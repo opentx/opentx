@@ -25,15 +25,20 @@ extern uint8_t g_moduleIdx;
 
 bool addRadioTool(uint8_t index, const char * label)
 {
-  int8_t sub = menuVerticalPosition - HEADER_LINE;
-  LcdFlags attr = (sub == index ? INVERS : 0);
-  coord_t y = MENU_HEADER_HEIGHT + 1 + index * FH;
-  lcdDrawNumber(3, y, index + 1, LEADING0|LEFT, 2);
-  lcdDrawText(3*FW, y, label, (sub == index ? INVERS  : 0));
-  if (attr && s_editMode > 0) {
-    s_editMode = 0;
-    killAllEvents();
-    return true;
+  if (index >= menuVerticalOffset) {
+    uint8_t lineIndex = index - menuVerticalOffset;
+    if (lineIndex < NUM_BODY_LINES) {
+      int8_t sub = menuVerticalPosition - HEADER_LINE;
+      LcdFlags attr = (sub == index ? INVERS : 0);
+      coord_t y = MENU_HEADER_HEIGHT + lineIndex * FH;
+      lcdDrawNumber(3, y, index + 1, LEADING0 | LEFT, 2);
+      lcdDrawText(3 * FW, y, label, (sub == index ? INVERS : 0));
+      if (attr && s_editMode > 0) {
+        s_editMode = 0;
+        killAllEvents();
+        return true;
+      }
+    }
   }
   return false;
 }
@@ -82,23 +87,7 @@ void menuRadioTools(event_t event)
 
   uint8_t index = 0;
 
-#if defined(INTERNAL_MODULE_PXX2)
-  if (isPXX2ModuleOptionAvailable(reusableBuffer.hardwareAndSettings.modules[INTERNAL_MODULE].information.modelID, MODULE_OPTION_SPECTRUM_ANALYSER))
-    addRadioModuleTool(index++, STR_SPECTRUM_ANALYSER_INT, menuRadioSpectrumAnalyser, INTERNAL_MODULE);
 
-  if (isPXX2ModuleOptionAvailable(reusableBuffer.hardwareAndSettings.modules[INTERNAL_MODULE].information.modelID, MODULE_OPTION_POWER_METER))
-    addRadioModuleTool(index++, STR_POWER_METER_INT, menuRadioPowerMeter, INTERNAL_MODULE);
-#elif defined(INTERNAL_MODULE_MULTI)
-  addRadioModuleTool(index++, STR_SPECTRUM_ANALYSER_INT, menuRadioSpectrumAnalyser, INTERNAL_MODULE);
-#endif
-#if defined(PXX2)|| defined(MULTIMODULE)
-  if (isPXX2ModuleOptionAvailable(reusableBuffer.hardwareAndSettings.modules[EXTERNAL_MODULE].information.modelID, MODULE_OPTION_SPECTRUM_ANALYSER) || isModuleMultimodule(EXTERNAL_MODULE))
-    addRadioModuleTool(index++, STR_SPECTRUM_ANALYSER_EXT, menuRadioSpectrumAnalyser, EXTERNAL_MODULE);
-#endif
-#if defined(PXX2)
-  if (isPXX2ModuleOptionAvailable(reusableBuffer.hardwareAndSettings.modules[EXTERNAL_MODULE].information.modelID, MODULE_OPTION_POWER_METER))
-    addRadioModuleTool(index++, STR_POWER_METER_EXT, menuRadioPowerMeter, EXTERNAL_MODULE);
-#endif
 
 #if defined(LUA)
   FILINFO fno;
@@ -120,6 +109,24 @@ void menuRadioTools(event_t event)
     }
     f_closedir(&dir);
   }
+#endif
+
+#if defined(INTERNAL_MODULE_PXX2)
+  if (isPXX2ModuleOptionAvailable(reusableBuffer.hardwareAndSettings.modules[INTERNAL_MODULE].information.modelID, MODULE_OPTION_SPECTRUM_ANALYSER))
+    addRadioModuleTool(index++, STR_SPECTRUM_ANALYSER_INT, menuRadioSpectrumAnalyser, INTERNAL_MODULE);
+
+  if (isPXX2ModuleOptionAvailable(reusableBuffer.hardwareAndSettings.modules[INTERNAL_MODULE].information.modelID, MODULE_OPTION_POWER_METER))
+    addRadioModuleTool(index++, STR_POWER_METER_INT, menuRadioPowerMeter, INTERNAL_MODULE);
+#elif defined(INTERNAL_MODULE_MULTI)
+  addRadioModuleTool(index++, STR_SPECTRUM_ANALYSER_INT, menuRadioSpectrumAnalyser, INTERNAL_MODULE);
+#endif
+#if defined(PXX2)|| defined(MULTIMODULE)
+  if (isPXX2ModuleOptionAvailable(reusableBuffer.hardwareAndSettings.modules[EXTERNAL_MODULE].information.modelID, MODULE_OPTION_SPECTRUM_ANALYSER) || isModuleMultimodule(EXTERNAL_MODULE))
+    addRadioModuleTool(index++, STR_SPECTRUM_ANALYSER_EXT, menuRadioSpectrumAnalyser, EXTERNAL_MODULE);
+#endif
+#if defined(PXX2)
+  if (isPXX2ModuleOptionAvailable(reusableBuffer.hardwareAndSettings.modules[EXTERNAL_MODULE].information.modelID, MODULE_OPTION_POWER_METER))
+    addRadioModuleTool(index++, STR_POWER_METER_EXT, menuRadioPowerMeter, EXTERNAL_MODULE);
 #endif
 
   if (index == 0) {

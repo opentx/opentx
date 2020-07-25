@@ -72,7 +72,7 @@ local function incrField(step)
     end
   else
     local min, max = 0, 0
-    if field.type <= 5 then
+    if ((field.type <= 5) or (field.type == 8)) then
       min = field.min
       max = field.max
       step = field.step * step
@@ -239,25 +239,21 @@ local function fieldFloatLoad(field, data, offset)
   field.default = fieldGetValue(data, offset+12, 4)
   fieldUnsignedToSigned(field, 4)
   field.prec = data[offset+16]
-  if field.prec > 2 then
-    field.prec = 2
+  if field.prec > 3 then
+    field.prec = 3
   end
   field.step = fieldGetValue(data, offset+17, 4)
   field.unit, offset = fieldGetString(data, offset+21)
 end
 
+local function formatFloat(num, decimals)
+  local mult = 10^(decimals or 0)
+  local val = num / mult
+  return string.format("%." .. decimals .. "f", val)
+end
+
 local function fieldFloatDisplay(field, y, attr)
-  local attrnum
-  if field.prec == 1 then
-    attrnum = LEFT + attr + PREC1
-  elseif field.prec == 2 then
-    attrnum = LEFT + attr + PREC2
-  else
-    attrnum = LEFT + attr
-  end
-  -- lcd.drawNumber(140, y, field.value, attrnum)			-- NOTE: original code getLastPos not available in Horus
-  -- lcd.drawText(lcd.getLastPos(), y, field.unit, attr)    -- NOTE: original code getLastPos not available in Horus
-  lcd.drawText(140, y, field.value .. field.unit, attr) 	-- NOTE: Concenated fields instead of get lastPos
+  lcd.drawText(140, y, formatFloat(field.value, field.prec) .. field.unit, attr)
 end
 
 local function fieldFloatSave(field)
@@ -423,7 +419,7 @@ end
 
 -- Main
 local function runDevicePage(event)
-  if event == EVT_EXIT_BREAK then             -- exit script
+  if event == EVT_VIRTUAL_EXIT then             -- exit script
     if edit == true then
       edit = false
       local field = getField(lineIndex)
@@ -455,9 +451,9 @@ local function runDevicePage(event)
       end
     end
   elseif edit then
-    if event == EVT_VIRTUAL_INC then
+    if event == EVT_VIRTUAL_INC or event == EVT_VIRTUAL_INC_REPT then
       incrField(1)
-    elseif event == EVT_VIRTUAL_DEC then
+    elseif event == EVT_VIRTUAL_DEC or event == EVT_VIRTUAL_DEC_REPT then
       incrField(-1)
     end
   else
@@ -493,7 +489,7 @@ end
 local function runPopupPage(event)
   local result
   if fieldPopup.status == 3 then
-    result = popupConfirmation(fieldPopup.info, event)
+    result = popupConfirmation("Confirmation", fieldPopup.info, event)
   else
     result = popupWarning(fieldPopup.info, event)
   end

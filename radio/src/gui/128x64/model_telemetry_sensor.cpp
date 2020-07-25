@@ -24,7 +24,7 @@ enum SensorFields {
   SENSOR_FIELD_NAME,
   SENSOR_FIELD_TYPE,
   SENSOR_FIELD_ID,
-  SENSOR_FIELD_FORMULA=SENSOR_FIELD_ID,
+  SENSOR_FIELD_FORMULA = SENSOR_FIELD_ID,
   SENSOR_FILED_RECEIVER_NAME,
   SENSOR_FIELD_UNIT,
   SENSOR_FIELD_PRECISION,
@@ -104,7 +104,7 @@ void menuModelSensor(event_t event)
         if (sensor->type == TELEM_TYPE_CUSTOM) {
           lcdDrawTextAlignedLeft(y, STR_ID);
           lcdDrawHexNumber(SENSOR_2ND_COLUMN, y, sensor->id, LEFT|(menuHorizontalPosition==0 ? attr : 0));
-          lcdDrawHexChar(SENSOR_3RD_COLUMN, y, (sensor->instance & 0x1F) + 1, LEFT|(menuHorizontalPosition==1 ? attr : 0));
+          lcdDrawNumber(SENSOR_3RD_COLUMN, y, (sensor->instance & 0x1F) + 1, LEFT|(menuHorizontalPosition==1 ? attr : 0));
           if (attr && s_editMode > 0) {
             switch (menuHorizontalPosition) {
               case 0:

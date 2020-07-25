@@ -93,7 +93,7 @@ bool CategorizedStorageFormat::load(RadioData & radioData)
         return false;
       }
       strncpy(radioData.models[modelIndex].filename, qPrintable(fileName), sizeof(radioData.models[modelIndex].filename));
-      if (IS_HORUS(board) && !strcmp(radioData.generalSettings.currModelFilename, qPrintable(fileName))) {
+      if (IS_FAMILY_HORUS_OR_T16(board) && !strcmp(radioData.generalSettings.currModelFilename, qPrintable(fileName))) {
         radioData.generalSettings.currModelIndex = modelIndex;
         qDebug() << "currModelIndex =" << modelIndex;
       }

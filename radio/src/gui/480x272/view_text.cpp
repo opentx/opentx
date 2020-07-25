@@ -42,7 +42,7 @@ bool menuTextView(event_t event)
       break;
 
     case EVT_ROTARY_RIGHT:
-      if (menuVerticalOffset + NUM_BODY_LINES >= lines_count)
+      if (menuVerticalOffset + TEXT_VIEWER_LINES >= lines_count)
         break;
       else
         ++menuVerticalOffset;
@@ -55,19 +55,11 @@ bool menuTextView(event_t event)
       break;
   }
 
-  for (int i=0; i<NUM_BODY_LINES; i++) {
-    lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + i*FH, reusableBuffer.viewText.lines[i]);
+  for (int i = 0; i < TEXT_VIEWER_LINES; i++) {
+    lcd->drawTextMaxWidth(MENUS_MARGIN_LEFT, MENU_HEADER_HEIGHT + i * FH, reusableBuffer.viewText.lines[i], 0, LCD_W - 2 * MENUS_MARGIN_LEFT);
   }
 
-#if 0
-  char * title = s_text_file;
-#if defined(SIMU)
-  if (!strncmp(title, "./", 2)) title += 2;
-#endif
-  lcdDrawTextAlignedCenter(MENU_FOOTER_TOP, title, HEADER_COLOR);
-#endif
-
-  drawVerticalScrollbar(LCD_W-5, 50, 195, menuVerticalOffset, lines_count, NUM_BODY_LINES);
+  drawVerticalScrollbar(LCD_W-5, 50, 195, menuVerticalOffset, lines_count, TEXT_VIEWER_LINES);
 
   return true;
 }

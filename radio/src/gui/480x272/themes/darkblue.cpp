@@ -35,7 +35,7 @@ class DarkblueTheme: public Theme
       lcdColorTable[TEXT_INVERTED_COLOR_INDEX] = WHITE;
       lcdColorTable[TEXT_INVERTED_BGCOLOR_INDEX] = RGB(32, 34, 42);
       lcdColorTable[TEXT_STATUSBAR_COLOR_INDEX] = WHITE;
-      lcdColorTable[LINE_COLOR_INDEX] = GREY;
+      lcdColorTable[LINE_COLOR_INDEX] = LIGHTGREY;
       lcdColorTable[SCROLLBOX_COLOR_INDEX] = WHITE;
       lcdColorTable[MENU_TITLE_BGCOLOR_INDEX] = DARKGREY;
       lcdColorTable[MENU_TITLE_COLOR_INDEX] = WHITE;
@@ -51,7 +51,7 @@ class DarkblueTheme: public Theme
       lcdColorTable[TRIM_BGCOLOR_INDEX] = RGB(32, 34, 42);
       lcdColorTable[TRIM_SHADOW_COLOR_INDEX] = RGB(100, 100, 100);
       lcdColorTable[MAINVIEW_PANES_COLOR_INDEX] = GREY;
-      lcdColorTable[MAINVIEW_GRAPHICS_COLOR_INDEX] = WHITE;
+      lcdColorTable[MAINVIEW_GRAPHICS_COLOR_INDEX] = BLUE;
       lcdColorTable[HEADER_BGCOLOR_INDEX] = BLACK;
       lcdColorTable[HEADER_ICON_BGCOLOR_INDEX] = BLACK;
       lcdColorTable[HEADER_CURRENT_BGCOLOR_INDEX] = RGB(10, 78, 121);
@@ -137,11 +137,19 @@ class DarkblueTheme: public Theme
       calibTrackpBackground = BitmapBuffer::load(getThemePath("trackp_background.png"));
 
       delete calibHorus;
-#if defined(PCBX10)
-      if (STICKS_PWM_ENABLED())
+#if defined(RADIO_T16)
+      calibHorus = BitmapBuffer::load(getThemePath("t16.bmp"));
+#elif defined(RADIO_T18)
+      calibHorus = BitmapBuffer::load(getThemePath("t18.bmp"));
+#elif defined(RADIO_TX16S)
+      calibHorus = BitmapBuffer::load(getThemePath("tx16s.bmp"));
+#elif defined(PCBX10)
+      if(STICKS_PWM_ENABLED()) {
         calibHorus = BitmapBuffer::load(getThemePath("X10S.bmp"));
-      else
+      }
+      else {
         calibHorus = BitmapBuffer::load(getThemePath("X10.bmp"));
+      }
 #else
       calibHorus = BitmapBuffer::load(getThemePath("horus.bmp"));
 #endif
@@ -224,6 +232,7 @@ class DarkblueTheme: public Theme
 
     virtual void load() const
     {
+      Theme::load();
       loadColors();
       loadMenusIcons();
       loadThemeBitmaps();
@@ -259,4 +268,7 @@ class DarkblueTheme: public Theme
 BitmapBuffer * DarkblueTheme::menuIconNormal[MENUS_ICONS_COUNT] = { NULL };
 BitmapBuffer * DarkblueTheme::menuIconSelected[MENUS_ICONS_COUNT] = { NULL };
 
-const DarkblueTheme darkblueTheme;
+DarkblueTheme darkblueTheme;
+#if defined(DEFAULT_THEME_DARKBLUE)
+  Theme * theme = &darkblueTheme;
+#endif

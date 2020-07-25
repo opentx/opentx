@@ -55,6 +55,8 @@ QString CustomFunctionData::funcToString(const ModelData * model) const
     return tr("Trainer THR");
   else if (func == FuncTrainerAIL)
     return tr("Trainer AIL");
+  else if (func == FuncTrainerChannels)
+    return tr("Trainer Channels");
   else if (func == FuncInstantTrim)
     return tr("Instant Trim");
   else if (func == FuncPlaySound)
@@ -110,13 +112,10 @@ void CustomFunctionData::populateResetParams(const ModelData * model, QComboBox 
 {
   int val = 0;
   Firmware * firmware = Firmware::getCurrentVariant();
-  Board::Type board = firmware->getBoard();
 
   b->addItem(tr("Timer1"), val++);
   b->addItem(tr("Timer2"), val++);
-  if (IS_ARM(board)) {
-    b->addItem( tr("Timer3"), val++);
-  }
+  b->addItem( tr("Timer3"), val++);
   b->addItem(tr("Flight"), val++);
   b->addItem(tr("Telemetry"), val++);
   int reCount = firmware->getCapability(RotaryEncoders);
@@ -130,7 +129,7 @@ void CustomFunctionData::populateResetParams(const ModelData * model, QComboBox 
   if ((int)value < b->count()) {
     b->setCurrentIndex(value);
   }
-  if (model && IS_ARM(board)) {
+  if (model) {
     for (unsigned i=0; i<CPN_MAX_SENSORS; ++i) {
       if (model->sensorData[i].isAvailable()) {
         RawSource item = RawSource(SOURCE_TYPE_TELEMETRY, 3*i);
@@ -208,14 +207,8 @@ QString CustomFunctionData::paramToString(const ModelData * model) const
       case FUNC_ADJUST_GVAR_INCDEC:
         float val;
         QString unit;
-        if (IS_ARM(getCurrentBoard())) {
-          val = param * model->gvarData[func - FuncAdjustGV1].multiplierGet();
-          unit = model->gvarData[func - FuncAdjustGV1].unitToString();
-        }
-        else {
-          val = param;
-          unit = "";
-        }
+        val = param * model->gvarData[func - FuncAdjustGV1].multiplierGet();
+        unit = model->gvarData[func - FuncAdjustGV1].unitToString();
         return QString("Increment: %1%2").arg(val).arg(unit);
     }
   }
@@ -231,7 +224,7 @@ QString CustomFunctionData::repeatToString() const
     return "";
   }
   else {
-    unsigned int step = IS_ARM(getCurrentBoard()) ? 1 : 10;
+    unsigned int step = 1;
     return tr("repeat(%1s)").arg(step*repeatParam);
   }
 }

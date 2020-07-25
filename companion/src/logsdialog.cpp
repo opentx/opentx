@@ -761,7 +761,7 @@ void LogsDialog::setFlightSessions()
   int noSesions = sessions.size()-1;
   QString label = QString("%1 ").arg(noSesions);
   label += tr(noSesions > 1 ? "sessions" : "session");
-  label += " <" + tr("total duration ") + generateDuration(getRecordTimeStamp(1), getRecordTimeStamp(n-1)) + ">";
+  label += " <" + tr("time span") + generateDuration(getRecordTimeStamp(1), getRecordTimeStamp(n-1)) + ">";
   ui->sessions_CB->addItem(label);
 
   // add individual sessions

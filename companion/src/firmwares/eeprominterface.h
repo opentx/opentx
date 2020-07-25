@@ -100,6 +100,8 @@ enum Capability {
   GvarsName,
   NoTelemetryProtocol,
   TelemetryCustomScreens,
+  TelemetryCustomScreensBars,
+  TelemetryCustomScreensLines,
   TelemetryCustomScreensFieldsPerLine,
   TelemetryMaxMultiplier,
   HasVario,
@@ -149,7 +151,8 @@ enum Capability {
   DangerousFunctions,
   HasModelCategories,
   HasSwitchableJack,
-  PwrButtonPress
+  PwrButtonPress,
+  Sensors
 };
 
 class EEPROMInterface
@@ -232,10 +235,7 @@ enum EepromLoadErrors {
   WRONG_SIZE,
   WRONG_FILE_SYSTEM,
   NOT_OPENTX,
-  NOT_TH9X,
-  NOT_GRUVIN9X,
   NOT_ERSKY9X,
-  NOT_ER9X,
   UNKNOWN_BOARD,
   WRONG_BOARD,
   BACKUP_NOT_SUPPORTED,

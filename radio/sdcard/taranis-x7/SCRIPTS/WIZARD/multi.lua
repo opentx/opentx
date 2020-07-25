@@ -58,10 +58,10 @@ end
 
 local function fieldIncDec(event, value, max, force)
   if edit or force==true then
-    if event == EVT_ROT_RIGHT then
+    if event == EVT_VIRTUAL_INC then
       value = (value + max)
       dirty = true
-    elseif event == EVT_ROT_LEFT then
+    elseif event == EVT_VIRTUAL_DEC then
       value = (value + max + 2)
       dirty = true
     end
@@ -72,12 +72,12 @@ end
 
 local function valueIncDec(event, value, min, max)
   if edit then
-    if event == EVT_ROT_RIGHT or event == EVT_RIGHT_FIRST then
+    if event == EVT_VIRTUAL_INC or event == EVT_VIRTUAL_INC_REPT then
       if value < max then
         value = (value + 1)
         dirty = true
       end
-    elseif event == EVT_ROT_LEFT or event == EVT_LEFT_FIRST then
+    elseif event == EVT_VIRTUAL_DEC or event == EVT_VIRTUAL_DEC_REPT then
       if value > min then
         value = (value - 1)
         dirty = true
@@ -88,11 +88,11 @@ local function valueIncDec(event, value, min, max)
 end
 
 local function navigate(event, fieldMax, prevPage, nextPage)
-  if event == EVT_ENTER_BREAK then
+  if event == EVT_VIRTUAL_ENTER then
     edit = not edit
     dirty = true
   elseif edit then
-    if event == EVT_EXIT_BREAK then
+    if event == EVT_VIRTUAL_EXIT then
       edit = false
       dirty = true
     elseif not dirty then
@@ -126,7 +126,7 @@ local function getFieldFlags(position)
 end
 
 local function channelIncDec(event, value)
-  if not edit and event==EVT_MENU_BREAK then
+  if not edit and event==EVT_VIRTUAL_MENU then
     servoPage = value
     dirty = true
   else
@@ -137,12 +137,12 @@ end
 
 local function switchValueIncDec(event, value, min, max)
   if edit then
-    if event == EVT_ROT_RIGHT or event == EVT_RIGHT_FIRST then
+    if event == EVT_VIRTUAL_INC or event == EVT_VIRTUAL_INC_REPT then
       if value < max then
         value = (value + 1)
         dirty = true
       end
-    elseif event == EVT_ROT_LEFT or event == EVT_LEFT_FIRST then
+    elseif event == EVT_VIRTUAL_DEC or event == EVT_VIRTUAL_DEC_REPT then
       if value > min then
         value = (value - 1)
         dirty = true
@@ -153,7 +153,7 @@ local function switchValueIncDec(event, value, min, max)
 end
 
 local function switchIncDec(event, value)
-  if not edit and event==EVT_MENU_BREAK then
+  if not edit and event== EVT_VIRTUAL_MENU then
     servoPage = value
     dirty = true
   else
@@ -165,8 +165,8 @@ end
 -- Init function
 local function init()
   thrCH1 = defaultChannel(2)
-  rollCH1 = defaultChannel(0)
-  yawCH1 = defaultChannel(3)
+  rollCH1 = defaultChannel(3)
+  yawCH1 = defaultChannel(0)
   pitchCH1 = defaultChannel(1)
   local ver, radio, maj, minor, rev = getVersion()
   if string.match(radio, "x7") then
@@ -399,9 +399,9 @@ local function confirmationMenu(event)
 
   navigate(event, fieldsMax, BEEPER_PAGE, page)
 
-  if event == EVT_EXIT_BREAK then
+  if event == EVT_VIRTUAL_EXIT then
     return 2
-  elseif event == EVT_ENTER_LONG then
+  elseif event == EVT_VIRTUAL_ENTER_LONG then
     killEvents(event)
     applySettings()
     return 2

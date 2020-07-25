@@ -24,6 +24,9 @@
 #include <inttypes.h>
 #include "rtc.h"
 #include "dump.h"
+
+#define CRLF "\r\n"
+
 #if defined(CLI)
 #include "cli.h"
 #else
@@ -35,6 +38,7 @@ extern "C" {
 #endif
 
 uint8_t auxSerialTracesEnabled();
+uint8_t aux2SerialTracesEnabled();
 
 #if defined(SIMU)
   typedef void (*traceCallbackFunc)(const char * text);
@@ -56,7 +60,7 @@ uint8_t auxSerialTracesEnabled();
 #endif
 
 #define TRACE_NOCRLF(...)     debugPrintf(__VA_ARGS__)
-#define TRACE(f_, ...)        debugPrintf((f_ "\r\n"), ##__VA_ARGS__)
+#define TRACE(f_, ...)        debugPrintf((f_ CRLF), ##__VA_ARGS__)
 #define DUMP(data, size)      dump(data, size)
 #define TRACE_DEBUG(...)      debugPrintf("-D- " __VA_ARGS__)
 #define TRACE_DEBUG_WP(...)   debugPrintf(__VA_ARGS__)
@@ -67,7 +71,7 @@ uint8_t auxSerialTracesEnabled();
 #define TRACE_ERROR(...)      debugPrintf("-E- " __VA_ARGS__)
 
 #if defined(TRACE_LUA_INTERNALS_ENABLED)
-  #define TRACE_LUA_INTERNALS(f_, ...)     debugPrintf(("[LUA INT] " f_ "\r\n"), ##__VA_ARGS__)
+  #define TRACE_LUA_INTERNALS(f_, ...)     debugPrintf(("[LUA INT] " f_ CRLF), ##__VA_ARGS__)
 
   #define TRACE_LUA_INTERNALS_WITH_LINEINFO(L, f_, ...)   do { \
                                                             lua_Debug ar; \
@@ -75,7 +79,7 @@ uint8_t auxSerialTracesEnabled();
                                                               lua_getinfo(L, ">Sl", &ar); \
                                                               debugPrintf("%s:%d: ", ar.short_src, ar.currentline); \
                                                             } \
-                                                            debugPrintf(("[LUA INT] " f_ "\r\n"), ##__VA_ARGS__); \
+                                                            debugPrintf(("[LUA INT] " f_ CRLF), ##__VA_ARGS__); \
                                                           } while(0)
 #else
   #define TRACE_LUA_INTERNALS(...)

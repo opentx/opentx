@@ -3,6 +3,7 @@ set_property(CACHE TIMERS PROPERTY STRINGS 2 3)
 option(CLI "Command Line Interface" OFF)
 option(DEBUG "Debug mode" OFF)
 option(LOG_TELEMETRY "Telemetry Logs on SD card" OFF)
+option(LOG_BLUETOOTH "Bluetooth Logs on SD card" OFF)
 option(TRACE_SD_CARD "Traces SD enabled" OFF)
 option(TRACE_FATFS "Traces FatFS enabled" OFF)
 option(TRACE_AUDIO "Traces audio enabled" OFF)
@@ -28,6 +29,10 @@ endif()
 
 if(LOG_TELEMETRY)
   add_definitions(-DLOG_TELEMETRY)
+endif()
+
+if(LOG_BLUETOOTH)
+  add_definitions(-DLOG_BLUETOOTH)
 endif()
 
 if(TRACE_SD_CARD)
@@ -143,7 +148,7 @@ endif()
 
 if(MULTIMODULE)
   add_definitions(-DMULTIMODULE)
-  set(SRC ${SRC} pulses/multi.cpp telemetry/spektrum.cpp telemetry/flysky_ibus.cpp telemetry/hitec.cpp telemetry/hott.cpp telemetry/multi.cpp io/multi_firmware_update.cpp)
+  set(SRC ${SRC} pulses/multi.cpp telemetry/spektrum.cpp telemetry/hitec.cpp telemetry/hott.cpp telemetry/multi.cpp io/multi_firmware_update.cpp)
 endif()
 
 if(CROSSFIRE)
@@ -156,6 +161,18 @@ if(CROSSFIRE)
     ${SRC}
     telemetry/crossfire.cpp
     )
+endif()
+
+if(AFHDS3)
+  add_definitions(-DAFHDS3)
+  set(PULSES_SRC
+    ${PULSES_SRC}
+    afhds3.cpp
+    )
+endif()
+
+if(MULTIMODULE OR AFHDS3)
+ set(SRC ${SRC} telemetry/flysky_ibus.cpp )
 endif()
 
 add_definitions(-DCPUARM)

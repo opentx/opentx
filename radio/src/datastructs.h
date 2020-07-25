@@ -26,6 +26,7 @@
 #include "dataconstants.h"
 #include "definitions.h"
 #include "bitfield.h"
+#include "globals.h"
 
 #if defined(PCBTARANIS)
   #define N_TARANIS_FIELD(x)
@@ -328,10 +329,10 @@ PACK(struct TelemetrySensor {
     NOBACKUP(uint16_t persistentValue);
   };
   union {
-    PACK(struct {
+    NOBACKUP(PACK(struct {
       uint8_t physID:5;
       uint8_t rxIndex:3; // 1 bit for module index, 2 bits for receiver index
-    }) frskyInstance;
+    }) frskyInstance);
     uint8_t instance;
     NOBACKUP(uint8_t formula);
   };
@@ -380,20 +381,7 @@ PACK(struct TelemetrySensor {
     bool isPrecConfigurable() const;
     int32_t getPrecMultiplier() const;
     int32_t getPrecDivisor() const;
-    bool isSameInstance(TelemetryProtocol protocol, uint8_t instance)
-    {
-      if (this->instance == instance)
-        return true;
-
-      if (protocol == PROTOCOL_TELEMETRY_FRSKY_SPORT) {
-        if (((this->instance ^ instance) & 0x9F) == 0 && (this->instance >> 5) != TELEMETRY_ENDPOINT_SPORT && (instance >> 5) != TELEMETRY_ENDPOINT_SPORT) {
-          this->instance = instance; // update the instance in case we had telemetry switching
-          return true;
-        }
-      }
-
-      return false;
-    }
+    bool isSameInstance(TelemetryProtocol protocol, uint8_t instance);
   );
 });
 
@@ -444,6 +432,9 @@ PACK(struct ModuleData {
       uint8_t autoBindMode:1;
       uint8_t lowPowerMode:1;
       int8_t optionValue;
+      uint8_t receiverTelemetryOff:1;
+      uint8_t receiverHigherChannels:1;
+      uint8_t spare:6;
     } multi);
     NOBACKUP(struct {
       uint8_t power:2;                  // 0=10 mW, 1=100 mW, 2=500 mW, 3=1W
@@ -463,15 +454,33 @@ PACK(struct ModuleData {
       uint8_t receivers; // 5 bits spare
       char receiverName[PXX2_MAX_RECEIVERS_PER_MODULE][PXX2_LEN_RX_NAME];
     }) pxx2);
+    NOBACKUP(PACK(struct {
+      uint8_t bindPower:3;
+      uint8_t runPower:3;
+      uint8_t emi:1;
+      uint8_t telemetry:1;
+      uint16_t failsafeTimeout;
+      uint8_t rx_freq[2];
+      uint16_t rxFreq()
+      {
+        return (uint16_t)rx_freq[0] | (((uint16_t)rx_freq[1]) << 8);
+      }
+
+      void setRxFreq(uint16_t value)
+      {
+        rx_freq[0] = value & 0xFF;
+        rx_freq[1] = value >> 8;
+      }
+    } afhds3));
   };
 
   // Helper functions to set both of the rfProto protocol at the same time
   NOBACKUP(inline uint8_t getMultiProtocol() {
-    return ((uint8_t) (rfProtocol & 0x0f)) + (multi.rfProtocolExtra << 4);
+    return ((uint8_t) (rfProtocol & 0x0F)) + (multi.rfProtocolExtra << 4);
   })
 
   NOBACKUP(inline void setMultiProtocol(uint8_t proto) {
-    rfProtocol = (uint8_t) (proto & 0x0f);
+    rfProtocol = (uint8_t) (proto & 0x0F);
     multi.rfProtocolExtra = (proto & 0x70) >> 4;
   })
 });
@@ -479,8 +488,6 @@ PACK(struct ModuleData {
 /*
  * Model structure
  */
-
-typedef uint16_t BeepANACenter;
 
 #if LEN_BITMAP_NAME > 0
 #define MODEL_HEADER_BITMAP_FIELD      NOBACKUP(char bitmap[LEN_BITMAP_NAME]);
@@ -664,7 +671,8 @@ PACK(struct TrainerData {
 
 #if defined(PCBHORUS)
   #define EXTRA_GENERAL_FIELDS \
-    NOBACKUP(uint8_t auxSerialMode); \
+    NOBACKUP(uint8_t auxSerialMode:4); \
+    NOBACKUP(uint8_t aux2SerialMode:4); \
     swconfig_t switchConfig; \
     uint16_t potsConfig; /* two bits per pot */ \
     uint8_t slidersConfig; /* 1 bit per slider */ \
@@ -736,7 +744,8 @@ PACK(struct RadioData {
   uint8_t backlightMode:3;
   int8_t antennaMode:2;
   uint8_t disableRtcWarning:1;
-  int8_t spare1:2;
+  uint8_t keysBacklight:1;
+  int8_t spare1:1;
   NOBACKUP(TrainerData trainer);
   NOBACKUP(uint8_t view);            // index of view in main screen
   NOBACKUP(BUZZER_FIELD); /* 2bits */
@@ -780,7 +789,7 @@ PACK(struct RadioData {
   NOBACKUP(uint8_t  disableRssiPoweroffAlarm:1);
   NOBACKUP(uint8_t  USBMode:2);
   NOBACKUP(uint8_t  jackMode:2);
-  NOBACKUP(uint8_t  spare3:1);
+  NOBACKUP(uint8_t  sportUpdatePower:1);
   NOBACKUP(char     ttsLanguage[2]);
   NOBACKUP(int8_t   beepVolume:4);
   NOBACKUP(int8_t   wavVolume:4);
@@ -938,4 +947,4 @@ static inline void check_struct()
 
 #undef CHKSIZE
 }
-#endif /* BACKUP */
+#endif /* BACKUP */ 

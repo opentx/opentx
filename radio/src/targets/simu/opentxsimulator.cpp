@@ -326,7 +326,7 @@ uint8_t OpenTxSimulator::getSensorInstance(uint16_t id, uint8_t defaultValue)
     if (isTelemetryFieldAvailable(i)) {
       TelemetrySensor * sensor = &g_model.telemetrySensors[i];
       if (sensor->id == id) {
-        return sensor->instance;
+        return sensor->frskyInstance.physID + 1;
       }
     }
   }
@@ -605,16 +605,16 @@ class OpenTxSimulatorFactory: public SimulatorFactory
       return Board::BOARD_HORUS_X12S;
 #elif defined(PCBX10)
       return Board::BOARD_X10;
+#elif defined(PCBX7ACCESS)
+      return Board::BOARD_TARANIS_X7_ACCESS;
 #elif defined(PCBX7)
       return Board::BOARD_TARANIS_X7;
 #elif defined(PCBX9LITES)
       return Board::BOARD_TARANIS_X9LITES;
 #elif defined(PCBX9LITE)
       return Board::BOARD_TARANIS_X9LITE;
-#elif defined(PCBTARANIS)
-      return Board::BOARD_TARANIS_X9D;
 #else
-      return Board::BOARD_9X_M64;
+      return Board::BOARD_TARANIS_X9D;
 #endif
     }
 };

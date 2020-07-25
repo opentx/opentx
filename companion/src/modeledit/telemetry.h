@@ -24,49 +24,17 @@
 #include "modeledit.h"
 #include "eeprominterface.h"
 
+constexpr char MIMETYPE_TELE_SENSOR[] = "application/x-companion-tele-sensor";
+
 class AutoComboBox;
 class RawSourceFilterItemModel;
 class TimerEdit;
 
 namespace Ui {
-  class TelemetryAnalog;
   class TelemetryCustomScreen;
   class TelemetrySensor;
   class Telemetry;
 }
-
-class TelemetryAnalog: public ModelPanel
-{
-    Q_OBJECT
-
-    friend class TelemetryPanel;
-
-  public:
-    TelemetryAnalog(QWidget *parent, FrSkyChannelData & analog, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware);
-    virtual ~TelemetryAnalog();
-
-  signals:
-    void modified();
-
-  private slots:
-    void on_UnitCB_currentIndexChanged(int index);
-    void on_RatioSB_editingFinished();
-    void on_RatioSB_valueChanged();
-    void on_CalibSB_editingFinished();
-    void on_alarm1LevelCB_currentIndexChanged(int index);
-    void on_alarm1GreaterCB_currentIndexChanged(int index);
-    void on_alarm1ValueSB_editingFinished();
-    void on_alarm2LevelCB_currentIndexChanged(int index);
-    void on_alarm2GreaterCB_currentIndexChanged(int index);
-    void on_alarm2ValueSB_editingFinished();
-
-  private:
-    Ui::TelemetryAnalog *ui;
-    FrSkyChannelData & analog;
-    bool lock;
-
-    void update();
-};
 
 class TelemetryCustomScreen: public ModelPanel
 {
@@ -103,19 +71,27 @@ class TelemetrySensorPanel: public ModelPanel
     Q_OBJECT
 
   public:
-    TelemetrySensorPanel(QWidget *parent, SensorData & sensor, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware);
+    TelemetrySensorPanel(QWidget *parent, SensorData & sensor, int sensorIndex, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware);
     ~TelemetrySensorPanel();
     void update();
 
   signals:
     void dataModified();
+    void clearAllSensors();
 
   protected slots:
     void on_name_editingFinished();
     void on_type_currentIndexChanged(int index);
     void on_formula_currentIndexChanged(int index);
     void on_unit_currentIndexChanged(int index);
-    void on_prec_valueChanged(double value);
+    void on_prec_valueChanged();
+    void on_customContextMenuRequested(QPoint pos);
+    bool hasClipboardData(QByteArray * data = nullptr) const;
+    void cmCopy();
+    void cmCut();
+    void cmPaste();
+    void cmClear();
+    void cmClearAll();
 
   protected:
     void updateSourcesComboBox(AutoComboBox * cb, bool negative);
@@ -123,7 +99,9 @@ class TelemetrySensorPanel: public ModelPanel
   private:
     Ui::TelemetrySensor * ui;
     SensorData & sensor;
-    bool lock;
+    bool lock = false;
+    int sensorIndex = 0;
+    int selectedIndex = 0;
 };
 
 class TelemetryPanel : public ModelPanel
@@ -143,8 +121,6 @@ class TelemetryPanel : public ModelPanel
     void onModified();
     void on_frskyProtoCB_currentIndexChanged(int index);
     void on_bladesCount_editingFinished();
-    void on_rssiAlarmWarningCB_currentIndexChanged(int index);
-    void on_rssiAlarmCriticalCB_currentIndexChanged(int index);
     void on_rssiAlarmWarningSB_editingFinished();
     void on_rssiAlarmCriticalSB_editingFinished();
     void on_varioLimitMin_DSB_editingFinished();
@@ -154,10 +130,10 @@ class TelemetryPanel : public ModelPanel
     void on_fasOffset_DSB_editingFinished();
     void on_mahCount_SB_editingFinished();
     void on_mahCount_ChkB_toggled(bool checked);
+    void on_clearAllSensors();
 
   private:
     Ui::Telemetry *ui;
-    TelemetryAnalog * analogs[4];
     TelemetryCustomScreen * telemetryCustomScreens[4];
     TelemetrySensorPanel * sensorPanels[CPN_MAX_SENSORS];
 

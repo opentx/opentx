@@ -18,6 +18,7 @@
  * GNU General Public License for more details.
  */
 
+#include <limits.h>
 #include "opentx.h"
 #include "timers.h"
 
@@ -148,9 +149,9 @@ void lcdPutPattern(coord_t x, coord_t y, const uint8_t * pattern, uint8_t width,
   }
 }
 
-#if !defined(BOOT)
 void getCharPattern(PatternData * pattern, unsigned char c, LcdFlags flags)
 {
+#if !defined(BOOT)
   uint32_t fontsize = FONTSIZE(flags);
   unsigned char c_remapped = 0;
 
@@ -211,6 +212,11 @@ void getCharPattern(PatternData * pattern, unsigned char c, LcdFlags flags)
     pattern->height = 7;
     pattern->data = (c < 0xC0) ? &font_5x7[(c-0x20)*5] : &font_5x7_extra[(c-0xC0)*5];
   }
+#else
+  pattern->width = 5;
+  pattern->height = 7;
+  pattern->data = &font_5x7[(c-0x20) * 5];
+#endif
 }
 
 uint8_t getCharWidth(char c, LcdFlags flags)
@@ -219,7 +225,6 @@ uint8_t getCharWidth(char c, LcdFlags flags)
   getCharPattern(&pattern, c, flags);
   return getPatternWidth(&pattern);
 }
-#endif
 
 void lcdDrawChar(coord_t x, coord_t y, const unsigned char c, LcdFlags flags)
 {
@@ -239,12 +244,15 @@ void lcdDrawChar(coord_t x, coord_t y, const unsigned char c)
   lcdDrawChar(x, y, c, 0);
 }
 
-#if !defined(BOOT)
 uint8_t getTextWidth(const char * s, uint8_t len, LcdFlags flags)
 {
   uint8_t width = 0;
-  for (int i=0; len==0 || i<len; ++i) {
+  for (int i = 0; len == 0 || i < len; ++i) {
+#if !defined(BOOT)
     unsigned char c = (flags & ZCHAR) ? zchar2char(*s) : *s;
+#else
+    unsigned char c = *s;
+#endif
     if (!c) {
       break;
     }
@@ -253,7 +261,6 @@ uint8_t getTextWidth(const char * s, uint8_t len, LcdFlags flags)
   }
   return width;
 }
-#endif
 
 void lcdDrawSizedText(coord_t x, coord_t y, const char * s, uint8_t len, LcdFlags flags)
 {
@@ -263,7 +270,6 @@ void lcdDrawSizedText(coord_t x, coord_t y, const char * s, uint8_t len, LcdFlag
   bool setx = false;
   uint8_t width = 0;
 
-#if !defined(BOOT)
   if (flags & RIGHT) {
     width = getTextWidth(s, len, flags);
     x -= width;
@@ -272,7 +278,6 @@ void lcdDrawSizedText(coord_t x, coord_t y, const char * s, uint8_t len, LcdFlag
     width = getTextWidth(s, len, flags);
     x -= width / 2;
   }
-#endif
 
   while (len--) {
 #if defined(BOOT)
@@ -402,7 +407,19 @@ void lcdDrawNumber(coord_t x, coord_t y, int32_t val, LcdFlags flags, uint8_t le
   int idx = 0;
   int mode = MODE(flags);
   bool neg = false;
+
+  if (val == INT_MAX) {
+    flags &= ~(LEADING0 | PREC1 | PREC2);
+    lcdDrawText(x, y, "INT_MAX", flags);
+    return;
+  }
+
   if (val < 0) {
+    if (val == INT_MIN) {
+      flags &= ~(LEADING0 | PREC1 | PREC2);
+      lcdDrawText(x, y, "INT_MIN", flags);
+      return;
+    }
     val = -val;
     neg = true;
   }

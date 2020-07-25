@@ -23,17 +23,14 @@
 void pwrInit()
 {
   GPIO_InitTypeDef GPIO_InitStructure;
+
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
   GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
 
-  // Board PWR
-  GPIO_InitStructure.GPIO_Pin = PWR_ON_GPIO_PIN;
-  GPIO_Init(PWR_ON_GPIO, &GPIO_InitStructure);
-
 #if defined(INTMODULE_BOOTCMD_GPIO)
-  GPIO_SetBits(INTMODULE_BOOTCMD_GPIO, INTMODULE_BOOTCMD_GPIO_PIN);
+  INIT_INTMODULE_BOOTCMD_PIN();
   GPIO_InitStructure.GPIO_Pin = INTMODULE_BOOTCMD_GPIO_PIN;
   GPIO_Init(INTMODULE_BOOTCMD_GPIO, &GPIO_InitStructure);
 #endif
@@ -54,22 +51,39 @@ void pwrInit()
   GPIO_InitStructure.GPIO_Pin = PWR_SWITCH_GPIO_PIN;
   GPIO_Init(PWR_SWITCH_GPIO, &GPIO_InitStructure);
 
+#if defined(PWR_EXTRA_SWITCH_GPIO)
+  // PWR Extra switch
+  GPIO_InitStructure.GPIO_Pin = PWR_EXTRA_SWITCH_GPIO_PIN;
+  GPIO_Init(PWR_EXTRA_SWITCH_GPIO, &GPIO_InitStructure);
+#endif
+
+#if defined(PCBREV_HARDCODED)
+  hardwareOptions.pcbrev = PCBREV_HARDCODED;
+#elif defined(PCBREV_GPIO_PIN)
+  #if defined(PCBREV_GPIO_PULL_DOWN)
+    GPIO_ResetBits(PCBREV_GPIO, PCBREV_GPIO_PIN);
+    GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_DOWN;
+  #endif
+  GPIO_InitStructure.GPIO_Pin = PCBREV_GPIO_PIN;
+  GPIO_Init(PCBREV_GPIO, &GPIO_InitStructure);
+  hardwareOptions.pcbrev = PCBREV_VALUE();
+#endif
+
 #if defined(TRAINER_DETECT_GPIO_PIN)
   GPIO_InitStructure.GPIO_Pin = TRAINER_DETECT_GPIO_PIN;
   GPIO_Init(TRAINER_DETECT_GPIO, &GPIO_InitStructure);
+#endif
+
+#if defined(SD_PRESENT_GPIO_PIN)
+  GPIO_ResetBits(SD_PRESENT_GPIO, SD_PRESENT_GPIO_PIN);
+  GPIO_InitStructure.GPIO_Pin = SD_PRESENT_GPIO_PIN;
+  GPIO_Init(SD_PRESENT_GPIO, &GPIO_InitStructure);
 #endif
 
 #if defined(INTMODULE_USART) && defined(TRAINER_MODULE_CPPM_GPIO_PIN)
   GPIO_SetBits(TRAINER_MODULE_CPPM_GPIO, TRAINER_MODULE_CPPM_GPIO_PIN);
   GPIO_InitStructure.GPIO_Pin = TRAINER_MODULE_CPPM_GPIO_PIN;
   GPIO_Init(TRAINER_MODULE_CPPM_GPIO, &GPIO_InitStructure);
-#endif
-
-#if defined(PCBREV_GPIO_PIN)
-  GPIO_ResetBits(PCBREV_GPIO, PCBREV_GPIO_PIN);
-  GPIO_InitStructure.GPIO_Pin = PCBREV_GPIO_PIN;
-  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_DOWN;
-  GPIO_Init(PCBREV_GPIO, &GPIO_InitStructure);
 #endif
 }
 
@@ -93,9 +107,20 @@ void pwrOff()
   GPIO_ResetBits(PWR_ON_GPIO, PWR_ON_GPIO_PIN);
 }
 
+#if defined(PWR_EXTRA_SWITCH_GPIO)
+bool pwrForcePressed()
+{
+  return (GPIO_ReadInputDataBit(PWR_SWITCH_GPIO, PWR_SWITCH_GPIO_PIN) == Bit_RESET && GPIO_ReadInputDataBit(PWR_EXTRA_SWITCH_GPIO, PWR_EXTRA_SWITCH_GPIO_PIN) == Bit_RESET);
+}
+#endif
+
 bool pwrPressed()
 {
+#if defined(PWR_EXTRA_SWITCH_GPIO)
+  return (GPIO_ReadInputDataBit(PWR_SWITCH_GPIO, PWR_SWITCH_GPIO_PIN) == Bit_RESET || GPIO_ReadInputDataBit(PWR_EXTRA_SWITCH_GPIO, PWR_EXTRA_SWITCH_GPIO_PIN) == Bit_RESET);
+#else
   return GPIO_ReadInputDataBit(PWR_SWITCH_GPIO, PWR_SWITCH_GPIO_PIN) == Bit_RESET;
+#endif
 }
 
 void pwrResetHandler()

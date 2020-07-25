@@ -62,6 +62,14 @@ void sportUpdatePowerOff()
 {
   GPIO_SPORT_UPDATE_PWR_GPIO_OFF(SPORT_UPDATE_PWR_GPIO, SPORT_UPDATE_PWR_GPIO_PIN);
 }
+
+void sportUpdatePowerInit()
+{
+  if (g_eeGeneral.sportUpdatePower == 1)
+    sportUpdatePowerOn();
+  else
+    sportUpdatePowerOff();
+}
 #endif
 
 void boardInit()
@@ -113,10 +121,11 @@ void boardInit()
                          INTMODULE_RCC_APB2Periph |
                          EXTMODULE_RCC_APB2Periph |
                          TRAINER_MODULE_RCC_APB2Periph |
-                         BT_RCC_APB2Periph,
+                         BT_RCC_APB2Periph |
+                         TELEMETRY_RCC_APB2Periph,
                          ENABLE);
 
-#if defined(BLUETOOTH)
+#if defined(BLUETOOTH) && !defined(PCBX9E)
   bluetoothInit(BLUETOOTH_DEFAULT_BAUDRATE, true);
 #endif
 

@@ -21,15 +21,15 @@
 #ifndef _BOARD_H_
 #define _BOARD_H_
 
-#include "../definitions.h"
-#include "../opentx_constants.h"
+#include "definitions.h"
+#include "opentx_constants.h"
 #include "board_common.h"
 #include "hal.h"
 
 PACK(typedef struct {
-  uint8_t pcbrev : 2;
-  uint8_t sticksPwmDisabled : 1;
-  uint8_t pxx2Enabled : 1;
+  uint8_t pcbrev:2;
+  uint8_t sticksPwmDisabled:1;
+  uint8_t pxx2Enabled:1;
 }) HardwareOptions;
 
 extern HardwareOptions hardwareOptions;
@@ -59,7 +59,7 @@ extern uint16_t sessionTimer;
 
 #define SLAVE_MODE()                   (g_model.trainerData.mode == TRAINER_MODE_SLAVE)
 
-#if defined(PCBX10) && !defined(RADIO_T16)
+#if defined(PCBX10) && !defined(RADIO_FAMILY_T16)
   #define TRAINER_CONNECTED()            (GPIO_ReadInputDataBit(TRAINER_DETECT_GPIO, TRAINER_DETECT_GPIO_PIN) == Bit_SET)
 #else
   #define TRAINER_CONNECTED()            (GPIO_ReadInputDataBit(TRAINER_DETECT_GPIO, TRAINER_DETECT_GPIO_PIN) == Bit_RESET)
@@ -146,6 +146,10 @@ void SDRAM_Init();
 // Pulses driver
 #define INTERNAL_MODULE_ON()           GPIO_SetBits(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN)
 
+#if defined(INTERNAL_MODULE_PXX1) || defined(INTERNAL_MODULE_PXX2)
+  #define HARDWARE_INTERNAL_RAS
+#endif
+
 #if defined(INTMODULE_USART)
   #define INTERNAL_MODULE_OFF()        intmoduleStop()
 #else
@@ -192,6 +196,9 @@ void init_trainer_ppm();
 void stop_trainer_ppm();
 void init_trainer_capture();
 void stop_trainer_capture();
+
+// SBUS
+int sbusGetByte(uint8_t * byte);
 
 // Keys driver
 enum EnumKeys
@@ -382,7 +389,11 @@ enum Analogs {
 #define SLIDER2 SLIDER_FRONT_RIGHT
 
 #define DEFAULT_SWITCH_CONFIG  (SWITCH_TOGGLE << 14) + (SWITCH_3POS << 12) + (SWITCH_2POS << 10) + (SWITCH_3POS << 8) + (SWITCH_3POS << 6) + (SWITCH_3POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0)
-#define DEFAULT_POTS_CONFIG    (POT_WITH_DETENT << 4) + (POT_MULTIPOS_SWITCH << 2) + (POT_WITHOUT_DETENT << 0)
+#if defined(RADIO_FAMILY_T16)
+  #define DEFAULT_POTS_CONFIG    (POT_WITH_DETENT << 4) + (POT_MULTIPOS_SWITCH << 2) + (POT_WITH_DETENT << 0)
+#else
+  #define DEFAULT_POTS_CONFIG    (POT_WITH_DETENT << 4) + (POT_MULTIPOS_SWITCH << 2) + (POT_WITHOUT_DETENT << 0)
+#endif
 
 #if defined(PCBX12S)
 #define DEFAULT_SLIDERS_CONFIG (SLIDER_WITH_DETENT << 3) + (SLIDER_WITH_DETENT << 2) + (SLIDER_WITH_DETENT << 1) + (SLIDER_WITH_DETENT << 0)
@@ -488,7 +499,16 @@ void pwrOn();
 void pwrOff();
 void pwrResetHandler();
 bool pwrPressed();
+#if defined(PWR_EXTRA_SWITCH_GPIO)
+  bool pwrForcePressed();
+#else
+  #define pwrForcePressed() false
+#endif
 uint32_t pwrPressedDuration();
+
+// USB Charger
+void usbChargerInit();
+bool usbChargerLed();
 
 // Led driver
 void ledInit();
@@ -527,7 +547,7 @@ void backlightEnable(uint8_t dutyCycle = 0);
 #define BACKLIGHT_LEVEL_MAX   100
 #if defined(PCBX12S)
 #define BACKLIGHT_LEVEL_MIN   5
-#elif defined(RADIO_T16)
+#elif defined(RADIO_FAMILY_T16)
 #define BACKLIGHT_LEVEL_MIN   1
 #else
 #define BACKLIGHT_LEVEL_MIN   46
@@ -547,6 +567,14 @@ void usbJoystickUpdate();
   #define USB_NAME                     "Jumper T16"
   #define USB_MANUFACTURER             'J', 'u', 'm', 'p', 'e', 'r', ' ', ' '  /* 8 bytes */
   #define USB_PRODUCT                  'T', '1', '6', ' ', ' ', ' ', ' ', ' '  /* 8 Bytes */  
+#elif defined(RADIO_T18)
+  #define USB_NAME                     "Jumper T18"
+  #define USB_MANUFACTURER             'J', 'u', 'm', 'p', 'e', 'r', ' ', ' '  /* 8 bytes */
+  #define USB_PRODUCT                  'T', '1', '8', ' ', ' ', ' ', ' ', ' '  /* 8 Bytes */
+#elif defined(RADIO_TX16S)
+  #define USB_NAME                     "RadioMas TX16S"
+  #define USB_MANUFACTURER             'R', 'a', 'd', 'i', 'o', 'M', 'a', 's'  /* 8 bytes */
+  #define USB_PRODUCT                  'T', 'X', '1', '6', 'S', ' ', ' ', ' '  /* 8 Bytes */
 #elif defined(PCBX10)
   #define USB_NAME                     "FrSky X10"
   #define USB_MANUFACTURER             'F', 'r', 'S', 'k', 'y', ' ', ' ', ' '  /* 8 bytes */
@@ -588,14 +616,58 @@ extern uint32_t telemetryErrors;
 void telemetryPortInvertedInit(uint32_t baudrate);
 
 // Sport update driver
-#if defined(PCBX10) && !defined(RADIO_T16)
+#if HAS_SPORT_UPDATE_CONNECTOR()
 void sportUpdatePowerOn();
 void sportUpdatePowerOff();
+void sportUpdatePowerInit();
 #define SPORT_UPDATE_POWER_ON()        sportUpdatePowerOn()
 #define SPORT_UPDATE_POWER_OFF()       sportUpdatePowerOff()
+#define SPORT_UPDATE_POWER_INIT()      sportUpdatePowerInit()
+#define IS_SPORT_UPDATE_POWER_ON()     (GPIO_ReadInputDataBit(SPORT_UPDATE_PWR_GPIO, SPORT_UPDATE_PWR_GPIO_PIN) == Bit_SET)
 #else
 #define SPORT_UPDATE_POWER_ON()
 #define SPORT_UPDATE_POWER_OFF()
+#define SPORT_UPDATE_POWER_INIT()
+#define IS_SPORT_UPDATE_POWER_ON()     (false)
+#endif
+
+// Aux serial port driver
+#if defined(AUX_SERIAL_GPIO)
+#define DEBUG_BAUDRATE                  115200
+extern uint8_t auxSerialMode;
+void auxSerialInit(unsigned int mode, unsigned int protocol);
+void auxSerialPutc(char c);
+#define auxSerialTelemetryInit(protocol) auxSerialInit(UART_MODE_TELEMETRY, protocol)
+void auxSerialSbusInit();
+void auxSerialStop();
+void auxSerialPowerOn();
+void auxSerialPowerOff();
+#if defined(AUX_SERIAL_PWR_GPIO)
+#define AUX_SERIAL_POWER_ON()             auxSerialPowerOn()
+#define AUX_SERIAL_POWER_OFF()            auxSerialPowerOff()
+#else
+#define AUX_SERIAL_POWER_ON()
+#define AUX_SERIAL_POWER_OFF()
+#endif
+#endif
+
+// Aux2 serial port driver
+#if defined(AUX2_SERIAL)
+extern uint8_t aux2SerialMode;
+void aux2SerialInit(unsigned int mode, unsigned int protocol);
+void aux2SerialPutc(char c);
+#define aux2SerialTelemetryInit(protocol) aux2SerialInit(UART_MODE_TELEMETRY, protocol)
+void aux2SerialSbusInit();
+void aux2SerialStop();
+void aux2SerialPowerOn();
+void aux2SerialPowerOff();
+#if defined(AUX2_SERIAL_PWR_GPIO)
+#define AUX2_SERIAL_POWER_ON()            aux2SerialPowerOn()
+#define AUX2_SERIAL_POWER_OFF()           aux2SerialPowerOff()
+#else
+#define AUX2_SERIAL_POWER_ON()
+#define AUX2_SERIAL_POWER_OFF()
+#endif
 #endif
 
 // Haptic driver
@@ -619,7 +691,7 @@ void gpsSendByte(uint8_t byte);
 
 // BT driver
 #define BT_TX_FIFO_SIZE    64
-#define BT_RX_FIFO_SIZE    128
+#define BT_RX_FIFO_SIZE    256
 #define BLUETOOTH_BOOTLOADER_BAUDRATE  230400
 #define BLUETOOTH_FACTORY_BAUDRATE     57600
 #define BLUETOOTH_DEFAULT_BAUDRATE     115200

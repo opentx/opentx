@@ -91,9 +91,9 @@ end
 
 -- Main
 local function runFieldsPage(event)
-  if event == EVT_EXIT_BREAK then -- exit script
+  if event == EVT_VIRTUAL_EXIT then -- exit script
     return 2
-  elseif event == EVT_ENTER_BREAK or event == EVT_ROT_BREAK then -- toggle editing/selecting current field
+  elseif event == EVT_VIRTUAL_ENTER then -- toggle editing/selecting current field
     if fields[current][5] ~= nil then
       edit = not edit
       if edit == false then
@@ -101,15 +101,15 @@ local function runFieldsPage(event)
       end
     end
   elseif edit then
-    if event == EVT_PLUS_FIRST or event == EVT_ROT_RIGHT or event == EVT_PLUS_REPT then
+    if event == EVT_VIRTUAL_INC or event == EVT_VIRTUAL_INC_REPT then
       addField(1)
-    elseif event == EVT_MINUS_FIRST or event == EVT_ROT_LEFT or event == EVT_MINUS_REPT then
+    elseif event == EVT_VIRTUAL_DEC or event == EVT_VIRTUAL_DEC_REPT then
       addField(-1)
     end
   else
-    if event == EVT_MINUS_FIRST or event == EVT_ROT_RIGHT then
+    if event == EVT_VIRTUAL_NEXT then
       selectField(1)
-    elseif event == EVT_PLUS_FIRST or event == EVT_ROT_LEFT then
+    elseif event == EVT_VIRTUAL_PREV then
       selectField(-1)
     end
   end
@@ -149,14 +149,13 @@ local function runMotorConfig(event)
   lcd.drawBitmap(BackgroundImg, 0, 0)
   lcd.drawBitmap(ImgPageDn, 455, 95)
   lcd.drawBitmap(ImgEngine, 310, 50)
-  lcd.setColor(CUSTOM_COLOR, lcd.RGB(255, 255, 255))
   fields = MotorFields
   lcd.drawText(40, 20, "Does your model have a motor ?", TEXT_COLOR)
-  lcd.drawFilledRectangle(40, 45, 200, 30, CUSTOM_COLOR)
+  lcd.drawFilledRectangle(40, 45, 200, 30, TEXT_BGCOLOR)
   fields[2][4]=0
   if fields[1][5] == 1 then
     lcd.drawText(40, 100, "What channel is it on ?", TEXT_COLOR)
-    lcd.drawFilledRectangle(40, 122, 100, 30, CUSTOM_COLOR)
+    lcd.drawFilledRectangle(40, 122, 100, 30, TEXT_BGCOLOR)
     fields[2][4]=1
   end
   local result = runFieldsPage(event)
@@ -190,7 +189,7 @@ local function runAilConfig(event)
     lcd.drawBitmap(ImgAilL, 395, 235)
     drawMark(308, 115, "A")
     drawMark(422, 220, "A")
-    lcd.drawFilledRectangle(40, 122, 100, 30, CUSTOM_COLOR)
+    lcd.drawFilledRectangle(40, 122, 100, 30, TEXT_BGCOLOR)
     drawMark(152, 124, "A")
     setFieldsVisible(1, 0)
   elseif fields[1][5] == 2 then
@@ -198,16 +197,16 @@ local function runAilConfig(event)
     lcd.drawBitmap(ImgAilL, 395, 235)
     drawMark(308, 115, "A")
     drawMark(422, 220, "B")
-    lcd.drawFilledRectangle(40, 122, 100, 30, CUSTOM_COLOR)
+    lcd.drawFilledRectangle(40, 122, 100, 30, TEXT_BGCOLOR)
     drawMark(152, 124, "A")
-    lcd.drawFilledRectangle(40, 162, 100, 30, CUSTOM_COLOR)
+    lcd.drawFilledRectangle(40, 162, 100, 30, TEXT_BGCOLOR)
     drawMark(152, 164, "B")
     setFieldsVisible(1, 1)
   else
     setFieldsVisible(0, 0)
   end
   lcd.drawText(40, 20, "Number of ailerons on your model ?", TEXT_COLOR)
-  lcd.drawFilledRectangle(40, 45, 400, 30, CUSTOM_COLOR)
+  lcd.drawFilledRectangle(40, 45, 400, 30, TEXT_BGCOLOR)
   local result = runFieldsPage(event)
   return result
 end
@@ -235,7 +234,7 @@ local function runFlapsConfig(event)
     lcd.drawBitmap(ImgFlp, 358, 202)
     drawMark(332, 132, "A")
     drawMark(412, 215, "A")
-    lcd.drawFilledRectangle(40, 122, 100, 30, CUSTOM_COLOR)
+    lcd.drawFilledRectangle(40, 122, 100, 30, TEXT_BGCOLOR)
     drawMark(152, 124, "A")
     setFieldsVisible(1, 0)
   elseif fields[1][5] == 2 then
@@ -243,16 +242,16 @@ local function runFlapsConfig(event)
     lcd.drawBitmap(ImgFlp, 358, 202)
     drawMark(332, 132, "A")
     drawMark(412, 215, "B")
-    lcd.drawFilledRectangle(40, 122, 100, 30, CUSTOM_COLOR)
+    lcd.drawFilledRectangle(40, 122, 100, 30, TEXT_BGCOLOR)
     drawMark(152, 124, "A")
-    lcd.drawFilledRectangle(40, 162, 100, 30, CUSTOM_COLOR)
+    lcd.drawFilledRectangle(40, 162, 100, 30, TEXT_BGCOLOR)
     drawMark(152, 164, "B")
     setFieldsVisible(1, 1)
   else
     setFieldsVisible(0, 0)
   end
   lcd.drawText(40, 20, "Does your model have flaps ?", TEXT_COLOR)
-  lcd.drawFilledRectangle(40, 45, 400, 30, CUSTOM_COLOR)
+  lcd.drawFilledRectangle(40, 45, 400, 30, TEXT_BGCOLOR)
   local result = runFieldsPage(event)
   return result
 end
@@ -283,7 +282,7 @@ local function runTailConfig(event)
     lcd.drawBitmap(ImgTail, 252, 100)
     drawMark(360, 125, "A")
     drawMark(390, 155, "A")
-    lcd.drawFilledRectangle(40, 122, 100, 30, CUSTOM_COLOR)
+    lcd.drawFilledRectangle(40, 122, 100, 30, TEXT_BGCOLOR)
     drawMark(152, 124, "A")
     setFieldsVisible(1, 0, 0)
   end
@@ -293,9 +292,9 @@ local function runTailConfig(event)
     drawMark(415, 150, "A")
     drawMark(380, 120, "A")
     drawMark(390, 185, "B")
-    lcd.drawFilledRectangle(40, 122, 100, 30, CUSTOM_COLOR)
+    lcd.drawFilledRectangle(40, 122, 100, 30, TEXT_BGCOLOR)
     drawMark(152, 124, "A")
-    lcd.drawFilledRectangle(40, 162, 100, 30, CUSTOM_COLOR)
+    lcd.drawFilledRectangle(40, 162, 100, 30, TEXT_BGCOLOR)
     drawMark(152, 164, "B")
     setFieldsVisible(1, 1, 0)
   end
@@ -305,11 +304,11 @@ local function runTailConfig(event)
     drawMark(415, 150, "C")
     drawMark(380, 120, "A")
     drawMark(390, 185, "B")
-    lcd.drawFilledRectangle(40, 122, 100, 30, CUSTOM_COLOR)
+    lcd.drawFilledRectangle(40, 122, 100, 30, TEXT_BGCOLOR)
     drawMark(152, 124, "A")
-    lcd.drawFilledRectangle(40, 162, 100, 30, CUSTOM_COLOR)
+    lcd.drawFilledRectangle(40, 162, 100, 30, TEXT_BGCOLOR)
     drawMark(152, 164, "B")
-    lcd.drawFilledRectangle(40, 202, 100, 30, CUSTOM_COLOR)
+    lcd.drawFilledRectangle(40, 202, 100, 30, TEXT_BGCOLOR)
     drawMark(152, 204, "C")
     setFieldsVisible(1, 1, 1)
   end
@@ -317,14 +316,14 @@ local function runTailConfig(event)
     lcd.drawBitmap(ImgVTail, 252, 100)
     drawMark(315, 110, "A")
     drawMark(382, 120, "B")
-    lcd.drawFilledRectangle(40, 122, 100, 30, CUSTOM_COLOR)
+    lcd.drawFilledRectangle(40, 122, 100, 30, TEXT_BGCOLOR)
     drawMark(152, 124, "A")
-    lcd.drawFilledRectangle(40, 162, 100, 30, CUSTOM_COLOR)
+    lcd.drawFilledRectangle(40, 162, 100, 30, TEXT_BGCOLOR)
     drawMark(152, 164, "B")
     setFieldsVisible(1, 1, 0)
   end
   lcd.drawText(40, 20, "Pick the tail config of your model", TEXT_COLOR)
-  lcd.drawFilledRectangle(40, 45, 400, 30, CUSTOM_COLOR)
+  lcd.drawFilledRectangle(40, 45, 400, 30, TEXT_BGCOLOR)
   local result = runFieldsPage(event)
   return result
 end
@@ -465,9 +464,9 @@ local function run(event)
   if event == nil then
     error("Cannot be run as a model script!")
     return 2
-  elseif (event == EVT_PAGE_BREAK or event == EVT_PAGEDN_FIRST) and page < #pages-1 then
+  elseif event == EVT_VIRTUAL_NEXT_PAGE and page < #pages-1 then
     selectPage(1)
-  elseif (event == EVT_PAGE_LONG or event == EVT_PAGEUP_FIRST) and page > 1 then
+  elseif event == EVT_VIRTUAL_PREV_PAGE and page > 1 then
     killEvents(event);
     selectPage(-1)
   end

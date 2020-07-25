@@ -52,8 +52,8 @@ void runPopupCurvePreset(event_t event)
 
   if (warningResult) {
     warningResult = 0;
-    CurveInfo & crv = g_model.curves[s_curveChan];
-    int8_t * points = curveAddress(s_curveChan);
+    CurveInfo & crv = g_model.curves[s_currIdxSubMenu];
+    int8_t * points = curveAddress(s_currIdxSubMenu);
     int k = 25 * reusableBuffer.curveEdit.preset;
     int dx = 2000 / (5+crv.points-1);
     for (uint8_t i=0; i<5+crv.points; i++) {
@@ -73,14 +73,14 @@ void onCurveOneMenu(const char * result)
     POPUP_INPUT(STR_PRESET, runPopupCurvePreset);
   }
   else if (result == STR_MIRROR) {
-    CurveInfo & crv = g_model.curves[s_curveChan];
-    int8_t * points = curveAddress(s_curveChan);
+    CurveInfo & crv = g_model.curves[s_currIdxSubMenu];
+    int8_t * points = curveAddress(s_currIdxSubMenu);
     for (int i=0; i<5+crv.points; i++)
       points[i] = -points[i];
   }
   else if (result == STR_CLEAR) {
-    CurveInfo & crv = g_model.curves[s_curveChan];
-    int8_t * points = curveAddress(s_curveChan);
+    CurveInfo & crv = g_model.curves[s_currIdxSubMenu];
+    int8_t * points = curveAddress(s_currIdxSubMenu);
     for (int i=0; i<5+crv.points; i++)
       points[i] = 0;
     if (crv.type == CURVE_TYPE_CUSTOM) {
@@ -105,11 +105,11 @@ enum MenuModelCurveOneItems {
 bool menuModelCurveOne(event_t event)
 {
   static uint8_t pointsOfs = 0;
-  CurveData & crv = g_model.curves[s_curveChan];
-  int8_t * points = curveAddress(s_curveChan);
+  CurveData & crv = g_model.curves[s_currIdxSubMenu];
+  int8_t * points = curveAddress(s_currIdxSubMenu);
 
   SUBMENU_WITH_OPTIONS(STR_MENUCURVE, ICON_MODEL_CURVES, IS_COORDS1_LINE_NEEDED() ? 6 : 5, OPTION_MENU_NO_FOOTER, { 0, 0, 0, 0, uint8_t(5+crv.points-1), uint8_t(5+crv.points-1) });
-  drawStringWithIndex(50, 3+FH, STR_CV, s_curveChan+1, MENU_TITLE_COLOR);
+  drawStringWithIndex(50, 3+FH, STR_CV, s_currIdxSubMenu+1, MENU_TITLE_COLOR);
   lcdDrawSolidFilledRect(0, MENU_FOOTER_TOP, 250, MENU_FOOTER_HEIGHT, HEADER_BGCOLOR);
 
   if (IS_COORDS1_LINE_NEEDED() && menuVerticalPosition == ITEM_CURVE_COORDS1) {
@@ -133,15 +133,15 @@ bool menuModelCurveOne(event_t event)
 
   // Curve type
   LcdFlags attr = (menuVerticalPosition==ITEM_CURVE_TYPE ? (s_editMode>0 ? INVERS|BLINK : INVERS) : 0);
-  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP, "Type");
+  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP, STR_TYPE);
   lcdDrawTextAtIndex(MODEL_CURVE_ONE_2ND_COLUMN, MENU_CONTENT_TOP, STR_CURVE_TYPES, crv.type, attr);
   if (attr) {
     uint8_t newType = checkIncDecModelZero(event, crv.type, CURVE_TYPE_LAST);
     if (newType != crv.type) {
       for (int i = 1; i < 4 + crv.points; i++) {
-        points[i] = calcRESXto100(applyCustomCurve(calc100toRESX(-100 + i * 200 / (4 + crv.points)), s_curveChan));
+        points[i] = calcRESXto100(applyCustomCurve(calc100toRESX(-100 + i * 200 / (4 + crv.points)), s_currIdxSubMenu));
       }
-      if (moveCurve(s_curveChan, checkIncDec_Ret > 0 ? 3 + crv.points : -3 - crv.points)) {
+      if (moveCurve(s_currIdxSubMenu, checkIncDec_Ret > 0 ? 3 + crv.points : -3 - crv.points)) {
         if (newType == CURVE_TYPE_CUSTOM) {
           resetCustomCurveX(points, 5 + crv.points);
         }
@@ -155,14 +155,17 @@ bool menuModelCurveOne(event_t event)
   lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + FH, STR_COUNT);
   lcdDrawNumber(MODEL_CURVE_ONE_2ND_COLUMN, MENU_CONTENT_TOP + FH, 5+crv.points, LEFT|attr, 0, NULL, STR_PTS);
   if (attr) {
+#if defined(ROTARY_ENCODER_NAVIGATION)
+    rotencSpeed = ROTENC_LOWSPEED;
+#endif
     int count = checkIncDecModel(event, crv.points, -3, 12); // 2pts - 17pts
     if (checkIncDec_Ret) {
       int newPoints[MAX_POINTS_PER_CURVE];
       newPoints[0] = points[0];
       newPoints[4+count] = points[4+crv.points];
       for (int i=1; i<4+count; i++)
-        newPoints[i] = calcRESXto100(applyCustomCurve(-RESX + (i * 2 * RESX) / (4 + count), s_curveChan));
-      if (moveCurve(s_curveChan, checkIncDec_Ret*(crv.type==CURVE_TYPE_CUSTOM ? 2 :1))) {
+        newPoints[i] = calcRESXto100(applyCustomCurve(-RESX + (i * 2 * RESX) / (4 + count), s_currIdxSubMenu));
+      if (moveCurve(s_currIdxSubMenu, checkIncDec_Ret*(crv.type==CURVE_TYPE_CUSTOM ? 2 :1))) {
         for (int i = 0; i < 5 + count; i++) {
           points[i] = newPoints[i];
           if (crv.type == CURVE_TYPE_CUSTOM && i != 0 && i != 4 + count)
@@ -298,7 +301,7 @@ void editCurveRef(coord_t x, coord_t y, CurveRef & curve, event_t event, LcdFlag
       drawCurveName(lcdNextPos+10, y, curve.value, (menuHorizontalPosition==1 ? attr : 0));
       if (attr && menuHorizontalPosition==1) {
         if (event==EVT_KEY_LONG(KEY_ENTER) && curve.value!=0) {
-          s_curveChan = (curve.value<0 ? -curve.value-1 : curve.value-1);
+          s_currIdxSubMenu = (curve.value<0 ? -curve.value-1 : curve.value-1);
           pushMenu(menuModelCurveOne);
         }
         else {
@@ -316,7 +319,7 @@ bool menuModelCurvesAll(event_t event)
 {
   SIMPLE_MENU(STR_MENUCURVES, MODEL_ICONS, menuTabModel, MENU_MODEL_CURVES, MAX_CURVES);
 
-  s_curveChan = menuVerticalPosition;
+  s_currIdxSubMenu = menuVerticalPosition;
 
   switch (event) {
     case EVT_KEY_BREAK(KEY_ENTER):

@@ -5,7 +5,7 @@ set -e
 set -x
 
 # Allow variable core usage, default uses all cpu cores, to set 8 cores for example : commit-tests.sh -j8
-num_cpus=$(grep 'physical id' /proc/cpuinfo | sort -u | wc -l)
+num_cpus=$(nproc)
 : "${CORES:=$num_cpus}"
 # Default build treats warnings as errors, set -Wno-error to override, e.g.: commit-tests.sh -Wno-error
 : "${WERROR:=1}"
@@ -97,7 +97,7 @@ fi
 if [[ " X9LITES X9LITE ALL " =~ \ ${FLAVOR}\  ]] ; then
   # OpenTX on X9LITES
   rm -rf ./*
-  cmake "${COMMON_OPTIONS}" -DPCB=X9LITES -DHELI=YES -DGVARS=YES "${SRCDIR}"
+  cmake "${COMMON_OPTIONS}" -DPCB=X9LITES -DHELI=YES -DGVARS=YES -DMULTIMODULE=NO "${SRCDIR}"
   make -j"${CORES}" ${FIRMARE_TARGET}
   make -j"${CORES}" libsimulator
   make -j"${CORES}" tests-radio
@@ -184,10 +184,28 @@ if [[ " X10 COLORLCD ALL " =~ \ ${FLAVOR}\  ]] ; then
   make -j"${CORES}" tests-radio
 fi
 
+if [[ " T16 COLORLCD ALL " =~ \ ${FLAVOR}\  ]] ; then
+  # OpenTX on T16 boards
+  rm -rf ./*
+  cmake "${COMMON_OPTIONS}" -DPCB=X10 -DPCBREV=T16 -DHELI=YES -DLUA=YES -DGVARS=YES -DAFHDS3=NO "${SRCDIR}"
+  make -j"${CORES}" ${FIRMARE_TARGET}
+  make -j"${CORES}" libsimulator
+  make -j"${CORES}" tests-radio
+fi
+
+if [[ " TX16S COLORLCD ALL " =~ \ ${FLAVOR}\  ]] ; then
+  # OpenTX on TX16S boards
+  rm -rf ./*
+  cmake "${COMMON_OPTIONS}" -DPCB=X10 -DPCBREV=TX16S -DHELI=YES -DLUA=YES -DGVARS=YES "${SRCDIR}"
+  make -j"${CORES}" ${FIRMARE_TARGET}
+  make -j"${CORES}" libsimulator
+  make -j"${CORES}" tests-radio
+fi
+
 if [[ " X12S COLORLCD ALL " =~ \ ${FLAVOR}\  ]] ; then
   # OpenTX on X12S
   rm -rf ./*
-  cmake "${COMMON_OPTIONS}" -DPCB=X12S -DHELI=YES -DLUA=YES -DGVARS=YES "${SRCDIR}"
+  cmake "${COMMON_OPTIONS}" -DPCB=X12S -DHELI=YES -DLUA=YES -DGVARS=YES -DMULTIMODULE=NO "${SRCDIR}"
   make -j"${CORES}" ${FIRMARE_TARGET}
   make -j"${CORES}" libsimulator
   make -j"${CORES}" tests-radio

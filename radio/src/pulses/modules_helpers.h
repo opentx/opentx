@@ -25,6 +25,9 @@
 #include "definitions.h"
 #include "opentx_helpers.h"
 #include "telemetry/telemetry.h"
+#include "storage/storage.h"
+#include "globals.h"
+
 #if defined(MULTIMODULE)
 #include "telemetry/multi.h"
 #endif
@@ -55,7 +58,7 @@ inline uint8_t getMaxMultiSubtype(uint8_t moduleIdx)
   const mm_protocol_definition *pdef = getMultiProtocolDefinition(g_model.moduleData[moduleIdx].getMultiProtocol());
 
   if (g_model.moduleData[moduleIdx].getMultiProtocol() == MODULE_SUBTYPE_MULTI_FRSKY) {
-    return 5;
+    return 7;
   }
 
   if (g_model.moduleData[moduleIdx].getMultiProtocol() > MODULE_SUBTYPE_MULTI_LAST) {
@@ -127,7 +130,7 @@ inline bool isModuleISRMD16(uint8_t idx)
 
 inline bool isModuleD16(uint8_t idx)
 {
-  return isModuleXJTD16(idx) || isModuleISRMD16(idx);
+  return isModuleXJTD16(idx) || isModuleISRMD16(idx) || IS_D16_MULTI(idx);
 }
 
 inline bool isModuleISRMAccess(uint8_t idx)
@@ -296,8 +299,32 @@ inline bool isModuleSBUS(uint8_t moduleIdx)
   return g_model.moduleData[moduleIdx].type == MODULE_TYPE_SBUS;
 }
 
+inline bool isModuleAFHDS3(uint8_t idx)
+{
+  return g_model.moduleData[idx].type == MODULE_TYPE_AFHDS3;
+}
+
+inline bool isModulePxx2(uint8_t idx)
+{
+  if (idx != EXTERNAL_MODULE)
+    return false;
+#if defined(PXX2)
+  #if defined(HARDWARE_EXTERNAL_MODULE_SIZE_SML)
+     if (g_model.moduleData[idx].type == MODULE_TYPE_XJT_LITE_PXX2 ||
+        g_model.moduleData[idx].type == MODULE_TYPE_R9M_LITE_PRO_PXX2)
+       return true;
+  #endif
+  #if defined(HARDWARE_EXTERNAL_MODULE_SIZE_SML)
+    if (g_model.moduleData[idx].type == MODULE_TYPE_R9M_LITE_PXX2)
+      return true;
+  #endif
+#endif
+  return false;
+}
+
 // order is the same as in enum Protocols in myeeprom.h (none, ppm, pxx, pxx2, dsm, crossfire, multi, r9m, r9m2, sbus)
-static const int8_t maxChannelsModules[] = { 0, 8, 8, 16, -2, 8, 4, 8, 16, 8}; // relative to 8!
+//qba667 count is not matching!
+static const int8_t maxChannelsModules[] = { 0, 8, 8, 16, -2, 8, 4, 8, 16, 8, 10}; // relative to 8!
 static const int8_t maxChannelsXJT[] = { 0, 8, 0, 4 }; // relative to 8!
 
 constexpr int8_t MAX_TRAINER_CHANNELS_M8 = MAX_TRAINER_CHANNELS - 8;
@@ -322,6 +349,9 @@ inline int8_t maxModuleChannels_M8(uint8_t moduleIdx)
       return 8; // always 16 channels in FCC / FLEX
     }
   }
+  else if (isModuleAFHDS3(moduleIdx)) {
+    return 10;
+  }
   else {
     return maxChannelsModules[g_model.moduleData[moduleIdx].type];
   }
@@ -345,6 +375,11 @@ inline int8_t defaultModuleChannels_M8(uint8_t idx)
     return maxModuleChannels_M8(idx);
 }
 
+inline uint8_t sentModulePXXChannels(uint8_t idx)
+{
+  return 8 + g_model.moduleData[idx].channelsCount;
+}
+
 inline int8_t sentModuleChannels(uint8_t idx)
 {
   if (isModuleCrossfire(idx))
@@ -354,7 +389,7 @@ inline int8_t sentModuleChannels(uint8_t idx)
   else if (isModuleSBUS(idx))
     return 16;
   else
-    return 8 + g_model.moduleData[idx].channelsCount;
+    return sentModulePXXChannels(idx);
 }
 
 inline bool isDefaultModelRegistrationID()
@@ -393,7 +428,7 @@ inline bool isModuleFailsafeAvailable(uint8_t moduleIdx)
     return g_model.moduleData[moduleIdx].subType == MODULE_SUBTYPE_PXX1_ACCST_D16;
 
 #if defined(MULTIMODULE)
-  if (isModuleMultimodule(moduleIdx)){
+  if (isModuleMultimodule(moduleIdx)) {
     MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
     if (status.isValid()) {
       return status.supportsFailsafe();
@@ -405,6 +440,11 @@ inline bool isModuleFailsafeAvailable(uint8_t moduleIdx)
   }
 #endif
 
+#if defined(AFHDS3)
+  if (isModuleAFHDS3(moduleIdx))
+    return true;
+#endif
+
   if (isModuleR9M(moduleIdx))
     return true;
 
@@ -413,8 +453,15 @@ inline bool isModuleFailsafeAvailable(uint8_t moduleIdx)
 
 inline bool isModuleBindRangeAvailable(uint8_t moduleIdx)
 {
-  return isModulePXX2(moduleIdx) || isModulePXX1(moduleIdx) || isModuleDSM2(moduleIdx) || isModuleMultimodule(moduleIdx);
+  return isModulePXX2(moduleIdx) || isModulePXX1(moduleIdx) || isModuleDSM2(moduleIdx) || isModuleMultimodule(moduleIdx) || isModuleAFHDS3(moduleIdx);
 }
+
+inline bool isModuleRangeAvailable(uint8_t moduleIdx)
+{
+  return isModuleBindRangeAvailable(moduleIdx) && !IS_RX_MULTI(moduleIdx);
+}
+
+constexpr uint8_t MAX_RXNUM = 63;
 
 inline uint8_t getMaxRxNum(uint8_t idx)
 {
@@ -422,8 +469,7 @@ inline uint8_t getMaxRxNum(uint8_t idx)
     return 20;
 
 #if defined(MULTIMODULE)
-  if (isModuleMultimodule(idx))
-  {
+  if (isModuleMultimodule(idx)) {
     switch (g_model.moduleData[idx].getMultiProtocol()) {
       case MODULE_SUBTYPE_MULTI_OLRS:
         return 4;
@@ -434,7 +480,7 @@ inline uint8_t getMaxRxNum(uint8_t idx)
   }
 #endif
 
-  return 63;
+  return MAX_RXNUM;
 }
 
 inline const char * getModuleDelay(uint8_t idx)
@@ -469,7 +515,7 @@ inline bool isTelemAllowedOnBind(uint8_t moduleIndex)
 {
 #if defined(HARDWARE_INTERNAL_MODULE)
   if (moduleIndex == INTERNAL_MODULE)
-    return isModuleISRM(moduleIndex) || isSportLineUsedByInternalModule();
+    return true;
 
   if (isSportLineUsedByInternalModule())
     return false;
@@ -526,6 +572,38 @@ inline void setDefaultPpmFrameLength(uint8_t moduleIdx)
   g_model.moduleData[moduleIdx].ppm.frameLength = 4 * max<int>(0, g_model.moduleData[moduleIdx].channelsCount);
 }
 
+inline void resetAccessAuthenticationCount()
+{
+#if defined(ACCESS_LIB)
+  // the module will reset on mode switch, we need to reset the authentication counter
+  globalData.authenticationCount = 0;
+#endif
+}
+
+inline void resetAfhds3Options(uint8_t moduleIdx)
+{
+  auto & data = g_model.moduleData[moduleIdx];
+  data.rfProtocol = 0;
+  data.subType = 0;
+#if defined(AFHDS3)
+  data.afhds3.bindPower = 0;
+  data.afhds3.runPower = 0;
+  data.afhds3.emi = 0;
+  data.afhds3.telemetry = 1;
+  data.afhds3.rx_freq[0] = 50;
+  data.afhds3.rx_freq[1] = 0;
+  data.afhds3.failsafeTimeout = 1000;
+  data.channelsCount = 14 - 8;
+  data.failsafeMode = 1;
+  //" PWM+i"" PWM+s"" PPM+i"" PPM+s"
+  data.subType = 0;
+  for (uint8_t channel = 0; channel < MAX_OUTPUT_CHANNELS; channel++) {
+    g_model.failsafeChannels[channel] = 0;
+  }
+#endif
+}
+
+
 inline void setModuleType(uint8_t moduleIdx, uint8_t moduleType)
 {
   ModuleData & moduleData = g_model.moduleData[moduleIdx];
@@ -536,6 +614,10 @@ inline void setModuleType(uint8_t moduleIdx, uint8_t moduleType)
     moduleData.sbus.refreshRate = -31;
   else if (moduleData.type == MODULE_TYPE_PPM)
     setDefaultPpmFrameLength(moduleIdx);
+  else if (moduleData.type == MODULE_TYPE_AFHDS3)
+    resetAfhds3Options(moduleIdx);
+  else
+    resetAccessAuthenticationCount();
 }
 
 extern bool isExternalAntennaEnabled();
@@ -557,6 +639,8 @@ inline void resetMultiProtocolsOptions(uint8_t moduleIdx)
   g_model.moduleData[moduleIdx].multi.disableTelemetry = 0;
   g_model.moduleData[moduleIdx].multi.disableMapping = 0;
   g_model.moduleData[moduleIdx].multi.lowPowerMode = 0;
+  g_model.moduleData[moduleIdx].failsafeMode = FAILSAFE_NOT_SET;
+  g_model.header.modelId[moduleIdx] = 0;
 }
 
 inline void getMultiOptionValues(int8_t multi_proto, int8_t & min, int8_t & max)
@@ -581,6 +665,10 @@ inline void getMultiOptionValues(int8_t multi_proto, int8_t & min, int8_t & max)
     case MODULE_SUBTYPE_MULTI_XN297DP:
       min = -1;
       max = 84;
+      break;
+    case MODULE_SUBTYPE_MULTI_FRSKY_R9:
+      min = 0;  // 10mW
+      max = 5;  // 300mW
       break;
     default:
       min = -128;

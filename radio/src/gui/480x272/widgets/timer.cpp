@@ -28,13 +28,13 @@ class TimerWidget: public Widget
     {
     }
 
-    virtual void refresh();
+    void refresh() override;
 
     static const ZoneOption options[];
 };
 
 const ZoneOption TimerWidget::options[] = {
-  { "Timer source", ZoneOption::Timer, OPTION_VALUE_UNSIGNED(0) },
+  { STR_TIMER_SOURCE, ZoneOption::Timer, OPTION_VALUE_UNSIGNED(0) },
   { NULL, ZoneOption::Bool }
 };
 

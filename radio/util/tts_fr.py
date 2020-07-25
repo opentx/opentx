@@ -71,9 +71,11 @@ for s, f in [("Trim centré", "midtrim"),
              ("Récepteur encore sous tension", "modelpwr"),
              ]:
     systemSounds.append((s, filename(f)))
-for i, (s, f) in enumerate([("altitude", "altitude"),
+for i, (s, f) in enumerate([("armé", "armed"),
+                            ("désarmé", "disarm"),
+                            ("altitude", "alt"),
                             ("température moteur", "moteur"),
-                            ("température contrôleur", "cntrleur"),
+                            ("température contrôleur", "tctrl"),
                             ("train rentré", "gearup"),
                             ("train sorti", "geardn"),
                             ("volets rentrés", "flapup"),

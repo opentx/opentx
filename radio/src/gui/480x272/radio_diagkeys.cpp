@@ -61,7 +61,7 @@ bool menuRadioDiagKeys(event_t event)
     displayKeyState(70, y, i);
   }
 
-  for (uint8_t i = 0; i <= NUM_SWITCHES; i++) {
+  for (uint8_t i = 0; i < NUM_SWITCHES; i++) {
     if (SWITCH_EXISTS(i)) {
       coord_t y = MENU_HEADER_HEIGHT + 1 + FH * i;
       getvalue_t val = getValue(MIXSRC_FIRST_SWITCH + i);
@@ -73,7 +73,7 @@ bool menuRadioDiagKeys(event_t event)
 #if defined(ROTARY_ENCODER_NAVIGATION)
   coord_t y = MENU_HEADER_HEIGHT + FH * (8 - KEY_START);
   lcdDrawText(MENUS_MARGIN_LEFT, y, STR_ROTARY_ENCODER);
-  lcdDrawNumber(70, y, rotencValue, 0);
+  lcdDrawNumber(70, y, rotencValue / ROTARY_ENCODER_GRANULARITY, 0);
 #endif
 
   return true;

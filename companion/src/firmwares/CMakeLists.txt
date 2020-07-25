@@ -1,5 +1,6 @@
 
 set(firmwares_SRCS
+  adjustmentreference.cpp
   boards.cpp
   curvereference.cpp
   customfunctiondata.cpp
@@ -17,8 +18,7 @@ set(firmwares_SRCS
   rawswitch.cpp
   sensordata.cpp
   telem_data.cpp
-  er9x/er9xeeprom.cpp
-  er9x/er9xinterface.cpp
+  afhds3.cpp
   ersky9x/ersky9xeeprom.cpp
   ersky9x/ersky9xinterface.cpp
   opentx/opentxeeprom.cpp

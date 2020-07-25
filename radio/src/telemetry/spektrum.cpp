@@ -24,6 +24,7 @@
 /*
  * Documentation of the Spektrum protocol is available under
  * https://www.spektrumrc.com/ProdInfo/Files/SPM_Telemetry_Developers_Specs.pdf
+ * https://github.com/SpektrumRC/SpektrumDocumentation/blob/master/Telemetry/spektrumTelemetrySensors.h
  *
  * Multi module adds two byte header of 0xAA [RSSI of telemetry packet] [16 byte message]
  */
@@ -49,7 +50,18 @@
 #define I2C_TEXTGEN 0x0c
 #define I2C_GPS  0x17
 #define I2C_GPS2 0x17
+#define I2C_ESC  0x20
 #define I2C_CELLS 0x3a
+
+// SMART_BAT is using fake I2C adresses compared to official Spektrum address because of subtype used only for this I2C address
+#define I2C_SMART_BAT_BASE_ADDRESS    0x42
+#define I2C_SMART_BAT_REALTIME        0x42
+#define I2C_SMART_BAT_CELLS_1_6       0x43
+#define I2C_SMART_BAT_CELLS_7_12      0x44
+#define I2C_SMART_BAT_CELLS_13_18     0x45
+#define I2C_SMART_BAT_ID              0x4A
+#define I2C_SMART_BAT_LIMITS          0x4B
+
 #define I2C_QOS 0x7f
 
 enum SpektrumDataType : uint8_t {
@@ -62,6 +74,8 @@ enum SpektrumDataType : uint8_t {
   uint8bcd,
   uint16bcd,
   uint32bcd,
+  uint16le,
+  uint32le,
   custom
 };
 
@@ -151,7 +165,16 @@ const SpektrumSensor spektrumSensors[] = {
   {0x1b,             2,  int16,     ZSTR_PITCH,             UNIT_DEGREE,                 1},
   {0x1b,             4,  int16,     ZSTR_YAW,               UNIT_DEGREE,                 1},
 
-  // {0x20, esc}, does not exist in the wild?
+  // {0x20, esc},  Smart ESC telemetry
+  {I2C_ESC,          0,  uint16,    ZSTR_ESC_RPM,           UNIT_RPMS,                   0},
+  {I2C_ESC,          2,  uint16,    ZSTR_ESC_VIN,           UNIT_VOLTS,                  2},
+  {I2C_ESC,          4,  uint16,    ZSTR_ESC_TFET,          UNIT_CELSIUS,                1},
+  {I2C_ESC,          6,  uint16,    ZSTR_ESC_CUR,           UNIT_MAH,                    1},
+  {I2C_ESC,          8,  uint16,    ZSTR_ESC_TBEC,          UNIT_CELSIUS,                1},
+  {I2C_ESC,          10, uint8,     ZSTR_ESC_BCUR,          UNIT_AMPS,                   1},
+  {I2C_ESC,          11, uint8,     ZSTR_ESC_VBEC,          UNIT_VOLTS,                  2},
+  {I2C_ESC,          12, uint8,     ZSTR_ESC_THR,           UNIT_PERCENT,                1},
+  {I2C_ESC,          13, uint8,     ZSTR_ESC_POUT,          UNIT_PERCENT,                1},
 
   // Dual Cell monitor (0x34)
   {0x34,             0,  int16,     ZSTR_BATT1_CURRENT,     UNIT_AMPS,                   1},
@@ -177,6 +200,53 @@ const SpektrumSensor spektrumSensors[] = {
   // Vario-S
   {0x40,             0,  int16,     ZSTR_ALT,               UNIT_METERS,                 1},
   {0x40,             2,  int16,     ZSTR_VSPD,              UNIT_METERS_PER_SECOND,      1},
+
+  // Smartbat
+  //{I2C_SMART_BAT_REALTIME,        1,  int8,      ZSTR_SMART_BAT_BTMP,    UNIT_CELSIUS,             0},  // disabled because sensor is a duplicate of cells sensors ones
+  {I2C_SMART_BAT_REALTIME,        2,  uint32le,  ZSTR_SMART_BAT_BCUR,    UNIT_MAH,                 0},
+  {I2C_SMART_BAT_REALTIME,        6,  uint16le,  ZSTR_SMART_BAT_BCAP,    UNIT_MAH,                 0},
+  {I2C_SMART_BAT_REALTIME,        8,  uint16le,  ZSTR_SMART_BAT_MIN_CEL, UNIT_VOLTS,               2},
+  {I2C_SMART_BAT_REALTIME,        10,  uint16le, ZSTR_SMART_BAT_MAX_CEL, UNIT_VOLTS,               2},
+  //{I2C_SMART_BAT_REALTIME,          12,  uint16le,  "RFU[2]", UNIT_RAW,                 0},   // disabled to save sensors slots
+
+  {I2C_SMART_BAT_CELLS_1_6,       1,  int8,      ZSTR_SMART_BAT_BTMP,   UNIT_CELSIUS,             0},
+  {I2C_SMART_BAT_CELLS_1_6,       2,  uint16le,  ZSTR_CL01,             UNIT_VOLTS,               2},
+  {I2C_SMART_BAT_CELLS_1_6,       4,  uint16le,  ZSTR_CL02,             UNIT_VOLTS,               2},
+  {I2C_SMART_BAT_CELLS_1_6,       6,  uint16le,  ZSTR_CL03,             UNIT_VOLTS,               2},
+  {I2C_SMART_BAT_CELLS_1_6,       8,  uint16le,  ZSTR_CL04,             UNIT_VOLTS,               2},
+  {I2C_SMART_BAT_CELLS_1_6,       10,  uint16le,  ZSTR_CL05,            UNIT_VOLTS,               2},
+  {I2C_SMART_BAT_CELLS_1_6,       12, uint16le,  ZSTR_CL06,             UNIT_VOLTS,               2},
+
+  {I2C_SMART_BAT_CELLS_7_12,      1,  int8,      ZSTR_SMART_BAT_BTMP,   UNIT_CELSIUS,             0},
+  {I2C_SMART_BAT_CELLS_7_12,      2,  uint16le,  ZSTR_CL07,             UNIT_VOLTS,               2},
+  {I2C_SMART_BAT_CELLS_7_12,      4,  uint16le,  ZSTR_CL08,             UNIT_VOLTS,               2},
+  {I2C_SMART_BAT_CELLS_7_12,      6,  uint16le,  ZSTR_CL09,             UNIT_VOLTS,               2},
+  {I2C_SMART_BAT_CELLS_7_12,      8,  uint16le,  ZSTR_CL10,             UNIT_VOLTS,               2},
+  {I2C_SMART_BAT_CELLS_7_12,      10,  uint16le,  ZSTR_CL11,            UNIT_VOLTS,               2},
+  {I2C_SMART_BAT_CELLS_7_12,      12, uint16le,  ZSTR_CL12,             UNIT_VOLTS,               2},
+
+  {I2C_SMART_BAT_CELLS_13_18,     1,  int8,      ZSTR_SMART_BAT_BTMP,   UNIT_CELSIUS,             0},
+  {I2C_SMART_BAT_CELLS_13_18,     2,  uint16le,  ZSTR_CL13,             UNIT_VOLTS,               2},
+  {I2C_SMART_BAT_CELLS_13_18,     4,  uint16le,  ZSTR_CL14,             UNIT_VOLTS,               2},
+  {I2C_SMART_BAT_CELLS_13_18,     6,  uint16le,  ZSTR_CL15,             UNIT_VOLTS,               2},
+  {I2C_SMART_BAT_CELLS_13_18,     8,  uint16le,  ZSTR_CL16,             UNIT_VOLTS,               2},
+  {I2C_SMART_BAT_CELLS_13_18,     10, uint16le,  ZSTR_CL17,             UNIT_VOLTS,               2},
+  {I2C_SMART_BAT_CELLS_13_18,     12, uint16le,  ZSTR_CL18,             UNIT_VOLTS,               2},
+
+  //{I2C_SMART_BAT_ID,              1,  uint8,  "chemistery",  UNIT_RAW, 0},   // disabled to save sensors slots
+  //{I2C_SMART_BAT_ID,              2,  uint8,  "number of cells",  UNIT_RAW, 0},   // disabled to save sensors slots
+  //{I2C_SMART_BAT_ID,              3,  uint8,  "manufacturer code",  UNIT_RAW, 0},   // disabled to save sensors slots
+  {I2C_SMART_BAT_ID,              4,  uint16le,  ZSTR_SMART_BAT_CYCLES,  UNIT_RAW,                 0},
+  //{I2C_SMART_BAT_ID,              6,  uint8,  "uniqueID[8]",  UNIT_RAW, 0},   // disabled to save sensors slots
+
+  //{I2C_SMART_BAT_LIMITS,          1,  uint8,  "rfu",  UNIT_RAW, 0},   // disabled to save sensors slots
+  {I2C_SMART_BAT_LIMITS,          2,  uint16le,  ZSTR_SMART_BAT_CAPACITY,UNIT_MAH,                 0},
+  //{I2C_SMART_BAT_LIMITS,          4,  uint16le,  "dischargeCurrentRating",  UNIT_RAW, 0},   // disabled to save sensors slots
+  //{I2C_SMART_BAT_LIMITS,          6,  uint16le,  "overDischarge_mV",  UNIT_RAW, 0},   // disabled to save sensors slots
+  //{I2C_SMART_BAT_LIMITS,          8,  uint16le,  "zeroCapacity_mV",  UNIT_RAW, 0},   // disabled to save sensors slots
+  //{I2C_SMART_BAT_LIMITS,          10,  uint16le,  "fullyCharged_mV",  UNIT_RAW, 0},   // disabled to save sensors slots
+  //{I2C_SMART_BAT_LIMITS,          12,  uint8,  "minWorkingTemp",  UNIT_RAW, 0},   // disabled to save sensors slots
+  //{I2C_SMART_BAT_LIMITS,          13,  uint8,  "maxWorkingTemp",  UNIT_RAW, 0},   // disabled to save sensors slots
 
   // 0x50-0x56 custom 3rd party sensors
   //{0x50, 0, int16, ZSTR_}
@@ -248,6 +318,10 @@ static int32_t spektrumGetValue(const uint8_t *packet, int startByte, SpektrumDa
       return bcdToInt8(*(uint8_t *)data);
     case uint32bcd:
       return bcdToInt32(*(uint32_t *)data);
+    case uint16le:
+      return (int16_t) ((uint16_t) (data[0] + (data[1] << 8)));
+    case uint32le:
+      return ((uint32_t) (data[0] + (data[1] << 8) + (data[2] << 16) + (data[3] << 24)));
     default:
       return -1;
   }
@@ -274,6 +348,12 @@ void processSpektrumPacket(const uint8_t *packet)
   setTelemetryValue(PROTOCOL_TELEMETRY_SPEKTRUM, (I2C_PSEUDO_TX << 8) + 0, 0, 0, packet[1], UNIT_RAW, 0);
   // highest bit indicates that TM1100 is in use, ignore it
   uint8_t i2cAddress = (packet[2] & 0x7f);
+
+  //SmartBat Hack
+  if (i2cAddress == I2C_SMART_BAT_BASE_ADDRESS) {
+    i2cAddress = i2cAddress + (packet[4] >> 4); // use type to create virtual I2CAddresses
+  }
+
   uint8_t instance = packet[3];
 
   if (i2cAddress == I2C_TEXTGEN) {
@@ -302,6 +382,41 @@ void processSpektrumPacket(const uint8_t *packet)
 
       if (!isSpektrumValidValue(value, sensor->dataType))
         continue;
+
+      // mV to VOLT PREC2 for Smart Batteries
+      if ((i2cAddress >= I2C_SMART_BAT_REALTIME  && i2cAddress <= I2C_SMART_BAT_LIMITS) && sensor->unit == UNIT_VOLTS) {
+        if (value == -1) {
+          continue;  // discard unavailable sensors
+        }
+        else {
+          value = value / 10;
+        }
+      }
+
+      // RPM, 10RPM (0-655340 RPM)
+      if (i2cAddress == I2C_ESC && sensor->unit == UNIT_RPMS) {
+        value = value / 10;
+      }
+
+      // Current, 10mA (0-655.34A)
+      if (i2cAddress == I2C_ESC && sensor->startByte == 6) {
+        value = value / 10;
+      }
+
+      // BEC Current, 100mA (0-25.4A)
+      if (i2cAddress == I2C_ESC && sensor->startByte == 10) {
+        value = value / 10;
+      }
+
+      // Throttle 0.5% (0-127%)
+      if (i2cAddress == I2C_ESC && sensor->startByte == 12) {
+        value = value / 2;
+      }
+
+      // Power 0.5% (0-127%)
+      if (i2cAddress == I2C_ESC && sensor->startByte == 13) {
+        value = value / 2;
+      }
 
       if (i2cAddress == I2C_CELLS && sensor->unit == UNIT_VOLTS) {
         // Map to FrSky style cell values
@@ -353,17 +468,17 @@ void processSpektrumPacket(const uint8_t *packet)
 // "I"  here means the multi module
 
 /*
-0-3   4 bytes -> Cyrf ID of the TX xor 0xFF but you don't care as I've checked it already...
-4     1 byte -> RX version but you don't care...
+0-3   4 bytes -> Cyrf ID of the TX xor 0xFF but don't care...
+4     1 byte -> RX version but don't care...
 5     1 byte -> number of channels, example 0x06=6 channels
 6     1 byte -> max DSM type allowed:
-        0x01 => 22ms 1024 DSM2 1 packet => number of channels is <8 and no telemetry
-        0x02 => 22ms 1024 DSM2 2 packets => either a number of channel >7 or telemetry enable RX
-        0x12 => 11ms 2048 DSM2 2 packets => can be any number of channels with/without telemetry -> this mode might be supported following Mike's trials, note the channels should be duplicated between the packets which is not the case today
-        0xa2 => 22ms 2048 DSMX 1 packet => number of channels is <8 and no telemetry
-        0xb2 => 11ms 2048 DSMX => can be any number of channels with/without telemetry -> this mode is only half supported since the channels should be duplicated between the packets which is not the case but might be supported following Mike's trials
+        0x01 => 1024 DSM2 1 packet => number of channels is <8 and no telemetry
+        0x02 => 1024 DSM2 2 packets => either a number of channel >7 or telemetry enable RX
+        0x12 => 2048 DSM2 2 packets => can be any number of channels with/without telemetry -> this mode might be supported following Mike's trials, note the channels should be duplicated between the packets which is not the case today
+        0xa2 => 2048 DSMX 1 packet => number of channels is <8 and no telemetry
+        0xb2 => 2048 DSMX 2 packets => can be any number of channels with/without telemetry -> this mode is only half supported since the channels should be duplicated between the packets which is not the case but might be supported following Mike's trials
 7     0x00: not sure of the use of this byte since I've always seen it at 0...
-8-9   2 bytes CRC but you don't care as I've checked it already...
+8-9   2 bytes CRC but don't care...
 
  Examples:           DSM   #Chan  RXver
  Inductrix           0xa2   07     1
@@ -373,22 +488,40 @@ void processSpektrumPacket(const uint8_t *packet)
 void processDSMBindPacket(uint8_t module, const uint8_t *packet)
 {
   uint32_t debugval;
-  if (g_model.moduleData[module].type == MODULE_TYPE_MULTIMODULE && g_model.moduleData[module].getMultiProtocol() == MODULE_SUBTYPE_MULTI_DSM2
-    && g_model.moduleData[module].multi.autoBindMode) {
-
+  if (g_model.moduleData[module].type == MODULE_TYPE_MULTIMODULE && g_model.moduleData[module].getMultiProtocol() == MODULE_SUBTYPE_MULTI_DSM2 && g_model.moduleData[module].subType == MM_RF_DSM2_SUBTYPE_AUTO) {
+    // Only sets channel etc when in DSM/AUTO mode
     int channels = packet[5];
-    // Only sets channel etc when in DSM multi mode
-    g_model.moduleData[module].channelsCount = channels - 8;
+    if (channels > 12) {
+      channels = 12;
+    }
+    else if (channels < 3) {
+      channels = 3;
+    }
 
-    // bool use11ms = (packet[8] & 0x10) ;
-    if (packet[6] >= 0xb2)
-      g_model.moduleData[module].subType = MM_RF_DSM2_SUBTYPE_DSMX_11;
-    else if (packet[6] >= 0xa2)
-      g_model.moduleData[module].subType = MM_RF_DSM2_SUBTYPE_DSMX_22;
-    else if (packet[6] >= 0x12)
-      g_model.moduleData[module].subType = MM_RF_DSM2_SUBTYPE_DSM2_11;
-    else
-      g_model.moduleData[module].subType = MM_RF_DSM2_SUBTYPE_DSM2_22;
+    switch(packet[6]) {
+      case 0xa2:
+        g_model.moduleData[module].subType = MM_RF_DSM2_SUBTYPE_DSMX_22;
+        break;
+      case 0x12:
+        g_model.moduleData[module].subType = MM_RF_DSM2_SUBTYPE_DSM2_11;
+        if (channels == 7) {
+          channels = 12;    // change the number of channels if 7
+        }
+        break;
+      case 0x01:
+      case 0x02:
+        g_model.moduleData[module].subType = MM_RF_DSM2_SUBTYPE_DSM2_22;
+        break;
+      default: // 0xb2 or unknown
+        g_model.moduleData[module].subType = MM_RF_DSM2_SUBTYPE_DSMX_11;
+        if (channels == 7) {
+          channels = 12;    // change the number of channels if 7
+        }
+        break;
+    }
+
+    g_model.moduleData[module].channelsCount = channels - 8;
+    g_model.moduleData[module].multi.optionValue &= 0xFD;    // clear the 11ms servo refresh rate flag
 
     storageDirty(EE_MODEL);
   }
@@ -434,7 +567,7 @@ void processSpektrumTelemetryData(uint8_t module, uint8_t data, uint8_t* rxBuffe
       debugPrintf("%02X%02X %02X%02X  ", rxBuffer[i], rxBuffer[i + 1],
                   rxBuffer[i + 2], rxBuffer[i + 3]);
     }
-    debugPrintf("\r\n");
+    debugPrintf(CRLF);
 #endif
     processSpektrumPacket(rxBuffer);
     rxBufferCount = 0;

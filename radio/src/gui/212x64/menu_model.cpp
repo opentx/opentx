@@ -67,3 +67,4 @@ void editSingleName(coord_t x, coord_t y, const char * label, char *name, uint8_
 }
 
 uint8_t s_currIdx;
+uint8_t s_currIdxSubMenu;

@@ -86,6 +86,9 @@ void onLimitsMenu(const char *result)
     copyTrimsToOffset(ch);
     storageDirty(EE_MODEL);
   }
+  else if (result == STR_COPY_MIN_MAX_TO_OUTPUTS) {
+    copyMinMaxToOutputs(ch);
+  }
 }
 
 void menuModelLimits(event_t event)
@@ -142,6 +145,7 @@ void menuModelLimits(event_t event)
       POPUP_MENU_ADD_ITEM(STR_RESET);
       POPUP_MENU_ADD_ITEM(STR_COPY_TRIMS_TO_OFS);
       POPUP_MENU_ADD_ITEM(STR_COPY_STICKS_TO_OFS);
+      POPUP_MENU_ADD_ITEM(STR_COPY_MIN_MAX_TO_OUTPUTS);
       POPUP_MENU_START(onLimitsMenu);
     }
 
@@ -208,7 +212,7 @@ void menuModelLimits(event_t event)
         case ITEM_LIMITS_CURVE:
           drawCurveName(LIMITS_CURVE_POS, y, ld->curve, attr);
           if (attr && event==EVT_KEY_LONG(KEY_ENTER) && ld->curve>0) {
-            s_curveChan = (ld->curve<0 ? -ld->curve-1 : ld->curve-1);
+            s_currIdxSubMenu = (ld->curve<0 ? -ld->curve-1 : ld->curve-1);
             pushMenu(menuModelCurveOne);
           }
           if (active) {

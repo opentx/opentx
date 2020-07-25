@@ -52,10 +52,10 @@ end
 
 local function fieldIncDec(event, value, max, force)
   if edit or force==true then
-    if event == EVT_ROT_LEFT or event == EVT_UP_BREAK then
+    if event == EVT_VIRTUAL_PREV or event == EVT_VIRTUAL_PREV_REPT then
       value = (value + max)
       dirty = true
-    elseif event == EVT_ROT_RIGHT or event == EVT_DOWN_BREAK then
+    elseif event == EVT_VIRTUAL_NEXT or event == EVT_VIRTUAL_NEXT_REPT then
       value = (value + max + 2)
       dirty = true
     end
@@ -66,12 +66,12 @@ end
 
 local function valueIncDec(event, value, min, max)
   if edit then
-    if event == EVT_ROT_RIGHT or event == EVT_RIGHT_BREAK then
+    if event == EVT_VIRTUAL_INC or event == EVT_VIRTUAL_INC_REPT then
       if value < max then
         value = (value + 1)
         dirty = true
       end
-    elseif event == EVT_ROT_LEFT or event == EVT_LEFT_BREAK then
+    elseif event == EVT_VIRTUAL_DEC or event == EVT_VIRTUAL_DEC_REPT then
       if value > min then
         value = (value - 1)
         dirty = true
@@ -82,22 +82,22 @@ local function valueIncDec(event, value, min, max)
 end
 
 local function navigate(event, fieldMax, prevPage, nextPage)
-  if event == EVT_ENTER_BREAK then
+  if event == EVT_VIRTUAL_ENTER then
     edit = not edit
     dirty = true
   elseif edit then
-    if event == EVT_EXIT_BREAK then
+    if event == EVT_VIRTUAL_EXIT then
       edit = false
       dirty = true
     elseif not dirty then
       dirty = blinkChanged()
     end
   else
-    if event == EVT_PAGE_BREAK or event==EVT_RIGHT_BREAK then
+    if event == EVT_VIRTUAL_NEXT then
       page = nextPage
       field = 0
       dirty = true
-    elseif event == EVT_PAGE_LONG or event==EVT_LEFT_BREAK then
+    elseif event == EVT_VIRTUAL_PREV then
       page = prevPage
       field = 0
       killEvents(event);
@@ -120,7 +120,7 @@ local function getFieldFlags(position)
 end
 
 local function channelIncDec(event, value)
-  if not edit and event==EVT_MENU_BREAK then
+  if not edit and event==EVT_VIRTUAL_MENU then
     servoPage = value
     dirty = true
   else
@@ -276,7 +276,7 @@ local function servoMenu(event)
       limits.revert = fieldIncDec(event, limits.revert, 1)
     end
     model.setOutput(servoPage, limits)
-  elseif event == EVT_EXIT_BREAK then
+  elseif event == EVT_VIRTUAL_EXIT then
     servoPage = nil
     dirty = true
   end
@@ -348,9 +348,9 @@ local function confirmationMenu(event)
 
   navigate(event, fieldsMax, RUDDER_PAGE, page)
 
-  if event == EVT_EXIT_BREAK then
+  if event == EVT_VIRTUAL_EXIT then
     return 2
-  elseif event == EVT_ENTER_LONG then
+  elseif event == EVT_VIRTUAL_ENTER_LONG then
     killEvents(event)
     applySettings()
     return 2

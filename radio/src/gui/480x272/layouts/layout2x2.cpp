@@ -25,7 +25,7 @@ const uint8_t LBM_LAYOUT_2x2[] = {
 };
 
 const ZoneOption OPTIONS_LAYOUT_2x2[] = {
-  { "Top bar", ZoneOption::Bool },
+  { STR_TOP_BAR, ZoneOption::Bool },
   { NULL, ZoneOption::Bool }
 };
 

@@ -45,16 +45,16 @@ inline bool isModelMenuDisplayed()
 void onMainViewMenu(const char * result);
 void menuFirstCalib(event_t event);
 void menuMainView(event_t event);
-void menuViewTelemetryFrsky(event_t event);
+void menuViewTelemetry(event_t event);
 void menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomFunctionsContext * functionsContext);
 
 enum MenuRadioIndexes
 {
-  MENU_RADIO_SETUP,
-  CASE_SDCARD(MENU_RADIO_SD_MANAGER)
-#if defined(LUA) || defined(PXX2) || defined(MULTIMODULE)
+#if defined(RADIO_TOOLS)
   MENU_RADIO_TOOLS,
 #endif
+  CASE_SDCARD(MENU_RADIO_SD_MANAGER)
+  MENU_RADIO_SETUP,
   MENU_RADIO_SPECIAL_FUNCTIONS,
   MENU_RADIO_TRAINER,
   MENU_RADIO_HARDWARE,
@@ -76,11 +76,11 @@ void menuRadioPowerMeter(event_t event);
 void menuRadioCalibration(event_t event);
 
 static const MenuHandlerFunc menuTabGeneral[MENU_RADIO_PAGES_COUNT]  = {
-  menuRadioSetup,
-  CASE_SDCARD(menuRadioSdManager)
-#if defined(LUA) || defined(PXX2) || defined(MULTIMODULE)
+#if defined(RADIO_TOOLS)
   menuRadioTools,
 #endif
+  CASE_SDCARD(menuRadioSdManager)
+  menuRadioSetup,
   menuRadioSpecialFunctions,
   menuRadioTrainer,
   menuRadioHardware,

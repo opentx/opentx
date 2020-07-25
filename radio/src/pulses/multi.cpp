@@ -38,6 +38,7 @@
 
 static void sendFrameProtocolHeader(uint8_t moduleIdx, bool failsafe);
 void sendChannels(uint8_t moduleIdx);
+static void sendD16BindOption(uint8_t moduleIdx);
 #if defined(LUA)
 static void sendSport(uint8_t moduleIdx);
 static void sendHott(uint8_t moduleIdx);
@@ -174,10 +175,13 @@ void setupPulsesMulti(uint8_t moduleIdx)
                                   | g_model.moduleData[moduleIdx].multi.disableMapping));
   
   // Multi V1.3.X.X -> Send protocol additional data: max 9 bytes
-#if defined(LUA)
   if (getMultiModuleStatus(moduleIdx).isValid()) {
     MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
     if (status.minor >= 3 && !(status.flags & 0x80)) { //Version 1.3.x.x or more and Buffer not full
+      if ((IS_D16_MULTI(moduleIdx) || IS_R9_MULTI(moduleIdx)) && moduleState[moduleIdx].mode == MODULE_MODE_BIND) {
+        sendD16BindOption(moduleIdx);//1 byte of additional data
+      }
+#if defined(LUA)
       // SPort send
       if (IS_D16_MULTI(moduleIdx) && outputTelemetryBuffer.destination == TELEMETRY_ENDPOINT_SPORT && outputTelemetryBuffer.size) {
         sendSport(moduleIdx);        //8 bytes of additional data
@@ -185,9 +189,9 @@ void setupPulsesMulti(uint8_t moduleIdx)
       else if (IS_HOTT_MULTI(moduleIdx)) {
         sendHott(moduleIdx);        //1 byte of additional data
       }
+#endif
     }
   }
-  #endif
 }
 
 void setupPulsesMultiExternalModule()
@@ -240,6 +244,50 @@ void sendChannels(uint8_t moduleIdx)
   }
 }
 
+void convertOtxProtocolToMulti(int *protocol, int *subprotocol)
+{
+  // Special treatment for the FrSky entry...
+  if (*protocol == MODULE_SUBTYPE_MULTI_FRSKY +1) {
+    if (*subprotocol == MM_RF_FRSKY_SUBTYPE_D8) {
+      //D8
+      *protocol = 3;
+      *subprotocol = 0;
+    } 
+    else if (*subprotocol == MM_RF_FRSKY_SUBTYPE_D8_CLONED) {
+      //D8
+      *protocol = 3;
+      *subprotocol = 1;
+    } 
+    else if (*subprotocol == MM_RF_FRSKY_SUBTYPE_V8) {
+      //V8
+      *protocol = 25;
+      *subprotocol = 0;
+    } 
+    else {
+      *protocol = 15;
+      if (*subprotocol == MM_RF_FRSKY_SUBTYPE_D16_8CH)
+        *subprotocol = 1;
+      else if (*subprotocol == MM_RF_FRSKY_SUBTYPE_D16)
+        *subprotocol = 0; // D16
+      else if (*subprotocol == MM_RF_FRSKY_SUBTYPE_D16_LBT)
+        *subprotocol = 2;
+      else if (*subprotocol == MM_RF_FRSKY_SUBTYPE_D16_LBT_8CH)
+        *subprotocol = 3;
+      else
+        *subprotocol = 4; // D16_CLONED
+    }
+  }
+  else {
+    // 15  for Multimodule is FrskyX or D16 which we map as a protocol of 3 (FrSky)
+    // all protos > frskyx are therefore also off by one
+    if (*protocol >= 15)
+      *protocol = *protocol + 1;
+    // 25 is again a FrSky *protocol (FrskyV) so shift again
+    if (*protocol >= 25)
+      *protocol = *protocol + 1;
+  }
+}
+
 void sendFrameProtocolHeader(uint8_t moduleIdx, bool failsafe)
 {// byte 1+2, protocol information
 
@@ -264,49 +312,19 @@ void sendFrameProtocolHeader(uint8_t moduleIdx, bool failsafe)
     protoByte |= MULTI_SEND_RANGECHECK;
 
   // rfProtocol
-  if (g_model.moduleData[moduleIdx].getMultiProtocol() == MODULE_SUBTYPE_MULTI_DSM2) {
-
-    // Autobinding should always be done in DSMX 11ms
-    if (g_model.moduleData[moduleIdx].multi.autoBindMode && moduleState[moduleIdx].mode == MODULE_MODE_BIND)
-      subtype = MM_RF_DSM2_SUBTYPE_AUTO;
-
-    // Multi module in DSM mode wants the number of channels to be used as option value
-    if (optionValue)
-      optionValue = 0x80 | sentModuleChannels(moduleIdx); // Max throw
+  if (type == MODULE_SUBTYPE_MULTI_DSM2 +1 ) {
+    // Multi module in DSM mode wants the number of channels to be used as option value along with other flags
+    if (optionValue & 0x01)
+      optionValue = 0x80; // Max throw
     else
-      optionValue = sentModuleChannels(moduleIdx);
-}
-
-  // 15  for Multimodule is FrskyX or D16 which we map as a subprotocol of 3 (FrSky)
-  // all protos > frskyx are therefore also off by one
-  if (type >= 15)
-    type = type + 1;
-
-  // 25 is again a FrSky protocol (FrskyV) so shift again
-  if (type >= 25)
-    type = type + 1;
-
-  if (g_model.moduleData[moduleIdx].getMultiProtocol() == MODULE_SUBTYPE_MULTI_FRSKY) {
-    if (subtype == MM_RF_FRSKY_SUBTYPE_D8) {
-      //D8
-      type = 3;
-      subtype = 0;
-    } else if (subtype == MM_RF_FRSKY_SUBTYPE_V8) {
-      //V8
-      type = 25;
-      subtype = 0;
-    } else {
-      type = 15;
-      if (subtype == MM_RF_FRSKY_SUBTYPE_D16_8CH) // D16 8ch
-        subtype = 1;
-      else if (subtype == MM_RF_FRSKY_SUBTYPE_D16)
-        subtype = 0;  // D16
-      else if (subtype == MM_RF_FRSKY_SUBTYPE_D16_LBT)
-        subtype = 2;
-      else
-        subtype = 3; // MM_RF_FRSKY_SUBTYPE_D16_LBT_8CH
-    }
+      optionValue = 0x00;
+    if (g_model.moduleData[moduleIdx].multi.optionValue & 0x02)
+      optionValue |= 0x40; // 11ms servo refresh
+    optionValue |= sentModuleChannels(moduleIdx); //add number of channels
   }
+
+  // Special treatment for the FrSky entry...
+  convertOtxProtocolToMulti(&type, &subtype);
 
   // Set the highest bit of option byte in AFHDS2A protocol to instruct MULTI to passthrough telemetry bytes instead
   // of sending Frsky D telemetry
@@ -316,7 +334,6 @@ void sendFrameProtocolHeader(uint8_t moduleIdx, bool failsafe)
   // For custom protocol send unmodified type byte
   if (g_model.moduleData[moduleIdx].getMultiProtocol() == MM_RF_CUSTOM_SELECTED)
     type = g_model.moduleData[moduleIdx].getMultiProtocol();
-
 
   uint8_t headerByte = 0x55;
   // header, byte 0,  0x55 for proto 0-31, 0x54 for proto 32-63
@@ -345,6 +362,13 @@ void sendFrameProtocolHeader(uint8_t moduleIdx, bool failsafe)
   sendMulti(moduleIdx, (uint8_t) optionValue);
 }
 
+void sendD16BindOption(uint8_t moduleIdx)
+{
+  uint8_t bind_opt = g_model.moduleData[moduleIdx].multi.receiverTelemetryOff ? 1 : 0;
+  bind_opt |= g_model.moduleData[moduleIdx].multi.receiverHigherChannels ? 2 : 0;
+  sendMulti(moduleIdx, bind_opt);
+}
+
 #if defined(LUA)
 void sendSport(uint8_t moduleIdx)
 {
@@ -367,7 +391,7 @@ void sendSport(uint8_t moduleIdx)
 
 void sendHott(uint8_t moduleIdx)
 {
-  if (Multi_Buffer && memcmp(Multi_Buffer, "HoTT", 4) == 0 && Multi_Buffer[5] >= 0xD7 && Multi_Buffer[5] <= 0xDF) {
+  if (Multi_Buffer && memcmp(Multi_Buffer, "HoTT", 4) == 0 && (Multi_Buffer[5] & 0x80) && (Multi_Buffer[5] & 0x0F) >= 0x07) {
     // HoTT Lua script is running
     sendMulti(moduleIdx, Multi_Buffer[5]);
   }

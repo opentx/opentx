@@ -28,7 +28,9 @@
 */
 static const luaL_Reg loadedlibs[] = {
   // {"_G", luaopen_base},
-  // {LUA_LOADLIBNAME, luaopen_package},
+#if defined(PCBHORUS)
+  {LUA_LOADLIBNAME, luaopen_package},
+#endif
   // {LUA_COLIBNAME, luaopen_coroutine},
   // {LUA_TABLIBNAME, luaopen_table},
   {LUA_IOLIBNAME, luaopen_io},
@@ -51,6 +53,9 @@ const luaR_table lua_rotable[] =
   {LUA_STRLIBNAME, strlib, NULL},
   {LUA_MATHLIBNAME, mathlib, mathlib_vals},
   {LUA_BITLIBNAME, bitlib, NULL},
+#if defined(PCBHORUS)
+  {LUA_TABLIBNAME, tab_funcs, NULL},
+#endif
   {NULL, NULL, NULL}
 };
 

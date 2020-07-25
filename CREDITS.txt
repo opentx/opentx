@@ -8,9 +8,11 @@ Romolo Manfredini (romoloman)
 Martin Hotař (mhotar)
 Maxim (Max) Paperno (mpaperno)
 Arne Schwabe (schwabe)
+Daniel Gorbea (dgatf)
 
 [Translators]
 [fr] Sebastien Charpentier (LapinFou)
+[es] Daniel Gorbea (dgatf)
 
 [Other contributors]
 Rob Thomson
@@ -29,6 +31,7 @@ Michael Byrne
 <a href="https://www.frsky-rc.com">FrSky (monthly)</a>
 <a href="https://www.flysky-cn.com/home">FlySky (monthly)</a>
 <a href="https://www.jumper-rc.com">JumperRC (monthly)</a>
+<a href="https://www.radiomasterrc.com">RadioMaster (monthly)</a>
 <a href="https://alofthobbies.com">Aloft Hobbies</a>
 <a href="https://jonathan.it">Jonathan Modellismo</a>
 <a href="http://wstech.de">WsTech</a>
@@ -421,7 +424,6 @@ Pablo Gomez Martinez
 Alan Thoren
 Jack Clodfelter
 William Simon
-James Houck
 Peter Fithern
 Thomas Svedman
 TechFixPros
@@ -686,7 +688,6 @@ Shaun Currier
 Danilo Schiara
 John Hennig
 RK Custom Homes
-James Houck
 Piet Teekens
 Tommy Widenflycht
 Johan Petrus Theophilus
@@ -1666,3 +1667,174 @@ Justin Farnsworth
 James Snodgrass
 Peter Schneider
 Norman Schenck
+Boris Hemmer
+Gilles Arbona
+Patrice Germain
+Mart Rogers
+Stefan Möst
+John Beech
+John Rodgers
+Stanton Sweet
+Peter Suphan
+FGS
+Outward Ideas
+Sylvie Le Madec
+James Houck (monthly)
+Frank Steinmetz
+Gary Garland
+Stefano Boggia
+Jean-Jacques Pointel
+Ferenc Kunkli
+Sven Müller
+Taavi Tuisk
+Thomas Floyd
+Matthew LePard
+Peter Schneider
+Michel Garbarino
+Achim Stolze
+Fernando Rimoldi
+Bernard Delpy
+Daniel Dubovsky
+Jonathan Starch
+Coolwind
+Benoit Pichereau
+Darko Perković
+Burt Pickard-Richardson
+Roland Nittby
+Frank Barbas
+Scott McCoy
+Fabrice Debonnet
+James Laver
+Kevin Bowens
+David Frech
+Udo Kastenholz
+Julio Margarido
+Uwe Muendelein
+James Jewitt
+Daniel Ferreira
+Michael Charlston
+Leopoldo Cicero
+Tom Van Driel
+Karl Vetter
+Johannes Janssen
+François Blondé
+Precision Aero
+Thomas Håkansson
+Gordon Evans
+Benny Simonsen
+George Kennedy
+Stefano Boggia
+Maksym Arshynkin
+Tomas Sodergren
+Jörg Lemnitz
+TMac FPV
+Josef Schaeffler
+Mike Frizell
+MeCodeGoodSomeday
+Timothy Fry
+John Beech
+Wojciech Winiarski
+Armin Kuepfer
+Alain Bregand
+James Thompson
+Dautremépuis Benoit
+Adriano Emanuele Figliola
+Stefano Bortolotti
+Gerald Zierer
+Alessio Noto
+Walter Fowler
+Robert Black
+Klaus Kernstock
+Michael Wittich
+AG-Software
+Dietmar Drees
+Winfried Goers
+Steve Schoonover
+N. Haasnoot (monthly)
+Wolfram Bahmann
+Florian Reck
+Gary Bancroft
+Karl-Heinz Behn
+Stuart Godsmark
+Josko Povse
+David Reese
+Paul Pearson
+Stuart Olson
+Pierre Connan
+Henk Eeltink
+Robert Miller
+George Walker
+Александр Щитов
+Heiko Polig
+Gary Wild
+Peter Sarcher
+Steve Schoonover
+Francisco Orcera Exposito
+Alan Powell
+Martin Eriksson
+Wayne J Podaima
+Tom Wilkinson
+Fred Ceratt
+Stefan Grunenberg
+Aram Parsamyan
+Wolfgang Rauser
+John Wall
+Martin Haggas
+Denis Kelly
+James Houck
+Brian Stephanik
+William McNeice
+Sven De Boeck
+SB Europe Ltd
+Evening Shade Pottery
+D van Oostveen
+Michael Grosso
+Carlos Marcal
+d@taweb
+Justin Digby
+Hermann Vocat
+Michael Francini
+Michael Chambers
+Harold H Youngren
+Yann Orselli
+Dieter Schaad
+Ernst Camenzind
+Ciobanu Rivelino Costel
+David Jolly
+Aram Parsamyan
+Stewart Davies
+Karsten Schwarz
+Robert Mckay
+Michael Oeschger
+Randy Ling
+Jonathan Wise
+David Gardner
+Christophe Judas
+Lachlan Peters
+Patrick C Kutschke
+Thomas Halenbeck
+Barry Wright
+Nicolas Ducher
+Giampiero Sintoni
+Sidney B Harden
+John Moody
+Sylvain Cubizolles
+Adam Kouse
+FCG Kas
+Dennis Marinus
+James Donelson
+Stefan Hassler
+Reinhard Prix
+Jeffrey Johnson
+Michael Conway
+Ryan Buffington
+Thomas Horns
+Michael Carnes
+William Hallman
+James Snodgrass
+Michal Mesaros
+James Lindner
+Laurence Gerrard
+Nico Wagner
+Christoph Rössner
+Ruben Flores

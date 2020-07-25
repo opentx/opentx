@@ -377,6 +377,7 @@ void pwrOn();
 uint32_t pwrCheck();
 bool pwrPressed();
 #define UNEXPECTED_SHUTDOWN()          (g_eeGeneral.unexpectedShutdown)
+#define pwrForcePressed()              (false)
 
 // EEPROM driver
 #define EEPROM_SIZE           (4*1024*1024/8)
@@ -409,5 +410,8 @@ bool telemetrySecondPortReceive(uint8_t & data);
 #endif
 
 extern const uint8_t BootCode[];
+
+// Pulses driver
+#define HARDWARE_EXTRA_MODULE
 
 #endif // _BOARD_SKY9X_H_

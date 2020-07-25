@@ -111,8 +111,6 @@ void lcdDrawText(coord_t x, coord_t y, const char * s);
 void lcdDrawSizedText(coord_t x, coord_t y, const char * s, unsigned char len);
 void lcdDrawTextAlignedLeft(coord_t y, const char * s);
 
-#define lcdDrawTextAlignedCenter(y, s) lcdDrawText((LCD_W-sizeof(s)*FW+FW+1)/2, y, s)
-
 void lcdDrawHexNumber(coord_t x, coord_t y, uint32_t val, LcdFlags mode=0);
 void lcdDrawNumber(coord_t x, coord_t y, int32_t val, LcdFlags mode, uint8_t len);
 void lcdDrawNumber(coord_t x, coord_t y, int32_t val, LcdFlags mode=0);
@@ -171,10 +169,10 @@ void lcdClear();
 uint8_t * lcdLoadBitmap(uint8_t * dest, const char * filename, uint16_t width, uint16_t height);
 
 #if defined(BOOT)
-  #define BLINK_ON_PHASE (0)
+  #define BLINK_ON_PHASE        (0)
 #else
-  #define BLINK_ON_PHASE (g_blinkTmr10ms & (1<<6))
-  #define SLOW_BLINK_ON_PHASE          (g_blinkTmr10ms & (1<<7))
+  #define BLINK_ON_PHASE        (g_blinkTmr10ms & (1 << 6))
+  #define SLOW_BLINK_ON_PHASE   (g_blinkTmr10ms & (1 << 7))
 #endif
 
 inline display_t getPixel(unsigned int x, unsigned int y)

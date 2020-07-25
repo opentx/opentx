@@ -32,10 +32,7 @@
 
 float RawSourceRange::getValue(int value)
 {
-  if (IS_ARM(getCurrentBoard()))
-    return float(value) * step;
-  else
-    return min + float(value) * step;
+  return float(value) * step;
 }
 
 
@@ -48,11 +45,10 @@ RawSourceRange RawSource::getRange(const ModelData * model, const GeneralSetting
   RawSourceRange result;
 
   Firmware * firmware = Firmware::getCurrentVariant();
-  Board::Type board = firmware->getBoard();
 
   switch (type) {
     case SOURCE_TYPE_TELEMETRY:
-      if (IS_ARM(board)) {
+      {
         div_t qr = div(index, 3);
         const SensorData & sensor = model->sensorData[qr.quot];
         if (sensor.prec == 2)
@@ -65,192 +61,8 @@ RawSourceRange RawSource::getRange(const ModelData * model, const GeneralSetting
         result.max = +30000 * result.step;
         result.decimals = sensor.prec;
         result.unit = sensor.unitString();
+        break;
       }
-      else {
-        result.offset = -DBL_MAX;
-
-        switch (index) {
-          case TELEMETRY_SOURCE_TX_BATT:
-            result.step = 0.1;
-            result.decimals = 1;
-            result.max = 25.5;
-            result.unit = tr("V");
-            break;
-          case TELEMETRY_SOURCE_TX_TIME:
-            result.step = 60;
-            result.max = 24 * 60 * result.step - 60;  // 23:59:00 with 1-minute resolution
-            result.unit = tr("s");
-            break;
-          case TELEMETRY_SOURCE_TIMER1:
-          case TELEMETRY_SOURCE_TIMER2:
-          case TELEMETRY_SOURCE_TIMER3:
-            result.step = 5;
-            result.max = 255 * result.step;
-            result.unit = tr("s");
-            break;
-          case TELEMETRY_SOURCE_RSSI_TX:
-          case TELEMETRY_SOURCE_RSSI_RX:
-            result.max = 100;
-            result.offset = 128;
-            break;
-          case TELEMETRY_SOURCE_A1_MIN:
-          case TELEMETRY_SOURCE_A2_MIN:
-          case TELEMETRY_SOURCE_A3_MIN:
-          case TELEMETRY_SOURCE_A4_MIN:
-            if (model) result = model->frsky.channels[index-TELEMETRY_SOURCE_A1_MIN].getRange();
-            break;
-          case TELEMETRY_SOURCE_A1:
-          case TELEMETRY_SOURCE_A2:
-          case TELEMETRY_SOURCE_A3:
-          case TELEMETRY_SOURCE_A4:
-            if (model) result = model->frsky.channels[index-TELEMETRY_SOURCE_A1].getRange();
-            break;
-          case TELEMETRY_SOURCE_ALT:
-          case TELEMETRY_SOURCE_ALT_MIN:
-          case TELEMETRY_SOURCE_ALT_MAX:
-          case TELEMETRY_SOURCE_GPS_ALT:
-            result.step = 8;
-            result.min = -500;
-            result.max = 1540;
-            if (firmware->getCapability(Imperial) || settings.imperial) {
-              result.step = (result.step * 105) / 32;
-              result.min = (result.min * 105) / 32;
-              result.max = (result.max * 105) / 32;
-              result.unit = tr("ft");
-            }
-            else {
-              result.unit = tr("m");
-            }
-            break;
-          case TELEMETRY_SOURCE_T1:
-          case TELEMETRY_SOURCE_T1_MAX:
-          case TELEMETRY_SOURCE_T2:
-          case TELEMETRY_SOURCE_T2_MAX:
-            result.min = -30;
-            result.max = 225;
-            result.unit = tr("°C");
-            break;
-          case TELEMETRY_SOURCE_HDG:
-            result.step = 2;
-            result.max = 360;
-            result.offset = 256;
-            result.unit = tr("°");
-            break;
-          case TELEMETRY_SOURCE_RPM:
-          case TELEMETRY_SOURCE_RPM_MAX:
-            result.step = 50;
-            result.max = 12750;
-            break;
-          case TELEMETRY_SOURCE_FUEL:
-            result.max = 100;
-            result.unit = tr("%");
-            break;
-          case TELEMETRY_SOURCE_ASPEED:
-          case TELEMETRY_SOURCE_ASPEED_MAX:
-            result.decimals = 1;
-            result.step = 2.0;
-            result.max = (2*255);
-            if (firmware->getCapability(Imperial) || settings.imperial) {
-              result.step *= 1.150779;
-              result.max *= 1.150779;
-              result.unit = tr("mph");
-            }
-            else {
-              result.step *= 1.852;
-              result.max *= 1.852;
-              result.unit = tr("km/h");
-            }
-            break;
-          case TELEMETRY_SOURCE_SPEED:
-          case TELEMETRY_SOURCE_SPEED_MAX:
-            result.step = 2;
-            result.max = (2*255);
-            if (firmware->getCapability(Imperial) || settings.imperial) {
-              result.step *= 1.150779;
-              result.max *= 1.150779;
-              result.unit = tr("mph");
-            }
-            else {
-              result.step *= 1.852;
-              result.max *= 1.852;
-              result.unit = tr("km/h");
-            }
-            break;
-          case TELEMETRY_SOURCE_VERTICAL_SPEED:
-            result.step = 0.1;
-            result.min = -12.5;
-            result.max = 13.0;
-            result.decimals = 1;
-            result.unit = tr("m/s");
-            break;
-          case TELEMETRY_SOURCE_DTE:
-            result.max = 30000;
-            break;
-          case TELEMETRY_SOURCE_DIST:
-          case TELEMETRY_SOURCE_DIST_MAX:
-            result.step = 8;
-            result.max = 2040;
-            result.unit = tr("m");
-            break;
-          case TELEMETRY_SOURCE_CELL:
-          case TELEMETRY_SOURCE_CELL_MIN:
-            result.step = 0.02;
-            result.max = 5.1;
-            result.decimals = 2;
-            result.unit = tr("V");
-            break;
-          case TELEMETRY_SOURCE_CELLS_SUM:
-          case TELEMETRY_SOURCE_CELLS_MIN:
-          case TELEMETRY_SOURCE_VFAS:
-          case TELEMETRY_SOURCE_VFAS_MIN:
-            result.step = 0.1;
-            result.max = 25.5;
-            result.decimals = 1;
-            result.unit = tr("V");
-            break;
-          case TELEMETRY_SOURCE_CURRENT:
-          case TELEMETRY_SOURCE_CURRENT_MAX:
-            result.step = 0.5;
-            result.max = 127.5;
-            result.decimals = 1;
-            result.unit = tr("A");
-            break;
-          case TELEMETRY_SOURCE_CONSUMPTION:
-            result.step = 100;
-            result.max =  25500;
-            result.unit = tr("mAh");
-            break;
-          case TELEMETRY_SOURCE_POWER:
-          case TELEMETRY_SOURCE_POWER_MAX:
-            result.step = 5;
-            result.max = 1275;
-            result.unit = tr("W");
-            break;
-          case TELEMETRY_SOURCE_ACCX:
-          case TELEMETRY_SOURCE_ACCY:
-          case TELEMETRY_SOURCE_ACCZ:
-            result.step = 0.01;
-            result.decimals = 2;
-            result.max = 2.55;
-            result.min = 0;
-            result.unit = tr("g");
-            break;
-          default:
-            result.max = 125;
-            break;
-        }
-
-        if (result.offset == -DBL_MAX) {
-          result.offset = result.max - (127*result.step);
-        }
-
-        if (flags & (RANGE_DELTA_FUNCTION | RANGE_ABS_FUNCTION)) {
-          result.offset = 0;
-          result.min = result.step * -127;
-          result.max = result.step * 127;
-        }
-      }
-      break;
 
     case SOURCE_TYPE_LUA_OUTPUT:
       result.max = 30000;
@@ -414,7 +226,7 @@ QString RawSource::toString(const ModelData * model, const GeneralSettings * con
       return CHECK_IN_ARRAY(special, index);
 
     case SOURCE_TYPE_TELEMETRY:
-      if (IS_ARM(board)) {
+      {
         div_t qr = div(index, 3);
         if (model)
           result = model->sensorData[qr.quot].nameToString(qr.quot);
@@ -423,9 +235,6 @@ QString RawSource::toString(const ModelData * model, const GeneralSettings * con
         if (qr.rem)
           result += (qr.rem == 1 ? "-" : "+");
         return result;
-      }
-      else {
-        return CHECK_IN_ARRAY(telemetry, index);
       }
 
     case SOURCE_TYPE_GVAR:
@@ -486,13 +295,7 @@ bool RawSource::isSlider(int * sliderIndex, Board::Type board) const
 
 bool RawSource::isTimeBased(Board::Type board) const
 {
-  if (board == Board::BOARD_UNKNOWN)
-    board = getCurrentBoard();
-
-  if (IS_ARM(board))
-    return (type == SOURCE_TYPE_SPECIAL && index > 0);
-  else
-    return (type==SOURCE_TYPE_TELEMETRY && (index==TELEMETRY_SOURCE_TX_TIME || index==TELEMETRY_SOURCE_TIMER1 || index==TELEMETRY_SOURCE_TIMER2 || index==TELEMETRY_SOURCE_TIMER3));
+  return (type == SOURCE_TYPE_SPECIAL && index > 0);
 }
 
 bool RawSource::isAvailable(const ModelData * const model, const GeneralSettings * const gs, Board::Type board) const
@@ -516,19 +319,8 @@ bool RawSource::isAvailable(const ModelData * const model, const GeneralSettings
       return false;
 
     if (type == SOURCE_TYPE_TELEMETRY) {
-      if (IS_ARM(board) && !model->sensorData[div(index, 3).quot].isAvailable()) {
+      if (!model->sensorData[div(index, 3).quot].isAvailable()) {
         return false;
-      }
-      else if (!IS_ARM(board)) {
-        Firmware * fw = getCurrentFirmware();
-        if (type == (int)TELEMETRY_SOURCE_TX_TIME && !fw->getCapability(RtcTime))
-          return false;
-
-        if (type == (int)TELEMETRY_SOURCE_RAS && !fw->getCapability(SportTelemetry))
-          return false;
-
-        if (type == (int)TELEMETRY_SOURCE_TIMER3 && fw->getCapability(Timers) < 3)
-          return false;
       }
     }
   }
@@ -580,13 +372,13 @@ RawSource RawSource::convert(RadioDataConversionState & cstate)
       }
     }
 
-    if (IS_TARANIS(cstate.toType) && IS_HORUS(cstate.fromType)) {
+    if (IS_TARANIS(cstate.toType) && IS_FAMILY_HORUS_OR_T16(cstate.fromType)) {
       if (index == 6)
         index = 5;  // pot S2 to S2
       else if (index == 5)
         index = -1;  //  6P on Horus doesn't exist on Taranis
     }
-    else  if (IS_HORUS(cstate.toType) && IS_TARANIS(cstate.fromType) && index == 5)
+    else  if (IS_FAMILY_HORUS_OR_T16(cstate.toType) && IS_TARANIS(cstate.fromType) && index == 5)
     {
       index = 6;  // pot S2 to S2
     }
@@ -602,7 +394,7 @@ RawSource RawSource::convert(RadioDataConversionState & cstate)
       }
     }
 
-    if (IS_TARANIS_X7(cstate.toType) && (IS_TARANIS_X9(cstate.fromType) || IS_HORUS(cstate.fromType))) {
+    if (IS_TARANIS_X7(cstate.toType) && (IS_TARANIS_X9(cstate.fromType) || IS_FAMILY_HORUS_OR_T16(cstate.fromType))) {
       // No SE and SG on X7 board
       if (index == 4 || index == 6) {
         index = 3;  // SG and SE to SD
@@ -615,7 +407,7 @@ RawSource RawSource::convert(RadioDataConversionState & cstate)
         index = 5;  // SH to SH
       }
     }
-    else if (IS_JUMPER_T12(cstate.toType) && (IS_TARANIS_X9(cstate.fromType) || IS_HORUS(cstate.fromType))) {
+    else if (IS_JUMPER_T12(cstate.toType) && (IS_TARANIS_X9(cstate.fromType) || IS_FAMILY_HORUS_OR_T16(cstate.fromType))) {
       // No SE and SG on T12 board
       if (index == 4 || index == 6) {
         index = 3;  // SG and SE to SD
@@ -629,7 +421,7 @@ RawSource RawSource::convert(RadioDataConversionState & cstate)
       }
     }
     // Compensate for SE and SG on X9/Horus board if converting from X7
-    else if ((IS_TARANIS_X9(cstate.toType) || IS_HORUS(cstate.toType)) && IS_TARANIS_X7(cstate.fromType)) {
+    else if ((IS_TARANIS_X9(cstate.toType) || IS_FAMILY_HORUS_OR_T16(cstate.toType)) && IS_TARANIS_X7(cstate.fromType)) {
       if (index == 4) {
         index = 5;  // SF to SF
       }
@@ -637,7 +429,7 @@ RawSource RawSource::convert(RadioDataConversionState & cstate)
         index = 7;  // SH to SH
       }
     }
-    else if ((IS_TARANIS_X9(cstate.toType) || IS_HORUS(cstate.toType)) && IS_JUMPER_T12(cstate.fromType)) {
+    else if ((IS_TARANIS_X9(cstate.toType) || IS_FAMILY_HORUS_OR_T16(cstate.toType)) && IS_JUMPER_T12(cstate.fromType)) {
       if (index == 4) {
         index = 5;  // SF to SF
       }
@@ -645,7 +437,7 @@ RawSource RawSource::convert(RadioDataConversionState & cstate)
         index = 7;  // SH to SH
       }
     }
-    else if ((IS_TARANIS_X9(cstate.toType) || IS_HORUS(cstate.toType)) && IS_JUMPER_T12(cstate.fromType)) {
+    else if ((IS_TARANIS_X9(cstate.toType) || IS_FAMILY_HORUS_OR_T16(cstate.toType)) && IS_JUMPER_T12(cstate.fromType)) {
       if (index == 4) {
         index = 5;  // SF to SF
       }

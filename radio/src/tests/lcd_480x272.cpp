@@ -168,6 +168,12 @@ TEST(Lcd_480x272, fonts)
   lcdDrawText(30, 200, "The quick brown fox", TEXT_COLOR|VERTICAL|NO_FONTCACHE);
   // lcdDrawText(50, 200, "The quick brown fox jumps over the lazy dog", TEXT_COLOR|VERTICAL|NO_FONTCACHE);
 
+  lcdDrawText(50, 25, "The quick", TEXT_COLOR|TINSIZE);
+  lcdDrawText(50, 40, "The quick", TEXT_COLOR|SMLSIZE);
+  lcdDrawText(50, 55, "The quick", TEXT_COLOR|MIDSIZE);
+  lcdDrawText(50, 80, "The quick", TEXT_COLOR|DBLSIZE);
+  lcdDrawText(50, 120, "The quick", TEXT_COLOR|XXLSIZE);
+
   lcdDrawText(8, 208, "The quick brown fox jumps over the lazy dog", TITLE_BGCOLOR|OPACITY(4));
   lcdDrawText(5, 205, "The quick brown fox jumps over the lazy dog", TITLE_BGCOLOR|OPACITY(12));
 

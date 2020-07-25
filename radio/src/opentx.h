@@ -21,14 +21,12 @@
 #ifndef _OPENTX_H_
 #define _OPENTX_H_
 
-#include <inttypes.h>
-#include <string.h>
-#include <stddef.h>
 #include <stdlib.h>
-#include <math.h>
 #include "definitions.h"
 #include "opentx_types.h"
 #include "debounce.h"
+#include "globals.h"
+#include "opentx_helpers.h"
 
 #if defined(SIMU)
 #include "targets/simu/simpgmspace.h"
@@ -219,6 +217,10 @@
   #define IS_SLAVE_TRAINER()           (g_model.trainerData.mode == TRAINER_MODE_SLAVE)
 #endif
 
+#if defined(LUA) || defined(PXX2) || defined(MULTIMODULE)
+  #define RADIO_TOOLS
+#endif
+
 // RESX range is used for internal calculation; The menu says -100.0 to 100.0; internally it is -1024 to 1024 to allow some optimizations
 #define RESX_SHIFT 10
 #define RESX       1024
@@ -250,17 +252,6 @@
 #endif
 
 #include "myeeprom.h"
-
-inline void memclear(void * p, size_t size)
-{
-  memset(p, 0, size);
-}
-
-inline bool is_memclear(void * p, size_t size)
-{
-  uint8_t * buf = (uint8_t *)p;
-  return buf[0] == 0 && memcmp(buf, buf + 1, size - 1) == 0;
-}
 
 void memswap(void * a, void * b, uint8_t size);
 
@@ -481,17 +472,19 @@ extern uint8_t flightModeTransitionLast;
 
 #if defined(SIMU)
   inline int availableMemory() { return 1000; }
-#elif !defined(SIMU)
+#else
   extern unsigned char *heap;
   extern int _end;
   extern int _heap_end;
   #define availableMemory() ((unsigned int)((unsigned char *)&_heap_end - heap))
 #endif
 
+extern uint32_t nextMixerTime[NUM_MODULES];
+
 void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms);
 void evalMixes(uint8_t tick10ms);
 void doMixerCalculations();
-void scheduleNextMixerCalculation(uint8_t module, uint16_t period_ms);
+void scheduleNextMixerCalculation(uint8_t module, uint32_t period_ms);
 
 void checkTrims();
 void perMain();
@@ -507,7 +500,6 @@ void logicalSwitchesReset();
 
 void evalLogicalSwitches(bool isCurrentFlightmode=true);
 void logicalSwitchesCopyState(uint8_t src, uint8_t dst);
-#define LS_RECURSIVE_EVALUATION_RESET()
 
 #if defined(PCBTARANIS) || defined(PCBHORUS)
   void getSwitchesPosition(bool startup);
@@ -544,7 +536,7 @@ bool setTrimValue(uint8_t phase, uint8_t idx, int trim);
 
 #if defined(PCBSKY9X)
   #define ROTARY_ENCODER_GRANULARITY (2 << g_eeGeneral.rotarySteps)
-#elif defined(RADIO_T16)
+#elif defined(RADIO_FAMILY_T16) && !defined(RADIO_T18)
   #define ROTARY_ENCODER_GRANULARITY (1)
 #else
   #define ROTARY_ENCODER_GRANULARITY (2)
@@ -552,33 +544,7 @@ bool setTrimValue(uint8_t phase, uint8_t idx, int trim);
 
 #include "gvars.h"
 
-extern uint16_t sessionTimer;
-extern uint16_t s_timeCumThr;
-extern uint16_t s_timeCum16ThrP;
-
-#if defined(OVERRIDE_CHANNEL_FUNCTION)
-#define OVERRIDE_CHANNEL_UNDEFINED -4096
-extern safetych_t safetyCh[MAX_OUTPUT_CHANNELS];
-#endif
-
-extern uint8_t trimsCheckTimer;
-extern uint8_t trimsDisplayTimer;
-extern uint8_t trimsDisplayMask;
-
 void flightReset(uint8_t check=true);
-
-PACK(struct GlobalData {
-  uint8_t unexpectedShutdown:1;
-  uint8_t externalAntennaEnabled:1;
-  uint8_t authenticationCount:2;
-  uint8_t upgradeModulePopup:1;
-  uint8_t internalModuleVersionChecked:1;
-  uint8_t spare:2;
-});
-
-extern GlobalData globalData;
-
-extern uint16_t maxMixerDuration;
 
 #define DURATION_MS_PREC2(x) ((x)/20)
 
@@ -640,7 +606,7 @@ static inline void GET_ADC_IF_MIXER_NOT_RUNNING()
 
 #include "sbus.h"
 
-void backlightOn();
+void resetBacklightTimeout();
 void checkBacklight();
 
 #define BITMASK(bit) (1<<(bit))
@@ -712,6 +678,7 @@ inline int calcRESXto100(int x)
 
 
 #if defined(COLORLCD)
+extern const char fw_stamp[];
 extern const char vers_stamp[];
 extern const char date_stamp[];
 extern const char time_stamp[];
@@ -725,16 +692,11 @@ extern const char vers_stamp[];
  * @param buffer If non-null find the firmware version in the buffer instead
  * @return The opentx version string starting with "opentx-" or "no version found" if the version string is not found
  */
-const char * getOtherVersion(char * buffer);
+const char * getFirmwareVersion(const char * buffer = nullptr);
 
 #define g_blinkTmr10ms    (*(uint8_t*)&g_tmr10ms)
-extern uint8_t            g_beepCnt;
 
 #include "trainer.h"
-
-extern int32_t            chans[MAX_OUTPUT_CHANNELS];
-extern int16_t            ex_chans[MAX_OUTPUT_CHANNELS]; // Outputs (before LIMITS) of the last perMain
-extern int16_t            channelOutputs[MAX_OUTPUT_CHANNELS];
 
 int expo(int x, int k);
 
@@ -834,14 +796,7 @@ int16_t applyLimits(uint8_t channel, int32_t value);
 void evalInputs(uint8_t mode);
 uint16_t anaIn(uint8_t chan);
 
-extern int16_t calibratedAnalogs[NUM_CALIBRATED_ANALOGS];
-
 #define FLASH_DURATION 20 /*200ms*/
-
-extern uint8_t beepAgain;
-extern uint16_t lightOffCounter;
-extern uint8_t flashCounter;
-extern uint8_t mixWarning;
 
 FlightModeData * flightModeAddress(uint8_t idx);
 ExpoData * expoAddress(uint8_t idx);
@@ -849,37 +804,13 @@ MixData * mixAddress(uint8_t idx);
 LimitData * limitAddress(uint8_t idx);
 LogicalSwitchData * lswAddress(uint8_t idx);
 
-// static variables used in evalFlightModeMixes - moved here so they don't interfere with the stack
-// It's also easier to initialize them here.
-extern int8_t  virtualInputsTrims[MAX_INPUTS];
-
-extern int16_t anas [MAX_INPUTS];
-extern int16_t trims[NUM_TRIMS];
-extern BeepANACenter bpanaCenter;
-
-extern uint8_t s_mixer_first_run_done;
-
 void applyDefaultTemplate();
-
 void instantTrim();
 void evalTrims();
 void copyTrimsToOffset(uint8_t ch);
 void copySticksToOffset(uint8_t ch);
+void copyMinMaxToOutputs(uint8_t ch);
 void moveTrimsToOffsets();
-
-typedef uint16_t ACTIVE_PHASES_TYPE;
-#define DELAY_POS_MARGIN   3
-typedef int16_t delayval_t;
-PACK(struct SwOn {
-  uint16_t delay:14; // max = 2550
-  uint8_t  activeMix:1;
-  uint8_t  activeExpo:1;
-  int16_t  now;            // timer trigger source -> off, abs, stk, stk%, sw/!sw, !m_sw/!m_sw
-  int16_t  prev;
-});
-
-extern SwOn   swOn[MAX_MIXERS];
-extern int32_t act[MAX_MIXERS];
 
 #if defined(BOLD_FONT)
   inline bool isExpoActive(uint8_t expo)
@@ -1053,15 +984,6 @@ enum AUDIO_SOUNDS {
 void setMFP();
 void clearMFP();
 #endif
-
-extern uint8_t requiredSpeakerVolume;
-
-enum MainRequest {
-  REQUEST_SCREENSHOT,
-  REQUEST_FLIGHT_RESET,
-};
-
-extern uint8_t mainRequestFlags;
 
 void checkBattery();
 void opentxClose(uint8_t shutdown=true);
@@ -1364,9 +1286,7 @@ extern uint16_t s_anaFilt[NUM_ANALOGS];
 #if defined(JITTER_MEASURE)
 extern JitterMeter<uint16_t> rawJitter[NUM_ANALOGS];
 extern JitterMeter<uint16_t> avgJitter[NUM_ANALOGS];
-#if defined(PCBHORUS)
-  #define JITTER_MEASURE_ACTIVE()   (menuHandlers[menuLevel] == menuStatsAnalogs)
-#elif defined(PCBTARANIS)
+#if defined(PCBHORUS) || defined(PCBTARANIS)
   #define JITTER_MEASURE_ACTIVE()   (menuHandlers[menuLevel] == menuRadioDiagAnalogs)
 #elif defined(CLI)
   #define JITTER_MEASURE_ACTIVE()   (1)
@@ -1398,7 +1318,7 @@ extern uint8_t latencyToggleSwitch;
 
 inline bool isAsteriskDisplayed()
 {
-#if defined(ASTERISK) || !defined(WATCHDOG) || defined(LOG_TELEMETRY) || defined(DEBUG_LATENCY)
+#if defined(ASTERISK) || !defined(WATCHDOG) || defined(LOG_TELEMETRY) || defined(LOG_BLUETOOTH) || defined(DEBUG_LATENCY)
   return true;
 #endif
 

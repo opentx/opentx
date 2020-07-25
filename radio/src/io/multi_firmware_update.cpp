@@ -520,7 +520,7 @@ bool multiFlashFirmware(uint8_t moduleIdx, const char * filename)
 
   pausePulses();
 
-#if defined(INTERNAL_MODULE_MULTI)
+#if defined(HARDWARE_INTERNAL_MODULE)
   uint8_t intPwr = IS_INTERNAL_MODULE_ON();
   INTERNAL_MODULE_OFF();
 #endif
@@ -528,13 +528,14 @@ bool multiFlashFirmware(uint8_t moduleIdx, const char * filename)
   uint8_t extPwr = IS_EXTERNAL_MODULE_ON();
   EXTERNAL_MODULE_OFF();
 
+  uint8_t spuPwr = IS_SPORT_UPDATE_POWER_ON();
   SPORT_UPDATE_POWER_OFF();
 
   drawProgressScreen(getBasename(filename), STR_DEVICE_RESET, 0, 0);
 
   /* wait 2s off */
   watchdogSuspend(500 /*5s*/);
-  RTOS_WAIT_MS(2000);
+  RTOS_WAIT_MS(3000);
 
   const char * result = driver->flashFirmware(&file, getBasename(filename));
   f_close(&file);
@@ -563,7 +564,7 @@ bool multiFlashFirmware(uint8_t moduleIdx, const char * filename)
   // reset telemetry protocol
   telemetryInit(255);
   
-#if defined(INTERNAL_MODULE_MULTI)
+#if defined(HARDWARE_INTERNAL_MODULE)
   if (intPwr) {
     INTERNAL_MODULE_ON();
     setupPulsesInternalModule();
@@ -573,6 +574,10 @@ bool multiFlashFirmware(uint8_t moduleIdx, const char * filename)
   if (extPwr) {
     EXTERNAL_MODULE_ON();
     setupPulsesExternalModule();
+  }
+
+  if (spuPwr) {
+    SPORT_UPDATE_POWER_ON();
   }
 
   resumePulses();

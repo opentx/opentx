@@ -71,7 +71,7 @@ void rotaryEncoderInit()
 
 void rotaryEncoderCheck()
 {
-#if defined(RADIO_T16)
+#if defined(RADIO_FAMILY_T16) && !defined(RADIO_T18)
   static uint8_t  state = 0;
   uint8_t pins = ROTARY_ENCODER_POSITION();
 
@@ -104,7 +104,7 @@ void rotaryEncoderCheck()
 #endif
 #if !defined(BOOT)
     if (g_eeGeneral.backlightMode & e_backlight_mode_keys) {
-      backlightOn();
+      resetBacklightTimeout();
     }
     inactivity.counter = 0;
 #endif

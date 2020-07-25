@@ -72,7 +72,7 @@ local function incrField(step)
     end
   else
     local min, max = 0, 0
-    if field.type <= 5 then
+    if ((field.type <= 5) or (field.type == 8)) then
       min = field.min
       max = field.max
       step = field.step * step
@@ -238,23 +238,21 @@ local function fieldFloatLoad(field, data, offset)
   field.default = fieldGetValue(data, offset+12, 4)
   fieldUnsignedToSigned(field, 4)
   field.prec = data[offset+16]
-  if field.prec > 2 then
-    field.prec = 2
+  if field.prec > 3 then
+    field.prec = 3
   end
   field.step = fieldGetValue(data, offset+17, 4)
   field.unit, offset = fieldGetString(data, offset+21)
 end
 
+local function formatFloat(num, decimals)
+  local mult = 10^(decimals or 0)
+  local val = num / mult
+  return string.format("%." .. decimals .. "f", val)
+end
+
 local function fieldFloatDisplay(field, y, attr)
-  local attrnum
-  if field.prec == 1 then
-    attrnum = LEFT + attr + PREC1
-  elseif field.prec == 2 then
-    attrnum = LEFT + attr + PREC2
-  else
-    attrnum = LEFT + attr
-  end
-  lcd.drawNumber(89, y, field.value, attrnum)
+  lcd.drawText(89, y, formatFloat(field.value, field.prec), LEFT + attr)
   lcd.drawText(lcd.getLastPos(), y, field.unit, attr)
 end
 

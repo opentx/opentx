@@ -191,10 +191,16 @@ ui(new Ui::GeneralSetup)
     ui->label_BLBright->hide();
   }
 
-  if (!IS_HORUS(firmware->getBoard())) {
+  if (!IS_FAMILY_HORUS_OR_T16(firmware->getBoard())) {
     ui->OFFBright_SB->hide();
     ui->OFFBright_SB->setDisabled(true);
     ui->label_OFFBright->hide();
+  }
+
+  if (!IS_JUMPER_T18(firmware->getBoard())) {
+    ui->keysBl_ChkB->hide();
+    ui->keysBl_ChkB->setDisabled(true);
+    ui->label_KeysBl->hide();
   }
 
   if (!firmware->getCapability(SoundMod)) {
@@ -234,14 +240,9 @@ ui(new Ui::GeneralSetup)
   ui->memwarnChkB->setChecked(!generalSettings.disableMemoryWarning); // Default is zero=checked
   ui->alarmwarnChkB->setChecked(!generalSettings.disableAlarmWarning); // Default is zero=checked
 
-  if (IS_ARM(firmware->getBoard())) {
-    ui->rssiPowerOffWarnChkB->setChecked(!generalSettings.disableRssiPoweroffAlarm); // Default is zero=checked
-  }
-  else {
-    ui->rssiPowerOffWarnChkB->hide();
-  }
+  ui->rssiPowerOffWarnChkB->setChecked(!generalSettings.disableRssiPoweroffAlarm); // Default is zero=checked
 
-  if (IS_HORUS(firmware->getBoard())) {
+  if (IS_FAMILY_HORUS_OR_T16(firmware->getBoard())) {
     ui->splashScreenChkB->hide();
     ui->splashScreenDuration->hide();
     ui->splashScreenLabel->hide();
@@ -302,13 +303,7 @@ ui(new Ui::GeneralSetup)
     ui->backlightColor2_label->hide();
   }
 
-  if (IS_ARM(firmware->getBoard())) {
-    ui->switchesDelay->setValue(10*(generalSettings.switchesDelay+15));
-  }
-  else {
-    ui->switchesDelay->hide();
-    ui->switchesDelayLabel->hide();
-  }
+  ui->switchesDelay->setValue(10*(generalSettings.switchesDelay+15));
   ui->blAlarm_ChkB->setChecked(generalSettings.flashBeep);
 
   if (!firmware->getCapability(HasBatMeterRange)) {
@@ -750,11 +745,11 @@ void GeneralSetupPanel::on_blAlarm_ChkB_stateChanged()
   emit modified();
 }
 
-void GeneralSetupPanel::on_ownerID_editingFinished()
+void GeneralSetupPanel::on_registrationId_editingFinished()
 {
   //copy ownerID back to generalSettings.registrationId
   QByteArray array = ui->registrationId->text().toLocal8Bit();
-  strncpy(generalSettings.registrationId, "pafleraf", 9);
+  strncpy(generalSettings.registrationId, array, 8);
   generalSettings.registrationId[8] = '\0';
   emit modified();
 }

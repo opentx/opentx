@@ -32,6 +32,7 @@
 
 #define DEFAULT_SCROLLBAR_X            (LCD_W-1)
 #define NUM_BODY_LINES                 (LCD_LINES-1)
+#define TEXT_VIEWER_LINES              NUM_BODY_LINES
 #define MENU_HEADER_HEIGHT             FH
 
 #define MODEL_BITMAP_WIDTH             64
@@ -228,7 +229,6 @@ swsrc_t editSwitch(coord_t x, coord_t y, swsrc_t value, LcdFlags attr, event_t e
 
 void gvarWeightItem(coord_t x, coord_t y, MixData * md, LcdFlags attr, event_t event);
 
-extern uint8_t s_curveChan;
 void editCurveRef(coord_t x, coord_t y, CurveRef & curve, event_t event, LcdFlags flags);
 
 extern uint8_t editNameCursorPos;
@@ -246,6 +246,7 @@ extern uint8_t s_copyMode;
 extern int8_t s_copySrcRow;
 extern int8_t s_copyTgtOfs;
 extern uint8_t s_currIdx;
+extern uint8_t s_currIdxSubMenu;
 extern uint8_t s_maxLines;
 extern uint8_t s_copySrcIdx;
 extern uint8_t s_copySrcCh;
@@ -303,7 +304,7 @@ FlightModesType editFlightModes(coord_t x, coord_t y, event_t event, FlightModes
 #endif
 
 #define IS_MAIN_VIEW_DISPLAYED()       menuHandlers[0] == menuMainView
-#define IS_TELEMETRY_VIEW_DISPLAYED()  menuHandlers[0] == menuViewTelemetryFrsky
+#define IS_TELEMETRY_VIEW_DISPLAYED()  menuHandlers[0] == menuViewTelemetry
 #define IS_OTHER_VIEW_DISPLAYED()      (menuHandlers[0] == menuMainViewChannelsMonitor || menuHandlers[0] == menuChannelsView)
 
 #endif // _GUI_H_

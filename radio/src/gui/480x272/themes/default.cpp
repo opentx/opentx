@@ -46,8 +46,7 @@ class DefaultTheme: public Theme
       lcdColorTable[SCROLLBOX_COLOR_INDEX] = RED;
       lcdColorTable[MENU_TITLE_BGCOLOR_INDEX] = DARKGREY;
       lcdColorTable[MENU_TITLE_COLOR_INDEX] = WHITE;
-      lcdColorTable[MENU_TITLE_DISABLE_COLOR_INDEX] =
-          RGB(GET_RED(RED)>>1, GET_GREEN(RED)>>1, GET_BLUE(RED)>>1);
+      lcdColorTable[MENU_TITLE_DISABLE_COLOR_INDEX] = RGB(GET_RED(RED)>>1, GET_GREEN(RED)>>1, GET_BLUE(RED)>>1);
       lcdColorTable[HEADER_COLOR_INDEX] = DARKGREY;
       lcdColorTable[ALARM_COLOR_INDEX] = RED;
       lcdColorTable[WARNING_COLOR_INDEX] = YELLOW;
@@ -91,11 +90,10 @@ class DefaultTheme: public Theme
 
     void loadIcons() const
     {
-#if defined(LOG_TELEMETRY) || !defined(WATCHDOG)
-      loadMenuIcon(ICON_OPENTX, "mask_opentx_testmode.png", TEXT_COLOR);
-#else
-      loadMenuIcon(ICON_OPENTX, "mask_opentx.png");
-#endif
+      if (isAsteriskDisplayed())
+        loadMenuIcon(ICON_OPENTX, "mask_opentx_testmode.png", TEXT_COLOR);
+      else
+        loadMenuIcon(ICON_OPENTX, "mask_opentx.png");
       loadMenuIcon(ICON_RADIO, "mask_menu_radio.png");
       loadMenuIcon(ICON_RADIO_SETUP, "mask_radio_setup.png");
       loadMenuIcon(ICON_RADIO_SD_MANAGER, "mask_radio_sd_browser.png");
@@ -178,6 +176,10 @@ class DefaultTheme: public Theme
       delete calibHorus;
 #if defined(RADIO_T16)
       calibHorus = BitmapBuffer::load(getThemePath("t16.bmp"));
+#elif defined(RADIO_T18)
+      calibHorus = BitmapBuffer::load(getThemePath("t18.bmp"));
+#elif defined(RADIO_TX16S)
+      calibHorus = BitmapBuffer::load(getThemePath("tx16s.bmp"));
 #elif defined(PCBX10)
       if(STICKS_PWM_ENABLED()) {
         calibHorus = BitmapBuffer::load(getThemePath("X10S.bmp"));
@@ -277,16 +279,15 @@ class DefaultTheme: public Theme
     virtual void update() const
     {
       uint32_t color = g_eeGeneral.themeData.options[1].unsignedValue;
-      uint32_t bg_color = UNEXPECTED_SHUTDOWN() ? WHITE : g_eeGeneral.themeData.options[0].unsignedValue;
+      uint32_t bgColor = globalData.unexpectedShutdown ? WHITE : g_eeGeneral.themeData.options[0].unsignedValue;
 
-      lcdColorTable[TEXT_BGCOLOR_INDEX] = bg_color;
+      lcdColorTable[TEXT_BGCOLOR_INDEX] = bgColor;
       lcdColorTable[TEXT_INVERTED_BGCOLOR_INDEX] = color;
       lcdColorTable[SCROLLBOX_COLOR_INDEX] = color;
       lcdColorTable[CURVE_COLOR_INDEX] = color;
       lcdColorTable[CURVE_CURSOR_COLOR_INDEX] = color;
       lcdColorTable[TITLE_BGCOLOR_INDEX] = color;
-      lcdColorTable[MENU_TITLE_DISABLE_COLOR_INDEX] =
-          RGB(GET_RED(color)>>1, GET_GREEN(color)>>1, GET_BLUE(color)>>1);
+      lcdColorTable[MENU_TITLE_DISABLE_COLOR_INDEX] = RGB(GET_RED(color)>>1, GET_GREEN(color)>>1, GET_BLUE(color)>>1);
       lcdColorTable[TRIM_BGCOLOR_INDEX] = color;
       lcdColorTable[MAINVIEW_GRAPHICS_COLOR_INDEX] = color;
       #define DARKER(x)     ((x * 70) / 100)
@@ -354,4 +355,6 @@ BitmapBuffer * DefaultTheme::menuIconSelected[MENUS_ICONS_COUNT] = { NULL };
 BitmapBuffer * DefaultTheme::currentMenuBackground = NULL;
 
 DefaultTheme defaultTheme;
-Theme * theme = &defaultTheme;
+#if defined(DEFAULT_THEME_DEFAULT)
+  Theme * theme = &defaultTheme;
+#endif

@@ -22,7 +22,7 @@
 #ifndef OPENTX_OPTIONS_H
 #define OPENTX_OPTIONS_H
 
-static const char * options[] = {
+static const char * const options[] = {
 #if defined(AUTOUPDATE)
   "autoupdate",
 #endif
@@ -33,10 +33,10 @@ static const char * options[] = {
   "eu",
 #endif
 #if defined(FAI)
-  "faimode",
+  "FAImode",
 #endif
 #if defined(FAI_CHOICE)
-  "faichoice",
+  "FAIchoice",
 #endif
 #if defined(MODULE_PROTOCOL_FLEX)
   "flexr9m",
@@ -53,11 +53,17 @@ static const char * options[] = {
 #if defined(HORUS_STICKS)
   "horussticks",
 #endif
+#if defined(INTERNAL_GPS)
+  "internalgps",
+#endif
 #if defined(INTERNAL_MODULE_PPM)
   "internalppm",
 #endif
 #if defined(INTERNAL_MODULE_MULTI)
   "internalmulti",
+#endif
+#if defined(INTERNAL_MODULE_PXX2)
+  "internalaccess",
 #endif
 #if defined(MULTIMODULE)
   "multimodule",

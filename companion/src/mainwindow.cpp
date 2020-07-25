@@ -26,7 +26,6 @@
 #include "apppreferencesdialog.h"
 #include "fwpreferencesdialog.h"
 #include "firmwareinterface.h"
-#include "fusesdialog.h"
 #include "downloaddialog.h"
 #include "printdialog.h"
 #include "version.h"
@@ -49,6 +48,7 @@
 #include "translations.h"
 
 #include "dialogs/filesyncdialog.h"
+#include "profilechooser.h"
 
 #include <QtGui>
 #include <QFileInfo>
@@ -130,10 +130,16 @@ MainWindow::MainWindow():
   else {
     if (!g.previousVersion().isEmpty())
       g.warningId(g.warningId() | AppMessages::MSG_UPGRADED);
-    if (checkProfileRadioExists(g.sessionId()))
-      QTimer::singleShot(updateDelay, this, SLOT(doAutoUpdates()));
-    else
-      g.warningId(g.warningId() | AppMessages::MSG_NO_RADIO_TYPE);
+    if (g.promptProfile()) {
+      QTimer::singleShot(updateDelay, this, SLOT(chooseProfile()));    // add an extra second to give mainwindow time to load
+      updateDelay += 5000;  //  give user time to select profile before warnings
+    }
+    else {
+      if (checkProfileRadioExists(g.sessionId()))
+        QTimer::singleShot(updateDelay, this, SLOT(doAutoUpdates()));
+      else
+        g.warningId(g.warningId() | AppMessages::MSG_NO_RADIO_TYPE);
+    }
   }
   QTimer::singleShot(updateDelay, this, SLOT(displayWarnings()));
 
@@ -353,7 +359,6 @@ void MainWindow::checkForCompanionUpdateFinished(QNetworkReply * reply)
     return onUpdatesError(tr("Companion update check failed, new version information not found."));
 
   int webVersion = version2index(version);
-
   int ownVersion = version2index(VERSION);
 
   if (ownVersion < webVersion) {
@@ -468,7 +473,7 @@ void MainWindow::checkForFirmwareUpdateFinished(QNetworkReply * reply)
   const QString errorString = seekCodeString(qba, "ERROR");
   const QString blockedRadios = seekCodeString(qba, "BLOCK");
   long version;
-  
+
   if (errorString == "NO_RC")
     return onUpdatesError(tr("No firmware release candidates are currently being served for this version, please switch release channel"));
   else if (errorString == "NO_NIGHTLY")
@@ -481,7 +486,7 @@ void MainWindow::checkForFirmwareUpdateFinished(QNetworkReply * reply)
     msgbox.setText(tr("Release candidate builds are now available for this version, would you like to switch to using them?"));
     msgbox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
     msgbox.setDefaultButton(QMessageBox::Yes);
-      
+
     if(msgbox.exec() == QMessageBox::Yes) {
       g.OpenTxBranch(AppData::DownloadBranchType(AppData::BRANCH_RC_TESTING));
       return onUpdatesError(tr("Channel changed to RC, please restart the download process"));
@@ -493,7 +498,7 @@ void MainWindow::checkForFirmwareUpdateFinished(QNetworkReply * reply)
     msgbox.setText(tr("Official release builds are now available for this version, would you like to switch to using them?"));
     msgbox.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
     msgbox.setDefaultButton(QMessageBox::Yes);
-      
+
     if(msgbox.exec() == QMessageBox::Yes) {
       g.OpenTxBranch(AppData::DownloadBranchType(AppData::BRANCH_RELEASE_STABLE));
       return onUpdatesError(tr("Channel changed to Release, please restart the download process"));
@@ -916,26 +921,25 @@ void MainWindow::changelog()
 
 void MainWindow::customizeSplash()
 {
-  CustomizeSplashDialog * dialog = new CustomizeSplashDialog(this);
+  auto * dialog = new CustomizeSplashDialog(this);
   dialog->exec();
   dialog->deleteLater();
 }
 
 void MainWindow::writeEeprom()
 {
-  if (activeMdiChild()) activeMdiChild()->writeEeprom();
+  if (activeMdiChild())
+    activeMdiChild()->writeEeprom();
 }
 
 void MainWindow::readEeprom()
 {
   Board::Type board = getCurrentBoard();
   QString tempFile;
-  if (IS_HORUS(board))
+  if (IS_FAMILY_HORUS_OR_T16(board))
     tempFile = generateProcessUniqueTempFileName("temp.otx");
-  else if (IS_ARM(board))
-    tempFile = generateProcessUniqueTempFileName("temp.bin");
   else
-    tempFile = generateProcessUniqueTempFileName("temp.hex");
+    tempFile = generateProcessUniqueTempFileName("temp.bin");
 
   qDebug() << "MainWindow::readEeprom(): using temp file: " << tempFile;
 
@@ -975,7 +979,7 @@ bool MainWindow::readEepromFromRadio(const QString & filename)
 
 void MainWindow::writeBackup()
 {
-  if (IS_HORUS(getCurrentBoard())) {
+  if (IS_FAMILY_HORUS_OR_T16(getCurrentBoard())) {
     QMessageBox::information(this, CPN_STR_APP_NAME, tr("This function is not yet implemented"));
     return;
     // TODO implementation
@@ -992,7 +996,7 @@ void MainWindow::writeFlash(QString fileToFlash)
 
 void MainWindow::readBackup()
 {
-  if (IS_HORUS(getCurrentBoard())) {
+  if (IS_FAMILY_HORUS_OR_T16(getCurrentBoard())) {
     QMessageBox::information(this, CPN_STR_APP_NAME, tr("This function is not yet implemented"));
     return;
     // TODO implementation
@@ -1022,14 +1026,6 @@ void MainWindow::burnConfig()
 void MainWindow::burnList()
 {
   burnConfigDialog bcd(this);
-  bcd.listAvrdudeProgrammers();
-}
-
-void MainWindow::burnFuses()
-{
-  FusesDialog *fd = new FusesDialog(this);
-  fd->exec();
-  delete fd;
 }
 
 void MainWindow::compare()
@@ -1058,7 +1054,7 @@ void MainWindow::about()
   aboutStr.append("<br/><br/>");
   aboutStr.append(QString("Version %1, %2").arg(VERSION).arg(__DATE__));
   aboutStr.append("<br/><br/>");
-  aboutStr.append(tr("Copyright OpenTX Team") + "<br/>&copy; 2011-2019<br/>");
+  aboutStr.append(tr("Copyright OpenTX Team") + QString("<br/>&copy; 2011-%1<br/>").arg(QString(__DATE__).right(4)));
   QMessageBox msgBox(this);
   msgBox.setWindowIcon(CompanionIcon("information.png"));
   msgBox.setWindowTitle(tr("About Companion"));
@@ -1078,9 +1074,15 @@ void MainWindow::updateMenus()
   compareAct->setEnabled(activeChild);
   writeEepromAct->setEnabled(activeChild);
   readEepromAct->setEnabled(true);
-  writeBUToRadioAct->setEnabled(true);
-  readBUToFileAct->setEnabled(true);
-  editSplashAct->setDisabled(IS_HORUS(getCurrentBoard()));
+  if (IS_FAMILY_HORUS_OR_T16(getCurrentBoard())) {
+    writeBUToRadioAct->setEnabled(false);
+    readBUToFileAct->setEnabled(false);
+  }
+  else {
+    writeBUToRadioAct->setEnabled(true);
+    readBUToFileAct->setEnabled(true);
+  }
+  editSplashAct->setDisabled(IS_FAMILY_HORUS_OR_T16(getCurrentBoard()));
 
   foreach (QAction * act, fileWindowActions) {
     if (!act)
@@ -1219,8 +1221,6 @@ void MainWindow::retranslateUi(bool showMsg)
   trAct(changelogAct,       tr("Release notes..."),           tr("Show release notes"));
   trAct(compareAct,         tr("Compare Models..."),          tr("Compare models"));
   trAct(editSplashAct,      tr("Edit Radio Splash Image..."), tr("Edit the splash image of your Radio"));
-  trAct(burnListAct,        tr("List programmers..."),        tr("List available programmers"));
-  trAct(burnFusesAct,       tr("Fuses..."),                   tr("Show fuses dialog"));
   trAct(readFlashAct,       tr("Read Firmware from Radio"),   tr("Read firmware from Radio"));
   trAct(writeFlashAct,      tr("Write Firmware to Radio"),    tr("Write firmware to Radio"));
   trAct(sdsyncAct,          tr("Synchronize SD"),             tr("SD card synchronization"));
@@ -1282,14 +1282,14 @@ void MainWindow::createActions()
 
   editSplashAct =      addAct("paintbrush.png",        SLOT(customizeSplash()));
   burnListAct =        addAct("list.png",              SLOT(burnList()));
-  burnFusesAct =       addAct("fuses.png",             SLOT(burnFuses()));
   readFlashAct =       addAct("read_flash.png",        SLOT(readFlash()));
   writeFlashAct =      addAct("write_flash.png",       SLOT(writeFlash()));
   writeEepromAct =     addAct("write_eeprom.png",      SLOT(writeEeprom()));
   readEepromAct =      addAct("read_eeprom.png",       SLOT(readEeprom()));
   burnConfigAct =      addAct("configure.png",         SLOT(burnConfig()));
-  writeBUToRadioAct =  addAct("write_eeprom_file.png", SLOT(writeBackup()));
-  readBUToFileAct =    addAct("read_eeprom_file.png",  SLOT(readBackup()));
+
+  writeBUToRadioAct = addAct("write_eeprom_file.png", SLOT(writeBackup()));
+  readBUToFileAct = addAct("read_eeprom_file.png", SLOT(readBackup()));
 
   createProfileAct =   addAct("new.png",   SLOT(createProfile()));
   copyProfileAct   =   addAct("copy.png",  SLOT(copyProfile()));
@@ -1386,10 +1386,6 @@ void MainWindow::createMenus()
   burnMenu->addAction(readFlashAct);
   burnMenu->addSeparator();
   burnMenu->addSeparator();
-  if (!IS_ARM(getCurrentBoard())) {
-    burnMenu->addAction(burnFusesAct);
-    burnMenu->addAction(burnListAct);
-  }
 
   windowMenu = menuBar()->addMenu("");
   windowMenu->addAction(actTabbedWindows);
@@ -1798,4 +1794,21 @@ void MainWindow::dropEvent(QDropEvent *event)
 void MainWindow::autoClose()
 {
   this->close();
+}
+
+void MainWindow::chooseProfile()
+{
+  QMap<int, QString> active;
+  active = g.getActiveProfiles();
+  if (active.size() > 1) {
+    ProfileChooserDialog *pcd = new ProfileChooserDialog(this);
+    connect(pcd, &ProfileChooserDialog::profileChanged, this, &MainWindow::loadProfileId);
+    pcd->exec();
+    delete pcd;
+    //  doi here as need to wait until dialog dismissed and current radio type is set
+    if (checkProfileRadioExists(g.sessionId()))
+      doAutoUpdates();
+    else
+      g.warningId(g.warningId() | AppMessages::MSG_NO_RADIO_TYPE);
+  }
 }

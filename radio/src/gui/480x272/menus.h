@@ -151,7 +151,6 @@ const uint8_t STATS_ICONS[] = {
   ICON_STATS,
   ICON_STATS_THROTTLE_GRAPH,
   ICON_STATS_DEBUG,
-  ICON_STATS_ANALOGS,
 #if defined(DEBUG_TRACE_BUFFER)
   ICON_STATS_TIMERS
 #endif
@@ -190,11 +189,11 @@ bool menuRadioDiagAnalogs(event_t event);
 extern const MenuHandlerFunc menuTabModel[MENU_MODEL_PAGES_COUNT];
 
 enum EnumTabRadio {
-  MENU_RADIO_SETUP,
-  MENU_RADIO_SD_MANAGER,
-#if defined(LUA) || defined(PXX2)
+#if defined(RADIO_TOOLS)
   MENU_RADIO_TOOLS,
 #endif
+  MENU_RADIO_SD_MANAGER,
+  MENU_RADIO_SETUP,
   MENU_RADIO_SPECIAL_FUNCTIONS,
   MENU_RADIO_TRAINER,
   MENU_RADIO_HARDWARE,
@@ -204,11 +203,11 @@ enum EnumTabRadio {
 
 const uint8_t RADIO_ICONS[MENU_RADIO_PAGES_COUNT + 1] = {
   ICON_RADIO,
-  ICON_RADIO_SETUP,
-  ICON_RADIO_SD_MANAGER,
-#if defined(LUA) || defined(PXX2)
+#if defined(RADIO_TOOLS)
   ICON_RADIO_TOOLS,
 #endif
+  ICON_RADIO_SD_MANAGER,
+  ICON_RADIO_SETUP,
   ICON_RADIO_GLOBAL_FUNCTIONS,
   ICON_RADIO_TRAINER,
   ICON_RADIO_HARDWARE,
@@ -240,13 +239,11 @@ enum MenuRadioIndexes
 
 bool menuStatsGraph(event_t event);
 bool menuStatsDebug(event_t event);
-bool menuStatsAnalogs(event_t event);
 bool menuStatsTraces(event_t event);
 
 static const MenuHandlerFunc menuTabStats[]  = {
   menuStatsGraph,
   menuStatsDebug,
-  menuStatsAnalogs,
 #if defined(DEBUG_TRACE_BUFFER)
   menuStatsTraces,
 #endif
@@ -440,8 +437,6 @@ void editName(coord_t x, coord_t y, char *name, uint8_t size, event_t event, uin
 uint8_t editDelay(coord_t x, coord_t y, event_t event, uint8_t attr, uint8_t delay);
 void editCurveRef(coord_t x, coord_t y, CurveRef & curve, event_t event, LcdFlags flags);
 
-extern uint8_t s_curveChan;
-
 enum
 {
   WARNING_TYPE_WAIT,
@@ -464,6 +459,7 @@ extern uint8_t s_copyMode;
 extern int8_t s_copySrcRow;
 extern int8_t s_copyTgtOfs;
 extern uint8_t s_currIdx;
+extern uint8_t s_currIdxSubMenu;
 extern int8_t s_currCh;
 extern uint8_t s_copySrcIdx;
 extern uint8_t s_copySrcCh;
@@ -506,6 +502,7 @@ inline void DISPLAY_WARNING(event_t event)
 #define MENU_MAX_DISPLAY_LINES         9
 #define MENU_LINE_LENGTH               (LEN_MODEL_NAME+12)
 
+extern const char * popupMenuTitle;
 extern const char * popupMenuItems[POPUP_MENU_MAX_LINES];
 extern uint16_t popupMenuItemsCount;
 extern uint16_t popupMenuOffset;
@@ -547,6 +544,11 @@ inline void POPUP_MENU_SELECT_ITEM(uint8_t index)
   popupMenuSelectedItem =  (index > 0 ? (index < popupMenuItemsCount ? index : popupMenuItemsCount - 1) : 0);
 }
 
+inline void POPUP_MENU_TITLE(const char * s)
+{
+  popupMenuTitle = s;
+}
+
 inline void POPUP_MENU_START(PopupMenuHandler handler)
 {
   if (handler != popupMenuHandler) {
@@ -560,8 +562,11 @@ inline void CLEAR_POPUP()
 {
   warningText = nullptr;
   warningInfoText = nullptr;
+  popupMenuTitle = nullptr;
   popupMenuHandler = nullptr;
   popupMenuItemsCount = 0;
+  // TODO ? popupFunc = nullptr;
+  putEvent(EVT_REFRESH);
 }
 
 inline void POPUP_WAIT(const char * s)
@@ -570,6 +575,15 @@ inline void POPUP_WAIT(const char * s)
   warningInfoText = nullptr;
   warningType = WARNING_TYPE_WAIT;
   popupFunc = runPopupWarning;
+}
+
+inline void DRAW_POPUP_WAIT(const char * s)
+{
+  warningText = s;
+  warningInfoText = nullptr;
+  warningType = WARNING_TYPE_WAIT;
+  runPopupWarning(0);
+  warningText = nullptr;
 }
 
 inline void POPUP_INFORMATION(const char * s)

@@ -63,6 +63,20 @@ static int luaLcdClear(lua_State *L)
 }
 
 /*luadoc
+@function lcd.resetBacklightTimeout()
+
+Reset the backlight timeout
+
+@status current Introduced in 2.3.6
+*/
+static int luaLcdResetBacklightTimeout(lua_State * L)
+{
+  if (!luaLcdAllowed) return 0;
+  resetBacklightTimeout();
+  return 0;
+}
+
+/*luadoc
 @function lcd.drawPoint(x, y)
 
 Draw a single pixel at (x,y) position
@@ -70,6 +84,8 @@ Draw a single pixel at (x,y) position
 @param x (positive number) x position
 
 @param y (positive number) y position
+
+@param flags (optional) lcdflags
 
 @notice Taranis has an LCD display width of 212 pixels and height of 64 pixels.
 Position (0,0) is at top left. Y axis is negative, top line is 0,
@@ -82,7 +98,8 @@ static int luaLcdDrawPoint(lua_State *L)
   if (!luaLcdAllowed) return 0;
   int x = luaL_checkinteger(L, 1);
   int y = luaL_checkinteger(L, 2);
-  lcdDrawPoint(x, y);
+  LcdFlags att = luaL_optunsigned(L, 3, 0);
+  lcdDrawPoint(x, y, att);
   return 0;
 }
 
@@ -95,14 +112,14 @@ Draw a straight line on LCD
 
 @param x2,y2 (positive numbers) end coordinate
 
-@param pattern TODO
+@param pattern SOLID or DOTTED
 
-@param flags TODO
+@param flags lcdflags
 
 @notice If the start or the end of the line is outside the LCD dimensions, then the
 whole line will not be drawn (starting from OpenTX 2.1.5)
 
-@status current Introduced in 2.0.0
+@status current Introduced in 2.0.0, flags introduced in 2.3.6
 */
 static int luaLcdDrawLine(lua_State *L)
 {
@@ -858,6 +875,7 @@ static int luaRGB(lua_State *L)
 const luaL_Reg lcdLib[] = {
   { "refresh", luaLcdRefresh },
   { "clear", luaLcdClear },
+  { "resetBacklightTimeout", luaLcdResetBacklightTimeout },
   { "drawPoint", luaLcdDrawPoint },
   { "drawLine", luaLcdDrawLine },
   { "drawRectangle", luaLcdDrawRectangle },

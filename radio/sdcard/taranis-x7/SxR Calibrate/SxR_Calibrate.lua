@@ -62,10 +62,10 @@ local function runWarningPage(event)
   lcd.drawText(0, 30, "power, and a level surface.", SMLSIZE)
   lcd.drawText(0, 40, "Press [Enter] when ready", SMLSIZE)
   lcd.drawText(0, 50, "Press [Exit] to cancel", SMLSIZE)
-  if event == EVT_ENTER_BREAK then
+  if event == EVT_VIRTUAL_ENTER then
     selectPage(1)
     return 0
-  elseif event == EVT_EXIT_BREAK then
+  elseif event == EVT_VIRTUAL_EXIT then
     return 2
   end
   return 0
@@ -186,9 +186,9 @@ end
 
 -- Main
 local function runFieldsPage(event)
-  if event == EVT_EXIT_BREAK then -- exit script
+  if event == EVT_VIRTUAL_EXIT then -- exit script
     return 2
-  elseif event == EVT_ENTER_BREAK then -- toggle editing/selecting current field
+  elseif event == EVT_VIRTUAL_ENTER then -- toggle editing/selecting current field
     if fields[current][4] ~= nil then
       edit = not edit
       if edit == false then
@@ -196,15 +196,15 @@ local function runFieldsPage(event)
       end
     end
   elseif edit then
-    if event == EVT_PLUS_FIRST or event == EVT_ROT_RIGHT or event == EVT_PLUS_REPT or event == EVT_DOWN_BREAK then
+    if event == EVT_VIRTUAL_NEXT or event == EVT_VIRTUAL_NEXT_REP then
       addField(1)
-    elseif event == EVT_MINUS_FIRST or event == EVT_ROT_LEFT or event == EVT_MINUS_REPT or event == EVT_UP_BREAK then
+    elseif event == EVT_VIRTUAL_PREV or event == EVT_VIRTUAL_PREV_REP then
       addField(-1)
     end
   else
-    if event == EVT_MINUS_FIRST or event == EVT_ROT_LEFT or event == EVT_UP_BREAK then
+    if event == EVT_VIRTUAL_INC or event == EVT_VIRTUAL_INC_REP then
       selectField(1)
-    elseif event == EVT_PLUS_FIRST or event == EVT_ROT_RIGHT or event == EVT_DOWN_BREAK then
+    elseif event == EVT_VIRTUAL_DEC or event == EVT_VIRTUAL_DEC_REP then
       selectField(-1)
     end
   end
@@ -260,9 +260,9 @@ local function runCalibrationPage(event)
 --    lcd.drawText(10, 19, "Done",0)
     lcd.drawText(0, 56, "Press [Exit] when ready", attr)
   end
-  if calibrationStep > 6 and (event == EVT_ENTER_BREAK or event == EVT_EXIT_BREAK) then
+  if calibrationStep > 6 and (event == EVT_VIRTUAL_ENTER or event == EVT_VIRTUAL_EXIT) then
     return 2
-  elseif event == EVT_ENTER_BREAK and positionConfirmed  then
+  elseif event == EVT_VIRTUAL_ENTER and positionConfirmed  then
     calibrationState = 1
     positionConfirmed = 0
   end
@@ -284,9 +284,9 @@ local function run(event)
   if event == nil then
     error("Cannot be run as a model script!")
     return 2
-  elseif event == EVT_PAGE_BREAK or event==EVT_RIGHT_BREAK then
+  elseif event == EVT_VIRTUAL_NEXT_PAGE then
     selectPage(1)
-  elseif event == EVT_PAGE_LONG or event==EVT_LEFT_BREAK then
+  elseif event == EVT_VIRTUAL_PREV_PAGE then
     killEvents(event);
     selectPage(-1)
   end

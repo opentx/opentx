@@ -24,6 +24,8 @@
 #include "modeledit.h"
 #include "eeprominterface.h"
 
+constexpr char MIMETYPE_TIMER[] = "application/x-companion-timer";
+
 class RawSwitchFilterItemModel;
 
 namespace Ui {
@@ -59,19 +61,19 @@ class ModulePanel : public ModelPanel
   Q_OBJECT
 
   public:
-    ModulePanel(QWidget *parent, ModelData & model, ModuleData & module, GeneralSettings & generalSettings, Firmware * firmware, int moduleIdx);
+    ModulePanel(QWidget * parent, ModelData & model, ModuleData & module, GeneralSettings & generalSettings, Firmware * firmware, int moduleIdx);
     virtual ~ModulePanel();
     virtual void update();
-    bool moduleHasFailsafes();
 
   public slots:
     void onExtendedLimitsToggled();
+    void onFailsafeModified(unsigned index);
 
   signals:
     void channelsRangeChanged();
+    void failsafeModified(unsigned index);
 
   private slots:
-    int getMaxChannelCount();
     void setupFailsafes();
     void on_trainerMode_currentIndexChanged(int index);
     void onProtocolChanged(int index);
@@ -95,7 +97,8 @@ class ModulePanel : public ModelPanel
     void onFailsafeUsecChanged(int value);
     void onFailsafePercentChanged(double value);
     void onFailsafesDisplayValueTypeChanged(int type);
-    void updateFailsafe(int channel);
+    void onRfFreqChanged(int freq);
+    void updateFailsafe(unsigned channel);
     void on_optionValue_editingFinished();
     void onClearAccessRxClicked();
 
@@ -114,6 +117,7 @@ class ModulePanel : public ModelPanel
     Ui::Module *ui;
     QMap<int, ChannelFailsafeWidgetsGroup> failsafeGroupsMap;
     static quint8 failsafesValueDisplayType;  // FailsafeValueDisplayTypes
+    void updateFailsafeUI(unsigned channel, quint8 updtSb);
 };
 
 class SetupPanel : public ModelPanel
@@ -129,6 +133,7 @@ class SetupPanel : public ModelPanel
   signals:
     void extendedLimitsToggled();
     void updated();
+    void timerUpdated();
 
   private slots:
     void on_name_editingFinished();
@@ -148,6 +153,16 @@ class SetupPanel : public ModelPanel
     void potWarningToggled(bool checked);
     void on_potWarningMode_currentIndexChanged(int index);
     void on_editText_clicked();
+    void onTimerCustomContextMenuRequested(QPoint pos);
+    void cmTimerClear();
+    void cmTimerClearAll();
+    void cmTimerCopy();
+    void cmTimerCut();
+    void cmTimerDelete();
+    void cmTimerInsert();
+    void cmTimerPaste();
+    void cmTimerMoveDown();
+    void cmTimerMoveUp();
 
   private:
     Ui::Setup *ui;
@@ -161,6 +176,13 @@ class SetupPanel : public ModelPanel
     void updatePotWarnings();
     void updateBeepCenter();
     void populateThrottleSourceCB();
+    int timersCount;
+    int selectedTimerIndex;
+    bool hasTimerClipboardData(QByteArray * data = nullptr) const;
+    bool insertTimerAllowed() const;
+    bool moveTimerDownAllowed() const;
+    bool moveTimerUpAllowed() const;
+    void swapTimerData(int idx1, int idx2);
 };
 
 #endif // _SETUP_H_

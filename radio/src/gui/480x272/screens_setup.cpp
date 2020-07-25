@@ -121,7 +121,7 @@ bool editZoneOption(coord_t y, const ZoneOption * option, ZoneOptionValue * valu
     }
   }
   else if (option->type == ZoneOption::TextSize) {
-    lcdDrawTextAtIndex(SCREENS_SETUP_2ND_COLUMN, y, "\010StandardTiny\0   Small\0  Mid\0    Double", value->unsignedValue, attr);
+    lcdDrawTextAtIndex(SCREENS_SETUP_2ND_COLUMN, y, STR_TEXT_SIZE, value->unsignedValue, attr);
     if (attr) {
       value->unsignedValue = checkIncDec(event, value->unsignedValue, 0, 4, i_flags);
     }
@@ -346,7 +346,7 @@ bool menuWidgetsSetup(event_t event)
 
   currentScreen->refresh();
 
-  for (int i=currentContainer->getZonesCount()-1; i>=0; i--) {
+  for (int i = currentContainer->getZonesCount() - 1; i >= 0; i--) {
     Zone zone = currentContainer->getZone(i);
     LcdFlags color;
     int padding, thickness;
@@ -558,7 +558,7 @@ bool menuScreenSetup(int index, event_t event)
   currentContainer = currentScreen;
   bool needsOffsetCheck = (menuVerticalPosition != 0 || menuHorizontalPosition < 0);
 
-  char title[] = "Main view X";
+  char title[] = TR_MAIN_VIEW_X;
   title[sizeof(title)-2] = '1' + index;
   menuPageCount = updateMainviewsMenu();
 

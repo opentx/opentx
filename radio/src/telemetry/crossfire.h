@@ -64,6 +64,7 @@ enum CrossfireSensorIndexes {
   BATT_VOLTAGE_INDEX,
   BATT_CURRENT_INDEX,
   BATT_CAPACITY_INDEX,
+  BATT_REMAINING_INDEX,
   GPS_LATITUDE_INDEX,
   GPS_LONGITUDE_INDEX,
   GPS_GROUND_SPEED_INDEX,
@@ -81,7 +82,6 @@ enum CrossfireSensorIndexes {
 void processCrossfireTelemetryData(uint8_t data);
 void crossfireSetDefault(int index, uint8_t id, uint8_t subId);
 
-#if SPORT_MAX_BAUDRATE < 400000
 const uint32_t CROSSFIRE_BAUDRATES[] = {
   400000,
   115200,
@@ -90,6 +90,7 @@ const uint8_t CROSSFIRE_PERIODS[] = {
   4,
   16,
 };
+#if SPORT_MAX_BAUDRATE < 400000
 #define CROSSFIRE_BAUDRATE    CROSSFIRE_BAUDRATES[g_eeGeneral.telemetryBaudrate]
 #define CROSSFIRE_PERIOD      CROSSFIRE_PERIODS[g_eeGeneral.telemetryBaudrate]
 #else

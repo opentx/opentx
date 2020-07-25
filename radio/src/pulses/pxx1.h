@@ -25,8 +25,12 @@
 #include "crc.h"
 
 struct HeartbeatCapture {
+#if !defined(INTMODULE_USART)
   uint32_t timestamp;
+#endif
+#if defined(DEBUG_LATENCY)
   uint32_t count;
+#endif
   uint8_t valid;
 };
 

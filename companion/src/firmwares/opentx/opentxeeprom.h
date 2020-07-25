@@ -28,17 +28,14 @@
 
 #define GVARS_VARIANT                  0x0001
 #define FRSKY_VARIANT                  0x0002
-#define MAVLINK_VARIANT                0x0008
 #define M128_VARIANT                   0x8000
 #define TARANIS_X9E_VARIANT            0x8000
 #define TARANIS_X7_VARIANT             0x4000
 #define TARANIS_XLITE_VARIANT          0x2000
 #define TARANIS_XLITES_VARIANT         0x1000
 #define TARANIS_X9LITE_VARIANT         0x0800
+#define TARANIS_X9LITES_VARIANT        0x0801
 #define JUMPER_T12_VARIANT             0x4001
-
-#define SIMU_STOCK_VARIANTS            (GVARS_VARIANT|FRSKY_VARIANT)
-#define SIMU_M128_VARIANTS             (M128_VARIANT|SIMU_STOCK_VARIANTS)
 
 class OpenTxGeneralData: public TransformedField {
   public:
@@ -107,6 +104,9 @@ class ProtocolsConversionTable: public ConversionTable
       addConversion(PULSES_XJT_LITE_X16, val);
       addConversion(PULSES_XJT_LITE_D8, val);
       addConversion(PULSES_XJT_LITE_LR12, val++);
+      if (version >= 219) {
+        addConversion(PULSES_AFHDS3, val++);
+      }
     }
 };
 

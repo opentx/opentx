@@ -21,6 +21,10 @@
 #include "opentx.h"
 #include "io/frsky_firmware_update.h"
 
+#if defined(LOG_BLUETOOTH)
+extern FIL g_bluetoothFile;
+#endif
+
 #if defined(PCBX9E)
 #define BLUETOOTH_COMMAND_NAME         "TTM:REN-"
 #define BLUETOOTH_ANSWER_NAME          "TTM:REN"
@@ -44,23 +48,24 @@ Bluetooth bluetooth;
 
 void Bluetooth::write(const uint8_t * data, uint8_t length)
 {
-  TRACE_NOCRLF("BT>");
-  for (int i=0; i<length; i++) {
-    TRACE_NOCRLF(" %02X", data[i]);
-    while (btTxFifo.isFull()) {
-      if (!bluetoothIsWriting())
-        bluetoothWriteWakeup();
-      RTOS_WAIT_MS(1);
+  if (btTxFifo.hasSpace(length)) {
+    BLUETOOTH_TRACE("BT>");
+    for (int i = 0; i < length; i++) {
+      BLUETOOTH_TRACE(" %02X", data[i]);
+      btTxFifo.push(data[i]);
     }
-    btTxFifo.push(data[i]);
+    BLUETOOTH_TRACE(CRLF);
   }
-  TRACE_NOCRLF("\r\n");
+  else {
+    BLUETOOTH_TRACE("[BT] TX fifo full!" CRLF);
+  }
+
   bluetoothWriteWakeup();
 }
 
 void Bluetooth::writeString(const char * str)
 {
-  TRACE("BT> %s", str);
+  BLUETOOTH_TRACE("BT> %s" CRLF, str);
   while (*str != 0) {
     btTxFifo.push(*str++);
   }
@@ -77,19 +82,19 @@ char * Bluetooth::readline(bool error_reset)
     if (!btRxFifo.pop(byte)) {
 #if defined(PCBX9E)
       // X9E BT module can get unresponsive
-      TRACE("NO RESPONSE FROM BT MODULE");
+      BLUETOOTH_TRACE("NO RESPONSE FROM BT MODULE" CRLF);
 #endif
       return nullptr;
     }
 
-    TRACE_NOCRLF("%02X ", byte);
+    BLUETOOTH_TRACE("%02X ", byte);
 
 #if 0
     if (error_reset && byte == 'R' && bufferIndex == 4 && memcmp(buffer, "ERRO", 4)) {
 #if defined(PCBX9E)  // X9E enter BT reset loop if following code is implemented
-      TRACE("BT Error...");
+      BLUETOOTH_TRACE("BT Error..." CRLF);
 #else
-      TRACE("BT Reset...");
+      BLUETOOTH_TRACE("BT Reset..." CRLF);
       bufferIndex = 0;
       bluetoothDisable();
       state = BLUETOOTH_STATE_OFF;
@@ -104,12 +109,12 @@ char * Bluetooth::readline(bool error_reset)
       if (bufferIndex > 2 && buffer[bufferIndex-1] == '\r') {
         buffer[bufferIndex-1] = '\0';
         bufferIndex = 0;
-        TRACE("BT< %s", buffer);
+        BLUETOOTH_TRACE("BT< %s" CRLF, buffer);
         if (error_reset && !strcmp((char *)buffer, "ERROR")) {
 #if defined(PCBX9E) // X9E enter BT reset loop if following code is implemented
-          TRACE("BT Error...");
+          BLUETOOTH_TRACE("BT Error..." CRLF);
 #else
-          TRACE("BT Reset...");
+          BLUETOOTH_TRACE("BT Reset..." CRLF);
           bluetoothDisable();
           state = BLUETOOTH_STATE_OFF;
           wakeupTime = get_tmr10ms() + 100; /* 1s */
@@ -137,7 +142,7 @@ char * Bluetooth::readline(bool error_reset)
 
 void Bluetooth::processTrainerFrame(const uint8_t * buffer)
 {
-  TRACE("");
+  BLUETOOTH_TRACE(CRLF);
 
   for (uint8_t channel=0, i=1; channel<8; channel+=2, i+=3) {
     // +-500 != 512, but close enough.
@@ -155,7 +160,7 @@ void Bluetooth::appendTrainerByte(uint8_t data)
     // we check for "DisConnected", but the first byte could be altered (if received in state STATE_DATA_XOR)
     if (data == '\n') {
       if (!strncmp((char *)&buffer[bufferIndex-13], "isConnected", 11)) {
-        TRACE("BT< DisConnected");
+        BLUETOOTH_TRACE("BT< DisConnected" CRLF);
         state = BLUETOOTH_STATE_DISCONNECTED;
         bufferIndex = 0;
         wakeupTime += 200; // 1s
@@ -171,7 +176,7 @@ void Bluetooth::processTrainerByte(uint8_t data)
   switch (dataState) {
     case STATE_DATA_START:
       if (data == START_STOP) {
-        dataState = STATE_DATA_IN_FRAME ;
+        dataState = STATE_DATA_IN_FRAME;
         bufferIndex = 0;
       }
       else {
@@ -184,7 +189,7 @@ void Bluetooth::processTrainerByte(uint8_t data)
         dataState = STATE_DATA_XOR; // XOR next byte
       }
       else if (data == START_STOP) {
-        dataState = STATE_DATA_IN_FRAME ;
+        dataState = STATE_DATA_IN_FRAME;
         bufferIndex = 0;
       }
       else {
@@ -285,7 +290,7 @@ void Bluetooth::receiveTrainer()
       return;
     }
 
-    TRACE_NOCRLF("%02X ", byte);
+    BLUETOOTH_TRACE("%02X ", byte);
 
     processTrainerByte(byte);
   }

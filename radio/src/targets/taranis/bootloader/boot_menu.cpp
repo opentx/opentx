@@ -21,28 +21,24 @@ void bootloaderDrawFilename(const char *str, uint8_t line, bool selected)
 void bootloaderDrawScreen(BootloaderState st, int opt, const char *str)
 {
   lcdClear();
-  lcdDrawText(0, 0, BOOTLOADER_TITLE, INVERS);
+  lcdDrawText(LCD_W / 2, 0, BOOTLOADER_TITLE, CENTERED);
+  lcdInvertLine(0);
 
   if (st == ST_START) {
-    lcdDrawTextAlignedLeft(2*FH, "\010Write Firmware");
-    lcdDrawTextAlignedLeft(3*FH, "\010Restore EEPROM");
-    lcdDrawTextAlignedLeft(4*FH, "\010Exit");
+    lcdDrawText(3*FW, 2*FH, "Write Firmware", opt == 0 ? INVERS : 0);
+    lcdDrawText(3*FW, 3*FH, "Restore EEPROM", opt == 1 ? INVERS : 0);
+    lcdDrawText(3*FW, 4*FH, "Exit", opt == 2 ? INVERS : 0);
 
-#if LCD_W >= 212
-    lcdDrawTextAlignedLeft(6*FH, "\001Curr FW:");
-    lcdDrawText(50, 6*FH, getOtherVersion(nullptr));
-#else
-    lcdDrawTextAlignedLeft(6 * FH, "\001FW:");
+    lcdDrawText(LCD_W / 2, 5 * FH + FH / 2, STR_OR_PLUGIN_USB_CABLE, CENTERED);
 
-    // Remove opentx- from string
-    const char *other_ver = getOtherVersion(nullptr);
-    if (strstr(other_ver, "opentx-"))
-      other_ver = other_ver + 7;
-    lcdDrawText(20, 6 * FH, other_ver);
+    // Remove "opentx-" from string
+    const char * vers = getFirmwareVersion();
+#if LCD_W < 212
+    if (strncmp(vers, "opentx-", 7) == 0)
+      vers += 7;
 #endif
-
-    lcdInvertLine(2 + opt);
-    lcdDrawTextAlignedLeft(7 * FH, STR_OR_PLUGIN_USB_CABLE);
+    lcdDrawText(LCD_W / 2, 7 * FH, vers, CENTERED);
+    lcdInvertLine(7);
   }
   else if (st == ST_USB) {
     lcdDrawTextAlignedLeft(4 * FH, STR_USB_CONNECTED);
@@ -65,11 +61,11 @@ void bootloaderDrawScreen(BootloaderState st, int opt, const char *str)
     }
     else if (opt == FC_OK) {
       if (memoryType == MEM_FLASH) {
-        const char * vers = getOtherVersion((char *) Block_buffer);
+        const char * vers = getFirmwareVersion((const char *)Block_buffer);
 #if LCD_W < 212
-        // Remove opentx- from string
-        if (strstr(vers, "opentx-"))
-          vers = vers + 7;
+        // Remove "opentx-" from string
+        if (strncmp(vers, "opentx-", 7) == 0)
+          vers += 7;
 #endif
         bootloaderDrawMsg(INDENT_WIDTH, vers, 0, false);
       }

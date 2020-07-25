@@ -10,6 +10,7 @@ set(TARGET_DIR sky9x)
 set(RADIO_DEPENDENCIES ${RADIO_DEPENDENCIES} 9x_bitmaps)
 set(PPM_LIMITS_SYMETRICAL YES)
 set(PXX1 YES)
+set(AFHDS3 NO)
 add_definitions(-DDISABLE_MULTI_UPDATE)
 
 if(PCB STREQUAL 9XRPRO)
@@ -71,6 +72,7 @@ set(GUI_SRC
   radio_diaganas.cpp
   view_telemetry.cpp
   view_about.cpp
+  view_channels.cpp
   )
 
 if(GVARS)

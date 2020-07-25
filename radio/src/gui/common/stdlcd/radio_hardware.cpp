@@ -184,6 +184,9 @@ enum {
 
   ITEM_RADIO_HARDWARE_JITTER_FILTER,
   ITEM_RADIO_HARDWARE_RAS,
+#if defined(SPORT_UPDATE_PWR_GPIO)
+  ITEM_RADIO_HARDWARE_SPORT_UPDATE_POWER,
+#endif
   ITEM_RADIO_HARDWARE_DEBUG,
 #if defined(EEPROM_RLC)
   ITEM_RADIO_BACKUP_EEPROM,
@@ -295,6 +298,12 @@ void onHardwareAntennaSwitchConfirm(const char * result)
   #define HW_SETTINGS_COLUMN2            (HW_SETTINGS_COLUMN1 + 5*FW)
 #endif
 
+#if defined(SPORT_UPDATE_PWR_GPIO)
+  #define SPORT_POWER_ROWS 0,
+#else
+  #define SPORT_POWER_ROWS
+#endif
+
 #if defined(EEPROM_RLC)
 void onFactoryResetConfirm(const char * result)
 {
@@ -334,7 +343,7 @@ void menuRadioHardware(event_t event)
 
     0 /* ADC filter */,
     READONLY_ROW /* RAS */,
-
+    SPORT_POWER_ROWS
     1 /* debugs */,
 
     0,
@@ -615,22 +624,31 @@ void menuRadioHardware(event_t event)
         break;
 
       case ITEM_RADIO_HARDWARE_RAS:
-#if defined(PCBX9LITE) && !defined(PCBX9LITES)
-        lcdDrawTextAlignedLeft(y, "Ext. RAS");
-        lcdNextPos = HW_SETTINGS_COLUMN2;
-#else
+#if defined(HARDWARE_INTERNAL_RAS)
         lcdDrawTextAlignedLeft(y, "RAS");
         if (telemetryData.swrInternal.isFresh())
           lcdDrawNumber(HW_SETTINGS_COLUMN2, y, telemetryData.swrInternal.value());
         else
           lcdDrawText(HW_SETTINGS_COLUMN2, y, "---");
         lcdDrawText(lcdNextPos, y, "/");
+#else
+        lcdDrawTextAlignedLeft(y, "Ext. RAS");
+        lcdNextPos = HW_SETTINGS_COLUMN2;
 #endif
         if (telemetryData.swrExternal.isFresh())
           lcdDrawNumber(lcdNextPos, y, telemetryData.swrExternal.value());
         else
           lcdDrawText(lcdNextPos, y, "---");
         break;
+
+#if defined(SPORT_UPDATE_PWR_GPIO)
+      case ITEM_RADIO_HARDWARE_SPORT_UPDATE_POWER:
+        g_eeGeneral.sportUpdatePower = editChoice(HW_SETTINGS_COLUMN2, y, STR_SPORT_UPDATE_POWER_MODE, STR_SPORT_UPDATE_POWER_MODES, g_eeGeneral.sportUpdatePower, 0, 1, attr, event);
+        if (attr && checkIncDec_Ret) {
+          SPORT_UPDATE_POWER_INIT();
+        }
+        break;
+#endif
 
       case ITEM_RADIO_HARDWARE_DEBUG:
         lcdDrawTextAlignedLeft(y, STR_DEBUG);

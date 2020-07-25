@@ -85,6 +85,17 @@ void drawOffsetBar(uint8_t x, uint8_t y, MixData * md)
 
 void menuModelMixOne(event_t event)
 {
+#if defined(NAVIGATION_X7)
+  if (event == EVT_KEY_LONG(KEY_MENU)) {
+    pushMenu(menuChannelsView);
+    killEvents(event);
+  }
+#elif defined(NAVIGATION_XLITE)
+  if (event == EVT_KEY_LONG(KEY_SHIFT)) {
+    pushMenu(menuChannelsView);
+    killEvents(event);
+  }
+#endif
   MixData * md2 = mixAddress(s_currIdx) ;
   putsChn(PSIZE(TR_MIXES)*FW+FW, 0, md2->destCh+1,0);
   
@@ -139,7 +150,7 @@ void menuModelMixOne(event_t event)
 
       case MIX_FIELD_CURVE:
         lcdDrawTextAlignedLeft(y, STR_CURVE);
-        editCurveRef(MIXES_2ND_COLUMN, y, md2->curve, event, attr);
+        editCurveRef(MIXES_2ND_COLUMN, y, md2->curve, s_editMode > 0 ? event : 0, attr);
         break;
 
 #if defined(FLIGHT_MODES)

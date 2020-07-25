@@ -22,8 +22,8 @@
 #define _BOARD_H_
 
 #include <inttypes.h>
-#include "../definitions.h"
-#include "../opentx_constants.h"
+#include "definitions.h"
+#include "opentx_constants.h"
 #include "board_common.h"
 #include "hal.h"
 
@@ -60,6 +60,13 @@ void boardOff();
 // Timers driver
 void init2MhzTimer();
 void init5msTimer();
+
+// PCBREV driver
+enum {
+  // X7
+  PCBREV_X7_STD = 0,
+  PCBREV_X7_40 = 1,
+};
 
 // SD driver
 #define BLOCK_SIZE                      512 /* Block Size in Bytes */
@@ -107,12 +114,16 @@ uint32_t isBootloaderStart(const uint8_t * buffer);
   #define INTERNAL_MODULE_OFF()         GPIO_ResetBits(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN)
 #endif
 
+#if !defined(PCBX9LITE) || defined(PCBX9LITES)
+  #define HARDWARE_INTERNAL_RAS
+#endif
+
 #define EXTERNAL_MODULE_ON()            EXTERNAL_MODULE_PWR_ON()
 
 #if defined(EXTMODULE_USART)
-#define EXTERNAL_MODULE_OFF()         extmoduleStop()
+  #define EXTERNAL_MODULE_OFF()         extmoduleStop()
 #else
-#define EXTERNAL_MODULE_OFF()         EXTERNAL_MODULE_PWR_OFF()
+  #define EXTERNAL_MODULE_OFF()         EXTERNAL_MODULE_PWR_OFF()
 #endif
 
 #if defined(RADIO_T12)
@@ -333,12 +344,16 @@ enum EnumSwitchesPositions
   SW_SH1,
   SW_SH2,
 #endif
-#if defined(PCBX9DP) && PCBREV >= 2019
+#if defined(RADIO_X9DP2019)
   SW_SI0,
   SW_SI1,
   SW_SI2,
 #endif
-#if defined(PCBX7)
+#if defined(PCBX7ACCESS)
+  SW_SI0,
+  SW_SI1,
+  SW_SI2,
+#elif defined(PCBX7)
   SW_SI0,
   SW_SI1,
   SW_SI2,
@@ -396,6 +411,11 @@ enum EnumSwitchesPositions
   #define STORAGE_NUM_SWITCHES          NUM_SWITCHES
   #define DEFAULT_SWITCH_CONFIG         (SWITCH_2POS << 10) + (SWITCH_2POS << 8) + (SWITCH_3POS << 6) + (SWITCH_3POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0)
   #define DEFAULT_POTS_CONFIG           (POT_WITHOUT_DETENT << 0) + (POT_WITHOUT_DETENT << 2); // S1 = pot without detent, S2 = pot with detent
+#elif defined(PCBX7ACCESS)
+  #define NUM_SWITCHES                  7
+  #define STORAGE_NUM_SWITCHES          8
+  #define DEFAULT_SWITCH_CONFIG         (SWITCH_TOGGLE << 10) + (SWITCH_2POS << 8) + (SWITCH_3POS << 6) + (SWITCH_3POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0)
+  #define DEFAULT_POTS_CONFIG           (POT_WITHOUT_DETENT << 0) + (POT_WITH_DETENT << 2); // S1 = pot without detent, S2 = pot with detent
 #elif defined(PCBX7)
   #define NUM_SWITCHES                  8
   #define STORAGE_NUM_SWITCHES          NUM_SWITCHES
@@ -417,7 +437,7 @@ enum EnumSwitchesPositions
   #define DEFAULT_SWITCH_CONFIG         (SWITCH_TOGGLE << 14) + (SWITCH_3POS << 12) + (SWITCH_2POS << 10) + (SWITCH_3POS << 8) + (SWITCH_3POS << 6) + (SWITCH_3POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0)
   #define DEFAULT_POTS_CONFIG           (POT_WITH_DETENT << 0) + (POT_WITH_DETENT << 2); // S1 = pot without detent, S2 = pot with detent
   #define DEFAULT_SLIDERS_CONFIG        (SLIDER_WITH_DETENT << 3) + (SLIDER_WITH_DETENT << 2) + (SLIDER_WITH_DETENT << 1) + (SLIDER_WITH_DETENT << 0)
-#elif defined(PCBX9DP) && PCBREV >= 2019
+#elif defined(RADIO_X9DP2019)
   #define NUM_SWITCHES                  9
   #define STORAGE_NUM_SWITCHES          NUM_SWITCHES
   #define DEFAULT_SWITCH_CONFIG         (SWITCH_TOGGLE << 16) + (SWITCH_TOGGLE << 14) + (SWITCH_3POS << 12) + (SWITCH_2POS << 10) + (SWITCH_3POS << 8) + (SWITCH_3POS << 6) + (SWITCH_3POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0);
@@ -520,28 +540,27 @@ enum Analogs {
 #define NUM_MOUSE_ANALOGS               0
 #define STORAGE_NUM_MOUSE_ANALOGS       0
 
+#if defined(PCBXLITE)
+  #define NUM_TRIMS_KEYS                4
+#else
+  #define NUM_TRIMS_KEYS                (NUM_TRIMS * 2)
+#endif
+
 #if defined(STICKS_PWM)
   #define NUM_PWMSTICKS                 4
   #define STICKS_PWM_ENABLED()          (!hardwareOptions.sticksPwmDisabled)
   void sticksPwmInit();
   void sticksPwmRead(uint16_t * values);
   extern volatile uint32_t pwm_interrupt_count; // TODO => reusable buffer (boot section)
-  #define NUM_TRIMS_KEYS                4
 #else
-  #define NUM_TRIMS_KEYS                8
   #define STICKS_PWM_ENABLED()          false
 #endif
 
-#if NUM_PWMSTICKS > 0
 PACK(typedef struct {
+  uint8_t pcbrev:2;
   uint8_t sticksPwmDisabled:1;
   uint8_t pxx2Enabled:1;
 }) HardwareOptions;
-#else
-PACK(typedef struct {
-  uint8_t pxx2Enabled:1;
-}) HardwareOptions;
-#endif
 
 extern HardwareOptions hardwareOptions;
 
@@ -607,7 +626,7 @@ extern uint16_t adcValues[NUM_ANALOGS];
   #define BATT_SCALE                    123
 #elif defined(PCBX9LITE)
   #define BATT_SCALE                    117
-#elif defined(PCBX9DP) && PCBREV >= 2019
+#elif defined(RADIO_X9DP2019)
   #define BATT_SCALE                    117
 #else
   #define BATT_SCALE                    150
@@ -629,6 +648,7 @@ bool pwrPressed();
 uint32_t pwrPressedDuration();
 #endif
 void pwrResetHandler();
+#define pwrForcePressed()   false
 
 #if defined(SIMU)
 #define UNEXPECTED_SHUTDOWN()           false
@@ -689,8 +709,10 @@ extern uint32_t telemetryErrors;
 void telemetryPortInvertedInit(uint32_t baudrate);
 
 // PCBREV driver
-#if defined(PCBX7)
-  #define IS_PCBREV_40()                (GPIO_ReadInputDataBit(PCBREV_GPIO, PCBREV_GPIO_PIN) == Bit_SET)
+#if defined(PCBX7ACCESS)
+  #define HAS_SPORT_UPDATE_CONNECTOR()  true
+#elif defined(PCBX7)
+  #define IS_PCBREV_40()                (hardwareOptions.pcbrev == PCBREV_X7_40)
   #define HAS_SPORT_UPDATE_CONNECTOR()  IS_PCBREV_40()
 #elif defined(SPORT_UPDATE_PWR_GPIO)
   #define HAS_SPORT_UPDATE_CONNECTOR()  true
@@ -703,12 +725,17 @@ void telemetryPortInvertedInit(uint32_t baudrate);
 void sportUpdateInit();
 void sportUpdatePowerOn();
 void sportUpdatePowerOff();
+void sportUpdatePowerInit();
 #define SPORT_UPDATE_POWER_ON()         sportUpdatePowerOn()
 #define SPORT_UPDATE_POWER_OFF()        sportUpdatePowerOff()
+#define SPORT_UPDATE_POWER_INIT()       sportUpdatePowerInit()
+#define IS_SPORT_UPDATE_POWER_ON()      (GPIO_ReadInputDataBit(SPORT_UPDATE_PWR_GPIO, SPORT_UPDATE_PWR_GPIO_PIN) == Bit_SET)
 #else
 #define sportUpdateInit()
 #define SPORT_UPDATE_POWER_ON()
 #define SPORT_UPDATE_POWER_OFF()
+#define SPORT_UPDATE_POWER_INIT()
+#define IS_SPORT_UPDATE_POWER_ON()      (false)
 #endif
 
 // Audio driver
@@ -759,7 +786,7 @@ void hapticOff();
   void hapticOn();
 #endif
 
-// Second serial port driver
+// Aux serial port driver
 #if defined(AUX_SERIAL_GPIO)
 #define DEBUG_BAUDRATE                  115200
 #define AUX_SERIAL
@@ -769,6 +796,8 @@ void auxSerialPutc(char c);
 #define auxSerialTelemetryInit(protocol) auxSerialInit(UART_MODE_TELEMETRY, protocol)
 void auxSerialSbusInit();
 void auxSerialStop();
+#define AUX_SERIAL_POWER_ON()
+#define AUX_SERIAL_POWER_OFF()
 #endif
 
 // BT driver
@@ -780,16 +809,16 @@ void auxSerialStop();
 #define BLUETOOTH_FACTORY_BAUDRATE      57600
 #endif
 #define BT_TX_FIFO_SIZE    64
-#define BT_RX_FIFO_SIZE    128
+#define BT_RX_FIFO_SIZE    256
 void bluetoothInit(uint32_t baudrate, bool enable);
 void bluetoothWriteWakeup();
 uint8_t bluetoothIsWriting();
 void bluetoothDisable();
-#if defined(PCBX9LITES)
+#if defined(PCBX9LITES) || defined(PCBX7ACCESS)
   #define IS_BLUETOOTH_CHIP_PRESENT()     (true)
 #elif defined(PCBX9LITE)
   #define IS_BLUETOOTH_CHIP_PRESENT()     (false)
-#elif (defined(PCBX7) || defined(PCBXLITE)) && !defined(SIMU)
+#elif defined(BLUETOOTH_PROBE) && !defined(SIMU)
   extern volatile uint8_t btChipPresent;
   #define IS_BLUETOOTH_CHIP_PRESENT()     (btChipPresent)
 #else
