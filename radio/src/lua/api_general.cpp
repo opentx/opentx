@@ -1742,6 +1742,7 @@ const luaR_value_entry opentxConstants[] = {
   { "VALUE", INPUT_TYPE_VALUE },
   { "SOURCE", INPUT_TYPE_SOURCE },
   { "REPLACE", MLTPX_REP },
+  { "MIXSRC_MAX", MIXSRC_MAX },
   { "MIXSRC_FIRST_INPUT", MIXSRC_FIRST_INPUT },
   { "MIXSRC_Rud", MIXSRC_Rud },
   { "MIXSRC_Ele", MIXSRC_Ele },

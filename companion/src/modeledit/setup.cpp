@@ -206,7 +206,7 @@ ModulePanel::ModulePanel(QWidget * parent, ModelData & model, ModuleData & modul
 
   ui->label_module->setText(ModuleData::indexToString(moduleIdx, firmware));
   if (moduleIdx < 0) {
-    if (!IS_TARANIS(firmware->getBoard())) {
+    if (!IS_TARANIS(firmware->getBoard()) || IS_ACCESS_RADIO(firmware->getBoard(), Firmware::getCurrentVariant()->getId())) {
       ui->trainerMode->setItemData(TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE, 0, Qt::UserRole - 1);
       ui->trainerMode->setItemData(TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE, 0, Qt::UserRole - 1);
       ui->trainerMode->setItemData(TRAINER_MODE_MASTER_BATTERY_COMPARTMENT, 0, Qt::UserRole - 1);
