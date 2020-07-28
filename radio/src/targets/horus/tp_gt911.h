@@ -61,24 +61,22 @@ bool touchPanelEventOccured();
 #define GT911_CONFIG_CHECKSUM_REG       0x80FF
 #define GT911_FIRMWARE_VERSION_REG      0x8144
 
-PACK(typedef struct
-       {
-         uint8_t track;
-         uint16_t x;
-         uint16_t y;
-         uint16_t size;
-         uint8_t reserved;
-       }) TouchPoint;
+PACK(typedef struct {
+  uint8_t track;
+  uint16_t x;
+  uint16_t y;
+  uint16_t size;
+  uint8_t reserved;
+}) TouchPoint;
 
-PACK(struct TouchData
-       {
-         uint8_t pointsCount;
-         union
-         {
-           TouchPoint points[GT911_MAX_TP];
-           uint8_t data[GT911_MAX_TP * sizeof(TouchPoint)];
-         };
-       });
+PACK(struct TouchData {
+  uint8_t pointsCount;
+  union
+  {
+    TouchPoint points[GT911_MAX_TP];
+    uint8_t data[GT911_MAX_TP * sizeof(TouchPoint)];
+  };
+});
 
 #define TPRST_LOW()   do { TOUCH_RST_GPIO->BSRRH = TOUCH_RST_GPIO_PIN; } while(0)
 #define TPRST_HIGH()  do { TOUCH_RST_GPIO->BSRRL = TOUCH_RST_GPIO_PIN; } while(0)
