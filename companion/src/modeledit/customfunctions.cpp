@@ -567,7 +567,7 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
         if (modified)
           cfn.param = fswtchParamT[i]->currentData().toInt();
         populateFuncParamCB(fswtchParamT[i], func, cfn.param);
-        widgetsMask |= CUSTOM_FUNCTION_SOURCE_PARAM;
+        widgetsMask |= CUSTOM_FUNCTION_SOURCE_PARAM | CUSTOM_FUNCTION_ENABLE;
       }
       else {
         if (modified)
