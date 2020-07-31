@@ -1201,6 +1201,9 @@
 #define TR_ADDMAINVIEW         "Aggiungi vista princ."
 #define TR_BACKGROUND_COLOR    "Colore background"
 #define TR_MAIN_COLOR          "Colore principale"
+#define TR_BAR2_COLOR                  "Secondary bar color"
+#define TR_BAR1_COLOR                  "Main bar color"
+#define TR_TEXT_COLOR                  "Text color"
 #define TR_TEXT_VIEWER         "Visualizzatore testi"
 
 #define TR_MENU_INPUTS         "\314Ingressi"
