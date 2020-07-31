@@ -40,9 +40,9 @@
 #define DARKRED                        RGB(160, 0, 6)
 #define GREEN                          RGB(25, 150, 50)
 #define LIGHTBROWN                     RGB(156, 109, 32)
-#define DARKGREEN                      RGB(106, 72, 16)
+#define DARKBROWN                      RGB(106, 72, 16)
 #define BRIGHTGREEN                    RGB(0, 180, 60)
-#define ORANGE                         RGB(229,100,30)
+#define ORANGE                         RGB(229, 100, 30)
 
 #define OPACITY_MAX                    0x0F
 #define OPACITY(x)                     ((x)<<24)

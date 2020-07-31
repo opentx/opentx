@@ -30,10 +30,10 @@ const ZoneOption OPTIONS_THEME_GREEN[] = {
   { NULL, ZoneOption::Bool }
 };
 
-class GreenTheme: public Theme
+class FlexiTheme: public Theme
 {
   public:
-    GreenTheme():
+    FlexiTheme():
       Theme("Green", OPTIONS_THEME_GREEN)
     {
     }
@@ -43,10 +43,10 @@ class GreenTheme: public Theme
       lcdColorTable[TEXT_COLOR_INDEX] = BLACK;
       lcdColorTable[TEXT_BGCOLOR_INDEX] = LIGHTWHITE;
       lcdColorTable[TEXT_INVERTED_COLOR_INDEX] = LIGHTWHITE;
-      lcdColorTable[TEXT_INVERTED_BGCOLOR_INDEX] = DARKGREEN;
+      lcdColorTable[TEXT_INVERTED_BGCOLOR_INDEX] = DARKBROWN;
       lcdColorTable[TEXT_STATUSBAR_COLOR_INDEX] = LIGHTWHITE;
       lcdColorTable[LINE_COLOR_INDEX] = GREY;
-      lcdColorTable[SCROLLBOX_COLOR_INDEX] = DARKGREEN;
+      lcdColorTable[SCROLLBOX_COLOR_INDEX] = DARKBROWN;
       lcdColorTable[MENU_TITLE_BGCOLOR_INDEX] = LIGHTWHITE;
       lcdColorTable[MENU_TITLE_COLOR_INDEX] = LIGHTWHITE;
       lcdColorTable[MENU_TITLE_DISABLE_COLOR_INDEX] = LIGHTWHITE;
@@ -56,13 +56,13 @@ class GreenTheme: public Theme
       lcdColorTable[TEXT_DISABLE_COLOR_INDEX] = GREY;
       lcdColorTable[CURVE_AXIS_COLOR_INDEX] = LIGHTGREY;
       lcdColorTable[CURVE_COLOR_INDEX] = RED;
-      lcdColorTable[CURVE_CURSOR_COLOR_INDEX] = DARKGREEN;
-      lcdColorTable[TITLE_BGCOLOR_INDEX] = DARKGREEN;
+      lcdColorTable[CURVE_CURSOR_COLOR_INDEX] = DARKBROWN;
+      lcdColorTable[TITLE_BGCOLOR_INDEX] = DARKBROWN;
       lcdColorTable[TRIM_BGCOLOR_INDEX] = LIGHTBROWN;
       lcdColorTable[TRIM_SHADOW_COLOR_INDEX] = BLACK;
       lcdColorTable[MAINVIEW_PANES_COLOR_INDEX] = LIGHTWHITE;
-      lcdColorTable[MAINVIEW_GRAPHICS_COLOR_INDEX] = DARKGREEN;
-      lcdColorTable[HEADER_BGCOLOR_INDEX] = DARKGREEN; // Top bar color
+      lcdColorTable[MAINVIEW_GRAPHICS_COLOR_INDEX] = DARKBROWN;
+      lcdColorTable[HEADER_BGCOLOR_INDEX] = DARKBROWN; // Top bar color
       lcdColorTable[HEADER_ICON_BGCOLOR_INDEX] = LIGHTBROWN; // background OPENTX icon
       lcdColorTable[HEADER_CURRENT_BGCOLOR_INDEX] = GREEN; // icons color
       lcdColorTable[OVERLAY_COLOR_INDEX] = LIGHTWHITE;
@@ -351,13 +351,13 @@ class GreenTheme: public Theme
     static BitmapBuffer * menuIconTitle[MENUS_ICONS_COUNT];
 };
 
-const BitmapBuffer * GreenTheme::backgroundBitmap = NULL;
-BitmapBuffer * GreenTheme::topleftBitmap = NULL;
-BitmapBuffer * GreenTheme::menuIconNormal[MENUS_ICONS_COUNT] = { NULL };
-BitmapBuffer * GreenTheme::menuIconSelected[MENUS_ICONS_COUNT] = { NULL };
-BitmapBuffer * GreenTheme::menuIconTitle[MENUS_ICONS_COUNT] = { NULL };
+const BitmapBuffer * FlexiTheme::backgroundBitmap = NULL;
+BitmapBuffer * FlexiTheme::topleftBitmap = NULL;
+BitmapBuffer * FlexiTheme::menuIconNormal[MENUS_ICONS_COUNT] = { NULL };
+BitmapBuffer * FlexiTheme::menuIconSelected[MENUS_ICONS_COUNT] = { NULL };
+BitmapBuffer * FlexiTheme::menuIconTitle[MENUS_ICONS_COUNT] = { NULL };
 
-GreenTheme greenTheme;
-#if defined(DEFAULT_THEME_GREEN)
-  Theme * theme = &greenTheme;
+FlexiTheme FlexiTheme;
+#if defined(DEFAULT_THEME_FLEXI)
+  Theme * theme = &FlexiTheme;
 #endif
