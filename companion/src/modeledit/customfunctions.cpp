@@ -471,7 +471,7 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
       else if (func >= FuncSetFailsafeInternalModule && func <= FuncBindExternalModule) {
         widgetsMask |= CUSTOM_FUNCTION_ENABLE;
       }
-      else if (func == FuncVolume) {
+      else if (func == FuncVolume || func == FuncBacklight) {
         if (modified)
           cfn.param = fswtchParamT[i]->currentData().toInt();
         populateFuncParamCB(fswtchParamT[i], func, cfn.param);
@@ -562,12 +562,6 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
           Helpers::getFileComboBoxValue(fswtchParamArmT[i], cfn.paramarm, 8);
         }
         Helpers::populateFileComboBox(fswtchParamArmT[i], scriptsSet, cfn.paramarm);
-      }
-      else if (func == FuncBacklight) {
-        if (modified)
-          cfn.param = fswtchParamT[i]->currentData().toInt();
-        populateFuncParamCB(fswtchParamT[i], func, cfn.param);
-        widgetsMask |= CUSTOM_FUNCTION_SOURCE_PARAM | CUSTOM_FUNCTION_ENABLE;
       }
       else {
         if (modified)
