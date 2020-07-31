@@ -462,7 +462,7 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
       else if (func >= FuncSetFailsafeInternalModule && func <= FuncBindExternalModule) {
         widgetsMask |= CUSTOM_FUNCTION_ENABLE;
       }
-      else if (func == FuncVolume) {
+      else if (func == FuncVolume || func == FuncBacklight) {
         if (modified)
           cfn.param = fswtchParamT[i]->currentData().toInt();
         populateFuncParamCB(fswtchParamT[i], func, cfn.param);
@@ -553,12 +553,6 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
           Helpers::getFileComboBoxValue(fswtchParamArmT[i], cfn.paramarm, 8);
         }
         Helpers::populateFileComboBox(fswtchParamArmT[i], scriptsSet, cfn.paramarm);
-      }
-      else if (func == FuncBacklight && IS_TARANIS_PLUS(getCurrentBoard())) {
-        if (modified)
-          cfn.param = (uint8_t)fswtchBLcolor[i]->value();
-        fswtchBLcolor[i]->setValue(cfn.param);
-        widgetsMask |= CUSTOM_FUNCTION_BL_COLOR;
       }
       else {
         if (modified)
@@ -701,28 +695,28 @@ void CustomFunctionsPanel::populateFuncParamCB(QComboBox *b, uint function, unsi
 {
   QStringList qs;
   b->setModel(new QStandardItemModel(b));  // clear combo box but not any shared item model
-  if (function==FuncPlaySound) {
+  if (function == FuncPlaySound) {
     CustomFunctionData::populatePlaySoundParams(qs);
     b->addItems(qs);
     b->setCurrentIndex(value);
   }
-  else if (function==FuncPlayHaptic) {
+  else if (function == FuncPlayHaptic) {
     CustomFunctionData::populateHapticParams(qs);
     b->addItems(qs);
     b->setCurrentIndex(value);
   }
-  else if (function==FuncReset) {
+  else if (function == FuncReset) {
     CustomFunctionData::populateResetParams(model, b, value);
   }
-  else if (function==FuncVolume) {
+  else if (function == FuncVolume || function == FuncBacklight) {
     b->setModel(rawSrcInputsItemModel);
     b->setCurrentIndex(b->findData(value));
   }
-  else if (function==FuncPlayValue) {
+  else if (function == FuncPlayValue) {
     b->setModel(rawSrcAllItemModel);
     b->setCurrentIndex(b->findData(value));
   }
-  else if (function>=FuncAdjustGV1 && function<=FuncAdjustGVLast) {
+  else if (function >= FuncAdjustGV1 && function <= FuncAdjustGVLast) {
     switch (adjustmode) {
       case 1:
         b->setModel(rawSrcInputsItemModel);
