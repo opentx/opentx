@@ -21,7 +21,7 @@
 #include "opentx.h"
 #include "storage/modelslist.h"
 
-const ZoneOption OPTIONS_THEME_GREEN[] = {
+const ZoneOption OPTIONS_THEME_FLEXI[] = {
   { STR_BACKGROUND_COLOR, ZoneOption::Color, OPTION_VALUE_UNSIGNED(LIGHTWHITE) },
   { STR_MAIN_COLOR, ZoneOption::Color, OPTION_VALUE_UNSIGNED(LIGHTBROWN) },
   { STR_TEXT_COLOR, ZoneOption::Color, OPTION_VALUE_UNSIGNED(BLACK) },
@@ -34,7 +34,7 @@ class FlexiTheme: public Theme
 {
   public:
     FlexiTheme():
-      Theme("Green", OPTIONS_THEME_GREEN)
+      Theme("Flexi", OPTIONS_THEME_FLEXI)
     {
     }
 
