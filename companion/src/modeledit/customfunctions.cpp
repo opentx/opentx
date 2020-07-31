@@ -705,28 +705,28 @@ void CustomFunctionsPanel::populateFuncParamCB(QComboBox *b, uint function, unsi
 {
   QStringList qs;
   b->setModel(new QStandardItemModel(b));  // clear combo box but not any shared item model
-  if (function==FuncPlaySound) {
+  if (function == FuncPlaySound) {
     CustomFunctionData::populatePlaySoundParams(qs);
     b->addItems(qs);
     b->setCurrentIndex(value);
   }
-  else if (function==FuncPlayHaptic) {
+  else if (function == FuncPlayHaptic) {
     CustomFunctionData::populateHapticParams(qs);
     b->addItems(qs);
     b->setCurrentIndex(value);
   }
-  else if (function==FuncReset) {
+  else if (function == FuncReset) {
     CustomFunctionData::populateResetParams(model, b, value);
   }
-  else if (function==FuncVolume || function==FuncBacklight) {
+  else if (function == FuncVolume || function == FuncBacklight) {
     b->setModel(rawSrcInputsItemModel);
     b->setCurrentIndex(b->findData(value));
   }
-  else if (function==FuncPlayValue) {
+  else if (function == FuncPlayValue) {
     b->setModel(rawSrcAllItemModel);
     b->setCurrentIndex(b->findData(value));
   }
-  else if (function>=FuncAdjustGV1 && function<=FuncAdjustGVLast) {
+  else if (function >= FuncAdjustGV1 && function <= FuncAdjustGVLast) {
     switch (adjustmode) {
       case 1:
         b->setModel(rawSrcInputsItemModel);
