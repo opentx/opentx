@@ -243,7 +243,8 @@ void onModelSelectMenu(const char * result)
 {
   if (result == STR_SELECT_MODEL) {
     if (!g_eeGeneral.disableRssiPoweroffAlarm) {
-      if (!confirmModelChange()) return;
+      if (!confirmModelChange())
+        return;
     }
     // we store the latest changes if any
     storageFlushCurrentModel();
@@ -263,7 +264,8 @@ void onModelSelectMenu(const char * result)
   }
   else if (result == STR_CREATE_MODEL) {
     if (!g_eeGeneral.disableRssiPoweroffAlarm) {
-      if (!confirmModelChange()) return;
+      if (!confirmModelChange())
+        return;
     }
     storageCheck(true);
     modelslist.addModel(currentCategory, createModel());

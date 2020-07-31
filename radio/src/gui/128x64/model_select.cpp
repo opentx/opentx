@@ -37,7 +37,8 @@ void onModelSelectMenu(const char * result)
 
   if (result == STR_SELECT_MODEL || result == STR_CREATE_MODEL) {
     if (!g_eeGeneral.disableRssiPoweroffAlarm) {
-      if (!confirmModelChange()) return;
+      if (!confirmModelChange())
+        return;
     }
     selectModel(sub);
   }
