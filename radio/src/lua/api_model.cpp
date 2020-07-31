@@ -364,6 +364,143 @@ static int luaModelGetInputsCount(lua_State *L)
 }
 
 /*luadoc
+@function model.getFlightMode(index)
+
+@param index (unsigned number) flight mode number (use 0 for FM0)
+ 
+Return input data for given input and line number
+
+@retval nil requested input or line does not exist
+
+@retval table input data:
+ * `name` (string) input line name
+ * `switch` (number) input switch index
+ * `fadeIn` (number) fade in value (in 0.1s)
+ * `fadeOut` (number) fade out value (in 0.1s)
+ * `gvar` (table) table of gvar values:
+   * `key` is gvar number (zero based)
+   * `value` is gvar value
+ * `trimvalue` (table) table of trim values:
+   * `key` is trim number (zero based)
+   * `value` is trim value
+* `trimmode` (table) table of trim mode:
+   * `key` is trim number (zero based)
+   * `value` is trim mode
+
+@status current Introduced in 2.3.10
+*/
+static int luaModelGetFlightMode(lua_State * L)
+{
+  unsigned int idx = luaL_checkunsigned(L, 1);
+  if (idx < MAX_FLIGHT_MODES) {
+    FlightModeData * fm = flightModeAddress(idx);
+    lua_newtable(L);
+    lua_pushtablezstring(L, "name", fm->name);
+    lua_pushtableinteger(L, "switch", fm->swtch);
+    lua_pushtableinteger(L, "fadeIn", fm->fadeIn);
+    lua_pushtableinteger(L, "fadeOut", fm->fadeOut);
+    lua_pushstring(L, "gvar");
+    lua_newtable(L);
+    for (uint8_t i = 0; i < MAX_GVARS; i++) {
+      lua_pushinteger(L, i);
+      lua_pushinteger(L, fm->gvars[i]);
+      lua_settable(L, -3);
+    }
+    lua_settable(L, -3);
+    lua_pushstring(L, "trimvalue");
+    lua_newtable(L);
+    for (uint8_t i = 0; i < NUM_TRIMS; i++) {
+      lua_pushinteger(L, i);
+      lua_pushinteger(L, fm->trim[i].value);
+      lua_settable(L, -3);
+    }
+    lua_settable(L, -3);
+    lua_pushstring(L, "trimmode");
+    lua_newtable(L);
+    for (uint8_t i = 0; i < NUM_TRIMS; i++) {
+      lua_pushinteger(L, i);
+      lua_pushinteger(L, fm->trim[i].mode);
+      lua_settable(L, -3);
+    }
+    lua_settable(L, -3);
+  }
+  else {
+    lua_pushnil(L);
+  }
+  return 1;
+}
+
+/*luadoc
+@function model.setFlightMode(index)
+
+Set Flight mode parameters
+
+@param index (unsigned number) flight mode number (use 0 for FM0)
+
+@param params see model.getFlightMode return format for table format.
+
+@status current Introduced in 2.3.10
+*/
+static int luaModelSetFlightMode(lua_State * L)
+{
+  unsigned int idx = luaL_checkunsigned(L, 1);
+
+  if (idx >= MAX_FLIGHT_MODES) {
+    lua_pushinteger(L, 2);
+    return 1;
+  }
+  FlightModeData * fm = flightModeAddress(idx);
+  luaL_checktype(L, -1, LUA_TTABLE);
+  for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1)) {
+    luaL_checktype(L, -2, LUA_TSTRING); // key is string
+    const char * key = luaL_checkstring(L, -2);
+    if (!strcmp(key, "name")) {
+      const char * name = luaL_checkstring(L, -1);
+      str2zchar(fm->name, name, sizeof(fm->name));
+    }
+    else if (!strcmp(key, "switch")) {
+      fm->swtch = luaL_checkinteger(L, -1);
+    }
+    else if (!strcmp(key, "fadeIn")) {
+      fm->fadeIn = luaL_checkinteger(L, -1);
+    }
+    else if (!strcmp(key, "fadeOut")) {
+      fm->fadeOut = luaL_checkinteger(L, -1);
+    }
+    else if (!strcmp(key, "gvar")) {
+      int gvarIdx = luaL_checkinteger(L, -2) - 1;
+      if (gvarIdx < 0 || gvarIdx > MAX_GVARS) {
+        lua_pushinteger(L, 4);
+        return 1;
+      }
+      int8_t val = luaL_checkinteger(L, -1);
+      fm->gvars[gvarIdx] = ( val & 0xFFFF);
+    }
+    else if (!strcmp(key, "trimvalue")) {
+      int trimIdx = luaL_checkinteger(L, -2) - 1;
+      if (trimIdx < 0 || trimIdx > NUM_TRIMS) {
+        lua_pushinteger(L, 4);
+        return 1;
+      }
+      int8_t val = luaL_checkinteger(L, -1);
+      fm->trim[trimIdx].value = ( val & 0x3FF);
+    }
+    else if (!strcmp(key, "trimmode")) {
+      int trimIdx = luaL_checkinteger(L, -2) - 1;
+      if (trimIdx < 0 || trimIdx > NUM_TRIMS) {
+        lua_pushinteger(L, 4);
+        return 1;
+      }
+      int8_t val = luaL_checkinteger(L, -1);
+      fm->trim[trimIdx].value = ( val & 0x1F);
+    }
+  }
+  storageDirty(EE_MODEL);
+  lua_pushinteger(L, 0);
+  return 1;
+}
+
+/*luadoc
 @function model.getInput(input, line)
 
 Return input data for given input and line number
@@ -1418,6 +1555,8 @@ const luaL_Reg modelLib[] = {
   { "getTimer", luaModelGetTimer },
   { "setTimer", luaModelSetTimer },
   { "resetTimer", luaModelResetTimer },
+  { "getFlightMode", luaModelGetFlightMode },
+  { "setFlightMode", luaModelSetFlightMode },
   { "getInputsCount", luaModelGetInputsCount },
   { "getInput", luaModelGetInput },
   { "insertInput", luaModelInsertInput },
