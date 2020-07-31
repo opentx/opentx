@@ -130,15 +130,9 @@ MainWindow::MainWindow():
   else {
     if (!g.previousVersion().isEmpty())
       g.warningId(g.warningId() | AppMessages::MSG_UPGRADED);
+    
     if (g.promptProfile()) {
-      QTimer::singleShot(updateDelay, this, SLOT(chooseProfile()));    // add an extra second to give mainwindow time to load
-      updateDelay += 5000;  //  give user time to select profile before warnings
-    }
-    else {
-      if (checkProfileRadioExists(g.sessionId()))
-        QTimer::singleShot(updateDelay, this, SLOT(doAutoUpdates()));
-      else
-        g.warningId(g.warningId() | AppMessages::MSG_NO_RADIO_TYPE);
+      chooseProfile();
     }
   }
   QTimer::singleShot(updateDelay, this, SLOT(displayWarnings()));
@@ -184,6 +178,11 @@ MainWindow::MainWindow():
   if (printing) {
     QTimer::singleShot(0, this, SLOT(autoClose()));
   }
+
+  if (checkProfileRadioExists(g.sessionId()))
+    QTimer::singleShot(updateDelay, this, SLOT(doAutoUpdates()));
+  else
+    g.warningId(g.warningId() | AppMessages::MSG_NO_RADIO_TYPE);
 }
 
 MainWindow::~MainWindow()
@@ -1805,10 +1804,8 @@ void MainWindow::chooseProfile()
     connect(pcd, &ProfileChooserDialog::profileChanged, this, &MainWindow::loadProfileId);
     pcd->exec();
     delete pcd;
-    //  doi here as need to wait until dialog dismissed and current radio type is set
-    if (checkProfileRadioExists(g.sessionId()))
-      doAutoUpdates();
-    else
+
+    if (!checkProfileRadioExists(g.sessionId()))
       g.warningId(g.warningId() | AppMessages::MSG_NO_RADIO_TYPE);
   }
 }
