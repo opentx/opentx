@@ -292,7 +292,7 @@ void onHardwareAntennaSwitchConfirm(const char * result)
 
 #if LCD_W >= 212
   #define HW_SETTINGS_COLUMN1            12*FW
-  #define HW_SETTINGS_COLUMN2            20*FW
+  #define HW_SETTINGS_COLUMN2            (20*FW - 3)
 #else
   #define HW_SETTINGS_COLUMN1            30
   #define HW_SETTINGS_COLUMN2            (HW_SETTINGS_COLUMN1 + 5*FW)
