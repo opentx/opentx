@@ -55,7 +55,7 @@ class SpectrumFooterWindow: public FormGroup
       tracker->setFocus(SET_FOCUS_DEFAULT);
 
       if (isModuleMultimodule(moduleIdx)) {
-        char label[10];
+        char label[16];
 
         // Frequency
         sprintf(label,"T: %dMHz", int(reusableBuffer.spectrumAnalyser.freq / 1000000));
