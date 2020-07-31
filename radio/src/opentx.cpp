@@ -690,13 +690,18 @@ void checkBacklight()
     }
 
     bool backlightOn = (g_eeGeneral.backlightMode == e_backlight_mode_on || (g_eeGeneral.backlightMode != e_backlight_mode_off && lightOffCounter) || isFunctionActive(FUNCTION_BACKLIGHT));
-    if (flashCounter) backlightOn = !backlightOn;
+
+    if (flashCounter) {
+      backlightOn = !backlightOn;
+    }
+
     if (backlightOn) {
       currentBacklightBright = requiredBacklightBright;
       BACKLIGHT_ENABLE();
     }
-    else
+    else {
       BACKLIGHT_DISABLE();
+    }
   }
 }
 
