@@ -23,7 +23,7 @@
 
 const ZoneOption OPTIONS_THEME_GREEN[] = {
   { STR_BACKGROUND_COLOR, ZoneOption::Color, OPTION_VALUE_UNSIGNED(LIGHTWHITE) },
-  { STR_MAIN_COLOR, ZoneOption::Color, OPTION_VALUE_UNSIGNED(LIGHTGREEN) },
+  { STR_MAIN_COLOR, ZoneOption::Color, OPTION_VALUE_UNSIGNED(LIGHTBROWN) },
   { STR_TEXT_COLOR, ZoneOption::Color, OPTION_VALUE_UNSIGNED(BLACK) },
   { STR_BAR1_COLOR, ZoneOption::Color, OPTION_VALUE_UNSIGNED(ORANGE) },
   { STR_BAR2_COLOR, ZoneOption::Color, OPTION_VALUE_UNSIGNED(BRIGHTGREEN) },
@@ -58,12 +58,12 @@ class GreenTheme: public Theme
       lcdColorTable[CURVE_COLOR_INDEX] = RED;
       lcdColorTable[CURVE_CURSOR_COLOR_INDEX] = DARKGREEN;
       lcdColorTable[TITLE_BGCOLOR_INDEX] = DARKGREEN;
-      lcdColorTable[TRIM_BGCOLOR_INDEX] = LIGHTGREEN;
+      lcdColorTable[TRIM_BGCOLOR_INDEX] = LIGHTBROWN;
       lcdColorTable[TRIM_SHADOW_COLOR_INDEX] = BLACK;
       lcdColorTable[MAINVIEW_PANES_COLOR_INDEX] = LIGHTWHITE;
       lcdColorTable[MAINVIEW_GRAPHICS_COLOR_INDEX] = DARKGREEN;
       lcdColorTable[HEADER_BGCOLOR_INDEX] = DARKGREEN; // Top bar color
-      lcdColorTable[HEADER_ICON_BGCOLOR_INDEX] = LIGHTGREEN; // background OPENTX icon
+      lcdColorTable[HEADER_ICON_BGCOLOR_INDEX] = LIGHTBROWN; // background OPENTX icon
       lcdColorTable[HEADER_CURRENT_BGCOLOR_INDEX] = GREEN; // icons color
       lcdColorTable[OVERLAY_COLOR_INDEX] = LIGHTWHITE;
       lcdColorTable[BARGRAPH1_COLOR_INDEX] = ORANGE;
