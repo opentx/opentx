@@ -140,21 +140,6 @@ QString RawSource::toString(const ModelData * model, const GeneralSettings * con
     tr("Batt"), tr("Time"), tr("Timer1"), tr("Timer2"), tr("Timer3"),
   };
 
-  static const QString telemetry[] = {
-    tr("Batt"), tr("Time"), tr("Timer1"), tr("Timer2"), tr("Timer3"),
-    tr("RAS"), tr("RSSI Tx"), tr("RSSI Rx"),
-    tr("A1"), tr("A2"), tr("A3"), tr("A4"),
-    tr("Alt"), tr("Rpm"), tr("Fuel"), tr("T1"), tr("T2"),
-    tr("Speed"), tr("Dist"), tr("GPS Alt"),
-    tr("Cell"), tr("Cells"), tr("Vfas"), tr("Curr"), tr("Cnsp"), tr("Powr"),
-    tr("AccX"), tr("AccY"), tr("AccZ"),
-    tr("Hdg "), tr("VSpd"), tr("AirSpeed"), tr("dTE"),
-    tr("A1-"),  tr("A2-"), tr("A3-"),  tr("A4-"),
-    tr("Alt-"), tr("Alt+"), tr("Rpm+"), tr("T1+"), tr("T2+"), tr("Speed+"), tr("Dist+"), tr("AirSpeed+"),
-    tr("Cell-"), tr("Cells-"), tr("Vfas-"), tr("Curr+"), tr("Powr+"),
-    tr("ACC"), tr("GPS Time"),
-  };
-
   static const QString rotary[]  = { tr("REa"), tr("REb") };
 
   if (index<0) {
@@ -223,7 +208,19 @@ QString RawSource::toString(const ModelData * model, const GeneralSettings * con
         return LimitData().nameToString(index);
 
     case SOURCE_TYPE_SPECIAL:
-      return CHECK_IN_ARRAY(special, index);
+      result = CHECK_IN_ARRAY(special, index);
+      //  TODO  refactor timers into own source type
+      if (result.startsWith("Timer")) {
+        bool ok;
+        int n = result.right(1).toInt(&ok);
+        if (ok) {
+          if (model)
+            result = model->timers[n - 1].nameToString(n - 1);
+          else
+            result = TimerData().nameToString(n - 1);
+        }
+      }
+      return result;
 
     case SOURCE_TYPE_TELEMETRY:
       {

@@ -940,11 +940,11 @@
 #define TR_DEL_BUTTON                  BUTTON(TR("Canc.", "Cancella"))
 #define TR_RESET_BTN           "[Reset]"
 #define TR_DEBUG                       "Debug"
-#define TR_KEYS_BTN                BUTTON(TR("SW","Interruttori"))
-#define TR_ANALOGS_BTN                 BUTTON(TR("Analogico","Analogici"))
-#define TR_TOUCH_NOTFOUND              "Schermo touch non trovato"
-#define TR_TOUCH_EXIT                  "Tocca lo schermo per uscire"
-#define TR_CALIBRATION                    TR("Calibraz.", "Calibrazione")
+#define TR_KEYS_BTN                BUTTON(TR("SW", "Tasti"))
+#define TR_ANALOGS_BTN             BUTTON("Analogici")
+#define TR_TOUCH_NOTFOUND          "Schermo touch non trovato"
+#define TR_TOUCH_EXIT              "Tocca lo schermo per uscire"
+#define TR_CALIBRATION             TR("Calibraz.", "Calibrazione")
 #define TR_SET                 "[Set]"
 #define TR_TRAINER             TR("Trainer", "Maestro/Allievo")
 #define TR_CHANS                       "Canali"
@@ -1201,6 +1201,9 @@
 #define TR_ADDMAINVIEW         "Aggiungi vista princ."
 #define TR_BACKGROUND_COLOR    "Colore background"
 #define TR_MAIN_COLOR          "Colore principale"
+#define TR_BAR2_COLOR                  "Secondary bar color"
+#define TR_BAR1_COLOR                  "Main bar color"
+#define TR_TEXT_COLOR                  "Text color"
 #define TR_TEXT_VIEWER         "Visualizzatore testi"
 
 #define TR_MENU_INPUTS         "\314Ingressi"
@@ -1220,12 +1223,12 @@
 #define TR_MENU_OTHER          "Altro"
 #define TR_MENU_INVERT         "Inverti"
 #define TR_JITTER_FILTER       "Filtro ADC"
-#define TR_RTC_CHECK           TR("Controllo RTC", "Controllo voltaggio RTC")
-#define TR_AUTH_FAILURE                "Auth-failure"
+#define TR_RTC_CHECK           TR("Controllo RTC", "Controllo volt. RTC")
+#define TR_AUTH_FAILURE        "Auth-failure"
 
 #define ZSTR_VFR               "VFR"
 #define ZSTR_RSSI              "RSSI"
-#define ZSTR_R9PW                      "R9PW"
+#define ZSTR_R9PW              "R9PW"
 #define ZSTR_RAS               "SWR"
 #define ZSTR_A1                "A1"
 #define ZSTR_A2                "A2"

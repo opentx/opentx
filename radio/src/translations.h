@@ -836,6 +836,9 @@ extern const char STR_LAYOUT[];
 extern const char STR_ADDMAINVIEW[];
 extern const char STR_BACKGROUND_COLOR[];
 extern const char STR_MAIN_COLOR[];
+extern const char STR_BAR2_COLOR[];
+extern const char STR_BAR1_COLOR[];
+extern const char STR_TEXT_COLOR[];
 extern const char STR_TEXT_VIEWER[];
 extern const char STR_RFPOWER[];
 

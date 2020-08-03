@@ -665,10 +665,10 @@ uint8_t isBacklightEnabled();
   #define backlightEnable(...)
 #elif defined(PCBX9E) || defined(PCBX9DP)
   void backlightEnable(uint8_t level = 0, uint8_t color = 0);
-  #define BACKLIGHT_ENABLE()            backlightEnable(g_eeGeneral.backlightBright, g_eeGeneral.backlightColor)
+  #define BACKLIGHT_ENABLE()            backlightEnable(currentBacklightBright, g_eeGeneral.backlightColor)
 #else
   void backlightEnable(uint8_t level = 0);
-  #define BACKLIGHT_ENABLE()            backlightEnable(g_eeGeneral.backlightBright)
+  #define BACKLIGHT_ENABLE()            backlightEnable(currentBacklightBright)
 #endif
 
 #if !defined(SIMU)

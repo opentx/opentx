@@ -292,7 +292,7 @@ void onHardwareAntennaSwitchConfirm(const char * result)
 
 #if LCD_W >= 212
   #define HW_SETTINGS_COLUMN1            12*FW
-  #define HW_SETTINGS_COLUMN2            (HW_SETTINGS_COLUMN1 + 6*FW)
+  #define HW_SETTINGS_COLUMN2            (20*FW - 3)
 #else
   #define HW_SETTINGS_COLUMN1            30
   #define HW_SETTINGS_COLUMN2            (HW_SETTINGS_COLUMN1 + 5*FW)
@@ -569,7 +569,7 @@ void menuRadioHardware(event_t event)
         lcdDrawTextAlignedLeft(y, STR_BLUETOOTH);
         lcdDrawTextAtIndex(HW_SETTINGS_COLUMN2, y, STR_BLUETOOTH_MODES, g_eeGeneral.bluetoothMode, attr);
         if (attr) {
-          g_eeGeneral.bluetoothMode = checkIncDecGen(event, g_eeGeneral.bluetoothMode, BLUETOOTH_OFF, BLUETOOTH_TRAINER);
+          g_eeGeneral.bluetoothMode = checkIncDecGen(event, g_eeGeneral.bluetoothMode, BLUETOOTH_OFF, BLUETOOTH_MAX);
         }
         break;
 

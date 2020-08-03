@@ -43,6 +43,11 @@ bool TimerData::isEmpty()
   return (mode == RawSwitch(SWITCH_TYPE_TIMER_MODE, 0) && name[0] == '\0' && minuteBeep == 0 && countdownBeep == COUNTDOWN_SILENT && val == 0 && persistent == 0 /*&& pvalue == 0*/);
 }
 
+QString TimerData::nameToString(int index) const
+{
+  return RadioData::getElementName(tr("TMR", "as in Timer"), index + 1, name);
+}
+
 /*
  * ModelData
  */
@@ -713,7 +718,7 @@ int ModelData::updateReference()
       updateAssignFunc(cfd);
       if (!cfd->isEmpty()) {
         updateSwitchRef(cfd->swtch);
-        if (cfd->func == FuncVolume || cfd->func == FuncPlayValue || (cfd->func >= FuncAdjustGV1 && cfd->func <= FuncAdjustGVLast && (cfd->adjustMode == FUNC_ADJUST_GVAR_GVAR || cfd->adjustMode == FUNC_ADJUST_GVAR_SOURCE))) {
+        if (cfd->func == FuncVolume || cfd->func == FuncBacklight || cfd->func == FuncPlayValue || (cfd->func >= FuncAdjustGV1 && cfd->func <= FuncAdjustGVLast && (cfd->adjustMode == FUNC_ADJUST_GVAR_GVAR || cfd->adjustMode == FUNC_ADJUST_GVAR_SOURCE))) {
           updateSourceIntRef(cfd->param);
           if (cfd->param == 0)
             cfd->clear();

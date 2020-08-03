@@ -167,13 +167,18 @@ void setupPulsesMulti(uint8_t moduleIdx)
     sendChannels(moduleIdx);
 
   // Multi V1.3.X.X -> Send byte 26, Protocol (bits 7 & 6), RX_Num (bits 5 & 4), invert, not used, disable telemetry, disable mapping
-  sendMulti(moduleIdx, (uint8_t) (((g_model.moduleData[moduleIdx].getMultiProtocol()+3)&0xC0)
-                                  | (g_model.header.modelId[moduleIdx] & 0x30)
-                                  | (invert[moduleIdx] & 0x08)
-                                  //| 0x04 // Future use
-                                  | (g_model.moduleData[moduleIdx].multi.disableTelemetry << 1)
-                                  | g_model.moduleData[moduleIdx].multi.disableMapping));
-  
+  if (moduleState[moduleIdx].mode == MODULE_MODE_SPECTRUM_ANALYSER) {
+    sendMulti(moduleIdx,  0);
+  }
+  else {
+    sendMulti(moduleIdx, (uint8_t) (((g_model.moduleData[moduleIdx].getMultiProtocol() + 3) & 0xC0)
+                                    | (g_model.header.modelId[moduleIdx] & 0x30)
+                                    | (invert[moduleIdx] & 0x08)
+                                    //| 0x04 // Future use
+                                    | (g_model.moduleData[moduleIdx].multi.disableTelemetry << 1)
+                                    | g_model.moduleData[moduleIdx].multi.disableMapping));
+  }
+
   // Multi V1.3.X.X -> Send protocol additional data: max 9 bytes
   if (getMultiModuleStatus(moduleIdx).isValid()) {
     MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);

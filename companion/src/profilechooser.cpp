@@ -28,6 +28,7 @@ ProfileChooserDialog::ProfileChooserDialog(QWidget * parent):
 {
   ui->setupUi(this);
   setWindowIcon(QIcon(":/icon.png"));
+  setWindowFlags(Qt::Dialog | Qt::MSWindowsFixedSizeDialogHint);
   QComboBox *prof = ui->cboProfiles;
   prof->clear();
 

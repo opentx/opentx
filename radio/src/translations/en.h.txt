@@ -925,7 +925,7 @@
 #define TR_DEL_BUTTON                  BUTTON(TR("Del", "Delete"))
 #define TR_RESET_BTN                   BUTTON("Reset")
 #define TR_DEBUG                       "Debug"
-#define TR_KEYS_BTN                    BUTTON(TR("Keys", "Switches"))
+#define TR_KEYS_BTN                    BUTTON("Keys")
 #define TR_ANALOGS_BTN                 BUTTON(TR("Anas", "Analogs"))
 #define TR_TOUCH_NOTFOUND              "Touch hardware not found"
 #define TR_TOUCH_EXIT                  "Touch screen to exit"
@@ -1184,6 +1184,9 @@
 #define TR_ADDMAINVIEW                 "Add main view"
 #define TR_BACKGROUND_COLOR            "Background color"
 #define TR_MAIN_COLOR                  "Main color"
+#define TR_BAR2_COLOR                  "Secondary bar color"
+#define TR_BAR1_COLOR                  "Main bar color"
+#define TR_TEXT_COLOR                  "Text color"
 #define TR_TEXT_VIEWER                 "Text Viewer"
 
 #define TR_MENU_INPUTS                 "\314Inputs"

@@ -75,6 +75,7 @@ class TimerData {
     void convert(RadioDataConversionState & cstate);
     bool isEmpty();
     bool isModeOff() { return mode == RawSwitch(SWITCH_TYPE_TIMER_MODE, 0); }
+    QString nameToString(int index) const;
 };
 
 #define CPN_MAX_SCRIPTS       9
