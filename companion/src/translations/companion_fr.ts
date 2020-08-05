@@ -2983,7 +2983,7 @@ Blanc signifie &quot;inclure tous&quot;.Les métacaractères ?, * et [...] sont 
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1110"/>
         <source>Enable AFHDS3 support</source>
-        <translation type="unfinished"></translation>
+        <translation>Activer le support du AFHDS3</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1165"/>
@@ -3102,7 +3102,7 @@ Blanc signifie &quot;inclure tous&quot;.Les métacaractères ?, * et [...] sont 
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1280"/>
         <source>Jumper T18</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1287"/>
@@ -4536,7 +4536,7 @@ Mode 4:
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1137"/>
         <source>Keys Backlight</source>
-        <translation type="unfinished"></translation>
+        <translation>Rétroéclairage des touches</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="1373"/>
@@ -8268,12 +8268,12 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../modelprinter.cpp" line="228"/>
         <source>Output Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Type de sortie</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="230"/>
         <source>RX Output Frequency</source>
-        <translation type="unfinished"></translation>
+        <translation>Fréquence de sortie du RX</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="271"/>
@@ -9090,12 +9090,12 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../modeledit/setup_module.ui" line="677"/>
         <source>RX Frequency</source>
-        <translation type="unfinished"></translation>
+        <translation>Fréquence RX</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="768"/>
         <source> Hz</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="980"/>
@@ -9261,27 +9261,27 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../firmwares/moduledata.cpp" line="179"/>
         <source>25 mW</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/moduledata.cpp" line="179"/>
         <source>100 mW</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/moduledata.cpp" line="179"/>
         <source>500 mW</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/moduledata.cpp" line="179"/>
         <source>1 W</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/moduledata.cpp" line="179"/>
         <source>2 W</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -9744,7 +9744,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../firmwares/multiprotocols.cpp" line="29"/>
         <source>RF power</source>
-        <translation type="unfinished"></translation>
+        <translation>Puissance HF</translation>
     </message>
     <message>
         <location filename="../firmwares/multiprotocols.cpp" line="30"/>
@@ -13316,7 +13316,7 @@ hh:mm:ss</translation>
         <location filename="../firmwares/modeldata.cpp" line="48"/>
         <source>TMR</source>
         <comment>as in Timer</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
