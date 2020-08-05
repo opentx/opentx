@@ -294,7 +294,7 @@ MACRO(GET_GCC_INCLUDE_PATH gcc_include_path)
   if (WIN32)
     execute_process(COMMAND arm-none-eabi-gcc -v -x c -E NUL ERROR_VARIABLE _gcc_output OUTPUT_QUIET)
   else()
-    execute_process(COMMAND arm-none-eabi-gcc -v -x c -E - INPUT_FILE /dev/null ERROR_VARIABLE _gcc_output OUTPUT_QUIET)
+    execute_process(COMMAND arm-none-eabi-gcc argument -v -x c -E - INPUT_FILE /dev/null ERROR_VARIABLE _gcc_output OUTPUT_QUIET)
   endif()
 
   # Build an array of string from the GCC output
