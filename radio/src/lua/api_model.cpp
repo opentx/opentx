@@ -431,7 +431,7 @@ static int luaModelGetFlightMode(lua_State * L)
 }
 
 /*luadoc
-@function model.setFlightMode(index)
+@function model.setFlightMode(index, params)
 
 Set Flight mode parameters
 
@@ -468,31 +468,31 @@ static int luaModelSetFlightMode(lua_State * L)
       fm->fadeOut = luaL_checkinteger(L, -1);
     }
     else if (!strcmp(key, "gvar")) {
-      int gvarIdx = luaL_checkinteger(L, -2) - 1;
-      if (gvarIdx < 0 || gvarIdx > MAX_GVARS) {
-        lua_pushinteger(L, 4);
-        return 1;
+      luaL_checktype(L, -1, LUA_TTABLE);
+      uint8_t idx = 0;
+      for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1), idx++) {
+        int16_t val = luaL_checkinteger(L, -1);
+        if (idx < MAX_GVARS)
+        fm->gvars[idx] = val;
       }
-      int8_t val = luaL_checkinteger(L, -1);
-      fm->gvars[gvarIdx] = ( val & 0xFFFF);
     }
     else if (!strcmp(key, "trimvalue")) {
-      int trimIdx = luaL_checkinteger(L, -2) - 1;
-      if (trimIdx < 0 || trimIdx > NUM_TRIMS) {
-        lua_pushinteger(L, 4);
-        return 1;
+      luaL_checktype(L, -1, LUA_TTABLE);
+      uint8_t idx = 0;
+      for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1), idx++) {
+        int16_t val = luaL_checkinteger(L, -1);
+        if (idx < NUM_TRIMS)
+          fm->trim[idx].value = (val & 0x3FF);
       }
-      int8_t val = luaL_checkinteger(L, -1);
-      fm->trim[trimIdx].value = ( val & 0x3FF);
     }
     else if (!strcmp(key, "trimmode")) {
-      int trimIdx = luaL_checkinteger(L, -2) - 1;
-      if (trimIdx < 0 || trimIdx > NUM_TRIMS) {
-        lua_pushinteger(L, 4);
-        return 1;
+      luaL_checktype(L, -1, LUA_TTABLE);
+      uint8_t idx = 0;
+      for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1), idx++) {
+        uint16_t val = luaL_checkinteger(L, -1);
+        if (idx < NUM_TRIMS)
+          fm->trim[idx].mode = ( val & 0x1F);
       }
-      int8_t val = luaL_checkinteger(L, -1);
-      fm->trim[trimIdx].value = ( val & 0x1F);
     }
   }
   storageDirty(EE_MODEL);
@@ -1134,7 +1134,7 @@ static int luaModelSetCurve(lua_State *L)
       bool isX = !strcmp(key, "x");
 
       for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1)) {
-        int idx = luaL_checkinteger(L, -2)-1;
+        int idx = luaL_checkinteger(L, -2);
         if (idx < 0 || idx > MAX_POINTS_PER_CURVE) {
           lua_pushinteger(L, 4);
           return 1;
