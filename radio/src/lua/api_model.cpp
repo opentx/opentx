@@ -443,13 +443,13 @@ Set Flight mode parameters
 */
 static int luaModelSetFlightMode(lua_State * L)
 {
-  unsigned int idx = luaL_checkunsigned(L, 1);
+  unsigned int flightMode = luaL_checkunsigned(L, 1);
 
-  if (idx >= MAX_FLIGHT_MODES) {
+  if (flightMode >= MAX_FLIGHT_MODES) {
     lua_pushinteger(L, 2);
     return 1;
   }
-  FlightModeData * fm = flightModeAddress(idx);
+  FlightModeData * fm = flightModeAddress(flightMode);
   luaL_checktype(L, -1, LUA_TTABLE);
   for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1)) {
     luaL_checktype(L, -2, LUA_TSTRING); // key is string
