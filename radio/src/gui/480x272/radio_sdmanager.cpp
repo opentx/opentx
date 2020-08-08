@@ -375,8 +375,14 @@ bool menuRadioSdManager(event_t _event)
                 POPUP_MENU_ADD_ITEM(STR_FLASH_INTERNAL_MODULE);
               if (information.productFamily == FIRMWARE_FAMILY_EXTERNAL_MODULE)
                 POPUP_MENU_ADD_ITEM(STR_FLASH_EXTERNAL_MODULE);
-              if (HAS_SPORT_UPDATE_CONNECTOR() && (information.productFamily == FIRMWARE_FAMILY_RECEIVER || information.productFamily == FIRMWARE_FAMILY_SENSOR))
-                POPUP_MENU_ADD_ITEM(STR_FLASH_EXTERNAL_DEVICE);
+              if (information.productFamily == FIRMWARE_FAMILY_RECEIVER || information.productFamily == FIRMWARE_FAMILY_SENSOR) {
+                if (HAS_SPORT_UPDATE_CONNECTOR()) {
+                  POPUP_MENU_ADD_ITEM(STR_FLASH_EXTERNAL_DEVICE);
+                }
+                else {
+                  POPUP_MENU_ADD_ITEM(STR_FLASH_EXTERNAL_MODULE);
+                }
+              }
 #if defined(PXX2)
               if (information.productFamily == FIRMWARE_FAMILY_RECEIVER) {
                 if (isReceiverOTAEnabledFromModule(INTERNAL_MODULE, information.productId))
