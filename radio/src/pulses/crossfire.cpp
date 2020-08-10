@@ -23,7 +23,7 @@
 #define CROSSFIRE_CH_BITS           11
 #define CROSSFIRE_CENTER            0x3E0
 #if defined(PPM_CENTER_ADJUSTABLE)
-  #define CROSSFIRE_CENTER_CH_OFFSET(ch)            (limitAddress(ch)->ppmCenter)
+  #define CROSSFIRE_CENTER_CH_OFFSET(ch)            (2 * limitAddress(ch)->ppmCenter)
 #else
   #define CROSSFIRE_CENTER_CH_OFFSET(ch)            (0)
 #endif
