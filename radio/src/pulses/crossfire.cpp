@@ -23,9 +23,9 @@
 #define CROSSFIRE_CH_BITS           11
 #define CROSSFIRE_CENTER            0x3E0
 #if defined(PPM_CENTER_ADJUSTABLE)
-  #define CROSSFIRE_CH_CENTER(ch)            (limitAddress(ch)->ppmCenter)
+  #define CROSSFIRE_CH_CENTER_OFFSET(ch)            (limitAddress(ch)->ppmCenter)
 #else
-  #define CROSSFIRE_CH_CENTER(ch)            (0)
+  #define CROSSFIRE_CH_CENTER_OFFSET(ch)            (0)
 #endif
 
 // Range for pulses (channels output) is [-1024:+1024]
@@ -39,7 +39,7 @@ uint8_t createCrossfireChannelsFrame(uint8_t * frame, int16_t * pulses)
   uint32_t bits = 0;
   uint8_t bitsavailable = 0;
   for (int i=0; i<CROSSFIRE_CHANNELS_COUNT; i++) {
-    uint32_t val = limit(0, CROSSFIRE_CENTER + (((CROSSFIRE_CH_CENTER(i) + pulses[i]) * 4) / 5), 2 * CROSSFIRE_CENTER);
+    uint32_t val = limit(0, CROSSFIRE_CENTER + (((CROSSFIRE_CH_CENTER_OFFSET(i) + pulses[i]) * 4) / 5), 2 * CROSSFIRE_CENTER);
     bits |= val << bitsavailable;
     bitsavailable += CROSSFIRE_CH_BITS;
     while (bitsavailable >= 8) {
