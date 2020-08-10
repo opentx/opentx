@@ -88,7 +88,7 @@ void bootloaderDrawScreen(BootloaderState st, int opt, const char* str)
       lcd->drawText(195, 200, "for mass storage");
 
       bootloaderDrawFooter();
-      //lcdDrawText(LCD_W / 2, 242, getFirmwareVersion(), CENTERED);
+      lcd->drawText(LCD_W / 2, 242, getFirmwareVersion(), CENTERED);
     }
     else if (st == ST_USB) {
 
