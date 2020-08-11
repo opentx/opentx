@@ -377,13 +377,10 @@ Return input data for given input and line number
  * `switch` (number) input switch index
  * `fadeIn` (number) fade in value (in 0.1s)
  * `fadeOut` (number) fade out value (in 0.1s)
- * `gvar` (table) table of gvar values:
-   * `key` is gvar number (zero based)
-   * `value` is gvar value
  * `trimvalue` (table) table of trim values:
    * `key` is trim number (zero based)
    * `value` is trim value
-* `trimmode` (table) table of trim mode:
+ * `trimmode` (table) table of trim mode:
    * `key` is trim number (zero based)
    * `value` is trim mode
 
@@ -399,14 +396,6 @@ static int luaModelGetFlightMode(lua_State * L)
     lua_pushtableinteger(L, "switch", fm->swtch);
     lua_pushtableinteger(L, "fadeIn", fm->fadeIn);
     lua_pushtableinteger(L, "fadeOut", fm->fadeOut);
-    lua_pushstring(L, "gvar");
-    lua_newtable(L);
-    for (uint8_t i = 0; i < MAX_GVARS; i++) {
-      lua_pushinteger(L, i);
-      lua_pushinteger(L, fm->gvars[i]);
-      lua_settable(L, -3);
-    }
-    lua_settable(L, -3);
     lua_pushstring(L, "trimvalue");
     lua_newtable(L);
     for (uint8_t i = 0; i < NUM_TRIMS; i++) {
@@ -467,15 +456,6 @@ static int luaModelSetFlightMode(lua_State * L)
     else if (!strcmp(key, "fadeOut")) {
       fm->fadeOut = luaL_checkinteger(L, -1);
     }
-    else if (!strcmp(key, "gvar")) {
-      luaL_checktype(L, -1, LUA_TTABLE);
-      uint8_t idx = 0;
-      for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1), idx++) {
-        int16_t val = luaL_checkinteger(L, -1);
-        if (idx < MAX_GVARS)
-        fm->gvars[idx] = val;
-      }
-    }
     else if (!strcmp(key, "trimvalue")) {
       luaL_checktype(L, -1, LUA_TTABLE);
       uint8_t idx = 0;
@@ -520,6 +500,7 @@ Return input data for given input and line number
  * `curveType` (number) curve type (function, expo, custom curve)
  * `curveValue` (number) curve index
  * `carryTrim` (boolean) input trims applied
+ * 'flightmodes' (table) table of enabled flightmodes
 
 @status current Introduced in 2.0.0, curveType/curveValue/carryTrim added in 2.3
 */
@@ -540,6 +521,16 @@ static int luaModelGetInput(lua_State *L)
     lua_pushtableinteger(L, "curveType", expo->curve.type);
     lua_pushtableinteger(L, "curveValue", expo->curve.value);
     lua_pushtableinteger(L, "carryTrim", expo->carryTrim);
+    lua_pushstring(L, "flightmodes");
+    lua_newtable(L);
+    for (int i = 0, cnt = 0; i < MAX_FLIGHT_MODES; i++) {
+      if (!(expo->flightModes & (1 << i))) {
+        lua_pushinteger(L, cnt++);
+        lua_pushinteger(L, i);
+        lua_settable(L, -3);
+      }
+    }
+    lua_settable(L, -3);
   }
   else {
     lua_pushnil(L);
@@ -601,6 +592,16 @@ static int luaModelInsertInput(lua_State *L)
       }
       else if (!strcmp(key, "carryTrim")) {
         expo->carryTrim = lua_toboolean(L, -1);
+      }
+      else if (!strcmp(key, "flightmodes")) {
+        luaL_checktype(L, -1, LUA_TTABLE);
+        int flighModes = 0x1FF;
+        for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1)) {
+          uint16_t val = luaL_checkinteger(L, -1);
+          if (val < MAX_FLIGHT_MODES)
+            flighModes &= ~(1 << val);
+        }
+        expo->flightModes = flighModes;
       }
     }
   }
@@ -1134,7 +1135,7 @@ static int luaModelSetCurve(lua_State *L)
       bool isX = !strcmp(key, "x");
 
       for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1)) {
-        int idx = luaL_checkinteger(L, -2);
+        int idx = luaL_checkinteger(L, -2) - 1;
         if (idx < 0 || idx > MAX_POINTS_PER_CURVE) {
           lua_pushinteger(L, 4);
           return 1;
