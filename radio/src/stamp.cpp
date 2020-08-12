@@ -38,6 +38,8 @@
 #define DISPLAY_VERSION "JumperRC"
 #elif defined(TBS_RELEASE)
 #define DISPLAY_VERSION "TBS"
+#elif defined(IMRC_RELEASE)
+#define DISPLAY_VERSION "IMRC"
 #else
 #define DISPLAY_VERSION VERSION
 #endif

@@ -88,7 +88,7 @@ def build(board, translation, srcdir):
         os.mkdir("output")
     path = tempfile.mkdtemp()
     os.chdir(path)
-    command = "cmake %s -DTRANSLATIONS=%s -DTBS_RELEASE=YES -DTEST_BUILD_WARNING=YES %s" % (cmake_options, translation, srcdir)
+    command = "cmake %s -DTRANSLATIONS=%s -DIMRC_RELEASE=YES -DTEST_BUILD_WARNING=YES %s" % (cmake_options, translation, srcdir)
     print(command)
     os.system(command)
     os.system("make firmware -j16")
@@ -96,7 +96,7 @@ def build(board, translation, srcdir):
     index = 0
     while 1:
         suffix = "" if index == 0 else "_%d" % index
-        filename = "output/tbs_firm_%s_%s_%s%s.bin" % (board.lower(), translation.lower(), timestamp(), suffix)
+        filename = "output/ghost_firm_%s_%s_%s%s.bin" % (board.lower(), translation.lower(), timestamp(), suffix)
         if not os.path.exists(filename):
             shutil.copy("%s/firmware.bin" % path, filename)
             break
@@ -112,7 +112,7 @@ def dir_path(string):
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Build TBS firmware")
+    parser = argparse.ArgumentParser(description="Build Ghost firmware")
     parser.add_argument("-b", "--boards", action="append", help="Destination boards", required=True)
     parser.add_argument("-t", "--translations", action="append", help="Translations", required=True)
     parser.add_argument("srcdir", type=dir_path)
