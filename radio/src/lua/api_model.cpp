@@ -364,6 +364,19 @@ static int luaModelGetInputsCount(lua_State *L)
 }
 
 /*luadoc
+@function model.deleteFlightModes()
+
+Clear all flightmodes
+
+@status current Introduced in 2.3.10
+*/
+static int luaModelDeleteFlightModess(lua_State *L)
+{
+  memset(g_model.flightModeData, 0, sizeof(g_model.flightModeData));
+  return 0;
+}
+
+/*luadoc
 @function model.getFlightMode(index)
 
 @param index (unsigned number) flight mode number (use 0 for FM0)
@@ -1556,6 +1569,7 @@ const luaL_Reg modelLib[] = {
   { "getTimer", luaModelGetTimer },
   { "setTimer", luaModelSetTimer },
   { "resetTimer", luaModelResetTimer },
+  { "deleteFlightModes", luaModelDeleteFlightModess },
   { "getFlightMode", luaModelGetFlightMode },
   { "setFlightMode", luaModelSetFlightMode },
   { "getInputsCount", luaModelGetInputsCount },
