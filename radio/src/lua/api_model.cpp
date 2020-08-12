@@ -506,6 +506,7 @@ Return input data for given input and line number
 
 @retval table input data:
  * `name` (string) input line name
+ * `input_name` (string) input input name
  * `source` (number) input source index
  * `weight` (number) input weight
  * `offset` (number) input offset
@@ -515,7 +516,7 @@ Return input data for given input and line number
  * `carryTrim` (boolean) input trims applied
  * 'flightmodes' (table) table of enabled flightmodes
 
-@status current Introduced in 2.0.0, curveType/curveValue/carryTrim added in 2.3
+@status current Introduced in 2.0.0, curveType/curveValue/carryTrim added in 2.3, input_name added 2.3.10
 */
 static int luaModelGetInput(lua_State *L)
 {
@@ -527,6 +528,7 @@ static int luaModelGetInput(lua_State *L)
     ExpoData * expo = expoAddress(first+idx);
     lua_newtable(L);
     lua_pushtablezstring(L, "name", expo->name);
+    lua_pushtablezstring(L, "input_name", g_model.inputNames[chn]);
     lua_pushtableinteger(L, "source", expo->srcRaw);
     lua_pushtableinteger(L, "weight", expo->weight);
     lua_pushtableinteger(L, "offset", expo->offset);
@@ -562,7 +564,7 @@ Insert an Input at specified line
 
 @param value (table) input data, see model.getInput()
 
-@status current Introduced in 2.0.0, curveType/curveValue/carryTrim added in 2.3
+@status current Introduced in 2.0.0, curveType/curveValue/carryTrim added in 2.3, input_name added 2.3.10
 */
 static int luaModelInsertInput(lua_State *L)
 {
@@ -584,6 +586,10 @@ static int luaModelInsertInput(lua_State *L)
       if (!strcmp(key, "name")) {
         const char * name = luaL_checkstring(L, -1);
         str2zchar(expo->name, name, sizeof(expo->name));
+      }
+      else if (!strcmp(key, "input_name")) {
+        const char * name = luaL_checkstring(L, -1);
+        str2zchar(g_model.inputNames[chn], name, LEN_INPUT_NAME);
       }
       else if (!strcmp(key, "source")) {
         expo->srcRaw = luaL_checkinteger(L, -1);
