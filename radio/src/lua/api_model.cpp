@@ -514,7 +514,7 @@ Return input data for given input and line number
  * `curveType` (number) curve type (function, expo, custom curve)
  * `curveValue` (number) curve index
  * `carryTrim` (boolean) input trims applied
- * 'flightmodes' (table) table of enabled flightmodes
+ * 'flightmodes' (table) table of enabled flightmodes {0,2,7} means that the input is enabled for FM0, FM2 and FM7
 
 @status current Introduced in 2.0.0, curveType/curveValue/carryTrim added in 2.3, input_name added 2.3.10
 */
