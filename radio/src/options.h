@@ -29,6 +29,9 @@ static const char * options[] = {
 #if defined(CROSSFIRE)
   "crossfire",
 #endif
+#if defined(GHOST)
+  "ghost",
+#endif
 #if !defined(MODULE_PROTOCOL_D8)
   "eu",
 #endif

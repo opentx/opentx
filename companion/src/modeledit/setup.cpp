@@ -396,6 +396,7 @@ int ModulePanel::getMaxChannelCount()
     case PULSES_XJT_LITE_X16:
     case PULSES_PXX_XJT_X16:
     case PULSES_CROSSFIRE:
+    case PULSES_GHOST:
     case PULSES_SBUS:
     case PULSES_PPM:
       return 16;
@@ -470,6 +471,7 @@ void ModulePanel::update()
         max_rx_num = 20;
         break;
       case PULSES_CROSSFIRE:
+      case PULSES_GHOST:
         mask |= MASK_CHANNELS_RANGE;
         module.channelsCount = 16;
         break;

@@ -520,6 +520,11 @@ int setTelemetryValue(TelemetryProtocol protocol, uint16_t id, uint8_t subId, ui
         crossfireSetDefault(index, id, instance);
         break;
 #endif
+#if defined(GHOST)
+      case PROTOCOL_TELEMETRY_GHOST:
+        ghostSetDefault(index, id, instance);
+        break;
+#endif
 #if defined(MULTIMODULE)
       case PROTOCOL_TELEMETRY_SPEKTRUM:
         spektrumSetDefault(index, id, subId, instance);

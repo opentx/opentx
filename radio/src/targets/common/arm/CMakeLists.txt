@@ -14,6 +14,7 @@ option(PPM "PPM TX Module" ON)
 option(DSM2 "DSM2 TX Module" ON)
 option(SBUS "SBUS TX Module" ON)
 option(CROSSFIRE "Crossfire TX Module" ON)
+option(GHOST "Ghost TX Module" ON)
 option(MULTIMODULE "DIY Multiprotocol TX Module (https://github.com/pascallanger/DIY-Multiprotocol-TX-Module)" ON)
 option(DEBUG_INTERRUPTS "Count interrupts" OFF)
 option(DEBUG_LATENCY "Debug latency" OFF)
@@ -160,6 +161,19 @@ if(CROSSFIRE)
   set(SRC
     ${SRC}
     telemetry/crossfire.cpp
+    )
+endif()
+
+
+if(GHOST)
+  add_definitions(-DGHOST)
+  set(PULSES_SRC
+    ${PULSES_SRC}
+    ghost.cpp
+    )
+  set(SRC
+    ${SRC}
+    telemetry/ghost.cpp
     )
 endif()
 

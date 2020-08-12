@@ -137,6 +137,12 @@ uint8_t getRequiredProtocol(uint8_t module)
       break;
 #endif
 
+#if defined(GHOST)
+    case MODULE_TYPE_GHOST:
+      protocol = PROTOCOL_CHANNELS_GHOST;
+      break;
+#endif
+
     default:
       protocol = PROTOCOL_CHANNELS_NONE;
       break;
@@ -188,6 +194,13 @@ void enablePulsesExternalModule(uint8_t protocol)
     case PROTOCOL_CHANNELS_CROSSFIRE:
       EXTERNAL_MODULE_ON();
       mixerSchedulerSetPeriod(EXTERNAL_MODULE, CROSSFIRE_PERIOD);
+      break;
+#endif
+
+#if defined(GHOST)
+    case PROTOCOL_CHANNELS_GHOST:
+      EXTERNAL_MODULE_ON();
+      mixerSchedulerSetPeriod(EXTERNAL_MODULE, GHOST_PERIOD);
       break;
 #endif
 
@@ -274,6 +287,19 @@ bool setupPulsesExternalModule(uint8_t protocol)
       else
         mixerSchedulerSetPeriod(EXTERNAL_MODULE, CROSSFIRE_PERIOD);
       setupPulsesCrossfire();
+      return true;
+    }
+#endif
+
+#if defined(GHOST)
+    case PROTOCOL_CHANNELS_GHOST:
+    {
+      ModuleSyncStatus& status = getModuleSyncStatus(EXTERNAL_MODULE);
+      if (status.isValid())
+        mixerSchedulerSetPeriod(EXTERNAL_MODULE, status.getAdjustedRefreshRate());
+      else
+        mixerSchedulerSetPeriod(EXTERNAL_MODULE, GHOST_PERIOD);
+      setupPulsesGhost();
       return true;
     }
 #endif

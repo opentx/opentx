@@ -30,6 +30,7 @@
 #endif
 
 #define CROSSFIRE_CHANNELS_COUNT        16
+#define GHOST_CHANNELS_COUNT            12
 
 #if defined(MULTIMODULE)
 // When using packed, the pointer in here end up not being aligned, which clang and gcc complain about
@@ -142,6 +143,18 @@ inline bool isModuleCrossfire(uint8_t idx)
 }
 #else
 inline bool isModuleCrossfire(uint8_t idx)
+{
+  return false;
+}
+#endif
+
+#if defined(GHOST)
+inline bool isModuleGhost(uint8_t idx)
+{
+  return idx == EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_GHOST;
+}
+#else
+inline bool isModuleGhost(uint8_t idx)
 {
   return false;
 }
@@ -354,6 +367,8 @@ inline int8_t sentModuleChannels(uint8_t idx)
 {
   if (isModuleCrossfire(idx))
     return CROSSFIRE_CHANNELS_COUNT;
+  else if (isModuleGhost(idx))
+    return GHOST_CHANNELS_COUNT;
   else if (isModuleMultimodule(idx) && !isModuleMultimoduleDSM2(idx))
     return 16;
   else if (isModuleSBUS(idx))

@@ -638,6 +638,11 @@ bool isExternalModuleAvailable(int moduleType)
     return false;
 #endif
 
+#if !defined(GHOST)
+  if (moduleType == MODULE_TYPE_GHOST)
+      return false;
+#endif
+
 #if !defined(DSM2)
   if (moduleType == MODULE_TYPE_DSM2)
      return false;
@@ -673,6 +678,11 @@ bool isRfProtocolAvailable(int protocol)
     return false;
   }
 #endif
+#if defined(GHOST)
+  if (protocol != MODULE_SUBTYPE_PXX1_OFF && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_GHOST) {
+    return false;
+  }
+#endif
 #if !defined(MODULE_PROTOCOL_D8)
   if (protocol == MODULE_SUBTYPE_PXX1_ACCST_D8) {
     return false;
@@ -699,6 +709,10 @@ bool isTelemetryProtocolAvailable(int protocol)
 #endif
 
   if (protocol== PROTOCOL_TELEMETRY_CROSSFIRE) {
+    return false;
+  }
+
+  if (protocol== PROTOCOL_TELEMETRY_GHOST) {
     return false;
   }
 
