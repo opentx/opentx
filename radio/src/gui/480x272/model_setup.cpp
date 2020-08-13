@@ -1502,22 +1502,22 @@ bool menuModelSetup(event_t event)
           else {
             lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, STR_RECEIVER_NUM);
           }
-          if (isModuleBindRangeAvailable(moduleIdx)) {
-            if (xOffsetBind)
-              lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, g_model.header.modelId[moduleIdx], (l_posHorz==0 ? attr : 0) | LEADING0 | LEFT, 2);
-            if (attr && l_posHorz==0) {
-              if (s_editMode>0) {
-                CHECK_INCDEC_MODELVAR_ZERO(event, g_model.header.modelId[moduleIdx], getMaxRxNum(moduleIdx));
-                if (event == EVT_KEY_LONG(KEY_ENTER)) {
-                  killEvents(event);
-                  uint8_t newVal = modelslist.findNextUnusedModelId(moduleIdx);
-                  if (newVal != g_model.header.modelId[moduleIdx]) {
-                    g_model.header.modelId[moduleIdx] = newVal;
-                    storageDirty(EE_MODEL);
-                  }
+          if (xOffsetBind)
+            lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, g_model.header.modelId[moduleIdx], (l_posHorz==0 ? attr : 0) | LEADING0 | LEFT, 2);
+          if (attr && l_posHorz==0) {
+            if (s_editMode>0) {
+              CHECK_INCDEC_MODELVAR_ZERO(event, g_model.header.modelId[moduleIdx], getMaxRxNum(moduleIdx));
+              if (event == EVT_KEY_LONG(KEY_ENTER)) {
+                killEvents(event);
+                uint8_t newVal = modelslist.findNextUnusedModelId(moduleIdx);
+                if (newVal != g_model.header.modelId[moduleIdx]) {
+                  g_model.header.modelId[moduleIdx] = newVal;
+                  storageDirty(EE_MODEL);
                 }
               }
             }
+          }
+          if (isModuleBindRangeAvailable(moduleIdx)) {
             drawButton(MODEL_SETUP_2ND_COLUMN+xOffsetBind, y, STR_MODULE_BIND, (moduleState[moduleIdx].mode == MODULE_MODE_BIND ? BUTTON_ON : BUTTON_OFF) | (l_posHorz==1 ? attr : 0));
             drawButton(MODEL_SETUP_2ND_COLUMN+MODEL_SETUP_RANGE_OFS+xOffsetBind, y, STR_MODULE_RANGE, (moduleState[moduleIdx].mode == MODULE_MODE_RANGECHECK ? BUTTON_ON : BUTTON_OFF) | (l_posHorz==2 ? attr : 0));
             uint8_t newFlag = 0;

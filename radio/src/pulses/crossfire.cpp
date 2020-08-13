@@ -23,6 +23,23 @@
 #define CROSSFIRE_CH_CENTER         0x3E0
 #define CROSSFIRE_CH_BITS           11
 
+
+uint8_t createCrossfireModelIDFrame(uint8_t * frame)
+{
+  uint8_t * buf = frame;
+  *buf++ = UART_SYNC;                                 /* device address */
+  *buf++ = 8;                                         /* frame length */
+  *buf++ = COMMAND_ID;                                /* cmd type */
+  *buf++ = MODULE_ADDRESS;                            /* Destination Address */
+  *buf++ = RADIO_ADDRESS;                             /* Origin Address */
+  *buf++ = SUBCOMMAND_CRSF;                           /* sub command */
+  *buf++ = COMMAND_MODEL_SELECT_ID;                   /* command of set model/receiver id */
+  *buf++ = g_model.header.modelId[EXTERNAL_MODULE];   /* model ID */
+  *buf++ = command_crc8(frame + 2, 6);
+  *buf++ = crc8(frame + 2, 7);
+  return buf - frame;
+}
+
 // Range for pulses (channels output) is [-1024:+1024]
 uint8_t createCrossfireChannelsFrame(uint8_t * frame, int16_t * pulses)
 {

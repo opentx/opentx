@@ -40,8 +40,12 @@
 #define PING_DEVICES_ID                0x28
 #define DEVICE_INFO_ID                 0x29
 #define REQUEST_SETTINGS_ID            0x2A
+#define COMMAND_ID                     0x32
 #define RADIO_ID                       0x3A
 
+#define UART_SYNC                      0xC8
+#define SUBCOMMAND_CRSF                0x10
+#define COMMAND_MODEL_SELECT_ID        0x05
 
 struct CrossfireSensor {
   const uint8_t id;
@@ -81,6 +85,7 @@ enum CrossfireSensorIndexes {
 
 void processCrossfireTelemetryData(uint8_t data);
 void crossfireSetDefault(int index, uint8_t id, uint8_t subId);
+uint8_t createCrossfireModelIDFrame(uint8_t * frame);
 
 #if SPORT_MAX_BAUDRATE < 400000
 const uint32_t CROSSFIRE_BAUDRATES[] = {
