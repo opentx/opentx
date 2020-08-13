@@ -270,6 +270,7 @@ extern "C" void EXTMODULE_USART_IRQHandler(void)
 
 void extmoduleSendNextFrame()
 {
+  static uint8_t crsfModelIdCnt = 0;
   switch (moduleState[EXTERNAL_MODULE].protocol) {
     case PROTOCOL_CHANNELS_PPM:
 #if defined(PCBX10) || PCBREV >= 13
@@ -365,6 +366,11 @@ void extmoduleSendNextFrame()
 #if defined(CROSSFIRE)
     case PROTOCOL_CHANNELS_CROSSFIRE:
       sportSendBuffer(extmodulePulsesData.crossfire.pulses, extmodulePulsesData.crossfire.length);
+      if (crsfModelIdCnt++ == 0xFF) {
+        RTOS_WAIT_MS(g_eeGeneral.telemetryBaudrate ? 4 : 1);
+        extmodulePulsesData.crossfire.length = createCrossfireModelIDFrame(extmodulePulsesData.crossfire.pulses);
+        sportSendBuffer(extmodulePulsesData.crossfire.pulses, extmodulePulsesData.crossfire.length);
+      }
       break;
 #endif
 
