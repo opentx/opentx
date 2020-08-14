@@ -96,7 +96,7 @@ class ProtocolsConversionTable: public ConversionTable
       addConversion(PULSES_ACCESS_R9M, val++);
       addConversion(PULSES_PXX_R9M_LITE, val++);
       addConversion(PULSES_ACCESS_R9M_LITE, val++);
-      addConversion(PULSES_PXX_R9M_LITE_PRO, val++);
+      addConversion(PULSES_GHOST, val++);
       addConversion(PULSES_ACCESS_R9M_LITE_PRO, val++);
 
       addConversion(PULSES_SBUS, val++);
@@ -104,6 +104,7 @@ class ProtocolsConversionTable: public ConversionTable
       addConversion(PULSES_XJT_LITE_X16, val);
       addConversion(PULSES_XJT_LITE_D8, val);
       addConversion(PULSES_XJT_LITE_LR12, val++);
+
       if (version >= 219) {
         addConversion(PULSES_AFHDS3, val++);
       }

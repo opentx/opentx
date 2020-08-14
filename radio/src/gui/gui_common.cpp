@@ -620,9 +620,6 @@ bool isInternalModuleAvailable(int moduleType)
 
 bool isExternalModuleAvailable(int moduleType)
 {
-  if (moduleType == MODULE_TYPE_R9M_LITE_PRO_PXX1)
-    return false;
-
 #if !defined(HARDWARE_EXTERNAL_MODULE_SIZE_SML)
   if (isModuleTypeR9MLite(moduleType) || moduleType == MODULE_TYPE_XJT_LITE_PXX2)
     return false;
@@ -654,6 +651,11 @@ bool isExternalModuleAvailable(int moduleType)
 
 #if !defined(CROSSFIRE)
   if (moduleType == MODULE_TYPE_CROSSFIRE)
+    return false;
+#endif
+
+#if !defined(GHOST)
+  if (moduleType == MODULE_TYPE_GHOST)
     return false;
 #endif
 
@@ -697,6 +699,11 @@ bool isRfProtocolAvailable(int protocol)
     return false;
   }
 #endif
+#if defined(GHOST)
+  if (protocol != MODULE_SUBTYPE_PXX1_OFF && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_GHOST) {
+    return false;
+  }
+#endif
 #if !defined(MODULE_PROTOCOL_D8)
   if (protocol == MODULE_SUBTYPE_PXX1_ACCST_D8) {
     return false;
@@ -723,6 +730,10 @@ bool isTelemetryProtocolAvailable(int protocol)
 #endif
 
   if (protocol== PROTOCOL_TELEMETRY_CROSSFIRE) {
+    return false;
+  }
+
+  if (protocol== PROTOCOL_TELEMETRY_GHOST) {
     return false;
   }
 
