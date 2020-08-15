@@ -366,11 +366,11 @@ static int luaModelGetInputsCount(lua_State *L)
 /*luadoc
 @function model.deleteFlightModes()
 
-Clear all flightmodes
+Clear all flightModes
 
 @status current Introduced in 2.3.10
 */
-static int luaModelDeleteFlightModess(lua_State *L)
+static int luaModelDeleteFlightModes(lua_State *L)
 {
   memset(g_model.flightModeData, 0, sizeof(g_model.flightModeData));
   return 0;
@@ -390,10 +390,10 @@ Return input data for given input and line number
  * `switch` (number) input switch index
  * `fadeIn` (number) fade in value (in 0.1s)
  * `fadeOut` (number) fade out value (in 0.1s)
- * `trimvalue` (table) table of trim values:
+ * `trimsValues` (table) table of trim values:
    * `key` is trim number (zero based)
    * `value` is trim value
- * `trimmode` (table) table of trim mode:
+ * `trimsModes` (table) table of trim mode:
    * `key` is trim number (zero based)
    * `value` is trim mode
 
@@ -409,7 +409,7 @@ static int luaModelGetFlightMode(lua_State * L)
     lua_pushtableinteger(L, "switch", fm->swtch);
     lua_pushtableinteger(L, "fadeIn", fm->fadeIn);
     lua_pushtableinteger(L, "fadeOut", fm->fadeOut);
-    lua_pushstring(L, "trimvalue");
+    lua_pushstring(L, "trimsValues");
     lua_newtable(L);
     for (uint8_t i = 0; i < NUM_TRIMS; i++) {
       lua_pushinteger(L, i);
@@ -417,7 +417,7 @@ static int luaModelGetFlightMode(lua_State * L)
       lua_settable(L, -3);
     }
     lua_settable(L, -3);
-    lua_pushstring(L, "trimmode");
+    lua_pushstring(L, "trimsModes");
     lua_newtable(L);
     for (uint8_t i = 0; i < NUM_TRIMS; i++) {
       lua_pushinteger(L, i);
@@ -469,7 +469,7 @@ static int luaModelSetFlightMode(lua_State * L)
     else if (!strcmp(key, "fadeOut")) {
       fm->fadeOut = luaL_checkinteger(L, -1);
     }
-    else if (!strcmp(key, "trimvalue")) {
+    else if (!strcmp(key, "trimsValues")) {
       luaL_checktype(L, -1, LUA_TTABLE);
       uint8_t idx = 0;
       for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1), idx++) {
@@ -478,13 +478,13 @@ static int luaModelSetFlightMode(lua_State * L)
           fm->trim[idx].value = (val & 0x3FF);
       }
     }
-    else if (!strcmp(key, "trimmode")) {
+    else if (!strcmp(key, "trimsModes")) {
       luaL_checktype(L, -1, LUA_TTABLE);
       uint8_t idx = 0;
       for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1), idx++) {
         uint16_t val = luaL_checkinteger(L, -1);
         if (idx < NUM_TRIMS)
-          fm->trim[idx].mode = ( val & 0x1F);
+          fm->trim[idx].mode = (val & 0x1F);
       }
     }
   }
@@ -506,7 +506,7 @@ Return input data for given input and line number
 
 @retval table input data:
  * `name` (string) input line name
- * `input_name` (string) input input name
+ * `inputName` (string) input input name
  * `source` (number) input source index
  * `weight` (number) input weight
  * `offset` (number) input offset
@@ -514,9 +514,9 @@ Return input data for given input and line number
  * `curveType` (number) curve type (function, expo, custom curve)
  * `curveValue` (number) curve index
  * `carryTrim` (boolean) input trims applied
- * 'flightmodes' (table) table of enabled flightmodes {0,2,7} means that the input is enabled for FM0, FM2 and FM7
+ * 'flightModes' (table) table of enabled flightModes {0,2,7} means that the input is enabled for FM0, FM2 and FM7
 
-@status current Introduced in 2.0.0, curveType/curveValue/carryTrim added in 2.3, flightmodes, input_name added 2.3.10
+@status current Introduced in 2.0.0, curveType/curveValue/carryTrim added in 2.3, flightModes, inputName added 2.3.10
 */
 static int luaModelGetInput(lua_State *L)
 {
@@ -528,7 +528,7 @@ static int luaModelGetInput(lua_State *L)
     ExpoData * expo = expoAddress(first+idx);
     lua_newtable(L);
     lua_pushtablezstring(L, "name", expo->name);
-    lua_pushtablezstring(L, "input_name", g_model.inputNames[chn]);
+    lua_pushtablezstring(L, "inputName", g_model.inputNames[chn]);
     lua_pushtableinteger(L, "source", expo->srcRaw);
     lua_pushtableinteger(L, "weight", expo->weight);
     lua_pushtableinteger(L, "offset", expo->offset);
@@ -536,7 +536,7 @@ static int luaModelGetInput(lua_State *L)
     lua_pushtableinteger(L, "curveType", expo->curve.type);
     lua_pushtableinteger(L, "curveValue", expo->curve.value);
     lua_pushtableinteger(L, "carryTrim", expo->carryTrim);
-    lua_pushstring(L, "flightmodes");
+    lua_pushstring(L, "flightModes");
     lua_newtable(L);
     for (int i = 0, cnt = 0; i < MAX_FLIGHT_MODES; i++) {
       if (!(expo->flightModes & (1 << i))) {
@@ -564,7 +564,7 @@ Insert an Input at specified line
 
 @param value (table) input data, see model.getInput()
 
-@status current Introduced in 2.0.0, curveType/curveValue/carryTrim added in 2.3, input_name added 2.3.10
+@status current Introduced in 2.0.0, curveType/curveValue/carryTrim added in 2.3, inputName added 2.3.10
 */
 static int luaModelInsertInput(lua_State *L)
 {
@@ -587,7 +587,7 @@ static int luaModelInsertInput(lua_State *L)
         const char * name = luaL_checkstring(L, -1);
         str2zchar(expo->name, name, sizeof(expo->name));
       }
-      else if (!strcmp(key, "input_name")) {
+      else if (!strcmp(key, "inputName")) {
         const char * name = luaL_checkstring(L, -1);
         str2zchar(g_model.inputNames[chn], name, LEN_INPUT_NAME);
       }
@@ -612,7 +612,7 @@ static int luaModelInsertInput(lua_State *L)
       else if (!strcmp(key, "carryTrim")) {
         expo->carryTrim = lua_toboolean(L, -1);
       }
-      else if (!strcmp(key, "flightmodes")) {
+      else if (!strcmp(key, "flightModes")) {
         luaL_checktype(L, -1, LUA_TTABLE);
         int flighModes = 0x1FF;
         for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1)) {
@@ -753,7 +753,7 @@ Get configuration for specified Mix
  * `delayDown` (number) delay down
  * `speedUp` (number) speed up
  * `speedDown` (number) speed down
-* 'flightmodes' (table) table of enabled flightmodes {0,2,7} means that the input is enabled for FM0, FM2 and FM7
+* 'flightModes' (table) table of enabled flightModes {0,2,7} means that the input is enabled for FM0, FM2 and FM7
 
 @status current Introduced in 2.0.0, parameters below `multiplex` added in 2.0.13, flightmoddes added 2.3.10
 */
@@ -781,7 +781,7 @@ static int luaModelGetMix(lua_State *L)
     lua_pushtableinteger(L, "delayDown", mix->delayDown);
     lua_pushtableinteger(L, "speedUp", mix->speedUp);
     lua_pushtableinteger(L, "speedDown", mix->speedDown);
-    lua_pushstring(L, "flightmodes");
+    lua_pushstring(L, "flightModes");
     lua_newtable(L);
     for (int i = 0, cnt = 0; i < MAX_FLIGHT_MODES; i++) {
       if (!(mix->flightModes & (1 << i))) {
@@ -874,7 +874,7 @@ static int luaModelInsertMix(lua_State *L)
       else if (!strcmp(key, "speedDown")) {
         mix->speedDown = luaL_checkinteger(L, -1);
       }
-      else if (!strcmp(key, "flightmodes")) {
+      else if (!strcmp(key, "flightModes")) {
         luaL_checktype(L, -1, LUA_TTABLE);
         int flighModes = 0x1FF;
         for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1)) {
@@ -1596,7 +1596,7 @@ const luaL_Reg modelLib[] = {
   { "getTimer", luaModelGetTimer },
   { "setTimer", luaModelSetTimer },
   { "resetTimer", luaModelResetTimer },
-  { "deleteFlightModes", luaModelDeleteFlightModess },
+  { "deleteFlightModes", luaModelDeleteFlightModes },
   { "getFlightMode", luaModelGetFlightMode },
   { "setFlightMode", luaModelSetFlightMode },
   { "getInputsCount", luaModelGetInputsCount },
