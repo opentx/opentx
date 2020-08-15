@@ -1507,6 +1507,9 @@ bool menuModelSetup(event_t event)
           if (attr && l_posHorz==0) {
             if (s_editMode>0) {
               CHECK_INCDEC_MODELVAR_ZERO(event, g_model.header.modelId[moduleIdx], getMaxRxNum(moduleIdx));
+              if (checkIncDec_Ret && isModuleCrossfire(moduleIdx)) {
+                moduleState[EXTERNAL_MODULE].counter = CRSF_FRAME_MODELID;
+              }
               if (event == EVT_KEY_LONG(KEY_ENTER)) {
                 killEvents(event);
                 uint8_t newVal = modelslist.findNextUnusedModelId(moduleIdx);

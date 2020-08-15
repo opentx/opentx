@@ -314,14 +314,7 @@ void extmoduleSendNextFrame()
 
 #if defined(CROSSFIRE)
     case PROTOCOL_CHANNELS_CROSSFIRE:
-      if (moduleState[EXTERNAL_MODULE].counter++ == 100) {
-        extmodulePulsesData.crossfire.length += createCrossfireModelIDFrame(extmodulePulsesData.crossfire.pulses + extmodulePulsesData.crossfire.length);
-        sportSendBuffer(extmodulePulsesData.crossfire.pulses, extmodulePulsesData.crossfire.length);
-        moduleState[EXTERNAL_MODULE].counter = 0;
-      }
-      else {
-        sportSendBuffer(extmodulePulsesData.crossfire.pulses, extmodulePulsesData.crossfire.length);
-      }
+      sportSendBuffer(extmodulePulsesData.crossfire.pulses, extmodulePulsesData.crossfire.length);
       break;
 #endif
 
