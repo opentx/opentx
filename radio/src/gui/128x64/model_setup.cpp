@@ -1345,11 +1345,6 @@ void menuModelSetup(event_t event)
           if (isModuleRxNumAvailable(moduleIdx)) {
             lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, g_model.header.modelId[moduleIdx], (l_posHorz==0 ? attr : 0) | LEADING0|LEFT, 2);
             bindButtonPos = lcdNextPos + 2;
-          }
-          else if (attr) {
-            l_posHorz += 1;
-          }
-          if (isModuleBindRangeAvailable(moduleIdx)) {
             if (attr && l_posHorz == 0) {
               if (s_editMode > 0) {
                 CHECK_INCDEC_MODELVAR_ZERO(event, g_model.header.modelId[moduleIdx], getMaxRxNum(moduleIdx));
@@ -1366,6 +1361,11 @@ void menuModelSetup(event_t event)
                 }
               }
             }
+          }
+          else if (attr) {
+            l_posHorz += 1;
+          }
+          if (isModuleBindRangeAvailable(moduleIdx)) {
             lcdDrawText(bindButtonPos, y, STR_MODULE_BIND, l_posHorz == 1 ? attr : 0);
             if (isModuleRangeAvailable(moduleIdx)) {
               lcdDrawText(lcdNextPos + 2, y, STR_MODULE_RANGE, l_posHorz == 2 ? attr : 0);
