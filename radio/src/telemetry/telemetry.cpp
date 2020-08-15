@@ -214,6 +214,7 @@ void telemetryWakeup()
 #endif
         if (telemetryState == TELEMETRY_KO) {
           AUDIO_TELEMETRY_BACK();
+          moduleState[EXTERNAL_MODULE].counter = CRSF_FRAME_MODELID;
         }
         telemetryState = TELEMETRY_OK;
       }
