@@ -82,7 +82,13 @@ void setupPulsesCrossfire()
     else
 #endif
     {
-      extmodulePulsesData.crossfire.length = createCrossfireChannelsFrame(pulses, &channelOutputs[g_model.moduleData[EXTERNAL_MODULE].channelsStart]);
+      if (moduleState[EXTERNAL_MODULE].counter == CRSF_FRAME_MODELID) {
+        extmodulePulsesData.crossfire.length = createCrossfireModelIDFrame(pulses);
+        moduleState[EXTERNAL_MODULE].counter = CRSF_FRAME_CHANNEL;
+      }
+      else {
+        extmodulePulsesData.crossfire.length = createCrossfireChannelsFrame(pulses, &channelOutputs[g_model.moduleData[EXTERNAL_MODULE].channelsStart]);
+      }
     }
   }
 }
