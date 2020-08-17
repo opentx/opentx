@@ -437,6 +437,9 @@ inline bool isModuleModelIndexAvailable(uint8_t idx)
   if (isModuleMultimodule(idx))
     return true;
 
+  if (isModuleCrossfire(idx))
+    return true;
+
   return false;
 }
 

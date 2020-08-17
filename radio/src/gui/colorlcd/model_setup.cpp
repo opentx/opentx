@@ -764,7 +764,7 @@ class ModuleWindow : public FormGroup {
       // Module parameters
 
       // Bind and Range buttons
-      if (!isModuleRFAccess(moduleIdx) && isModuleBindRangeAvailable(moduleIdx)) {
+      if (!isModuleRFAccess(moduleIdx) && (isModuleModelIndexAvailable(moduleIdx)|| isModuleBindRangeAvailable(moduleIdx))) {
         uint8_t thirdColumn = 0;
         new StaticText(this, grid.getLabelSlot(true), STR_RECEIVER);
 
@@ -774,49 +774,51 @@ class ModuleWindow : public FormGroup {
           new NumberEdit(this, grid.getFieldSlot(3, 0), 0, getMaxRxNum(moduleIdx), GET_SET_DEFAULT(g_model.header.modelId[moduleIdx]));
         }
 
-        bindButton = new TextButton(this, grid.getFieldSlot(2+thirdColumn, 0+thirdColumn), STR_MODULE_BIND);
-        bindButton->setPressHandler([=]() -> uint8_t {
-          if (moduleState[moduleIdx].mode == MODULE_MODE_RANGECHECK) {
-            rangeButton->check(false);
-          }
-          if (moduleState[moduleIdx].mode == MODULE_MODE_BIND) {
-            moduleState[moduleIdx].mode = MODULE_MODE_NORMAL;
-            return 0;
-          }
-          else {
-            setMultiBindStatus(moduleIdx, MULTI_BIND_INITIATED);
-            moduleState[moduleIdx].mode = MODULE_MODE_BIND;
-            return 1;
-          }
-        });
-        bindButton->setCheckHandler([=]() {
-          if (moduleState[moduleIdx].mode != MODULE_MODE_BIND) {
-            bindButton->check(false);
-          }
+        if (isModuleBindRangeAvailable(moduleIdx)) {
+          bindButton = new TextButton(this, grid.getFieldSlot(2 + thirdColumn, 0 + thirdColumn), STR_MODULE_BIND);
+          bindButton->setPressHandler([=]() -> uint8_t {
+              if (moduleState[moduleIdx].mode == MODULE_MODE_RANGECHECK) {
+                rangeButton->check(false);
+              }
+              if (moduleState[moduleIdx].mode == MODULE_MODE_BIND) {
+                moduleState[moduleIdx].mode = MODULE_MODE_NORMAL;
+                return 0;
+              }
+              else {
+                setMultiBindStatus(moduleIdx, MULTI_BIND_INITIATED);
+                moduleState[moduleIdx].mode = MODULE_MODE_BIND;
+                return 1;
+              }
+          });
+          bindButton->setCheckHandler([=]() {
+              if (moduleState[moduleIdx].mode != MODULE_MODE_BIND) {
+                bindButton->check(false);
+              }
 #if defined(MULTIMODULE)
-          if (getMultiBindStatus(moduleIdx) == MULTI_BIND_FINISHED) {
-            setMultiBindStatus(moduleIdx, MULTI_BIND_NONE);
-            moduleState[moduleIdx].mode = MODULE_MODE_NORMAL;
-            bindButton->check(false);
-          }
+              if (getMultiBindStatus(moduleIdx) == MULTI_BIND_FINISHED) {
+                setMultiBindStatus(moduleIdx, MULTI_BIND_NONE);
+                moduleState[moduleIdx].mode = MODULE_MODE_NORMAL;
+                bindButton->check(false);
+              }
 #endif
-        });
+          });
 
-        rangeButton = new TextButton(this, grid.getFieldSlot(2+thirdColumn, 1+thirdColumn), STR_MODULE_RANGE);
-        rangeButton->setPressHandler([=]() -> uint8_t {
-          if (moduleState[moduleIdx].mode == MODULE_MODE_BIND) {
-            bindButton->check(false);
-            moduleState[moduleIdx].mode = MODULE_MODE_NORMAL;
-          }
-          if (moduleState[moduleIdx].mode == MODULE_MODE_RANGECHECK) {
-            moduleState[moduleIdx].mode = MODULE_MODE_NORMAL;
-            return 0;
-          }
-          else {
-            moduleState[moduleIdx].mode = MODULE_MODE_RANGECHECK;
-            return 1;
-          }
-        });
+          rangeButton = new TextButton(this, grid.getFieldSlot(2 + thirdColumn, 1 + thirdColumn), STR_MODULE_RANGE);
+          rangeButton->setPressHandler([=]() -> uint8_t {
+              if (moduleState[moduleIdx].mode == MODULE_MODE_BIND) {
+                bindButton->check(false);
+                moduleState[moduleIdx].mode = MODULE_MODE_NORMAL;
+              }
+              if (moduleState[moduleIdx].mode == MODULE_MODE_RANGECHECK) {
+                moduleState[moduleIdx].mode = MODULE_MODE_NORMAL;
+                return 0;
+              }
+              else {
+                moduleState[moduleIdx].mode = MODULE_MODE_RANGECHECK;
+                return 1;
+              }
+          });
+        }
 
         grid.nextLine();
       }
