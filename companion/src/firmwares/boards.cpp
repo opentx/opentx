@@ -289,7 +289,7 @@ int Boards::getCapability(Board::Type board, Board::Capability capability)
         return 0;
 
     case MouseAnalogs:
-      if (IS_HORUS_X12S(board))
+      if (IS_FAMILY_HORUS_OR_T16(board))
         return 2;
       else
         return 0;
