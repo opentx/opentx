@@ -584,6 +584,14 @@ bool isModuleUsingSport(uint8_t moduleBay, uint8_t moduleType)
   }
 }
 
+bool areModulesConflicting(int intModuleType, int extModuleType)
+{
+  if (intModuleType == MODULE_TYPE_ISRM_PXX2)
+    return (extModuleType == MODULE_TYPE_GHOST);
+
+  return false;
+}
+
 #if defined(HARDWARE_INTERNAL_MODULE)
 bool isInternalModuleAvailable(int moduleType)
 {
@@ -605,7 +613,7 @@ bool isInternalModuleAvailable(int moduleType)
 
   if (moduleType == MODULE_TYPE_ISRM_PXX2) {
 #if defined(PXX2) && defined(INTERNAL_MODULE_PXX2)
-    return true;
+    return !areModulesConflicting(moduleType, g_model.moduleData[EXTERNAL_MODULE].type);
 #endif
   }
 
