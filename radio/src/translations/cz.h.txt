@@ -820,7 +820,7 @@
 #define TR_MENUGLOBALVARS              "GLOBÁLNÍ PROMĚNNÉ"
 #define TR_OWN                         " \043 "
 #define TR_DATE                        "Datum"
-#define TR_MONTHS                      { "Led", "Úno", "Bře", "Dub", "Kvě", "Čer", "Čec", "Srp", "Zář", "Říj", "Lis", "Pro" }
+#define TR_MONTHS                      { "Led", "Úno", "Bře", "Dub", "Kvě", "Čvn", "Čvc", "Srp", "Zář", "Říj", "Lis", "Pro" }
 #define TR_ROTARY_ENCODER              "R.Enko"
 #define TR_CHANNELS_MONITOR            "MONITOR KANÁLU"
 #define TR_MIXERS_MONITOR              "MONITOR MIXU"
