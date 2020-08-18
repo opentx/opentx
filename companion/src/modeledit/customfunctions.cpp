@@ -587,7 +587,7 @@ void CustomFunctionsPanel::update()
 {
   updateDataModels();
   lock = true;
-  for (int i=0; i<fswCapability; i++) {
+  for (int i = 0; i < fswCapability; i++) {
     refreshCustomFunction(i);
   }
   lock = false;
@@ -605,13 +605,13 @@ void CustomFunctionsPanel::cmPaste()
 
 void CustomFunctionsPanel::cmDelete()
 {
-  if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Delete Special Function. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+  if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Delete Function. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
     return;
 
   memmove(&functions[selectedIndex], &functions[selectedIndex + 1], (CPN_MAX_SPECIAL_FUNCTIONS - (selectedIndex + 1)) * sizeof(CustomFunctionData));
   functions[fswCapability - 1].clear();
 
-  for (int i = selectedIndex; i < (fswCapability - 1); i++) {
+  for (int i = selectedIndex; i < fswCapability; i++) {
     resetCBsAndRefresh(i);
   }
   emit modified();
@@ -659,7 +659,7 @@ void CustomFunctionsPanel::onCustomContextMenuRequested(QPoint pos)
 void CustomFunctionsPanel::populateFuncCB(QComboBox *b, unsigned int value)
 {
   b->clear();
-  for (unsigned int i=0; i<FuncCount; i++) {
+  for (unsigned int i = 0; i < FuncCount; i++) {
     if (((i>=FuncOverrideCH1 && i<=FuncOverrideCH32) && (!model || !firmware->getCapability(SafetyChannelCustomFunction))) ||
         ((i==FuncVolume || i==FuncBackgroundMusic || i==FuncBackgroundMusicPause) && !firmware->getCapability(HasVolume)) ||
         ((i==FuncPlayScript && !IS_HORUS_OR_TARANIS(firmware->getBoard()))) ||
@@ -677,7 +677,7 @@ void CustomFunctionsPanel::populateFuncCB(QComboBox *b, unsigned int value)
     else {
       b->addItem(CustomFunctionData(AssignFunc(i)).funcToString(model), i);
       if (i == value) {
-        b->setCurrentIndex(b->count()-1);
+        b->setCurrentIndex(b->count() - 1);
       }
     }
   }
@@ -748,7 +748,7 @@ void CustomFunctionsPanel::cmMoveDown()
 void CustomFunctionsPanel::cmClear(bool prompt)
 {
   if (prompt) {
-    if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Clear Special Function. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+    if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Clear Function. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
       return;
   }
 
@@ -759,10 +759,10 @@ void CustomFunctionsPanel::cmClear(bool prompt)
 
 void CustomFunctionsPanel::cmClearAll()
 {
-  if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Clear all Special Functions. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+  if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Clear all Functions. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
     return;
 
-  for (int i=0; i<fswCapability; i++) {
+  for (int i = 0; i < fswCapability; i++) {
     functions[i].clear();
     resetCBsAndRefresh(i);
   }
@@ -774,7 +774,7 @@ void CustomFunctionsPanel::cmInsert()
   memmove(&functions[selectedIndex + 1], &functions[selectedIndex], (CPN_MAX_SPECIAL_FUNCTIONS - (selectedIndex + 1)) * sizeof(CustomFunctionData));
   functions[selectedIndex].clear();
 
-  for (int i = selectedIndex; i < (fswCapability - 1); i++) {
+  for (int i = selectedIndex; i < fswCapability; i++) {
     resetCBsAndRefresh(i);
   }
 }
@@ -818,7 +818,7 @@ bool CustomFunctionsPanel::hasClipboardData(QByteArray * data) const
 
 bool CustomFunctionsPanel::insertAllowed() const
 {
-  return ((selectedIndex < fswCapability - 1) && (model->curves[fswCapability - 1].isEmpty()));
+  return ((selectedIndex < fswCapability - 1) && (functions[fswCapability - 1].isEmpty()));
 }
 
 bool CustomFunctionsPanel::moveDownAllowed() const
