@@ -683,11 +683,8 @@ bool isExternalModuleAvailable(int moduleType)
 #endif
 
 #if defined(HARDWARE_INTERNAL_MODULE)
-  // x10e and x9d2019 internal module pull down sport line, so it does not work with some modules
-#if defined(RADIO_X10E) || defined(RADIO_X9DP2019)
-  if (moduleType == MODULE_TYPE_GHOST && isModuleISRM(INTERNAL_MODULE))
+  if (areModulesConflicting(g_model.moduleData[INTERNAL_MODULE].type, moduleType))
     return false;
-#endif
 
   if (isTrainerUsingModuleBay() || (isModuleUsingSport(EXTERNAL_MODULE, moduleType) && isModuleUsingSport(INTERNAL_MODULE, g_model.moduleData[INTERNAL_MODULE].type)))
     return false;
