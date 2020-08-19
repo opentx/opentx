@@ -84,6 +84,8 @@ QString SensorData::unitString() const
       return tr("V");
     case UNIT_MILLILITERS_PER_MINUTE:
       return tr("ml/minute");
+    case UNIT_HERZ:
+      return tr("Hertz");
     default:
       return "";
   }

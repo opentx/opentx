@@ -50,7 +50,7 @@ const GhostSensor ghostSensors[] = {
   {GHOST_ID_RX_LQ,           ZSTR_RX_QUALITY,       UNIT_PERCENT,           0},
   {GHOST_ID_RX_SNR,          ZSTR_RX_SNR,           UNIT_DB,                0},
 
-  {GHOST_ID_FRAME_RATE,      ZSTR_FRAME_RATE,       UNIT_RAW,               0},
+  {GHOST_ID_FRAME_RATE,      ZSTR_FRAME_RATE,       UNIT_HERTZ,             0},
   {GHOST_ID_TX_POWER,        ZSTR_TX_POWER,         UNIT_MILLIWATTS,        0},
   {GHOST_ID_RF_MODE,         ZSTR_RF_MODE,          UNIT_TEXT,              0},
   {GHOST_ID_TOTAL_LATENCY,   ZSTR_TOTAL_LATENCY,    UNIT_RAW,               0},
