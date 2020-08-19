@@ -121,6 +121,7 @@ if(PCB STREQUAL X10 OR PCB STREQUAL X12S)
       ${BOOTLOADER_SRC}
       ../../../../../${STM32LIB_DIR}/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_usart.c
       ../../../../../serial.cpp
+      ../../../../../targets/common/arm/stm32/aux_serial_driver.cpp
       )
   endif()
 else()
