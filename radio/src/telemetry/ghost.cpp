@@ -60,11 +60,11 @@ const GhostSensor ghostSensors[] = {
 
 const GhostSensor *getGhostSensor(uint8_t id)
 {
-    for (const GhostSensor * sensor = ghostSensors; sensor->id; sensor++) {
-      if (id == sensor->id)
-        return sensor;
-    }
-    return nullptr;
+  for (const GhostSensor * sensor = ghostSensors; sensor->id; sensor++) {
+    if (id == sensor->id)
+      return sensor;
+  }
+  return nullptr;
 }
 
 void processGhostTelemetryValue(uint8_t index, int32_t value)
@@ -112,7 +112,16 @@ void processGhostTelemetryFrame()
       processGhostTelemetryValue(GHOST_ID_RX_SNR, snrVal);
 
       // give OpenTx the LQ value, not RSSI
-      telemetryData.rssi.set(lqVal);
+      if(lqVal)
+      {
+        telemetryData.rssi.set(lqVal);
+        telemetryStreaming = TELEMETRY_TIMEOUT10ms;
+      }
+      else
+      {
+        telemetryData.rssi.reset();
+        telemetryStreaming = 0;
+      }
 
       uint8_t txPwrEnum = min<uint8_t>(telemetryRxBuffer[6], GHST_PWR_4W);
       processGhostTelemetryValue(GHOST_ID_TX_POWER, ghstPwrValueuW[txPwrEnum] / 1000);
@@ -151,7 +160,7 @@ void processGhostTelemetryData(uint8_t data)
 
   if (telemetryRxBufferCount > 4) {
     uint8_t length = telemetryRxBuffer[1];
-   if (length + 2 == telemetryRxBufferCount) {
+    if (length + 2 == telemetryRxBufferCount) {
       processGhostTelemetryFrame();
       telemetryRxBufferCount = 0;
     }
