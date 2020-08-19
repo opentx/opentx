@@ -60,11 +60,11 @@ const GhostSensor ghostSensors[] = {
 
 const GhostSensor *getGhostSensor(uint8_t id)
 {
-    for (const GhostSensor * sensor = ghostSensors; sensor->id; sensor++) {
-      if (id == sensor->id)
-        return sensor;
-    }
-    return nullptr;
+  for (const GhostSensor * sensor = ghostSensors; sensor->id; sensor++) {
+    if (id == sensor->id)
+      return sensor;
+  }
+  return nullptr;
 }
 
 void processGhostTelemetryValue(uint8_t index, int32_t value)
@@ -103,16 +103,16 @@ void processGhostTelemetryFrame()
   uint8_t id = telemetryRxBuffer[2];
   switch(id) {
     case GHST_DL_OPENTX_SYNC:
-      {
-        uint32_t update_interval = getTelemetryValue_s32(3);
-        int32_t  offset = getTelemetryValue_s32(7);
+    {
+      uint32_t update_interval = getTelemetryValue_s32(3);
+      int32_t  offset = getTelemetryValue_s32(7);
 
-        // values are in units of 100ns
-        update_interval /= 10;
-        offset /= 10;
+      // values are in units of 100ns
+      update_interval /= 10;
+      offset /= 10;
 
-        getModuleSyncStatus(EXTERNAL_MODULE).update(update_interval, offset + SAFE_SYNC_LAG);
-      }
+      getModuleSyncStatus(EXTERNAL_MODULE).update(update_interval, offset + SAFE_SYNC_LAG);
+    }
       break;
 
     case GHST_DL_LINK_STAT:
@@ -125,7 +125,16 @@ void processGhostTelemetryFrame()
       processGhostTelemetryValue(GHOST_ID_RX_SNR, snrVal);
 
       // give OpenTx the LQ value, not RSSI
-      telemetryData.rssi.set(lqVal);
+      if(lqVal)
+      {
+        telemetryData.rssi.set(lqVal);
+        telemetryStreaming = TELEMETRY_TIMEOUT10ms;
+      }
+      else
+      {
+        telemetryData.rssi.reset();
+        telemetryStreaming = 0;
+      }
 
       uint8_t txPwrEnum = min<uint8_t>(telemetryRxBuffer[6], GHST_PWR_4W);
       processGhostTelemetryValue(GHOST_ID_TX_POWER, ghstPwrValueuW[txPwrEnum] / 1000);
@@ -140,8 +149,6 @@ void processGhostTelemetryFrame()
       do {
         setTelemetryValue(PROTOCOL_TELEMETRY_GHOST, sensor->id, 0, 0, rfModeString[i], UNIT_TEXT, i);
       } while(rfModeString[i++] != 0);
-
-      telemetryStreaming = TELEMETRY_TIMEOUT10ms;
 
       break;
   }
@@ -164,7 +171,7 @@ void processGhostTelemetryData(uint8_t data)
 
   if (telemetryRxBufferCount > 4) {
     uint8_t length = telemetryRxBuffer[1];
-   if (length + 2 == telemetryRxBufferCount) {
+    if (length + 2 == telemetryRxBufferCount) {
       processGhostTelemetryFrame();
       telemetryRxBufferCount = 0;
     }
