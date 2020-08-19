@@ -41,7 +41,31 @@ void watchdogInit(unsigned int duration)
   IWDG->KR = 0xCCCC;      // start
 }
 
-#if defined(PCBX10) && !defined(RADIO_FAMILY_T16)
+#if defined(AUX_SERIAL_PWR_GPIO)
+void auxSerialPowerOn()
+{
+  GPIO_SetBits(AUX_SERIAL_PWR_GPIO, AUX_SERIAL_PWR_GPIO_PIN);
+}
+
+void auxSerialPowerOff()
+{
+  GPIO_ResetBits(AUX_SERIAL_PWR_GPIO, AUX_SERIAL_PWR_GPIO_PIN);
+}
+#endif
+#if defined(AUX2_SERIAL_PWR_GPIO)
+void aux2SerialPowerOn()
+{
+  GPIO_SetBits(AUX2_SERIAL_PWR_GPIO, AUX2_SERIAL_PWR_GPIO_PIN);
+}
+
+void aux2SerialPowerOff()
+{
+  GPIO_ResetBits(AUX2_SERIAL_PWR_GPIO, AUX2_SERIAL_PWR_GPIO_PIN);
+}
+#endif
+
+
+#if HAS_SPORT_UPDATE_CONNECTOR()
 void sportUpdateInit()
 {
   GPIO_InitTypeDef GPIO_InitStructure;
@@ -77,6 +101,7 @@ void boardInit()
                          KEYS_RCC_AHB1Periph |
                          ADC_RCC_AHB1Periph |
                          AUX_SERIAL_RCC_AHB1Periph |
+                         AUX2_SERIAL_RCC_AHB1Periph |
                          TELEMETRY_RCC_AHB1Periph |
                          TRAINER_RCC_AHB1Periph |
                          BT_RCC_AHB1Periph |
@@ -94,6 +119,7 @@ void boardInit()
                          TIMER_2MHz_RCC_APB1Periph |
                          AUDIO_RCC_APB1Periph |
                          AUX_SERIAL_RCC_APB1Periph |
+                         AUX2_SERIAL_RCC_APB1Periph |
                          TELEMETRY_RCC_APB1Periph |
                          TRAINER_RCC_APB1Periph |
                          AUDIO_RCC_APB1Periph |
@@ -112,6 +138,9 @@ void boardInit()
                          EXTMODULE_RCC_APB2Periph |
                          TELEMETRY_RCC_APB2Periph |
                          BT_RCC_APB2Periph |
+                         AUX_SERIAL_RCC_APB2Periph |
+                         AUX2_SERIAL_RCC_APB2Periph |
+                         GPS_RCC_APB2Periph |
                          BACKLIGHT_RCC_APB2Periph,
                          ENABLE);
 
@@ -120,6 +149,13 @@ void boardInit()
   delaysInit();
 
   __enable_irq();
+
+#if defined(DEBUG) && defined(AUX_SERIAL)
+  auxSerialInit(UART_MODE_DEBUG, 0); // default serial mode (None if DEBUG not defined)
+#endif
+#if defined(DEBUG) && defined(AUX2_SERIAL)
+  aux2SerialInit(UART_MODE_DEBUG, 0); // default serial mode (None if DEBUG not defined)
+#endif
 
   TRACE("\nHorus board started :)");
   TRACE("RCC->CSR = %08x", RCC->CSR);
