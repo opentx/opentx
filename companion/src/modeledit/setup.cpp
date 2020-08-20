@@ -424,7 +424,7 @@ void ModulePanel::update()
         max_rx_num = 20;
         break;
       case PULSES_CROSSFIRE:
-        mask |= MASK_CHANNELS_RANGE;
+        mask |= MASK_CHANNELS_RANGE | MASK_RX_NUMBER;
         module.channelsCount = 16;
         break;
       case PULSES_PPM:
