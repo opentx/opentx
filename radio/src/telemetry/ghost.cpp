@@ -116,9 +116,9 @@ void processGhostTelemetryFrame()
       break;
 
     case GHST_DL_LINK_STAT:
-      uint8_t rssiVal = min<uint8_t>(telemetryRxBuffer[3], 99);
-      uint8_t lqVal = min<uint8_t>(telemetryRxBuffer[4], 99);
-      uint8_t snrVal = min<uint8_t>(telemetryRxBuffer[5], 99);
+      uint8_t rssiVal = min<uint8_t>(telemetryRxBuffer[3], 100);
+      uint8_t lqVal = min<uint8_t>(telemetryRxBuffer[4], 100);
+      uint8_t snrVal = min<uint8_t>(telemetryRxBuffer[5], 100);
 
       processGhostTelemetryValue(GHOST_ID_RX_RSSI, rssiVal);
       processGhostTelemetryValue(GHOST_ID_RX_LQ, lqVal);
