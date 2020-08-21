@@ -347,17 +347,19 @@ RawSource RawSource::convert(RadioDataConversionState & cstate)
     if (cstate.toBoard.getCapability(Board::Sliders)) {
       if (index >= cstate.fromBoard.getCapability(Board::Sticks) + cstate.fromBoard.getCapability(Board::Pots)) {
         // 1st slider alignment
-        index += cstate.toBoard.getCapability(Board::Pots) - cstate.fromBoard.getCapability(Board::Pots);
+        // 2 aux sliders on X12 and X9E and 2 extra pots on other Horus and T16 which negate the need for general index shift
+        if (!IS_FAMILY_HORUS_OR_T16(cstate.toType) && !IS_TARANIS_X9E(cstate.toType) && !IS_FAMILY_HORUS_OR_T16(cstate.fromType) && !IS_TARANIS_X9E(cstate.fromType))
+          index += cstate.toBoard.getCapability(Board::Pots) - cstate.fromBoard.getCapability(Board::Pots);
       }
 
       if (isSlider(0, cstate.fromType)) {
-        // LS and RS sliders are after 2 aux sliders on X12 and X9E
-        if ((IS_HORUS_X12S(cstate.toType) || IS_TARANIS_X9E(cstate.toType)) && !IS_HORUS_X12S(cstate.fromType) && !IS_TARANIS_X9E(cstate.fromType)) {
+        // LS and RS sliders are after 2 aux sliders on X12 and X9E and 2 extra pots on other Horus and T16
+        if ((IS_FAMILY_HORUS_OR_T16(cstate.toType) || IS_TARANIS_X9E(cstate.toType)) && !IS_FAMILY_HORUS_OR_T16(cstate.fromType) && !IS_TARANIS_X9E(cstate.fromType)) {
           if (index >= 7) {
             index += 2;  // LS/RS to LS/RS
           }
         }
-        else if (!IS_TARANIS_X9E(cstate.toType) && !IS_HORUS_X12S(cstate.toType) && (IS_HORUS_X12S(cstate.fromType) || IS_TARANIS_X9E(cstate.fromType))) {
+        else if (!IS_TARANIS_X9E(cstate.toType) && !IS_FAMILY_HORUS_OR_T16(cstate.toType) && (IS_FAMILY_HORUS_OR_T16(cstate.fromType) || IS_TARANIS_X9E(cstate.fromType))) {
           if (index >= 7 && index <= 8) {
             index += 2;   // aux sliders to spare analogs (which may not exist, this is validated later)
             evt = RadioDataConversionState::EVT_CVRT;
@@ -372,8 +374,9 @@ RawSource RawSource::convert(RadioDataConversionState & cstate)
     if (IS_TARANIS(cstate.toType) && IS_FAMILY_HORUS_OR_T16(cstate.fromType)) {
       if (index == 6)
         index = 5;  // pot S2 to S2
-      else if (index == 5)
+      else if (index == 5) {
         index = -1;  //  6P on Horus doesn't exist on Taranis
+      }
     }
     else  if (IS_FAMILY_HORUS_OR_T16(cstate.toType) && IS_TARANIS(cstate.fromType) && index == 5)
     {
