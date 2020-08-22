@@ -20,10 +20,10 @@
 
 #include "opentx.h"
 
-const char *ghstRfProfileValue[GHST_RF_PROFILE_COUNT] = { "Auto", "Norm", "Race", "Pure", "Long" };
-const uint32_t ghstPwrValueuW[GHST_PWR_COUNT] = { 16, 100, 1000, 25000, 100000, 200000,
-                                                  350000, 500000, 600000, 1000000, 15000000,
-                                                  2000000, 3000000, 4000000 };
+const char * ghstRfProfileValue[GHST_RF_PROFILE_COUNT] = {"Auto", "Norm", "Race", "Pure", "Long"};
+const uint32_t ghstPwrValueuW[GHST_PWR_COUNT] = {16, 100, 1000, 25000, 100000, 200000,
+                                                 350000, 500000, 600000, 1000000, 15000000,
+                                                 2000000, 3000000, 4000000};
 
 struct GhostSensor
 {
@@ -46,19 +46,19 @@ enum
 };
 
 const GhostSensor ghostSensors[] = {
-  {GHOST_ID_RX_RSSI,         ZSTR_RSSI,             UNIT_DB,                0},
-  {GHOST_ID_RX_LQ,           ZSTR_RX_QUALITY,       UNIT_PERCENT,           0},
-  {GHOST_ID_RX_SNR,          ZSTR_RX_SNR,           UNIT_DB,                0},
+  {GHOST_ID_RX_RSSI,       ZSTR_RSSI,          UNIT_DB,         0},
+  {GHOST_ID_RX_LQ,         ZSTR_RX_QUALITY,    UNIT_PERCENT,    0},
+  {GHOST_ID_RX_SNR,        ZSTR_RX_SNR,        UNIT_DB,         0},
 
-  {GHOST_ID_FRAME_RATE,      ZSTR_FRAME_RATE,       UNIT_HERTZ,             0},
-  {GHOST_ID_TX_POWER,        ZSTR_TX_POWER,         UNIT_MILLIWATTS,        0},
-  {GHOST_ID_RF_MODE,         ZSTR_RF_MODE,          UNIT_TEXT,              0},
-  {GHOST_ID_TOTAL_LATENCY,   ZSTR_TOTAL_LATENCY,    UNIT_US,               0},
+  {GHOST_ID_FRAME_RATE,    ZSTR_FRAME_RATE,    UNIT_HERTZ,      0},
+  {GHOST_ID_TX_POWER,      ZSTR_TX_POWER,      UNIT_MILLIWATTS, 0},
+  {GHOST_ID_RF_MODE,       ZSTR_RF_MODE,       UNIT_TEXT,       0},
+  {GHOST_ID_TOTAL_LATENCY, ZSTR_TOTAL_LATENCY, UNIT_US,         0},
 
-  {0x00,                     NULL,                  UNIT_RAW,               0},
+  {0x00,                   NULL,               UNIT_RAW,        0},
 };
 
-const GhostSensor *getGhostSensor(uint8_t id)
+const GhostSensor * getGhostSensor(uint8_t id)
 {
   for (const GhostSensor * sensor = ghostSensors; sensor->id; sensor++) {
     if (id == sensor->id)
@@ -69,27 +69,27 @@ const GhostSensor *getGhostSensor(uint8_t id)
 
 void processGhostTelemetryValue(uint8_t index, int32_t value)
 {
-  const GhostSensor *sensor = getGhostSensor(index);
+  const GhostSensor * sensor = getGhostSensor(index);
   setTelemetryValue(PROTOCOL_TELEMETRY_GHOST, sensor->id, 0, 0, value, sensor->unit, sensor->precision);
 }
 
 bool checkGhostTelemetryFrameCRC()
 {
   uint8_t len = telemetryRxBuffer[1];
-  uint8_t crc = crc8(&telemetryRxBuffer[2], len-1);
-  return (crc == telemetryRxBuffer[len+1]);
+  uint8_t crc = crc8(&telemetryRxBuffer[2], len - 1);
+  return (crc == telemetryRxBuffer[len + 1]);
 }
 
 uint16_t getTelemetryValue_u16(uint8_t index)
 {
-  return (telemetryRxBuffer[index] << 8) | telemetryRxBuffer[index+1];
+  return (telemetryRxBuffer[index] << 8) | telemetryRxBuffer[index + 1];
 }
 
 uint32_t getTelemetryValue_s32(uint8_t index)
 {
   uint32_t val = 0;
-  for(int i = 0; i < 4; ++i)
-    val <<= 8, val |= telemetryRxBuffer[index+i];
+  for (int i = 0; i < 4; ++i)
+    val <<= 8, val |= telemetryRxBuffer[index + i];
   return val;
 }
 
@@ -101,7 +101,7 @@ void processGhostTelemetryFrame()
   }
 
   uint8_t id = telemetryRxBuffer[2];
-  switch(id) {
+  switch (id) {
     case GHST_DL_LINK_STAT:
       uint8_t rssiVal = min<uint8_t>(telemetryRxBuffer[3], 100);
       uint8_t lqVal = min<uint8_t>(telemetryRxBuffer[4], 100);
@@ -112,13 +112,11 @@ void processGhostTelemetryFrame()
       processGhostTelemetryValue(GHOST_ID_RX_SNR, snrVal);
 
       // give OpenTx the LQ value, not RSSI
-      if(lqVal)
-      {
+      if (lqVal) {
         telemetryData.rssi.set(lqVal);
         telemetryStreaming = TELEMETRY_TIMEOUT10ms;
       }
-      else
-      {
+      else {
         telemetryData.rssi.reset();
         telemetryStreaming = 0;
       }
@@ -130,12 +128,12 @@ void processGhostTelemetryFrame()
       uint8_t rfModeEnum = min<uint8_t>(telemetryRxBuffer[11], GHST_RF_PROFILE_MAX);
 
       // RF mode string, one char at a time
-      const GhostSensor *sensor = getGhostSensor(GHOST_ID_RF_MODE);
-      const char *rfModeString = ghstRfProfileValue[rfModeEnum];
+      const GhostSensor * sensor = getGhostSensor(GHOST_ID_RF_MODE);
+      const char * rfModeString = ghstRfProfileValue[rfModeEnum];
       int i = 0;
       do {
         setTelemetryValue(PROTOCOL_TELEMETRY_GHOST, sensor->id, 0, 0, rfModeString[i], UNIT_TEXT, i);
-      } while(rfModeString[i++] != 0);
+      } while (rfModeString[i++] != 0);
 
       break;
   }
@@ -168,14 +166,13 @@ void processGhostTelemetryData(uint8_t data)
 
 void ghostSetDefault(int index, uint8_t id, uint8_t subId)
 {
-  TelemetrySensor & telemetrySensor = g_model.telemetrySensors[index];
+  TelemetrySensor &telemetrySensor = g_model.telemetrySensors[index];
 
   telemetrySensor.id = id;
   telemetrySensor.instance = subId;
 
-  const GhostSensor *sensor = getGhostSensor(id);
-  if(sensor)
-  {
+  const GhostSensor * sensor = getGhostSensor(id);
+  if (sensor) {
     TelemetryUnit unit = sensor->unit;
     uint8_t prec = min<uint8_t>(2, sensor->precision);
     telemetrySensor.init(sensor->name, unit, prec);
