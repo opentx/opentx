@@ -188,7 +188,7 @@ inline bool isModulePPM(uint8_t moduleIdx)
 
 inline bool isModuleTypeR9MNonAccess(uint8_t type)
 {
-  return type == MODULE_TYPE_R9M_PXX1 || type == MODULE_TYPE_R9M_LITE_PXX1 || type == MODULE_TYPE_R9M_LITE_PRO_PXX1;
+  return type == MODULE_TYPE_R9M_PXX1 || type == MODULE_TYPE_R9M_LITE_PXX1;
 }
 
 inline bool isModuleR9MNonAccess(uint8_t idx)
@@ -228,7 +228,7 @@ inline bool isModuleR9MLiteNonPro(uint8_t idx)
 
 inline bool isModuleTypeR9MLitePro(uint8_t type)
 {
-  return type == MODULE_TYPE_R9M_LITE_PRO_PXX1 || type == MODULE_TYPE_R9M_LITE_PRO_PXX2;
+  return type == MODULE_TYPE_R9M_LITE_PRO_PXX2;
 }
 
 inline bool isModuleTypeR9MLite(uint8_t type)
@@ -503,7 +503,7 @@ inline bool isTelemAllowedOnBind(uint8_t moduleIndex)
       return true;
   }
 
-  if (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_R9M_PXX1 || g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_R9M_LITE_PRO_PXX1) {
+  if (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_R9M_PXX1) {
     if (isModuleR9M_LBT(EXTERNAL_MODULE))
       return g_model.moduleData[EXTERNAL_MODULE].pxx.power < R9M_LBT_POWER_200_16CH_NOTELEM;
     else

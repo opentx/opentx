@@ -79,36 +79,34 @@ class ProtocolsConversionTable: public ConversionTable
       addConversion(PULSES_OFF, val++);
       addConversion(PULSES_PPM, val++);
 
-      addConversion(PULSES_PXX_XJT_X16, val);
+      addConversion(PULSES_PXX_XJT_X16, val);             // MODULE_TYPE_XJT_PXX1
       addConversion(PULSES_PXX_XJT_D8, val);
       addConversion(PULSES_PXX_XJT_LR12, val++);
 
       if (version >= 219) {
-        addConversion(PULSES_ACCESS_ISRM, val);
+        addConversion(PULSES_ACCESS_ISRM, val);           // MODULE_TYPE_ISRM_PXX2
         addConversion(PULSES_ACCST_ISRM_D16, val++);
       }
 
-      addConversion(PULSES_LP45, val);
+      addConversion(PULSES_LP45, val);                    // MODULE_TYPE_DSM2
       addConversion(PULSES_DSM2, val);
       addConversion(PULSES_DSMX, val++);
 
-      addConversion(PULSES_CROSSFIRE, val++);
-      addConversion(PULSES_MULTIMODULE, val++);
+      addConversion(PULSES_CROSSFIRE, val++);             // MODULE_TYPE_CROSSFIRE
+      addConversion(PULSES_MULTIMODULE, val++);           // MODULE_TYPE_MULTIMODULE
 
-      addConversion(PULSES_PXX_R9M, val++);
-      addConversion(PULSES_ACCESS_R9M, val++);
-      addConversion(PULSES_PXX_R9M_LITE, val++);
-      addConversion(PULSES_ACCESS_R9M_LITE, val++);
-      addConversion(PULSES_PXX_R9M_LITE_PRO, val++);
-      addConversion(PULSES_ACCESS_R9M_LITE_PRO, val++);
+      addConversion(PULSES_PXX_R9M, val++);               // MODULE_TYPE_R9M_PXX1
+      addConversion(PULSES_ACCESS_R9M, val++);            // MODULE_TYPE_R9M_PXX2
+      addConversion(PULSES_PXX_R9M_LITE, val++);          // MODULE_TYPE_R9M_LITE_PXX1
+      addConversion(PULSES_ACCESS_R9M_LITE, val++);       // MODULE_TYPE_R9M_LITE_PXX2
+      addConversion(PULSES_GHOST, val++);                 // MODULE_TYPE_GHOST
+      addConversion(PULSES_ACCESS_R9M_LITE_PRO, val++);   // MODULE_TYPE_R9M_LITE_PRO_PXX2
 
       addConversion(PULSES_SBUS, val++);
 
       addConversion(PULSES_XJT_LITE_X16, val);
       addConversion(PULSES_XJT_LITE_D8, val);
       addConversion(PULSES_XJT_LITE_LR12, val++);
-
-      addConversion(PULSES_GHOST, val++);
     }
 };
 
