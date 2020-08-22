@@ -137,8 +137,6 @@ void processGhostTelemetryFrame()
         setTelemetryValue(PROTOCOL_TELEMETRY_GHOST, sensor->id, 0, 0, rfModeString[i], UNIT_TEXT, i);
       } while(rfModeString[i++] != 0);
 
-      telemetryStreaming = TELEMETRY_TIMEOUT10ms;
-
       break;
   }
 }
