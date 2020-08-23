@@ -69,7 +69,6 @@ const GhostSensor *getGhostSensor(uint8_t id)
 
 void processGhostTelemetryValue(uint8_t index, int32_t value)
 {
-  const GhostSensor *sensor = getGhostSensor(index);
   if (!TELEMETRY_STREAMING())
     return;
 
