@@ -128,6 +128,14 @@ inline int SWITCHES_CONFIG_SIZE(Board::Type board, int version)
   return 16;
 }
 
+inline int MAX_MOUSE_ANALOG_STORAGE(Board::Type board, int version)
+{
+  if (IS_FAMILY_HORUS_OR_T16(board))
+    return 2;
+  else
+    return 0;
+}
+
 #define MAX_ROTARY_ENCODERS(board)            0
 #define MAX_FLIGHT_MODES(board, version)      9
 #define MAX_TIMERS(board, version)            3
@@ -300,7 +308,7 @@ class SourcesConversionTable: public ConversionTable {
         }
       }
 
-      for (int i=0; i<CPN_MAX_STICKS + MAX_POTS_SOURCES(board, version) + MAX_SLIDERS_SOURCES(board, version) + Boards::getCapability(board, Board::MouseAnalogs) + MAX_GYRO_ANALOGS(board, version); i++) {
+      for (int i=0; i<CPN_MAX_STICKS + MAX_POTS_SOURCES(board, version) + MAX_SLIDERS_SOURCES(board, version) + MAX_MOUSE_ANALOG_STORAGE(board, version) + MAX_GYRO_ANALOGS(board, version); i++) {
         int offset = 0;
         if (version <= 218 && IS_HORUS_X10(board) && i >= CPN_MAX_STICKS + MAX_POTS_STORAGE(board, version))
           offset += 2;
@@ -2569,7 +2577,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
   generalData(generalData),
   board(board),
   version(version),
-  inputsCount(CPN_MAX_STICKS + MAX_POTS_STORAGE(board, version) + MAX_SLIDERS_STORAGE(board, version) + Boards::getCapability(board, Board::MouseAnalogs))
+  inputsCount(CPN_MAX_STICKS + MAX_POTS_STORAGE(board, version) + MAX_SLIDERS_STORAGE(board, version) + MAX_MOUSE_ANALOG_STORAGE(board, version))
 {
   qCDebug(eepromImport) << QString("OpenTxGeneralData::OpenTxGeneralData(board: %1, version:%2, variant:%3)").arg(board).arg(version).arg(variant);
 
