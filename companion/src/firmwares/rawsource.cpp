@@ -374,8 +374,8 @@ RawSource RawSource::convert(RadioDataConversionState & cstate)
   // final validation (we do not pass model to isAvailable() because we don't know what has or hasn't been converted)
   if (index < 0 || !isAvailable(NULL, cstate.toGS(), cstate.toType)) {
     cstate.setInvalid(oldData);
-    index = -1;  // TODO: better way to flag invalid sources?
-    type = MAX_SOURCE_TYPE;
+    // no source is safer than an invalid one
+    clear();
   }
   else if (evt == RadioDataConversionState::EVT_CVRT) {
     cstate.setConverted(oldData, RadioDataConversionState::LogField(index, toString(cstate.toModel(), cstate.toGS(), cstate.toType)));
