@@ -69,6 +69,9 @@ const GhostSensor * getGhostSensor(uint8_t id)
 
 void processGhostTelemetryValue(uint8_t index, int32_t value)
 {
+  if (!TELEMETRY_STREAMING())
+    return;
+
   const GhostSensor * sensor = getGhostSensor(index);
   setTelemetryValue(PROTOCOL_TELEMETRY_GHOST, sensor->id, 0, 0, value, sensor->unit, sensor->precision);
 }
@@ -112,6 +115,7 @@ void processGhostTelemetryFrame()
       processGhostTelemetryValue(GHOST_ID_RX_SNR, snrVal);
 
       // give OpenTx the LQ value, not RSSI
+      TRACE("LQ %d", lqVal);
       if (lqVal) {
         telemetryData.rssi.set(lqVal);
         telemetryStreaming = TELEMETRY_TIMEOUT10ms;
@@ -131,10 +135,11 @@ void processGhostTelemetryFrame()
       const GhostSensor * sensor = getGhostSensor(GHOST_ID_RF_MODE);
       const char * rfModeString = ghstRfProfileValue[rfModeEnum];
       int i = 0;
-      do {
-        setTelemetryValue(PROTOCOL_TELEMETRY_GHOST, sensor->id, 0, 0, rfModeString[i], UNIT_TEXT, i);
-      } while (rfModeString[i++] != 0);
-
+      if (TELEMETRY_STREAMING()) {
+        do {
+          setTelemetryValue(PROTOCOL_TELEMETRY_GHOST, sensor->id, 0, 0, rfModeString[i], UNIT_TEXT, i);
+        } while (rfModeString[i++] != 0);
+      }
       break;
   }
 }
