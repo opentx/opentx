@@ -829,13 +829,12 @@ void ModelData::updateTypeIndexRef(R & curRef, const T type, const int idxAdj, c
   newRef.type = curRef.type;
   newRef.index = abs(curRef.index);
 
-  int idx = newRef.index / updRefInfo.occurences;
-  int occ = newRef.index % updRefInfo.occurences;
+  div_t idx = div(newRef.index, updRefInfo.occurences);
 
   switch (updRefInfo.action)
   {
     case REF_UPD_ACT_CLEAR:
-      if (idx != (updRefInfo.index1 + idxAdj))
+      if (idx.quot != (updRefInfo.index1 + idxAdj))
         return;
       if (defClear)
         newRef.clear();
@@ -845,12 +844,12 @@ void ModelData::updateTypeIndexRef(R & curRef, const T type, const int idxAdj, c
       }
       break;
     case REF_UPD_ACT_SHIFT:
-      if (idx < (updRefInfo.index1 + idxAdj))
+      if (idx.quot < (updRefInfo.index1 + idxAdj))
         return;
 
       newRef.index += updRefInfo.shift;
 
-      if (idx < (updRefInfo.index1 + idxAdj) || idx > (updRefInfo.maxindex + idxAdj)) {
+      if (idx.quot < (updRefInfo.index1 + idxAdj) || idx.quot > (updRefInfo.maxindex + idxAdj)) {
         if (defClear)
           newRef.clear();
         else {
@@ -860,10 +859,10 @@ void ModelData::updateTypeIndexRef(R & curRef, const T type, const int idxAdj, c
       }
       break;
     case REF_UPD_ACT_SWAP:
-      if (idx == updRefInfo.index1 + idxAdj)
-        newRef.index = ((updRefInfo.index2 + idxAdj) * updRefInfo.occurences) + occ;
-      else if (idx == updRefInfo.index2 + idxAdj)
-        newRef.index = ((updRefInfo.index1 + idxAdj) * updRefInfo.occurences) + occ;
+      if (idx.quot == updRefInfo.index1 + idxAdj)
+        newRef.index = ((updRefInfo.index2 + idxAdj) * updRefInfo.occurences) + idx.rem;
+      else if (idx.quot == updRefInfo.index2 + idxAdj)
+        newRef.index = ((updRefInfo.index1 + idxAdj) * updRefInfo.occurences) + idx.rem;
       break;
     default:
       qDebug() << "Error - unhandled action:" << updRefInfo.action;
