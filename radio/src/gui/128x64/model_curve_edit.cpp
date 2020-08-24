@@ -171,7 +171,7 @@ void menuModelCurveOne(event_t event)
       killEvents(event);
       break;
 #elif defined(NAVIGATION_XLITE)
-    case EVT_KEY_BREAK(KEY_ENTER):
+    case EVT_KEY_FIRST(KEY_ENTER):
       if (IS_SHIFT_PRESSED()) {
         pushMenu(menuChannelsView);
         killEvents(event);

@@ -91,7 +91,7 @@ void menuModelMixOne(event_t event)
     killEvents(event);
   }
 #elif defined(NAVIGATION_XLITE)
-  if (event == EVT_KEY_BREAK(KEY_ENTER) && IS_SHIFT_PRESSED()) {
+  if (event == EVT_KEY_FIRST(KEY_ENTER) && IS_SHIFT_PRESSED()) {
     pushMenu(menuChannelsView);
     killEvents(event);
   }
