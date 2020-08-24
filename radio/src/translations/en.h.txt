@@ -1356,3 +1356,7 @@
 #define ZSTR_CL18                      "Cl18"
 #define ZSTR_FRAME_RATE                "FRat"
 #define ZSTR_TOTAL_LATENCY             "TLat"
+#define ZSTR_VTX_FREQ                  "VFrq"
+#define ZSTR_VTX_PWR                   "VPwr"
+#define ZSTR_VTX_CHAN                  "VChn"
+#define ZSTR_VTX_BAND                  "VBan"

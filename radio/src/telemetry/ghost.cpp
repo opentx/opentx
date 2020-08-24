@@ -21,6 +21,7 @@
 #include "opentx.h"
 
 const char * ghstRfProfileValue[GHST_RF_PROFILE_COUNT] = {"Auto", "Norm", "Race", "Pure", "Long"};
+const char * ghstVtxBandName[GHST_VTX_BAND_COUNT] = {"- - -", "IRC", "Race", "BandE", "BandB", "BandA"};
 const uint32_t ghstPwrValueuW[GHST_PWR_COUNT] = {16, 100, 1000, 25000, 100000, 200000,
                                                  350000, 500000, 600000, 1000000, 15000000,
                                                  2000000, 3000000, 4000000};
@@ -43,6 +44,11 @@ enum
   GHOST_ID_TX_POWER = 0x0005,           // Tx-side power output
   GHOST_ID_RF_MODE = 0x0006,            // Tx-side frame rate
   GHOST_ID_TOTAL_LATENCY = 0x0007,      // Tx-side total latency
+  GHOST_ID_VTX_FREQ = 0x0008,           // Vtx Frequency (in MHz)
+  GHOST_ID_VTX_POWER = 0x0009,          // Vtx Power (in mW)
+  GHOST_ID_VTX_CHAN = 0x000a,           // Vtx Channel
+  GHOST_ID_VTX_BAND = 0x000b,           // Vtx Band
+
 };
 
 const GhostSensor ghostSensors[] = {
@@ -50,10 +56,15 @@ const GhostSensor ghostSensors[] = {
   {GHOST_ID_RX_LQ,         ZSTR_RX_QUALITY,    UNIT_PERCENT,    0},
   {GHOST_ID_RX_SNR,        ZSTR_RX_SNR,        UNIT_DB,         0},
 
-  {GHOST_ID_FRAME_RATE,    ZSTR_FRAME_RATE,    UNIT_HERTZ,      0},
+  {GHOST_ID_FRAME_RATE,    ZSTR_FRAME_RATE,    UNIT_RAW,        0},
   {GHOST_ID_TX_POWER,      ZSTR_TX_POWER,      UNIT_MILLIWATTS, 0},
   {GHOST_ID_RF_MODE,       ZSTR_RF_MODE,       UNIT_TEXT,       0},
-  {GHOST_ID_TOTAL_LATENCY, ZSTR_TOTAL_LATENCY, UNIT_US,         0},
+  {GHOST_ID_TOTAL_LATENCY, ZSTR_TOTAL_LATENCY, UNIT_RAW,        0},
+
+  {GHOST_ID_VTX_FREQ,      ZSTR_VTX_FREQ,      UNIT_RAW,        0},
+  {GHOST_ID_VTX_POWER,     ZSTR_VTX_PWR,       UNIT_RAW,        0},
+  {GHOST_ID_VTX_CHAN,      ZSTR_VTX_CHAN,      UNIT_RAW,        0},
+  {GHOST_ID_VTX_BAND,      ZSTR_VTX_BAND,      UNIT_TEXT,       0},
 
   {0x00,                   NULL,               UNIT_RAW,        0},
 };
@@ -74,6 +85,16 @@ void processGhostTelemetryValue(uint8_t index, int32_t value)
 
   const GhostSensor * sensor = getGhostSensor(index);
   setTelemetryValue(PROTOCOL_TELEMETRY_GHOST, sensor->id, 0, 0, value, sensor->unit, sensor->precision);
+}
+
+void processGhostTelemetryValueString(const GhostSensor * sensor, const char * str)
+{
+  int i = 0;
+  if (TELEMETRY_STREAMING()) {
+    do {
+      setTelemetryValue(PROTOCOL_TELEMETRY_GHOST, sensor->id, 0, 0, str[i], UNIT_TEXT, i);
+    } while (str[i++] != 0);
+  }
 }
 
 bool checkGhostTelemetryFrameCRC()
@@ -106,6 +127,7 @@ void processGhostTelemetryFrame()
   uint8_t id = telemetryRxBuffer[2];
   switch (id) {
     case GHST_DL_LINK_STAT:
+    {
       uint8_t rssiVal = min<uint8_t>(telemetryRxBuffer[3], 100);
       uint8_t lqVal = min<uint8_t>(telemetryRxBuffer[4], 100);
       uint8_t snrVal = min<uint8_t>(telemetryRxBuffer[5], 100);
@@ -115,7 +137,6 @@ void processGhostTelemetryFrame()
       processGhostTelemetryValue(GHOST_ID_RX_SNR, snrVal);
 
       // give OpenTx the LQ value, not RSSI
-      TRACE("LQ %d", lqVal);
       if (lqVal) {
         telemetryData.rssi.set(lqVal);
         telemetryStreaming = TELEMETRY_TIMEOUT10ms;
@@ -134,13 +155,23 @@ void processGhostTelemetryFrame()
       // RF mode string, one char at a time
       const GhostSensor * sensor = getGhostSensor(GHOST_ID_RF_MODE);
       const char * rfModeString = ghstRfProfileValue[rfModeEnum];
-      int i = 0;
-      if (TELEMETRY_STREAMING()) {
-        do {
-          setTelemetryValue(PROTOCOL_TELEMETRY_GHOST, sensor->id, 0, 0, rfModeString[i], UNIT_TEXT, i);
-        } while (rfModeString[i++] != 0);
-      }
+      processGhostTelemetryValueString(sensor, rfModeString);
       break;
+    }
+
+    case GHST_DL_VTX_STAT:
+    {
+      uint8_t vtxBandEnum = min<uint8_t>(telemetryRxBuffer[8], GHST_VTX_BAND_MAX);
+
+      const GhostSensor * sensor = getGhostSensor(GHOST_ID_VTX_BAND);
+      const char * vtxBandString = ghstVtxBandName[vtxBandEnum];
+
+      processGhostTelemetryValue(GHOST_ID_VTX_FREQ, getTelemetryValue_u16(4));
+      processGhostTelemetryValue(GHOST_ID_VTX_POWER, getTelemetryValue_u16(6));
+      processGhostTelemetryValue(GHOST_ID_VTX_CHAN, min<uint8_t>(telemetryRxBuffer[9], 8));
+      processGhostTelemetryValueString(sensor, vtxBandString);
+      break;
+    }
   }
 }
 
@@ -187,4 +218,3 @@ void ghostSetDefault(int index, uint8_t id, uint8_t subId)
 
   storageDirty(EE_MODEL);
 }
-

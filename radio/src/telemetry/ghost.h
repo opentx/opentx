@@ -40,6 +40,7 @@
 
 #define GHST_DL_OPENTX_SYNC		0x20
 #define GHST_DL_LINK_STAT               0x21
+#define GHST_DL_VTX_STAT                0x22
 
 #define GHST_RC_CTR_VAL_12BIT		0x7C0   // 0x3e0 << 1
 #define GHST_RC_CTR_VAL_8BIT		0x7C
@@ -49,32 +50,44 @@
 
 enum GhstPowerMode
 {
-    GHST_PWR_16UW =   0,
-    GHST_PWR_100UW =  1,
-    GHST_PWR_1MW =    2,
-    GHST_PWR_25MW =   3,
-    GHST_PWR_100MW =  4,
-    GHST_PWR_200MW =  5,
-    GHST_PWR_350MW =  6,
-    GHST_PWR_500MW =  7,
-    GHST_PWR_600MW =  8,
-    GHST_PWR_1W =     9,
-    GHST_PWR_1_5W =   10,
-    GHST_PWR_2W =     11,
-    GHST_PWR_3W =     12,
-    GHST_PWR_4W =     13,
-    GHST_PWR_COUNT
+  GHST_PWR_16UW =   0,
+  GHST_PWR_100UW =  1,
+  GHST_PWR_1MW =    2,
+  GHST_PWR_25MW =   3,
+  GHST_PWR_100MW =  4,
+  GHST_PWR_200MW =  5,
+  GHST_PWR_350MW =  6,
+  GHST_PWR_500MW =  7,
+  GHST_PWR_600MW =  8,
+  GHST_PWR_1W =     9,
+  GHST_PWR_1_5W =   10,
+  GHST_PWR_2W =     11,
+  GHST_PWR_3W =     12,
+  GHST_PWR_4W =     13,
+  GHST_PWR_COUNT
 };
 
 enum GhstRFProfile
 {
-    GHST_RF_PROFILE_Auto        = 0,
-    GHST_RF_PROFILE_Normal      = 1,
-    GHST_RF_PROFILE_Race        = 2,
-    GHST_RF_PROFILE_PureRace    = 3,
-    GHST_RF_PROFILE_LongRange   = 4,
-    GHST_RF_PROFILE_MAX = GHST_RF_PROFILE_LongRange,
-    GHST_RF_PROFILE_COUNT
+  GHST_RF_PROFILE_Auto        = 0,
+  GHST_RF_PROFILE_Normal      = 1,
+  GHST_RF_PROFILE_Race        = 2,
+  GHST_RF_PROFILE_PureRace    = 3,
+  GHST_RF_PROFILE_LongRange   = 4,
+  GHST_RF_PROFILE_MAX = GHST_RF_PROFILE_LongRange,
+  GHST_RF_PROFILE_COUNT
+};
+
+enum GhstVtxBand
+{
+  GHST_VTX_BAND_Unknown     = 0,
+  GHST_VTX_BAND_Irc         = 1,
+  GHST_VTX_BAND_Race        = 2,
+  GHST_VTX_BAND_BandE       = 3,
+  GHST_VTX_BAND_BandB       = 4,
+  GHST_VTX_BAND_BandA       = 5,
+  GHST_VTX_BAND_MAX = GHST_VTX_BAND_BandA,
+  GHST_VTX_BAND_COUNT
 };
 
 void processGhostTelemetryData(uint8_t data);
