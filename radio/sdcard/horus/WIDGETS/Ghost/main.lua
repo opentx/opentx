@@ -16,29 +16,33 @@
 ---- #########################################################################
 
 local backgroundBitmap
+local offsetX
+local offsetY
+local sensors = {}
 
 local options = {
-  { "RFMD", SOURCE, 0 },
-  { "FRat", SOURCE, 0 },
-  { "TPWR", SOURCE, 0 },
-  -- rssi is taken directly
+  { "VTX", BOOL, 0 },
 }
+
+local function getValues(wgt)
+  if wgt.options.VTX == 0 then
+    sensors[1] = string.format("%s", getValue("RFMD"))
+    sensors[2] = string.format("%d Hz", getValue("FRat"))
+    sensors[3] = string.format("%d %%", getValue("RDly"))
+    sensors[4] = string.format("%d mW", getValue("TPWR"))
+  else
+    sensors[1] = string.format("%s", getValue("VBan"))
+    sensors[2] = string.format("%d MHz", getValue("VFrq"))
+    sensors[3] = string.format("%d", getValue("VChn"))
+    sensors[4] = string.format("%d mW", getValue("VPwr"))
+  end
+end
 
 local function create(zone, options)
   local wgt = { zone=zone, options=options}
-
   backgroundBitmap = Bitmap.open("/WIDGETS/Ghost/img/background.png")
-
-  if wgt.options.RFMD == 0 then
-    wgt.options.Sensor = "RFMD"
-  end
-  if wgt.options.FRat == 0 then
-    wgt.options.Sensor = "FRat"
-  end
-  if wgt.options.TPWR == 0 then
-    wgt.options.Sensor = "TPWR"
-  end
-
+  offsetX = (wgt.zone.w - 178) / 2
+  offsetY = (wgt.zone.h - 148) / 2
   return wgt
 end
 
@@ -56,24 +60,23 @@ function refresh(wgt)
   end
 
   if backgroundBitmap ~= nil then
-    lcd.drawBitmap(backgroundBitmap, wgt.zone.x, wgt.zone.y)
+    lcd.drawBitmap(backgroundBitmap, wgt.zone.x + offsetX, wgt.zone.y + offsetY)
   end
 
   if getRSSI() ~= 0 then
-    -- Ghost mode
-    value = string.format("%s", getValue(wgt.options.RFMD))
-    lcd.drawText(wgt.zone.x + 75, wgt.zone.y + 2, value, CENTER + DBLSIZE)
+    getValues(wgt)
 
-    -- Frame rate
-    value = string.format("%d Hz", getValue(wgt.options.FRat))
-    lcd.drawText(wgt.zone.x + 85, wgt.zone.y + 35, value, CENTER + DBLSIZE)
+    -- RF Mode/Band
+    lcd.drawText(wgt.zone.x + offsetX + 75, wgt.zone.y + offsetY + 2, sensors[1], CENTER + DBLSIZE)
 
-    -- RSSI
-    lcd.drawText(wgt.zone.x + 85, wgt.zone.y + 70, getRSSI() .." %", CENTER + DBLSIZE)
+    -- Frame rate / Frequency
+    lcd.drawText(wgt.zone.x + offsetX + 85, wgt.zone.y + offsetY + 35, sensors[2], CENTER + DBLSIZE)
+
+    -- RSSI / Channel
+    lcd.drawText(wgt.zone.x + offsetX + 85, wgt.zone.y + offsetY + 70, sensors[3], CENTER + DBLSIZE)
 
     -- Transmit power
-    value = string.format("%d mW", getValue(wgt.options.TPWR))
-    lcd.drawText(wgt.zone.x + 85, wgt.zone.y + 105, value, CENTER + DBLSIZE)
+    lcd.drawText(wgt.zone.x + offsetX + 85, wgt.zone.y + offsetY + 105, sensors[4], CENTER + DBLSIZE)
   end
 
 end
