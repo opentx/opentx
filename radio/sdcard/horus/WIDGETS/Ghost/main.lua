@@ -16,6 +16,8 @@
 ---- #########################################################################
 
 local backgroundBitmap
+local offsetX
+local offsetY
 local sensors = {}
 
 local options = {
@@ -39,6 +41,8 @@ end
 local function create(zone, options)
   local wgt = { zone=zone, options=options}
   backgroundBitmap = Bitmap.open("/WIDGETS/Ghost/img/background.png")
+  offsetX = (wgt.zone.w - 178) / 2
+  offsetY = (wgt.zone.h - 148) / 2
   return wgt
 end
 
@@ -56,23 +60,23 @@ function refresh(wgt)
   end
 
   if backgroundBitmap ~= nil then
-    lcd.drawBitmap(backgroundBitmap, wgt.zone.x, wgt.zone.y)
+    lcd.drawBitmap(backgroundBitmap, wgt.zone.x + offsetX, wgt.zone.y + offsetY)
   end
 
   if getRSSI() ~= 0 then
     getValues(wgt)
 
     -- RF Mode/Band
-    lcd.drawText(wgt.zone.x + 75, wgt.zone.y + 2, sensors[1], CENTER + DBLSIZE)
+    lcd.drawText(wgt.zone.x + offsetX + 75, wgt.zone.y + offsetY + 2, sensors[1], CENTER + DBLSIZE)
 
     -- Frame rate / Frequency
-    lcd.drawText(wgt.zone.x + 85, wgt.zone.y + 35, sensors[2], CENTER + DBLSIZE)
+    lcd.drawText(wgt.zone.x + offsetX + 85, wgt.zone.y + offsetY + 35, sensors[2], CENTER + DBLSIZE)
 
     -- RSSI / Channel
-    lcd.drawText(wgt.zone.x + 85, wgt.zone.y + 70, sensors[3], CENTER + DBLSIZE)
+    lcd.drawText(wgt.zone.x + offsetX + 85, wgt.zone.y + offsetY + 70, sensors[3], CENTER + DBLSIZE)
 
     -- Transmit power
-    lcd.drawText(wgt.zone.x + 85, wgt.zone.y + 105, sensors[4], CENTER + DBLSIZE)
+    lcd.drawText(wgt.zone.x + offsetX + 85, wgt.zone.y + offsetY + 105, sensors[4], CENTER + DBLSIZE)
   end
 
 end
