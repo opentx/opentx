@@ -28,12 +28,12 @@ local function getValues(wgt)
   if wgt.options.VTX == 0 then
     sensors[1] = string.format("%s", getValue("RFMD"))
     sensors[2] = string.format("%d Hz", getValue("FRat"))
-    sensors[3] = string.format("%d %%", getValue("RDly"))
+    sensors[3] = string.format("%d %%", getValue("RQly"))
     sensors[4] = string.format("%d mW", getValue("TPWR"))
   else
     sensors[1] = string.format("%s", getValue("VBan"))
-    sensors[2] = string.format("%d MHz", getValue("VFrq"))
-    sensors[3] = string.format("%d", getValue("VChn"))
+    sensors[2] = string.format("%dMHz", getValue("VFrq"))
+    sensors[3] = string.format("CH: %d", getValue("VChn"))
     sensors[4] = string.format("%d mW", getValue("VPwr"))
   end
 end
