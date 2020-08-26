@@ -22,9 +22,6 @@
 
 const char *ghstRfProfileValue[GHST_RF_PROFILE_COUNT] = { "Auto", "Norm", "Race", "Pure", "Long" };
 const char *ghstVtxBandName[GHST_VTX_BAND_COUNT] = { "- - -" , "IRC", "Race", "BandE", "BandB", "BandA" };
-const uint32_t ghstPwrValueuW[GHST_PWR_COUNT] = { 16, 100, 1000, 25000, 100000, 200000,
-                                                  350000, 500000, 600000, 1000000, 15000000,
-                                                  2000000, 3000000, 4000000 };
 
 struct GhostSensor
 {
@@ -161,11 +158,10 @@ void processGhostTelemetryFrame()
         telemetryStreaming = 0;
       }
 
-      uint8_t txPwrEnum = min<uint8_t>(telemetryRxBuffer[6], GHST_PWR_4W);
-      processGhostTelemetryValue(GHOST_ID_TX_POWER, ghstPwrValueuW[txPwrEnum] / 1000);
-      processGhostTelemetryValue(GHOST_ID_FRAME_RATE, getTelemetryValue_u16(7));
-      processGhostTelemetryValue(GHOST_ID_TOTAL_LATENCY, getTelemetryValue_u16(9));
-      uint8_t rfModeEnum = min<uint8_t>(telemetryRxBuffer[11], GHST_RF_PROFILE_MAX);
+      processGhostTelemetryValue(GHOST_ID_TX_POWER, getTelemetryValue_u16(6));
+      processGhostTelemetryValue(GHOST_ID_FRAME_RATE, getTelemetryValue_u16(8));
+      processGhostTelemetryValue(GHOST_ID_TOTAL_LATENCY, getTelemetryValue_u16(10));
+      uint8_t rfModeEnum = min<uint8_t>(telemetryRxBuffer[12], GHST_RF_PROFILE_MAX);
 
       // RF mode string, one char at a time
       const GhostSensor *sensor = getGhostSensor(GHOST_ID_RF_MODE);
