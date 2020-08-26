@@ -29,7 +29,11 @@ local function getValues(wgt)
     sensors[1] = string.format("%s", getValue("RFMD"))
     sensors[2] = string.format("%d Hz", getValue("FRat"))
     sensors[3] = string.format("%d %%", getValue("RQly"))
-    sensors[4] = string.format("%d mW", getValue("TPWR"))
+    if (getValue("TPWR") == 0) then
+      sensors[4] = "Range"
+    else
+      sensors[4] = string.format("%d mW", getValue("TPWR"))
+    end
   else
     sensors[1] = string.format("%s", getValue("VBan"))
     sensors[2] = string.format("%dMHz", getValue("VFrq"))
