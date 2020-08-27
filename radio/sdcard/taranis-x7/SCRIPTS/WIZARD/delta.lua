@@ -52,10 +52,10 @@ end
 
 local function fieldIncDec(event, value, max, force)
   if edit or force==true then
-    if event == EVT_VIRTUAL_PREV or event == EVT_VIRTUAL_PREV_REPT then
+    if event == EVT_VIRTUAL_INC then
       value = (value + max)
       dirty = true
-    elseif event == EVT_VIRTUAL_NEXT or event == EVT_VIRTUAL_NEXT_REPT then
+    elseif event == EVT_VIRTUAL_DEC then
       value = (value + max + 2)
       dirty = true
     end
@@ -93,11 +93,11 @@ local function navigate(event, fieldMax, prevPage, nextPage)
       dirty = blinkChanged()
     end
   else
-    if event == EVT_VIRTUAL_NEXT then
+    if event == EVT_PAGE_BREAK or event == EVT_RIGHT_FIRST then
       page = nextPage
       field = 0
       dirty = true
-    elseif event == EVT_VIRTUAL_PREV then
+    elseif event == EVT_PAGE_LONG or event == EVT_LEFT_FIRST then
       page = prevPage
       field = 0
       killEvents(event);
