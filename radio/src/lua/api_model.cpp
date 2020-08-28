@@ -809,7 +809,7 @@ Insert a mixer line into Channel
 
 @param value (table) see model.getMix() for table format
 
-@status current Introduced in 2.0.0, parameters below `multiplex` added in 2.0.13, flightmoddes added 2.3.10
+@status current Introduced in 2.0.0, parameters below `multiplex` added in 2.0.13, flightModes added 2.3.10
 */
 static int luaModelInsertMix(lua_State *L)
 {
