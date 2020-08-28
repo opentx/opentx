@@ -266,7 +266,9 @@ void generalDefault()
 
 #if defined(PCBHORUS)
   g_eeGeneral.blOffBright = 20;
-#else
+#endif
+
+#if defined(LCD_CONTRAST_DEFAULT)
   g_eeGeneral.contrast = LCD_CONTRAST_DEFAULT;
 #endif
 
@@ -2041,7 +2043,7 @@ int main()
   // important to disable it before commencing with system initialisation (or
   // we could put a bunch more WDG_RESET()s in. But I don't like that approach
   // during boot up.)
-#if defined(PCBTARANIS)
+#if defined(LCD_CONTRAST_DEFAULT)
   g_eeGeneral.contrast = LCD_CONTRAST_DEFAULT;
 #endif
 

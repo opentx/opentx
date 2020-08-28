@@ -847,7 +847,7 @@ void ledBlue();
 #define IS_LCD_RESET_NEEDED()           true
 #define LCD_CONTRAST_MIN                10
 #define LCD_CONTRAST_MAX                30
-#define LCD_CONTRAST_DEFAULT            20
+#define LCD_CONTRAST_DEFAULT            15
 #endif
 
 #if defined(PCBX9D) || defined(PCBX9E) || (defined(PCBX9DP) && PCBREV < 2019)
