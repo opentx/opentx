@@ -345,11 +345,9 @@ bool setupPulsesExternalModule(uint8_t protocol)
 
 #if defined(GHOST)
     case PROTOCOL_CHANNELS_GHOST:
-    {
       setupPulsesGhost();
       scheduleNextMixerCalculation(EXTERNAL_MODULE, GHOST_PERIOD);
       return true;
-    }
 #endif
 
 #if defined(MULTIMODULE)

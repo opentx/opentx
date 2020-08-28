@@ -744,7 +744,7 @@ bool isTelemetryProtocolAvailable(int protocol)
     return false;
   }
 
-  if (protocol== PROTOCOL_TELEMETRY_GHOST) {
+  if ( protocol== PROTOCOL_TELEMETRY_GHOST) {
     return false;
   }
 

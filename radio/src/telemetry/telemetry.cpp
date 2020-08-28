@@ -303,7 +303,7 @@ void telemetryInit(uint8_t protocol)
 #endif
 
 #if defined(GHOST)
-    else if (protocol == PROTOCOL_TELEMETRY_GHOST) {
+  else if (protocol == PROTOCOL_TELEMETRY_GHOST) {
     telemetryPortInit(GHOST_BAUDRATE, TELEMETRY_SERIAL_DEFAULT);
 #if defined(LUA)
     outputTelemetryBuffer.reset();

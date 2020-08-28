@@ -84,8 +84,6 @@ void setupPulsesGhost()
 {
   if (telemetryProtocol == PROTOCOL_TELEMETRY_GHOST) {
     uint8_t * pulses = extmodulePulsesData.ghost.pulses;
-    {
-      extmodulePulsesData.ghost.length = createGhostChannelsFrame(pulses, &channelOutputs[g_model.moduleData[EXTERNAL_MODULE].channelsStart]);
-    }
+    extmodulePulsesData.ghost.length = createGhostChannelsFrame(pulses, &channelOutputs[g_model.moduleData[EXTERNAL_MODULE].channelsStart]);
   }
 }

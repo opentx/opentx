@@ -322,7 +322,7 @@ void extmoduleSendNextFrame()
 #endif
 
 #if defined(GHOST)
-      case PROTOCOL_CHANNELS_GHOST:
+    case PROTOCOL_CHANNELS_GHOST:
       sportSendBuffer(extmodulePulsesData.ghost.pulses, extmodulePulsesData.ghost.length);
       break;
 #endif
