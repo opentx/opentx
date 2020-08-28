@@ -429,6 +429,9 @@ inline bool isModuleRxNumAvailable(uint8_t moduleIdx)
   if (isModuleMultimodule(moduleIdx))
     return true;
 
+  if (isModuleCrossfire(moduleIdx))
+    return true;
+
   return false;
 }
 

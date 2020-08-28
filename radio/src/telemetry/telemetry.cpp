@@ -216,6 +216,11 @@ void telemetryWakeup()
       if (TELEMETRY_STREAMING()) {
         if (telemetryState == TELEMETRY_KO) {
           AUDIO_TELEMETRY_BACK();
+#if defined(CROSSFIRE)
+          if (isModuleCrossfire(EXTERNAL_MODULE)) {
+            moduleState[EXTERNAL_MODULE].counter = CRSF_FRAME_MODELID;
+          }
+#endif
         }
         telemetryState = TELEMETRY_OK;
       }

@@ -66,6 +66,7 @@ bool ModuleData::supportRxNum() const
     case PULSES_PXX_R9M_LITE:
     case PULSES_PXX_R9M_LITE_PRO:
     case PULSES_MULTIMODULE:
+    case PULSES_CROSSFIRE:
     case PULSES_ACCESS_ISRM:
     case PULSES_ACCST_ISRM_D16:
     case PULSES_ACCESS_R9M:
