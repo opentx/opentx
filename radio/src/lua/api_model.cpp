@@ -753,9 +753,9 @@ Get configuration for specified Mix
  * `delayDown` (number) delay down
  * `speedUp` (number) speed up
  * `speedDown` (number) speed down
-* 'flightModes' (table) table of enabled flightModes {0,2,7} means that the input is enabled for FM0, FM2 and FM7
+ * 'flightModes' (table) table of enabled flightModes {0,2,7} means that the input is enabled for FM0, FM2 and FM7
 
-@status current Introduced in 2.0.0, parameters below `multiplex` added in 2.0.13, flightmoddes added 2.3.10
+@status current Introduced in 2.0.0, parameters below `multiplex` added in 2.0.13, flightModes added 2.3.10
 */
 static int luaModelGetMix(lua_State *L)
 {
