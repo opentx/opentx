@@ -368,6 +368,12 @@ void extmoduleSendNextFrame()
       break;
 #endif
 
+#if defined(GHOST)
+    case PROTOCOL_CHANNELS_GHOST:
+      sportSendBuffer(extmodulePulsesData.ghost.pulses, extmodulePulsesData.ghost.length);
+      break;
+#endif
+
     default:
       EXTMODULE_TIMER->DIER |= TIM_DIER_CC2IE;
       break;

@@ -89,6 +89,8 @@ enum {
 #elif defined(PCBX10)
   #if defined(PCBREV_EXPRESS)
     #define IS_FIRMWARE_COMPATIBLE_WITH_BOARD() (hardwareOptions.pcbrev == PCBREV_X10_EXPRESS)
+  #elif defined(RADIO_FAMILY_T16)
+    #define IS_FIRMWARE_COMPATIBLE_WITH_BOARD() (true)
   #else
     #define IS_FIRMWARE_COMPATIBLE_WITH_BOARD() (hardwareOptions.pcbrev == PCBREV_X10_STD)
   #endif

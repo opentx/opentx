@@ -23,6 +23,7 @@
 
 #include "frsky.h"
 #include "crossfire.h"
+#include "ghost.h"
 #include "myeeprom.h"
 #include "io/frsky_sport.h"
 
@@ -150,6 +151,12 @@ inline uint8_t modelTelemetryProtocol()
 #if defined(CROSSFIRE)
   if (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_CROSSFIRE) {
     return PROTOCOL_TELEMETRY_CROSSFIRE;
+  }
+#endif
+
+#if defined(GHOST)
+  if (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_GHOST) {
+    return PROTOCOL_TELEMETRY_GHOST;
   }
 #endif
 

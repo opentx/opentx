@@ -178,7 +178,7 @@ inline uint8_t MODULE_CHANNELS_ROWS(int moduleIdx)
     else
       return 0;
   }
-  else if (isModuleDSM2(moduleIdx) || isModuleCrossfire(moduleIdx) || isModuleSBUS(moduleIdx)) {
+  else if (isModuleDSM2(moduleIdx) || isModuleCrossfire(moduleIdx) || isModuleGhost(moduleIdx) || isModuleSBUS(moduleIdx)) {
     return 0;
   }
   else {

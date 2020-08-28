@@ -161,7 +161,8 @@ QString ModuleData::protocolToString(unsigned protocol)
     "FrSky ACCESS R9M Lite",
     "FrSky ACCESS R9M Lite Pro",
     "FrSky XJT lite (D16)", "FrSky XJT lite (D8)", "FrSky XJT lite (LR12)",
-    "AFHDS3"
+    "AFHDS3",
+    "ImmersionRC Ghost"
   };
 
   return CHECK_IN_ARRAY(strings, protocol);
@@ -222,6 +223,7 @@ int ModuleData::getMaxChannelCount()
     case PULSES_XJT_LITE_X16:
     case PULSES_PXX_XJT_X16:
     case PULSES_CROSSFIRE:
+    case PULSES_GHOST:
     case PULSES_SBUS:
     case PULSES_PPM:
       return 16;

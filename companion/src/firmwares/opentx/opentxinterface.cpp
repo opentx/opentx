@@ -760,6 +760,7 @@ bool OpenTxFirmware::isAvailable(PulsesProtocol proto, int port)
           case PULSES_MULTIMODULE:
           case PULSES_CROSSFIRE:
           case PULSES_AFHDS3:
+          case PULSES_GHOST:
             return true;
           case PULSES_ACCESS_R9M:
             return IS_TARANIS_XLITE(board) || IS_TARANIS_X9LITE(board) || board == BOARD_TARANIS_X9DP_2019 || board == BOARD_X10_EXPRESS || (IS_FAMILY_HORUS_OR_T16(board) && id.contains("internalaccess"));
