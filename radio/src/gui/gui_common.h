@@ -149,10 +149,10 @@ inline uint8_t MODULE_BIND_ROWS(int moduleIdx)
     return 0;
 
   if (isModuleMultimodule(moduleIdx)) {
-   if (IS_RX_MULTI(moduleIdx))
-     return 1;
-   else
-     return 2;
+    if (IS_RX_MULTI(moduleIdx))
+      return 1;
+    else
+      return 2;
   }
   else if (isModuleXJTD8(moduleIdx) || isModuleSBUS(moduleIdx) || isModuleAFHDS3(moduleIdx)) {
     return 1;
