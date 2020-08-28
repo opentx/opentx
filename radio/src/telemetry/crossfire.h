@@ -85,7 +85,8 @@ enum CrossfireSensorIndexes {
 
 enum CrossfireFrames{
   CRSF_FRAME_CHANNEL,
-  CRSF_FRAME_MODELID
+  CRSF_FRAME_MODELID,
+  CRSF_FRAME_MODELID_SENT
 };
 
 void processCrossfireTelemetryData(uint8_t data);

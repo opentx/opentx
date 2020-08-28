@@ -105,7 +105,7 @@ void processCrossfireTelemetryFrame()
     return;
   }
 
-  if (telemetryState == TELEMETRY_INIT) {
+  if (telemetryState == TELEMETRY_INIT && moduleState[EXTERNAL_MODULE].counter != CRSF_FRAME_MODELID_SENT) {
     moduleState[EXTERNAL_MODULE].counter = CRSF_FRAME_MODELID;
   }
 

@@ -79,7 +79,7 @@ void setupPulsesCrossfire()
     {
       if (moduleState[EXTERNAL_MODULE].counter == CRSF_FRAME_MODELID) {
         extmodulePulsesData.crossfire.length = createCrossfireModelIDFrame(pulses);
-        moduleState[EXTERNAL_MODULE].counter = CRSF_FRAME_CHANNEL;
+        moduleState[EXTERNAL_MODULE].counter = CRSF_FRAME_MODELID_SENT;
       }
       else {
         extmodulePulsesData.crossfire.length = createCrossfireChannelsFrame(pulses, &channelOutputs[g_model.moduleData[EXTERNAL_MODULE].channelsStart]);
