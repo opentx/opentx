@@ -505,13 +505,13 @@ void GeneralSetupPanel::on_splashScreenDuration_currentIndexChanged(int index)
   emit modified();
 }
 
-void GeneralSetupPanel::on_pwrOnDelay_valueChanged(int i)
+void GeneralSetupPanel::on_pwrOnDelay_valueChanged(int)
 {
   generalSettings.pwrOnSpeed = 2 - ui->pwrOnDelay->value();
   emit modified();
 }
 
-void GeneralSetupPanel::on_pwrOffDelay_valueChanged(int i)
+void GeneralSetupPanel::on_pwrOffDelay_valueChanged(int)
 {
   generalSettings.pwrOffSpeed = 2 - ui->pwrOffDelay->value();
   emit modified();
@@ -650,7 +650,7 @@ void GeneralSetupPanel::on_backlightautoSB_editingFinished()
   }
 }
 
-void GeneralSetupPanel::on_switchesDelay_valueChanged(int i)
+void GeneralSetupPanel::on_switchesDelay_valueChanged(int)
 {
   generalSettings.switchesDelay = (ui->switchesDelay->value() / 10) - 15;
   emit modified();
