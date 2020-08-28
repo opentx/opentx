@@ -133,7 +133,6 @@ uint8_t getRequiredProtocol(uint8_t module)
 
 #if defined(HARDWARE_EXTERNAL_MODULE_SIZE_SML)
     case MODULE_TYPE_R9M_LITE_PXX1:
-    case MODULE_TYPE_R9M_LITE_PRO_PXX1:
       protocol = PROTOCOL_CHANNELS_PXX1_SERIAL;
       break;
 
@@ -193,6 +192,12 @@ uint8_t getRequiredProtocol(uint8_t module)
       break;
 #endif
 
+#if defined(GHOST)
+    case MODULE_TYPE_GHOST:
+      protocol = PROTOCOL_CHANNELS_GHOST;
+      break;
+#endif
+
     default:
       protocol = PROTOCOL_CHANNELS_NONE;
       break;
@@ -239,6 +244,12 @@ void enablePulsesExternalModule(uint8_t protocol)
 
 #if defined(CROSSFIRE)
     case PROTOCOL_CHANNELS_CROSSFIRE:
+      EXTERNAL_MODULE_ON();
+      break;
+#endif
+
+#if defined(GHOST)
+    case PROTOCOL_CHANNELS_GHOST:
       EXTERNAL_MODULE_ON();
       break;
 #endif
@@ -329,6 +340,13 @@ bool setupPulsesExternalModule(uint8_t protocol)
     case PROTOCOL_CHANNELS_CROSSFIRE:
       setupPulsesCrossfire();
       scheduleNextMixerCalculation(EXTERNAL_MODULE, CROSSFIRE_PERIOD);
+      return true;
+#endif
+
+#if defined(GHOST)
+    case PROTOCOL_CHANNELS_GHOST:
+      setupPulsesGhost();
+      scheduleNextMixerCalculation(EXTERNAL_MODULE, GHOST_PERIOD);
       return true;
 #endif
 
