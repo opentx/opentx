@@ -32,6 +32,7 @@ Michael Byrne
 <a href="https://www.flysky-cn.com/home">FlySky (monthly)</a>
 <a href="https://www.jumper-rc.com">JumperRC (monthly)</a>
 <a href="https://www.radiomasterrc.com">RadioMaster (monthly)</a>
+<a href="http://www.happymodel.cn">HappyModel (monthly)</a>
 <a href="https://alofthobbies.com">Aloft Hobbies</a>
 <a href="https://jonathan.it">Jonathan Modellismo</a>
 <a href="http://wstech.de">WsTech</a>
@@ -1870,3 +1871,13 @@ Jose Luis Franco Torres
 Bart Sillen
 Antonio Moreno
 Carolina Carcione
+Lonnie Misner
+John Eppling
+Phillip Elliott
+Robin Bayer
+Jurij Peternel
+George Aandahl
+Guy Dangerfield
+Thomas Limpert
+Ismael G Zapater
+Alan Hall

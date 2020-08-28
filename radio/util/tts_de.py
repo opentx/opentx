@@ -82,7 +82,7 @@ for s, f in [("Inaktivitätsalarm", "inactiv"),
              ("timer zwei abgelaufen", "timovr2"),
              ("timer drei abgelaufen", "timovr3"),
              ("Sensor verloren", "sensorko"),
-             ("Willkommen bei open te ix", "hello"),
+             ("Willkommen bei open t x", "hello"),
              ]:
     systemSounds.append((s, filename(f)))
 for i, s in enumerate(["Uhr", "Uhr", "Sender", "Empfang", "A1", "A2", "Hoehe", "Motor",

@@ -841,7 +841,7 @@
 #define TR_MENUGLOBALVARS      "VARIABILI GLOBALI"
 #define TR_OWN                 "Fase"
 #define TR_DATE                "Data"
-#define TR_MONTHS              { "Gen", "Feb", "Mar", "Apr", "Mag", "Giu", "Lug", "Auo", "Set", "Ott", "Nov", "Dic" }
+#define TR_MONTHS              { "Gen", "Feb", "Mar", "Apr", "Mag", "Giu", "Lug", "Ago", "Set", "Ott", "Nov", "Dic" }
 #define TR_ROTARY_ENCODER      "R.E."
 #define TR_CHANNELS_MONITOR    "MONITOR CANALI"
 #define TR_MIXERS_MONITOR      "MONITOR MIXER"
