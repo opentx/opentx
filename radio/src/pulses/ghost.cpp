@@ -34,7 +34,11 @@ uint8_t createGhostChannelsFrame(uint8_t * frame, int16_t * pulses)
   }
 
   uint8_t * buf = frame;
-  *buf++ = GHST_ADDR_MODULE;
+#if SPORT_MAX_BAUDRATE < 400000
+  *buf++ = g_eeGeneral.telemetryBaudrate == GHST_TELEMETRY_RATE_400K ? GHST_ADDR_MODULE_SYM : GHST_ADDR_MODULE_ASYM;
+#else
+  *buf++ = GHST_ADDR_MODULE_SYM;
+#endif
   *buf++ = GHST_UL_RC_CHANS_SIZE;
   uint8_t * crc_start = buf;
   *buf++ = lastGhostFrameId;
