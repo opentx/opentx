@@ -26,7 +26,8 @@
 
 // Device (destination) address
 #define GHST_ADDR_RADIO                 0x80    // phase 1
-#define GHST_ADDR_MODULE                0x81
+#define GHST_ADDR_MODULE_SYM            0x81    // symmetrical, 400k pulses, 400k telemetry
+#define GHST_ADDR_MODULE_ASYM           0x88    // asymmetrical, 400k pulses, 115k telemetry
 #define GHST_ADDR_FC                    0x82
 #define GHST_ADDR_GOGGLES               0x83    // phase 2
 #define GHST_ADDR_5G_TXCTRL             0x84	// phase 3
@@ -96,6 +97,21 @@ void ghostSetDefault(int index, uint8_t id, uint8_t subId);
 #if SPORT_MAX_BAUDRATE < 400000
 // For radios which can't support telemetry at high rates, offer baud rate choices
 // (modified vs. unmodified radios)
+
+#if defined(PCBHORUS)
+  constexpr uint16_t BRR_400K = 105;
+  constexpr uint16_t BRR_115K = 364;
+#else
+  constexpr uint16_t BRR_400K = 75;
+  constexpr uint16_t BRR_115K = 260;
+#endif
+
+enum GhostTelemetryBaudrates
+{
+  GHST_TELEMETRY_RATE_400K,
+  GHST_TELEMETRY_RATE_115K
+};
+
 const uint32_t GHOST_BAUDRATES[] = {
   400000,
   115200,
