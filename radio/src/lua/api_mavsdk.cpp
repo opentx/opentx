@@ -116,7 +116,8 @@ static int luaMavsdkGimbalGetAttYawDeg(lua_State *L)
   return 1;
 }
 
-// gimbal protocol v0
+// gimbal protocol v1
+// can also be used for gimbal protocol v2, if _gimbal_protocol_v2 is set accordingly
 
 static int luaMavsdkGimbalSetNeutralMode(lua_State *L)
 {
@@ -156,7 +157,21 @@ static int luaMavsdkGimbalSetPitchYawDeg(lua_State *L)
   return 0;
 }
 
-// -- GIMBAL CLIENT -- gimbal protocol v1
+// -- GIMBAL CLIENT -- gimbal protocol v2
+
+static int luaMavsdkIsGimbalProtocolV2(lua_State *L)
+{
+  bool flag = mavlinkTelem.isGimbalProtocolV2();
+  lua_pushboolean(L, flag);
+  return 1;
+}
+
+static int luaMavsdkSetGimbalProtocolV2(lua_State *L)
+{
+  bool flag = (luaL_checknumber(L, 1) > 0);
+  mavlinkTelem.setGimbalProtocolV2(flag);
+  return 0;
+}
 
 static int luaMavsdkGimbalClientIsReceiving(lua_State *L)
 {
@@ -188,10 +203,10 @@ static int luaMavsdkGimbalClientGetStatus(lua_State *L)
   return 1;
 }
 
-static int luaMavsdkGimbalClientSetMode(lua_State *L)
+static int luaMavsdkGimbalClientSetFlags(lua_State *L)
 {
-  int32_t mode = luaL_checkinteger(L, 1);
-  mavlinkTelem.setGimbalClientMode(mode);
+  uint32_t flags = luaL_checkinteger(L, 1);
+  mavlinkTelem.setGimbalClientFlags(flags);
   return 0;
 }
 
@@ -203,21 +218,27 @@ static int luaMavsdkGimbalClientSetPitchYawDeg(lua_State *L)
   return 0;
 }
 
-// not for use, just for testing momentarily here
-static int luaMavsdkGimbalDeviceSetPitchYawDeg(lua_State *L)
+static int luaMavsdkGimbalClientSetAttitudePitchYawDeg(lua_State *L)
 {
   float pitch = luaL_checknumber(L, 1);
   float yaw = luaL_checknumber(L, 2);
-  mavlinkTelem.setGimbalDevicePitchYawDeg(pitch, yaw);
+  mavlinkTelem.setGimbalManagerAttitudePitchYawDeg(pitch, yaw);
   return 0;
 }
 
-// not for use, just for testing momentarily here
 static int luaMavsdkGimbalClientCmdSetPitchYawDeg(lua_State *L)
 {
   float pitch = luaL_checknumber(L, 1);
   float yaw = luaL_checknumber(L, 2);
   mavlinkTelem.setGimbalManagerCmdPitchYawDeg(pitch, yaw);
+  return 0;
+}
+
+static int luaMavsdkGimbalDeviceSetPitchYawDeg(lua_State *L)
+{
+  float pitch = luaL_checknumber(L, 1);
+  float yaw = luaL_checknumber(L, 2);
+  mavlinkTelem.setGimbalDevicePitchYawDeg(pitch, yaw);
   return 0;
 }
 
@@ -1087,23 +1108,26 @@ const luaL_Reg mavsdkLib[] = {
   { "gimbalGetAttRollDeg", luaMavsdkGimbalGetAttRollDeg },
   { "gimbalGetAttPitchDeg", luaMavsdkGimbalGetAttPitchDeg },
   { "gimbalGetAttYawDeg", luaMavsdkGimbalGetAttYawDeg },
-  // gimbal protocol v0
+  // gimbal protocol v1
   { "gimbalSetNeutralMode", luaMavsdkGimbalSetNeutralMode },
   { "gimbalSetMavlinkTargetingMode", luaMavsdkGimbalSetMavlinkTargetingMode },
   { "gimbalSetRcTargetingMode", luaMavsdkGimbalSetRcTargetingMode },
   { "gimbalSetGpsPointMode", luaMavsdkGimbalSetGpsPointMode },
   { "gimbalSetSysIdTargetingMode", luaMavsdkGimbalSetSysIdTargetingMode },
   { "gimbalSetPitchYawDeg", luaMavsdkGimbalSetPitchYawDeg },
-  // gimbal protocol v1
+  // gimbal protocol v2
+  { "gimbalIsProtocolV2", luaMavsdkIsGimbalProtocolV2 },
+  { "gimbalSetProtocolV2", luaMavsdkSetGimbalProtocolV2 },
   { "gimbalClientIsReceiving", luaMavsdkGimbalClientIsReceiving },
   { "gimbalClientIsInitialized", luaMavsdkGimbalClientIsInitialized },
   { "gimbalClientGetInfo", luaMavsdkGimbalClientGetInfo },
   { "gimbalClientGetStatus", luaMavsdkGimbalClientGetStatus },
-  { "gimbalClientSetMode", luaMavsdkGimbalClientSetMode },
+  { "gimbalClientSetFlags", luaMavsdkGimbalClientSetFlags },
   { "gimbalClientSetPitchYawDeg", luaMavsdkGimbalClientSetPitchYawDeg },
   //for testing only
-  { "gimbalDeviceSetPitchYawDeg", luaMavsdkGimbalDeviceSetPitchYawDeg },
+  { "gimbalClientSetAttPitchYawDeg", luaMavsdkGimbalClientSetAttitudePitchYawDeg },
   { "gimbalClientCmdSetPitchYawDeg", luaMavsdkGimbalClientCmdSetPitchYawDeg },
+  { "gimbalDeviceSetPitchYawDeg", luaMavsdkGimbalDeviceSetPitchYawDeg },
 
   { "cameraIsReceiving", luaMavsdkCameraIsReceiving },
   { "cameraIsInitialized", luaMavsdkCameraIsInitialized },
@@ -1216,134 +1240,26 @@ const luaR_value_entry mavsdkConstants[] = {
   { "VEHICLECLASS_BOAT", MAVSDK_VEHICLECLASS_BOAT },
   { "VEHICLECLASS_SUB", MAVSDK_VEHICLECLASS_SUB },
 
-  { "GMFLAGS_GCS_NUDGE", MavlinkTelem::GIMBAL_MANAGER_FLAGS_GCS_NUDGE },
-  { "GMFLAGS_GCS_OVERRIDE", MavlinkTelem::GIMBAL_MANAGER_FLAGS_GCS_OVERRIDE },
-  { "GMFLAGS_MISSION_NOTOVERRIDE", MavlinkTelem::GIMBAL_MANAGER_FLAGS_MISSION_NOTOVERRIDE },
-  { "GMFLAGS_MISSION_NUDGE", MavlinkTelem::GIMBAL_MANAGER_FLAGS_MISSION_NUDGE },
-  { "GMFLAGS_RC_NUDGE", MavlinkTelem::GIMBAL_MANAGER_FLAGS_RC_NUDGE },
-  { "GMFLAGS_RC_OVERRIDE", MavlinkTelem::GIMBAL_MANAGER_FLAGS_RC_OVERRIDE },
-  { "GMFLAGS_COMPANION_NUDGE", MavlinkTelem::GIMBAL_MANAGER_FLAGS_COMPANION_NUDGE },
-  { "GMFLAGS_COMPANION_OVERRIDE", MavlinkTelem::GIMBAL_MANAGER_FLAGS_COMPANION_OVERRIDE },
+  { "GMFLAGS_SET_RC_ACTIVE", MavlinkTelem::MYGIMBALMANAGER_SET_FLAGS_RC_ACTIVE },
+  { "GMFLAGS_SET_CLIENT1_ACTIVE", MavlinkTelem::MYGIMBALMANAGER_SET_FLAGS_CLIENT1_ACTIVE },
+  { "GMFLAGS_SET_CLIENT2_ACTIVE", MavlinkTelem::MYGIMBALMANAGER_SET_FLAGS_CLIENT2_ACTIVE },
+  { "GMFLAGS_SET_CLIENT3_ACTIVE", MavlinkTelem::MYGIMBALMANAGER_SET_FLAGS_CLIENT3_ACTIVE },
+  { "GMFLAGS_SET_CLIENT4_ACTIVE", MavlinkTelem::MYGIMBALMANAGER_SET_FLAGS_CLIENT4_ACTIVE },
+  { "GMFLAGS_SET_CLIENT5_ACTIVE", MavlinkTelem::MYGIMBALMANAGER_SET_FLAGS_CLIENT5_ACTIVE },
+  { "GMFLAGS_SET_CONTROL", MavlinkTelem::MYGIMBALMANAGER_SET_FLAGS_CONTROL },
 
-  { "GIMBALCLIENTMODE_NONE", MavlinkTelem::GIMBALCLIENT_MODE_NONE },
-  { "GIMBALCLIENTMODE_RETRACT", MavlinkTelem::GIMBALCLIENT_MODE_RETRACT },
-  { "GIMBALCLIENTMODE_NEUTRAL", MavlinkTelem::GIMBALCLIENT_MODE_NEUTRAL },
-  { "GIMBALCLIENTMODE_OVERRIDE", MavlinkTelem::GIMBALCLIENT_MODE_OVERRIDE },
-  { "GIMBALCLIENTMODE_NUDGE", MavlinkTelem::GIMBALCLIENT_MODE_NUDGE },
-  { "GIMBALCLIENTMODE_RC_NUDGE", MavlinkTelem::GIMBALCLIENT_MODE_RC_NUDGE },
-  { "GIMBALCLIENTMODE_RC_OVERRIDE", MavlinkTelem::GIMBALCLIENT_MODE_RC_OVERRIDE },
+  { "GMFLAGS_RC_ISACTIVE", MavlinkTelem::MYGIMBALMANAGER_FLAGS_RC_ISACTIVE },
+  { "GMFLAGS_CLIENT1_ISACTIVE", MavlinkTelem::MYGIMBALMANAGER_FLAGS_CLIENT1_ISACTIVE },
+  { "GMFLAGS_CLIENT2_ISACTIVE", MavlinkTelem::MYGIMBALMANAGER_FLAGS_CLIENT2_ISACTIVE },
+  { "GMFLAGS_CLIENT3_ISACTIVE", MavlinkTelem::MYGIMBALMANAGER_FLAGS_CLIENT3_ISACTIVE },
+  { "GMFLAGS_CLIENT4_ISACTIVE", MavlinkTelem::MYGIMBALMANAGER_FLAGS_CLIENT4_ISACTIVE },
+  { "GMFLAGS_CLIENT5_ISACTIVE", MavlinkTelem::MYGIMBALMANAGER_FLAGS_CLIENT5_ISACTIVE },
+  { "GMFLAGS_CLIENT1_HASCONTROL", MavlinkTelem::MYGIMBALMANAGER_FLAGS_CLIENT1_HASCONTROL },
+  { "GMFLAGS_CLIENT2_HASCONTROL", MavlinkTelem::MYGIMBALMANAGER_FLAGS_CLIENT2_HASCONTROL },
+  { "GMFLAGS_CLIENT3_HASCONTROL", MavlinkTelem::MYGIMBALMANAGER_FLAGS_CLIENT3_HASCONTROL },
+  { "GMFLAGS_CLIENT4_HASCONTROL", MavlinkTelem::MYGIMBALMANAGER_FLAGS_CLIENT4_HASCONTROL },
+  { "GMFLAGS_CLIENT5_HASCONTROL", MavlinkTelem::MYGIMBALMANAGER_FLAGS_CLIENT5_HASCONTROL },
 
   { nullptr, 0 }  /* sentinel */
 };
 
-
-
-
-
-
-
-/*
-// should we have the vehicle specific flight modes defined in mavsdk ???
-// could equally well go into the lua script itself, could have advantages
-typedef enum MAVSDK_APCOPTER_FLIGHTMODE {
-   MAVSDK_APCOPTER_FLIGHTMODE_STABILIZE =   0,  // manual airframe angle with manual throttle
-   MAVSDK_APCOPTER_FLIGHTMODE_ACRO =      1,  // manual body-frame angular rate with manual throttle
-   MAVSDK_APCOPTER_FLIGHTMODE_ALT_HOLD =    2,  // manual airframe angle with automatic throttle
-   MAVSDK_APCOPTER_FLIGHTMODE_AUTO =      3,  // fully automatic waypoint control using mission commands
-   MAVSDK_APCOPTER_FLIGHTMODE_GUIDED =    4,  // fully automatic fly to coordinate or fly at velocity/direction using GCS immediate commands
-   MAVSDK_APCOPTER_FLIGHTMODE_LOITER =    5,  // automatic horizontal acceleration with automatic throttle
-   MAVSDK_APCOPTER_FLIGHTMODE_RTL =       6,  // automatic return to launching point
-   MAVSDK_APCOPTER_FLIGHTMODE_CIRCLE =    7,  // automatic circular flight with automatic throttle
-   MAVSDK_APCOPTER_FLIGHTMODE_LAND =      9,  // automatic landing with horizontal position control
-   MAVSDK_APCOPTER_FLIGHTMODE_DRIFT =    11,  // semi-automous position, yaw and throttle control
-   MAVSDK_APCOPTER_FLIGHTMODE_SPORT =    13,  // manual earth-frame angular rate control with manual throttle
-   MAVSDK_APCOPTER_FLIGHTMODE_FLIP =     14,  // automatically flip the vehicle on the roll axis
-   MAVSDK_APCOPTER_FLIGHTMODE_AUTOTUNE =   15,  // automatically tune the vehicle's roll and pitch gains
-   MAVSDK_APCOPTER_FLIGHTMODE_POSHOLD =    16,  // automatic position hold with manual override, with automatic throttle
-   MAVSDK_APCOPTER_FLIGHTMODE_BRAKE =    17,  // full-brake using inertial/GPS system, no pilot input
-   MAVSDK_APCOPTER_FLIGHTMODE_THROW =    18,  // throw to launch mode using inertial/GPS system, no pilot input
-   MAVSDK_APCOPTER_FLIGHTMODE_AVOID_ADSB =   19,  // automatic avoidance of obstacles in the macro scale - e.g. full-sized aircraft
-   MAVSDK_APCOPTER_FLIGHTMODE_GUIDED_NOGPS = 20,  // guided mode but only accepts attitude and altitude
-   MAVSDK_APCOPTER_FLIGHTMODE_SMART_RTL =  21,  // SMART_RTL returns to home by retracing its steps
-   MAVSDK_APCOPTER_FLIGHTMODE_FLOWHOLD  =  22,  // FLOWHOLD holds position with optical flow without rangefinder
-   MAVSDK_APCOPTER_FLIGHTMODE_FOLLOW  =  23,  // follow attempts to follow another vehicle or ground station
-   MAVSDK_APCOPTER_FLIGHTMODE_ZIGZAG  =  24,  // ZIGZAG mode is able to fly in a zigzag manner with predefined point A and point B
-   MAVSDK_APCOPTER_FLIGHTMODE_SYSTEMID  =  25,  // System ID mode produces automated system identification signals in the controllers
-   MAVSDK_APCOPTER_FLIGHTMODE_AUTOROTATE =   26,  // Autonomous autorotation
-} MAVSDK_APCOPTER_FLIGHTMODE;
-
-typedef enum MAVSDK_APPLANE_FLIGHTMODE {
-   MAVSDK_APPLANE_MANUAL    = 0,
-   MAVSDK_APPLANE_CIRCLE    = 1,
-   MAVSDK_APPLANE_STABILIZE   = 2,
-   MAVSDK_APPLANE_TRAINING    = 3,
-   MAVSDK_APPLANE_ACRO      = 4,
-   MAVSDK_APPLANE_FLY_BY_WIRE_A = 5,
-   MAVSDK_APPLANE_FLY_BY_WIRE_B = 6,
-   MAVSDK_APPLANE_CRUISE    = 7,
-   MAVSDK_APPLANE_AUTOTUNE    = 8,
-   MAVSDK_APPLANE_AUTO      = 10,
-   MAVSDK_APPLANE_RTL       = 11,
-   MAVSDK_APPLANE_LOITER    = 12,
-   MAVSDK_APPLANE_TAKEOFF     = 13,
-   MAVSDK_APPLANE_AVOID_ADSB  = 14,
-   MAVSDK_APPLANE_GUIDED    = 15,
-   MAVSDK_APPLANE_INITIALISING  = 16,
-   MAVSDK_APPLANE_QSTABILIZE  = 17,
-   MAVSDK_APPLANE_QHOVER    = 18,
-   MAVSDK_APPLANE_QLOITER     = 19,
-   MAVSDK_APPLANE_QLAND     = 20,
-   MAVSDK_APPLANE_QRTL      = 21,
-   MAVSDK_APPLANE_QAUTOTUNE   = 22,
-   MAVSDK_APPLANE_QACRO     = 23,
-} MAVSDK_APPLANE_FLIGHTMODE; */
-
-/*
-  { "APCOPTER_FLIGHTMODE_STABILIZE", MAVSDK_APCOPTER_FLIGHTMODE_STABILIZE },
-  { "APCOPTER_FLIGHTMODE_ACRO", MAVSDK_APCOPTER_FLIGHTMODE_ACRO },
-  { "APCOPTER_FLIGHTMODE_ALTHOLD", MAVSDK_APCOPTER_FLIGHTMODE_ALT_HOLD },
-  { "APCOPTER_FLIGHTMODE_AUTO", MAVSDK_APCOPTER_FLIGHTMODE_AUTO },
-  { "APCOPTER_FLIGHTMODE_GUIDED", MAVSDK_APCOPTER_FLIGHTMODE_GUIDED },
-  { "APCOPTER_FLIGHTMODE_LOITER", MAVSDK_APCOPTER_FLIGHTMODE_LOITER },
-  { "APCOPTER_FLIGHTMODE_RTL", MAVSDK_APCOPTER_FLIGHTMODE_RTL },
-  { "APCOPTER_FLIGHTMODE_CIRCLE", MAVSDK_APCOPTER_FLIGHTMODE_CIRCLE },
-  { "APCOPTER_FLIGHTMODE_LAND", MAVSDK_APCOPTER_FLIGHTMODE_LAND },
-  { "APCOPTER_FLIGHTMODE_DRIFT", MAVSDK_APCOPTER_FLIGHTMODE_DRIFT },
-  { "APCOPTER_FLIGHTMODE_SPORT", MAVSDK_APCOPTER_FLIGHTMODE_SPORT },
-  { "APCOPTER_FLIGHTMODE_FLIP", MAVSDK_APCOPTER_FLIGHTMODE_FLIP },
-  { "APCOPTER_FLIGHTMODE_AUTOTUNE", MAVSDK_APCOPTER_FLIGHTMODE_AUTOTUNE },
-  { "APCOPTER_FLIGHTMODE_POSHOLD", MAVSDK_APCOPTER_FLIGHTMODE_POSHOLD },
-  { "APCOPTER_FLIGHTMODE_BRAKE", MAVSDK_APCOPTER_FLIGHTMODE_BRAKE },
-  { "APCOPTER_FLIGHTMODE_THROW", MAVSDK_APCOPTER_FLIGHTMODE_THROW },
-  { "APCOPTER_FLIGHTMODE_AVOID_ADSB", MAVSDK_APCOPTER_FLIGHTMODE_AVOID_ADSB },
-  { "APCOPTER_FLIGHTMODE_GUIDED_NOGPS", MAVSDK_APCOPTER_FLIGHTMODE_GUIDED_NOGPS },
-  { "APCOPTER_FLIGHTMODE_SMARTRTL", MAVSDK_APCOPTER_FLIGHTMODE_SMART_RTL },
-  { "APCOPTER_FLIGHTMODE_FLOWHOLD", MAVSDK_APCOPTER_FLIGHTMODE_FLOWHOLD },
-  { "APCOPTER_FLIGHTMODE_FOLLOW", MAVSDK_APCOPTER_FLIGHTMODE_FOLLOW },
-  { "APCOPTER_FLIGHTMODE_ZIGZAG", MAVSDK_APCOPTER_FLIGHTMODE_ZIGZAG },
-  { "APCOPTER_FLIGHTMODE_SYSTEMID", MAVSDK_APCOPTER_FLIGHTMODE_SYSTEMID },
-  { "APCOPTER_FLIGHTMODE_AUTOROTATE", MAVSDK_APCOPTER_FLIGHTMODE_AUTOROTATE },
-
-  { "APPLANE_FLIGHTMODE_MANUAL", MAVSDK_APPLANE_MANUAL },
-  { "APPLANE_FLIGHTMODE_CIRCLE", MAVSDK_APPLANE_CIRCLE },
-  { "APPLANE_FLIGHTMODE_STABILIZE", MAVSDK_APPLANE_STABILIZE },
-  { "APPLANE_FLIGHTMODE_TRAINING", MAVSDK_APPLANE_TRAINING },
-  { "APPLANE_FLIGHTMODE_ACRO", MAVSDK_APPLANE_ACRO },
-  { "APPLANE_FLIGHTMODE_FLYBYWIRE_A", MAVSDK_APPLANE_FLY_BY_WIRE_A },
-  { "APPLANE_FLIGHTMODE_FLYBYWIRE_B", MAVSDK_APPLANE_FLY_BY_WIRE_B },
-  { "APPLANE_FLIGHTMODE_CRUISE", MAVSDK_APPLANE_CRUISE },
-  { "APPLANE_FLIGHTMODE_AUTOTUNE", MAVSDK_APPLANE_AUTOTUNE },
-  { "APPLANE_FLIGHTMODE_AUTO", MAVSDK_APPLANE_AUTO },
-  { "APPLANE_FLIGHTMODE_RTL", MAVSDK_APPLANE_RTL },
-  { "APPLANE_FLIGHTMODE_LOITER", MAVSDK_APPLANE_LOITER },
-  { "APPLANE_FLIGHTMODE_TAKEOFF", MAVSDK_APPLANE_TAKEOFF },
-  { "APPLANE_FLIGHTMODE_AVOID_ADSB", MAVSDK_APPLANE_AVOID_ADSB },
-  { "APPLANE_FLIGHTMODE_GUIDED", MAVSDK_APPLANE_GUIDED },
-  { "APPLANE_FLIGHTMODE_INITIALISING", MAVSDK_APPLANE_INITIALISING },
-  { "APPLANE_FLIGHTMODE_QSTABILIZE", MAVSDK_APPLANE_QSTABILIZE },
-  { "APPLANE_FLIGHTMODE_QHOVER", MAVSDK_APPLANE_QHOVER },
-  { "APPLANE_FLIGHTMODE_QLOITER", MAVSDK_APPLANE_QLOITER },
-  { "APPLANE_FLIGHTMODE_QLAND", MAVSDK_APPLANE_QLAND },
-  { "APPLANE_FLIGHTMODE_QRTL", MAVSDK_APPLANE_QRTL },
-  { "APPLANE_FLIGHTMODE_QAUTOTUNE", MAVSDK_APPLANE_QAUTOTUNE },
-  { "APPLANE_FLIGHTMODE_QACRO", MAVSDK_APPLANE_QACRO }, */

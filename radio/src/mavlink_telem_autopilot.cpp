@@ -857,7 +857,8 @@ BATTERY:
   float current, consumed_mah, consumed_wh;
   if (battery.current_amps(current, instance)) {
      current *= 100;
-  } else {
+  }
+  else {
     current = -1;
   }
   if (!battery.consumed_mah(consumed_mah, instance)) {
@@ -865,7 +866,8 @@ BATTERY:
   }
   if (battery.consumed_wh(consumed_wh, instance)) {
     consumed_wh *= 36;
-  } else {
+  }
+  else {
     consumed_wh = -1;
   }
 
@@ -894,7 +896,8 @@ SYS_STATUS:
   if (battery.healthy() && battery.current_amps(battery_current)) {
     battery_remaining = battery.capacity_remaining_pct();
     battery_current *= 100;
-  } else {
+  }
+  else {
     battery_current = -1;
     battery_remaining = -1;
   }
@@ -1103,14 +1106,14 @@ extern int16_t      channelOutputs[MAX_OUTPUT_CHANNELS];
   int value = channelOutputs[channel] + 2 * PPM_CH_CENTER(channel) - 2 * PPM_CENTER;
 
     if (i < sendUpperChannels) {
-    int channel = 8 + g_model.moduleData[moduleIdx].channelsStart + i;
-    int value = channelOutputs[channel] + 2*PPM_CH_CENTER(channel) - 2*PPM_CENTER;
-    pulseValue = limit(2049, (value * 512 / 682) + 3072, 4094);
+      int channel = 8 + g_model.moduleData[moduleIdx].channelsStart + i;
+      int value = channelOutputs[channel] + 2*PPM_CH_CENTER(channel) - 2*PPM_CENTER;
+      pulseValue = limit(2049, (value * 512 / 682) + 3072, 4094);
     }
     else if (i < sentModulePXXChannels(moduleIdx)) {
-    int channel = g_model.moduleData[moduleIdx].channelsStart + i;
-    int value = channelOutputs[channel] + 2*PPM_CH_CENTER(channel) - 2*PPM_CENTER;
-    pulseValue = limit(1, (value * 512 / 682) + 1024, 2046);
+      int channel = g_model.moduleData[moduleIdx].channelsStart + i;
+      int value = channelOutputs[channel] + 2*PPM_CH_CENTER(channel) - 2*PPM_CENTER;
+      pulseValue = limit(1, (value * 512 / 682) + 1024, 2046);
     }
 
   uint8_t channel = g_model.moduleData[module].channelsStart;

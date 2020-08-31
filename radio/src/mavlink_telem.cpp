@@ -341,7 +341,6 @@ void MavlinkTelem::doTask(void)
   if (!isSystemIdValid()) return;
 
   // trigger startup requests
-  // gimbal has no startup requests
 
   // we need to wait until at least one heartbeat was send out before requesting data streams
   if (autopilot.compid && autopilot.requests_triggered) {
@@ -401,7 +400,8 @@ void MavlinkTelem::doTask(void)
         if (i < MAX_MIXERS && (md=mixAddress(i))->srcRaw && md->destCh == i) {
           int value = channelOutputs[i] + 2 * PPM_CH_CENTER(i) - 2 * PPM_CENTER;
           _tovr_chan_raw[i] = value;
-        }else{
+        }
+        else {
           _tovr_chan_raw[i] = UINT16_MAX;
         }*/
         // the first four channels may not be ordered like with transmitter!!
