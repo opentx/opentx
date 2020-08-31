@@ -656,6 +656,8 @@ int ModelData::updateReference()
       }
     }
   }
+  if (updRefInfo.type == REF_UPD_TYPE_CHANNEL)
+    sortMixes();
   //s1.report("Mixes");
 
   for (int i = 0; i < CPN_MAX_CHNOUT; i++) {
@@ -1293,4 +1295,46 @@ void ModelData::removeMix(const int idx)
 {
   memmove(&mixData[idx], &mixData[idx + 1], (CPN_MAX_MIXERS - (idx + 1)) * sizeof(MixData));
   mixData[CPN_MAX_MIXERS - 1].clear();
+}
+
+void ModelData::sortMixes()
+{
+  unsigned int lastchn = 0;
+  bool sortreq = false;
+
+  for (int i = 0; i < CPN_MAX_MIXERS; i++) {
+    MixData *md = &mixData[i];
+    if (!md->isEmpty()) {
+      if (md->destCh < lastchn) {
+        sortreq = true;
+        break;
+      }
+      else
+        lastchn = md->destCh;
+    }
+  }
+
+  if (!sortreq)
+    return;
+
+  //  QMap automatically sorts based on key
+  QMap<int, int> map;
+  for (int i = 0; i < CPN_MAX_MIXERS; i++) {
+    MixData *md = &mixData[i];
+    if (!md->isEmpty()) {
+      //  destCh may not be unique so build a compound sort key
+      map.insert(md->destCh * (CPN_MAX_MIXERS + 1) + i, i);
+    }
+  }
+
+  MixData sortedMixData[CPN_MAX_MIXERS];
+  int destidx = 0;
+
+  QMap<int, int>::const_iterator i;
+  for (i = map.constBegin(); i != map.constEnd(); ++i) {
+    memcpy(&sortedMixData[destidx], &mixData[i.value()], sizeof(MixData));
+    destidx++;
+  }
+
+  memcpy(&mixData[0], &sortedMixData[0], CPN_MAX_MIXERS * sizeof(MixData));
 }

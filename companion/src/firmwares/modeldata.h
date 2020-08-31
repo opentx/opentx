@@ -334,6 +334,7 @@ class ModelData {
       if (value != swtch.toValue())
         value = swtch.toValue();
     }
+    void sortMixes();
 };
 
 #endif // MODELDATA_H
