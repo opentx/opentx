@@ -138,6 +138,11 @@ void processGhostTelemetryFrame()
 
     case GHST_DL_LINK_STAT:
     {
+#if defined(BLUETOOTH)
+      if (g_eeGeneral.bluetoothMode == BLUETOOTH_TELEMETRY && bluetooth.state == BLUETOOTH_STATE_CONNECTED) {
+        bluetooth.write(telemetryRxBuffer, telemetryRxBufferCount);
+      }
+#endif
       uint8_t rssiVal = min<uint8_t>(telemetryRxBuffer[3], 100);
       uint8_t lqVal = min<uint8_t>(telemetryRxBuffer[4], 100);
       uint8_t snrVal = min<uint8_t>(telemetryRxBuffer[5], 100);
@@ -172,6 +177,11 @@ void processGhostTelemetryFrame()
 
     case GHST_DL_VTX_STAT:
     {
+#if defined(BLUETOOTH)
+      if (g_eeGeneral.bluetoothMode == BLUETOOTH_TELEMETRY && bluetooth.state == BLUETOOTH_STATE_CONNECTED) {
+        bluetooth.write(telemetryRxBuffer, telemetryRxBufferCount);
+      }
+#endif
       uint8_t vtxBandEnum = min<uint8_t>(telemetryRxBuffer[8], GHST_VTX_BAND_MAX);
 
       const GhostSensor *sensor = getGhostSensor(GHOST_ID_VTX_BAND);
@@ -188,6 +198,18 @@ void processGhostTelemetryFrame()
 
 void processGhostTelemetryData(uint8_t data)
 {
+#if defined(AUX_SERIAL)
+  if (g_eeGeneral.auxSerialMode == UART_MODE_TELEMETRY_MIRROR) {
+    auxSerialPutc(data);
+  }
+#endif
+
+#if defined(AUX2_SERIAL)
+  if (g_eeGeneral.aux2SerialMode == UART_MODE_TELEMETRY_MIRROR) {
+    aux2SerialPutc(data);
+  }
+#endif
+
   if (telemetryRxBufferCount == 0 && data != GHST_ADDR_RADIO) {
     TRACE("[GH] address 0x%02X error", data);
     return;
