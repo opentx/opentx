@@ -98,13 +98,8 @@ void ghostSetDefault(int index, uint8_t id, uint8_t subId);
 // For radios which can't support telemetry at high rates, offer baud rate choices
 // (modified vs. unmodified radios)
 
-#if defined(PCBHORUS)
-  constexpr uint16_t BRR_400K = 105;
-  constexpr uint16_t BRR_115K = 364;
-#else
-  constexpr uint16_t BRR_400K = 75;
-  constexpr uint16_t BRR_115K = 260;
-#endif
+constexpr uint16_t BRR_400K = PERI1_FREQUENCY / 400000;
+constexpr uint16_t BRR_115K = PERI1_FREQUENCY / 115200;
 
 enum GhostTelemetryBaudrates
 {
