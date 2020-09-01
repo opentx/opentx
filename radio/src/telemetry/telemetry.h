@@ -23,10 +23,11 @@
 
 #include "frsky.h"
 #include "crossfire.h"
-#include "ghost.h"
 #include "myeeprom.h"
 #include "io/frsky_sport.h"
-
+#if defined(GHOST)
+  #include "ghost.h"
+#endif
 #if defined(MULTIMODULE)
   #include "spektrum.h"
   #include "hitec.h"
