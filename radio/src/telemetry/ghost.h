@@ -106,20 +106,8 @@ enum GhostTelemetryBaudrates
   GHST_TELEMETRY_RATE_400K,
   GHST_TELEMETRY_RATE_115K
 };
-
-const uint32_t GHOST_BAUDRATES[] = {
-  400000,
-  115200,
-};
-const uint8_t GHOST_PERIODS[] = {
-   4,
-  16,
-};
-#define GHOST_BAUDRATE    GHOST_BAUDRATES[g_eeGeneral.telemetryBaudrate]
-#define GHOST_PERIOD      GHOST_PERIODS[g_eeGeneral.telemetryBaudrate]
-#else
+#endif
 #define GHOST_BAUDRATE       400000
 #define GHOST_PERIOD         4
-#endif
 
 #endif // _GHOST_H_
