@@ -117,7 +117,7 @@ void processCrossfireTelemetryFrame()
     case CF_VARIO_ID:
       if (getCrossfireTelemetryValue<2>(3, value))
         processCrossfireTelemetryValue(VERTICAL_SPEED_INDEX, value);
-	  if (getCrossfireTelemetryValue<2>(5, value))
+      if (getCrossfireTelemetryValue<2>(5, value))
         processCrossfireTelemetryValue(VARIO_ALTITUDE_INDEX,  value - 1000);
       break;
 
