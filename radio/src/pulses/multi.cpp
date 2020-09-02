@@ -42,6 +42,7 @@ static void sendD16BindOption(uint8_t moduleIdx);
 #if defined(LUA)
 static void sendSport(uint8_t moduleIdx);
 static void sendHott(uint8_t moduleIdx);
+static void sendDSM(uint8_t moduleIdx);
 #endif
 
 void multiPatchCustom(uint8_t moduleIdx)
@@ -193,6 +194,9 @@ void setupPulsesMulti(uint8_t moduleIdx)
       }
       else if (IS_HOTT_MULTI(moduleIdx)) {
         sendHott(moduleIdx);        //1 byte of additional data
+      }
+      else if (IS_DSM_MULTI(moduleIdx)) {
+        sendDSM(moduleIdx);         //7 bytes of additional data
       }
 #endif
     }
@@ -399,6 +403,20 @@ void sendHott(uint8_t moduleIdx)
   if (Multi_Buffer && memcmp(Multi_Buffer, "HoTT", 4) == 0 && (Multi_Buffer[5] & 0x80) && (Multi_Buffer[5] & 0x0F) >= 0x07) {
     // HoTT Lua script is running
     sendMulti(moduleIdx, Multi_Buffer[5]);
+  }
+}
+
+void sendDSM(uint8_t moduleIdx)
+{
+  // Multi_Buffer[0..2]=="DSM" -> Lua script is running
+  // Multi_Buffer[3]==0x70 + len -> TX to RX data ready to be sent
+  // Multi_Buffer[4..9]=6 bytes of TX to RX data
+  // Multi_Buffer[10..25]=16 bytes of RX to TX data
+  if (Multi_Buffer && memcmp(Multi_Buffer, "DSM", 3) == 0 && (Multi_Buffer[3] & 0xF8) == 0x70) {
+    for(uint8_t i = 0; i < 7; i++) {
+        sendMulti(moduleIdx, Multi_Buffer[3+i]);
+    }
+    Multi_Buffer[3] = 0x00;    // Data sent
   }
 }
 #endif
