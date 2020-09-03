@@ -376,6 +376,24 @@ bool luaFindFieldByName(const char * name, LuaField & field, unsigned int flags)
 }
 
 /*luadoc
+@function getRotEncSpeed()
+
+Return rotary encoder current speed
+
+@retval number in list (ROTENC_LOWSPEED, ROTENC_MIDSPEED, ROTENC_HIGHSPEED)
+        return 0 on radio without rotary encoder
+*/
+static int luGetRotEncSpeed(lua_State * L)
+{
+#if defined(ROTARY_ENCODER_NAVIGATION)
+  lua_pushunsigned(L, rotencSpeed);
+#else
+  lua_pushunsigned(L, 0);
+#endif
+  return 1;
+}
+
+/*luadoc
 @function sportTelemetryPop()
 
 Pops a received SPORT packet from the queue. Please note that only packets using a data ID within 0x5000 to 0x50FF
@@ -1680,6 +1698,7 @@ const luaL_Reg opentxLib[] = {
   { "getVersion", luaGetVersion },
   { "getGeneralSettings", luaGetGeneralSettings },
   { "getGlobalTimer", luaGetGlobalTimer },
+  { "getRotEncSpeed", luGetRotEncSpeed },
   { "getValue", luaGetValue },
   { "getRAS", luaGetRAS },
   { "getTxGPS", luaGetTxGPS },
@@ -1814,6 +1833,9 @@ const luaR_value_entry opentxConstants[] = {
   { "EVT_VIRTUAL_NEXT", EVT_ROTARY_RIGHT },
   { "EVT_VIRTUAL_DEC", EVT_ROTARY_LEFT },
   { "EVT_VIRTUAL_INC", EVT_ROTARY_RIGHT },
+  { "ROTENC_LOWSPEED", ROTENC_LOWSPEED },
+  { "ROTENC_MIDSPEED", ROTENC_MIDSPEED },
+  { "ROTENC_HIGHSPEED", ROTENC_HIGHSPEED },
 #elif defined(PCBX9D) || defined(PCBX9DP)  // key reverted between field nav and value change
   { "EVT_VIRTUAL_PREV", EVT_KEY_FIRST(KEY_PLUS) },
   { "EVT_VIRTUAL_PREV_REPT", EVT_KEY_REPT(KEY_PLUS) },
