@@ -380,8 +380,10 @@ bool luaFindFieldByName(const char * name, LuaField & field, unsigned int flags)
 
 Return rotary encoder current speed
 
-@retval number in list (ROTENC_LOWSPEED, ROTENC_MIDSPEED, ROTENC_HIGHSPEED)
+@retval number in list: ROTENC_LOWSPEED, ROTENC_MIDSPEED, ROTENC_HIGHSPEED
         return 0 on radio without rotary encoder
+
+@status current Introduced in 2.3.10
 */
 static int luGetRotEncSpeed(lua_State * L)
 {
