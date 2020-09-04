@@ -628,8 +628,10 @@ void CustomFunctionsPanel::cmCopy()
 
 void CustomFunctionsPanel::cmCut()
 {
+  if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Cut Special Function. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+    return;
   cmCopy();
-  cmClear();
+  cmClear(false);
 }
 
 void CustomFunctionsPanel::onCustomContextMenuRequested(QPoint pos)
@@ -743,10 +745,12 @@ void CustomFunctionsPanel::cmMoveDown()
   swapData(selectedIndex, selectedIndex + 1);
 }
 
-void CustomFunctionsPanel::cmClear()
+void CustomFunctionsPanel::cmClear(bool prompt)
 {
-  if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Clear Special Function. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
-    return;
+  if (prompt) {
+    if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Clear Special Function. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+      return;
+  }
 
   functions[selectedIndex].clear();
   resetCBsAndRefresh(selectedIndex);

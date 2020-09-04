@@ -71,13 +71,18 @@ class TelemetrySensorPanel: public ModelPanel
     Q_OBJECT
 
   public:
-    TelemetrySensorPanel(QWidget *parent, SensorData & sensor, int sensorIndex, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware);
+    TelemetrySensorPanel(QWidget *parent, SensorData & sensor, int sensorIndex, int sensorCapability, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware);
     ~TelemetrySensorPanel();
     void update();
 
   signals:
     void dataModified();
     void clearAllSensors();
+    void insertSensor(int index);
+    void deleteSensor(int index);
+    void moveUpSensor(int index);
+    void moveDownSensor(int index);
+
 
   protected slots:
     void on_name_editingFinished();
@@ -90,8 +95,12 @@ class TelemetrySensorPanel: public ModelPanel
     void cmCopy();
     void cmCut();
     void cmPaste();
-    void cmClear();
+    void cmClear(bool prompt = true);
     void cmClearAll();
+    void cmInsert();
+    void cmDelete();
+    void cmMoveUp();
+    void cmMoveDown();
 
   protected:
     void updateSourcesComboBox(AutoComboBox * cb, bool negative);
@@ -102,6 +111,10 @@ class TelemetrySensorPanel: public ModelPanel
     bool lock = false;
     int sensorIndex = 0;
     int selectedIndex = 0;
+    int sensorCapability;
+    bool insertAllowed() const;
+    bool moveDownAllowed() const;
+    bool moveUpAllowed() const;
 };
 
 class TelemetryPanel : public ModelPanel
@@ -131,17 +144,23 @@ class TelemetryPanel : public ModelPanel
     void on_mahCount_SB_editingFinished();
     void on_mahCount_ChkB_toggled(bool checked);
     void on_clearAllSensors();
+    void on_insertSensor(int index);
+    void on_deleteSensor(int index);
+    void on_moveUpSensor(int index);
+    void on_moveDownSensor(int index);
 
   private:
     Ui::Telemetry *ui;
     TelemetryCustomScreen * telemetryCustomScreens[4];
     TelemetrySensorPanel * sensorPanels[CPN_MAX_SENSORS];
+    int sensorCapability;
 
     void setup();
     void telBarUpdate();
     void populateVoltsSource();
     void populateCurrentSource();
     void populateVarioSource();
+    void swapData(int idx1, int idx2);
 };
 
 #endif // _TELEMETRY_H_

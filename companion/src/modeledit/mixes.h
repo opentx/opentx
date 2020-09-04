@@ -39,7 +39,7 @@ class MixesPanel : public ModelPanel
   private slots:
     // TODO all slots?
     void clearMixes();
-    void mixersDelete(bool ask=true);
+    void mixersDelete(bool prompt = true);
     void mixersCut();
     void mixersCopy();
     void mixersPaste();
