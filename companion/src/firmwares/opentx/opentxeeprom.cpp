@@ -145,7 +145,7 @@ inline int MAX_MOUSE_ANALOG_SOURCES(Board::Type board, int version)
 #define MAX_EXPOS(board, version)             (IS_HORUS_OR_TARANIS(board) ? 64 : 32)
 #define MAX_LOGICAL_SWITCHES(board, version)  (version >= 218 ? 64 : 32)
 #define MAX_CUSTOM_FUNCTIONS(board, version)  64
-#define MAX_CURVES(board, version)            ((version >= 219 || HAS_LARGE_LCD(board)) ? 32 : 16)
+#define MAX_CURVES(board, version)            (version >= 219 ? 32 : 16)
 #define MAX_GVARS(board, version)             9
 #define MAX_SCRIPTS(board)                    (IS_FAMILY_HORUS_OR_T16(board) ? 9 : 7)
 #define MAX_TELEMETRY_SENSORS(board, version) (version <= 218 ? 32 : ((IS_FAMILY_HORUS_OR_T16(board) || IS_TARANIS_X9(board)) ? 60 : 40))
