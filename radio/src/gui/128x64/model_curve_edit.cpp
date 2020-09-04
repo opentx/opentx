@@ -171,9 +171,11 @@ void menuModelCurveOne(event_t event)
       killEvents(event);
       break;
 #elif defined(NAVIGATION_XLITE)
-    case EVT_KEY_LONG(KEY_SHIFT):
-      pushMenu(menuChannelsView);
-      killEvents(event);
+    case EVT_KEY_FIRST(KEY_ENTER):
+      if (IS_SHIFT_PRESSED()) {
+        pushMenu(menuChannelsView);
+        killEvents(event);
+      }
       break;
 #endif
   }

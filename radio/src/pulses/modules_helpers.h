@@ -33,6 +33,7 @@
 #endif
 
 #define CROSSFIRE_CHANNELS_COUNT        16
+#define GHOST_CHANNELS_COUNT            12
 
 #if defined(MULTIMODULE)
 // When using packed, the pointer in here end up not being aligned, which clang and gcc complain about
@@ -150,6 +151,18 @@ inline bool isModuleCrossfire(uint8_t idx)
 }
 #endif
 
+#if defined(GHOST)
+inline bool isModuleGhost(uint8_t idx)
+{
+  return idx == EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_GHOST;
+}
+#else
+inline bool isModuleGhost(uint8_t idx)
+{
+  return false;
+}
+#endif
+
 #if defined(PCBSKY9X)
 inline bool isExtraModule(uint8_t idx)
 {
@@ -178,7 +191,7 @@ inline bool isModulePPM(uint8_t moduleIdx)
 
 inline bool isModuleTypeR9MNonAccess(uint8_t type)
 {
-  return type == MODULE_TYPE_R9M_PXX1 || type == MODULE_TYPE_R9M_LITE_PXX1 || type == MODULE_TYPE_R9M_LITE_PRO_PXX1;
+  return type == MODULE_TYPE_R9M_PXX1 || type == MODULE_TYPE_R9M_LITE_PXX1;
 }
 
 inline bool isModuleR9MNonAccess(uint8_t idx)
@@ -218,7 +231,7 @@ inline bool isModuleR9MLiteNonPro(uint8_t idx)
 
 inline bool isModuleTypeR9MLitePro(uint8_t type)
 {
-  return type == MODULE_TYPE_R9M_LITE_PRO_PXX1 || type == MODULE_TYPE_R9M_LITE_PRO_PXX2;
+  return type == MODULE_TYPE_R9M_LITE_PRO_PXX2;
 }
 
 inline bool isModuleTypeR9MLite(uint8_t type)
@@ -384,6 +397,8 @@ inline int8_t sentModuleChannels(uint8_t idx)
 {
   if (isModuleCrossfire(idx))
     return CROSSFIRE_CHANNELS_COUNT;
+  else if (isModuleGhost(idx))
+    return GHOST_CHANNELS_COUNT;
   else if (isModuleMultimodule(idx) && !isModuleMultimoduleDSM2(idx))
     return 16;
   else if (isModuleSBUS(idx))
@@ -412,6 +427,9 @@ inline bool isModuleRxNumAvailable(uint8_t moduleIdx)
     return true;
 
   if (isModuleMultimodule(moduleIdx))
+    return true;
+
+  if (isModuleCrossfire(moduleIdx))
     return true;
 
   return false;
@@ -528,7 +546,7 @@ inline bool isTelemAllowedOnBind(uint8_t moduleIndex)
       return true;
   }
 
-  if (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_R9M_PXX1 || g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_R9M_LITE_PRO_PXX1) {
+  if (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_R9M_PXX1) {
     if (isModuleR9M_LBT(EXTERNAL_MODULE))
       return g_model.moduleData[EXTERNAL_MODULE].pxx.power < R9M_LBT_POWER_200_16CH_NOTELEM;
     else

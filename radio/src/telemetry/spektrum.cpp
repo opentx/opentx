@@ -47,6 +47,7 @@
 #define DSM_BIND_PACKET_LENGTH 12
 
 #define I2C_HIGH_CURRENT 0x03
+#define I2C_FWD_PGM 0x09
 #define I2C_TEXTGEN 0x0c
 #define I2C_GPS  0x17
 #define I2C_GPS2 0x17
@@ -349,6 +350,20 @@ void processSpektrumPacket(const uint8_t *packet)
   // highest bit indicates that TM1100 is in use, ignore it
   uint8_t i2cAddress = (packet[2] & 0x7f);
 
+  if (i2cAddress == I2C_FWD_PGM) {
+#if defined(LUA)
+    // Forward Programming
+    if (Multi_Buffer && memcmp(Multi_Buffer, "DSM", 3) == 0) {
+      // Multi_Buffer[0..2]=="DSM" -> Lua script is running
+      // Multi_Buffer[3]==0x70 -> TX to RX data ready to be sent
+      // Multi_Buffer[4..9]=6 bytes of TX to RX data
+      // Multi_Buffer[10..25]=16 bytes of RX to TX data
+      Multi_Buffer[10] = i2cAddress;
+      memcpy(&Multi_Buffer[11], &packet[3], 15); // Store the received RX answer in the buffer
+    }
+#endif
+    return; // Not a sensor
+  }
   //SmartBat Hack
   if (i2cAddress == I2C_SMART_BAT_BASE_ADDRESS) {
     i2cAddress = i2cAddress + (packet[4] >> 4); // use type to create virtual I2CAddresses

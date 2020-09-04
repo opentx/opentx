@@ -45,6 +45,13 @@ void processTelemetryData(uint8_t data)
   }
 #endif
 
+#if defined(GHOST)
+  if (telemetryProtocol == PROTOCOL_TELEMETRY_GHOST) {
+    processGhostTelemetryData(data);
+    return;
+  }
+#endif
+
 #if defined(MULTIMODULE)
   if (telemetryProtocol == PROTOCOL_TELEMETRY_SPEKTRUM) {
     processSpektrumTelemetryData(EXTERNAL_MODULE, data, telemetryRxBuffer, telemetryRxBufferCount);
@@ -209,6 +216,11 @@ void telemetryWakeup()
       if (TELEMETRY_STREAMING()) {
         if (telemetryState == TELEMETRY_KO) {
           AUDIO_TELEMETRY_BACK();
+#if defined(CROSSFIRE)
+          if (isModuleCrossfire(EXTERNAL_MODULE)) {
+            moduleState[EXTERNAL_MODULE].counter = CRSF_FRAME_MODELID;
+          }
+#endif
         }
         telemetryState = TELEMETRY_OK;
       }
@@ -288,6 +300,16 @@ void telemetryInit(uint8_t protocol)
 #if defined(CROSSFIRE)
   else if (protocol == PROTOCOL_TELEMETRY_CROSSFIRE) {
     telemetryPortInit(CROSSFIRE_BAUDRATE, TELEMETRY_SERIAL_DEFAULT);
+#if defined(LUA)
+    outputTelemetryBuffer.reset();
+#endif
+    telemetryPortSetDirectionOutput();
+  }
+#endif
+
+#if defined(GHOST)
+  else if (protocol == PROTOCOL_TELEMETRY_GHOST) {
+    telemetryPortInit(GHOST_BAUDRATE, TELEMETRY_SERIAL_DEFAULT);
 #if defined(LUA)
     outputTelemetryBuffer.reset();
 #endif

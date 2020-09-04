@@ -584,6 +584,14 @@ bool isModuleUsingSport(uint8_t moduleBay, uint8_t moduleType)
   }
 }
 
+bool areModulesConflicting(int intModuleType, int extModuleType)
+{
+  if (intModuleType == MODULE_TYPE_ISRM_PXX2)
+    return (extModuleType == MODULE_TYPE_GHOST);
+
+  return false;
+}
+
 #if defined(HARDWARE_INTERNAL_MODULE)
 bool isInternalModuleAvailable(int moduleType)
 {
@@ -605,7 +613,7 @@ bool isInternalModuleAvailable(int moduleType)
 
   if (moduleType == MODULE_TYPE_ISRM_PXX2) {
 #if defined(PXX2) && defined(INTERNAL_MODULE_PXX2)
-    return true;
+    return !areModulesConflicting(moduleType, g_model.moduleData[EXTERNAL_MODULE].type);
 #endif
   }
 
@@ -620,9 +628,6 @@ bool isInternalModuleAvailable(int moduleType)
 
 bool isExternalModuleAvailable(int moduleType)
 {
-  if (moduleType == MODULE_TYPE_R9M_LITE_PRO_PXX1)
-    return false;
-
 #if !defined(HARDWARE_EXTERNAL_MODULE_SIZE_SML)
   if (isModuleTypeR9MLite(moduleType) || moduleType == MODULE_TYPE_XJT_LITE_PXX2)
     return false;
@@ -657,6 +662,11 @@ bool isExternalModuleAvailable(int moduleType)
     return false;
 #endif
 
+#if !defined(GHOST)
+  if (moduleType == MODULE_TYPE_GHOST)
+    return false;
+#endif
+
 #if !defined(DSM2)
   if (moduleType == MODULE_TYPE_DSM2)
      return false;
@@ -673,6 +683,9 @@ bool isExternalModuleAvailable(int moduleType)
 #endif
 
 #if defined(HARDWARE_INTERNAL_MODULE)
+  if (areModulesConflicting(g_model.moduleData[INTERNAL_MODULE].type, moduleType))
+    return false;
+
   if (isTrainerUsingModuleBay() || (isModuleUsingSport(EXTERNAL_MODULE, moduleType) && isModuleUsingSport(INTERNAL_MODULE, g_model.moduleData[INTERNAL_MODULE].type)))
     return false;
 #endif
@@ -694,6 +707,11 @@ bool isRfProtocolAvailable(int protocol)
 {
 #if defined(CROSSFIRE)
   if (protocol != MODULE_SUBTYPE_PXX1_OFF && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_CROSSFIRE) {
+    return false;
+  }
+#endif
+#if defined(GHOST)
+  if (protocol != MODULE_SUBTYPE_PXX1_OFF && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_GHOST) {
     return false;
   }
 #endif
@@ -723,6 +741,10 @@ bool isTelemetryProtocolAvailable(int protocol)
 #endif
 
   if (protocol== PROTOCOL_TELEMETRY_CROSSFIRE) {
+    return false;
+  }
+
+  if ( protocol== PROTOCOL_TELEMETRY_GHOST) {
     return false;
   }
 
