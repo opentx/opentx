@@ -240,6 +240,11 @@ void telemetryPortInvertedRxBit()
 
 void telemetryPortSetDirectionOutput()
 {
+#if defined(GHOST) && SPORT_MAX_BAUDRATE < 400000
+  if (isModuleGhost(EXTERNAL_MODULE)) {
+    TELEMETRY_USART->BRR = BRR_400K;
+  }
+#endif
   TELEMETRY_DIR_GPIO->BSRRL = TELEMETRY_DIR_GPIO_PIN;     // output enable
   TELEMETRY_USART->CR1 &= ~USART_CR1_RE;                  // turn off receiver
 }
@@ -252,6 +257,11 @@ void sportWaitTransmissionComplete()
 void telemetryPortSetDirectionInput()
 {
   sportWaitTransmissionComplete();
+#if defined(GHOST) && SPORT_MAX_BAUDRATE < 400000
+  if (isModuleGhost(EXTERNAL_MODULE) && g_eeGeneral.telemetryBaudrate == GHST_TELEMETRY_RATE_115K) {
+    TELEMETRY_USART->BRR = BRR_115K;
+  }
+#endif
   TELEMETRY_DIR_GPIO->BSRRH = TELEMETRY_DIR_GPIO_PIN;     // output disable
   TELEMETRY_USART->CR1 |= USART_CR1_RE;                   // turn on receiver
 }
