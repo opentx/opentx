@@ -1592,10 +1592,12 @@ bool SetupPanel::moveTimerUpAllowed() const
   return selectedTimerIndex > 0;
 }
 
-void SetupPanel::cmTimerClear()
+void SetupPanel::cmTimerClear(bool prompt)
 {
-  if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Clear Timer. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
-    return;
+  if (prompt) {
+    if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Clear Timer. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+      return;
+  }
 
   model->timers[selectedTimerIndex].clear();
   model->updateAllReferences(ModelData::REF_UPD_TYPE_TIMER, ModelData::REF_UPD_ACT_CLEAR, selectedTimerIndex);
@@ -1627,8 +1629,10 @@ void SetupPanel::cmTimerCopy()
 
 void SetupPanel::cmTimerCut()
 {
+  if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Cut Timer. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+    return;
   cmTimerCopy();
-  cmTimerClear();
+  cmTimerClear(false);
 }
 
 void SetupPanel::cmTimerDelete()

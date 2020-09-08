@@ -540,7 +540,7 @@ int OpenTxFirmware::getCapability(::Capability capability)
     case Simulation:
       return 1;
     case NumCurves:
-      return (HAS_LARGE_LCD(board) ? 32 : 16);
+      return 32;
     case HasMixerNames:
       return (IS_TARANIS_X9(board) ? 8 : 6);
     case HasExpoNames:

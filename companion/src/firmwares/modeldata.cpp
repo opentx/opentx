@@ -532,6 +532,8 @@ int ModelData::updateReference()
 
   Firmware *fw = getCurrentFirmware();
 
+  updRefInfo.occurences = 1;
+
   switch (updRefInfo.type)
   {
     case REF_UPD_TYPE_CHANNEL:
@@ -566,6 +568,7 @@ int ModelData::updateReference()
       updRefInfo.srcType = SOURCE_TYPE_TELEMETRY;
       updRefInfo.swtchType = SWITCH_TYPE_SENSOR;
       updRefInfo.maxindex = fw->getCapability(Sensors);
+      updRefInfo.occurences = 3;
       break;
     case REF_UPD_TYPE_TIMER:
       updRefInfo.srcType = SOURCE_TYPE_SPECIAL;
@@ -656,6 +659,8 @@ int ModelData::updateReference()
       }
     }
   }
+  if (updRefInfo.type == REF_UPD_TYPE_CHANNEL)
+    sortMixes();
   //s1.report("Mixes");
 
   for (int i = 0; i < CPN_MAX_CHNOUT; i++) {
@@ -767,15 +772,35 @@ int ModelData::updateReference()
     //s1.report("Telemetry");
   }
 
-  //  TODO maybe less risk to leave it up to the user??
-  /*
   for (int i = 0; i < CPN_MAX_SENSORS; i++) {
     SensorData *sd = &sensorData[i];
-    if (sd->isAvailable() && sd->type == SensorData::TELEM_TYPE_CALCULATED) {
+    if (!sd->isEmpty() && sd->type == SensorData::TELEM_TYPE_CALCULATED) {
+      if (sd->formula == SensorData::TELEM_FORMULA_CELL) {
+        updateTelemetryRef(sd->source);
+        if (sd->source == 0) {
+          sd->clear();
+          appendUpdateReferenceParams(REF_UPD_TYPE_SENSOR, REF_UPD_ACT_CLEAR, i);
+        }
+      }
+      else if (sd->formula == SensorData::TELEM_FORMULA_DIST) {
+        updateTelemetryRef(sd->gps);
+        updateTelemetryRef(sd->alt);
+      }
+      else if (sd->formula == SensorData::TELEM_FORMULA_CONSUMPTION || sd->formula == SensorData::TELEM_FORMULA_TOTALIZE) {
+        updateTelemetryRef(sd->amps);
+        if (sd->amps == 0) {
+          sd->clear();
+          appendUpdateReferenceParams(REF_UPD_TYPE_SENSOR, REF_UPD_ACT_CLEAR, i);
+        }
+      }
+      else {
+        for (unsigned int i = 0; i < 4; i++) {
+          updateTelemetryRef(sd->sources[i]);
+        }
+      }
     }
   }
-  s1.report("Telemetry Sensors");
-  */
+  //s1.report("Telemetry Sensors");
 
   //  TODO needs lua incorporated into Companion as script needs to be parsed to determine if input field is source or value
   /*
@@ -811,38 +836,40 @@ void ModelData::updateTypeIndexRef(R & curRef, const T type, const int idxAdj, c
   newRef.type = curRef.type;
   newRef.index = abs(curRef.index);
 
+  div_t idx = div(newRef.index, updRefInfo.occurences);
+
   switch (updRefInfo.action)
   {
     case REF_UPD_ACT_CLEAR:
-      if (newRef.index != (updRefInfo.index1 + idxAdj))
+      if (idx.quot != (updRefInfo.index1 + idxAdj))
         return;
       if (defClear)
         newRef.clear();
       else {
         newRef.type = (T)defType;
-        newRef.index = defIndex;
+        newRef.index = defIndex + idxAdj;
       }
       break;
     case REF_UPD_ACT_SHIFT:
-      if (newRef.index < (updRefInfo.index1 + idxAdj))
+      if (idx.quot < (updRefInfo.index1 + idxAdj))
         return;
 
       newRef.index += updRefInfo.shift;
 
-      if (newRef.index < (updRefInfo.index1 + idxAdj) || newRef.index > (updRefInfo.maxindex + idxAdj)) {
+      if (idx.quot < (updRefInfo.index1 + idxAdj) || idx.quot > (updRefInfo.maxindex + idxAdj)) {
         if (defClear)
           newRef.clear();
         else {
           newRef.type = (T)defType;
-          newRef.index = defIndex;
+          newRef.index = defIndex + idxAdj;
         }
       }
       break;
     case REF_UPD_ACT_SWAP:
-      if (newRef.index == updRefInfo.index1 + idxAdj)
-        newRef.index = updRefInfo.index2 + idxAdj;
-      else if (newRef.index == updRefInfo.index2 + idxAdj)
-        newRef.index = updRefInfo.index1 + idxAdj;
+      if (idx.quot == updRefInfo.index1 + idxAdj)
+        newRef.index = ((updRefInfo.index2 + idxAdj) * updRefInfo.occurences) + idx.rem;
+      else if (idx.quot == updRefInfo.index2 + idxAdj)
+        newRef.index = ((updRefInfo.index1 + idxAdj) * updRefInfo.occurences) + idx.rem;
       break;
     default:
       qDebug() << "Error - unhandled action:" << updRefInfo.action;
@@ -877,7 +904,7 @@ void ModelData::updateTypeValueRef(R & curRef, const T type, const int idxAdj, c
         newRef.clear();
       else {
         newRef.type = (T)defType;
-        newRef.value = defValue;
+        newRef.value = defValue + idxAdj;
       }
       break;
     case REF_UPD_ACT_SHIFT:
@@ -891,7 +918,7 @@ void ModelData::updateTypeValueRef(R & curRef, const T type, const int idxAdj, c
           newRef.clear();
         else {
           newRef.type = (T)defType;
-          newRef.value = defValue;
+          newRef.value = defValue + idxAdj;
         }
       }
       break;
@@ -1120,13 +1147,14 @@ void ModelData::updateFlightModeFlags(unsigned int & curRef)
   }
 }
 
-void ModelData::updateTelemetryRef(unsigned int & curRef)
+void ModelData::updateTelemetryRef(int & curRef)
 {
   if (updRefInfo.type != REF_UPD_TYPE_SENSOR)
     return;
 
   const int idxAdj = 1;
   int newRef = curRef;
+
   switch (updRefInfo.action)
   {
     case REF_UPD_ACT_CLEAR:
@@ -1154,10 +1182,20 @@ void ModelData::updateTelemetryRef(unsigned int & curRef)
       return;
   }
 
-  if (curRef != static_cast<unsigned int>(newRef)) {
+  if (curRef != newRef) {
     //qDebug() << "Updated reference:" << curRef << " -> " << newRef;
     curRef = newRef;
     updRefInfo.updcnt++;
+  }
+}
+
+void ModelData::updateTelemetryRef(unsigned int & curRef)
+{
+  int newRef = (int)curRef;
+  updateTelemetryRef(newRef);
+
+  if (curRef != static_cast<unsigned int>(newRef)) {
+    curRef = (unsigned int)newRef;
   }
 }
 
@@ -1293,4 +1331,46 @@ void ModelData::removeMix(const int idx)
 {
   memmove(&mixData[idx], &mixData[idx + 1], (CPN_MAX_MIXERS - (idx + 1)) * sizeof(MixData));
   mixData[CPN_MAX_MIXERS - 1].clear();
+}
+
+void ModelData::sortMixes()
+{
+  unsigned int lastchn = 0;
+  bool sortreq = false;
+
+  for (int i = 0; i < CPN_MAX_MIXERS; i++) {
+    MixData *md = &mixData[i];
+    if (!md->isEmpty()) {
+      if (md->destCh < lastchn) {
+        sortreq = true;
+        break;
+      }
+      else
+        lastchn = md->destCh;
+    }
+  }
+
+  if (!sortreq)
+    return;
+
+  //  QMap automatically sorts based on key
+  QMap<int, int> map;
+  for (int i = 0; i < CPN_MAX_MIXERS; i++) {
+    MixData *md = &mixData[i];
+    if (!md->isEmpty()) {
+      //  destCh may not be unique so build a compound sort key
+      map.insert(md->destCh * (CPN_MAX_MIXERS + 1) + i, i);
+    }
+  }
+
+  MixData sortedMixData[CPN_MAX_MIXERS];
+  int destidx = 0;
+
+  QMap<int, int>::const_iterator i;
+  for (i = map.constBegin(); i != map.constEnd(); ++i) {
+    memcpy(&sortedMixData[destidx], &mixData[i.value()], sizeof(MixData));
+    destidx++;
+  }
+
+  memcpy(&mixData[0], &sortedMixData[0], CPN_MAX_MIXERS * sizeof(MixData));
 }

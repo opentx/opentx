@@ -26,7 +26,8 @@
 
 // Device (destination) address
 #define GHST_ADDR_RADIO                 0x80    // phase 1
-#define GHST_ADDR_MODULE                0x81
+#define GHST_ADDR_MODULE_SYM            0x81    // symmetrical, 400k pulses, 400k telemetry
+#define GHST_ADDR_MODULE_ASYM           0x88    // asymmetrical, 400k pulses, 115k telemetry
 #define GHST_ADDR_FC                    0x82
 #define GHST_ADDR_GOGGLES               0x83    // phase 2
 #define GHST_ADDR_5G_TXCTRL             0x84	// phase 3
@@ -96,19 +97,17 @@ void ghostSetDefault(int index, uint8_t id, uint8_t subId);
 #if SPORT_MAX_BAUDRATE < 400000
 // For radios which can't support telemetry at high rates, offer baud rate choices
 // (modified vs. unmodified radios)
-const uint32_t GHOST_BAUDRATES[] = {
-  400000,
-  115200,
+
+constexpr uint16_t BRR_400K = PERI1_FREQUENCY / 400000;
+constexpr uint16_t BRR_115K = PERI1_FREQUENCY / 115200;
+
+enum GhostTelemetryBaudrates
+{
+  GHST_TELEMETRY_RATE_400K,
+  GHST_TELEMETRY_RATE_115K
 };
-const uint8_t GHOST_PERIODS[] = {
-   4,
-  16,
-};
-#define GHOST_BAUDRATE    GHOST_BAUDRATES[g_eeGeneral.telemetryBaudrate]
-#define GHOST_PERIOD      GHOST_PERIODS[g_eeGeneral.telemetryBaudrate]
-#else
+#endif
 #define GHOST_BAUDRATE       400000
 #define GHOST_PERIOD         4
-#endif
 
 #endif // _GHOST_H_
