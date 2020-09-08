@@ -522,7 +522,7 @@ bool setupPulsesInternalModule(uint8_t protocol)
 #endif
 
     default:
-      mixerSchedulerSetPeriod(INTERNAL_MODULE, 10000 /*us*/);  // used for USB sim for example
+      //mixerSchedulerSetPeriod(INTERNAL_MODULE, 10000 /*us*/); // used for USB sim for example
       return false;
   }
 }
