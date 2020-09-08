@@ -483,6 +483,7 @@ extern uint32_t nextMixerTime[NUM_MODULES];
 void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms);
 void evalMixes(uint8_t tick10ms);
 void doMixerCalculations();
+void doMixerPeriodicUpdates();
 
 void checkTrims();
 extern uint8_t currentBacklightBright;

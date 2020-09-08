@@ -168,12 +168,20 @@ TASK_FUNCTION(mixerTask)
 
       DEBUG_TIMER_START(debugTimerMixer);
       RTOS_LOCK_MUTEX(mixerMutex);
+
       doMixerCalculations();
+
+      // TODO: fix runMask
+      sendSynchronousPulses((1 << INTERNAL_MODULE) | (1 << EXTERNAL_MODULE));
+
+      doMixerPeriodicUpdates();
+
       DEBUG_TIMER_START(debugTimerMixerCalcToUsage);
       DEBUG_TIMER_SAMPLE(debugTimerMixerIterval);
       RTOS_UNLOCK_MUTEX(mixerMutex);
       DEBUG_TIMER_STOP(debugTimerMixer);
 
+  
 #if defined(STM32) && !defined(SIMU)
       if (getSelectedUsbMode() == USB_JOYSTICK_MODE) {
         usbJoystickUpdate();
@@ -202,9 +210,6 @@ TASK_FUNCTION(mixerTask)
       //    between protocols with multi-proto RF
       if (timeout)
         serialPrint("mix sched timeout!");
-
-      // TODO: fix runMask
-      sendSynchronousPulses((1 << INTERNAL_MODULE) | (1 << EXTERNAL_MODULE));
     }
   }
 }
