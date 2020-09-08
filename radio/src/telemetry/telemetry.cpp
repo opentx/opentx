@@ -421,7 +421,7 @@ void ModuleSyncStatus::update(uint16_t newRefreshRate, uint16_t newInputLag)
 
 uint16_t ModuleSyncStatus::getAdjustedRefreshRate()
 {
-  int16_t lag = currentLag - SAFE_SYNC_LAG;
+  int16_t lag = currentLag;
   int32_t newRefreshRate = refreshRate;
 
   if (lag == 0) {

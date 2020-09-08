@@ -290,8 +290,6 @@ extern Fifo<uint8_t, LUA_TELEMETRY_INPUT_FIFO_SIZE> * luaInputTelemetryFifo;
 void processPXX2Frame(uint8_t module, const uint8_t *frame);
 
 // Module pulse synchronization
-#define SAFE_SYNC_LAG          800 /* us */
-
 struct ModuleSyncStatus
 {
   // feedback input: last received values

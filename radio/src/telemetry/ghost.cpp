@@ -141,7 +141,7 @@ void processGhostTelemetryFrame()
       update_interval /= 10;
       offset /= 10;
 
-      getModuleSyncStatus(EXTERNAL_MODULE).update(update_interval, offset + SAFE_SYNC_LAG);
+      getModuleSyncStatus(EXTERNAL_MODULE).update(update_interval, offset);
     }
     break;
 
