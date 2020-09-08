@@ -65,8 +65,8 @@ void intmoduleSendNextFrame()
       INTMODULE_DMA_STREAM->CR |= DMA_SxCR_EN | DMA_SxCR_TCIE; // Enable DMA
 
       // re-init timer
-      EXTMODULE_TIMER->EGR = 1;
-      EXTMODULE_TIMER->CR1 |= TIM_CR1_CEN;
+      INTMODULE_TIMER->EGR = 1;
+      INTMODULE_TIMER->CR1 |= TIM_CR1_CEN;
       break;
     }
 #endif
