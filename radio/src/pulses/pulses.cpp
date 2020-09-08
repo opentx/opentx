@@ -411,6 +411,7 @@ static void enablePulsesInternalModule(uint8_t protocol)
       intmodulePxx1PulsesStart();
 #if defined(INTMODULE_HEARTBEAT)
       // use backup trigger (1 ms later)
+      init_intmodule_heartbeat();
       mixerSchedulerSetPeriod(INTERNAL_MODULE, INTMODULE_PXX1_SERIAL_PERIOD + 1000/*us*/);
 #else
       mixerSchedulerSetPeriod(INTERNAL_MODULE, INTMODULE_PXX1_SERIAL_PERIOD);
@@ -423,6 +424,7 @@ static void enablePulsesInternalModule(uint8_t protocol)
       intmodulePxx1SerialStart();
 #if defined(INTMODULE_HEARTBEAT)
       // use backup trigger (1 ms later)
+      init_intmodule_heartbeat();
       mixerSchedulerSetPeriod(INTERNAL_MODULE, INTMODULE_PXX1_SERIAL_PERIOD + 1000/*us*/);
 #else
       mixerSchedulerSetPeriod(INTERNAL_MODULE, INTMODULE_PXX1_SERIAL_PERIOD);
@@ -437,6 +439,7 @@ static void enablePulsesInternalModule(uint8_t protocol)
 
 #if defined(INTMODULE_HEARTBEAT)
       // use backup trigger (1 ms later)
+      init_intmodule_heartbeat();
       mixerSchedulerSetPeriod(INTERNAL_MODULE, PXX2_PERIOD + 1000/*us*/);
 #else
       mixerSchedulerSetPeriod(INTERNAL_MODULE, PXX2_PERIOD);
