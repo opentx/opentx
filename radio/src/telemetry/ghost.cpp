@@ -132,6 +132,19 @@ void processGhostTelemetryFrame()
 
   uint8_t id = telemetryRxBuffer[2];
   switch(id) {
+    case GHST_DL_OPENTX_SYNC:
+    {
+      uint32_t update_interval = getTelemetryValue_s32(3);
+      int32_t  offset = getTelemetryValue_s32(7);
+
+      // values are in units of 100ns
+      update_interval /= 10;
+      offset /= 10;
+
+      getModuleSyncStatus(EXTERNAL_MODULE).update(update_interval, offset + SAFE_SYNC_LAG);
+    }
+    break;
+
     case GHST_DL_LINK_STAT:
     {
 #if defined(BLUETOOTH)
