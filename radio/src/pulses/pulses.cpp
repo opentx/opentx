@@ -333,6 +333,9 @@ bool setupPulsesExternalModule(uint8_t protocol)
 #if defined(SBUS)
     case PROTOCOL_CHANNELS_SBUS:
       setupPulsesSbus();
+
+      // SBUS_PERIOD is not a constant! It can be set from UI
+      mixerSchedulerSetPeriod(EXTERNAL_MODULE, SBUS_PERIOD);
       return true;
 #endif
 
