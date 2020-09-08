@@ -143,11 +143,11 @@ void processGhostTelemetryFrame()
         bluetooth.write(telemetryRxBuffer, telemetryRxBufferCount);
       }
 #endif
-      uint8_t rssiVal = min<uint8_t>(telemetryRxBuffer[3], 100);
+      uint8_t rssiVal = min<uint8_t>(telemetryRxBuffer[3], 120); // RSSI is a negative value, but sent as a positive integer.
       uint8_t lqVal = min<uint8_t>(telemetryRxBuffer[4], 100);
       uint8_t snrVal = min<uint8_t>(telemetryRxBuffer[5], 100);
 
-      processGhostTelemetryValue(GHOST_ID_RX_RSSI, rssiVal);
+      processGhostTelemetryValue(GHOST_ID_RX_RSSI, - rssiVal);
       processGhostTelemetryValue(GHOST_ID_RX_LQ, lqVal);
       processGhostTelemetryValue(GHOST_ID_RX_SNR, snrVal);
 
