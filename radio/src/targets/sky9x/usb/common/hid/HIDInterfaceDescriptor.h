@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- *         ATMEL Microcontroller Software Support 
+ *         ATMEL Microcontroller Software Support
  * ----------------------------------------------------------------------------
  * Copyright (c) 2008, Atmel Corporation
  *
@@ -60,18 +60,17 @@
 /// - HIDInterfaceDescriptor_PROTOCOL_MOUSE
 
 /// HID interface class code.
-#define HIDInterfaceDescriptor_CLASS                0x03
+#define HIDInterfaceDescriptor_CLASS 0x03
 /// Indicates the interface does not implement a particular subclass.
-#define HIDInterfaceDescriptor_SUBCLASS_NONE        0x00
+#define HIDInterfaceDescriptor_SUBCLASS_NONE 0x00
 /// Indicates the interface is compliant with the boot specification.
-#define HIDInterfaceDescriptor_SUBCLASS_BOOT        0x01
+#define HIDInterfaceDescriptor_SUBCLASS_BOOT 0x01
 /// Indicates the interface does not implement a particular protocol.
-#define HIDInterfaceDescriptor_PROTOCOL_NONE        0x00
+#define HIDInterfaceDescriptor_PROTOCOL_NONE 0x00
 /// Indicates the interface supports the boot specification as a keyboard.
-#define HIDInterfaceDescriptor_PROTOCOL_KEYBOARD    0x01
+#define HIDInterfaceDescriptor_PROTOCOL_KEYBOARD 0x01
 /// Indicates the interface supports the boot specification as a mouse.
-#define HIDInterfaceDescriptor_PROTOCOL_MOUSE       0x02
+#define HIDInterfaceDescriptor_PROTOCOL_MOUSE 0x02
 //------------------------------------------------------------------------------
 
 #endif //#ifndef HIDINTERFACEDESCRIPTOR_H
-

@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- *         ATMEL Microcontroller Software Support 
+ *         ATMEL Microcontroller Software Support
  * ----------------------------------------------------------------------------
  * Copyright (c) 2008, Atmel Corporation
  *
@@ -49,10 +49,9 @@
 /// \param endpoint Pointer to a USBEndpointDescriptor instance.
 /// \return Endpoint number.
 //------------------------------------------------------------------------------
-unsigned char USBEndpointDescriptor_GetNumber(
-    const USBEndpointDescriptor *endpoint)
+unsigned char USBEndpointDescriptor_GetNumber(const USBEndpointDescriptor *endpoint)
 {
-    return endpoint->bEndpointAddress & 0xF;
+  return endpoint->bEndpointAddress & 0xF;
 }
 
 //------------------------------------------------------------------------------
@@ -60,17 +59,16 @@ unsigned char USBEndpointDescriptor_GetNumber(
 /// \param endpoint Pointer to a USBEndpointDescriptor instance.
 /// \return Endpoint direction (see <Endpoint directions>).
 //------------------------------------------------------------------------------
-unsigned char USBEndpointDescriptor_GetDirection(
-    const USBEndpointDescriptor *endpoint)
+unsigned char USBEndpointDescriptor_GetDirection(const USBEndpointDescriptor *endpoint)
 {
-    if ((endpoint->bEndpointAddress & 0x80) != 0) {
+  if ((endpoint->bEndpointAddress & 0x80) != 0) {
 
-        return USBEndpointDescriptor_IN;
-    }
-    else {
+    return USBEndpointDescriptor_IN;
+  }
+  else {
 
-        return USBEndpointDescriptor_OUT;
-    }
+    return USBEndpointDescriptor_OUT;
+  }
 }
 
 //------------------------------------------------------------------------------
@@ -78,10 +76,9 @@ unsigned char USBEndpointDescriptor_GetDirection(
 /// \param endpoint Pointer to a USBEndpointDescriptor instance.
 /// \return Endpoint type (see <Endpoint types>).
 //------------------------------------------------------------------------------
-unsigned char USBEndpointDescriptor_GetType(
-    const USBEndpointDescriptor *endpoint)
+unsigned char USBEndpointDescriptor_GetType(const USBEndpointDescriptor *endpoint)
 {
-    return endpoint->bmAttributes & 0x3;
+  return endpoint->bmAttributes & 0x3;
 }
 
 //------------------------------------------------------------------------------
@@ -90,10 +87,9 @@ unsigned char USBEndpointDescriptor_GetType(
 /// \param endpoint - Pointer to a USBEndpointDescriptor instance.
 /// \return Maximum packet size of endpoint.
 //------------------------------------------------------------------------------
-unsigned short USBEndpointDescriptor_GetMaxPacketSize(
-    const USBEndpointDescriptor *endpoint)
+unsigned short USBEndpointDescriptor_GetMaxPacketSize(const USBEndpointDescriptor *endpoint)
 {
-    return endpoint->wMaxPacketSize;
+  return endpoint->wMaxPacketSize;
 }
 
 //------------------------------------------------------------------------------
@@ -101,9 +97,7 @@ unsigned short USBEndpointDescriptor_GetMaxPacketSize(
 /// \param endpoint - Pointer to a USBEndpointDescriptor instance.
 /// \return Polling interval of endpoint.
 //------------------------------------------------------------------------------
-unsigned char USBEndpointDescriptor_GetInterval(
-    const USBEndpointDescriptor *endpoint)
+unsigned char USBEndpointDescriptor_GetInterval(const USBEndpointDescriptor *endpoint)
 {
-    return endpoint->bInterval;
+  return endpoint->bInterval;
 }
-

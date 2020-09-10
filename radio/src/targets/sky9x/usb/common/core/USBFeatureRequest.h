@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- *         ATMEL Microcontroller Software Support 
+ *         ATMEL Microcontroller Software Support
  * ----------------------------------------------------------------------------
  * Copyright (c) 2008, Atmel Corporation
  *
@@ -86,21 +86,21 @@
 /// - USBFeatureRequest_TESTMODE
 
 /// Halt feature of an endpoint.
-#define USBFeatureRequest_ENDPOINTHALT          0
+#define USBFeatureRequest_ENDPOINTHALT 0
 /// Remote wake-up feature of the device.
-#define USBFeatureRequest_DEVICEREMOTEWAKEUP    1
+#define USBFeatureRequest_DEVICEREMOTEWAKEUP 1
 /// Test mode of the device.
-#define USBFeatureRequest_TESTMODE              2
+#define USBFeatureRequest_TESTMODE 2
 /// OTG set feature
-#define USBFeatureRequest_OTG                0x0B
+#define USBFeatureRequest_OTG 0x0B
 //------------------------------------------------------------------------------
 
 /// On The Go Feature Selectors
 /// b_hnp_enable      3
 /// a_hnp_support     4
 /// a_alt_hnp_support 5
-#define USBFeatureRequest_OTG_B_HNP_ENABLE      3
-#define USBFeatureRequest_OTG_A_HNP_SUPPORT     4
+#define USBFeatureRequest_OTG_B_HNP_ENABLE 3
+#define USBFeatureRequest_OTG_A_HNP_SUPPORT 4
 #define USBFeatureRequest_OTG_A_ALT_HNP_SUPPORT 5
 
 //------------------------------------------------------------------------------
@@ -117,30 +117,26 @@
 /// - USBFeatureRequest_TESTSENDZLP
 
 /// Tests the high-output drive level on the D+ line.
-#define USBFeatureRequest_TESTJ                 1
+#define USBFeatureRequest_TESTJ 1
 /// Tests the high-output drive level on the D- line.
-#define USBFeatureRequest_TESTK                 2
+#define USBFeatureRequest_TESTK 2
 /// Tests the output impedance, low-level output voltage and loading
 /// characteristics.
-#define USBFeatureRequest_TESTSE0NAK            3
+#define USBFeatureRequest_TESTSE0NAK 3
 /// Tests rise and fall times, eye patterns and jitter.
-#define USBFeatureRequest_TESTPACKET            4
+#define USBFeatureRequest_TESTPACKET 4
 /// Tests the hub disconnect detection.
-#define USBFeatureRequest_TESTFORCEENABLE       5
+#define USBFeatureRequest_TESTFORCEENABLE 5
 /// Send a ZLP in Test Mode.
-#define USBFeatureRequest_TESTSENDZLP           6
+#define USBFeatureRequest_TESTSENDZLP 6
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
 //         Exported functions
 //------------------------------------------------------------------------------
 
-extern unsigned char USBFeatureRequest_GetFeatureSelector(
-    const USBGenericRequest *request);
+extern unsigned char USBFeatureRequest_GetFeatureSelector(const USBGenericRequest *request);
 
-
-extern unsigned char USBFeatureRequest_GetTestSelector(
-    const USBGenericRequest *request);
+extern unsigned char USBFeatureRequest_GetTestSelector(const USBGenericRequest *request);
 
 #endif //#ifndef USBFEATUREREQUEST_H
-

@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -37,12 +37,12 @@ extern unsigned long _ebss;
 extern unsigned long _estack;
 
 /* This is the main */
-extern int main (void);
+extern int main(void);
 
 /*=========================================================================*/
 /*  DEFINE: Prototypes                                                     */
 /*=========================================================================*/
-extern uint32_t SystemInit (void) ; // __attribute__((weak));
+extern uint32_t SystemInit(void); // __attribute__((weak));
 
 /*=========================================================================*/
 /*  DEFINE: All code exported                                              */
@@ -55,12 +55,12 @@ extern uint32_t SystemInit (void) ; // __attribute__((weak));
 /*  If this function is not available, we need a function here to prevent  */
 /*  an error of the linker. Therefore this function is declared as weak.   */
 /***************************************************************************/
-//uint32_t SystemInit (void)
+// uint32_t SystemInit (void)
 //{
-	
+
 //} /* SystemInit */
 
-extern uint32_t Master_frequency ;
+extern uint32_t Master_frequency;
 
 /***************************************************************************/
 /*  ResetHandler                                                           */
@@ -68,63 +68,62 @@ extern uint32_t Master_frequency ;
 /*  This function is used for the C runtime initialisation,                */
 /*  for handling the .data and .bss segments.                              */
 /***************************************************************************/
-void ResetHandler (void)
+void ResetHandler(void)
 {
   {
-  	uint32_t *pSrc;
-  	uint32_t *pDest;
-  	uint32_t m_freq ;
-   
-  	 /*
-  	  * Call the SystemInit code from CMSIS interface if available.
-  	  * SystemInit is a week function which can be override
-  	  * by an external function.
-  	  */
-  	m_freq = SystemInit();    
-   
-  	/*
-  	 * Set the "Vector Table Offset Register". From the ARM
-  	 * documentation, we got the following information:
-  	 *
-  	 * Use the Vector Table Offset Register to determine:
-  	 *  - if the vector table is in RAM or code memory
-  	 *  - the vector table offset.    
-  	 */
-  	*((uint32_t*)0xE000ED08) = (uint32_t)&_stext;
-   
-  	/*
-  	 * Copy the initialized data of the ".data" segment
-  	 * from the flash to the are in the ram.
-  	 */
-  	pSrc  = &_etext;
-  	pDest = &_sdata;
-  	 while(pDest < &_edata)
-  	{
-  	  *pDest++ = *pSrc++;
-  	}
-   
-  	 /*
-  	  * Clear the ".bss" segment.
-  	  */
-  	pDest = &_sbss;
-  	while(pDest < &_ebss)
-  	{
-  	  *pDest++ = 0;
-  	}
-  	Master_frequency = m_freq ;
+    uint32_t *pSrc;
+    uint32_t *pDest;
+    uint32_t m_freq;
+
+    /*
+     * Call the SystemInit code from CMSIS interface if available.
+     * SystemInit is a week function which can be override
+     * by an external function.
+     */
+    m_freq = SystemInit();
+
+    /*
+     * Set the "Vector Table Offset Register". From the ARM
+     * documentation, we got the following information:
+     *
+     * Use the Vector Table Offset Register to determine:
+     *  - if the vector table is in RAM or code memory
+     *  - the vector table offset.
+     */
+    *((uint32_t *)0xE000ED08) = (uint32_t)&_stext;
+
+    /*
+     * Copy the initialized data of the ".data" segment
+     * from the flash to the are in the ram.
+     */
+    pSrc = &_etext;
+    pDest = &_sdata;
+    while (pDest < &_edata) {
+      *pDest++ = *pSrc++;
+    }
+
+    /*
+     * Clear the ".bss" segment.
+     */
+    pDest = &_sbss;
+    while (pDest < &_ebss) {
+      *pDest++ = 0;
+    }
+    Master_frequency = m_freq;
   }
-   
-   /*
-    * And now the main function can be called.
-    * Scotty, energie...
-    */       
-  main();    
-   
-   /*
-    * In case there are problems with the
-    * "warp drive", stop here.
-    */
-  while(1) {};    
+
+  /*
+   * And now the main function can be called.
+   * Scotty, energie...
+   */
+  main();
+
+  /*
+   * In case there are problems with the
+   * "warp drive", stop here.
+   */
+  while (1) {
+  };
 
 } /* ResetHandler */
 

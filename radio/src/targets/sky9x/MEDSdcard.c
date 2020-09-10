@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -22,18 +22,18 @@
 //         Headers
 //------------------------------------------------------------------------------
 
-#include <string.h>
+#include "Media.h"
+#include "board_lowlevel.h"
 #include "debug.h"
 #include "diskio.h"
-#include "board_lowlevel.h"
-#include "Media.h"
+#include <string.h>
 
 //------------------------------------------------------------------------------
 //         Constants
 //------------------------------------------------------------------------------
 
 /// Number of SD Slots
-#define NUM_SD_SLOTS            1
+#define NUM_SD_SLOTS 1
 
 //------------------------------------------------------------------------------
 /// Checks if the device is write protected.
@@ -43,21 +43,21 @@
 static unsigned char CardIsProtected(unsigned char slot)
 {
     if (slot == 0) {
-      #ifdef BOARD_SD_PIN_WP
+#ifdef BOARD_SD_PIN_WP
         PIO_Configure(&pinMciWriteProtect, 1);
         return (PIO_Get(&pinMciWriteProtect) != 0);
-      #else
+#else
         return 0;
-      #endif
+#endif
     }
 
     if (slot == 1) {
-      #ifdef BOARD_SD_MCI1_PIN_WP
+#ifdef BOARD_SD_MCI1_PIN_WP
         PIO_Configure(&pinMciWriteProtect1, 1);
         return (PIO_Get(&pinMciWriteProtect1) != 0);
-      #else
+#else
         return 0;
-      #endif
+#endif
     }
 
     return 0;
@@ -70,22 +70,22 @@ static unsigned char CardIsProtected(unsigned char slot)
 #if 0
 static void ConfigurePIO(unsigned char mciID)
 {
-    #ifdef BOARD_SD_PINS
+#ifdef BOARD_SD_PINS
     const Pin pinSd0[] = {BOARD_SD_PINS};
-    #endif
+#endif
 
-    #ifdef BOARD_SD_MCI1_PINS
+#ifdef BOARD_SD_MCI1_PINS
     const Pin pinSd1[] = {BOARD_SD_MCI1_PINS};
-    #endif
+#endif
 
     if(mciID == 0) {
-        #ifdef BOARD_SD_PINS
+#ifdef BOARD_SD_PINS
         PIO_Configure(pinSd0, PIO_LISTSIZE(pinSd0));
-        #endif
+#endif
     } else {
-        #ifdef BOARD_SD_MCI1_PINS
+#ifdef BOARD_SD_MCI1_PINS
         PIO_Configure(pinSd1, PIO_LISTSIZE(pinSd1));
-        #endif
+#endif
     }
 }
 #endif
@@ -102,45 +102,40 @@ static void ConfigurePIO(unsigned char mciID)
 //! \param  argument Optional pointer to an argument for the callback
 //! \return Operation result code
 //------------------------------------------------------------------------------
-static unsigned char MEDSdcard_Read(Media         *media,
-                                    unsigned int   address,
-                                    void          *data,
-                                    unsigned int   length,
-                                    MediaCallback callback,
-                                    void          *argument)
+static unsigned char MEDSdcard_Read(Media *media, unsigned int address, void *data, unsigned int length,
+                                    MediaCallback callback, void *argument)
 {
   TRACE_DEBUG("MEDSdcard_Read(address=%d length=%d)\n\r", address, length);
 
-    // Check that the media is ready
-    if (media->state != MED_STATE_READY) {
+  // Check that the media is ready
+  if (media->state != MED_STATE_READY) {
 
-        TRACE_INFO("Media busy\n\r");
-        return MED_STATUS_BUSY;
-    }
+    TRACE_INFO("Media busy\n\r");
+    return MED_STATUS_BUSY;
+  }
 
-    // Check that the data to read is not too big
-    if ((length + address) > media->size) {
+  // Check that the data to read is not too big
+  if ((length + address) > media->size) {
 
-        TRACE_WARNING("MEDSdcard_Read: Data too big: %d, %d\n\r",
-                      (int)length, (int)address);
-        return MED_STATUS_ERROR;
-    }
+    TRACE_WARNING("MEDSdcard_Read: Data too big: %d, %d\n\r", (int)length, (int)address);
+    return MED_STATUS_ERROR;
+  }
 
-    // Enter Busy state
-    media->state = MED_STATE_BUSY;
+  // Enter Busy state
+  media->state = MED_STATE_BUSY;
 
-    disk_read (0, data, address, length);
+  disk_read(0, data, address, length);
 
-    // Leave the Busy state
-    media->state = MED_STATE_READY;
+  // Leave the Busy state
+  media->state = MED_STATE_READY;
 
-    // Invoke callback
-    if (callback != 0) {
+  // Invoke callback
+  if (callback != 0) {
 
-        callback(argument, MED_STATUS_SUCCESS, 0, 0);
-    }
+    callback(argument, MED_STATUS_SUCCESS, 0, 0);
+  }
 
-    return MED_STATUS_SUCCESS;
+  return MED_STATUS_SUCCESS;
 }
 
 //------------------------------------------------------------------------------
@@ -156,47 +151,42 @@ static unsigned char MEDSdcard_Read(Media         *media,
 //! \see    Media
 //! \see    MediaCallback
 //------------------------------------------------------------------------------
-static unsigned char MEDSdcard_Write(Media         *media,
-                                    unsigned int   address,
-                                    void          *data,
-                                    unsigned int   length,
-                                    MediaCallback callback,
-                                    void          *argument)
+static unsigned char MEDSdcard_Write(Media *media, unsigned int address, void *data, unsigned int length,
+                                     MediaCallback callback, void *argument)
 {
 
   TRACE_DEBUG("MEDSdcard_Write(address=%d length=%d)\n\r", address, length);
 
-    // Check that the media if ready
-    if (media->state != MED_STATE_READY) {
+  // Check that the media if ready
+  if (media->state != MED_STATE_READY) {
 
-        TRACE_WARNING("MEDSdcard_Write: Media is busy\n\r");
-        return MED_STATUS_BUSY;
-    }
+    TRACE_WARNING("MEDSdcard_Write: Media is busy\n\r");
+    return MED_STATUS_BUSY;
+  }
 
-    // Check that the data to write is not too big
-    if ((length + address) > media->size) {
+  // Check that the data to write is not too big
+  if ((length + address) > media->size) {
 
-        TRACE_WARNING("MEDSdcard_Write: Data too big\n\r");
-        return MED_STATUS_ERROR;
-    }
+    TRACE_WARNING("MEDSdcard_Write: Data too big\n\r");
+    return MED_STATUS_ERROR;
+  }
 
-    // Put the media in Busy state
-    media->state = MED_STATE_BUSY;
+  // Put the media in Busy state
+  media->state = MED_STATE_BUSY;
 
-    disk_write(0, data, address, length);
+  disk_write(0, data, address, length);
 
-    // Leave the Busy state
-    media->state = MED_STATE_READY;
+  // Leave the Busy state
+  media->state = MED_STATE_READY;
 
-    // Invoke the callback if it exists
-    if (callback != 0) {
+  // Invoke the callback if it exists
+  if (callback != 0) {
 
-        callback(argument, MED_STATUS_SUCCESS, 0, 0);
-    }
+    callback(argument, MED_STATUS_SUCCESS, 0, 0);
+  }
 
-    return MED_STATUS_SUCCESS;
+  return MED_STATUS_SUCCESS;
 }
-
 
 //------------------------------------------------------------------------------
 /// Initializes a Media instance and the associated physical interface
@@ -206,41 +196,39 @@ static unsigned char MEDSdcard_Write(Media         *media,
 
 unsigned char MEDSdcard_Initialize(Media *media, unsigned char mciID)
 {
-    TRACE_INFO("MEDSdcard init\n\r");
+  TRACE_INFO("MEDSdcard init\n\r");
 
-    // Initialize SDcard
-    //--------------------------------------------------------------------------
+  // Initialize SDcard
+  //--------------------------------------------------------------------------
 
-    if ( !SD_CARD_PRESENT(  ) )
-    {
-        return 0;
-    }
+  if (!SD_CARD_PRESENT()) {
+    return 0;
+  }
 
-    media->write = MEDSdcard_Write;
-    media->read = MEDSdcard_Read;
-    media->lock = 0;
-    media->unlock = 0;
-    media->handler = 0;
-    media->flush = 0;
+  media->write = MEDSdcard_Write;
+  media->read = MEDSdcard_Read;
+  media->lock = 0;
+  media->unlock = 0;
+  media->handler = 0;
+  media->flush = 0;
 
-    media->blockSize = BLOCK_SIZE;
-    media->baseAddress = 0;
+  media->blockSize = BLOCK_SIZE;
+  media->baseAddress = 0;
 
-    media->size = SD_GET_BLOCKNR();
+  media->size = SD_GET_BLOCKNR();
 
-    media->mappedRD  = 0;
-    media->mappedWR  = 0;
-    media->protected = 0;
-    media->removable = 1;
+  media->mappedRD = 0;
+  media->mappedWR = 0;
+  media->protected = 0;
+  media->removable = 1;
 
-    media->state = MED_STATE_READY;
+  media->state = MED_STATE_READY;
 
-    media->transfer.data = 0;
-    media->transfer.address = 0;
-    media->transfer.length = 0;
-    media->transfer.callback = 0;
-    media->transfer.argument = 0;
+  media->transfer.data = 0;
+  media->transfer.address = 0;
+  media->transfer.length = 0;
+  media->transfer.callback = 0;
+  media->transfer.argument = 0;
 
-    return 1;
+  return 1;
 }
-

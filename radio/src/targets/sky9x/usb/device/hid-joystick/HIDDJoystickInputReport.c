@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- *         ATMEL Microcontroller Software Support 
+ *         ATMEL Microcontroller Software Support
  * ----------------------------------------------------------------------------
  * Copyright (c) 2008, Atmel Corporation
  *
@@ -50,15 +50,15 @@
 //------------------------------------------------------------------------------
 void HIDDJoystickInputReport_Initialize(HIDDJoystickInputReport *report)
 {
-    report->buttons1 = 0;
-    report->buttons2 = 0;
-    report->buttons3 = 0;
-    report->X = 0;
-    report->Y = 0;
-    report->Z = 0;
-    report->Rx = 0;
-    report->Ry = 0;
-    report->Rz = 0;
-    report->S1 = 0;
-    report->S2 = 0;
+  report->buttons1 = 0;
+  report->buttons2 = 0;
+  report->buttons3 = 0;
+  report->X = 0;
+  report->Y = 0;
+  report->Z = 0;
+  report->Rx = 0;
+  report->Ry = 0;
+  report->Rz = 0;
+  report->S1 = 0;
+  report->S2 = 0;
 }

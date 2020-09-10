@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- *         ATMEL Microcontroller Software Support 
+ *         ATMEL Microcontroller Software Support
  * ----------------------------------------------------------------------------
  * Copyright (c) 2008, Atmel Corporation
  *
@@ -50,7 +50,7 @@
 /// - HIDDescriptor_HID1_11
 
 /// Identifies version 1.11 of the HID specification.
-#define HIDDescriptor_HID1_11           0x0111
+#define HIDDescriptor_HID1_11 0x0111
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
@@ -68,26 +68,25 @@
 //------------------------------------------------------------------------------
 typedef struct {
 
-    /// Size of descriptor in bytes.
-    unsigned char bLength;
-    /// Descriptor type (HIDGenericDescriptor_HID).
-    unsigned char bDescriptorType;
-    /// HID class specification release number in BCD format.
-    unsigned short bcdHID;
-    /// Country code of the device if it is localized.
-    unsigned char bCountryCode; 
-    /// Number of subordinate descriptors.
-    unsigned char bNumDescriptors;
-    /// Type of the first subordinate descriptor.
-    unsigned char bDescriptorType0;
-    /// Size in bytes of the first subordinate descriptor.
-    unsigned short wDescriptorLength0;
+  /// Size of descriptor in bytes.
+  unsigned char bLength;
+  /// Descriptor type (HIDGenericDescriptor_HID).
+  unsigned char bDescriptorType;
+  /// HID class specification release number in BCD format.
+  unsigned short bcdHID;
+  /// Country code of the device if it is localized.
+  unsigned char bCountryCode;
+  /// Number of subordinate descriptors.
+  unsigned char bNumDescriptors;
+  /// Type of the first subordinate descriptor.
+  unsigned char bDescriptorType0;
+  /// Size in bytes of the first subordinate descriptor.
+  unsigned short wDescriptorLength0;
 
-} __attribute__ ((packed)) HIDDescriptor; // GCC
+} __attribute__((packed)) HIDDescriptor; // GCC
 
-#ifdef __ICCARM__          // IAR
-#pragma pack()             // IAR
-#endif                     // IAR
+#ifdef __ICCARM__ // IAR
+#pragma pack()    // IAR
+#endif            // IAR
 
 #endif //#ifndef HIDDESCRIPTOR_H
-

@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- *         ATMEL Microcontroller Software Support 
+ *         ATMEL Microcontroller Software Support
  * ----------------------------------------------------------------------------
  * Copyright (c) 2008, Atmel Corporation
  *
@@ -33,13 +33,13 @@
 
 #include "../../../usb/device/massstorage/MSDDriver.h"
 
+#include "../../../Media.h"
 #include "../../../usb/common/core/USBFeatureRequest.h"
+#include "../../../usb/common/core/USBGenericRequest.h"
+#include "../../../usb/device/core/USBD.h"
 #include "../../../usb/device/core/USBDDriver.h"
 #include "../../../usb/device/massstorage/MSDDriverDescriptors.h"
 #include "../../../usb/device/massstorage/SBCMethods.h"
-#include "../../../Media.h"
-#include "../../../usb/common/core/USBGenericRequest.h"
-#include "../../../usb/device/core/USBD.h"
 #include "debug.h"
 
 //-----------------------------------------------------------------------------
@@ -61,11 +61,11 @@ static USBDDriver usbdDriver;
 //-----------------------------------------------------------------------------
 static void MSDDriver_Reset(void)
 {
-    TRACE_INFO_WP("MSDReset ");
+  TRACE_INFO_WP("MSDReset ");
 
-    msdDriver.state = MSDD_STATE_READ_CBW;
-    msdDriver.waitResetRecovery = 0;
-    msdDriver.commandState.state = 0;
+  msdDriver.state = MSDD_STATE_READ_CBW;
+  msdDriver.waitResetRecovery = 0;
+  msdDriver.commandState.state = 0;
 }
 
 //-----------------------------------------------------------------------------
@@ -76,7 +76,7 @@ static void MSDDriver_Reset(void)
 /// request to the Mass Storage device driver handler function.
 /// \param request  Pointer to a USBGenericRequest instance.
 //-----------------------------------------------------------------------------
-//void USBDCallbacks_RequestReceived(const USBGenericRequest *request)
+// void USBDCallbacks_RequestReceived(const USBGenericRequest *request)
 //{
 //    MSDDriver_RequestHandler(request);
 //}
@@ -86,7 +86,7 @@ static void MSDDriver_Reset(void)
 /// storage driver.
 /// \param cfgnum New configuration number.
 //-----------------------------------------------------------------------------
-//void USBDDriverCallbacks_ConfigurationChanged(unsigned char cfgnum)
+// void USBDDriverCallbacks_ConfigurationChanged(unsigned char cfgnum)
 //{
 //    if (cfgnum > 0) {
 
@@ -106,17 +106,10 @@ static void MSDDriver_Reset(void)
 /// \param callback Pointer to the function invoked on end of reading.
 /// \param argument Pointer to additional argument data struct.
 //-----------------------------------------------------------------------------
-char MSDD_Read(void *data,
-               unsigned int size,
-               TransferCallback callback,
-               void *argument)
+char MSDD_Read(void *data, unsigned int size, TransferCallback callback, void *argument)
 
 {
-    return USBD_Read(MSDDriverDescriptors_BULKOUT,
-                     data,
-                     size,
-                     callback,
-                     argument);
+  return USBD_Read(MSDDriverDescriptors_BULKOUT, data, size, callback, argument);
 }
 
 //-----------------------------------------------------------------------------
@@ -127,16 +120,9 @@ char MSDD_Read(void *data,
 /// \param callback Pointer to the function invoked on end of writing.
 /// \param argument Pointer to additional argument data struct.
 //-----------------------------------------------------------------------------
-char MSDD_Write(void *data,
-                unsigned int size,
-                TransferCallback callback,
-                void *argument)
+char MSDD_Write(void *data, unsigned int size, TransferCallback callback, void *argument)
 {
-    return USBD_Write(MSDDriverDescriptors_BULKIN,
-                      data,
-                      size,
-                      callback,
-                      argument);
+  return USBD_Write(MSDDriverDescriptors_BULKIN, data, size, callback, argument);
 }
 
 //-----------------------------------------------------------------------------
@@ -145,15 +131,15 @@ char MSDD_Write(void *data,
 //-----------------------------------------------------------------------------
 void MSDD_Halt(unsigned int stallCASE)
 {
-    if (stallCASE & MSDD_CASE_STALL_OUT) {
+  if (stallCASE & MSDD_CASE_STALL_OUT) {
 
-        USBD_Halt(MSDDriverDescriptors_BULKOUT);
-    }
+    USBD_Halt(MSDDriverDescriptors_BULKOUT);
+  }
 
-    if (stallCASE & MSDD_CASE_STALL_IN) {
+  if (stallCASE & MSDD_CASE_STALL_IN) {
 
-        USBD_Halt(MSDDriverDescriptors_BULKIN);
-    }
+    USBD_Halt(MSDDriverDescriptors_BULKIN);
+  }
 }
 
 //-----------------------------------------------------------------------------
@@ -163,16 +149,16 @@ void MSDD_Halt(unsigned int stallCASE)
 //-----------------------------------------------------------------------------
 unsigned int MSDD_IsHalted(void)
 {
-    unsigned int stallCASE = 0;
-    if (USBD_IsHalted(MSDDriverDescriptors_BULKOUT)) {
+  unsigned int stallCASE = 0;
+  if (USBD_IsHalted(MSDDriverDescriptors_BULKOUT)) {
 
-        stallCASE |= MSDD_CASE_STALL_OUT;
-    }
-    if (USBD_IsHalted(MSDDriverDescriptors_BULKIN)) {
+    stallCASE |= MSDD_CASE_STALL_OUT;
+  }
+  if (USBD_IsHalted(MSDDriverDescriptors_BULKIN)) {
 
-        stallCASE |= MSDD_CASE_STALL_IN;
-    }
-    return stallCASE;
+    stallCASE |= MSDD_CASE_STALL_IN;
+  }
+  return stallCASE;
 }
 
 //-----------------------------------------------------------------------------
@@ -190,22 +176,22 @@ void MSDDriver_Initialize(MSDLun *defLuns, unsigned char numLuns)
 
   TRACE_INFO("MSD init\n\r");
 
-    // Command state initialization
-    msdDriver.commandState.state = 0;
-    msdDriver.commandState.postprocess = 0;
-    msdDriver.commandState.length = 0;
-    msdDriver.commandState.transfer.semaphore = 0;
+  // Command state initialization
+  msdDriver.commandState.state = 0;
+  msdDriver.commandState.postprocess = 0;
+  msdDriver.commandState.length = 0;
+  msdDriver.commandState.transfer.semaphore = 0;
 
-    // LUNs
-    msdDriver.luns = defLuns;
-    msdDriver.maxLun = (unsigned char) (numLuns - 1);
+  // LUNs
+  msdDriver.luns = defLuns;
+  msdDriver.maxLun = (unsigned char)(numLuns - 1);
 
-    // Reset BOT driver
-    MSDDriver_Reset();
+  // Reset BOT driver
+  MSDDriver_Reset();
 
-    // Init the USB driver
-    USBDDriver_Initialize(&usbdDriver, &msdDriverDescriptors, 0);
-    USBD_Init();
+  // Init the USB driver
+  USBDDriver_Initialize(&usbdDriver, &msdDriverDescriptors, 0);
+  USBD_Init();
 }
 
 //-----------------------------------------------------------------------------
@@ -217,98 +203,91 @@ void MSDDriver_Initialize(MSDLun *defLuns, unsigned char numLuns)
 //-----------------------------------------------------------------------------
 void MSDDriver_RequestHandler(const USBGenericRequest *request)
 {
-    TRACE_INFO_WP("NewReq ");
+  TRACE_INFO_WP("NewReq ");
 
-    // Handle requests
-    switch (USBGenericRequest_GetRequest(request)) {
+  // Handle requests
+  switch (USBGenericRequest_GetRequest(request)) {
     //---------------------
     case USBGenericRequest_CLEARFEATURE:
-    //---------------------
-        TRACE_INFO_WP("ClrFeat ");
+      //---------------------
+      TRACE_INFO_WP("ClrFeat ");
 
-        switch (USBFeatureRequest_GetFeatureSelector(request)) {
+      switch (USBFeatureRequest_GetFeatureSelector(request)) {
 
         //---------------------
         case USBFeatureRequest_ENDPOINTHALT:
-        //---------------------
-            TRACE_INFO_WP("Hlt ");
+          //---------------------
+          TRACE_INFO_WP("Hlt ");
 
-            // Do not clear the endpoint halt status if the device is waiting
-            // for a reset recovery sequence
-            if (!msdDriver.waitResetRecovery) {
+          // Do not clear the endpoint halt status if the device is waiting
+          // for a reset recovery sequence
+          if (!msdDriver.waitResetRecovery) {
 
-                // Forward the request to the standard handler
-                USBDDriver_RequestHandler(&usbdDriver, request);
-            }
-            else {
+            // Forward the request to the standard handler
+            USBDDriver_RequestHandler(&usbdDriver, request);
+          }
+          else {
 
-                TRACE_INFO_WP("No ");
-            }
+            TRACE_INFO_WP("No ");
+          }
 
-            USBD_Write(0, 0, 0, 0, 0);
-            break;
+          USBD_Write(0, 0, 0, 0, 0);
+          break;
 
         //------
         default:
-        //------
-            // Forward the request to the standard handler
-            USBDDriver_RequestHandler(&usbdDriver, request);
-        }
-        break;
+          //------
+          // Forward the request to the standard handler
+          USBDDriver_RequestHandler(&usbdDriver, request);
+      }
+      break;
 
     //-------------------
     case MSD_GET_MAX_LUN:
-    //-------------------
-        TRACE_INFO_WP("gMaxLun ");
+      //-------------------
+      TRACE_INFO_WP("gMaxLun ");
 
-        // Check request parameters
-        if ((request->wValue == 0)
-            && (request->wIndex == 0)
-            && (request->wLength == 1)) {
+      // Check request parameters
+      if ((request->wValue == 0) && (request->wIndex == 0) && (request->wLength == 1)) {
 
-            USBD_Write(0, &(msdDriver.maxLun), 1, 0, 0);
+        USBD_Write(0, &(msdDriver.maxLun), 1, 0, 0);
+      }
+      else {
 
-        }
-        else {
-
-            TRACE_WARNING(
-                "MSDDriver_RequestHandler: GetMaxLUN(%d,%d,%d)\n\r",
-                request->wValue, request->wIndex, request->wLength);
-            USBD_Stall(0);
-        }
-        break;
+        TRACE_WARNING("MSDDriver_RequestHandler: GetMaxLUN(%d,%d,%d)\n\r", request->wValue, request->wIndex,
+                      request->wLength);
+        USBD_Stall(0);
+      }
+      break;
 
     //-----------------------
     case MSD_BULK_ONLY_RESET:
-    //-----------------------
-        TRACE_INFO_WP("Rst ");
+      //-----------------------
+      TRACE_INFO_WP("Rst ");
 
-        // Check parameters
-        if ((request->wValue == 0)
-            && (request->wIndex == 0)
-            && (request->wLength == 0)) {
+      // Check parameters
+      if ((request->wValue == 0) && (request->wIndex == 0) && (request->wLength == 0)) {
 
-            // Reset the MSD driver
-            MSDDriver_Reset();
-            USBD_Write(0, 0, 0, 0, 0);
-        }
-        else {
+        // Reset the MSD driver
+        MSDDriver_Reset();
+        USBD_Write(0, 0, 0, 0, 0);
+      }
+      else {
 
-            TRACE_WARNING(
-                "MSDDriver_RequestHandler: Reset(%d,%d,%d)\n\r",
-                request->wValue, request->wIndex, request->wLength);
-            USBD_Stall(0);
-        }
-        break;
+        TRACE_WARNING("MSDDriver_RequestHandler: Reset(%d,%d,%d)\n\r", request->wValue, request->wIndex,
+                      request->wLength);
+        USBD_Stall(0);
+      }
+      break;
 
     //------
     default:
-    //------
-        // Forward request to standard handler
-        USBDDriver_RequestHandler(&usbdDriver, request);
+      //------
+      // Forward request to standard handler
+      USBDDriver_RequestHandler(&usbdDriver, request);
 
-        break;
-    }
+      break;
+  }
 }
 
 //-----------------------------------------------------------------------------
@@ -316,9 +295,10 @@ void MSDDriver_RequestHandler(const USBGenericRequest *request)
 //-----------------------------------------------------------------------------
 void MSDDriver_StateMachine(void)
 {
-    if (USBD_GetState() < USBD_STATE_CONFIGURED){}
-    else MSDD_StateMachine(&msdDriver);
-
+  if (USBD_GetState() < USBD_STATE_CONFIGURED) {
+  }
+  else
+    MSDD_StateMachine(&msdDriver);
 }
 
 //-----------------------------------------------------------------------------
@@ -327,16 +307,14 @@ void MSDDriver_StateMachine(void)
 //-----------------------------------------------------------------------------
 void MSDDriver_RemoteWakeUp(void)
 {
-    // Remote wake-up has been enabled
-    if (USBDDriver_IsRemoteWakeUpEnabled(&usbdDriver)) {
+  // Remote wake-up has been enabled
+  if (USBDDriver_IsRemoteWakeUpEnabled(&usbdDriver)) {
 
-        USBD_RemoteWakeUp();
-    }
-    // Remote wake-up NOT enabled
-    else {
+    USBD_RemoteWakeUp();
+  }
+  // Remote wake-up NOT enabled
+  else {
 
-        TRACE_WARNING(
-            "MSD..RemoteWakeUp: Host has not enabled remote wake-up\n\r");
-    }
+    TRACE_WARNING("MSD..RemoteWakeUp: Host has not enabled remote wake-up\n\r");
+  }
 }
-

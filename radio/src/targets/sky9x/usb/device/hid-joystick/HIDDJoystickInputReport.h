@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- *         ATMEL Microcontroller Software Support 
+ *         ATMEL Microcontroller Software Support
  * ----------------------------------------------------------------------------
  * Copyright (c) 2008, Atmel Corporation
  *
@@ -31,7 +31,7 @@
  \unit
 
  !!!Purpose
- 
+
  Class for manipulating HID Joystick input reports.
 
  !!!Usage
@@ -58,23 +58,23 @@
 //------------------------------------------------------------------------------
 typedef struct {
 
-    unsigned char buttons1; // bit 0 - button 1, bit 1 - button 2, ..., mapped to channels 9-16, on if channel > 0
-    unsigned char buttons2; // mapped to channels 17-24, on if channel > 0
-    unsigned char buttons3; // mapped to channels 25-32, on if channel > 0
-    unsigned char X;        // analog value, mapped to channel 1
-    unsigned char Y;        // analog value, mapped to channel 2
-    unsigned char Z;        // analog value, mapped to channel 3
-    unsigned char Rx;       // analog value, mapped to channel 4
-    unsigned char Ry;       // analog value, mapped to channel 5
-    unsigned char Rz;       // analog value, mapped to channel 6
-    unsigned char S1;       // analog value, mapped to channel 7
-    unsigned char S2;       // analog value, mapped to channel 8
+  unsigned char buttons1; // bit 0 - button 1, bit 1 - button 2, ..., mapped to channels 9-16, on if channel > 0
+  unsigned char buttons2; // mapped to channels 17-24, on if channel > 0
+  unsigned char buttons3; // mapped to channels 25-32, on if channel > 0
+  unsigned char X;        // analog value, mapped to channel 1
+  unsigned char Y;        // analog value, mapped to channel 2
+  unsigned char Z;        // analog value, mapped to channel 3
+  unsigned char Rx;       // analog value, mapped to channel 4
+  unsigned char Ry;       // analog value, mapped to channel 5
+  unsigned char Rz;       // analog value, mapped to channel 6
+  unsigned char S1;       // analog value, mapped to channel 7
+  unsigned char S2;       // analog value, mapped to channel 8
 
-} __attribute__ ((packed)) HIDDJoystickInputReport; // GCC
+} __attribute__((packed)) HIDDJoystickInputReport; // GCC
 
-#ifdef __ICCARM__          // IAR
-#pragma pack()             // IAR
-#endif                     // IAR
+#ifdef __ICCARM__ // IAR
+#pragma pack()    // IAR
+#endif            // IAR
 
 //------------------------------------------------------------------------------
 //         Exported functions
@@ -83,4 +83,3 @@ typedef struct {
 extern void HIDDJoystickInputReport_Initialize(HIDDJoystickInputReport *report);
 
 #endif //#ifndef HIDDJOYSTICKINPUTREPORT_H
-

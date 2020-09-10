@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- *         ATMEL Microcontroller Software Support 
+ *         ATMEL Microcontroller Software Support
  * ----------------------------------------------------------------------------
  * Copyright (c) 2008, Atmel Corporation
  *
@@ -57,12 +57,11 @@
 /// - HIDDeviceDescriptor_PROTOCOL
 
 /// Class code for a HID device.
-#define HIDDeviceDescriptor_CLASS               0
+#define HIDDeviceDescriptor_CLASS 0
 /// Subclass code for a HID device.
-#define HIDDeviceDescriptor_SUBCLASS            0
+#define HIDDeviceDescriptor_SUBCLASS 0
 /// Protocol code for a HID device.
-#define HIDDeviceDescriptor_PROTOCOL            0
+#define HIDDeviceDescriptor_PROTOCOL 0
 //------------------------------------------------------------------------------
 
 #endif //#ifndef HIDDEVICEDESCRIPTOR_H
-

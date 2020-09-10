@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- *         ATMEL Microcontroller Software Support 
+ *         ATMEL Microcontroller Software Support
  * ----------------------------------------------------------------------------
  * Copyright (c) 2008, Atmel Corporation
  *
@@ -45,15 +45,14 @@
 //-----------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
-/// Returns the total length of a configuration, i.e. including the 
+/// Returns the total length of a configuration, i.e. including the
 /// descriptors following it.
 /// \param configuration Pointer to a USBConfigurationDescriptor instance.
 /// \return Total length (in bytes) of the configuration.
 //-----------------------------------------------------------------------------
-unsigned int USBConfigurationDescriptor_GetTotalLength(
-    const USBConfigurationDescriptor *configuration)
+unsigned int USBConfigurationDescriptor_GetTotalLength(const USBConfigurationDescriptor *configuration)
 {
-    return configuration->wTotalLength;
+  return configuration->wTotalLength;
 }
 
 //-----------------------------------------------------------------------------
@@ -61,10 +60,9 @@ unsigned int USBConfigurationDescriptor_GetTotalLength(
 /// \param configuration Pointer to a USBConfigurationDescriptor instance.
 /// \return Number of interfaces in configuration.
 //-----------------------------------------------------------------------------
-unsigned char USBConfigurationDescriptor_GetNumInterfaces(
-    const USBConfigurationDescriptor *configuration)
+unsigned char USBConfigurationDescriptor_GetNumInterfaces(const USBConfigurationDescriptor *configuration)
 {
-    return configuration->bNumInterfaces;
+  return configuration->bNumInterfaces;
 }
 
 //-----------------------------------------------------------------------------
@@ -73,17 +71,16 @@ unsigned char USBConfigurationDescriptor_GetNumInterfaces(
 /// \return 1 if the device is self-powered when in the given configuration;
 ///         otherwise 0.
 //-----------------------------------------------------------------------------
-unsigned char USBConfigurationDescriptor_IsSelfPowered(
-    const USBConfigurationDescriptor *configuration)
+unsigned char USBConfigurationDescriptor_IsSelfPowered(const USBConfigurationDescriptor *configuration)
 {
-    if ((configuration->bmAttributes & (1 << 6)) != 0) {
+  if ((configuration->bmAttributes & (1 << 6)) != 0) {
 
-        return 1;
-    }
-    else {
+    return 1;
+  }
+  else {
 
-        return 0;
-    }
+    return 0;
+  }
 }
 
 //-----------------------------------------------------------------------------
@@ -95,68 +92,63 @@ unsigned char USBConfigurationDescriptor_IsSelfPowered(
 ///
 /// Note that if the pointer to an array is null (0), nothing is stored in
 /// it.
-/// \param configuration Pointer to the start of the whole Configuration 
+/// \param configuration Pointer to the start of the whole Configuration
 ///                      descriptor.
 /// \param interfaces    Pointer to the Interface descriptor array.
 /// \param endpoints     Pointer to the Endpoint descriptor array.
 /// \param others        Pointer to the class-specific descriptor array.
 //-----------------------------------------------------------------------------
-void USBConfigurationDescriptor_Parse(
-    const USBConfigurationDescriptor *configuration,
-    USBInterfaceDescriptor **interfaces,
-    USBEndpointDescriptor **endpoints,
-    USBGenericDescriptor **others)
+void USBConfigurationDescriptor_Parse(const USBConfigurationDescriptor *configuration,
+                                      USBInterfaceDescriptor **interfaces, USBEndpointDescriptor **endpoints,
+                                      USBGenericDescriptor **others)
 {
-    // Get size of configuration to parse
-    int size = USBConfigurationDescriptor_GetTotalLength(configuration);
-    size -= sizeof(USBConfigurationDescriptor);
+  // Get size of configuration to parse
+  int size = USBConfigurationDescriptor_GetTotalLength(configuration);
+  size -= sizeof(USBConfigurationDescriptor);
 
-    // Start parsing descriptors
-    USBGenericDescriptor *descriptor = (USBGenericDescriptor *) configuration;
-    while (size > 0) {
+  // Start parsing descriptors
+  USBGenericDescriptor *descriptor = (USBGenericDescriptor *)configuration;
+  while (size > 0) {
 
-        // Get next descriptor
-        descriptor = USBGenericDescriptor_GetNextDescriptor(descriptor);
-        size -= USBGenericDescriptor_GetLength(descriptor);
+    // Get next descriptor
+    descriptor = USBGenericDescriptor_GetNextDescriptor(descriptor);
+    size -= USBGenericDescriptor_GetLength(descriptor);
 
-        // Store descriptor in correponding array
-        if (USBGenericDescriptor_GetType(descriptor)
-             == USBGenericDescriptor_INTERFACE) {
+    // Store descriptor in correponding array
+    if (USBGenericDescriptor_GetType(descriptor) == USBGenericDescriptor_INTERFACE) {
 
-            if (interfaces) {
-            
-                *interfaces = (USBInterfaceDescriptor *) descriptor;
-                interfaces++;
-            }
-        }
-        else if (USBGenericDescriptor_GetType(descriptor)
-                  == USBGenericDescriptor_ENDPOINT) {
+      if (interfaces) {
 
-            if (endpoints) {
-                
-                *endpoints = (USBEndpointDescriptor *) descriptor;
-                endpoints++;
-            }
-        }
-        else if (others) {
-
-            *others = descriptor;
-            others++;
-        }
+        *interfaces = (USBInterfaceDescriptor *)descriptor;
+        interfaces++;
+      }
     }
+    else if (USBGenericDescriptor_GetType(descriptor) == USBGenericDescriptor_ENDPOINT) {
 
-    // Null-terminate arrays
-    if (interfaces) {
+      if (endpoints) {
 
-        *interfaces = 0;
+        *endpoints = (USBEndpointDescriptor *)descriptor;
+        endpoints++;
+      }
     }
-    if (endpoints) {
+    else if (others) {
 
-        *endpoints = 0;
+      *others = descriptor;
+      others++;
     }
-    if (others) {
+  }
 
-        *others = 0;
-    }
+  // Null-terminate arrays
+  if (interfaces) {
+
+    *interfaces = 0;
+  }
+  if (endpoints) {
+
+    *endpoints = 0;
+  }
+  if (others) {
+
+    *others = 0;
+  }
 }
-

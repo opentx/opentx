@@ -22,27 +22,27 @@
 #define _SIMPGMSPACE_H_
 
 #ifndef __GNUC__
-#include <windows.h>
 #include <intrin.h>
+#include <windows.h>
 #define sleep(x) Sleep(x)
-#define strcasecmp  _stricmp
+#define strcasecmp _stricmp
 #define strncasecmp _tcsnicmp
-#define chdir  _chdir
+#define chdir _chdir
 #define getcwd _getcwd
 inline int __builtin_clz(unsigned x)
 {
-    return (int)__lzcnt(x);
+  return (int)__lzcnt(x);
 }
 #else
 #include <unistd.h>
-#define sleep(x) usleep(1000*x)
+#define sleep(x) usleep(1000 * x)
 #endif
 
 #ifdef SIMU_EXCEPTIONS
-extern char * main_thread_error;
-#include <stdlib.h>
-#include <stdio.h>
+extern char *main_thread_error;
 #include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
 #if defined(_MSC_VER) || !defined(__GNUC__)
 #define write_backtrace(output)
 #else
@@ -54,8 +54,8 @@ inline void write_backtrace(char *output)
   int n = backtrace(buf, 16);
   s = backtrace_symbols(buf, n);
   if (s) {
-    for (int i=0; i<n; ++i) {
-      sprintf(output+strlen(output), "%02i: %s\n", i, s[i]);
+    for (int i = 0; i < n; ++i) {
+      sprintf(output + strlen(output), "%02i: %s\n", i, s[i]);
     }
   }
 }
@@ -63,19 +63,27 @@ inline void write_backtrace(char *output)
 void sig(int sgn)
 {
   main_thread_error = (char *)malloc(2048);
-  sprintf(main_thread_error,"Signal %d caught\n", sgn);
+  sprintf(main_thread_error, "Signal %d caught\n", sgn);
   write_backtrace(main_thread_error);
   throw std::exception();
 }
-#define assert(x) do { if (!(x)) { main_thread_error = (char *)malloc(2048); sprintf(main_thread_error, "Assert failed, %s:%d: %s\n", __FILE__, __LINE__, #x); write_backtrace(main_thread_error); throw std::exception(); } } while(0)
+#define assert(x)                                                                                                      \
+  do {                                                                                                                 \
+    if (!(x)) {                                                                                                        \
+      main_thread_error = (char *)malloc(2048);                                                                        \
+      sprintf(main_thread_error, "Assert failed, %s:%d: %s\n", __FILE__, __LINE__, #x);                                \
+      write_backtrace(main_thread_error);                                                                              \
+      throw std::exception();                                                                                          \
+    }                                                                                                                  \
+  } while (0)
 #else
 #include <assert.h>
 #endif
 
-#include <inttypes.h>
-#include <stdio.h>
-#include <stddef.h>
 #include <errno.h>
+#include <inttypes.h>
+#include <stddef.h>
+#include <stdio.h>
 
 #undef min
 #undef max
@@ -87,7 +95,8 @@ extern GPIO_TypeDef gpioa, gpiob, gpioc, gpiod, gpioe, gpiof, gpiog, gpioh, gpio
 extern TIM_TypeDef tim1, tim2, tim3, tim4, tim5, tim6, tim7, tim8, tim9, tim10;
 extern USART_TypeDef Usart0, Usart1, Usart2, Usart3, Usart4;
 extern RCC_TypeDef rcc;
-extern DMA_Stream_TypeDef dma1_stream0, dma1_stream1, dma1_stream2, dma1_stream3, dma1_stream4, dma1_stream5, dma1_stream6, dma1_stream7, dma2_stream1, dma2_stream2, dma2_stream5, dma2_stream6, dma2_stream7;
+extern DMA_Stream_TypeDef dma1_stream0, dma1_stream1, dma1_stream2, dma1_stream3, dma1_stream4, dma1_stream5,
+    dma1_stream6, dma1_stream7, dma2_stream1, dma2_stream2, dma2_stream5, dma2_stream6, dma2_stream7;
 extern DMA_TypeDef dma2;
 extern SysTick_Type systick;
 extern ADC_Common_TypeDef adc;
@@ -217,13 +226,13 @@ extern Pwm pwm;
 #define PWM (&pwm)
 #endif
 
-extern uint8_t * eeprom;
-extern void startPdcUsartReceive() ;
-extern uint32_t txPdcUsart( uint8_t *buffer, uint32_t size );
+extern uint8_t *eeprom;
+extern void startPdcUsartReceive();
+extern uint32_t txPdcUsart(uint8_t *buffer, uint32_t size);
 extern uint32_t txPdcPending();
-extern void rxPdcUsart( void (*pChProcess)(uint8_t x) );
+extern void rxPdcUsart(void (*pChProcess)(uint8_t x));
 
-#define ISR(x, ...)  void x()
+#define ISR(x, ...) void x()
 
 #if !defined(_MSC_VER) && defined(__GNUC__)
 #define asm(...)
@@ -238,43 +247,47 @@ extern uint32_t Master_frequency;
 #define __enable_irq()
 
 extern uint8_t simu_start_mode;
-extern char * main_thread_error;
+extern char *main_thread_error;
 
-#define OPENTX_START_DEFAULT_ARGS  simu_start_mode
+#define OPENTX_START_DEFAULT_ARGS simu_start_mode
 
-inline void getADC() { }
+inline void getADC()
+{
+}
 
 uint64_t simuTimerMicros(void);
 
 void simuInit();
-void StartSimu(bool tests=true, const char * sdPath = 0, const char * settingsPath = 0);
+void StartSimu(bool tests = true, const char *sdPath = 0, const char *settingsPath = 0);
 void StopSimu();
 bool simuIsRunning();
-uint8_t simuSleep(uint32_t ms);  // returns true if thread shutdown requested
+uint8_t simuSleep(uint32_t ms); // returns true if thread shutdown requested
 
 void simuSetKey(uint8_t key, bool state);
 void simuSetTrim(uint8_t trim, bool state);
 void simuSetSwitch(uint8_t swtch, int8_t state);
 
-void StartEepromThread(const char *filename="eeprom.bin");
+void StartEepromThread(const char *filename = "eeprom.bin");
 void StopEepromThread();
 #if defined(SIMU_AUDIO)
-  void StartAudioThread(int volumeGain = 10);
-  void StopAudioThread(void);
+void StartAudioThread(int volumeGain = 10);
+void StopAudioThread(void);
 #else
-  #define StartAudioThread(dummy)
-  #define StopAudioThread()
+#define StartAudioThread(dummy)
+#define StopAudioThread()
 #endif
 
 void simuMain();
 
 #define UART_Stop(...)
 #define UART3_Stop(...)
-#define USART_GetITStatus(...)         0
+#define USART_GetITStatus(...) 0
 #define USART_ClearFlag(...)
 
 #if defined(STM32)
-inline void GPIO_Init(GPIO_TypeDef* GPIOx, GPIO_InitTypeDef* GPIO_InitStruct) { }
+inline void GPIO_Init(GPIO_TypeDef *GPIOx, GPIO_InitTypeDef *GPIO_InitStruct)
+{
+}
 #define TIM_DeInit(...)
 #define TIM_SetCompare2(...)
 #define TIM_ClearFlag(...)
@@ -285,55 +298,95 @@ inline void GPIO_Init(GPIO_TypeDef* GPIOx, GPIO_InitTypeDef* GPIO_InitStruct) { 
 #define GPIO_ReadInputDataBit(GPIOx, pin) (GPIOx->BSRRL & pin)
 #define RCC_AHB1PeriphClockCmd(...)
 #define RCC_APB2PeriphClockCmd(...)
-inline void SPI_Init(SPI_TypeDef* SPIx, SPI_InitTypeDef* SPI_InitStruct) { }
-inline void SPI_CalculateCRC(SPI_TypeDef* SPIx, FunctionalState NewState) { }
-inline void SPI_Cmd(SPI_TypeDef* SPIx, FunctionalState NewState) { }
-inline FlagStatus SPI_I2S_GetFlagStatus(SPI_TypeDef* SPIx, uint16_t SPI_I2S_FLAG) { return RESET; }
-inline uint16_t SPI_I2S_ReceiveData(SPI_TypeDef* SPIx) { return 0; }
-inline void SPI_I2S_SendData(SPI_TypeDef* SPIx, uint16_t Data) { }
-inline void DMA_DeInit(DMA_Stream_TypeDef* DMAy_Streamx) { }
-inline void DMA_Init(DMA_Stream_TypeDef* DMAy_Streamx, DMA_InitTypeDef* DMA_InitStruct) { }
-inline void DMA_ITConfig(DMA_Stream_TypeDef* DMAy_Streamx, uint32_t DMA_IT, FunctionalState NewState) { }
-inline void DMA_StructInit(DMA_InitTypeDef* DMA_InitStruct) { }
-inline void DMA_Cmd(DMA_Stream_TypeDef* DMAy_Streamx, FunctionalState NewState) { }
-void DMACopy(void * src, void * dest, unsigned size);
-inline FlagStatus DMA_GetFlagStatus(DMA_Stream_TypeDef* DMAy_Streamx, uint32_t DMA_FLAG) { return RESET; }
-inline ITStatus DMA_GetITStatus(DMA_Stream_TypeDef* DMAy_Streamx, uint32_t DMA_IT) { return RESET; }
-inline void DMA_ClearITPendingBit(DMA_Stream_TypeDef* DMAy_Streamx, uint32_t DMA_IT) { }
-inline void SPI_I2S_DMACmd(SPI_TypeDef* SPIx, uint16_t SPI_I2S_DMAReq, FunctionalState NewState) { }
-inline void UART3_Configure(uint32_t baudrate, uint32_t masterClock) { }
-inline void NVIC_Init(NVIC_InitTypeDef *) { }
+inline void SPI_Init(SPI_TypeDef *SPIx, SPI_InitTypeDef *SPI_InitStruct)
+{
+}
+inline void SPI_CalculateCRC(SPI_TypeDef *SPIx, FunctionalState NewState)
+{
+}
+inline void SPI_Cmd(SPI_TypeDef *SPIx, FunctionalState NewState)
+{
+}
+inline FlagStatus SPI_I2S_GetFlagStatus(SPI_TypeDef *SPIx, uint16_t SPI_I2S_FLAG)
+{
+  return RESET;
+}
+inline uint16_t SPI_I2S_ReceiveData(SPI_TypeDef *SPIx)
+{
+  return 0;
+}
+inline void SPI_I2S_SendData(SPI_TypeDef *SPIx, uint16_t Data)
+{
+}
+inline void DMA_DeInit(DMA_Stream_TypeDef *DMAy_Streamx)
+{
+}
+inline void DMA_Init(DMA_Stream_TypeDef *DMAy_Streamx, DMA_InitTypeDef *DMA_InitStruct)
+{
+}
+inline void DMA_ITConfig(DMA_Stream_TypeDef *DMAy_Streamx, uint32_t DMA_IT, FunctionalState NewState)
+{
+}
+inline void DMA_StructInit(DMA_InitTypeDef *DMA_InitStruct)
+{
+}
+inline void DMA_Cmd(DMA_Stream_TypeDef *DMAy_Streamx, FunctionalState NewState)
+{
+}
+void DMACopy(void *src, void *dest, unsigned size);
+inline FlagStatus DMA_GetFlagStatus(DMA_Stream_TypeDef *DMAy_Streamx, uint32_t DMA_FLAG)
+{
+  return RESET;
+}
+inline ITStatus DMA_GetITStatus(DMA_Stream_TypeDef *DMAy_Streamx, uint32_t DMA_IT)
+{
+  return RESET;
+}
+inline void DMA_ClearITPendingBit(DMA_Stream_TypeDef *DMAy_Streamx, uint32_t DMA_IT)
+{
+}
+inline void SPI_I2S_DMACmd(SPI_TypeDef *SPIx, uint16_t SPI_I2S_DMAReq, FunctionalState NewState)
+{
+}
+inline void UART3_Configure(uint32_t baudrate, uint32_t masterClock)
+{
+}
+inline void NVIC_Init(NVIC_InitTypeDef *)
+{
+}
 #endif
 
-inline void delay_01us(int dummy) { }
+inline void delay_01us(int dummy)
+{
+}
 #define configure_pins(...)
 
 #if defined(SDCARD) && !defined(SKIP_FATFS_DECLARATION) && !defined(SIMU_DISKIO)
-  #define SIMU_USE_SDCARD
+#define SIMU_USE_SDCARD
 #endif
 
 #if defined(SIMU_DISKIO)
-  uint32_t sdMounted();
-  #define sdPoll10ms()
-  void sdInit(void);
-  void sdDone(void);
+uint32_t sdMounted();
+#define sdPoll10ms()
+void sdInit(void);
+void sdDone(void);
 #else
-  #define sdPoll10ms()
-  uint32_t sdMounted(void);
-  #define sdMounted()      (true)
+#define sdPoll10ms()
+uint32_t sdMounted(void);
+#define sdMounted() (true)
 #endif
 
 #if defined(SIMU_USE_SDCARD)
-  void simuFatfsSetPaths(const char * sdPath, const char * settingsPath);
+void simuFatfsSetPaths(const char *sdPath, const char *settingsPath);
 #else
-  #define simuFatfsSetPaths(...)
+#define simuFatfsSetPaths(...)
 #endif
 
 #if defined(TRACE_SIMPGMSPACE)
-  #undef TRACE_SIMPGMSPACE
-  #define TRACE_SIMPGMSPACE   TRACE
+#undef TRACE_SIMPGMSPACE
+#define TRACE_SIMPGMSPACE TRACE
 #else
-  #define TRACE_SIMPGMSPACE(...)
+#define TRACE_SIMPGMSPACE(...)
 #endif
 
 #endif // _SIMPGMSPACE_H_

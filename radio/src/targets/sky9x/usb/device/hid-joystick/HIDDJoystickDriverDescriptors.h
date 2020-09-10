@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- *         ATMEL Microcontroller Software Support 
+ *         ATMEL Microcontroller Software Support
  * ----------------------------------------------------------------------------
  * Copyright (c) 2008, Atmel Corporation
  *
@@ -60,8 +60,8 @@
         HIDDJoystickDriverDescriptors_INTERRUPTIN_POLLING - Interrupt IN endpoint
             polling rate (in milliseconds).
 */
-#define HIDDJoystickDriverDescriptors_INTERRUPTIN           1
-#define HIDDJoystickDriverDescriptors_INTERRUPTIN_POLLING   10
+#define HIDDJoystickDriverDescriptors_INTERRUPTIN 1
+#define HIDDJoystickDriverDescriptors_INTERRUPTIN_POLLING 10
 
 //------------------------------------------------------------------------------
 //         Exported variables
@@ -76,4 +76,3 @@ extern USBDDriverDescriptors hiddJoystickDriverDescriptors;
 extern const unsigned char hiddReportDescriptor[];
 
 #endif //#ifndef HIDDJOYSTICKDRIVERDESCRIPTORS_H
-

@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- *         ATMEL Microcontroller Software Support 
+ *         ATMEL Microcontroller Software Support
  * ----------------------------------------------------------------------------
  * Copyright (c) 2008, Atmel Corporation
  *
@@ -58,18 +58,17 @@
 /// - HIDGenericRequest_SETPROTOCOL
 
 /// GetReport request code.
-#define HIDGenericRequest_GETREPORT             0x01
+#define HIDGenericRequest_GETREPORT 0x01
 /// GetIdle request code.
-#define HIDGenericRequest_GETIDLE               0x02
+#define HIDGenericRequest_GETIDLE 0x02
 /// GetProtocol request code.
-#define HIDGenericRequest_GETPROTOCOL           0x03
+#define HIDGenericRequest_GETPROTOCOL 0x03
 /// SetReport request code.
-#define HIDGenericRequest_SETREPORT             0x09
+#define HIDGenericRequest_SETREPORT 0x09
 /// SetIdle request code.
-#define HIDGenericRequest_SETIDLE               0x0A
+#define HIDGenericRequest_SETIDLE 0x0A
 /// SetProtocol request code.
-#define HIDGenericRequest_SETPROTOCOL           0x0B
+#define HIDGenericRequest_SETPROTOCOL 0x0B
 //------------------------------------------------------------------------------
 
 #endif //#ifndef HIDGENERICREQUEST_H
-

@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- *         ATMEL Microcontroller Software Support 
+ *         ATMEL Microcontroller Software Support
  * ----------------------------------------------------------------------------
  * Copyright (c) 2008, Atmel Corporation
  *
@@ -65,22 +65,19 @@
 /// - HIDReportRequest_FEATURE
 
 /// Input report.
-#define HIDReportRequest_INPUT                  1
+#define HIDReportRequest_INPUT 1
 /// Output report.
-#define HIDReportRequest_OUTPUT                 2
+#define HIDReportRequest_OUTPUT 2
 /// Feature report.
-#define HIDReportRequest_FEATURE                3
+#define HIDReportRequest_FEATURE 3
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
 //         Exported functions
 //------------------------------------------------------------------------------
 
-extern unsigned char HIDReportRequest_GetReportType(
-    const USBGenericRequest *request);
+extern unsigned char HIDReportRequest_GetReportType(const USBGenericRequest *request);
 
-extern unsigned char HIDReportRequest_GetReportId(
-    const USBGenericRequest *request);
+extern unsigned char HIDReportRequest_GetReportId(const USBGenericRequest *request);
 
 #endif //#ifndef HIDREPORTREQUEST_H
-

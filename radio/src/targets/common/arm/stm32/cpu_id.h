@@ -20,12 +20,12 @@
 
 #include <inttypes.h>
 
-void getCPUUniqueID(char * s);
+void getCPUUniqueID(char *s);
 
-#define LEN_CPU_UID                    (3*8+2)
+#define LEN_CPU_UID (3 * 8 + 2)
 
 #if defined(SIMU)
 extern const uint32_t cpu_uid[3];
 #else
-extern const uint32_t * cpu_uid;
+extern const uint32_t *cpu_uid;
 #endif

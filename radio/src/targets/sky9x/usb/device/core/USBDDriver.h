@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- *         ATMEL Microcontroller Software Support 
+ *         ATMEL Microcontroller Software Support
  * ----------------------------------------------------------------------------
  * Copyright (c) 2008, Atmel Corporation
  *
@@ -63,17 +63,17 @@
 //------------------------------------------------------------------------------
 typedef struct {
 
-    /// List of descriptors used by the device.
-    const USBDDriverDescriptors *pDescriptors;
-    /// Current setting for each interface.
-    unsigned char *pInterfaces;
-    /// Current configuration number (0 -> device is not configured).
-    unsigned char cfgnum;
-    /// Indicates if remote wake up has been enabled by the host.
-    unsigned char isRemoteWakeUpEnabled;
+  /// List of descriptors used by the device.
+  const USBDDriverDescriptors *pDescriptors;
+  /// Current setting for each interface.
+  unsigned char *pInterfaces;
+  /// Current configuration number (0 -> device is not configured).
+  unsigned char cfgnum;
+  /// Indicates if remote wake up has been enabled by the host.
+  unsigned char isRemoteWakeUpEnabled;
 #if defined(CHIP_USB_OTGHS)
-    /// Features supported by OTG
-    unsigned char otg_features_supported;
+  /// Features supported by OTG
+  unsigned char otg_features_supported;
 #endif
 } USBDDriver;
 
@@ -81,14 +81,10 @@ typedef struct {
 //         Exported functions
 //------------------------------------------------------------------------------
 
-extern void USBDDriver_Initialize(
-    USBDDriver *pDriver,
-    const USBDDriverDescriptors *pDescriptors,
-    unsigned char *pInterfaces);
+extern void
+USBDDriver_Initialize(USBDDriver *pDriver, const USBDDriverDescriptors *pDescriptors, unsigned char *pInterfaces);
 
-extern void USBDDriver_RequestHandler(
-    USBDDriver *pDriver,
-    const USBGenericRequest *pRequest);
+extern void USBDDriver_RequestHandler(USBDDriver *pDriver, const USBGenericRequest *pRequest);
 
 extern unsigned char USBDDriver_IsRemoteWakeUpEnabled(const USBDDriver *pDriver);
 
@@ -98,4 +94,3 @@ extern void USBDDriver_clearOTGFeatures(void);
 #endif
 
 #endif //#ifndef USBDDRIVER_H
-

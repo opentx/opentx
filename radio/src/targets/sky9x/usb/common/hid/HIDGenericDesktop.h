@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- *         ATMEL Microcontroller Software Support 
+ *         ATMEL Microcontroller Software Support
  * ----------------------------------------------------------------------------
  * Copyright (c) 2008, Atmel Corporation
  *
@@ -55,7 +55,7 @@
 /// - HIDGenericDesktop_PAGEID
 
 /// ID for the HID generic desktop usage page.
-#define HIDGenericDesktop_PAGEID            0x01
+#define HIDGenericDesktop_PAGEID 0x01
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
@@ -75,35 +75,34 @@
 /// - HIDGenericDesktop_Z
 
 /// Pointer usage ID.
-#define HIDGenericDesktop_POINTER           0x01
+#define HIDGenericDesktop_POINTER 0x01
 /// Mouse usage ID.
-#define HIDGenericDesktop_MOUSE             0x02
+#define HIDGenericDesktop_MOUSE 0x02
 /// Joystick usage ID.
-#define HIDGenericDesktop_JOYSTICK          0x04
+#define HIDGenericDesktop_JOYSTICK 0x04
 /// Gamepad usage ID.
-#define HIDGenericDesktop_GAMEPAD           0x05
+#define HIDGenericDesktop_GAMEPAD 0x05
 /// Keyboard usage ID.
-#define HIDGenericDesktop_KEYBOARD          0x06
+#define HIDGenericDesktop_KEYBOARD 0x06
 /// Keypad usage ID.
-#define HIDGenericDesktop_KEYPAD            0x07
+#define HIDGenericDesktop_KEYPAD 0x07
 /// Multi-axis controller usage ID.
-#define HIDGenericDesktop_MULTIAXIS         0x08
+#define HIDGenericDesktop_MULTIAXIS 0x08
 
 /// Axis Usage X direction ID.
-#define HIDGenericDesktop_X_AXIS            0x30
+#define HIDGenericDesktop_X_AXIS 0x30
 /// Axis Usage Y direction ID.
-#define HIDGenericDesktop_Y_AXIS            0x31
+#define HIDGenericDesktop_Y_AXIS 0x31
 /// Axis Usage Z direction ID.
-#define HIDGenericDesktop_Z_AXIS            0x32
+#define HIDGenericDesktop_Z_AXIS 0x32
 /// Rotation Usage X direction ID.
-#define HIDGenericDesktop_X_ROTATION        0x33
+#define HIDGenericDesktop_X_ROTATION 0x33
 /// Rotation Usage Y direction ID.
-#define HIDGenericDesktop_Y_ROTATION        0x34
+#define HIDGenericDesktop_Y_ROTATION 0x34
 /// Rotation Usage Z direction ID.
-#define HIDGenericDesktop_Z_ROTATION        0x35
+#define HIDGenericDesktop_Z_ROTATION 0x35
 /// Slider usage ID.
-#define HIDGenericDesktop_SLIDER            0x36
+#define HIDGenericDesktop_SLIDER 0x36
 //------------------------------------------------------------------------------
 
 #endif //#ifndef HIDGENERICDESKTOP_H
-

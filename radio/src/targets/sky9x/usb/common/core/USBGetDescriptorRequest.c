@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- *         ATMEL Microcontroller Software Support 
+ *         ATMEL Microcontroller Software Support
  * ----------------------------------------------------------------------------
  * Copyright (c) 2008, Atmel Corporation
  *
@@ -50,11 +50,10 @@
 /// \param request Pointer to a USBGenericDescriptor instance.
 /// \return Type of the requested descriptor.
 //------------------------------------------------------------------------------
-unsigned char USBGetDescriptorRequest_GetDescriptorType(
-    const USBGenericRequest *request)
+unsigned char USBGetDescriptorRequest_GetDescriptorType(const USBGenericRequest *request)
 {
-    // Requested descriptor type is in the high-byte of the wValue field
-    return (USBGenericRequest_GetValue(request) >> 8) & 0xFF;
+  // Requested descriptor type is in the high-byte of the wValue field
+  return (USBGenericRequest_GetValue(request) >> 8) & 0xFF;
 }
 
 //------------------------------------------------------------------------------
@@ -63,10 +62,8 @@ unsigned char USBGetDescriptorRequest_GetDescriptorType(
 /// \param request Pointer to a USBGenericDescriptor instance.
 /// \return Index of the requested descriptor.
 //------------------------------------------------------------------------------
-unsigned char USBGetDescriptorRequest_GetDescriptorIndex(
-    const USBGenericRequest *request)
+unsigned char USBGetDescriptorRequest_GetDescriptorIndex(const USBGenericRequest *request)
 {
-    // Requested descriptor index if in the low byte of the wValue field
-    return USBGenericRequest_GetValue(request) & 0xFF;
+  // Requested descriptor index if in the low byte of the wValue field
+  return USBGenericRequest_GetValue(request) & 0xFF;
 }
-

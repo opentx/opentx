@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- *         ATMEL Microcontroller Software Support 
+ *         ATMEL Microcontroller Software Support
  * ----------------------------------------------------------------------------
  * Copyright (c) 2008, Atmel Corporation
  *
@@ -30,12 +30,12 @@
 //------------------------------------------------------------------------------
 /// \unit
 /// !Purpose
-/// 
+///
 /// Definition of several constants used when manipulating Mass Storage interface
 /// descriptors.
 ///
 /// !Usage
-/// 
+///
 /// - For a USB device:
 ///     -# When declaring an interface descriptor for a Mass Storage device, use
 ///        the class, subclass and protocol codes defined here (see
@@ -53,23 +53,21 @@
 /// \page "MS interface codes"
 /// This page lists the available class, subclass & protocol codes for a Mass
 /// Storage interface.
-/// 
+///
 /// !Codes
-/// 
+///
 /// - MSInterfaceDescriptor_CLASS
 /// - MSInterfaceDescriptor_SCSI
 /// - MSInterfaceDescriptor_BULKONLY
 
 /// Class code for a Mass Storage interface.
-#define MSInterfaceDescriptor_CLASS         0x08
+#define MSInterfaceDescriptor_CLASS 0x08
 
 /// Subclass code for a Mass Storage interface using the SCSI protocol.
-#define MSInterfaceDescriptor_SCSI          0x06
+#define MSInterfaceDescriptor_SCSI 0x06
 
 /// Protocol code for a Mass Storage interface using Bulk-Only Transport.
-#define MSInterfaceDescriptor_BULKONLY      0x50
+#define MSInterfaceDescriptor_BULKONLY 0x50
 //------------------------------------------------------------------------------
 
-
 #endif //#ifndef MSINTERFACEDESCRIPTOR_H
-

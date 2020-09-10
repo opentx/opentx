@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- *         ATMEL Microcontroller Software Support 
+ *         ATMEL Microcontroller Software Support
  * ----------------------------------------------------------------------------
  * Copyright (c) 2008, Atmel Corporation
  *
@@ -49,7 +49,6 @@
 //------------------------------------------------------------------------------
 
 /// Identifier for the HID button usage page
-#define HIDButton_PAGEID                0x09
-
+#define HIDButton_PAGEID 0x09
 
 #endif

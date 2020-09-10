@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- *         ATMEL Microcontroller Software Support 
+ *         ATMEL Microcontroller Software Support
  * ----------------------------------------------------------------------------
  * Copyright (c) 2008, Atmel Corporation
  *
@@ -52,7 +52,7 @@
 //------------------------------------------------------------------------------
 unsigned char HIDReportRequest_GetReportType(const USBGenericRequest *request)
 {
-    return ((USBGenericRequest_GetValue(request) >> 8) & 0xFF);
+  return ((USBGenericRequest_GetValue(request) >> 8) & 0xFF);
 }
 
 //------------------------------------------------------------------------------
@@ -63,6 +63,5 @@ unsigned char HIDReportRequest_GetReportType(const USBGenericRequest *request)
 //------------------------------------------------------------------------------
 unsigned char HIDReportRequest_GetReportId(const USBGenericRequest *request)
 {
-    return (USBGenericRequest_GetValue(request) & 0xFF);
+  return (USBGenericRequest_GetValue(request) & 0xFF);
 }
-

@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- *         ATMEL Microcontroller Software Support 
+ *         ATMEL Microcontroller Software Support
  * ----------------------------------------------------------------------------
  * Copyright (c) 2008, Atmel Corporation
  *
@@ -31,10 +31,9 @@
 //         Headers
 //------------------------------------------------------------------------------
 
-
 #include "../../../usb/device/massstorage/MSDLun.h"
-#include "board_lowlevel.h"
 #include "../../../usb/device/core/USBD.h"
+#include "board_lowlevel.h"
 #include "debug.h"
 
 //------------------------------------------------------------------------------
@@ -42,7 +41,7 @@
 //------------------------------------------------------------------------------
 
 /// Default LUN block size in bytes
-#define     DEFAULT_LUN_BLOCK_SIZE      BLOCK_SIZE
+#define DEFAULT_LUN_BLOCK_SIZE BLOCK_SIZE
 
 //------------------------------------------------------------------------------
 //         Internal variables
@@ -51,47 +50,39 @@
 /// Inquiry data to return to the host for the Lun.
 static SBCInquiryData inquiryData = {
 
-    SBC_DIRECT_ACCESS_BLOCK_DEVICE, // Direct-access block device
-    SBC_PERIPHERAL_DEVICE_CONNECTED,// Peripheral device is connected
-    0x00,                           // Reserved bits
-    0x01,                           // Media is removable
-    0x02, // SBC_SPC_VERSION_4,     // SPC-4 supported
-    0x2,                            // Response data format, must be 0x2
-    0,                              // Hierarchical addressing not supported
-    0,                              // ACA not supported
-    0x0,                            // Obsolete bits
-    sizeof(SBCInquiryData) - 5,     // Additional length
-    0,                              // No embedded SCC
-    0,                              // No access control coordinator
-    SBC_TPGS_NONE,                  // No target port support group
-    0,                              // Third-party copy not supported
-    0x0,                            // Reserved bits
-    0,                              // Protection information not supported
-    0x0,                            // Obsolete bit
-    0,                              // No embedded enclosure service component
-    0x0,                            // ???
-    0,                              // Device is not multi-port
-    0x0,                            // Obsolete bits
-    0x0,                            // Unused feature
-    0x0,                            // Unused features
-    0,                              // Task management model not supported
-    0x0,                            // ???
-    {'A','T','M','E','L',' ',' ',' '},
-    {'M','a','s','s',' ',
-     'S','t','o','r','a','g','e',' ',
-     'M','S','D'},
-    {'0','.','0','1'},
-    {'M','a','s','s',' ',
-     'S','t','o','r','a','g','e',' ',
-     'E','x','a','m','p','l','e'},
-    0x00,                           // Unused features
-    0x00,                           // Reserved bits
-    {SBC_VERSION_DESCRIPTOR_SBC_3}, // SBC-3 compliant device
-    {0, 0, 0, 0, 0,
-     0, 0, 0, 0, 0,
-     0, 0, 0, 0, 0,
-     0, 0, 0, 0, 0,
-     0, 0} // Reserved
+    SBC_DIRECT_ACCESS_BLOCK_DEVICE,  // Direct-access block device
+    SBC_PERIPHERAL_DEVICE_CONNECTED, // Peripheral device is connected
+    0x00,                            // Reserved bits
+    0x01,                            // Media is removable
+    0x02,                            // SBC_SPC_VERSION_4,     // SPC-4 supported
+    0x2,                             // Response data format, must be 0x2
+    0,                               // Hierarchical addressing not supported
+    0,                               // ACA not supported
+    0x0,                             // Obsolete bits
+    sizeof(SBCInquiryData) - 5,      // Additional length
+    0,                               // No embedded SCC
+    0,                               // No access control coordinator
+    SBC_TPGS_NONE,                   // No target port support group
+    0,                               // Third-party copy not supported
+    0x0,                             // Reserved bits
+    0,                               // Protection information not supported
+    0x0,                             // Obsolete bit
+    0,                               // No embedded enclosure service component
+    0x0,                             // ???
+    0,                               // Device is not multi-port
+    0x0,                             // Obsolete bits
+    0x0,                             // Unused feature
+    0x0,                             // Unused features
+    0,                               // Task management model not supported
+    0x0,                             // ???
+    {'A', 'T', 'M', 'E', 'L', ' ', ' ', ' '},
+    {'M', 'a', 's', 's', ' ', 'S', 't', 'o', 'r', 'a', 'g', 'e', ' ', 'M', 'S', 'D'},
+    {'0', '.', '0', '1'},
+    {'M', 'a', 's', 's', ' ', 'S', 't', 'o', 'r', 'a', 'g', 'e', ' ', 'E', 'x', 'a', 'm', 'p', 'l', 'e'},
+    0x00,                                                              // Unused features
+    0x00,                                                              // Reserved bits
+    {SBC_VERSION_DESCRIPTOR_SBC_3},                                    // SBC-3 compliant device
+    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0} // Reserved
 };
 
 //------------------------------------------------------------------------------
@@ -115,104 +106,95 @@ static SBCInquiryData inquiryData = {
 //! \param  dataMonitor  Pointer to a Monitor Function to analyze the flow of
 //!                      this LUN.
 //------------------------------------------------------------------------------
-void LUN_Init(MSDLun        *lun,
-              Media         *media,
-              unsigned char *ioBuffer,
-              unsigned int   ioBufferSize,
-              unsigned int   baseAddress,
-              unsigned int   size,
-              unsigned short blockSize,
-              unsigned char  protected,
-              void (*dataMonitor)(unsigned char flowDirection,
-                                  unsigned int  dataLength,
-                                  unsigned int  fifoNullCount,
-                                  unsigned int  fifoFullCount))
+void LUN_Init(MSDLun *lun, Media *media, unsigned char *ioBuffer, unsigned int ioBufferSize, unsigned int baseAddress,
+              unsigned int size, unsigned short blockSize, unsigned char protected,
+              void (*dataMonitor)(unsigned char flowDirection, unsigned int dataLength, unsigned int fifoNullCount,
+                                  unsigned int fifoFullCount))
 {
-    unsigned int logicalBlockAddress;
-    TRACE_INFO("LUN init\n\r");
+  unsigned int logicalBlockAddress;
+  TRACE_INFO("LUN init\n\r");
 
-    // Initialize inquiry data
-    lun->inquiryData = &inquiryData;
+  // Initialize inquiry data
+  lun->inquiryData = &inquiryData;
 
-    // Initialize request sense data
-    lun->requestSenseData.bResponseCode = SBC_SENSE_DATA_FIXED_CURRENT;
-    lun->requestSenseData.isValid = 1;
-    lun->requestSenseData.bObsolete1 = 0;
-    lun->requestSenseData.bSenseKey = SBC_SENSE_KEY_NO_SENSE;
-    lun->requestSenseData.bReserved1 = 0;
-    lun->requestSenseData.isILI = 0;
-    lun->requestSenseData.isEOM = 0;
-    lun->requestSenseData.isFilemark = 0;
-    lun->requestSenseData.pInformation[0] = 0;
-    lun->requestSenseData.pInformation[1] = 0;
-    lun->requestSenseData.pInformation[2] = 0;
-    lun->requestSenseData.pInformation[3] = 0;
-    lun->requestSenseData.bAdditionalSenseLength
-        = sizeof(SBCRequestSenseData) - 8;
-    lun->requestSenseData.bAdditionalSenseCode = 0;
-    lun->requestSenseData.bAdditionalSenseCodeQualifier = 0;
-    lun->requestSenseData.bFieldReplaceableUnitCode = 0;
-    lun->requestSenseData.bSenseKeySpecific = 0;
-    lun->requestSenseData.pSenseKeySpecific[0] = 0;
-    lun->requestSenseData.pSenseKeySpecific[0] = 0;
-    lun->requestSenseData.isSKSV = 0;
+  // Initialize request sense data
+  lun->requestSenseData.bResponseCode = SBC_SENSE_DATA_FIXED_CURRENT;
+  lun->requestSenseData.isValid = 1;
+  lun->requestSenseData.bObsolete1 = 0;
+  lun->requestSenseData.bSenseKey = SBC_SENSE_KEY_NO_SENSE;
+  lun->requestSenseData.bReserved1 = 0;
+  lun->requestSenseData.isILI = 0;
+  lun->requestSenseData.isEOM = 0;
+  lun->requestSenseData.isFilemark = 0;
+  lun->requestSenseData.pInformation[0] = 0;
+  lun->requestSenseData.pInformation[1] = 0;
+  lun->requestSenseData.pInformation[2] = 0;
+  lun->requestSenseData.pInformation[3] = 0;
+  lun->requestSenseData.bAdditionalSenseLength = sizeof(SBCRequestSenseData) - 8;
+  lun->requestSenseData.bAdditionalSenseCode = 0;
+  lun->requestSenseData.bAdditionalSenseCodeQualifier = 0;
+  lun->requestSenseData.bFieldReplaceableUnitCode = 0;
+  lun->requestSenseData.bSenseKeySpecific = 0;
+  lun->requestSenseData.pSenseKeySpecific[0] = 0;
+  lun->requestSenseData.pSenseKeySpecific[0] = 0;
+  lun->requestSenseData.isSKSV = 0;
 
-    STORE_DWORDB(0, lun->readCapacityData.pLogicalBlockAddress);
-    STORE_DWORDB(0, lun->readCapacityData.pLogicalBlockLength);
+  STORE_DWORDB(0, lun->readCapacityData.pLogicalBlockAddress);
+  STORE_DWORDB(0, lun->readCapacityData.pLogicalBlockLength);
 
-    // Initialize LUN
-    lun->media = media;
-    if (media == 0) {
-        lun->status = LUN_NOT_PRESENT;
-        return;
-    }
+  // Initialize LUN
+  lun->media = media;
+  if (media == 0) {
+    lun->status = LUN_NOT_PRESENT;
+    return;
+  }
 
-    lun->baseAddress = baseAddress;
+  lun->baseAddress = baseAddress;
 
-    // Customized block size
-    if (blockSize) {
-        lun->blockSize = blockSize;
-    }
-    else {
-        if (media->blockSize < DEFAULT_LUN_BLOCK_SIZE)
-            lun->blockSize = DEFAULT_LUN_BLOCK_SIZE / media->blockSize;
-        else
-            lun->blockSize = 1;
-    }
+  // Customized block size
+  if (blockSize) {
+    lun->blockSize = blockSize;
+  }
+  else {
+    if (media->blockSize < DEFAULT_LUN_BLOCK_SIZE)
+      lun->blockSize = DEFAULT_LUN_BLOCK_SIZE / media->blockSize;
+    else
+      lun->blockSize = 1;
+  }
 
-    if (size) {
-        lun->size = size;
-    }
-    else {
-        lun->size = media->size;
-        //if (blockSize)
-        //    lun->size = media->size / blockSize;
-        //else {
-        //    if (media->blockSize < DEFAULT_LUN_BLOCK_SIZE)
-        //        lun->size = media->size / lun->blockSize;
-        //    else
-        //        lun->size = media->size;
-        //}
-    }
-    
-    TRACE_INFO("LUN: blkSize %d, size %d\n\r", (int)lun->blockSize, (int)lun->size);
-    if (protected) lun->protected = 1;
-    else           lun->protected = media->protected;
+  if (size) {
+    lun->size = size;
+  }
+  else {
+    lun->size = media->size;
+    // if (blockSize)
+    //    lun->size = media->size / blockSize;
+    // else {
+    //    if (media->blockSize < DEFAULT_LUN_BLOCK_SIZE)
+    //        lun->size = media->size / lun->blockSize;
+    //    else
+    //        lun->size = media->size;
+    //}
+  }
 
-    lun->ioFifo.pBuffer = ioBuffer;
-    lun->ioFifo.bufferSize = ioBufferSize;
+  TRACE_INFO("LUN: blkSize %d, size %d\n\r", (int)lun->blockSize, (int)lun->size);
+  if (protected)
+    lun->protected = 1;
+  else
+    lun->protected = media->protected;
 
-    lun->dataMonitor = dataMonitor;
+  lun->ioFifo.pBuffer = ioBuffer;
+  lun->ioFifo.bufferSize = ioBufferSize;
 
-    // Initialize read capacity data
-    logicalBlockAddress = lun->size / lun->blockSize - 1;
-    STORE_DWORDB(logicalBlockAddress,
-                 lun->readCapacityData.pLogicalBlockAddress);
-    STORE_DWORDB(lun->blockSize * media->blockSize,
-                 lun->readCapacityData.pLogicalBlockLength);
+  lun->dataMonitor = dataMonitor;
 
-    // Indicate media change
-    lun->status = LUN_CHANGED;
+  // Initialize read capacity data
+  logicalBlockAddress = lun->size / lun->blockSize - 1;
+  STORE_DWORDB(logicalBlockAddress, lun->readCapacityData.pLogicalBlockAddress);
+  STORE_DWORDB(lun->blockSize * media->blockSize, lun->readCapacityData.pLogicalBlockLength);
+
+  // Indicate media change
+  lun->status = LUN_CHANGED;
 }
 
 //------------------------------------------------------------------------------
@@ -222,21 +204,21 @@ void LUN_Init(MSDLun        *lun,
 //------------------------------------------------------------------------------
 unsigned char LUN_Eject(MSDLun *lun)
 {
-    if (lun->media) {
+  if (lun->media) {
 
-        // Avoid any LUN R/W in progress
-        if (lun->media->state == MED_STATE_BUSY) {
+    // Avoid any LUN R/W in progress
+    if (lun->media->state == MED_STATE_BUSY) {
 
-            return USBD_STATUS_LOCKED;
-        }
-
-        // Remove the link of the media
-        lun->media = 0;
+      return USBD_STATUS_LOCKED;
     }
-    // LUN is removed
-    lun->status = LUN_NOT_PRESENT;
 
-    return USBD_STATUS_SUCCESS;
+    // Remove the link of the media
+    lun->media = 0;
+  }
+  // LUN is removed
+  lun->status = LUN_NOT_PRESENT;
+
+  return USBD_STATUS_SUCCESS;
 }
 
 //------------------------------------------------------------------------------
@@ -248,60 +230,51 @@ unsigned char LUN_Eject(MSDLun *lun)
 //! \param  callback     Optional callback to invoke when the write finishes
 //! \return Operation result code
 //------------------------------------------------------------------------------
-unsigned char LUN_Write(MSDLun        *lun,
-                        unsigned int blockAddress,
-                        void         *data,
-                        unsigned int length,
-                        TransferCallback   callback,
-                        void         *argument)
+unsigned char LUN_Write(MSDLun *lun, unsigned int blockAddress, void *data, unsigned int length,
+                        TransferCallback callback, void *argument)
 {
-    unsigned int  medBlk, medLen;
-    unsigned char status;
+  unsigned int medBlk, medLen;
+  unsigned char status;
 
-    TRACE_INFO_WP("LUNWrite(%u) ", blockAddress);
+  TRACE_INFO_WP("LUNWrite(%u) ", blockAddress);
 
-    // Check that the data is not too big
-    if ((length + blockAddress) * lun->blockSize > lun->size) {
+  // Check that the data is not too big
+  if ((length + blockAddress) * lun->blockSize > lun->size) {
 
-        TRACE_WARNING("LUN_Write: Data too big\n\r");
-        status = USBD_STATUS_ABORTED;
-    }
-    else if (lun->media == 0 || lun->status != LUN_READY) {
+    TRACE_WARNING("LUN_Write: Data too big\n\r");
+    status = USBD_STATUS_ABORTED;
+  }
+  else if (lun->media == 0 || lun->status != LUN_READY) {
 
-        TRACE_WARNING("LUN_Write: Media not ready\n\r");
-        status = USBD_STATUS_ABORTED;
-    }
-    else if (lun->protected) {
-        TRACE_WARNING("LUN_Write: LUN is readonly\n\r");
-        status = USBD_STATUS_ABORTED;
+    TRACE_WARNING("LUN_Write: Media not ready\n\r");
+    status = USBD_STATUS_ABORTED;
+  }
+  else if (lun->protected) {
+    TRACE_WARNING("LUN_Write: LUN is readonly\n\r");
+    status = USBD_STATUS_ABORTED;
+  }
+  else {
+
+    // Compute write start address
+    medBlk = lun->baseAddress + blockAddress * lun->blockSize;
+    medLen = length * lun->blockSize;
+
+    // Start write operation
+    status = MED_Write(lun->media, medBlk, data, medLen, (MediaCallback)callback, argument);
+
+    // Check operation result code
+    if (status == MED_STATUS_SUCCESS) {
+
+      status = USBD_STATUS_SUCCESS;
     }
     else {
 
-        // Compute write start address
-        medBlk = lun->baseAddress + blockAddress * lun->blockSize;
-        medLen = length * lun->blockSize;
-
-        // Start write operation
-        status = MED_Write(lun->media,
-                           medBlk,
-                           data,
-                           medLen,
-                           (MediaCallback) callback,
-                           argument);
-
-        // Check operation result code
-        if (status == MED_STATUS_SUCCESS) {
-
-            status = USBD_STATUS_SUCCESS;
-        }
-        else {
-
-            TRACE_WARNING("LUN_Write: Cannot write media\n\r");
-            status = USBD_STATUS_ABORTED;
-        }
+      TRACE_WARNING("LUN_Write: Cannot write media\n\r");
+      status = USBD_STATUS_ABORTED;
     }
+  }
 
-    return status;
+  return status;
 }
 
 //------------------------------------------------------------------------------
@@ -313,55 +286,46 @@ unsigned char LUN_Write(MSDLun        *lun,
 //! \param  callback     Optional callback to invoke when the read finishes
 //! \return Operation result code
 //------------------------------------------------------------------------------
-unsigned char LUN_Read(MSDLun        *lun,
-                       unsigned int blockAddress,
-                       void         *data,
-                       unsigned int length,
-                       TransferCallback   callback,
-                       void         *argument)
+unsigned char LUN_Read(MSDLun *lun, unsigned int blockAddress, void *data, unsigned int length,
+                       TransferCallback callback, void *argument)
 {
-    unsigned int medBlk, medLen;
-    unsigned char status;
+  unsigned int medBlk, medLen;
+  unsigned char status;
 
-    // Check that the data is not too big
-    if ((length + blockAddress) * lun->blockSize > lun->size) {
+  // Check that the data is not too big
+  if ((length + blockAddress) * lun->blockSize > lun->size) {
 
-        TRACE_WARNING("LUN_Read: Area: (%d + %d)*%d > %d\n\r",
-                      (int)length, (int)blockAddress, (int)lun->blockSize, (int)lun->size);
-        status = USBD_STATUS_ABORTED;
-    }
-    else if (lun->media == 0 || lun->status != LUN_READY) {
+    TRACE_WARNING("LUN_Read: Area: (%d + %d)*%d > %d\n\r", (int)length, (int)blockAddress, (int)lun->blockSize,
+                  (int)lun->size);
+    status = USBD_STATUS_ABORTED;
+  }
+  else if (lun->media == 0 || lun->status != LUN_READY) {
 
-        TRACE_WARNING("LUN_Read: Media not present\n\r");
-        status = USBD_STATUS_ABORTED;
+    TRACE_WARNING("LUN_Read: Media not present\n\r");
+    status = USBD_STATUS_ABORTED;
+  }
+  else {
+
+    TRACE_INFO_WP("LUNRead(%u) ", blockAddress);
+
+    // Compute read start address
+    medBlk = lun->baseAddress + (blockAddress * lun->blockSize);
+    medLen = length * lun->blockSize;
+
+    // Start write operation
+    status = MED_Read(lun->media, medBlk, data, medLen, (MediaCallback)callback, argument);
+
+    // Check result code
+    if (status == MED_STATUS_SUCCESS) {
+
+      status = USBD_STATUS_SUCCESS;
     }
     else {
 
-        TRACE_INFO_WP("LUNRead(%u) ", blockAddress);
-
-        // Compute read start address
-        medBlk = lun->baseAddress + (blockAddress * lun->blockSize);
-        medLen = length * lun->blockSize;
-
-        // Start write operation
-        status = MED_Read(lun->media,
-                          medBlk,
-                          data,
-                          medLen,
-                          (MediaCallback) callback,
-                          argument);
-
-        // Check result code
-        if (status == MED_STATUS_SUCCESS) {
-
-            status = USBD_STATUS_SUCCESS;
-        }
-        else {
-
-            TRACE_WARNING("LUN_Read: Cannot read media\n\r");
-            status = USBD_STATUS_ABORTED;
-        }
+      TRACE_WARNING("LUN_Read: Cannot read media\n\r");
+      status = USBD_STATUS_ABORTED;
     }
+  }
 
-    return status;
+  return status;
 }

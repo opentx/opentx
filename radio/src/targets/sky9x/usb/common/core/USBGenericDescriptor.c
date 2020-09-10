@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- *         ATMEL Microcontroller Software Support 
+ *         ATMEL Microcontroller Software Support
  * ----------------------------------------------------------------------------
  * Copyright (c) 2008, Atmel Corporation
  *
@@ -49,10 +49,9 @@
 /// \param descriptor Pointer to a USBGenericDescriptor instance.
 /// \return Length of descriptor in bytes.
 //------------------------------------------------------------------------------
-unsigned int USBGenericDescriptor_GetLength(
-    const USBGenericDescriptor *descriptor)
+unsigned int USBGenericDescriptor_GetLength(const USBGenericDescriptor *descriptor)
 {
-    return descriptor->bLength;
+  return descriptor->bLength;
 }
 
 //------------------------------------------------------------------------------
@@ -60,10 +59,9 @@ unsigned int USBGenericDescriptor_GetLength(
 /// \param descriptor Pointer to a USBGenericDescriptor instance.
 /// \return Type of descriptor.
 //------------------------------------------------------------------------------
-unsigned char USBGenericDescriptor_GetType(
-    const USBGenericDescriptor *descriptor)
+unsigned char USBGenericDescriptor_GetType(const USBGenericDescriptor *descriptor)
 {
-    return descriptor->bDescriptorType;
+  return descriptor->bDescriptorType;
 }
 
 //------------------------------------------------------------------------------
@@ -72,9 +70,7 @@ unsigned char USBGenericDescriptor_GetType(
 /// \param descriptor - Pointer to a USBGenericDescriptor instance.
 /// \return Pointer to the next descriptor.
 //------------------------------------------------------------------------------
-USBGenericDescriptor *USBGenericDescriptor_GetNextDescriptor(
-    const USBGenericDescriptor *descriptor)
+USBGenericDescriptor *USBGenericDescriptor_GetNextDescriptor(const USBGenericDescriptor *descriptor)
 {
-    return (USBGenericDescriptor *)
-        (((char *) descriptor) + USBGenericDescriptor_GetLength(descriptor));
+  return (USBGenericDescriptor *)(((char *)descriptor) + USBGenericDescriptor_GetLength(descriptor));
 }

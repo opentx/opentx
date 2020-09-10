@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- *         ATMEL Microcontroller Software Support 
+ *         ATMEL Microcontroller Software Support
  * ----------------------------------------------------------------------------
  * Copyright (c) 2008, Atmel Corporation
  *
@@ -70,27 +70,27 @@
 /// - USBGenericDescriptor_INTERFACEASSOCIATION
 
 /// Device descriptor type.
-#define USBGenericDescriptor_DEVICE                     1
+#define USBGenericDescriptor_DEVICE 1
 /// Configuration descriptor type.
-#define USBGenericDescriptor_CONFIGURATION              2
+#define USBGenericDescriptor_CONFIGURATION 2
 /// String descriptor type.
-#define USBGenericDescriptor_STRING                     3
+#define USBGenericDescriptor_STRING 3
 /// Interface descriptor type.
-#define USBGenericDescriptor_INTERFACE                  4
+#define USBGenericDescriptor_INTERFACE 4
 /// Endpoint descriptor type.
-#define USBGenericDescriptor_ENDPOINT                   5
+#define USBGenericDescriptor_ENDPOINT 5
 /// Device qualifier descriptor type.
-#define USBGenericDescriptor_DEVICEQUALIFIER            6
+#define USBGenericDescriptor_DEVICEQUALIFIER 6
 /// Other speed configuration descriptor type.
-#define USBGenericDescriptor_OTHERSPEEDCONFIGURATION    7
+#define USBGenericDescriptor_OTHERSPEEDCONFIGURATION 7
 /// Interface power descriptor type.
-#define USBGenericDescriptor_INTERFACEPOWER             8
+#define USBGenericDescriptor_INTERFACEPOWER 8
 /// On-The-Go descriptor type.
-#define USBGenericDescriptor_OTG                        9
+#define USBGenericDescriptor_OTG 9
 /// Debug descriptor type.
-#define USBGenericDescriptor_DEBUG                      10
+#define USBGenericDescriptor_DEBUG 10
 /// Interface association descriptor type.
-#define USBGenericDescriptor_INTERFACEASSOCIATION       11
+#define USBGenericDescriptor_INTERFACEASSOCIATION 11
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
@@ -105,29 +105,25 @@
 /// Holds the few fields shared by all USB descriptors.
 typedef struct {
 
-    /// Length of the descriptor in bytes.
-    unsigned char bLength;
-    /// Descriptor type.
-    unsigned char bDescriptorType;
+  /// Length of the descriptor in bytes.
+  unsigned char bLength;
+  /// Descriptor type.
+  unsigned char bDescriptorType;
 
-} __attribute__ ((packed)) USBGenericDescriptor; // GCC
+} __attribute__((packed)) USBGenericDescriptor; // GCC
 
-#ifdef __ICCARM__          // IAR
-#pragma pack()             // IAR
-#endif                     // IAR
+#ifdef __ICCARM__ // IAR
+#pragma pack()    // IAR
+#endif            // IAR
 
 //------------------------------------------------------------------------------
 //         Exported functions
 //------------------------------------------------------------------------------
 
-extern unsigned int USBGenericDescriptor_GetLength(
-    const USBGenericDescriptor *descriptor);
+extern unsigned int USBGenericDescriptor_GetLength(const USBGenericDescriptor *descriptor);
 
-extern unsigned char USBGenericDescriptor_GetType(
-    const USBGenericDescriptor *descriptor);
+extern unsigned char USBGenericDescriptor_GetType(const USBGenericDescriptor *descriptor);
 
-extern USBGenericDescriptor *USBGenericDescriptor_GetNextDescriptor(
-    const USBGenericDescriptor *descriptor);
+extern USBGenericDescriptor *USBGenericDescriptor_GetNextDescriptor(const USBGenericDescriptor *descriptor);
 
 #endif //#ifndef USBGENERICDESCRIPTOR_H
-

@@ -28,9 +28,9 @@ enum usbMode {
   USB_MASS_STORAGE_MODE,
   USB_SERIAL_MODE,
 #if defined(USB_SERIAL)
-  USB_MAX_MODE=USB_SERIAL_MODE
+  USB_MAX_MODE = USB_SERIAL_MODE
 #else
-  USB_MAX_MODE=USB_MASS_STORAGE_MODE
+  USB_MAX_MODE = USB_MASS_STORAGE_MODE
 #endif
 };
 
@@ -46,10 +46,10 @@ void usbSerialPutc(uint8_t c);
 
 // Used in view_statistics.cpp
 #if defined(DEBUG) && !defined(BOOT)
-  extern uint16_t usbWraps;
-  extern uint16_t charsWritten;
-  extern volatile uint32_t APP_Rx_ptr_in;
-  extern volatile uint32_t APP_Rx_ptr_out;
+extern uint16_t usbWraps;
+extern uint16_t charsWritten;
+extern volatile uint32_t APP_Rx_ptr_in;
+extern volatile uint32_t APP_Rx_ptr_out;
 #endif
 
 #endif

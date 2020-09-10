@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- *         ATMEL Microcontroller Software Support 
+ *         ATMEL Microcontroller Software Support
  * ----------------------------------------------------------------------------
  * Copyright (c) 2008, Atmel Corporation
  *
@@ -33,7 +33,7 @@
 ///
 /// Definitions, structs, functions  required by a Mass Storage device driver
 /// state machine..
-/// 
+///
 /// !Usage
 ///
 /// - For a USB device:
@@ -41,7 +41,7 @@
 ///        usage in the state machine procedure.
 ///
 ///     -# MSDD_StateMachine is invoked to run the MSD state machine.
-///        
+///
 //-----------------------------------------------------------------------------
 
 #ifndef MSDDSTATEMACHINE_H
@@ -73,25 +73,25 @@
 /// - MSDD_STATE_WAIT_RESET
 
 //! \brief  Driver is expecting a command block wrapper
-#define MSDD_STATE_READ_CBW              (1 << 0)
+#define MSDD_STATE_READ_CBW (1 << 0)
 
 //! \brief  Driver is waiting for the transfer to finish
-#define MSDD_STATE_WAIT_CBW              (1 << 1)
+#define MSDD_STATE_WAIT_CBW (1 << 1)
 
 //! \brief  Driver is processing the received command
-#define MSDD_STATE_PROCESS_CBW           (1 << 2)
+#define MSDD_STATE_PROCESS_CBW (1 << 2)
 
 //! \brief  Driver is halted because pipe halt or wait reset
-#define MSDD_STATE_WAIT_HALT             (1 << 3)
+#define MSDD_STATE_WAIT_HALT (1 << 3)
 
 //! \brief  Driver is starting the transmission of a command status wrapper
-#define MSDD_STATE_SEND_CSW              (1 << 4)
+#define MSDD_STATE_SEND_CSW (1 << 4)
 
 //! \brief  Driver is waiting for the CSW transmission to finish
-#define MSDD_STATE_WAIT_CSW              (1 << 5)
+#define MSDD_STATE_WAIT_CSW (1 << 5)
 
 //! \brief  Driver is waiting for the MassStorageReset
-#define MSDD_STATE_WAIT_RESET            (1 << 6)
+#define MSDD_STATE_WAIT_RESET (1 << 6)
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
@@ -106,20 +106,20 @@
 /// - MSDD_STATUS_RW
 
 //! \brief  Method was successful
-#define MSDD_STATUS_SUCCESS              0x00
+#define MSDD_STATUS_SUCCESS 0x00
 
 //! \brief  There was an error when trying to perform a method
-#define MSDD_STATUS_ERROR                0x01
+#define MSDD_STATUS_ERROR 0x01
 
 //! \brief  No error was encountered but the application should call the
 //!         method again to continue the operation
-#define MSDD_STATUS_INCOMPLETE           0x02
+#define MSDD_STATUS_INCOMPLETE 0x02
 
 //! \brief  A wrong parameter has been passed to the method
-#define MSDD_STATUS_PARAMETER            0x03
+#define MSDD_STATUS_PARAMETER 0x03
 
 //! \brief An error when reading/writing disk (protected or not present)
-#define MSDD_STATUS_RW                   0x04
+#define MSDD_STATUS_RW 0x04
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
@@ -127,19 +127,19 @@
 /// This page lists actions to perform during the post-processing phase of a
 /// command.
 ///
-/// !Actions 
+/// !Actions
 /// - MSDD_CASE_PHASE_ERROR
 /// - MSDD_CASE_STALL_IN
 /// - MSDD_CASE_STALL_OUT
 
 //! \brief  Indicates that the CSW should report a phase error
-#define MSDD_CASE_PHASE_ERROR            (1 << 0)
+#define MSDD_CASE_PHASE_ERROR (1 << 0)
 
 //! \brief  The driver should halt the Bulk IN pipe after the transfer
-#define MSDD_CASE_STALL_IN               (1 << 1)
+#define MSDD_CASE_STALL_IN (1 << 1)
 
 //! \brief  The driver should halt the Bulk OUT pipe after the transfer
-#define MSDD_CASE_STALL_OUT              (1 << 2)
+#define MSDD_CASE_STALL_OUT (1 << 2)
 
 //------------------------------------------------------------------------------
 
@@ -152,9 +152,9 @@
 /// - MSDD_HOST_TO_DEVICE
 /// - MSDD_NO_TRANSFER
 
-#define MSDD_DEVICE_TO_HOST              0
-#define MSDD_HOST_TO_DEVICE              1
-#define MSDD_NO_TRANSFER                 2
+#define MSDD_DEVICE_TO_HOST 0
+#define MSDD_HOST_TO_DEVICE 1
+#define MSDD_NO_TRANSFER 2
 //------------------------------------------------------------------------------
 
 //-----------------------------------------------------------------------------
@@ -167,10 +167,10 @@
 //------------------------------------------------------------------------------
 typedef struct {
 
-    volatile unsigned int   transferred; /// Number of bytes transferred
-    volatile unsigned int   remaining;   /// Number of bytes not transferred
-    volatile unsigned short semaphore;   /// Semaphore to indicate transfer completion
-    volatile unsigned short status;      /// Operation result code
+  volatile unsigned int transferred; /// Number of bytes transferred
+  volatile unsigned int remaining;   /// Number of bytes not transferred
+  volatile unsigned short semaphore; /// Semaphore to indicate transfer completion
+  volatile unsigned short status;    /// Operation result code
 
 } MSDTransfer;
 
@@ -182,13 +182,13 @@ typedef struct {
 //------------------------------------------------------------------------------
 typedef struct {
 
-    MSDTransfer     transfer;    /// Current transfer status (USB)
-    MSDTransfer     disktransfer;/// Current transfer status (Disk)
-    unsigned int    length;      /// Remaining length of command
-    MSCbw           cbw;         /// Received CBW (31 bytes)
-    unsigned char   state;       /// Current command state
-    MSCsw           csw;         /// CSW to send  (13 bytes)
-    unsigned char   postprocess; /// Actions to perform when command is complete
+  MSDTransfer transfer;      /// Current transfer status (USB)
+  MSDTransfer disktransfer;  /// Current transfer status (Disk)
+  unsigned int length;       /// Remaining length of command
+  MSCbw cbw;                 /// Received CBW (31 bytes)
+  unsigned char state;       /// Current command state
+  MSCsw csw;                 /// CSW to send  (13 bytes)
+  unsigned char postprocess; /// Actions to perform when command is complete
 
 } MSDCommandState;
 
@@ -199,16 +199,16 @@ typedef struct {
 //------------------------------------------------------------------------------
 typedef struct {
 
-    /// LUN list for the %device.
-    MSDLun *luns;
-    /// State of the currently executing command
-    MSDCommandState commandState;
-    /// Maximum LUN index
-    unsigned char maxLun;
-    /// Current state of the driver
-    unsigned char state;
-    /// Indicates if the driver is waiting for a reset recovery
-    unsigned char waitResetRecovery;
+  /// LUN list for the %device.
+  MSDLun *luns;
+  /// State of the currently executing command
+  MSDCommandState commandState;
+  /// Maximum LUN index
+  unsigned char maxLun;
+  /// Current state of the driver
+  unsigned char state;
+  /// Indicates if the driver is waiting for a reset recovery
+  unsigned char waitResetRecovery;
 
 } MSDDriver;
 
@@ -222,33 +222,23 @@ typedef struct {
 /// \param  transferred Number of bytes transferred by the command
 /// \param  remaining   Number of bytes not transferred
 //-----------------------------------------------------------------------------
-static inline void MSDDriver_Callback(MSDTransfer *transfer,
-                                      unsigned char status,
-                                      unsigned int transferred,
-                                      unsigned int remaining)
+static inline void
+MSDDriver_Callback(MSDTransfer *transfer, unsigned char status, unsigned int transferred, unsigned int remaining)
 {
-    TRACE_DEBUG("Cbk ");
-    transfer->semaphore++;
-    transfer->status = status;
-    transfer->transferred = transferred;
-    transfer->remaining = remaining;
+  TRACE_DEBUG("Cbk ");
+  transfer->semaphore++;
+  transfer->status = status;
+  transfer->transferred = transferred;
+  transfer->remaining = remaining;
 }
 
 //-----------------------------------------------------------------------------
 //      Driver functions
 //-----------------------------------------------------------------------------
 //- MSD General support function
-extern char MSDD_Read(
-    void* pData,
-    unsigned int dLength,
-    TransferCallback fCallback,
-    void* pArgument);
+extern char MSDD_Read(void *pData, unsigned int dLength, TransferCallback fCallback, void *pArgument);
 
-extern char MSDD_Write(
-    void* pData,
-    unsigned int dLength,
-    TransferCallback fCallback,
-    void* pArgument);
+extern char MSDD_Write(void *pData, unsigned int dLength, TransferCallback fCallback, void *pArgument);
 
 extern void MSDD_Halt(unsigned int stallCase);
 
@@ -258,7 +248,6 @@ extern unsigned int MSDD_IsHalted(void);
 //      Exported functions
 //-----------------------------------------------------------------------------
 
-extern void MSDD_StateMachine(MSDDriver * pMsdDriver);
+extern void MSDD_StateMachine(MSDDriver *pMsdDriver);
 
 #endif // #define MSDDSTATEMACHINE_H
-

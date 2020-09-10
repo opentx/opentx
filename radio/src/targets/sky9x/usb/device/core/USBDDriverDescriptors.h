@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- *         ATMEL Microcontroller Software Support 
+ *         ATMEL Microcontroller Software Support
  * ----------------------------------------------------------------------------
  * Copyright (c) 2008, Atmel Corporation
  *
@@ -59,28 +59,27 @@
 //------------------------------------------------------------------------------
 typedef struct {
 
-    /// Pointer to the full-speed device descriptor.
-    const USBDeviceDescriptor *pFsDevice;
-    /// Pointer to the full-speed configuration descriptor.
-    const USBConfigurationDescriptor *pFsConfiguration;
-    /// Pointer to the full-speed qualifier descriptor.
-    const USBDeviceQualifierDescriptor *pFsQualifier;
-    /// Pointer to the full-speed other speed configuration descriptor.
-    const USBConfigurationDescriptor *pFsOtherSpeed;
-    /// Pointer to the high-speed device descriptor.
-    const USBDeviceDescriptor *pHsDevice;
-    /// Pointer to the high-speed configuration descriptor.
-    const USBConfigurationDescriptor *pHsConfiguration;
-    /// Pointer to the high-speed qualifier descriptor.
-    const USBDeviceQualifierDescriptor *pHsQualifier;
-    /// Pointer to the high-speed other speed configuration descriptor.
-    const USBConfigurationDescriptor *pHsOtherSpeed;
-    /// Pointer to the list of string descriptors.
-    const unsigned char **pStrings;
-    /// Number of string descriptors in list.
-    unsigned char numStrings;
+  /// Pointer to the full-speed device descriptor.
+  const USBDeviceDescriptor *pFsDevice;
+  /// Pointer to the full-speed configuration descriptor.
+  const USBConfigurationDescriptor *pFsConfiguration;
+  /// Pointer to the full-speed qualifier descriptor.
+  const USBDeviceQualifierDescriptor *pFsQualifier;
+  /// Pointer to the full-speed other speed configuration descriptor.
+  const USBConfigurationDescriptor *pFsOtherSpeed;
+  /// Pointer to the high-speed device descriptor.
+  const USBDeviceDescriptor *pHsDevice;
+  /// Pointer to the high-speed configuration descriptor.
+  const USBConfigurationDescriptor *pHsConfiguration;
+  /// Pointer to the high-speed qualifier descriptor.
+  const USBDeviceQualifierDescriptor *pHsQualifier;
+  /// Pointer to the high-speed other speed configuration descriptor.
+  const USBConfigurationDescriptor *pHsOtherSpeed;
+  /// Pointer to the list of string descriptors.
+  const unsigned char **pStrings;
+  /// Number of string descriptors in list.
+  unsigned char numStrings;
 
 } USBDDriverDescriptors;
 
 #endif //#ifndef USBDDRIVERDESCRIPTORS_H
-

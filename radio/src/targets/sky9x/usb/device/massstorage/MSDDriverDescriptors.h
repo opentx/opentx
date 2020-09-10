@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- *         ATMEL Microcontroller Software Support 
+ *         ATMEL Microcontroller Software Support
  * ----------------------------------------------------------------------------
  * Copyright (c) 2008, Atmel Corporation
  *
@@ -30,11 +30,11 @@
 //------------------------------------------------------------------------------
 /// \unit
 /// !Purpose
-/// 
+///
 /// Definitions of the descriptors required by a Mass Storage device driver.
-/// 
+///
 /// !Usage
-/// 
+///
 /// - For a USB %device:
 ///     -# When initializing a USBDDriver instance, use msdDriverDescriptors as
 ///        the list of standard descriptors.
@@ -56,20 +56,20 @@
 //------------------------------------------------------------------------------
 /// \page "MSD endpoint addresses"
 /// This page lists the addresses used by the Mass Storage driver %endpoints.
-/// 
+///
 /// !Addresses
-/// 
+///
 /// - MSDDriverDescriptors_BULKOUT
 /// - MSDDriverDescriptors_BULKIN
 
 /// Address of the Mass Storage bulk-out endpoint.
-#define MSDDriverDescriptors_BULKOUT        1
+#define MSDDriverDescriptors_BULKOUT 1
 
 /// Address of the Mass Storage bulk-in endpoint.
 #if defined(at91sam9m10)
- #define MSDDriverDescriptors_BULKIN        6
+#define MSDDriverDescriptors_BULKIN 6
 #else
- #define MSDDriverDescriptors_BULKIN        2
+#define MSDDriverDescriptors_BULKIN 2
 #endif
 //------------------------------------------------------------------------------
 
@@ -80,4 +80,3 @@
 extern const USBDDriverDescriptors msdDriverDescriptors;
 
 #endif //#ifndef MSDDRIVERDESCRIPTORS_H
-

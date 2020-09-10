@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- *         ATMEL Microcontroller Software Support 
+ *         ATMEL Microcontroller Software Support
  * ----------------------------------------------------------------------------
  * Copyright (c) 2008, Atmel Corporation
  *
@@ -53,11 +53,10 @@
 //         Headers
 //------------------------------------------------------------------------------
 
-#include <usb/common/core/USBGenericRequest.h>
 #include "HIDDJoystickInputReport.h"
+#include <usb/common/core/USBGenericRequest.h>
 
 //------------------------------------------------------------------------------
-
 
 //------------------------------------------------------------------------------
 //         Exported functions
@@ -80,4 +79,3 @@ extern void HIDDJoystickDriver_RequestHandler(const USBGenericRequest *request);
 extern unsigned char HIDDJoystickDriver_ChangeJoystickState(const HIDDJoystickInputReport *report);
 
 #endif //#ifndef HIDDJOYSTICKDRIVER_H
-

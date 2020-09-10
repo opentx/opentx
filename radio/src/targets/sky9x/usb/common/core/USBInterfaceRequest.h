@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- *         ATMEL Microcontroller Software Support 
+ *         ATMEL Microcontroller Software Support
  * ----------------------------------------------------------------------------
  * Copyright (c) 2008, Atmel Corporation
  *
@@ -57,12 +57,8 @@
 //         Exported functions
 //------------------------------------------------------------------------------
 
-extern unsigned char USBInterfaceRequest_GetInterface(
-    const USBGenericRequest *request);
+extern unsigned char USBInterfaceRequest_GetInterface(const USBGenericRequest *request);
 
-
-extern unsigned char USBInterfaceRequest_GetAlternateSetting(
-    const USBGenericRequest *request);
+extern unsigned char USBInterfaceRequest_GetAlternateSetting(const USBGenericRequest *request);
 
 #endif //#ifndef USBINTERFACEREQUEST_H
-

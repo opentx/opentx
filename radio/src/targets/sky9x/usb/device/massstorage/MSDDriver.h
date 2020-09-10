@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- *         ATMEL Microcontroller Software Support 
+ *         ATMEL Microcontroller Software Support
  * ----------------------------------------------------------------------------
  * Copyright (c) 2008, Atmel Corporation
  *
@@ -30,11 +30,11 @@
 //------------------------------------------------------------------------------
 /// \unit
 /// !Purpose
-/// 
+///
 /// Mass storage %device driver implementation.
-/// 
+///
 /// !Usage
-/// 
+///
 /// -# Enable and setup USB related pins (see pio & board.h).
 /// -# Configure the memory interfaces used for Mass Storage LUNs
 ///    (see memories, MSDLun.h).
@@ -66,10 +66,7 @@ extern void MSDDriver_StateMachine(void);
 
 extern void MSDDriver_RemoteWakeUp(void);
 
-extern void MSDDriver_DataCallback(unsigned char isRead,
-                                   unsigned int dataLength,
-                                   unsigned int nullCnt,
-                                   unsigned int fullCnt);
+extern void
+MSDDriver_DataCallback(unsigned char isRead, unsigned int dataLength, unsigned int nullCnt, unsigned int fullCnt);
 
 #endif // #ifndef MSDDRIVER_H
-

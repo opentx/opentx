@@ -23,27 +23,24 @@
 
 #include "opentx.h"
 
-enum MemoryType {
-  MEM_FLASH,
-  MEM_EEPROM
-};
+enum MemoryType { MEM_FLASH, MEM_EEPROM };
 
 #if defined(EEPROM)
-#define getBinaryPath(mt)  ((mt == MEM_FLASH) ? FIRMWARES_PATH : EEPROMS_PATH)
+#define getBinaryPath(mt) ((mt == MEM_FLASH) ? FIRMWARES_PATH : EEPROMS_PATH)
 #else
-#define getBinaryPath(mt)  (FIRMWARES_PATH)
+#define getBinaryPath(mt) (FIRMWARES_PATH)
 #endif
 
-#define MAX_NAMES_ON_SCREEN   6
-#define MAX_BIN_FILES         (MAX_NAMES_ON_SCREEN+1)
+#define MAX_NAMES_ON_SCREEN 6
+#define MAX_BIN_FILES (MAX_NAMES_ON_SCREEN + 1)
 
 // Size of the block read when checking / writing BIN files
 #define BLOCK_LEN 4096
 
 // File info struct while browsing files on SD card
 struct BinFileInfo {
-    TCHAR        name[_MAX_LFN + 1];
-    unsigned int size;
+  TCHAR name[_MAX_LFN + 1];
+  unsigned int size;
 };
 
 // File info storage while browsing files on SD card
@@ -53,7 +50,7 @@ extern BinFileInfo binFiles[MAX_BIN_FILES];
 extern uint8_t Block_buffer[BLOCK_LEN];
 
 // Bytes read into the Block_buffer
-extern UINT    BlockCount;
+extern UINT BlockCount;
 
 // Open directory for EEPROM / firmware files
 FRESULT openBinDir(MemoryType mt);
@@ -68,15 +65,14 @@ unsigned int fetchBinFiles(unsigned int index);
 // Bootloader is skipped in firmware files
 FRESULT openBinFile(MemoryType mt, unsigned int index);
 
-struct VersionTag
-{
-    char        flavour[8];
-    const char* version;
+struct VersionTag {
+  char flavour[8];
+  const char *version;
 };
 
 // Can be called right after openBinFile() to extract the version information
 // from a firmware file
-void extractFirmwareVersion(VersionTag* tag);
+void extractFirmwareVersion(VersionTag *tag);
 
 // Read the next BLOCK_LEN bytes into 'Block_buffer'
 // Check 'BlockCount' for # of bytes read

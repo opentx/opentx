@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- *         ATMEL Microcontroller Software Support 
+ *         ATMEL Microcontroller Software Support
  * ----------------------------------------------------------------------------
  * Copyright (c) 2008, Atmel Corporation
  *
@@ -50,7 +50,7 @@
 //------------------------------------------------------------------------------
 extern unsigned char USBGenericRequest_GetType(const USBGenericRequest *request)
 {
-    return ((request->bmRequestType >> 5) & 0x3);
+  return ((request->bmRequestType >> 5) & 0x3);
 }
 
 //------------------------------------------------------------------------------
@@ -61,7 +61,7 @@ extern unsigned char USBGenericRequest_GetType(const USBGenericRequest *request)
 //------------------------------------------------------------------------------
 unsigned char USBGenericRequest_GetRequest(const USBGenericRequest *request)
 {
-    return request->bRequest;
+  return request->bRequest;
 }
 
 //------------------------------------------------------------------------------
@@ -71,7 +71,7 @@ unsigned char USBGenericRequest_GetRequest(const USBGenericRequest *request)
 //------------------------------------------------------------------------------
 unsigned short USBGenericRequest_GetValue(const USBGenericRequest *request)
 {
-    return request->wValue;
+  return request->wValue;
 }
 
 //------------------------------------------------------------------------------
@@ -81,7 +81,7 @@ unsigned short USBGenericRequest_GetValue(const USBGenericRequest *request)
 //------------------------------------------------------------------------------
 unsigned short USBGenericRequest_GetIndex(const USBGenericRequest *request)
 {
-    return request->wIndex;
+  return request->wIndex;
 }
 
 //------------------------------------------------------------------------------
@@ -91,7 +91,7 @@ unsigned short USBGenericRequest_GetIndex(const USBGenericRequest *request)
 //------------------------------------------------------------------------------
 unsigned short USBGenericRequest_GetLength(const USBGenericRequest *request)
 {
-    return request->wLength;
+  return request->wLength;
 }
 
 //------------------------------------------------------------------------------
@@ -99,10 +99,9 @@ unsigned short USBGenericRequest_GetLength(const USBGenericRequest *request)
 /// \param request Pointer to a USBGenericRequest instance.
 /// \return Endpoint number.
 //------------------------------------------------------------------------------
-unsigned char USBGenericRequest_GetEndpointNumber(
-    const USBGenericRequest *request)
+unsigned char USBGenericRequest_GetEndpointNumber(const USBGenericRequest *request)
 {
-    return USBGenericRequest_GetIndex(request) & 0xF;
+  return USBGenericRequest_GetIndex(request) & 0xF;
 }
 
 //------------------------------------------------------------------------------
@@ -113,8 +112,8 @@ unsigned char USBGenericRequest_GetEndpointNumber(
 //------------------------------------------------------------------------------
 unsigned char USBGenericRequest_GetRecipient(const USBGenericRequest *request)
 {
-    // Recipient is in bits [0..4] of the bmRequestType field
-    return request->bmRequestType & 0xF;
+  // Recipient is in bits [0..4] of the bmRequestType field
+  return request->bmRequestType & 0xF;
 }
 
 //------------------------------------------------------------------------------
@@ -125,14 +124,13 @@ unsigned char USBGenericRequest_GetRecipient(const USBGenericRequest *request)
 //------------------------------------------------------------------------------
 unsigned char USBGenericRequest_GetDirection(const USBGenericRequest *request)
 {
-    // Transfer direction is located in bit D7 of the bmRequestType field
-    if ((request->bmRequestType & 0x80) != 0) {
+  // Transfer direction is located in bit D7 of the bmRequestType field
+  if ((request->bmRequestType & 0x80) != 0) {
 
-        return USBGenericRequest_IN;
-    }
-    else {
+    return USBGenericRequest_IN;
+  }
+  else {
 
-        return USBGenericRequest_OUT;
-    }
+    return USBGenericRequest_OUT;
+  }
 }
-

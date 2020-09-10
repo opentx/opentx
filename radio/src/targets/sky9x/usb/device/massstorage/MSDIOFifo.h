@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- *         ATMEL Microcontroller Software Support 
+ *         ATMEL Microcontroller Software Support
  * ----------------------------------------------------------------------------
  * Copyright (c) 2008, Atmel Corporation
  *
@@ -39,29 +39,29 @@
 //------------------------------------------------------------------------------
 
 /// Idle state, do nothing
-#define MSDIO_IDLE          0
+#define MSDIO_IDLE 0
 /// Start, to start IO operation
-#define MSDIO_START         1
+#define MSDIO_START 1
 /// Wait, waiting for IO operation done
-#define MSDIO_WAIT          2
+#define MSDIO_WAIT 2
 /// Next, to check if the next block can be performed
-#define MSDIO_NEXT          3
+#define MSDIO_NEXT 3
 /// Pause, to pause the process for buffer full or null
-#define MSDIO_PAUSE         4
+#define MSDIO_PAUSE 4
 /// Abort, to abort the process
-#define MSDIO_ABORT         5
+#define MSDIO_ABORT 5
 /// Done, finish without error
-#define MSDIO_DONE          6
+#define MSDIO_DONE 6
 /// Error, any error happens
-#define MSDIO_ERROR         7
+#define MSDIO_ERROR 7
 
 /// FIFO offset before USB transmit start
 //#define MSDIO_FIFO_OFFSET   (4*512)
 
 /// FIFO trunk size (in each transfer, large amount of data)
 #if !defined(MSD_OP_BUFFER)
-#define MSDIO_READ10_CHUNK_SIZE     (4*512)
-#define MSDIO_WRITE10_CHUNK_SIZE    (4*512)
+#define MSDIO_READ10_CHUNK_SIZE (4 * 512)
+#define MSDIO_WRITE10_CHUNK_SIZE (4 * 512)
 #endif
 
 //------------------------------------------------------------------------------
@@ -71,41 +71,41 @@
 /// FIFO buffer for READ/WRITE (disk) operation of a mass storage device
 typedef struct _MSDIOFifo {
 
-    /// Pointer to the ring buffer allocated for read/write
-    unsigned char * pBuffer;
-    /// The size of the buffer allocated
-    unsigned int    bufferSize;
+  /// Pointer to the ring buffer allocated for read/write
+  unsigned char *pBuffer;
+  /// The size of the buffer allocated
+  unsigned int bufferSize;
 #ifdef MSDIO_FIFO_OFFSET
-    /// The offset to start USB transfer (READ10)
-    unsigned int    bufferOffset;
+  /// The offset to start USB transfer (READ10)
+  unsigned int bufferOffset;
 #endif
-    /// The index of input data (loaded to fifo buffer)
-    unsigned int    inputNdx;
-    /// The total size of the loaded data
-    unsigned int    inputTotal;
-    /// The index of output data (sent from the fifo buffer)
-    unsigned int    outputNdx;
-    /// The total size of the output data
-    unsigned int    outputTotal;
+  /// The index of input data (loaded to fifo buffer)
+  unsigned int inputNdx;
+  /// The total size of the loaded data
+  unsigned int inputTotal;
+  /// The index of output data (sent from the fifo buffer)
+  unsigned int outputNdx;
+  /// The total size of the output data
+  unsigned int outputTotal;
 
-    /// The total size of the data
-    unsigned int    dataTotal;
-    /// The size of the block in bytes
-    unsigned short  blockSize;
-#if  defined(MSDIO_READ10_CHUNK_SIZE) || defined(MSDIO_WRITE10_CHUNK_SIZE)
-    /// The size of one chunk
-    /// (1 block, or several blocks for large amount data R/W)
-    unsigned int    chunkSize;
+  /// The total size of the data
+  unsigned int dataTotal;
+  /// The size of the block in bytes
+  unsigned short blockSize;
+#if defined(MSDIO_READ10_CHUNK_SIZE) || defined(MSDIO_WRITE10_CHUNK_SIZE)
+  /// The size of one chunk
+  /// (1 block, or several blocks for large amount data R/W)
+  unsigned int chunkSize;
 #endif
-    /// State of input & output
-    unsigned char   inputState;
-    unsigned char   outputState;
+  /// State of input & output
+  unsigned char inputState;
+  unsigned char outputState;
 
-    //- Statistics
-    /// Times when fifo has no data to send
-    unsigned short  nullCnt;
-    /// Times when fifo can not load more input data
-    unsigned short  fullCnt;
+  //- Statistics
+  /// Times when fifo has no data to send
+  unsigned short nullCnt;
+  /// Times when fifo can not load more input data
+  unsigned short fullCnt;
 } MSDIOFifo, *PMSDIOFifo;
 
 //------------------------------------------------------------------------------
@@ -118,18 +118,16 @@ typedef struct _MSDIOFifo {
 /// \param sectSize     The defined block size
 /// \param bufSize      The ring buffer size
 //------------------------------------------------------------------------------
-#define MSDIOFifo_IncNdx(ndx, sectSize, bufSize) \
-    if ((ndx) >= (bufSize) - (sectSize)) (ndx) = 0; \
-    else (ndx) += (sectSize)
-
+#define MSDIOFifo_IncNdx(ndx, sectSize, bufSize)                                                                       \
+  if ((ndx) >= (bufSize) - (sectSize))                                                                                 \
+    (ndx) = 0;                                                                                                         \
+  else                                                                                                                 \
+    (ndx) += (sectSize)
 
 //------------------------------------------------------------------------------
 //         Exported Functions
 //------------------------------------------------------------------------------
 
-
-extern void MSDIOFifo_Init(MSDIOFifo *pFifo,
-                           void * pBuffer, unsigned short bufferSize);
+extern void MSDIOFifo_Init(MSDIOFifo *pFifo, void *pBuffer, unsigned short bufferSize);
 
 #endif // _MSDIOFIFO_H
-

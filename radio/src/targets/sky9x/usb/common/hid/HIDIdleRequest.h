@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- *         ATMEL Microcontroller Software Support 
+ *         ATMEL Microcontroller Software Support
  * ----------------------------------------------------------------------------
  * Copyright (c) 2008, Atmel Corporation
  *
@@ -31,12 +31,12 @@
  \unit
 
  !!!Purpose
- 
+
  Methods and constants for manipulating HID-specific GET_IDLE and SET_IDLE
  requests.
 
  !!!Usage
- 
+
   -# Retrieve the idle rate indicated by a GET_IDLE or SET_IDLE request
      with HIDIdleRequest_GetIdleRate.
 */
@@ -55,14 +55,12 @@
 //------------------------------------------------------------------------------
 
 /// Infinite idle rate.
-#define HIDIdleRequest_INFINITE                 0
+#define HIDIdleRequest_INFINITE 0
 
 //------------------------------------------------------------------------------
 //         Exported functions
 //------------------------------------------------------------------------------
 
-extern unsigned char HIDIdleRequest_GetIdleRate(
-    const USBGenericRequest *request);
+extern unsigned char HIDIdleRequest_GetIdleRate(const USBGenericRequest *request);
 
 #endif //#ifndef HIDIDLEREQUEST_H
-

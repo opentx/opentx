@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- *         ATMEL Microcontroller Software Support 
+ *         ATMEL Microcontroller Software Support
  * ----------------------------------------------------------------------------
  * Copyright (c) 2008, Atmel Corporation
  *
@@ -50,9 +50,7 @@
 /// \param request Pointer to a USBGenericRequest instance.
 /// \return Number of the requested configuration.
 //------------------------------------------------------------------------------
-unsigned char USBSetConfigurationRequest_GetConfiguration(
-    const USBGenericRequest *request)
+unsigned char USBSetConfigurationRequest_GetConfiguration(const USBGenericRequest *request)
 {
-    return USBGenericRequest_GetValue(request);
+  return USBGenericRequest_GetValue(request);
 }
-

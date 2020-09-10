@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- *         ATMEL Microcontroller Software Support 
+ *         ATMEL Microcontroller Software Support
  * ----------------------------------------------------------------------------
  * Copyright (c) 2008, Atmel Corporation
  *
@@ -30,12 +30,12 @@
 //------------------------------------------------------------------------------
 /// \unit
 /// !Purpose
-/// 
+///
 /// Declaration of constants for using Device Descriptors with a Mass Storage
 /// driver.
-/// 
+///
 /// !Usage
-/// 
+///
 /// - For a USB device:
 ///     -# When declaring a USBDeviceDescriptor instance, use the Mass Storage
 ///        codes defined in this file (see "MS device codes").
@@ -52,22 +52,21 @@
 /// \page "MS device codes"
 /// This page lists the class, subclass & protocol codes used by a device with
 /// a Mass Storage driver.
-/// 
+///
 /// !Codes
-/// 
+///
 /// - MSDeviceDescriptor_CLASS
 /// - MSDeviceDescriptor_SUBCLASS
 /// - MSDeviceDescriptor_PROTOCOL
 
 /// Class code for a Mass Storage device.
-#define MSDeviceDescriptor_CLASS        0
+#define MSDeviceDescriptor_CLASS 0
 
 /// Subclass code for a Mass Storage device.
-#define MSDeviceDescriptor_SUBCLASS     0
+#define MSDeviceDescriptor_SUBCLASS 0
 
 /// Protocol code for a Mass Storage device.
-#define MSDeviceDescriptor_PROTOCOL     0
+#define MSDeviceDescriptor_PROTOCOL 0
 //------------------------------------------------------------------------------
 
 #endif //#ifndef MSDEVICEDESCRIPTOR_H
-

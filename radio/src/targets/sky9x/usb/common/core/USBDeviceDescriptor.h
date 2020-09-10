@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- *         ATMEL Microcontroller Software Support 
+ *         ATMEL Microcontroller Software Support
  * ----------------------------------------------------------------------------
  * Copyright (c) 2008, Atmel Corporation
  *
@@ -56,7 +56,7 @@
 /// - USBDeviceDescriptor_USB2_00
 
 /// The device supports USB 2.00.
-#define USBDeviceDescriptor_USB2_00         0x0200
+#define USBDeviceDescriptor_USB2_00 0x0200
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
@@ -73,53 +73,52 @@
 //------------------------------------------------------------------------------
 typedef struct {
 
-   /// Size of this descriptor in bytes.
-   unsigned char bLength;
-   /// Descriptor type (USBGenericDescriptor_DEVICE).
-   unsigned char bDescriptorType;
-   /// USB specification release number in BCD format.
-   unsigned short bcdUSB;
-   /// Device class code.
-   unsigned char bDeviceClass;
-   /// Device subclass code.
-   unsigned char bDeviceSubClass;
-   /// Device protocol code.
-   unsigned char bDeviceProtocol;
-   /// Maximum packet size of endpoint 0 (in bytes).
-   unsigned char bMaxPacketSize0;
-   /// Vendor ID.
-   unsigned short idVendor;
-   /// Product ID.
-   unsigned short idProduct;
-   /// Device release number in BCD format.
-   unsigned short bcdDevice;
-   /// Index of the manufacturer string descriptor.
-   unsigned char iManufacturer;
-   /// Index of the product string descriptor.
-   unsigned char iProduct;
-   /// Index of the serial number string descriptor.
-   unsigned char iSerialNumber;
-   /// Number of possible configurations for the device.
-   unsigned char bNumConfigurations;
+  /// Size of this descriptor in bytes.
+  unsigned char bLength;
+  /// Descriptor type (USBGenericDescriptor_DEVICE).
+  unsigned char bDescriptorType;
+  /// USB specification release number in BCD format.
+  unsigned short bcdUSB;
+  /// Device class code.
+  unsigned char bDeviceClass;
+  /// Device subclass code.
+  unsigned char bDeviceSubClass;
+  /// Device protocol code.
+  unsigned char bDeviceProtocol;
+  /// Maximum packet size of endpoint 0 (in bytes).
+  unsigned char bMaxPacketSize0;
+  /// Vendor ID.
+  unsigned short idVendor;
+  /// Product ID.
+  unsigned short idProduct;
+  /// Device release number in BCD format.
+  unsigned short bcdDevice;
+  /// Index of the manufacturer string descriptor.
+  unsigned char iManufacturer;
+  /// Index of the product string descriptor.
+  unsigned char iProduct;
+  /// Index of the serial number string descriptor.
+  unsigned char iSerialNumber;
+  /// Number of possible configurations for the device.
+  unsigned char bNumConfigurations;
 
-} __attribute__ ((packed)) USBDeviceDescriptor; // GCC
+} __attribute__((packed)) USBDeviceDescriptor; // GCC
 
 #if defined(CHIP_USB_OTGHS)
 typedef struct {
 
-   /// Size of this descriptor in bytes.
-   unsigned char bLength;
-   /// Descriptor type (USBGenericDescriptor_OTG).
-   unsigned char bDescriptorType;
-   /// Attribute Fields D7�2: Reserved D1: HNP support D0: SRP support
-   unsigned char bmAttributes;
+  /// Size of this descriptor in bytes.
+  unsigned char bLength;
+  /// Descriptor type (USBGenericDescriptor_OTG).
+  unsigned char bDescriptorType;
+  /// Attribute Fields D7�2: Reserved D1: HNP support D0: SRP support
+  unsigned char bmAttributes;
 
-} __attribute__ ((packed)) USBOtgDescriptor; // GCC
+} __attribute__((packed)) USBOtgDescriptor; // GCC
 #endif
 
-#ifdef __ICCARM__          // IAR
-#pragma pack()             // IAR
-#endif                     // IAR
+#ifdef __ICCARM__ // IAR
+#pragma pack()    // IAR
+#endif            // IAR
 
 #endif //#ifndef USBDEVICEDESCRIPTOR_H
-

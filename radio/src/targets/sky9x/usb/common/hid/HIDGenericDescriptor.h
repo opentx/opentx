@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- *         ATMEL Microcontroller Software Support 
+ *         ATMEL Microcontroller Software Support
  * ----------------------------------------------------------------------------
  * Copyright (c) 2008, Atmel Corporation
  *
@@ -52,12 +52,11 @@
 /// - HIDGenericDescriptor_PHYSICAL
 
 /// HID descriptor type.
-#define HIDGenericDescriptor_HID            0x21
+#define HIDGenericDescriptor_HID 0x21
 /// Report descriptor type.
-#define HIDGenericDescriptor_REPORT         0x22
+#define HIDGenericDescriptor_REPORT 0x22
 /// Physical descriptor type.
-#define HIDGenericDescriptor_PHYSICAL       0x23
+#define HIDGenericDescriptor_PHYSICAL 0x23
 //------------------------------------------------------------------------------
 
 #endif //#ifndef HIDGENERICDESCRIPTOR_H
-

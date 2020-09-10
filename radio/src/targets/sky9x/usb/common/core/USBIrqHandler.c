@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- *         ATMEL Microcontroller Software Support 
+ *         ATMEL Microcontroller Software Support
  * ----------------------------------------------------------------------------
  * Copyright (c) 2008, Atmel Corporation
  *
@@ -39,24 +39,22 @@
 //------------------------------------------------------------------------------
 #include <exceptions.h>
 
-#include "radio/src/targets/sky9x/board_lowlevel.h"
 #include "../../../usb/device/core/USBD.h"
+#include "radio/src/targets/sky9x/board_lowlevel.h"
 
 //------------------------------------------------------------------------------
 //         Exported functions
 //------------------------------------------------------------------------------
 //------------------------------------------------------------------------------
-/// Call Arbitrer, device and host interrupt handler. 
+/// Call Arbitrer, device and host interrupt handler.
 /// The IRQ functions are defined with weak and can be surcharged if needed.
 //------------------------------------------------------------------------------
-void USB_IrqHandler( void )
+void USB_IrqHandler(void)
 {
-    // Most arbitrer interrupt
-    usb_general_interrupt();
-    // Device interrupt
-    USBD_IrqHandler();
-    // Host interrupt
-    usb_pipe_interrupt();
+  // Most arbitrer interrupt
+  usb_general_interrupt();
+  // Device interrupt
+  USBD_IrqHandler();
+  // Host interrupt
+  usb_pipe_interrupt();
 }
-
-

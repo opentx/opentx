@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- *         ATMEL Microcontroller Software Support 
+ *         ATMEL Microcontroller Software Support
  * ----------------------------------------------------------------------------
  * Copyright (c) 2008, Atmel Corporation
  *
@@ -58,30 +58,29 @@
 //------------------------------------------------------------------------------
 typedef struct {
 
-   /// Size of the descriptor in bytes.
-   unsigned char bLength;
-   /// Descriptor type (USBGenericDescriptor_INTERFACE).
-   unsigned char bDescriptorType;
-   /// Number of the interface in its configuration.
-   unsigned char bInterfaceNumber;
-   /// Value to select this alternate interface setting.
-   unsigned char bAlternateSetting;
-   /// Number of endpoints used by the inteface (excluding endpoint 0).
-   unsigned char bNumEndpoints;
-   /// Interface class code.
-   unsigned char bInterfaceClass;
-   /// Interface subclass code.
-   unsigned char bInterfaceSubClass;
-   /// Interface protocol code.
-   unsigned char bInterfaceProtocol;
-   /// Index of the interface string descriptor.
-   unsigned char iInterface;
-                                    
-} __attribute__ ((packed)) USBInterfaceDescriptor; // GCC
+  /// Size of the descriptor in bytes.
+  unsigned char bLength;
+  /// Descriptor type (USBGenericDescriptor_INTERFACE).
+  unsigned char bDescriptorType;
+  /// Number of the interface in its configuration.
+  unsigned char bInterfaceNumber;
+  /// Value to select this alternate interface setting.
+  unsigned char bAlternateSetting;
+  /// Number of endpoints used by the inteface (excluding endpoint 0).
+  unsigned char bNumEndpoints;
+  /// Interface class code.
+  unsigned char bInterfaceClass;
+  /// Interface subclass code.
+  unsigned char bInterfaceSubClass;
+  /// Interface protocol code.
+  unsigned char bInterfaceProtocol;
+  /// Index of the interface string descriptor.
+  unsigned char iInterface;
 
-#ifdef __ICCARM__          // IAR
-#pragma pack()             // IAR
-#endif                     // IAR
+} __attribute__((packed)) USBInterfaceDescriptor; // GCC
+
+#ifdef __ICCARM__ // IAR
+#pragma pack()    // IAR
+#endif            // IAR
 
 #endif //#ifndef USBINTERFACEDESCRIPTOR_H
-

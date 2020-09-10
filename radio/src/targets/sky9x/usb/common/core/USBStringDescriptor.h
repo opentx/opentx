@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- *         ATMEL Microcontroller Software Support 
+ *         ATMEL Microcontroller Software Support
  * ----------------------------------------------------------------------------
  * Copyright (c) 2008, Atmel Corporation
  *
@@ -57,18 +57,17 @@
 /// - USBStringDescriptor_UNICODE
 
 /// Language ID for US english.
-#define USBStringDescriptor_ENGLISH_US          0x09, 0x04
+#define USBStringDescriptor_ENGLISH_US 0x09, 0x04
 
 /// Calculates the length of a string descriptor given the number of ascii
 /// characters/language IDs in it.
 /// \param length The ascii format string length.
 /// \return The actual data length in bytes.
-#define USBStringDescriptor_LENGTH(length)      ((length) * 2 + 2)
+#define USBStringDescriptor_LENGTH(length) ((length)*2 + 2)
 /// Converts an ascii character to its unicode representation.
 /// \param ascii The ASCII character to convert
 /// \return A 2-byte-array for the UNICODE based on given ASCII
-#define USBStringDescriptor_UNICODE(ascii)      (ascii), 0
+#define USBStringDescriptor_UNICODE(ascii) (ascii), 0
 //------------------------------------------------------------------------------
 
 #endif //#ifndef USBSTRINGDESCRIPTOR_H
-

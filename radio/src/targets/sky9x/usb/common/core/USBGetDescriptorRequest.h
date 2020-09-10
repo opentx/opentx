@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- *         ATMEL Microcontroller Software Support 
+ *         ATMEL Microcontroller Software Support
  * ----------------------------------------------------------------------------
  * Copyright (c) 2008, Atmel Corporation
  *
@@ -57,11 +57,8 @@
 //         Exported functions
 //------------------------------------------------------------------------------
 
-extern unsigned char USBGetDescriptorRequest_GetDescriptorType(
-    const USBGenericRequest *request);
+extern unsigned char USBGetDescriptorRequest_GetDescriptorType(const USBGenericRequest *request);
 
-extern unsigned char USBGetDescriptorRequest_GetDescriptorIndex(
-    const USBGenericRequest *request);
+extern unsigned char USBGetDescriptorRequest_GetDescriptorIndex(const USBGenericRequest *request);
 
 #endif //#ifndef USBGETDESCRIPTORREQUEST_H
-

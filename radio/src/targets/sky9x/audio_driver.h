@@ -2,7 +2,7 @@
  * Copyright (C) OpenTX
  *
  * Based on code named
- *   th9x - http://code.google.com/p/th9x 
+ *   th9x - http://code.google.com/p/th9x
  *   er9x - http://code.google.com/p/er9x
  *   gruvin9x - http://code.google.com/p/gruvin9x
  *
@@ -21,16 +21,16 @@
 #ifndef _AUDIO_DRIVER_H_
 #define _AUDIO_DRIVER_H_
 
-void audioInit( void ) ;
-void audioEnd( void ) ;
+void audioInit(void);
+void audioEnd(void);
 void audioConsumeCurrentBuffer();
-#define audioDisableIrq()       __disable_irq()
-#define audioEnableIrq()        __enable_irq()
+#define audioDisableIrq() __disable_irq()
+#define audioEnableIrq() __enable_irq()
 
-void setSampleRate( uint32_t frequency ) ;
+void setSampleRate(uint32_t frequency);
 
-#define VOLUME_LEVEL_MAX  23
-#define VOLUME_LEVEL_DEF  12
+#define VOLUME_LEVEL_MAX 23
+#define VOLUME_LEVEL_DEF 12
 
 void setScaledVolume(uint8_t volume);
 

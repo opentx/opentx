@@ -1,5 +1,5 @@
 /* ----------------------------------------------------------------------------
- *         ATMEL Microcontroller Software Support 
+ *         ATMEL Microcontroller Software Support
  * ----------------------------------------------------------------------------
  * Copyright (c) 2008, Atmel Corporation
  *
@@ -50,10 +50,9 @@
 /// \param request Pointer to a USBGenericRequest instance.
 /// \return Feature selector.
 //------------------------------------------------------------------------------
-unsigned char USBFeatureRequest_GetFeatureSelector(
-    const USBGenericRequest *request)
+unsigned char USBFeatureRequest_GetFeatureSelector(const USBGenericRequest *request)
 {
-    return USBGenericRequest_GetValue(request);
+  return USBGenericRequest_GetValue(request);
 }
 
 //------------------------------------------------------------------------------
@@ -62,9 +61,7 @@ unsigned char USBFeatureRequest_GetFeatureSelector(
 /// \param request Pointer to a USBGenericRequest instance.
 /// \return Test selector.
 //------------------------------------------------------------------------------
-unsigned char USBFeatureRequest_GetTestSelector(
-    const USBGenericRequest *request)
+unsigned char USBFeatureRequest_GetTestSelector(const USBGenericRequest *request)
 {
-    return (USBGenericRequest_GetIndex(request) >> 8) & 0xFF;
+  return (USBGenericRequest_GetIndex(request) >> 8) & 0xFF;
 }
-
