@@ -321,12 +321,12 @@ void extmoduleSendNextFrame()
       if (EXTMODULE_TIMER_DMA_STREAM->CR & DMA_SxCR_EN)
         return;
 
+      // disable timer
+      EXTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN;
+
       if (PROTOCOL_CHANNELS_SBUS == moduleState[EXTERNAL_MODULE].protocol) {
         EXTMODULE_TIMER->CCER = EXTMODULE_TIMER_OUTPUT_ENABLE | (GET_SBUS_POLARITY(EXTERNAL_MODULE) ? EXTMODULE_TIMER_OUTPUT_POLARITY : 0); // reverse polarity for Sbus if needed
       }
-
-      // disable timer
-      EXTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN;
 
       // send DMA request
       EXTMODULE_TIMER_DMA_STREAM->CR &= ~DMA_SxCR_EN; // Disable DMA
