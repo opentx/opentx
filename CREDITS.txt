@@ -1909,3 +1909,4 @@ Gilles Dando
 Philippe Desrichard
 Jón Haase
 Michael Hansen
+Sylvain Vanston
