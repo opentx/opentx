@@ -52,6 +52,13 @@
 #define RSSI_MAX      105
 #define TRIM_LEN      23
 
+#if defined(PCBTANGO)
+int8_t pre_stick_idx = -1;
+int8_t cur_stick_idx = -1;
+tmr10ms_t pre_enter_time;
+bool pre_enter_valid = false;
+#endif
+
 void drawExternalAntennaAndRSSI()
 {
 #if defined(INTERNAL_MODULE_PXX1) && defined(EXTERNAL_ANTENNA)
@@ -129,100 +136,6 @@ void doMainScreenGraphics( uint8_t views, uint32_t ptr )
 }
 #endif
 
-#if defined(PCBTANGO)
-void displayTrims(uint8_t phase, uint8_t editMode)
-{
-  for (uint8_t i=0; i<4; i++) {
-    static coord_t x[4] = {TRIM_LH_X, TRIM_LV_X, TRIM_RV_X, TRIM_RH_X};
-    static uint8_t vert[4] = {0,1,1,0};
-    coord_t xm, ym;
-    uint8_t stickIndex = CONVERT_MODE(i);
-    xm = x[stickIndex];
-    uint8_t att = ROUND;
-    int16_t val = getTrimValue(phase, i);
-
-    int16_t dir = val;
-    bool exttrim = false;
-    if (val < TRIM_MIN || val > TRIM_MAX) {
-      exttrim = true;
-    }
-    if (val < -(TRIM_LEN+1)*4) {
-      val = -(TRIM_LEN+1);
-    }
-    else if (val > (TRIM_LEN+1)*4) {
-      val = TRIM_LEN+1;
-    }
-    else {
-      val /= 4;
-    }
-
-    if (vert[i]) {
-      ym = 61;
-      if (editMode == i) {
-        lcdDrawSolidVerticalLine(xm, ym-TRIM_LEN, TRIM_LEN*2);
-        if (i!=2 || !g_model.thrTrim) {
-          lcdDrawSolidVerticalLine(xm-1, ym-TRIM_LEN,  TRIM_LEN*2);
-          lcdDrawSolidVerticalLine(xm+1, ym-TRIM_LEN,  TRIM_LEN*2);
-        }
-      }
-      else {
-        lcdDrawSolidVerticalLine(xm, ym-TRIM_LEN, TRIM_LEN*2);
-        if (i!=2 || !g_model.thrTrim) {
-          lcdDrawSolidVerticalLine(xm-1, ym-1,  3);
-          lcdDrawSolidVerticalLine(xm+1, ym-1,  3);
-        }
-      }
-      ym -= val;
-      lcdDrawFilledRect(xm-3, ym-3, 7, 7, SOLID, att|ERASE);
-      if (dir >= 0) {
-        lcdDrawSolidHorizontalLine(xm-1, ym-1,  3);
-      }
-      if (dir <= 0) {
-        lcdDrawSolidHorizontalLine(xm-1, ym+1,  3);
-      }
-      if (exttrim) {
-        lcdDrawSolidHorizontalLine(xm-1, ym,  3);
-      }
-
-      if (g_model.displayTrims != DISPLAY_TRIMS_NEVER && dir != 0) {
-        if (g_model.displayTrims == DISPLAY_TRIMS_ALWAYS || (trimsDisplayTimer > 0 && (trimsDisplayMask & (1<<i)))) {
-          lcdDrawNumber(dir>0 ? 12 : 40, xm-2, -abs(dir/5), TINSIZE|VERTICAL);
-        }
-      }
-    }
-    else {
-      ym = 92;
-      if (editMode == i) {
-        lcdDrawSolidHorizontalLine(xm-TRIM_LEN, ym,   TRIM_LEN*2);
-        lcdDrawSolidHorizontalLine(xm-TRIM_LEN, ym-1, TRIM_LEN*2);
-        lcdDrawSolidHorizontalLine(xm-TRIM_LEN, ym+1, TRIM_LEN*2);
-      }
-      else {
-        lcdDrawSolidHorizontalLine(xm-TRIM_LEN, ym, TRIM_LEN*2);
-        lcdDrawSolidHorizontalLine(xm-1, ym-1,  3);
-        lcdDrawSolidHorizontalLine(xm-1, ym+1,  3);
-      }
-      xm += val;
-      lcdDrawFilledRect(xm-3, ym-3, 7, 7, SOLID, att|ERASE);
-      if (dir >= 0) {
-        lcdDrawSolidVerticalLine(xm+1, ym-1,  3);
-      }
-      if (dir <= 0) {
-        lcdDrawSolidVerticalLine(xm-1, ym-1,  3);
-      }
-      if (exttrim) {
-        lcdDrawSolidVerticalLine(xm, ym-1,  3);
-      }
-      if (g_model.displayTrims != DISPLAY_TRIMS_NEVER && dir != 0) {
-        if (g_model.displayTrims == DISPLAY_TRIMS_ALWAYS || (trimsDisplayTimer > 0 && (trimsDisplayMask & (1<<i)))) {
-          lcdDrawNumber((stickIndex==0 ? (dir>0 ? TRIM_LH_POS : TRIM_LH_NEG) : (dir>0 ? TRIM_RH_POS : TRIM_RH_NEG)), ym-2, -abs(dir/5), TINSIZE);
-        }
-      }
-    }
-    lcdDrawSquare(xm-3, ym-3, 7, att);
-  }
-}
-#else
 void displayTrims(uint8_t phase)
 {
   for (uint8_t i = 0; i < 4; i++) {
@@ -253,12 +166,30 @@ void displayTrims(uint8_t phase)
     }
 
     if (vert[i]) {
+#if defined(PCBTANGO)
+      ym = 61;
+      if (cur_stick_idx == i) {
+        lcdDrawSolidVerticalLine(xm, ym - TRIM_LEN, TRIM_LEN * 2);
+        if (i != 2 || !g_model.thrTrim) {
+          lcdDrawSolidVerticalLine(xm - 1, ym - TRIM_LEN, TRIM_LEN * 2);
+          lcdDrawSolidVerticalLine(xm + 1, ym - TRIM_LEN, TRIM_LEN * 2);
+        }
+      }
+      else {
+        lcdDrawSolidVerticalLine(xm, ym - TRIM_LEN, TRIM_LEN * 2);
+        if (i != 2 || !g_model.thrTrim) {
+          lcdDrawSolidVerticalLine(xm - 1, ym - 1, 3);
+          lcdDrawSolidVerticalLine(xm + 1, ym - 1, 3);
+        }
+      }
+#else
       ym = 31;
       lcdDrawSolidVerticalLine(xm, ym - TRIM_LEN, TRIM_LEN * 2);
       if (i != 2 || !g_model.thrTrim) {
         lcdDrawSolidVerticalLine(xm - 1, ym - 1, 3);
         lcdDrawSolidVerticalLine(xm + 1, ym - 1, 3);
       }
+#endif
       ym -= val;
       lcdDrawFilledRect(xm - 3, ym - 3, 7, 7, SOLID, att | ERASE);
       if (dir >= 0) {
@@ -277,10 +208,24 @@ void displayTrims(uint8_t phase)
       }
     }
     else {
+#if defined(PCBTANGO)
+      ym = 92;
+      if (cur_stick_idx == i) {
+        lcdDrawSolidHorizontalLine(xm - TRIM_LEN, ym,   TRIM_LEN * 2);
+        lcdDrawSolidHorizontalLine(xm - TRIM_LEN, ym - 1, TRIM_LEN * 2);
+        lcdDrawSolidHorizontalLine(xm - TRIM_LEN, ym + 1, TRIM_LEN * 2);
+      }
+      else {
+        lcdDrawSolidHorizontalLine(xm - TRIM_LEN, ym, TRIM_LEN * 2);
+        lcdDrawSolidHorizontalLine(xm - 1, ym - 1, 3);
+        lcdDrawSolidHorizontalLine(xm - 1, ym + 1, 3);
+      }
+#else
       ym = 60;
       lcdDrawSolidHorizontalLine(xm - TRIM_LEN, ym, TRIM_LEN * 2);
       lcdDrawSolidHorizontalLine(xm - 1, ym - 1, 3);
       lcdDrawSolidHorizontalLine(xm - 1, ym + 1, 3);
+#endif
       xm += val;
       lcdDrawFilledRect(xm - 3, ym - 3, 7, 7, SOLID, att | ERASE);
       if (dir >= 0) {
@@ -301,7 +246,6 @@ void displayTrims(uint8_t phase)
     lcdDrawSquare(xm - 3, ym - 3, 7, att);
   }
 }
-#endif
 
 void displayBattVoltage()
 {
@@ -446,12 +390,6 @@ void drawSmallSwitch(coord_t x, coord_t y, int width, unsigned int index)
 
 void menuMainView(event_t event)
 {
-#if defined(PCBTANGO)
-  static int8_t pre_stick_idx = -1;
-  static int8_t cur_stick_idx = -1;
-  static tmr10ms_t pre_enter_time;
-  static bool pre_enter_valid = false;
-#endif
   uint8_t view = g_eeGeneral.view;
   uint8_t view_base = view & 0x0f;
 
@@ -803,11 +741,7 @@ void menuMainView(event_t event)
     drawTimerWithMode(125, 2 * FH, 0, RIGHT | DBLSIZE);
 
     // Trims sliders
-#if defined(PCBTANGO)
-    displayTrims(mode, cur_stick_idx);
-#else
     displayTrims(mode);
-#endif
 
     // RSSI gauge / external antenna
     drawExternalAntennaAndRSSI();
