@@ -1913,3 +1913,5 @@ Sylvain Vanston
 Helmut Nemecek
 Alexander Mathis
 Jay Watkins
+Patrice Oudjaoudi
+Didier Hochedez
