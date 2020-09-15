@@ -910,7 +910,7 @@ Manche Droit:  Profondeur, Direction
     <message>
         <location filename="../modeledit/channels.cpp" line="352"/>
         <source>Cut Channel. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Couper la Voie. Êtes-vous sûr?</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="366"/>
@@ -1613,7 +1613,7 @@ Si vous avez un fichier de sauvegarde des paramètres, vous pouvez l&apos;import
     <message>
         <location filename="../modeledit/curves.cpp" line="739"/>
         <source>Cut Curve. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Couper la Courbe. Êtes-vous sûr?</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="747"/>
@@ -1651,7 +1651,7 @@ Si vous avez un fichier de sauvegarde des paramètres, vous pouvez l&apos;import
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="49"/>
         <source>Trainer Sticks</source>
-        <translation type="unfinished"></translation>
+        <translation>Manches Écolage</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="51"/>
@@ -1928,12 +1928,12 @@ Si vous avez un fichier de sauvegarde des paramètres, vous pouvez l&apos;import
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="608"/>
         <source>Delete Function. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Supprimer la Fonction. Êtes-vous sûr?</translation>
     </message>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="631"/>
         <source>Cut Special Function. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Couper la Fonction. Êtes-vous sûr?</translation>
     </message>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="644"/>
@@ -2003,12 +2003,12 @@ Si vous avez un fichier de sauvegarde des paramètres, vous pouvez l&apos;import
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="751"/>
         <source>Clear Function. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Effacer la Fonction. Êtes-vous sûr?</translation>
     </message>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="762"/>
         <source>Clear all Functions. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Effacer toutes les Fonctions. Êtes-vous sûr?</translation>
     </message>
 </context>
 <context>
@@ -3797,7 +3797,7 @@ Vous utilisez actuellement:
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="785"/>
         <source>Cut Flight Mode. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Couper la Phase de Vol. Êtes-vous sûr?</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="793"/>
@@ -3807,32 +3807,32 @@ Vous utilisez actuellement:
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="1149"/>
         <source>Clear Global Variable across all Flight Modes. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Effacer la Variable Globale pour toutes les Phases de Vol. Êtes-vous sûr?</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="1160"/>
         <source>Clear Global Variable. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Effacer la Variable Globale. Êtes-vous sûr?</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="1232"/>
         <source>Cut Global Variable across all Flight Modes. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Couper la Variable Globale pour toutes les Phases de Vol. Êtes-vous sûr?</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="1236"/>
         <source>Cut Global Variable. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Couper la Variable Globale. Êtes-vous sûr?</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="1249"/>
         <source>Delete Global Variable. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Supprimer la Variable Globale. Êtes-vous sûr?</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="1302"/>
         <source>Paste to selected Global Variable across all Flight Modes. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Coller la Variable Globale pour toutes les Phases de Vol. Êtes-vous sûr?</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="1172"/>
@@ -5773,12 +5773,12 @@ Cette fonction ne peut pas être désactivée sur la radio.
     <message>
         <location filename="../modeledit/inputs.cpp" line="237"/>
         <source>Delete selected Input lines. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Supprimer les lignes Entrée sélectionnées. Êtes-vous sûr?</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="248"/>
         <source>Cut selected Input lines. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Couper les lignes Entrée sélectionnées. Êtes-vous sûr?</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="386"/>
@@ -5879,17 +5879,17 @@ Cette fonction ne peut pas être désactivée sur la radio.
     <message>
         <location filename="../modeledit/inputs.cpp" line="518"/>
         <source>Clear all Input lines. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Effacer toutes les lignes Entrée. Êtes-vous sûr?</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="562"/>
         <source>Clear all lines for the selected Inputs. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Effacer toutes les lignes Entrée sélectionnées. Êtes-vous sûr?</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="577"/>
         <source>Delete all lines for the selected Inputs. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Supprimer toutes les lignes Entrée sélectionnées. Êtes-vous sûr?</translation>
     </message>
 </context>
 <context>
@@ -6096,7 +6096,7 @@ Cette fonction ne peut pas être désactivée sur la radio.
     <message>
         <location filename="../modeledit/logicalswitches.cpp" line="536"/>
         <source>Cut Logical Switch. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Couper l&apos;Interrupteur Logique. Êtes-vous sûr?</translation>
     </message>
     <message>
         <location filename="../modeledit/logicalswitches.cpp" line="550"/>
@@ -6146,7 +6146,7 @@ Cette fonction ne peut pas être désactivée sur la radio.
     <message>
         <location filename="../modeledit/logicalswitches.cpp" line="605"/>
         <source>Clear Logical Switch. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Effacer l&apos;Interrupteur Logique. Êtes-vous sûr?</translation>
     </message>
     <message>
         <location filename="../modeledit/logicalswitches.cpp" line="617"/>
@@ -7978,12 +7978,12 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../modeledit/mixes.cpp" line="263"/>
         <source>Delete selected Mix lines. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Supprimer les lignes Mixeur sélectionnées. Êtes-vous sûr?</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="274"/>
         <source>Cut selected Mix lines. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Couper les lignes Mixeur sélectionnées. Êtes-vous sûr?</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="412"/>
@@ -10793,17 +10793,17 @@ E</translation>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="88"/>
         <source>Hertz</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="90"/>
         <source>mS</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="92"/>
         <source>uS</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="100"/>
@@ -11070,7 +11070,7 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../modeledit/setup.cpp" line="1632"/>
         <source>Cut Timer. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Couper le Chrono. Êtes-vous sûr?</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="1640"/>
@@ -12654,7 +12654,7 @@ Trop d&apos;erreurs, abandon.</translation>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="991"/>
         <source>Delete Sensor. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Supprimer le Capteur. Êtes-vous sûr?</translation>
     </message>
 </context>
 <context>
@@ -13002,22 +13002,22 @@ Trop d&apos;erreurs, abandon.</translation>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="573"/>
         <source>Insert</source>
-        <translation type="unfinished">Insérer</translation>
+        <translation>Insérer</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="574"/>
         <source>Delete</source>
-        <translation type="unfinished">Supprimer</translation>
+        <translation>Supprimer</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="575"/>
         <source>Move Up</source>
-        <translation type="unfinished">Monter</translation>
+        <translation>Monter</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="576"/>
         <source>Move Down</source>
-        <translation type="unfinished">Descendre</translation>
+        <translation>Descendre</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="578"/>
@@ -13027,7 +13027,7 @@ Trop d&apos;erreurs, abandon.</translation>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="621"/>
         <source>Cut Telemetry Sensor. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Couper le capteur de télémétrie. Êtes-vous sûr?</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="641"/>
