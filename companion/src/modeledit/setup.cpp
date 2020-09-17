@@ -31,13 +31,15 @@
 
 #include <QDir>
 
-TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, GeneralSettings & generalSettings, Firmware * firmware, QWidget * prevFocus, RawSwitchFilterItemModel * switchModel):
+TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, GeneralSettings & generalSettings, Firmware * firmware, QWidget * prevFocus, RawItemFilteredModel * rawSwitchModel):
   ModelPanel(parent, model, generalSettings, firmware),
   timer(timer),
   ui(new Ui::Timer)
 {
 
   ui->setupUi(this);
+  connect(rawSwitchModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &TimerPanel::onModelDataAboutToBeUpdated);
+  connect(rawSwitchModel, &RawItemFilteredModel::dataUpdateComplete, this, &TimerPanel::onModelDataUpdateComplete);
 
   lock = true;
 
@@ -52,7 +54,7 @@ TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, Ge
   }
 
   // Mode
-  ui->mode->setModel(switchModel);
+  ui->mode->setModel(rawSwitchModel);
   ui->mode->setCurrentIndex(ui->mode->findData(timer.mode.toValue()));
   connect(ui->mode, SIGNAL(activated(int)), this, SLOT(onModeChanged(int)));
 
@@ -165,9 +167,20 @@ void TimerPanel::on_name_editingFinished()
     if (QString(timer.name) != ui->name->text()) {
       int length = ui->name->maxLength();
       strncpy(timer.name, ui->name->text().toLatin1(), length);
+      emit nameChanged();
       emit modified();
     }
   }
+}
+
+void TimerPanel::onModelDataAboutToBeUpdated()
+{
+  lock = true;
+}
+
+void TimerPanel::onModelDataUpdateComplete()
+{
+  update();
 }
 
 /******************************************************************************/
@@ -978,7 +991,7 @@ void ModulePanel::onClearAccessRxClicked()
 
 /******************************************************************************/
 
-SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware):
+SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, RawSwitchItemModel * rawSwitchItemModel):
   ModelPanel(parent, model, generalSettings, firmware),
   ui(new Ui::Setup)
 {
@@ -1062,18 +1075,17 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
   }
 
   QWidget * prevFocus = ui->image;
-  RawSwitchFilterItemModel * swModel = new RawSwitchFilterItemModel(&generalSettings, &model, RawSwitch::TimersContext, this);
-  connect(this, &SetupPanel::updated, swModel, &RawSwitchFilterItemModel::update);
+  rawSwitchFilteredModel = new RawItemFilteredModel(rawSwitchItemModel, RawSwitch::TimersContext, this);
 
   timersCount = firmware->getCapability(Timers);
 
   for (int i = 0; i < CPN_MAX_TIMERS; i++) {
     if (i < timersCount) {
-      timers[i] = new TimerPanel(this, model, model.timers[i], generalSettings, firmware, prevFocus, swModel);
+      timers[i] = new TimerPanel(this, model, model.timers[i], generalSettings, firmware, prevFocus, rawSwitchFilteredModel);
       ui->gridLayout->addWidget(timers[i], 1+i, 1);
       connect(timers[i], &TimerPanel::modified, this, &SetupPanel::modified);
+      connect(timers[i], &TimerPanel::nameChanged, this, &SetupPanel::onTimerNameChanged);
       connect(this, &SetupPanel::updated, timers[i], &TimerPanel::update);
-      connect(this, &SetupPanel::timerUpdated, timers[i], &TimerPanel::update);
       prevFocus = timers[i]->getLastFocus();
       //  TODO more reliable method required
       QLabel *label = findChild<QLabel *>(QString("label_timer%1").arg(i + 1));
@@ -1234,6 +1246,7 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
 
 SetupPanel::~SetupPanel()
 {
+  delete rawSwitchFilteredModel;
   delete ui;
 }
 
@@ -1601,7 +1614,7 @@ void SetupPanel::cmTimerClear(bool prompt)
 
   model->timers[selectedTimerIndex].clear();
   model->updateAllReferences(ModelData::REF_UPD_TYPE_TIMER, ModelData::REF_UPD_ACT_CLEAR, selectedTimerIndex);
-  emit timerUpdated();
+  emit updateDataModels();
   emit modified();
 }
 
@@ -1614,7 +1627,7 @@ void SetupPanel::cmTimerClearAll()
     model->timers[i].clear();
     model->updateAllReferences(ModelData::REF_UPD_TYPE_TIMER, ModelData::REF_UPD_ACT_CLEAR, i);
   }
-  emit timerUpdated();
+  emit updateDataModels();
   emit modified();
 }
 
@@ -1648,7 +1661,7 @@ void SetupPanel::cmTimerDelete()
   }
   model->timers[maxidx].clear();
   model->updateAllReferences(ModelData::REF_UPD_TYPE_TIMER, ModelData::REF_UPD_ACT_SHIFT, selectedTimerIndex, 0, -1);
-  emit timerUpdated();
+  emit updateDataModels();
   emit modified();
 }
 
@@ -1661,7 +1674,7 @@ void SetupPanel::cmTimerInsert()
   }
   model->timers[selectedTimerIndex].clear();
   model->updateAllReferences(ModelData::REF_UPD_TYPE_TIMER, ModelData::REF_UPD_ACT_SHIFT, selectedTimerIndex, 0, 1);
-  emit timerUpdated();
+  emit updateDataModels();
   emit modified();
 }
 
@@ -1681,7 +1694,7 @@ void SetupPanel::cmTimerPaste()
   if (hasTimerClipboardData(&data)) {
     TimerData *td = &model->timers[selectedTimerIndex];
     memcpy(td, data.constData(), sizeof(TimerData));
-    emit timerUpdated();
+    emit updateDataModels();
     emit modified();
   }
 }
@@ -1695,7 +1708,12 @@ void SetupPanel::swapTimerData(int idx1, int idx2)
     memcpy(td2, td1, sizeof(TimerData));
     memcpy(td1, &tdtmp, sizeof(TimerData));
     model->updateAllReferences(ModelData::REF_UPD_TYPE_TIMER, ModelData::REF_UPD_ACT_SWAP, idx1, idx2);
-    emit timerUpdated();
+    emit updateDataModels();
     emit modified();
   }
+}
+
+void SetupPanel::onTimerNameChanged()
+{
+  emit updateDataModels();
 }

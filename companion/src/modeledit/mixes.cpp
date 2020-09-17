@@ -21,11 +21,14 @@
 #include "mixes.h"
 #include "helpers.h"
 
-MixesPanel::MixesPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware):
+MixesPanel::MixesPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware,
+                          RawSourceItemModel * rawSourceItemModel, RawSwitchItemModel * rawSwitchItemModel):
   ModelPanel(parent, model, generalSettings, firmware),
   mixInserted(false),
   highlightedSource(0),
-  modelPrinter(firmware, generalSettings, model)
+  modelPrinter(firmware, generalSettings, model),
+  rawSourceItemModel(rawSourceItemModel),
+  rawSwitchItemModel(rawSwitchItemModel)
 {
   QGridLayout * mixesLayout = new QGridLayout(this);
 
@@ -175,7 +178,7 @@ void MixesPanel::gm_openMix(int index)
 
   MixData mixd(model->mixData[index]);
 
-  MixerDialog *g = new MixerDialog(this, *model, &mixd, generalSettings, firmware);
+  MixerDialog *g = new MixerDialog(this, *model, &mixd, generalSettings, firmware, rawSourceItemModel, rawSwitchItemModel);
   if(g->exec()) {
     model->mixData[index] = mixd;
     emit modified();

@@ -54,13 +54,13 @@ class CustomScene : public QGraphicsScene
     virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent * event) override;
 };
 
-class Curves : public ModelPanel
+class CurvesPanel : public ModelPanel
 {
     Q_OBJECT
 
   public:
-    Curves(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware);
-    virtual ~Curves();
+    CurvesPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware);
+    virtual ~CurvesPanel();
 
     virtual void update();
 
@@ -90,6 +90,9 @@ class Curves : public ModelPanel
     void cmPaste();
     void cmMoveDown();
     void cmMoveUp();
+
+  signals:
+    void updateDataModels();
 
   protected:
     virtual void resizeEvent(QResizeEvent *event);

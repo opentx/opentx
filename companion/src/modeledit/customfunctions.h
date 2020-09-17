@@ -26,8 +26,9 @@
 
 #include <QMediaPlayer>
 
-class RawSourceFilterItemModel;
-class RawSwitchFilterItemModel;
+class RawSourceItemModel;
+class RawSwitchItemModel;
+class RawItemFilteredModel;
 class TimerEdit;
 
 constexpr char MIMETYPE_CUSTOM_FUNCTION[] = "application/x-companion-custom-function";
@@ -55,7 +56,8 @@ class CustomFunctionsPanel : public GenericPanel
   Q_OBJECT
 
   public:
-    CustomFunctionsPanel(QWidget *parent, ModelData * model, GeneralSettings & generalSettings, Firmware * firmware);
+    CustomFunctionsPanel(QWidget *parent, ModelData * model, GeneralSettings & generalSettings, Firmware * firmware,
+                            RawSourceItemModel * rawSourceItemModel, RawSwitchItemModel * rawSwitchItemModel);
     ~CustomFunctionsPanel();
 
     virtual void update();
@@ -64,12 +66,11 @@ class CustomFunctionsPanel : public GenericPanel
     CustomFunctionData * functions;
 
   private slots:
-    void updateDataModels();
     void customFunctionEdited();
     void functionEdited();
     void onCustomContextMenuRequested(QPoint pos);
     void refreshCustomFunction(int index, bool modified=false);
-    void onChildModified();
+    void onRepeatModified();
     bool playSound(int index);
     void stopSound(int index);
     void toggleSound(bool play);
@@ -84,6 +85,8 @@ class CustomFunctionsPanel : public GenericPanel
     void cmInsert();
     void cmClear(bool prompt = true);
     void cmClearAll();
+    void onModelDataAboutToBeUpdated();
+    void onModelDataUpdateComplete();
 
   private:
     void populateFuncCB(QComboBox *b, unsigned int value);
@@ -95,10 +98,10 @@ class CustomFunctionsPanel : public GenericPanel
     bool moveUpAllowed() const;
     void swapData(int idx1, int idx2);
     void resetCBsAndRefresh(int idx);
-    RawSwitchFilterItemModel * rawSwitchItemModel;
-    RawSourceFilterItemModel * rawSrcAllItemModel;
-    RawSourceFilterItemModel * rawSrcInputsItemModel;
-    RawSourceFilterItemModel * rawSrcGVarsItemModel;
+    RawItemFilteredModel * rawSwitchModel;
+    RawItemFilteredModel * rawSrcAllModel;
+    RawItemFilteredModel * rawSrcInputsModel;
+    RawItemFilteredModel * rawSrcGVarsModel;
 
     QSet<QString> tracksSet;
     QSet<QString> scriptsSet;
@@ -119,7 +122,7 @@ class CustomFunctionsPanel : public GenericPanel
 
     int selectedIndex;
     int fswCapability;
-
+    int modelsUpdateCnt;
 };
 
 #endif // _CUSTOMFUNCTIONS_H_

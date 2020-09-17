@@ -22,10 +22,13 @@
 #include "expodialog.h"
 #include "helpers.h"
 
-InputsPanel::InputsPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware):
+InputsPanel::InputsPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware,
+                            RawSourceItemModel * rawSourceItemModel, RawSwitchItemModel * rawSwitchItemModel):
   ModelPanel(parent, model, generalSettings, firmware),
   expoInserted(false),
-  modelPrinter(firmware, generalSettings, model)
+  modelPrinter(firmware, generalSettings, model),
+  rawSourceItemModel(rawSourceItemModel),
+  rawSwitchItemModel(rawSwitchItemModel)
 {
   inputsCount = firmware->getCapability(VirtualInputs);
   if (inputsCount == 0)
@@ -180,11 +183,12 @@ void InputsPanel::gm_openExpo(int index)
   if (firmware->getCapability(VirtualInputs))
     inputName = model->inputNames[ed.chn];
 
-  ExpoDialog *g = new ExpoDialog(this, *model, &ed, generalSettings, firmware, inputName);
+  ExpoDialog *g = new ExpoDialog(this, *model, &ed, generalSettings, firmware, inputName, rawSourceItemModel, rawSwitchItemModel);
   if (g->exec())  {
     model->expoData[index] = ed;
     if (firmware->getCapability(VirtualInputs))
       strncpy(model->inputNames[ed.chn], inputName.toLatin1().data(), INPUT_NAME_LEN);
+    emit updateDataModels();
     emit modified();
     update();
   }

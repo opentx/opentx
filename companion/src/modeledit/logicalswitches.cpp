@@ -24,16 +24,20 @@
 
 #include <TimerEdit>
 
-LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware):
+LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware,
+                                              RawSourceItemModel * rawSourceItemModel, RawSwitchItemModel * rawSwitchItemModel):
   ModelPanel(parent, model, generalSettings, firmware),
-  selectedIndex(0)
+  selectedIndex(0),
+  modelsUpdateCnt(0)
 {
-  Stopwatch s1("LogicalSwitchesPanel");
-
-  rawSwitchItemModel = new RawSwitchFilterItemModel(&generalSettings, &model, RawSwitch::LogicalSwitchesContext, this);
+  rawSwitchModel = new RawItemFilteredModel(rawSwitchItemModel, RawSwitch::LogicalSwitchesContext);
+  connect(rawSwitchModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &LogicalSwitchesPanel::onModelDataAboutToBeUpdated);
+  connect(rawSwitchModel, &RawItemFilteredModel::dataUpdateComplete, this, &LogicalSwitchesPanel::onModelDataUpdateComplete);
 
   const int srcGroups = firmware->getCapability(GvarsInCS) ? 0 : (RawSource::AllSourceGroups & ~RawSource::GVarsGroup);
-  rawSourceItemModel = new RawSourceFilterItemModel(&generalSettings, &model, srcGroups, this);
+  rawSourceModel = new RawItemFilteredModel(rawSourceItemModel, srcGroups, this);
+  connect(rawSourceModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &LogicalSwitchesPanel::onModelDataAboutToBeUpdated);
+  connect(rawSourceModel, &RawItemFilteredModel::dataUpdateComplete, this, &LogicalSwitchesPanel::onModelDataUpdateComplete);
 
   lsCapability = firmware->getCapability(LogicalSwitches);
   lsCapabilityExt = firmware->getCapability(LogicalSwitchesExt);
@@ -45,16 +49,14 @@ LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, 
   }
   TableLayout * tableLayout = new TableLayout(this, lsCapability, headerLabels);
 
-  s1.report("header");
-
   const int channelsMax = model.getChannelsMax(true);
 
   lock = true;
-  for (int i=0; i<lsCapability; i++) {
+  for (int i = 0; i < lsCapability; i++) {
     // The label
     QLabel * label = new QLabel(this);
     label->setProperty("index", i);
-    label->setText(RawSwitch(SWITCH_TYPE_VIRTUAL, i+1).toString());
+    label->setText(RawSwitch(SWITCH_TYPE_VIRTUAL, i + 1).toString());
     label->setContextMenuPolicy(Qt::CustomContextMenu);
     label->setToolTip(tr("Popup menu available"));
     label->setMouseTracking(true);
@@ -123,7 +125,8 @@ LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, 
     // AND
     cbAndSwitch[i] = new QComboBox(this);
     cbAndSwitch[i]->setProperty("index", i);
-    populateAndSwitchCB(cbAndSwitch[i]);
+    cbAndSwitch[i]->setModel(rawSwitchModel);
+    cbAndSwitch[i]->setVisible(true);
     connect(cbAndSwitch[i], SIGNAL(currentIndexChanged(int)), this, SLOT(onAndSwitchChanged(int)));
     tableLayout->addWidget(i, 4, cbAndSwitch[i]);
 
@@ -152,27 +155,16 @@ LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, 
     }
   }
 
-  s1.report("added elements");
-
   disableMouseScrolling();
   lock = false;
-  update();
   tableLayout->resizeColumnsToContents();
   tableLayout->pushRowsUp(lsCapability+1);
-  s1.report("end");
 }
 
 LogicalSwitchesPanel::~LogicalSwitchesPanel()
 {
-}
-
-void LogicalSwitchesPanel::updateDataModels()
-{
-  const bool oldLock = lock;
-  lock = true;
-  rawSwitchItemModel->update();
-  rawSourceItemModel->update();
-  lock = oldLock;
+  delete rawSourceModel;
+  delete rawSwitchModel;
 }
 
 void LogicalSwitchesPanel::onFunctionChanged()
@@ -199,8 +191,10 @@ void LogicalSwitchesPanel::onFunctionChanged()
       model->logicalSw[i].val2 = -129;
     }
   }
-  if (bool(oldFunc) != bool(newFunc))
+  if (bool(oldFunc) != bool(newFunc)) {
+    emit updateDataModels();
     update();
+  }
   else
     updateLine(i);
 
@@ -211,13 +205,15 @@ void LogicalSwitchesPanel::onV1Changed(int value)
 {
   if (!lock) {
     int i = sender()->property("index").toInt();
-    model->logicalSw[i].val1 = cbSource1[i]->itemData(value).toInt();
-    if (model->logicalSw[i].getFunctionFamily() == LS_FAMILY_VOFS) {
-      if (!offsetChangedAt(i))
-        updateLine(i);
-    }
-    else {
-      emit modified();
+    if (model->logicalSw[i].val1 != cbSource1[i]->itemData(value).toInt()) {
+      model->logicalSw[i].val1 = cbSource1[i]->itemData(value).toInt();
+      if (model->logicalSw[i].getFunctionFamily() == LS_FAMILY_VOFS) {
+        if (!offsetChangedAt(i))
+          updateLine(i);
+      }
+      else {
+        emit modified();
+      }
     }
   }
 }
@@ -226,8 +222,10 @@ void LogicalSwitchesPanel::onV2Changed(int value)
 {
   if (!lock) {
     int i = sender()->property("index").toInt();
-    model->logicalSw[i].val2 = cbSource2[i]->itemData(value).toInt();
-    emit modified();
+    if (model->logicalSw[i].val2 != cbSource2[i]->itemData(value).toInt()) {
+      model->logicalSw[i].val2 = cbSource2[i]->itemData(value).toInt();
+      emit modified();
+    }
   }
 }
 
@@ -235,8 +233,10 @@ void LogicalSwitchesPanel::onAndSwitchChanged(int value)
 {
   if (!lock) {
     int index = sender()->property("index").toInt();
-    model->logicalSw[index].andsw = cbAndSwitch[index]->itemData(value).toInt();
-    emit modified();
+    if (model->logicalSw[index].andsw != cbAndSwitch[index]->itemData(value).toInt()) {
+      model->logicalSw[index].andsw = cbAndSwitch[index]->itemData(value).toInt();
+      emit modified();
+    }
   }
 }
 
@@ -244,7 +244,7 @@ void LogicalSwitchesPanel::onDurationChanged(double duration)
 {
   if (!lock) {
     int index = sender()->property("index").toInt();
-    model->logicalSw[index].duration = (uint8_t)round(duration*10);
+    model->logicalSw[index].duration = (uint8_t)round(duration * 10);
     emit modified();
   }
 }
@@ -253,7 +253,7 @@ void LogicalSwitchesPanel::onDelayChanged(double delay)
 {
   if (!lock) {
     int index = sender()->property("index").toInt();
-    model->logicalSw[index].delay = (uint8_t)round(delay*10);
+    model->logicalSw[index].delay = (uint8_t)round(delay * 10);
     emit modified();
   }
 }
@@ -326,9 +326,9 @@ void LogicalSwitchesPanel::updateTimerParam(QDoubleSpinBox *sb, int timer, doubl
   sb->setMinimum(minimum);
   sb->setMaximum(175);
   float value = ValToTim(timer);
-  if (value>=60)
+  if (value >= 60)
     sb->setSingleStep(1);
-  else if (value>=2)
+  else if (value >= 2)
     sb->setSingleStep(0.5);
   else
     sb->setSingleStep(0.1);
@@ -367,7 +367,7 @@ void LogicalSwitchesPanel::updateLine(int i)
         RawSource source = RawSource(model->logicalSw[i].val1);
         RawSourceRange range = source.getRange(model, generalSettings, model->logicalSw[i].getRangeFlags());
         double value = range.step * model->logicalSw[i].val2 + range.offset;  /* TODO+source.getRawOffset(model)*/
-        cbSource1[i]->setModel(rawSourceItemModel);
+        cbSource1[i]->setModel(rawSourceModel);
         cbSource1[i]->setCurrentIndex(cbSource1[i]->findData(source.toValue()));
         if (source.isTimeBased()) {
           mask |= VALUE_TO_VISIBLE;
@@ -396,16 +396,16 @@ void LogicalSwitchesPanel::updateLine(int i)
       case LS_FAMILY_STICKY:  // no break
       case LS_FAMILY_VBOOL:
         mask |= SOURCE1_VISIBLE | SOURCE2_VISIBLE;
-        cbSource1[i]->setModel(rawSwitchItemModel);
+        cbSource1[i]->setModel(rawSwitchModel);
         cbSource1[i]->setCurrentIndex(cbSource1[i]->findData(model->logicalSw[i].val1));
-        cbSource2[i]->setModel(rawSwitchItemModel);
+        cbSource2[i]->setModel(rawSwitchModel);
         cbSource2[i]->setCurrentIndex(cbSource2[i]->findData(model->logicalSw[i].val2));
         break;
 
       case LS_FAMILY_EDGE:
         mask |= SOURCE1_VISIBLE | VALUE2_VISIBLE | VALUE3_VISIBLE;
         mask &= ~DELAY_ENABLED;
-        cbSource1[i]->setModel(rawSwitchItemModel);
+        cbSource1[i]->setModel(rawSwitchModel);
         cbSource1[i]->setCurrentIndex(cbSource1[i]->findData(model->logicalSw[i].val1));
         updateTimerParam(dsbOffset[i], model->logicalSw[i].val2, 0.0);
         updateTimerParam(dsbOffset2[i], model->logicalSw[i].val2+model->logicalSw[i].val3, ValToTim(TimToVal(dsbOffset[i]->value())-1));
@@ -414,9 +414,9 @@ void LogicalSwitchesPanel::updateLine(int i)
 
       case LS_FAMILY_VCOMP:
         mask |= SOURCE1_VISIBLE | SOURCE2_VISIBLE;
-        cbSource1[i]->setModel(rawSourceItemModel);
+        cbSource1[i]->setModel(rawSourceModel);
         cbSource1[i]->setCurrentIndex(cbSource1[i]->findData(model->logicalSw[i].val1));
-        cbSource2[i]->setModel(rawSourceItemModel);
+        cbSource2[i]->setModel(rawSourceModel);
         cbSource2[i]->setCurrentIndex(cbSource2[i]->findData(model->logicalSw[i].val2));
         break;
 
@@ -439,9 +439,9 @@ void LogicalSwitchesPanel::updateLine(int i)
     dsbDuration[i]->setVisible(mask & DURATION_ENABLED);
     dsbDelay[i]->setVisible(mask & DELAY_ENABLED);
     if (mask & DURATION_ENABLED)
-      dsbDuration[i]->setValue(model->logicalSw[i].duration/10.0);
+      dsbDuration[i]->setValue(model->logicalSw[i].duration / 10.0);
     if (mask & DELAY_ENABLED)
-      dsbDelay[i]->setValue(model->logicalSw[i].delay/10.0);
+      dsbDelay[i]->setValue(model->logicalSw[i].delay / 10.0);
   }
 
   lock = false;
@@ -475,7 +475,7 @@ void LogicalSwitchesPanel::populateFunctionCB(QComboBox *b)
   };
 
   b->clear();
-  for (int i=0; i<LS_FN_MAX; i++) {
+  for (int i = 0; i < LS_FN_MAX; i++) {
     int func = order[i];
     if (func == LS_FN_NEQUAL || func == LS_FN_EGREATER || func == LS_FN_ELESS)
       continue;
@@ -484,16 +484,9 @@ void LogicalSwitchesPanel::populateFunctionCB(QComboBox *b)
   b->setMaxVisibleItems(10);
 }
 
-void LogicalSwitchesPanel::populateAndSwitchCB(QComboBox *b)
-{
-  b->setModel(rawSwitchItemModel);
-  b->setVisible(true);
-}
-
 void LogicalSwitchesPanel::update()
 {
-  updateDataModels();
-  for (int i=0; i<lsCapability; i++) {
+  for (int i = 0; i < lsCapability; i++) {
     updateLine(i);
   }
 }
@@ -503,7 +496,7 @@ void LogicalSwitchesPanel::cmPaste()
   QByteArray data;
   if (hasClipboardData(&data)) {
     memcpy(&model->logicalSw[selectedIndex], data.constData(), sizeof(LogicalSwitchData));
-    updateDataModels();
+    emit updateDataModels();
     updateLine(selectedIndex);
     emit modified();
   }
@@ -518,6 +511,7 @@ void LogicalSwitchesPanel::cmDelete()
   model->logicalSw[lsCapability - 1].clear();
 
   model->updateAllReferences(ModelData::REF_UPD_TYPE_LOGICAL_SWITCH, ModelData::REF_UPD_ACT_SHIFT, selectedIndex, 0, -1);
+  emit updateDataModels();
   update();
   emit modified();
 }
@@ -609,6 +603,7 @@ void LogicalSwitchesPanel::cmClear(bool prompt)
   model->logicalSw[selectedIndex].clear();
   model->updateAllReferences(ModelData::REF_UPD_TYPE_LOGICAL_SWITCH, ModelData::REF_UPD_ACT_CLEAR, selectedIndex);
   update();
+  emit updateDataModels();
   emit modified();
 }
 
@@ -617,11 +612,12 @@ void LogicalSwitchesPanel::cmClearAll()
   if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Clear all Logical Switches. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
     return;
 
-  for (int i=0; i<lsCapability; i++) {
+  for (int i = 0; i < lsCapability; i++) {
     model->logicalSw[i].clear();
     model->updateAllReferences(ModelData::REF_UPD_TYPE_LOGICAL_SWITCH, ModelData::REF_UPD_ACT_CLEAR, i);
   }
   update();
+  emit updateDataModels();
   emit modified();
 }
 
@@ -631,6 +627,7 @@ void LogicalSwitchesPanel::cmInsert()
   model->logicalSw[selectedIndex].clear();
   model->updateAllReferences(ModelData::REF_UPD_TYPE_LOGICAL_SWITCH, ModelData::REF_UPD_ACT_SHIFT, selectedIndex, 0, 1);
   update();
+  emit updateDataModels();
   emit modified();
 }
 
@@ -644,6 +641,20 @@ void LogicalSwitchesPanel::swapData(int idx1, int idx2)
     memcpy(lsw1, &lstmp, sizeof(LogicalSwitchData));
     model->updateAllReferences(ModelData::REF_UPD_TYPE_LOGICAL_SWITCH, ModelData::REF_UPD_ACT_SWAP, idx1, idx2);
     update();
+    emit updateDataModels();
     emit modified();
   }
+}
+
+void LogicalSwitchesPanel::onModelDataAboutToBeUpdated()
+{
+  lock = true;
+  modelsUpdateCnt++;
+}
+
+void LogicalSwitchesPanel::onModelDataUpdateComplete()
+{
+  modelsUpdateCnt--;
+  if (modelsUpdateCnt < 1)
+    update();
 }

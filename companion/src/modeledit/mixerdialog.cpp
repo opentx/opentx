@@ -24,7 +24,8 @@
 #include "rawitemfilteredmodel.h"
 #include "helpers.h"
 
-MixerDialog::MixerDialog(QWidget *parent, ModelData & model, MixData * mixdata, GeneralSettings & generalSettings, Firmware * firmware) :
+MixerDialog::MixerDialog(QWidget *parent, ModelData & model, MixData * mixdata, GeneralSettings & generalSettings, Firmware * firmware,
+                            RawSourceItemModel * rawSourceItemModel, RawSwitchItemModel * rawSwitchItemModel) :
   QDialog(parent),
   ui(new Ui::MixerDialog),
   model(model),
@@ -34,6 +35,9 @@ MixerDialog::MixerDialog(QWidget *parent, ModelData & model, MixData * mixdata, 
   lock(false)
 {
   ui->setupUi(this);
+  rawSourceModel = new RawItemFilteredModel(rawSourceItemModel, RawSource::InputSourceGroups | RawSource::ScriptsGroup, this);
+  rawSwitchModel = new RawItemFilteredModel(rawSwitchItemModel, RawSwitch::MixesContext, this);
+
   QRegExp rx(CHAR_FOR_NAMES_REGEX);
   QLabel * lb_fp[CPN_MAX_FLIGHT_MODES] = {ui->lb_FP0,ui->lb_FP1,ui->lb_FP2,ui->lb_FP3,ui->lb_FP4,ui->lb_FP5,ui->lb_FP6,ui->lb_FP7,ui->lb_FP8 };
   QCheckBox * tmp[CPN_MAX_FLIGHT_MODES] = {ui->cb_FP0,ui->cb_FP1,ui->cb_FP2,ui->cb_FP3,ui->cb_FP4,ui->cb_FP5,ui->cb_FP6,ui->cb_FP7,ui->cb_FP8 };
@@ -43,7 +47,7 @@ MixerDialog::MixerDialog(QWidget *parent, ModelData & model, MixData * mixdata, 
 
   this->setWindowTitle(tr("DEST -> %1").arg(RawSource(SOURCE_TYPE_CH, md->destCh-1).toString(&model, &generalSettings)));
 
-  ui->sourceCB->setModel(new RawSourceFilterItemModel(&generalSettings, &model, RawSource::InputSourceGroups | RawSource::ScriptsGroup, this));
+  ui->sourceCB->setModel(rawSourceModel);
   ui->sourceCB->setCurrentIndex(ui->sourceCB->findData(md->srcRaw.toValue()));
   ui->sourceCB->removeItem(0);
 
@@ -104,7 +108,7 @@ MixerDialog::MixerDialog(QWidget *parent, ModelData & model, MixData * mixdata, 
     }
   }
 
-  ui->switchesCB->setModel(new RawSwitchFilterItemModel(&generalSettings, &model, RawSwitch::MixesContext, this));
+  ui->switchesCB->setModel(rawSwitchModel);
   ui->switchesCB->setCurrentIndex(ui->switchesCB->findData(md->swtch.toValue()));
   ui->warningCB->setCurrentIndex(md->mixWarn);
   ui->mltpxCB->setCurrentIndex(md->mltpx);

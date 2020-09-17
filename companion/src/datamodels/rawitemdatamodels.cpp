@@ -30,7 +30,7 @@ RawSourceItemModel::RawSourceItemModel(const GeneralSettings * const generalSett
   Firmware * fw = getCurrentFirmware();
 
   addItems(SOURCE_TYPE_NONE,           RawSource::NoneGroup,     1);
-  for (int i=0; i < fw->getCapability(LuaScripts); i++)
+  for (int i = 0; i < fw->getCapability(LuaScripts); i++)
     addItems(SOURCE_TYPE_LUA_OUTPUT,   RawSource::ScriptsGroup,  fw->getCapability(LuaOutputsPerScript), i * 16);
   addItems(SOURCE_TYPE_VIRTUAL_INPUT,  RawSource::InputsGroup,   fw->getCapability(VirtualInputs));
   addItems(SOURCE_TYPE_STICK,          RawSource::SourcesGroup,  board.getCapability(Board::MaxAnalogs));
@@ -67,10 +67,14 @@ void RawSourceItemModel::addItems(const RawSourceType & type, const int group, c
   }
 }
 
-void RawSourceItemModel::update() const
+void RawSourceItemModel::update()
 {
-  for (int i=0; i < rowCount(); ++i)
+  emit dataAboutToBeUpdated();
+
+  for (int i = 0; i < rowCount(); ++i)
     setDynamicItemData(item(i), RawSource(item(i)->data(ItemIdRole).toInt()));
+
+  emit dataUpdateComplete();
 }
 
 
@@ -166,8 +170,53 @@ void RawSwitchItemModel::addItems(const RawSwitchType & type, int count)
   }
 }
 
-void RawSwitchItemModel::update() const
+void RawSwitchItemModel::update()
 {
-  for (int i=0; i < rowCount(); ++i)
+  emit dataAboutToBeUpdated();
+
+  for (int i = 0; i < rowCount(); ++i)
     setDynamicItemData(item(i), RawSwitch(item(i)->data(ItemIdRole).toInt()));
+
+  emit dataUpdateComplete();
+}
+
+//
+// CurveItemModel
+//
+
+CurveItemModel::CurveItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData, QObject * parent) :
+  AbstractRawItemDataModel(generalSettings, modelData, parent)
+{
+  const int count = getCurrentFirmware()->getCapability(NumCurves);
+
+  for (int i = -count ; i <= count; ++i) {
+    QStandardItem * modelItem = new QStandardItem();
+    modelItem->setData(i, ItemIdRole);
+    int flags;
+    if (i < 0)
+      flags = DataGroups::NegativeGroup;
+    else if (i > 0)
+      flags = DataGroups::PositiveGroup;
+    else
+      flags = DataGroups::NoneGroup;
+    modelItem->setData(flags, ItemFlagsRole);
+    setDynamicItemData(modelItem, i);
+    appendRow(modelItem);
+  }
+}
+
+void CurveItemModel::setDynamicItemData(QStandardItem * item, int index) const
+{
+  item->setText(CurveReference(CurveReference::CURVE_REF_CUSTOM, index).toString(modelData, false));
+  item->setData(true, IsAvailableRole);
+}
+
+void CurveItemModel::update()
+{
+  emit dataAboutToBeUpdated();
+
+  for (int i = 0; i < rowCount(); ++i)
+   setDynamicItemData(item(i), item(i)->data(ItemIdRole).toInt());
+
+  emit dataUpdateComplete();
 }

@@ -33,6 +33,7 @@
 #include "customfunctions.h"
 #include "telemetry.h"
 #include "appdata.h"
+#include "rawitemdatamodels.h"
 
 ModelEdit::ModelEdit(QWidget * parent, RadioData & radioData, int modelId, Firmware * firmware) :
   QDialog(parent),
@@ -48,38 +49,96 @@ ModelEdit::ModelEdit(QWidget * parent, RadioData & radioData, int modelId, Firmw
   setWindowIcon(CompanionIcon("edit.png"));
   restoreGeometry(g.modelEditGeo());
   ui->pushButton->setIcon(CompanionIcon("simulate.png"));
-  SetupPanel * setupPanel = new SetupPanel(this, radioData.models[modelId], radioData.generalSettings, firmware);
+
+  GeneralSettings &generalSettings = radioData.generalSettings;
+  ModelData &model = radioData.models[modelId];
+
+  /*
+    Create reusable model specific ui datamodels here and pass pointers as needed
+    They should be referenced through filters in each use case
+    Code that updates the source for one or more ui datamodels should emit a SIGNAL that can be trapped (see below) and the datamodels refreshed
+    WARNING: beware of looping signals and slots and unnecessary data field updates from refreshing datamodels
+             where practical make signals granular to only those fields that affect datamodels thus needing to be refreshed
+  */
+  rawSourceModel = new RawSourceItemModel(&generalSettings, &model, this);
+  rawSwitchModel = new RawSwitchItemModel(&generalSettings, &model, this);
+  curveModel = new CurveItemModel(&generalSettings, &model, this);
+  s1.report("Init");
+
+  SetupPanel * setupPanel = new SetupPanel(this, model, generalSettings, firmware, rawSwitchModel);
   addTab(setupPanel, tr("Setup"));
-  if (firmware->getCapability(Heli))
-    addTab(new HeliPanel(this, radioData.models[modelId], radioData.generalSettings, firmware), tr("Heli"));
-  addTab(new FlightModesPanel(this, radioData.models[modelId], radioData.generalSettings, firmware), tr("Flight Modes"));
-  addTab(new InputsPanel(this, radioData.models[modelId], radioData.generalSettings, firmware), tr("Inputs"));
-  s1.report("inputs");
-  addTab(new MixesPanel(this, radioData.models[modelId], radioData.generalSettings, firmware), tr("Mixes"));
+  s1.report("Setup");
+
+  if (firmware->getCapability(Heli)) {
+    HeliPanel * heliPanel = new HeliPanel(this, model, generalSettings, firmware, rawSourceModel);
+    addTab(heliPanel, tr("Heli"));
+    s1.report("Heli");
+  }
+
+  FlightModesPanel * flightModesPanel = new FlightModesPanel(this, model, generalSettings, firmware, rawSwitchModel);
+  addTab(flightModesPanel, tr("Flight Modes"));
+  s1.report("Flight Modes");
+
+  InputsPanel * inputsPanel = new InputsPanel(this, model, generalSettings, firmware, rawSourceModel, rawSwitchModel);
+  addTab(inputsPanel, tr("Inputs"));
+  s1.report("Inputs");
+
+  MixesPanel * mixesPanel = new MixesPanel(this, model, generalSettings, firmware, rawSourceModel, rawSwitchModel);
+  addTab(mixesPanel, tr("Mixes"));
   s1.report("Mixes");
-  Channels * chnPanel = new Channels(this, radioData.models[modelId], radioData.generalSettings, firmware);
-  addTab(chnPanel, tr("Outputs"));
+
+  ChannelsPanel * channelsPanel = new ChannelsPanel(this, model, generalSettings, firmware, curveModel);
+  addTab(channelsPanel, tr("Outputs"));
   s1.report("Outputs");
-  addTab(new Curves(this, radioData.models[modelId], radioData.generalSettings, firmware), tr("Curves"));
-  addTab(new LogicalSwitchesPanel(this, radioData.models[modelId], radioData.generalSettings, firmware), tr("Logical Switches"));
-  s1.report("LS");
-  addTab(new CustomFunctionsPanel(this, &radioData.models[modelId], radioData.generalSettings, firmware), tr("Special Functions"));
-  s1.report("CF");
-  if (firmware->getCapability(Telemetry))
-    addTab(new TelemetryPanel(this, radioData.models[modelId], radioData.generalSettings, firmware), tr("Telemetry"));
 
-  onTabIndexChanged(ui->tabWidget->currentIndex());  // make sure to trigger update on default tab panel
+  CurvesPanel * curvesPanel = new CurvesPanel(this, model, generalSettings, firmware);
+  addTab(curvesPanel, tr("Curves"));
+  s1.report("Curves");
 
-  connect(setupPanel, &SetupPanel::extendedLimitsToggled, chnPanel, &Channels::refreshExtendedLimits);
+  LogicalSwitchesPanel * logicalSwitchesPanel = new LogicalSwitchesPanel(this, model, generalSettings, firmware, rawSourceModel, rawSwitchModel);
+  addTab(logicalSwitchesPanel, tr("Logical Switches"));
+  s1.report("Logical Switches");
+
+  CustomFunctionsPanel * customFunctionsPanel = new CustomFunctionsPanel(this, &model, generalSettings, firmware, rawSourceModel, rawSwitchModel);
+  addTab(customFunctionsPanel, tr("Special Functions"));
+  s1.report("Special Functions");
+
+  if (firmware->getCapability(Telemetry)) {
+    TelemetryPanel * telemetryPanel = new TelemetryPanel(this, model, generalSettings, firmware, rawSourceModel);
+    addTab(telemetryPanel, tr("Telemetry"));
+    connect(telemetryPanel, &TelemetryPanel::updateDataModels, rawSourceModel, &RawSourceItemModel::update);
+    s1.report("Telemetry");
+  }
+
+  connect(setupPanel, &SetupPanel::extendedLimitsToggled, channelsPanel, &ChannelsPanel::refreshExtendedLimits);
+  connect(setupPanel, &SetupPanel::updateDataModels, rawSourceModel, &RawSourceItemModel::update);
+
+  connect(flightModesPanel, &FlightModesPanel::updateDataModels, rawSourceModel, &RawSourceItemModel::update);
+  connect(flightModesPanel, &FlightModesPanel::updateDataModels, rawSwitchModel, &RawSwitchItemModel::update);
+
+  connect(inputsPanel, &InputsPanel::updateDataModels, rawSourceModel, &RawSourceItemModel::update);
+
+  connect(channelsPanel, &ChannelsPanel::updateDataModels, rawSourceModel, &RawSourceItemModel::update);
+
+  connect(curvesPanel, &CurvesPanel::updateDataModels, curveModel, &CurveItemModel::update);
+
+  connect(logicalSwitchesPanel, &LogicalSwitchesPanel::updateDataModels, rawSourceModel, &RawSourceItemModel::update);
+  connect(logicalSwitchesPanel, &LogicalSwitchesPanel::updateDataModels, rawSwitchModel, &RawSwitchItemModel::update);
+
   connect(ui->tabWidget, &QTabWidget::currentChanged, this, &ModelEdit::onTabIndexChanged);
   connect(ui->pushButton, &QPushButton::clicked, this, &ModelEdit::launchSimulation);
 
-  s1.report("end");
+  onTabIndexChanged(ui->tabWidget->currentIndex());  // make sure to trigger update on default tab panel
+
+  s1.report("Signals and Slots");
   gStopwatch.report("ModelEdit end constructor");
 }
 
 ModelEdit::~ModelEdit()
 {
+  delete rawSourceModel;
+  delete rawSwitchModel;
+  delete curveModel;
   delete ui;
 }
 

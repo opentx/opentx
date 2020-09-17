@@ -25,13 +25,15 @@
 #include "mixerslistwidget.h"
 #include "mixerdialog.h"
 #include "modelprinter.h"
+#include "rawitemdatamodels.h"
 
 class MixesPanel : public ModelPanel
 {
     Q_OBJECT
 
   public:
-    MixesPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware);
+    MixesPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware,
+                  RawSourceItemModel * rawSourceItemModel, RawSwitchItemModel * rawSwitchItemModel);
     virtual ~MixesPanel();
 
     virtual void update();
@@ -63,6 +65,8 @@ class MixesPanel : public ModelPanel
     bool mixInserted;
     unsigned int highlightedSource;
     ModelPrinter modelPrinter;
+    RawSourceItemModel *rawSourceItemModel;
+    RawSwitchItemModel *rawSwitchItemModel;
 
     int getMixerIndex(unsigned int dch);
     bool gm_insertMix(int idx);

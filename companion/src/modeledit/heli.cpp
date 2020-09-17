@@ -23,17 +23,20 @@
 #include "helpers.h"
 #include "rawitemfilteredmodel.h"
 
-HeliPanel::HeliPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware):
+HeliPanel::HeliPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, RawSourceItemModel * rawSourceItemModel):
   ModelPanel(parent, model, generalSettings, firmware),
   ui(new Ui::Heli)
 {
   ui->setupUi(this);
 
-  rawSourceItemModel = new RawSourceFilterItemModel(&generalSettings, &model, RawSource::InputSourceGroups, this);
+  rawSourceModel = new RawItemFilteredModel(rawSourceItemModel, RawSource::InputSourceGroups, this);
+  connect(rawSourceModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &HeliPanel::onModelDataAboutToBeUpdated);
+  connect(rawSourceModel, &RawItemFilteredModel::dataUpdateComplete, this, &HeliPanel::onModelDataUpdateComplete);
 
   connect(ui->swashType, SIGNAL(currentIndexChanged(int)), this, SLOT(edited()));
   connect(ui->swashRingVal, SIGNAL(editingFinished()), this, SLOT(edited()));
   connect(ui->swashCollectiveSource, SIGNAL(currentIndexChanged(int)), this, SLOT(edited()));
+
   if (firmware->getCapability(VirtualInputs)) {
     connect(ui->swashAileronSource, SIGNAL(currentIndexChanged(int)), this, SLOT(edited()));
     connect(ui->swashElevatorSource, SIGNAL(currentIndexChanged(int)), this, SLOT(edited()));
@@ -63,30 +66,22 @@ HeliPanel::HeliPanel(QWidget *parent, ModelData & model, GeneralSettings & gener
 
 HeliPanel::~HeliPanel()
 {
+  delete rawSourceModel;
   delete ui;
-}
-
-void HeliPanel::updateDataModels()
-{
-  const bool oldLock = lock;
-  lock = true;
-  rawSourceItemModel->update();
-  lock = oldLock;
 }
 
 void HeliPanel::update()
 {
   lock = true;
-  updateDataModels();
 
   ui->swashType->setCurrentIndex(model->swashRingData.type);
-  ui->swashCollectiveSource->setModel(rawSourceItemModel);
+  ui->swashCollectiveSource->setModel(rawSourceModel);
   ui->swashCollectiveSource->setCurrentIndex(ui->swashCollectiveSource->findData(model->swashRingData.collectiveSource.toValue()));
   ui->swashRingVal->setValue(model->swashRingData.value);
   if (firmware->getCapability(VirtualInputs)) {
-    ui->swashElevatorSource->setModel(rawSourceItemModel);
+    ui->swashElevatorSource->setModel(rawSourceModel);
     ui->swashElevatorSource->setCurrentIndex(ui->swashElevatorSource->findData(model->swashRingData.elevatorSource.toValue()));
-    ui->swashAileronSource->setModel(rawSourceItemModel);
+    ui->swashAileronSource->setModel(rawSourceModel);
     ui->swashAileronSource->setCurrentIndex(ui->swashAileronSource->findData(model->swashRingData.aileronSource.toValue()));
     ui->swashElevatorWeight->setValue(model->swashRingData.elevatorWeight);
     ui->swashAileronWeight->setValue(model->swashRingData.aileronWeight);
@@ -121,4 +116,14 @@ void HeliPanel::edited()
     }
     emit modified();
   }
+}
+
+void HeliPanel::onModelDataAboutToBeUpdated()
+{
+  lock = true;
+}
+
+void HeliPanel::onModelDataUpdateComplete()
+{
+  update();
 }

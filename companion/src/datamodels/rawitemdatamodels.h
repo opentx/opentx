@@ -36,6 +36,13 @@ class AbstractRawItemDataModel: public QStandardItemModel
     enum DataRoles { ItemIdRole = Qt::UserRole, ItemTypeRole, ItemFlagsRole, IsAvailableRole };
     Q_ENUM(DataRoles)
 
+    enum DataGroups {
+      NoneGroup     = 0x01,
+      NegativeGroup = 0x02,
+      PositiveGroup = 0x04
+    };
+    Q_ENUM(DataGroups)
+
     explicit AbstractRawItemDataModel(const GeneralSettings * const generalSettings, const ModelData * const modelData, QObject * parent = nullptr)  :
       QStandardItemModel(parent),
       generalSettings(generalSettings),
@@ -43,7 +50,11 @@ class AbstractRawItemDataModel: public QStandardItemModel
     {}
 
   public slots:
-    virtual void update() const = 0;
+    virtual void update() = 0;
+
+  signals:
+    void dataAboutToBeUpdated();
+    void dataUpdateComplete();
 
   protected:
     const GeneralSettings * generalSettings;
@@ -58,7 +69,7 @@ class RawSourceItemModel: public AbstractRawItemDataModel
     explicit RawSourceItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData, QObject * parent = nullptr);
 
   public slots:
-    void update() const override;
+    void update() override;
 
   protected:
     void setDynamicItemData(QStandardItem * item, const RawSource & src) const;
@@ -73,12 +84,25 @@ class RawSwitchItemModel: public AbstractRawItemDataModel
     explicit RawSwitchItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData, QObject * parent = nullptr);
 
   public slots:
-    void update() const override;
+    void update() override;
 
   protected:
     void setDynamicItemData(QStandardItem * item, const RawSwitch & rsw) const;
     void addItems(const RawSwitchType & type, int count);
 };
 
+
+class CurveItemModel: public AbstractRawItemDataModel
+{
+    Q_OBJECT
+  public:
+    explicit CurveItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData, QObject * parent = nullptr);
+
+  public slots:
+    void update() override;
+
+  protected:
+    void setDynamicItemData(QStandardItem * item, int index) const;
+};
 
 #endif // RAWITEMDATAMODELS_H

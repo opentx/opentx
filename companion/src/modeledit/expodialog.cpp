@@ -24,7 +24,8 @@
 #include "helpers.h"
 
 ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, GeneralSettings & generalSettings,
-                          Firmware * firmware, QString & inputName) :
+                          Firmware * firmware, QString & inputName, RawSourceItemModel * rawSourceItemModel,
+                          RawSwitchItemModel * rawSwitchItemModel) :
   QDialog(parent),
   ui(new Ui::ExpoDialog),
   model(model),
@@ -36,6 +37,9 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, G
   lock(false)
 {
   ui->setupUi(this);
+  rawSourceModel = new RawItemFilteredModel(rawSourceItemModel, (RawSource::InputSourceGroups & ~RawSource::InputsGroup) | RawSource::TelemGroup, this);
+  rawSwitchModel = new RawItemFilteredModel(rawSwitchItemModel, RawSwitch::MixesContext, this);
+
   QLabel * lb_fp[CPN_MAX_FLIGHT_MODES] = {ui->lb_FP0,ui->lb_FP1,ui->lb_FP2,ui->lb_FP3,ui->lb_FP4,ui->lb_FP5,ui->lb_FP6,ui->lb_FP7,ui->lb_FP8 };
   QCheckBox * tmp[CPN_MAX_FLIGHT_MODES] = {ui->cb_FP0,ui->cb_FP1,ui->cb_FP2,ui->cb_FP3,ui->cb_FP4,ui->cb_FP5,ui->cb_FP6,ui->cb_FP7,ui->cb_FP8 };
   for (int i=0; i<CPN_MAX_FLIGHT_MODES; i++) {
@@ -52,7 +56,7 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, G
   curveGroup = new CurveGroup(ui->curveTypeCB, ui->curveGVarCB, ui->curveValueCB, ui->curveValueSB, ed->curve, model,
                               firmware->getCapability(HasInputDiff) ? 0 : (HIDE_DIFF | HIDE_NEGATIVE_CURVES));
 
-  ui->switchesCB->setModel(new RawSwitchFilterItemModel(&generalSettings, &model, RawSwitch::MixesContext, this));
+  ui->switchesCB->setModel(rawSwitchModel);
   ui->switchesCB->setCurrentIndex(ui->switchesCB->findData(ed->swtch.toValue()));
 
   ui->sideCB->setCurrentIndex(ed->mode-1);
@@ -83,7 +87,7 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, G
 
   if (firmware->getCapability(VirtualInputs)) {
     ui->inputName->setMaxLength(firmware->getCapability(InputsLength));
-    ui->sourceCB->setModel(new RawSourceFilterItemModel(&generalSettings, &model, (RawSource::InputSourceGroups & ~RawSource::InputsGroup) | RawSource::TelemGroup, this));
+    ui->sourceCB->setModel(rawSourceModel);
     ui->sourceCB->setCurrentIndex(ui->sourceCB->findData(ed->srcRaw.toValue()));
     ui->sourceCB->removeItem(0);
     ui->inputName->setValidator(new QRegExpValidator(rx, this));

@@ -30,6 +30,12 @@ RawItemFilteredModel::RawItemFilteredModel(QAbstractItemModel * sourceModel, int
   setFilterFlags(flags);
   setDynamicSortFilter(true);
   setSourceModel(sourceModel);
+
+  AbstractRawItemDataModel * model = qobject_cast<AbstractRawItemDataModel *>(sourceModel);
+  if (model) {
+    connect(model, &AbstractRawItemDataModel::dataAboutToBeUpdated, this, &RawItemFilteredModel::onDataAboutToBeUpdated);
+    connect(model, &AbstractRawItemDataModel::dataUpdateComplete, this, &RawItemFilteredModel::onDataUpdateComplete);
+  }
 }
 
 void RawItemFilteredModel::setFilterFlags(int flags)
@@ -61,14 +67,12 @@ void RawItemFilteredModel::update() const
     model->update();
 }
 
-
-RawSourceFilterItemModel::RawSourceFilterItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData, int flags, QObject * parent) :
-  RawItemFilteredModel(new RawSourceItemModel(generalSettings, modelData, parent), flags, parent)
+void RawItemFilteredModel::onDataAboutToBeUpdated()
 {
+  emit dataAboutToBeUpdated();
 }
 
-
-RawSwitchFilterItemModel::RawSwitchFilterItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData, int context, QObject * parent) :
-  RawItemFilteredModel(new RawSwitchItemModel(generalSettings, modelData, parent), context, parent)
+void RawItemFilteredModel::onDataUpdateComplete()
 {
+  emit dataUpdateComplete();
 }
