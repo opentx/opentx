@@ -21,6 +21,10 @@
 #include <io/frsky_firmware_update.h>
 #include "opentx.h"
 
+#if defined(PCBSKY9X)
+#include "audio_driver.h"
+#endif
+
 RadioData  g_eeGeneral;
 ModelData  g_model;
 
