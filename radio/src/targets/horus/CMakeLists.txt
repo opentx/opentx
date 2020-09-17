@@ -5,6 +5,7 @@ option(PXX2 "PXX2 protocol support" OFF)
 option(AFHDS3 "AFHDS3 TX Module" ON)
 option(MULTIMODULE "DIY Multiprotocol TX Module (https://github.com/pascallanger/DIY-Multiprotocol-TX-Module)" ON)
 option(GHOST "Ghost TX Module" ON)
+option(EXTERNALACCESSMOD "Support for R9M 2019 hardware mod" OFF)
 
 set(PWR_BUTTON "PRESS" CACHE STRING "Pwr button type (PRESS/SWITCH)")
 set(CPU_TYPE STM32F4)
@@ -137,6 +138,12 @@ endif()
 
 if(NOT UNEXPECTED_SHUTDOWN)
   add_definitions(-DNO_UNEXPECTED_SHUTDOWN)
+endif()
+
+if(EXTERNALACCESSMOD)
+  set(PXX2 ON)
+  set(AUX_SERIAL OFF)
+  add_definitions(-DEXTERNAL_ACCESS_MOD)
 endif()
 
 if(INTERNAL_MODULE_PXX1)

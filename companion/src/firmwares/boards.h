@@ -336,7 +336,7 @@ inline bool IS_TARANIS_X9DP_2019(Board::Type board)
 inline bool IS_ACCESS_RADIO(Board::Type board, const QString & id)
 {
   return (IS_TARANIS_XLITES(board) || IS_TARANIS_X9LITE(board) || board == Board::BOARD_TARANIS_X9DP_2019 || board == Board::BOARD_X10_EXPRESS || IS_TARANIS_X7_ACCESS(board) ||
-          (IS_FAMILY_HORUS_OR_T16(board) && id.contains("internalaccess")));
+          (IS_FAMILY_HORUS_OR_T16(board) && id.contains("internalaccess")) || (IS_FAMILY_HORUS_OR_T16(board) && id.contains("externalaccessmod")));
 }
 
 #endif // _BOARDS_H_
