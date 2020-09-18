@@ -763,7 +763,7 @@ bool OpenTxFirmware::isAvailable(PulsesProtocol proto, int port)
           case PULSES_GHOST:
             return true;
           case PULSES_ACCESS_R9M:
-            return IS_ACCESS_RADIO(board, id);
+            return IS_ACCESS_RADIO(board, id)  || (IS_FAMILY_HORUS_OR_T16(board) && id.contains("externalaccessmod"));
           case PULSES_PXX_R9M_LITE:
           case PULSES_ACCESS_R9M_LITE:
           case PULSES_ACCESS_R9M_LITE_PRO:
