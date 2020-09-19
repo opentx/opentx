@@ -408,7 +408,7 @@ void LogicalSwitchesPanel::updateLine(int i)
         cbSource1[i]->setModel(rawSwitchModel);
         cbSource1[i]->setCurrentIndex(cbSource1[i]->findData(model->logicalSw[i].val1));
         updateTimerParam(dsbOffset[i], model->logicalSw[i].val2, 0.0);
-        updateTimerParam(dsbOffset2[i], model->logicalSw[i].val2+model->logicalSw[i].val3, ValToTim(TimToVal(dsbOffset[i]->value())-1));
+        updateTimerParam(dsbOffset2[i], model->logicalSw[i].val2 + model->logicalSw[i].val3, ValToTim(TimToVal(dsbOffset[i]->value()) - 1));
         dsbOffset2[i]->setSuffix((model->logicalSw[i].val3) ? "" : tr(" (infinite)"));
         break;
 
