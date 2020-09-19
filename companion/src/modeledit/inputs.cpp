@@ -21,15 +21,22 @@
 #include "inputs.h"
 #include "expodialog.h"
 #include "helpers.h"
+#include "rawitemfilteredmodel.h"
 
 InputsPanel::InputsPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware,
                             RawSourceItemModel * rawSourceItemModel, RawSwitchItemModel * rawSwitchItemModel):
   ModelPanel(parent, model, generalSettings, firmware),
   expoInserted(false),
-  modelPrinter(firmware, generalSettings, model),
-  rawSourceItemModel(rawSourceItemModel),
-  rawSwitchItemModel(rawSwitchItemModel)
+  modelPrinter(firmware, generalSettings, model)
 {
+  rawSourceModel = new RawItemFilteredModel(rawSourceItemModel, (RawSource::InputSourceGroups & ~RawSource::InputsGroup), this);
+  connect(rawSourceModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &InputsPanel::onModelDataAboutToBeUpdated);
+  connect(rawSourceModel, &RawItemFilteredModel::dataUpdateComplete, this, &InputsPanel::onModelDataUpdateComplete);
+
+  rawSwitchModel = new RawItemFilteredModel(rawSwitchItemModel, RawSwitch::MixesContext, this);
+  connect(rawSwitchModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &InputsPanel::onModelDataAboutToBeUpdated);
+  connect(rawSwitchModel, &RawItemFilteredModel::dataUpdateComplete, this, &InputsPanel::onModelDataUpdateComplete);
+
   inputsCount = firmware->getCapability(VirtualInputs);
   if (inputsCount == 0)
     inputsCount = CPN_MAX_STICKS;
@@ -68,6 +75,8 @@ InputsPanel::InputsPanel(QWidget *parent, ModelData & model, GeneralSettings & g
 
 InputsPanel::~InputsPanel()
 {
+  delete rawSourceModel;
+  delete rawSwitchModel;
 }
 
 void InputsPanel::update()
@@ -183,7 +192,7 @@ void InputsPanel::gm_openExpo(int index)
   if (firmware->getCapability(VirtualInputs))
     inputName = model->inputNames[ed.chn];
 
-  ExpoDialog *g = new ExpoDialog(this, *model, &ed, generalSettings, firmware, inputName, rawSourceItemModel, rawSwitchItemModel);
+  ExpoDialog *g = new ExpoDialog(this, *model, &ed, generalSettings, firmware, inputName, rawSourceModel, rawSwitchModel);
   if (g->exec())  {
     model->expoData[index] = ed;
     if (firmware->getCapability(VirtualInputs))
@@ -708,4 +717,14 @@ int InputsPanel::getInputIndexFromSelected()
     idx = ed->chn;
   }
   return idx;
+}
+
+void InputsPanel::onModelDataAboutToBeUpdated()
+{
+  lock = true;
+}
+
+void InputsPanel::onModelDataUpdateComplete()
+{
+  update();
 }

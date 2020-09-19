@@ -27,8 +27,6 @@
 
 class GVarGroup;
 class CurveGroup;
-class RawSourceItemModel;
-class RawSwitchItemModel;
 class RawItemFilteredModel;
 
 namespace Ui {
@@ -39,8 +37,8 @@ class ExpoDialog : public QDialog {
     Q_OBJECT
   public:
     ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expodata, GeneralSettings & generalSettings,
-                Firmware * firmware, QString & inputName, RawSourceItemModel * rawSourceItemModel,
-                RawSwitchItemModel * rawSwitchItemModel);
+                Firmware * firmware, QString & inputName, RawItemFilteredModel * rawSourceItemModel,
+                RawItemFilteredModel * rawSwitchItemModel);
     ~ExpoDialog();
 
   protected:
@@ -67,8 +65,6 @@ class ExpoDialog : public QDialog {
     ModelPrinter modelPrinter;
     bool lock;
     QCheckBox * cb_fp[CPN_MAX_FLIGHT_MODES];
-    RawItemFilteredModel * rawSourceModel;
-    RawItemFilteredModel * rawSwitchModel;
 };
 
 #endif // _EXPODIALOG_H_

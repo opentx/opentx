@@ -24,7 +24,10 @@
 #include "modeledit.h"
 #include "mixerslistwidget.h"
 #include "modelprinter.h"
-#include "rawitemdatamodels.h"
+
+class RawSourceItemModel;
+class RawSwitchItemModel;
+class RawItemFilteredModel;
 
 constexpr char MIMETYPE_EXPO[] = "application/x-companion-expo";
 
@@ -61,6 +64,8 @@ class InputsPanel : public ModelPanel
     void cmInputInsert();
     void cmInputMoveDown();
     void cmInputMoveUp();
+    void onModelDataAboutToBeUpdated();
+    void onModelDataUpdateComplete();
 
   signals:
     void updateDataModels();
@@ -72,8 +77,8 @@ class InputsPanel : public ModelPanel
     ModelPrinter modelPrinter;
     int selectedIdx;
     int inputIdx;
-    RawSourceItemModel *rawSourceItemModel;
-    RawSwitchItemModel *rawSwitchItemModel;
+    RawItemFilteredModel *rawSourceModel;
+    RawItemFilteredModel *rawSwitchModel;
 
     int getExpoIndex(unsigned int dch);
     bool gm_insertExpo(int idx);
