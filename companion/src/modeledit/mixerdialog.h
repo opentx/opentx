@@ -26,8 +26,6 @@
 
 class GVarGroup;
 class CurveGroup;
-class RawSourceItemModel;
-class RawSwitchItemModel;
 class RawItemFilteredModel;
 
 namespace Ui {
@@ -38,7 +36,7 @@ class MixerDialog : public QDialog {
     Q_OBJECT
   public:
     MixerDialog(QWidget *parent, ModelData & model, MixData *mixdata, GeneralSettings & generalSettings, Firmware * firmware,
-                  RawSourceItemModel * rawSourceItemModel, RawSwitchItemModel * rawSwitchItemModel);
+                  RawItemFilteredModel * rawSourceModel, RawItemFilteredModel * rawSwitchModel);
     ~MixerDialog();
 
   protected:
@@ -63,8 +61,6 @@ class MixerDialog : public QDialog {
     GVarGroup * gvOffsetGroup;
     CurveGroup * curveGroup;
     QCheckBox * cb_fp[CPN_MAX_FLIGHT_MODES];
-    RawItemFilteredModel * rawSourceModel;
-    RawItemFilteredModel * rawSwitchModel;
 };
 
 #endif // _MIXERDIALOG_H_

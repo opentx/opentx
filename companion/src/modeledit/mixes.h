@@ -25,7 +25,10 @@
 #include "mixerslistwidget.h"
 #include "mixerdialog.h"
 #include "modelprinter.h"
-#include "rawitemdatamodels.h"
+
+class RawSourceItemModel;
+class RawSwitchItemModel;
+class RawItemFilteredModel;
 
 class MixesPanel : public ModelPanel
 {
@@ -52,7 +55,6 @@ class MixesPanel : public ModelPanel
     void moveMixDown();
     void mixerHighlight();
 
-
     void mixerlistWidget_customContextMenuRequested(QPoint pos);
     void mixerlistWidget_doubleClicked(QModelIndex index);
     void mixerlistWidget_KeyPress(QKeyEvent *event);
@@ -60,13 +62,16 @@ class MixesPanel : public ModelPanel
     void mimeMixerDropped(int index, const QMimeData *data, Qt::DropAction action);
     void pasteMixerMimeData(const QMimeData * mimeData, int destIdx);
 
+    void onModelDataAboutToBeUpdated();
+    void onModelDataUpdateComplete();
+
   private:
     MixersListWidget * mixersListWidget;
     bool mixInserted;
     unsigned int highlightedSource;
     ModelPrinter modelPrinter;
-    RawSourceItemModel *rawSourceItemModel;
-    RawSwitchItemModel *rawSwitchItemModel;
+    RawItemFilteredModel *rawSourceModel;
+    RawItemFilteredModel *rawSwitchModel;
 
     int getMixerIndex(unsigned int dch);
     bool gm_insertMix(int idx);

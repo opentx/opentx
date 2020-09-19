@@ -20,16 +20,23 @@
 
 #include "mixes.h"
 #include "helpers.h"
+#include "rawitemfilteredmodel.h"
 
 MixesPanel::MixesPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware,
                           RawSourceItemModel * rawSourceItemModel, RawSwitchItemModel * rawSwitchItemModel):
   ModelPanel(parent, model, generalSettings, firmware),
   mixInserted(false),
   highlightedSource(0),
-  modelPrinter(firmware, generalSettings, model),
-  rawSourceItemModel(rawSourceItemModel),
-  rawSwitchItemModel(rawSwitchItemModel)
+  modelPrinter(firmware, generalSettings, model)
 {
+  rawSourceModel = new RawItemFilteredModel(rawSourceItemModel, RawSource::InputSourceGroups | RawSource::ScriptsGroup, this);
+  connect(rawSourceModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &MixesPanel::onModelDataAboutToBeUpdated);
+  connect(rawSourceModel, &RawItemFilteredModel::dataUpdateComplete, this, &MixesPanel::onModelDataUpdateComplete);
+
+  rawSwitchModel = new RawItemFilteredModel(rawSwitchItemModel, RawSwitch::MixesContext, this);
+  connect(rawSwitchModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &MixesPanel::onModelDataAboutToBeUpdated);
+  connect(rawSwitchModel, &RawItemFilteredModel::dataUpdateComplete, this, &MixesPanel::onModelDataUpdateComplete);
+
   QGridLayout * mixesLayout = new QGridLayout(this);
 
   mixersListWidget = new MixersListWidget(this, false); // TODO enum
@@ -63,6 +70,8 @@ MixesPanel::MixesPanel(QWidget *parent, ModelData & model, GeneralSettings & gen
 
 MixesPanel::~MixesPanel()
 {
+  delete rawSourceModel;
+  delete rawSwitchModel;
 }
 
 void MixesPanel::update()
@@ -178,7 +187,7 @@ void MixesPanel::gm_openMix(int index)
 
   MixData mixd(model->mixData[index]);
 
-  MixerDialog *g = new MixerDialog(this, *model, &mixd, generalSettings, firmware, rawSourceItemModel, rawSwitchItemModel);
+  MixerDialog *g = new MixerDialog(this, *model, &mixd, generalSettings, firmware, rawSourceModel, rawSwitchModel);
   if(g->exec()) {
     model->mixData[index] = mixd;
     emit modified();
@@ -531,4 +540,14 @@ void MixesPanel::clearMixes()
     emit modified();
     update();
   }
+}
+
+void MixesPanel::onModelDataAboutToBeUpdated()
+{
+  lock = true;
+}
+
+void MixesPanel::onModelDataUpdateComplete()
+{
+  update();
 }
