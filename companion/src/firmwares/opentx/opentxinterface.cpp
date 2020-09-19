@@ -1232,6 +1232,7 @@ void registerOpenTxFirmwares()
   firmware = new OpenTxFirmware("opentx-x10", Firmware::tr("FrSky Horus X10 / X10S"), BOARD_X10);
   addOpenTxFrskyOptions(firmware);
   firmware->addOption("internalaccess", Firmware::tr("Support for ACCESS internal module replacement"));
+  firmware->addOption("externalaccessmod", Firmware::tr("Support hardware mod: R9M ACCESS"));
   registerOpenTxFirmware(firmware);
   addOpenTxRfOptions(firmware, EU + FLEX);
 
