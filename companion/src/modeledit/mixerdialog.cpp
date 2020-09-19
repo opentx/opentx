@@ -154,6 +154,8 @@ MixerDialog::~MixerDialog()
   delete gvWeightGroup;
   delete gvOffsetGroup;
   delete curveGroup;
+  delete rawSourceModel;
+  delete rawSwitchModel;
   delete ui;
 }
 
