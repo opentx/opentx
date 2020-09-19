@@ -29,7 +29,7 @@ MixesPanel::MixesPanel(QWidget *parent, ModelData & model, GeneralSettings & gen
   highlightedSource(0),
   modelPrinter(firmware, generalSettings, model)
 {
-  rawSourceModel = new RawItemFilteredModel(rawSourceItemModel, RawSource::InputSourceGroups | RawSource::ScriptsGroup, this);
+  rawSourceModel = new RawItemFilteredModel(rawSourceItemModel, ((RawSource::InputSourceGroups | RawSource::ScriptsGroup) & ~ RawSource::NoneGroup), this);
   connect(rawSourceModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &MixesPanel::onModelDataAboutToBeUpdated);
   connect(rawSourceModel, &RawItemFilteredModel::dataUpdateComplete, this, &MixesPanel::onModelDataUpdateComplete);
 

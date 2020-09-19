@@ -29,7 +29,7 @@ InputsPanel::InputsPanel(QWidget *parent, ModelData & model, GeneralSettings & g
   expoInserted(false),
   modelPrinter(firmware, generalSettings, model)
 {
-  rawSourceModel = new RawItemFilteredModel(rawSourceItemModel, (RawSource::InputSourceGroups & ~RawSource::InputsGroup), this);
+  rawSourceModel = new RawItemFilteredModel(rawSourceItemModel, (RawSource::InputSourceGroups & ~ RawSource::NoneGroup & ~RawSource::InputsGroup), this);
   connect(rawSourceModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &InputsPanel::onModelDataAboutToBeUpdated);
   connect(rawSourceModel, &RawItemFilteredModel::dataUpdateComplete, this, &InputsPanel::onModelDataUpdateComplete);
 

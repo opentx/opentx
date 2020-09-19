@@ -47,7 +47,6 @@ MixerDialog::MixerDialog(QWidget *parent, ModelData & model, MixData * mixdata, 
 
   ui->sourceCB->setModel(rawSourceModel);
   ui->sourceCB->setCurrentIndex(ui->sourceCB->findData(md->srcRaw.toValue()));
-  ui->sourceCB->removeItem(0);
 
   int limit = firmware->getCapability(OffsetWeight);
 
@@ -191,7 +190,7 @@ void MixerDialog::valuesChanged()
     strcpy(md->name, ui->mixerName->text().toLatin1());
 
     md->flightModes = 0;
-    for (int i = CPN_MAX_FLIGHT_MODES-1; i >= 0 ; i--) {
+    for (int i = CPN_MAX_FLIGHT_MODES - 1; i >= 0 ; i--) {
       if (!cb_fp[i]->checkState()) {
         md->flightModes++;
       }
