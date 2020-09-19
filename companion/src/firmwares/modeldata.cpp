@@ -847,7 +847,7 @@ void ModelData::updateTypeIndexRef(R & curRef, const T type, const int idxAdj, c
         newRef.clear();
       else {
         newRef.type = (T)defType;
-        newRef.index = defIndex + idxAdj;
+        newRef.index = defIndex;
       }
       break;
     case REF_UPD_ACT_SHIFT:
@@ -904,7 +904,7 @@ void ModelData::updateTypeValueRef(R & curRef, const T type, const int idxAdj, c
         newRef.clear();
       else {
         newRef.type = (T)defType;
-        newRef.value = defValue + idxAdj;
+        newRef.value = defValue;
       }
       break;
     case REF_UPD_ACT_SHIFT:
