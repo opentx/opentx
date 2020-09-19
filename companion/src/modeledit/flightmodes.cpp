@@ -58,7 +58,7 @@ FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseI
   // Flight mode switch
   if (phaseIdx > 0) {
     ui->swtch->setModel(switchModel);
-    connect(ui->swtch, SIGNAL(activated(int)), this, SLOT(phaseSwitchChanged(int)));
+    connect(ui->swtch, SIGNAL(currentIndexChanged(int)), this, SLOT(phaseSwitch_currentIndexChanged(int)));
   }
   else {
     ui->swtch->hide();
@@ -393,15 +393,14 @@ void FlightModePanel::phaseName_editingFinished()
   emit modified();
 }
 
-void FlightModePanel::phaseSwitchChanged(int index)
+void FlightModePanel::phaseSwitch_currentIndexChanged(int index)
 {
   if (!lock) {
     bool ok;
     const RawSwitch rs(ui->swtch->itemData(index).toInt(&ok));
     if (ok && phase.swtch.toValue() != rs.toValue()) {
       phase.swtch = rs;
-      if (!rs.isSet())
-        emit phaseNoSwitchSet();
+      emit phaseSwitchChanged();
       emit modified();
     }
   }
@@ -1386,15 +1385,13 @@ FlightModesPanel::FlightModesPanel(QWidget * parent, ModelData & model, GeneralS
   for (int i = 0; i < modesCount; i++) {
     FlightModePanel * tab = new FlightModePanel(tabWidget, model, i, generalSettings, firmware, rawSwitchFilteredModel);
     tab->setProperty("index", i);
-    connect(tab, &FlightModePanel::modified,         this, &FlightModesPanel::modified);
-    connect(tab, &FlightModePanel::phaseDataChanged, this, &FlightModesPanel::onPhaseNameChanged);
-    connect(tab, &FlightModePanel::phaseDataChanged, this, &FlightModesPanel::update);
-    connect(tab, &FlightModePanel::phaseDataChanged, this, &FlightModesPanel::refreshDataModels);
-    connect(tab, &FlightModePanel::phaseNameChanged, this, &FlightModesPanel::onPhaseNameChanged);
-    connect(tab, &FlightModePanel::phaseNoSwitchSet, this, &FlightModesPanel::refreshDataModels);
-    connect(tab, &FlightModePanel::gvNameChanged,    this, &FlightModesPanel::refreshDataModels);
+    connect(tab, &FlightModePanel::modified,           this, &FlightModesPanel::modified);
+    connect(tab, &FlightModePanel::phaseDataChanged,   this, &FlightModesPanel::onPhaseNameChanged);
+    connect(tab, &FlightModePanel::phaseNameChanged,   this, &FlightModesPanel::onPhaseNameChanged);
+    connect(tab, &FlightModePanel::phaseSwitchChanged, this, &FlightModesPanel::refreshDataModels);
+    connect(tab, &FlightModePanel::gvNameChanged,      this, &FlightModesPanel::refreshDataModels);
 
-    connect(this, &FlightModesPanel::updated,         tab,  &FlightModePanel::update);
+    connect(this, &FlightModesPanel::updated,          tab, &FlightModePanel::update);
     tabWidget->addTab(tab, getTabName(i));
     panels << tab;
   }
@@ -1426,6 +1423,7 @@ void FlightModesPanel::onPhaseNameChanged()
 {
   int index = sender()->property("index").toInt();
   tabWidget->setTabText(index, getTabName(index));
+  refreshDataModels();
 }
 
 void FlightModesPanel::update()

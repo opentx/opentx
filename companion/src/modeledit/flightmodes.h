@@ -50,11 +50,11 @@ class FlightModePanel : public ModelPanel
     void gvNameChanged();
     void phaseDataChanged();
     void phaseNameChanged();
-    void phaseNoSwitchSet();
+    void phaseSwitchChanged();
 
   private slots:
     void phaseName_editingFinished();
-    void phaseSwitchChanged(int index);
+    void phaseSwitch_currentIndexChanged(int index);
     void phaseFadeIn_editingFinished();
     void phaseFadeOut_editingFinished();
     void phaseTrimUse_currentIndexChanged(int index);
