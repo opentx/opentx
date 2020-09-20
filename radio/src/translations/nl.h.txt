@@ -1042,7 +1042,7 @@
 #define TR_LSW_HEADERS_V1              "Var1"
 #define TR_LSW_HEADERS_V2              "Var2"
 #define TR_LSW_HEADERS_ANDSW           "EN-Schakelaar"
-#define TR_LSW_HEADERS_DURATION        "Min. Duur"
+#define TR_LSW_HEADERS_DURATION        "Duur"
 #define TR_LSW_HEADERS_DELAY           "Vertraging"
 
 #define TR_GVAR_HEADERS_NAME          "Name"

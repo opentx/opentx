@@ -1039,7 +1039,7 @@
 #define TR_LSW_HEADERS_V1              "V1"
 #define TR_LSW_HEADERS_V2              "V2"
 #define TR_LSW_HEADERS_ANDSW           "AND Switch"
-#define TR_LSW_HEADERS_DURATION        "Min Duration"
+#define TR_LSW_HEADERS_DURATION        "Duration"
 #define TR_LSW_HEADERS_DELAY           "Delay"
 
 #define TR_GVAR_HEADERS_NAME          "Name"
