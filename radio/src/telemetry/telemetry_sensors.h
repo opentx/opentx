@@ -26,6 +26,7 @@
 constexpr int8_t TELEMETRY_SENSOR_TIMEOUT_UNAVAILABLE = -2;
 constexpr int8_t TELEMETRY_SENSOR_TIMEOUT_OLD = -1;
 constexpr int8_t TELEMETRY_SENSOR_TIMEOUT_START = 125; // * 160ms = 20s
+constexpr uint8_t TELEMETRY_SENSOR_TEXT_LENGTH = 16;
 
 class TelemetryItem
 {
@@ -74,7 +75,7 @@ class TelemetryItem
         // pilot latitude is stored in max
         // distFromEarthAxis is stored in value
       } gps;
-      char text[16];
+      char text[TELEMETRY_SENSOR_TEXT_LENGTH];
     };
 
     TelemetryItem()
