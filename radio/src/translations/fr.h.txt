@@ -731,7 +731,7 @@
 #define TR_16CH_WITHOUT_TELEMETRY      TR("16CH sans télém.", "16CH sans télémétrie")
 #define TR_16CH_WITH_TELEMETRY         TR("16CH avec télém.", "16CH avec télémétrie")
 #define TR_8CH_WITH_TELEMETRY          TR("8CH avec télém.", "8CH avec télémétrie")
-#define TR_EXT_ANTENNA                 "Antenne externe"
+#define TR_EXT_ANTENNA                 "Antenne Ext."
 #define TR_PIN                         "Pin"
 #define TR_UPDATE_RX_OPTIONS           "Sauver options RX?"
 #define TR_UPDATE_TX_OPTIONS           "Sauver options TX?"
