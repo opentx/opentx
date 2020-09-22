@@ -185,7 +185,10 @@ bool menuModelExpoOne(event_t event)
 
   drawFunction(expoFn, CURVE_CENTER_X, CURVE_CENTER_Y, CURVE_SIDE_WIDTH);
   drawCurveHorizontalScale();
-  drawCurveVerticalScale(CURVE_CENTER_X-CURVE_SIDE_WIDTH-15);
+  drawCurveVerticalScale(CURVE_CENTER_X-CURVE_SIDE_WIDTH - 15);
+  // those parameters are global so that they can be reused in the curve edit screen
+  s_currSrcRaw = ed->srcRaw;
+  s_currScale = ed->scale;
   drawCursor(expoFn);
 
   for (uint8_t k=0; k<NUM_BODY_LINES+1; k++) {
@@ -219,8 +222,6 @@ bool menuModelExpoOne(event_t event)
         else if (attr) {
           menuHorizontalPosition = 0;
         }
-        s_currSrcRaw = ed->srcRaw;
-        s_currScale = ed->scale;
         break;
 
       case EXPO_FIELD_SCALE:

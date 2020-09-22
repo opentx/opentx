@@ -141,9 +141,9 @@ void editCurveRef(coord_t x, coord_t y, CurveRef & curve, event_t event, LcdFlag
       break;
     case CURVE_REF_CUSTOM:
       drawCurveName(x, y, curve.value, flags);
-      if (active && menuHorizontalPosition==1) {
-        if (event==EVT_KEY_LONG(KEY_ENTER) && curve.value!=0) {
-          s_currIdxSubMenu = (curve.value<0 ? -curve.value-1 : curve.value-1);
+      if (active && menuHorizontalPosition == 1) {
+        if (event == EVT_KEY_LONG(KEY_ENTER) && curve.value != 0) {
+          s_currIdxSubMenu = abs(curve.value) - 1;
           pushMenu(menuModelCurveOne);
         }
         else {
@@ -180,7 +180,8 @@ void drawCursor(FnFuncP fn, uint8_t offset)
 {
   int x512 = getValue(s_currSrcRaw);
   if (s_currSrcRaw >= MIXSRC_FIRST_TELEM) {
-    if (s_currScale > 0) x512 = (x512 * 1024) / convertTelemValue(s_currSrcRaw - MIXSRC_FIRST_TELEM + 1, s_currScale);
+    if (s_currScale > 0)
+      x512 = (x512 * 1024) / convertTelemValue(s_currSrcRaw - MIXSRC_FIRST_TELEM + 1, s_currScale);
     drawSensorCustomValue(LCD_W - FW - offset, 6 * FH, (s_currSrcRaw - MIXSRC_FIRST_TELEM) / 3, x512, 0);
   }
   else {

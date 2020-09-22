@@ -88,8 +88,6 @@ void menuModelExpoOne(event_t event)
         lcdDrawTextAlignedLeft(y, STR_SOURCE);
         drawSource(EXPO_ONE_2ND_COLUMN, y, ed->srcRaw, STREXPANDED|attr);
         if (attr) ed->srcRaw = checkIncDec(event, ed->srcRaw, INPUTSRC_FIRST, INPUTSRC_LAST, EE_MODEL|INCDEC_SOURCE|NO_INCDEC_MARKS, isSourceAvailableInInputs);
-        s_currSrcRaw = ed->srcRaw;
-        s_currScale = ed->scale;
         break;
 
       case EXPO_FIELD_SCALE:
@@ -140,5 +138,8 @@ void menuModelExpoOne(event_t event)
   }
 
   drawFunction(expoFn);
+  // those parameters are global so that they can be reused in the curve edit screen
+  s_currSrcRaw = ed->srcRaw;
+  s_currScale = ed->scale;
   drawCursor(expoFn);
 }

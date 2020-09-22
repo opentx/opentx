@@ -103,7 +103,8 @@ void drawCursor(FnFuncP fn)
   if (s_currSrcRaw >= MIXSRC_FIRST_TELEM) {
     strAppendUnsigned(textx, calcRESXto100(x));
     // TODO drawSensorCustomValue(LCD_W-8, 6*FH, ed->srcRaw - MIXSRC_FIRST_TELEM, x);
-    if (s_currScale > 0) x = (x * 1024) / convertTelemValue(s_currSrcRaw - MIXSRC_FIRST_TELEM + 1, s_currScale);
+    if (s_currScale > 0)
+      x = (x * 1024) / convertTelemValue(s_currSrcRaw - MIXSRC_FIRST_TELEM + 1, s_currScale);
   }
   else {
     strAppendSigned(textx, calcRESXto100(x));

@@ -203,7 +203,8 @@ bool menuModelCurveOne(event_t event)
   drawCurve(CURVE_CENTER_X, CURVE_CENTER_Y, CURVE_SIDE_WIDTH);
   drawCurveHorizontalScale();
   if (menuVerticalPosition < ITEM_CURVE_COORDS1) drawCurveVerticalScale(CURVE_CENTER_X-CURVE_SIDE_WIDTH-15);
-  if (s_currSrcRaw != MIXSRC_NONE) drawCursor(applyCurrentCurve);
+  if (s_currSrcRaw != MIXSRC_NONE)
+    drawCursor(applyCurrentCurve);
 
   coord_t posX = 47;
   attr = (s_editMode > 0 ? INVERS|BLINK : INVERS);

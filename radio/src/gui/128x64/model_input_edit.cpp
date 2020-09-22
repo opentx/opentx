@@ -21,7 +21,6 @@
 #include "opentx.h"
 
 #define EXPO_ONE_2ND_COLUMN (7*FW+3*FW+2)
-#define EXPO_ONE_FM_WIDTH   (5*FW)
 
 int expoFn(int x)
 {
@@ -91,15 +90,15 @@ void menuModelExpoOne(event_t event)
       case EXPO_FIELD_SOURCE:
         lcdDrawTextAlignedLeft(y, STR_SOURCE);
         drawSource(EXPO_ONE_2ND_COLUMN, y, ed->srcRaw, RIGHT|STREXPANDED|attr);
-        if (attr) ed->srcRaw = checkIncDec(event, ed->srcRaw, INPUTSRC_FIRST, INPUTSRC_LAST, EE_MODEL|INCDEC_SOURCE|NO_INCDEC_MARKS, isSourceAvailableInInputs);
-        s_currSrcRaw = ed->srcRaw;
-        s_currScale = ed->scale;
+        if (attr)
+          ed->srcRaw = checkIncDec(event, ed->srcRaw, INPUTSRC_FIRST, INPUTSRC_LAST, EE_MODEL|INCDEC_SOURCE|NO_INCDEC_MARKS, isSourceAvailableInInputs);
         break;
 
       case EXPO_FIELD_SCALE:
         lcdDrawTextAlignedLeft(y, STR_SCALE);
         drawSensorCustomValue(EXPO_ONE_2ND_COLUMN, y, (ed->srcRaw - MIXSRC_FIRST_TELEM)/3, convertTelemValue(ed->srcRaw - MIXSRC_FIRST_TELEM + 1, ed->scale), attr);
-        if (attr) ed->scale = checkIncDec(event, ed->scale, 0, maxTelemValue(ed->srcRaw - MIXSRC_FIRST_TELEM + 1), EE_MODEL);
+        if (attr)
+          ed->scale = checkIncDec(event, ed->scale, 0, maxTelemValue(ed->srcRaw - MIXSRC_FIRST_TELEM + 1), EE_MODEL);
         break;
 
       case EXPO_FIELD_WEIGHT:
@@ -139,16 +138,20 @@ void menuModelExpoOne(event_t event)
         break;
 
       case EXPO_FIELD_TRIM:
-        uint8_t not_stick = (ed->srcRaw > MIXSRC_Ail);
+        uint8_t notStick = (ed->srcRaw > MIXSRC_Ail);
         int8_t carryTrim = -ed->carryTrim;
         lcdDrawTextAlignedLeft(y, STR_TRIM);
-        lcdDrawTextAtIndex(EXPO_ONE_2ND_COLUMN, y, STR_VMIXTRIMS, (not_stick && carryTrim == 0) ? 0 : carryTrim+1, RIGHT | (menuHorizontalPosition==0 ? attr : 0));
-        if (attr) ed->carryTrim = -checkIncDecModel(event, carryTrim, not_stick ? TRIM_ON : -TRIM_OFF, -TRIM_LAST);
+        lcdDrawTextAtIndex(EXPO_ONE_2ND_COLUMN, y, STR_VMIXTRIMS, (notStick && carryTrim == 0) ? 0 : carryTrim+1, RIGHT | (menuHorizontalPosition==0 ? attr : 0));
+        if (attr)
+          ed->carryTrim = -checkIncDecModel(event, carryTrim, notStick ? TRIM_ON : -TRIM_OFF, -TRIM_LAST);
         break;
     }
     y += FH;
   }
 
   drawFunction(expoFn);
+  // those parameters are global so that they can be reused in the curve edit screen
+  s_currSrcRaw = ed->srcRaw;
+  s_currScale = ed->scale;
   drawCursor(expoFn);
 }
