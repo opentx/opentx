@@ -94,7 +94,11 @@ const FrSkySportSensor sportSensors[] = {
   { RB3040_CH5_6_FIRST_ID, RB3040_CH5_6_LAST_ID, 1, ZSTR_RB3040_CHANNEL6, UNIT_AMPS, 2 },
   { RB3040_CH7_8_FIRST_ID, RB3040_CH7_8_LAST_ID, 0, ZSTR_RB3040_CHANNEL7, UNIT_AMPS, 2 },
   { RB3040_CH7_8_FIRST_ID, RB3040_CH7_8_LAST_ID, 1, ZSTR_RB3040_CHANNEL8, UNIT_AMPS, 2 },
-  { 0, 0, 0, NULL, UNIT_RAW, 0 } // sentinel
+  { SERVO_FIRST_ID, SERVO_LAST_ID, 0, ZSTR_SERVO_CURRENT, UNIT_AMPS, 1 },
+  { SERVO_FIRST_ID, SERVO_LAST_ID, 1, ZSTR_SERVO_VOLTAGE, UNIT_VOLTS, 1 },
+  { SERVO_FIRST_ID, SERVO_LAST_ID, 2, ZSTR_SERVO_TEMPERATURE, UNIT_CELSIUS, 0 },
+  { SERVO_FIRST_ID, SERVO_LAST_ID, 3, ZSTR_SERVO_STATUS, UNIT_BITFIELD, 0 },
+  { 0, 0, 0, nullptr, UNIT_RAW, 0 } // sentinel
 };
 
 const FrSkySportSensor * getFrSkySportSensor(uint16_t id, uint8_t subId=0)
@@ -336,6 +340,17 @@ void sportProcessTelemetryPacketWithoutCrc(uint8_t origin, const uint8_t * packe
         else if (dataId >= RB3040_CH1_2_FIRST_ID && dataId <= RB3040_CH7_8_LAST_ID) {
           sportProcessTelemetryPacket(dataId, 0, instance, data & 0xffff);
           sportProcessTelemetryPacket(dataId, 1, instance, (data >> 16u) & 0xffff);
+        }
+        else if (dataId >= SERVO_FIRST_ID && dataId <= SERVO_LAST_ID) {
+          sportProcessTelemetryPacket(dataId, 0, instance, data & 0xFFu);
+          sportProcessTelemetryPacket(dataId, 1, instance, (data >> 8u) & 0xFFu);
+          sportProcessTelemetryPacket(dataId, 2, instance, (data >> 16u) & 0xFFu);
+          uint8_t newServosState = data >> 24u;
+          sportProcessTelemetryPacket(dataId, 3, instance, newServosState);
+          if (newServosState != 0 && servosState == 0) {
+            audioEvent(AU_SERVO_KO);
+            servosState = newServosState;
+          }
         }
         else {
           sportProcessTelemetryPacket(dataId, 0, instance, data);
