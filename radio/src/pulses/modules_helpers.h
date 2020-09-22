@@ -331,6 +331,10 @@ inline bool isModulePxx2(uint8_t idx)
     if (g_model.moduleData[idx].type == MODULE_TYPE_R9M_LITE_PXX2)
       return true;
   #endif
+  #if defined(EXTERNAL_ACCESS_MOD)
+  if (g_model.moduleData[idx].type == MODULE_TYPE_R9M_PXX2)
+    return true;
+  #endif
 #endif
   return false;
 }

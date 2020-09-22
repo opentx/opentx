@@ -402,7 +402,7 @@
 #endif
 
 // Serial Port (DEBUG)
-#if defined(PCBX12S) || defined(RADIO_TX16S) && !defined(EXTERNAL_ACCESS_MOD)
+#if (defined(PCBX12S) || defined(RADIO_TX16S)) && !defined(EXTERNAL_ACCESS_MOD)
   #define AUX_SERIAL_RCC_AHB1Periph           (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_DMA1)
   #define AUX_SERIAL_RCC_APB1Periph           RCC_APB1Periph_USART3
   #define AUX_SERIAL_RCC_APB2Periph           0
@@ -762,7 +762,7 @@
   #define INTMODULE_BOOTCMD_GPIO_PIN    GPIO_Pin_9  // PI.09
 #endif
 #define INIT_INTMODULE_BOOTCMD_PIN() GPIO_ResetBits(INTMODULE_BOOTCMD_GPIO, INTMODULE_BOOTCMD_GPIO_PIN);
-#if !defined(EXTERNAL_ACCESS_MOD) && defined(PCBX10) || PCBREV >= 13
+#if (defined(PCBX10) || PCBREV >= 13) && !defined(EXTERNAL_ACCESS_MOD) //TIM2 used by ext mod
   #define INTMODULE_RCC_APB1Periph      RCC_APB1Periph_TIM2
   #define INTMODULE_RCC_APB2Periph      RCC_APB2Periph_USART1
   #define INTMODULE_TIMER               TIM2
@@ -782,7 +782,7 @@
 #define EXTMODULE_PWR_GPIO                 GPIOB
 #define EXTMODULE_PWR_GPIO_PIN             GPIO_Pin_3  // PB.03
 #define EXTERNAL_MODULE_PWR_OFF()          GPIO_ResetBits(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN)
-#if defined(PCBX10) && defined(PCBREV_EXPRESS) || defined(EXTERNAL_ACCESS_MOD)
+#if (defined(PCBX10) && defined(PCBREV_EXPRESS)) || defined(EXTERNAL_ACCESS_MOD)
   #define EXTMODULE_RCC_AHB1Periph         (RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_DMA1)
   #define EXTMODULE_RCC_APB1Periph         (RCC_APB1Periph_TIM2 | RCC_APB1Periph_USART3)
   #define EXTMODULE_RCC_APB2Periph         0

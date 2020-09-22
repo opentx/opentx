@@ -26,6 +26,9 @@ static const char * const options[] = {
 #if defined(AUTOUPDATE)
   "autoupdate",
 #endif
+#if defined(BLUETOOTH)
+  "bluetooth",
+#endif
 #if defined(CROSSFIRE)
   "crossfire",
 #endif
