@@ -197,9 +197,9 @@ void InputsPanel::gm_openExpo(int index)
     model->expoData[index] = ed;
     if (firmware->getCapability(VirtualInputs))
       strncpy(model->inputNames[ed.chn], inputName.toLatin1().data(), INPUT_NAME_LEN);
+    update();
     emit updateDataModels();
     emit modified();
-    update();
   }
   else {
     if (expoInserted) {
@@ -252,8 +252,9 @@ void InputsPanel::exposDelete(bool prompt)
   }
 
   exposDeleteList(list, prompt);
-  emit modified();
   update();
+  emit updateDataModels();
+  emit modified();
 }
 
 void InputsPanel::exposCut()
@@ -326,8 +327,9 @@ void InputsPanel::pasteExpoMimeData(const QMimeData * mimeData, int destIdx)
       i += sizeof(ExpoData);
     }
 
-    emit modified();
     update();
+    emit updateDataModels();
+    emit modified();
   }
 }
 
@@ -494,8 +496,9 @@ void InputsPanel::moveExpoList(bool down)
     }
   }
   if (mod) {
-    emit modified();
     update();
+    emit updateDataModels();
+    emit modified();
   }
   setSelectedByExpoList(highlightList);
 }
@@ -533,8 +536,9 @@ void InputsPanel::clearExpos()
     for (int i = 0; i < inputsCount; i++) {
       model->updateAllReferences(ModelData::REF_UPD_TYPE_INPUT, ModelData::REF_UPD_ACT_CLEAR, i);
     }
-    emit modified();
     update();
+    emit updateDataModels();
+    emit modified();
   }
 }
 
@@ -582,6 +586,7 @@ void InputsPanel::cmInputClear()
   }
   model->updateAllReferences(ModelData::REF_UPD_TYPE_INPUT, ModelData::REF_UPD_ACT_CLEAR, inputIdx);
   update();
+  emit updateDataModels();
   emit modified();
 }
 
@@ -605,6 +610,7 @@ void InputsPanel::cmInputDelete()
 
   model->updateAllReferences(ModelData::REF_UPD_TYPE_INPUT, ModelData::REF_UPD_ACT_SHIFT, inputIdx, 0, -1);
   update();
+  emit updateDataModels();
   emit modified();
 }
 
@@ -623,6 +629,7 @@ void InputsPanel::cmInputInsert()
 
   model->updateAllReferences(ModelData::REF_UPD_TYPE_INPUT, ModelData::REF_UPD_ACT_SHIFT, inputIdx, 0, 1);
   update();
+  emit updateDataModels();
   emit modified();
 }
 
@@ -684,6 +691,7 @@ void InputsPanel::cmInputSwapData(int idx1, int idx2)
 
   model->updateAllReferences(ModelData::REF_UPD_TYPE_INPUT, ModelData::REF_UPD_ACT_SWAP, idx1, idx2);
   update();
+  emit updateDataModels();
   emit modified();
 }
 

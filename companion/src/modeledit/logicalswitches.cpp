@@ -169,36 +169,33 @@ LogicalSwitchesPanel::~LogicalSwitchesPanel()
 
 void LogicalSwitchesPanel::onFunctionChanged()
 {
-  int i = sender()->property("index").toInt();
-  unsigned newFunc = cbFunction[i]->currentData().toUInt();
+  if (!lock) {
+    int i = sender()->property("index").toInt();
+    unsigned newFunc = cbFunction[i]->currentData().toUInt();
 
-  if (model->logicalSw[i].func == newFunc)
-    return;
+    if (model->logicalSw[i].func == newFunc)
+      return;
 
-  const unsigned oldFunc = model->logicalSw[i].func;
-  CSFunctionFamily oldFuncFamily = model->logicalSw[i].getFunctionFamily();
-  model->logicalSw[i].func = newFunc;
-  CSFunctionFamily newFuncFamily = model->logicalSw[i].getFunctionFamily();
-
-  if (oldFuncFamily != newFuncFamily) {
-    model->logicalSw[i].clear();
+    const unsigned oldFunc = model->logicalSw[i].func;
+    CSFunctionFamily oldFuncFamily = model->logicalSw[i].getFunctionFamily();
     model->logicalSw[i].func = newFunc;
-    if (newFuncFamily == LS_FAMILY_TIMER) {
-      model->logicalSw[i].val1 = -119;
-      model->logicalSw[i].val2 = -119;
-    }
-    else if (newFuncFamily == LS_FAMILY_EDGE) {
-      model->logicalSw[i].val2 = -129;
-    }
-  }
-  if (bool(oldFunc) != bool(newFunc)) {
-    emit updateDataModels();
-    update();
-  }
-  else
-    updateLine(i);
+    CSFunctionFamily newFuncFamily = model->logicalSw[i].getFunctionFamily();
 
-  emit modified();
+    if (oldFuncFamily != newFuncFamily) {
+      model->logicalSw[i].clear();
+      model->logicalSw[i].func = newFunc;
+      if (newFuncFamily == LS_FAMILY_TIMER) {
+        model->logicalSw[i].val1 = -119;
+        model->logicalSw[i].val2 = -119;
+      }
+      else if (newFuncFamily == LS_FAMILY_EDGE) {
+        model->logicalSw[i].val2 = -129;
+      }
+    }
+
+    updateLine(i);
+    emit modified();
+  }
 }
 
 void LogicalSwitchesPanel::onV1Changed(int value)
@@ -353,7 +350,7 @@ void LogicalSwitchesPanel::updateLine(int i)
   cbFunction[i]->setCurrentIndex(cbFunction[i]->findData(model->logicalSw[i].func));
   cbAndSwitch[i]->setCurrentIndex(cbAndSwitch[i]->findData(RawSwitch(model->logicalSw[i].andsw).toValue()));
 
-  if (!model->logicalSw[i].func) {
+  if (model->logicalSw[i].isEmpty()) {
     mask = 0;
   }
   else {
