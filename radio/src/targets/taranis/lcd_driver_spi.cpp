@@ -144,9 +144,9 @@ void lcdStart()
   lcdWriteCommand(0xE9); // Set bias=1/10
   lcdWriteCommand(0x81); // Set Vop
 #if defined(BOOT)
-  lcdWriteCommand(LCD_CONTRAST_OFFSET+LCD_CONTRAST_DEFAULT);
+  lcdWriteCommand(LCD_CONTRAST_OFFSET + LCD_CONTRAST_DEFAULT);
 #else
-  lcdWriteCommand(LCD_CONTRAST_OFFSET+g_eeGeneral.contrast);
+  lcdWriteCommand(LCD_CONTRAST_OFFSET + g_eeGeneral.contrast);
 #endif
   lcdWriteCommand(0xA2); // Set line rate: 28KLPS
   lcdWriteCommand(0x28); // Set panel loading
@@ -173,11 +173,11 @@ void lcdStart()
 
 void lcdWriteAddress(uint8_t x, uint8_t y)
 {
-  lcdWriteCommand(x & 0x0F); // Set Column Address LSB CA[3:0]
-  lcdWriteCommand((x>>4) | 0x10); // Set Column Address MSB CA[7:4]
+  lcdWriteCommand(x & 0x0Fu); // Set Column Address LSB CA[3:0]
+  lcdWriteCommand((x >> 4u) | 0x10u); // Set Column Address MSB CA[7:4]
 
-  lcdWriteCommand((y&0x0F) | 0x60); // Set Row Address LSB RA [3:0]
-  lcdWriteCommand(((y>>4) & 0x0F) | 0x70); // Set Row Address MSB RA [7:4]
+  lcdWriteCommand((y & 0x0Fu) | 0x60u); // Set Row Address LSB RA [3:0]
+  lcdWriteCommand(((y >> 4u) & 0x0Fu) | 0x70u); // Set Row Address MSB RA [7:4]
 }
 #endif
 

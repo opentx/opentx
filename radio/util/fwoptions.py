@@ -71,13 +71,13 @@ options_taranis_x9d = {
     "haptic": ("HAPTIC", "YES", "NO"),
     "nogvars": ("GVARS", "NO", "YES"),
     "sqt5font": ("FONT", "SQT5", None),
+    "noras": ("RAS", "NO", "YES"),
     "faimode": ("FAI", "YES", None),
     "faichoice": ("FAI", "CHOICE", None),
     "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
-    "internalppm": ("INTERNAL_MODULE_PPM", "YES", "NO"),
-    "shutdownconfirm": ("SHUTDOWN_CONFIRMATION", "YES", "NO"),
     "eu": ("MODULE_PROTOCOL_D8", "NO", "YES"),
-    "flexr9m": ("MODULE_PROTOCOL_FLEX", "YES", None)
+    "flexr9m": ("MODULE_PROTOCOL_FLEX", "YES", None),
+    "afhds3": ("AFHDS3", "YES", "NO")
 }
 
 options_taranis_x9dp = {
@@ -90,10 +90,21 @@ options_taranis_x9dp = {
     "faimode": ("FAI", "YES", None),
     "faichoice": ("FAI", "CHOICE", None),
     "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
-    "internalppm": ("INTERNAL_MODULE_PPM", "YES", "NO"),
-    "shutdownconfirm": ("SHUTDOWN_CONFIRMATION", "YES", "NO"),
     "eu": ("MODULE_PROTOCOL_D8", "NO", "YES"),
-    "flexr9m": ("MODULE_PROTOCOL_FLEX", "YES", None)
+    "flexr9m": ("MODULE_PROTOCOL_FLEX", "YES", None),
+    "afhds3": ("AFHDS3", "YES", "NO")
+}
+options_taranis_x7 = {
+    "noheli": ("HELI", "NO", "YES"),
+    "ppmus": ("PPM_UNIT", "US", "PERCENT_PREC1"),
+    "lua": ("LUA", "YES", "NO_MODEL_SCRIPTS"),
+    "nogvars": ("GVARS", "NO", "YES"),
+    "sqt5font": ("FONT", "SQT5", None),
+    "faimode": ("FAI", "YES", None),
+    "faichoice": ("FAI", "CHOICE", None),
+    "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
+    "eu": ("MODULE_PROTOCOL_D8", "NO", "YES"),
+    "flexr9m": ("MODULE_PROTOCOL_FLEX", "YES", None),
 }
 
 options_taranis_x9lite = {
@@ -101,16 +112,13 @@ options_taranis_x9lite = {
     "ppmus": ("PPM_UNIT", "US", "PERCENT_PREC1"),
     "lua": ("LUA", "YES", "NO_MODEL_SCRIPTS"),
     "nogvars": ("GVARS", "NO", "YES"),
-    "autoupdate": ("AUTOUPDATE", "YES", None),
     "sqt5font": ("FONT", "SQT5", None),
-    "noras": ("RAS", "NO", "YES"),
     "faimode": ("FAI", "YES", None),
     "faichoice": ("FAI", "CHOICE", None),
     "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
-    "shutdownconfirm": ("SHUTDOWN_CONFIRMATION", "YES", "NO"),
     "eu": ("MODULE_PROTOCOL_D8", "NO", "YES"),
-    "internalpxx1": ("INTERNAL_MODULE_PXX1", "YES", "NO"),
-    "flexr9m": ("MODULE_PROTOCOL_FLEX", "YES", None)
+    "flexr9m": ("MODULE_PROTOCOL_FLEX", "YES", None),
+    "afhds3": ("AFHDS3", "YES", "NO")
 }
 
 options_taranis_xlite = {
@@ -122,9 +130,9 @@ options_taranis_xlite = {
     "faimode": ("FAI", "YES", None),
     "faichoice": ("FAI", "CHOICE", None),
     "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
-    "shutdownconfirm": ("SHUTDOWN_CONFIRMATION", "YES", "NO"),
     "eu": ("MODULE_PROTOCOL_D8", "NO", "YES"),
-    "flexr9m": ("MODULE_PROTOCOL_FLEX", "YES", None)
+    "flexr9m": ("MODULE_PROTOCOL_FLEX", "YES", None),
+    "afhds3": ("AFHDS3", "YES", "NO")
 }
 
 options_taranis_xlites = {
@@ -132,15 +140,13 @@ options_taranis_xlites = {
     "ppmus": ("PPM_UNIT", "US", "PERCENT_PREC1"),
     "lua": ("LUA", "YES", "NO_MODEL_SCRIPTS"),
     "nogvars": ("GVARS", "NO", "YES"),
-    "autoupdate": ("AUTOUPDATE", "YES", None),
     "sqt5font": ("FONT", "SQT5", None),
     "faimode": ("FAI", "YES", None),
     "faichoice": ("FAI", "CHOICE", None),
     "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
-    "shutdownconfirm": ("SHUTDOWN_CONFIRMATION", "YES", "NO"),
     "eu": ("MODULE_PROTOCOL_D8", "NO", "YES"),
-    "internalpxx1": ("INTERNAL_MODULE_PXX1", "YES", "NO"),
-    "flexr9m": ("MODULE_PROTOCOL_FLEX", "YES", None)
+    "flexr9m": ("MODULE_PROTOCOL_FLEX", "YES", None),
+    "afhds3": ("AFHDS3", "YES", "NO")
 }
 
 options_taranis_x9e = {
@@ -152,11 +158,11 @@ options_taranis_x9e = {
     "faimode": ("FAI", "YES", None),
     "faichoice": ("FAI", "CHOICE", None),
     "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
-    "internalppm": ("INTERNAL_MODULE_PPM", "YES", "NO"),
     "shutdownconfirm": ("SHUTDOWN_CONFIRMATION", "YES", "NO"),
     "eu": ("MODULE_PROTOCOL_D8", "NO", "YES"),
     "horussticks": ("STICKS", "HORUS", "STANDARD"),
-    "flexr9m": ("MODULE_PROTOCOL_FLEX", "YES", None)
+    "flexr9m": ("MODULE_PROTOCOL_FLEX", "YES", None),
+    "afhds3": ("AFHDS3", "YES", "NO")
 }
 
 options_horus_x12s = {
@@ -170,7 +176,7 @@ options_horus_x12s = {
     "eu": ("MODULE_PROTOCOL_D8", "NO", "YES"),
     "pcbdev": ("PCBREV", "10", None),
     "flexr9m": ("MODULE_PROTOCOL_FLEX", "YES", None),
-    "internalaccess": [("INTERNAL_MODULE_PXX1", "NO", None), ("INTERNAL_MODULE_PXX2", "YES", None)]
+    "internalaccess": [("INTERNAL_MODULE_PXX1", "NO", None), ("INTERNAL_MODULE_PXX2", "YES", None)],
 }
 
 options_horus_x10 = {
@@ -183,7 +189,7 @@ options_horus_x10 = {
     "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
     "eu": ("MODULE_PROTOCOL_D8", "NO", "YES"),
     "flexr9m": ("MODULE_PROTOCOL_FLEX", "YES", None),
-    "internalaccess": [("INTERNAL_MODULE_PXX1", "NO", None), ("INTERNAL_MODULE_PXX2", "YES", None)]
+    "internalaccess": [("INTERNAL_MODULE_PXX1", "NO", None), ("INTERNAL_MODULE_PXX2", "YES", None)],
 }
 
 options_horus_x10express = {
@@ -196,7 +202,7 @@ options_horus_x10express = {
     "faichoice": ("FAI", "CHOICE", None),
     "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
     "eu": ("MODULE_PROTOCOL_D8", "NO", "YES"),
-    "flexr9m": ("MODULE_PROTOCOL_FLEX", "YES", None)
+    "flexr9m": ("MODULE_PROTOCOL_FLEX", "YES", None),
 }
 
 options_jumper_t12 = {
@@ -209,6 +215,7 @@ options_jumper_t12 = {
     "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
     "flexr9m": ("MODULE_PROTOCOL_FLEX", "YES", None),
     "internalmulti": ("INTERNAL_MODULE_MULTI", "YES", "NO"),
+    "afhds3": ("AFHDS3", "YES", "NO")
 }
 
 options_jumper_t16 = {
@@ -221,6 +228,18 @@ options_jumper_t16 = {
     "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
     "flexr9m": ("MODULE_PROTOCOL_FLEX", "YES", None),
     "internalmulti": ("INTERNAL_MODULE_MULTI", "YES", "NO"),
+    "bluetooth": ("BLUETOOTH", "YES", "NO"),
+}
+
+options_jumper_t18 = {
+    "noheli": ("HELI", "NO", "YES"),
+    "ppmus": ("PPM_UNIT", "US", "PERCENT_PREC1"),
+    "lua": ("LUA", "YES", "NO_MODEL_SCRIPTS"),
+    "nogvars": ("GVARS", "NO", "YES"),
+    "faimode": ("FAI", "YES", None),
+    "faichoice": ("FAI", "CHOICE", None),
+    "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
+    "flexr9m": ("MODULE_PROTOCOL_FLEX", "YES", None),
     "bluetooth": ("BLUETOOTH", "YES", "NO"),
 }
 

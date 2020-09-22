@@ -45,7 +45,8 @@ void telemetryPortInit(uint32_t baudrate, uint8_t mode)
     USART_DeInit(TELEMETRY_USART);
     return;
   }
-
+  //deinit inverted mode
+  telemetryPortInvertedInit(0);
   NVIC_InitTypeDef NVIC_InitStructure;
   NVIC_InitStructure.NVIC_IRQChannel = TELEMETRY_DMA_TX_Stream_IRQ;
   NVIC_InitStructure.NVIC_IRQChannelPreemptionPriority = 1;
@@ -136,6 +137,9 @@ void telemetryPortInit(uint32_t baudrate, uint8_t mode)
 // soft serial vars
 static uint8_t rxBitCount;
 static uint8_t rxByte;
+// single bit length expresses in half us
+static uint16_t bitLength;
+static uint16_t probeTimeFromStartBit;
 
 void telemetryPortInvertedInit(uint32_t baudrate)
 {
@@ -154,6 +158,20 @@ void telemetryPortInvertedInit(uint32_t baudrate)
   }
 
   rxBitCount = 0;
+
+  switch(baudrate) {
+    case 115200:
+      bitLength = 17;
+      probeTimeFromStartBit = 23; //because pin is not probed immediately
+      break;
+    case 57600:
+      bitLength = 35; //34 was used before - I prefer to use use 35 because of lower error
+      probeTimeFromStartBit = 48; // 48 used in original implementation
+      break;
+    default:
+      bitLength = 2000000/baudrate; //because of 0,5 us  tick
+      probeTimeFromStartBit = 3000000/baudrate;
+  }
 
   // configure bit sample timer
   TELEMETRY_TIMER->PSC = (PERI2_FREQUENCY * TIMER_MULT_APB2) / 2000000 - 1; // 0.5uS
@@ -196,7 +214,7 @@ void telemetryPortInvertedRxBit()
 {
   if (rxBitCount < 8) {
     if (rxBitCount == 0) {
-      TELEMETRY_TIMER->ARR = 34;
+      TELEMETRY_TIMER->ARR = bitLength;
       rxByte = 0;
     }
     else {
@@ -209,7 +227,6 @@ void telemetryPortInvertedRxBit()
     ++rxBitCount;
   }
   else if (rxBitCount == 8) {
-
     telemetryNoDMAFifo.push(rxByte);
     rxBitCount = 0;
 
@@ -223,6 +240,11 @@ void telemetryPortInvertedRxBit()
 
 void telemetryPortSetDirectionOutput()
 {
+#if defined(GHOST) && SPORT_MAX_BAUDRATE < 400000
+  if (isModuleGhost(EXTERNAL_MODULE)) {
+    TELEMETRY_USART->BRR = BRR_400K;
+  }
+#endif
   TELEMETRY_DIR_GPIO->BSRRL = TELEMETRY_DIR_GPIO_PIN;     // output enable
   TELEMETRY_USART->CR1 &= ~USART_CR1_RE;                  // turn off receiver
 }
@@ -235,6 +257,11 @@ void sportWaitTransmissionComplete()
 void telemetryPortSetDirectionInput()
 {
   sportWaitTransmissionComplete();
+#if defined(GHOST) && SPORT_MAX_BAUDRATE < 400000
+  if (isModuleGhost(EXTERNAL_MODULE) && g_eeGeneral.telemetryBaudrate == GHST_TELEMETRY_RATE_115K) {
+    TELEMETRY_USART->BRR = BRR_115K;
+  }
+#endif
   TELEMETRY_DIR_GPIO->BSRRH = TELEMETRY_DIR_GPIO_PIN;     // output disable
   TELEMETRY_USART->CR1 |= USART_CR1_RE;                   // turn on receiver
 }
@@ -360,7 +387,7 @@ extern "C" void TELEMETRY_EXTI_IRQHandler(void)
 
     if (rxBitCount == 0) {
 
-      TELEMETRY_TIMER->ARR = 48; // 1,5 cycle from start at 57600bps
+      TELEMETRY_TIMER->ARR = probeTimeFromStartBit; // 1,5 cycle from start at 57600bps
       TELEMETRY_TIMER->CR1 |= TIM_CR1_CEN;
     
       // disable start bit interrupt

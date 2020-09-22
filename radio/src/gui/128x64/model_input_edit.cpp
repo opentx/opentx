@@ -55,7 +55,7 @@ void menuModelExpoOne(event_t event)
     killEvents(event);
   }
 #elif defined(NAVIGATION_XLITE)
-  if (event == EVT_KEY_LONG(KEY_SHIFT)) {
+  if (event == EVT_KEY_FIRST(KEY_ENTER) && IS_SHIFT_PRESSED()) {
     pushMenu(menuChannelsView);
     killEvents(event);
   }
@@ -96,7 +96,7 @@ void menuModelExpoOne(event_t event)
 
       case EXPO_FIELD_SCALE:
         lcdDrawTextAlignedLeft(y, STR_SCALE);
-        drawSensorCustomValue(EXPO_ONE_2ND_COLUMN, y, (ed->srcRaw - MIXSRC_FIRST_TELEM)/3, convertTelemValue(ed->srcRaw - MIXSRC_FIRST_TELEM + 1, ed->scale), attr);
+        drawSensorCustomValue(EXPO_ONE_2ND_COLUMN, y, (ed->srcRaw - MIXSRC_FIRST_TELEM)/3, convertTelemValue(ed->srcRaw - MIXSRC_FIRST_TELEM + 1, ed->scale),  RIGHT | attr);
         if (attr)
           ed->scale = checkIncDec(event, ed->scale, 0, maxTelemValue(ed->srcRaw - MIXSRC_FIRST_TELEM + 1), EE_MODEL);
         break;

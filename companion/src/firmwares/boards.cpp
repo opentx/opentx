@@ -25,18 +25,13 @@
 // Update: These are now all only used within this class.
 //  External access is only via getEEpromSize() and getFlashSize()
 
-#define EESIZE_STOCK                   2048
-#define EESIZE_M128                    4096
-#define EESIZE_GRUVIN9X                4096
 #define EESIZE_TARANIS                 (32*1024)
 #define EESIZE_SKY9X                   (128*4096)
 #define EESIZE_9XRPRO                  (128*4096)
 #define EESIZE_MAX                     EESIZE_9XRPRO
 
 // getFlashSize() (and these macros) is only used by radiointerface::getDfuArgs (perhaps can find a better way?)
-#define FSIZE_STOCK                    (64*1024)
-#define FSIZE_M128                     (128*1024)
-#define FSIZE_GRUVIN9X                 (256*1024)
+
 #define FSIZE_TARANIS                  (512*1024)
 #define FSIZE_SKY9X                    (256*1024)
 #define FSIZE_9XRPRO                   (512*1024)
@@ -82,16 +77,12 @@ uint32_t Boards::getFourCC(Type board)
     case BOARD_AR9X:
     case BOARD_9XRPRO:
       return 0x3278746F;
-    case BOARD_MEGA2560:
-    case BOARD_GRUVIN9X:
-      return 0x3178746F;
-    case BOARD_9X_M64:
-    case BOARD_9X_M128:
-      return 0;
     case BOARD_JUMPER_T12:
       return 0x3D78746F;
     case BOARD_JUMPER_T16:
       return 0x3F78746F;
+    case BOARD_JUMPER_T18:
+      return 0x4078746F;
     case BOARD_RADIOMASTER_TX16S:
       return 0x3878746F;
     case BOARD_UNKNOWN:
@@ -104,13 +95,6 @@ uint32_t Boards::getFourCC(Type board)
 int Boards::getEEpromSize(Board::Type board)
 {
   switch (board) {
-    case BOARD_9X_M64:
-      return EESIZE_STOCK;
-    case BOARD_9X_M128:
-      return EESIZE_M128;
-    case BOARD_MEGA2560:
-    case BOARD_GRUVIN9X:
-      return EESIZE_GRUVIN9X;
     case BOARD_SKY9X:
       return EESIZE_SKY9X;
     case BOARD_9XRPRO:
@@ -134,6 +118,7 @@ int Boards::getEEpromSize(Board::Type board)
     case BOARD_X10:
     case BOARD_X10_EXPRESS:
     case BOARD_JUMPER_T16:
+    case BOARD_JUMPER_T18:
     case BOARD_RADIOMASTER_TX16S:
       return 0;
   }
@@ -144,13 +129,6 @@ int Boards::getEEpromSize(Board::Type board)
 int Boards::getFlashSize(Type board)
 {
   switch (board) {
-    case BOARD_9X_M64:
-      return FSIZE_STOCK;
-    case BOARD_9X_M128:
-      return FSIZE_M128;
-    case BOARD_MEGA2560:
-    case BOARD_GRUVIN9X:
-      return FSIZE_GRUVIN9X;
     case BOARD_SKY9X:
       return FSIZE_SKY9X;
     case BOARD_9XRPRO:
@@ -172,6 +150,7 @@ int Boards::getFlashSize(Type board)
     case BOARD_X10:
     case BOARD_X10_EXPRESS:
     case BOARD_JUMPER_T16:
+    case BOARD_JUMPER_T18:
     case BOARD_RADIOMASTER_TX16S:
       return FSIZE_HORUS;
     case BOARD_UNKNOWN:
@@ -310,7 +289,7 @@ int Boards::getCapability(Board::Type board, Board::Capability capability)
         return 0;
 
     case MouseAnalogs:
-      if (IS_FAMILY_HORUS_OR_T16(board))
+      if (IS_HORUS_X12S(board))
         return 2;
       else
         return 0;
@@ -412,7 +391,7 @@ QString Boards::getAnalogInputName(Board::Type board, int index)
 
   index -= getCapability(board, Board::Sticks);
 
-  if (IS_9X(board) || IS_2560(board) || IS_SKY9X(board)) {
+  if (IS_SKY9X(board)) {
     const QString pots[] = {
       "P1",
       "P2",
@@ -496,14 +475,6 @@ bool Boards::isBoardCompatible(Type board1, Type board2)
 QString Boards::getBoardName(Board::Type board)
 {
   switch (board) {
-    case BOARD_9X_M64:
-      return "9X";
-    case BOARD_9X_M128:
-      return "9X128";
-    case BOARD_GRUVIN9X:
-      return "Gruvin9x";
-    case BOARD_MEGA2560:
-      return "MEGA2560";
     case BOARD_TARANIS_X7:
       return "Taranis X7/X7S";
     case BOARD_TARANIS_X7_ACCESS:
@@ -540,6 +511,8 @@ QString Boards::getBoardName(Board::Type board)
       return "Horus X10/X10S Express";
     case BOARD_JUMPER_T16:
       return "Jumper T16";
+    case BOARD_JUMPER_T18:
+      return "Jumper T18";
     case BOARD_RADIOMASTER_TX16S:
       return "Radiomaster TX16S";
     default:

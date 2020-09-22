@@ -80,5 +80,6 @@ void startBindMenu(uint8_t moduleIdx)
     selection += 1;
 
   POPUP_MENU_SELECT_ITEM(selection);
+  POPUP_MENU_TITLE(STR_SELECT_MODE);
   POPUP_MENU_START(onBindMenu);
 }

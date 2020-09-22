@@ -240,12 +240,12 @@
 #define TR_FSW_RESET_TELEM     TR("Telm", "Telemetría")
 
 #if LCD_W >= 212
-  #define TR_FSW_RESET_TIMERS  "Timer 1\0 ""Timer 2\0 ""Timer 3\0 "
+  #define TR_FSW_RESET_TIMERS  "Timer 1\0  ""Timer 2\0  ""Timer 3\0  "
 #else
   #define TR_FSW_RESET_TIMERS  "Tmr1""Tmr2""Tmr3"
 #endif
 
-#define TR_VFSWRESET           TR(TR_FSW_RESET_TIMERS "Todo" TR_FSW_RESET_TELEM, TR_FSW_RESET_TIMERS "Todo\0    " TR_FSW_RESET_TELEM)
+#define TR_VFSWRESET           TR(TR_FSW_RESET_TIMERS "Todo" TR_FSW_RESET_TELEM, TR_FSW_RESET_TIMERS "Vuelo\0    " TR_FSW_RESET_TELEM)
 
 #define LEN_FUNCSOUNDS         TR("\004", "\006")
 #define TR_FUNCSOUNDS          TR("Bp1\0""Bp2\0""Bp3\0""Avs1""Avs2""Chee""Rata""Tick""Sirn""Ring""SciF""Robt""Chrp""Tada""Crck""Alrm", "Beep1 ""Beep2 ""Beep3 ""Aviso1""Aviso2""Cheep ""Ratata""Tick  ""Sirena""Ring  ""SciFi ""Robot ""Chirp ""Tada  ""Crickt""AlmClk")
@@ -260,7 +260,7 @@
 #define LEN_VUNITSSYSTEM     "\010"
 #define TR_VUNITSSYSTEM      "Métrico\0""Imperial"
 #define LEN_VTELEMUNIT       "\003"
-#define TR_VTELEMUNIT        "-\0 ""V\0 ""A\0 ""mA\0""kts""m/s""f/s""kmh""mph""m\0 ""ft\0""@C\0""@F\0""%\0 ""mAh""W\0 ""mW\0""dB\0""rpm""g\0 ""@\0 ""rad""ml\0""fOz"
+#define TR_VTELEMUNIT        "-\0 ""V\0 ""A\0 ""mA\0""kts""m/s""f/s""kmh""mph""m\0 ""ft\0""@C\0""@F\0""%\0 ""mAh""W\0 ""mW\0""dB\0""rpm""g\0 ""@\0 ""rad""ml\0""fOz""mlm""Hz\0""mS\0""uS\0"
 
 #define STR_V                  (STR_VTELEMUNIT+1)
 #define STR_A                  (STR_VTELEMUNIT+4)
@@ -441,6 +441,7 @@
 #define TR_PPMFRAME            "Trama PPM"
 #define TR_REFRESHRATE         TR(INDENT "Refresco", INDENT "Velocidad refresco")
 #define STR_WARN_BATTVOLTAGE   TR(INDENT "Salida es VBAT: ", INDENT "Aviso: señal salida es VBAT: ")
+#define TR_WARN_5VOLTS                 "Warning: output level is 5 volts"
 #define TR_MS                  "ms"
 #define TR_FREQUENCY           INDENT "Frequencia"
 #define TR_SWITCH              TR("Interr.", "Interruptor")
@@ -522,6 +523,7 @@
 #define TR_BLDELAY             INDENT"Duración"
 #define TR_BLONBRIGHTNESS      INDENT"MAS brillo"
 #define TR_BLOFFBRIGHTNESS     INDENT"MENOS brillo"
+#define TR_KEYS_BACKLIGHT              "Keys backlight"
 #define TR_BLCOLOR             INDENT "Color"
 #define TR_SPLASHSCREEN        "Pantalla inicio"
 #define TR_PWR_ON_DELAY        TR("Atraso On", "Atraso encendido")
@@ -631,6 +633,7 @@
 #define TR_RECEIVER_NUM                TR("Num Rx", "Receptor No.")
 #define TR_RECEIVER                    "Receptor"
 #define TR_MULTI_RFTUNE                TR("Sint.freq.", "RF Freq. sint.fina")
+#define TR_MULTI_RFPOWER               "RF power"
 #define TR_MULTI_TELEMETRY             "Telemetría"
 #define TR_MULTI_VIDFREQ               TR("Freq.vídeo", "Frecuencia vídeo")
 #define TR_RFPOWER                     "RF Power"
@@ -682,6 +685,7 @@
 #define TR_VOLTAGE                     INDENT"Voltaje"
 #define TR_CURRENT                     INDENT"Actual"
 #define TR_SELECT_MODEL                TR("Selec. modelo", "Seleccionar modelo")
+#define TR_SELECT_MODE                 "Select mode"
 #define TR_CREATE_CATEGORY             "Crear categoría"
 #define TR_RENAME_CATEGORY             "Renombrar categoría"
 #define TR_DELETE_CATEGORY             "Borrar categoría"
@@ -904,7 +908,7 @@
 #define TR_POWERMETER_ATTN_NEEDED      "Necesita atenuador"
 #define TR_PXX2_SELECT_RX              "Selecciona RX..."
 #define TR_PXX2_DEFAULT                "<defecto>"
-#define TR_BT_SELECT_DEVICE            "Selecciona dispositivo..."
+#define TR_BT_SELECT_DEVICE            "Selecciona dispositivo"
 #define TR_DISCOVER             "Buscar"
 #define TR_BUTTON_INIT                 BUTTON("Init")
 #define TR_WAITING                     "Espera..."
@@ -937,6 +941,11 @@
 #define TR_UNIT                "Unidad"
 #define TR_TELEMETRY_NEWSENSOR INDENT "Añadir sensor..."
 #define TR_CHANNELRANGE        INDENT "Canales"
+#define TR_AFHDS3_RX_FREQ              TR("RX freq.", "RX frequency")
+#define TR_AFHDS3_ONE_TO_ONE_TELEMETRY TR("Unicast/Tel.", "Unicast/Telemetry")
+#define TR_AFHDS3_ONE_TO_MANY          "Multicast"
+#define TR_AFHDS3_ACTUAL_POWER         TR("Act. pow", "Actual power")
+#define TR_AFHDS3_POWER_SOURCE         TR("Power src.", "Power source")
 #define TR_ANTENNACONFIRM1     "ANTENA EXT."
 #if defined(PCBX12S)
 #define LEN_ANTENNA_MODES      "\020"
@@ -1174,6 +1183,9 @@
 #define TR_ADDMAINVIEW         "Añadir vista pral."
 #define TR_BACKGROUND_COLOR    "Color de fondo"
 #define TR_MAIN_COLOR          "Color principal"
+#define TR_BAR2_COLOR                  "Secondary bar color"
+#define TR_BAR1_COLOR                  "Main bar color"
+#define TR_TEXT_COLOR                  "Text color"
 #define TR_TEXT_VIEWER         "Visor de texto"
 
 #define TR_MENU_INPUTS         "\314Entradas"
@@ -1341,3 +1353,9 @@
 #define ZSTR_CL16                      "Cl16"
 #define ZSTR_CL17                      "Cl17"
 #define ZSTR_CL18                      "Cl18"
+#define ZSTR_FRAME_RATE                "FRat"
+#define ZSTR_TOTAL_LATENCY             "TLat"
+#define ZSTR_VTX_FREQ                  "VFrq"
+#define ZSTR_VTX_PWR                   "VPwr"
+#define ZSTR_VTX_CHAN                  "VChn"
+#define ZSTR_VTX_BAND                  "VBan"

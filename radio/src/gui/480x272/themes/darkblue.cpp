@@ -35,7 +35,7 @@ class DarkblueTheme: public Theme
       lcdColorTable[TEXT_INVERTED_COLOR_INDEX] = WHITE;
       lcdColorTable[TEXT_INVERTED_BGCOLOR_INDEX] = RGB(32, 34, 42);
       lcdColorTable[TEXT_STATUSBAR_COLOR_INDEX] = WHITE;
-      lcdColorTable[LINE_COLOR_INDEX] = GREY;
+      lcdColorTable[LINE_COLOR_INDEX] = LIGHTGREY;
       lcdColorTable[SCROLLBOX_COLOR_INDEX] = WHITE;
       lcdColorTable[MENU_TITLE_BGCOLOR_INDEX] = DARKGREY;
       lcdColorTable[MENU_TITLE_COLOR_INDEX] = WHITE;
@@ -139,6 +139,8 @@ class DarkblueTheme: public Theme
       delete calibHorus;
 #if defined(RADIO_T16)
       calibHorus = BitmapBuffer::load(getThemePath("t16.bmp"));
+#elif defined(RADIO_T18)
+      calibHorus = BitmapBuffer::load(getThemePath("t18.bmp"));
 #elif defined(RADIO_TX16S)
       calibHorus = BitmapBuffer::load(getThemePath("tx16s.bmp"));
 #elif defined(PCBX10)

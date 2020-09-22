@@ -403,14 +403,18 @@ void menuRadioSdManager(event_t _event)
           else if (!READ_ONLY() && !strcasecmp(ext, SPORT_FIRMWARE_EXT)) {
             if (HAS_SPORT_UPDATE_CONNECTOR())
               POPUP_MENU_ADD_ITEM(STR_FLASH_EXTERNAL_DEVICE);
+#if defined(INTERNAL_MODULE_PXX1) || defined(INTERNAL_MODULE_PXX2)
             POPUP_MENU_ADD_ITEM(STR_FLASH_INTERNAL_MODULE);
+#endif
             POPUP_MENU_ADD_ITEM(STR_FLASH_EXTERNAL_MODULE);
           }
           else if (!READ_ONLY() && !strcasecmp(ext, FRSKY_FIRMWARE_EXT)) {
             FrSkyFirmwareInformation information;
             if (readFrSkyFirmwareInformation(line, information) == nullptr) {
+#if defined(INTERNAL_MODULE_PXX1) || defined(INTERNAL_MODULE_PXX2)
               if (information.productFamily == FIRMWARE_FAMILY_INTERNAL_MODULE)
                 POPUP_MENU_ADD_ITEM(STR_FLASH_INTERNAL_MODULE);
+#endif
               if (information.productFamily == FIRMWARE_FAMILY_EXTERNAL_MODULE)
                 POPUP_MENU_ADD_ITEM(STR_FLASH_EXTERNAL_MODULE);
               if (information.productFamily == FIRMWARE_FAMILY_RECEIVER || information.productFamily == FIRMWARE_FAMILY_SENSOR) {
@@ -580,7 +584,7 @@ void menuRadioSdManager(event_t _event)
             for (auto rx = 0; rx < popupMenuItemsCount; rx++) {
               popupMenuItems[rx] = reusableBuffer.sdManager.otaUpdateInformation.candidateReceiversNames[rx];
             }
-            popupMenuTitle = STR_PXX2_SELECT_RX;
+            POPUP_MENU_TITLE(STR_PXX2_SELECT_RX);
             POPUP_MENU_START(onUpdateReceiverSelection);
           }
         }

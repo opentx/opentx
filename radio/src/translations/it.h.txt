@@ -284,7 +284,7 @@
 #define LEN_VUNITSSYSTEM     TR("\006", "\011")
 #define TR_VUNITSSYSTEM      TR("Metric""Imper.", "Metriche\0""Imperiali")
 #define LEN_VTELEMUNIT       "\003"
-#define TR_VTELEMUNIT        "-\0 ""V\0 ""A\0 ""mA\0""kts""m/s""f/s""kmh""mph""m\0 ""ft\0""@C\0""@F\0""%\0 ""mAh""W\0 ""mW\0""dB\0""rpm""g\0 ""@\0 ""rad""ml\0""fOz"
+#define TR_VTELEMUNIT        "-\0 ""V\0 ""A\0 ""mA\0""kts""m/s""f/s""kmh""mph""m\0 ""ft\0""@C\0""@F\0""%\0 ""mAh""W\0 ""mW\0""dB\0""rpm""g\0 ""@\0 ""rad""ml\0""fOz""mlm""Hz\0""mS\0""uS\0"
 
 #define STR_V                  (STR_VTELEMUNIT+1)
 #define STR_A                  (STR_VTELEMUNIT+4)
@@ -461,10 +461,11 @@
 #endif
 #define TR_PROTO               TR(INDENT "Protoc.", INDENT "Protocollo")
   #define TR_PPMFRAME          INDENT "Frame PPM"
-#define TR_REFRESHRATE               TR(INDENT "Refresh", INDENT "Refresh rate")
-#define STR_WARN_BATTVOLTAGE           TR(INDENT "Uscita VBAT: ", INDENT "Att.: livel. uscita VBAT: ")
+#define TR_REFRESHRATE         TR(INDENT "Refresh", INDENT "Refresh rate")
+#define STR_WARN_BATTVOLTAGE   TR(INDENT "Uscita VBAT: ", INDENT "Att.: livel. uscita VBAT: ")
+#define TR_WARN_5VOLTS         "Attenzione: il livello d'uscita è 5 Volts"
 #define TR_MS                  "ms"
-#define TR_FREQUENCY                   INDENT "Frequenza"
+#define TR_FREQUENCY           INDENT "Frequenza"
 #define TR_SWITCH              "Inter."
 #define TR_TRIMS               "Trims"
 #define TR_FADEIN              "Diss.In"
@@ -544,6 +545,7 @@
 #define TR_BLDELAY             INDENT "Durata"
 #define TR_BLONBRIGHTNESS      TR(INDENT "Lumin. ON", INDENT "Luminosità ON")
 #define TR_BLOFFBRIGHTNESS     TR(INDENT "Lumin. OFF", INDENT "Luminosità OFF")
+#define TR_KEYS_BACKLIGHT              "Keys backlight"
 #define TR_BLCOLOR             INDENT "Colore"
 #define TR_SPLASHSCREEN        TR("Sch. avvio", "Schermata d'avvio")
 #define TR_PWR_ON_DELAY        "Rit. accens."
@@ -649,6 +651,7 @@
 #define TR_RECEIVER_NUM        TR("RxNum", "Ricevente N.")
 #define TR_RECEIVER            "Ricevente"
 #define TR_MULTI_RFTUNE        TR("Tune RF", "Tune fine Freq. RF")
+#define TR_MULTI_RFPOWER               "RF power"
 #define TR_MULTI_TELEMETRY     "Telemetria"
 #define TR_MULTI_VIDFREQ       TR("Freq. video", "Frequenza video")
 #define TR_RFPOWER             "Potenza RF"
@@ -700,6 +703,7 @@
 #define TR_VOLTAGE             TR(INDENT "Voltagg.",INDENT "Voltaggio")
 #define TR_CURRENT             TR(INDENT "Corrente",INDENT "Corrente")
 #define TR_SELECT_MODEL        TR("Scegli mod.", "Scegli Modello")
+#define TR_SELECT_MODE                 "Select mode"
 #define TR_CREATE_CATEGORY     "Crea Categoria"
 #define TR_RENAME_CATEGORY     "Rinomina Categoria"
 #define TR_DELETE_CATEGORY     "Cancella Categoria"
@@ -837,7 +841,7 @@
 #define TR_MENUGLOBALVARS      "VARIABILI GLOBALI"
 #define TR_OWN                 "Fase"
 #define TR_DATE                "Data"
-#define TR_MONTHS              { "Gen", "Feb", "Mar", "Apr", "Mag", "Giu", "Lug", "Auo", "Set", "Ott", "Nov", "Dic" }
+#define TR_MONTHS              { "Gen", "Feb", "Mar", "Apr", "Mag", "Giu", "Lug", "Ago", "Set", "Ott", "Nov", "Dic" }
 #define TR_ROTARY_ENCODER      "R.E."
 #define TR_CHANNELS_MONITOR    "MONITOR CANALI"
 #define TR_MIXERS_MONITOR      "MONITOR MIXER"
@@ -936,11 +940,11 @@
 #define TR_DEL_BUTTON                  BUTTON(TR("Canc.", "Cancella"))
 #define TR_RESET_BTN           "[Reset]"
 #define TR_DEBUG                       "Debug"
-#define TR_KEYS_BTN                BUTTON(TR("SW","Interruttori"))
-#define TR_ANALOGS_BTN                 BUTTON(TR("Analogico","Analogici"))
-#define TR_TOUCH_NOTFOUND              "Schermo touch non trovato"
-#define TR_TOUCH_EXIT                  "Tocca lo schermo per uscire"
-#define TR_CALIBRATION                    TR("Calibraz.", "Calibrazione")
+#define TR_KEYS_BTN                BUTTON(TR("SW", "Tasti"))
+#define TR_ANALOGS_BTN             BUTTON("Analogici")
+#define TR_TOUCH_NOTFOUND          "Schermo touch non trovato"
+#define TR_TOUCH_EXIT              "Tocca lo schermo per uscire"
+#define TR_CALIBRATION             TR("Calibraz.", "Calibrazione")
 #define TR_SET                 "[Set]"
 #define TR_TRAINER             TR("Trainer", "Maestro/Allievo")
 #define TR_CHANS                       "Canali"
@@ -955,6 +959,11 @@
 #define TR_UNIT                "Unita"
 #define TR_TELEMETRY_NEWSENSOR INDENT "Aggiungi nuovo sensore"
 #define TR_CHANNELRANGE        INDENT "Numero Canali"
+#define TR_AFHDS3_RX_FREQ              TR("Freq. RX", "Frequenza RX")
+#define TR_AFHDS3_ONE_TO_ONE_TELEMETRY TR("Unicast/Tel.", "Unicast/Telemetria")
+#define TR_AFHDS3_ONE_TO_MANY          "Multicast"
+#define TR_AFHDS3_ACTUAL_POWER         TR("Pot. att.", "Potenza attuale")
+#define TR_AFHDS3_POWER_SOURCE         TR("Sorg. al.", "Sorgente alimentazione")
 #define TR_ANTENNACONFIRM1     "ANTENNA EST."
 #if defined(PCBX12S)
 #define LEN_ANTENNA_MODES      "\023"
@@ -1192,6 +1201,9 @@
 #define TR_ADDMAINVIEW         "Aggiungi vista princ."
 #define TR_BACKGROUND_COLOR    "Colore background"
 #define TR_MAIN_COLOR          "Colore principale"
+#define TR_BAR2_COLOR                  "Secondary bar color"
+#define TR_BAR1_COLOR                  "Main bar color"
+#define TR_TEXT_COLOR                  "Text color"
 #define TR_TEXT_VIEWER         "Visualizzatore testi"
 
 #define TR_MENU_INPUTS         "\314Ingressi"
@@ -1211,12 +1223,12 @@
 #define TR_MENU_OTHER          "Altro"
 #define TR_MENU_INVERT         "Inverti"
 #define TR_JITTER_FILTER       "Filtro ADC"
-#define TR_RTC_CHECK           TR("Controllo RTC", "Controllo voltaggio RTC")
-#define TR_AUTH_FAILURE                "Auth-failure"
+#define TR_RTC_CHECK           TR("Controllo RTC", "Controllo volt. RTC")
+#define TR_AUTH_FAILURE        "Auth-failure"
 
 #define ZSTR_VFR               "VFR"
 #define ZSTR_RSSI              "RSSI"
-#define ZSTR_R9PW                      "R9PW"
+#define ZSTR_R9PW              "R9PW"
 #define ZSTR_RAS               "SWR"
 #define ZSTR_A1                "A1"
 #define ZSTR_A2                "A2"
@@ -1359,3 +1371,9 @@
 #define ZSTR_CL16                      "Cl16"
 #define ZSTR_CL17                      "Cl17"
 #define ZSTR_CL18                      "Cl18"
+#define ZSTR_FRAME_RATE                "FRat"
+#define ZSTR_TOTAL_LATENCY             "TLat"
+#define ZSTR_VTX_FREQ                  "VFrq"
+#define ZSTR_VTX_PWR                   "VPwr"
+#define ZSTR_VTX_CHAN                  "VChn"
+#define ZSTR_VTX_BAND                  "VBan"

@@ -27,6 +27,7 @@
 #include "pxx1.h"
 #include "pxx2.h"
 #include "multi.h"
+#include "afhds3.h"
 #include "modules_helpers.h"
 #include "ff.h"
 
@@ -56,28 +57,13 @@
   #define IS_MULTIMODULE_PROTOCOL(protocol)  (0)
 #endif
 
-#define IS_SBUS_PROTOCOL(protocol)         (protocol == PROTOCOL_CHANNELS_SBUS)
+#if defined(AFHDS3)
+#define IS_AFHDS3_PROTOCOL(protocol)         (protocol == PROTOCOL_CHANNELS_AFHDS3)
+#else
+#define IS_AFHDS3_PROTOCOL(protocol)         (0)
+#endif
 
 extern uint8_t s_pulses_paused;
-
-enum ModuleSettingsMode
-{
-  MODULE_MODE_NORMAL,
-  MODULE_MODE_SPECTRUM_ANALYSER,
-  MODULE_MODE_POWER_METER,
-  MODULE_MODE_GET_HARDWARE_INFO,
-  MODULE_MODE_MODULE_SETTINGS,
-  MODULE_MODE_RECEIVER_SETTINGS,
-  MODULE_MODE_BEEP_FIRST,
-  MODULE_MODE_REGISTER = MODULE_MODE_BEEP_FIRST,
-  MODULE_MODE_BIND,
-  MODULE_MODE_SHARE,
-  MODULE_MODE_RANGECHECK,
-  MODULE_MODE_RESET,
-  MODULE_MODE_AUTHENTICATION,
-  MODULE_MODE_OTA_UPDATE,
-};
-
 
 PACK(struct PXX2Version {
   uint8_t major;
@@ -251,6 +237,12 @@ PACK(struct CrossfirePulsesData {
   uint8_t length;
 });
 
+#define GHOST_FRAME_MAXLEN             16
+PACK(struct GhostPulsesData {
+  uint8_t pulses[GHOST_FRAME_MAXLEN];
+  uint8_t length;
+});
+
 union InternalModulePulsesData {
 #if defined(PXX1)
 #if defined(INTMODULE_USART)
@@ -293,9 +285,15 @@ union ExternalModulePulsesData {
   Dsm2PulsesData dsm2;
 #endif
 
+#if defined(AFHDS3)
+  afhds3::PulsesData afhds3;
+#endif
+
   PpmPulsesData<pulse_duration_t> ppm;
 
   CrossfirePulsesData crossfire;
+
+  GhostPulsesData ghost;
 } __ALIGNED(4);
 
 /* The __ALIGNED keyword is required to align the struct inside the modulePulsesData below,
@@ -320,6 +318,7 @@ bool setupPulsesInternalModule();
 bool setupPulsesExternalModule();
 void setupPulsesDSM2();
 void setupPulsesCrossfire();
+void setupPulsesGhost();
 void setupPulsesMultiExternalModule();
 void setupPulsesMultiInternalModule();
 void setupPulsesSbus();
@@ -338,6 +337,11 @@ void extmodulePxx1SerialStart();
 void extmodulePpmStart();
 void intmoduleStop();
 void extmoduleStop();
+void getModuleStatusString(uint8_t moduleIdx, char * statusText);
+void getModuleSyncStatusString(uint8_t moduleIdx, char * statusText);
+#if defined(AFHDS3)
+uint8_t actualAfhdsRunPower(int moduleIndex);
+#endif
 void extramodulePpmStart();
 
 inline void startPulses()
@@ -369,6 +373,8 @@ enum ChannelsProtocols {
   PROTOCOL_CHANNELS_SBUS,
   PROTOCOL_CHANNELS_PXX2_LOWSPEED,
   PROTOCOL_CHANNELS_PXX2_HIGHSPEED,
+  PROTOCOL_CHANNELS_AFHDS3,
+  PROTOCOL_CHANNELS_GHOST
 };
 
 inline void stopPulses()

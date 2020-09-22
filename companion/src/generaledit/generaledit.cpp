@@ -56,9 +56,7 @@ GeneralEdit::GeneralEdit(QWidget * parent, RadioData & radioData, Firmware * fir
   }
 
   addTab(new GeneralSetupPanel(this, generalSettings, firmware), tr("Setup"));
-  if (IS_ARM(firmware->getBoard())) {
-    addTab(new CustomFunctionsPanel(this, NULL, generalSettings, firmware), tr("Global Functions"));
-  }
+  addTab(new CustomFunctionsPanel(this, NULL, generalSettings, firmware), tr("Global Functions"));
   addTab(new TrainerPanel(this, generalSettings, firmware), tr("Trainer"));
   addTab(new HardwarePanel(this, generalSettings, firmware), tr("Hardware"));
   addTab(new CalibrationPanel(this, generalSettings, firmware), tr("Calibration"));

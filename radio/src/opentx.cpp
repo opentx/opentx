@@ -266,7 +266,9 @@ void generalDefault()
 
 #if defined(PCBHORUS)
   g_eeGeneral.blOffBright = 20;
-#else
+#endif
+
+#if defined(LCD_CONTRAST_DEFAULT)
   g_eeGeneral.contrast = LCD_CONTRAST_DEFAULT;
 #endif
 
@@ -689,12 +691,19 @@ void checkBacklight()
       }
     }
 
-    bool backlightOn = (g_eeGeneral.backlightMode == e_backlight_mode_on || (g_eeGeneral.backlightMode != e_backlight_mode_off && lightOffCounter) || isFunctionActive(FUNCTION_BACKLIGHT));
-    if (flashCounter) backlightOn = !backlightOn;
-    if (backlightOn)
+    bool backlightOn = (g_eeGeneral.backlightMode == e_backlight_mode_on || (g_eeGeneral.backlightMode != e_backlight_mode_off && lightOffCounter));
+
+    if (flashCounter) {
+      backlightOn = !backlightOn;
+    }
+
+    if (backlightOn) {
+      currentBacklightBright = requiredBacklightBright;
       BACKLIGHT_ENABLE();
-    else
+    }
+    else {
       BACKLIGHT_DISABLE();
+    }
   }
 }
 
@@ -765,7 +774,7 @@ void doSplash()
       }
 #endif
 
-#if defined(FRSKY_RELEASE)
+#if defined(FRSKY_RELEASE) && !defined(COLORLCD)
       static uint8_t secondSplash = false;
       if (!secondSplash && get_tmr10ms() >= tgtime-200) {
         secondSplash = true;
@@ -1951,6 +1960,7 @@ void opentxInit()
 #endif
 
   currentSpeakerVolume = requiredSpeakerVolume = g_eeGeneral.speakerVolume + VOLUME_LEVEL_DEF;
+  currentBacklightBright = requiredBacklightBright = g_eeGeneral.backlightBright;
 #if !defined(SOFTWARE_VOLUME)
   setScaledVolume(currentSpeakerVolume);
 #endif
@@ -2033,7 +2043,7 @@ int main()
   // important to disable it before commencing with system initialisation (or
   // we could put a bunch more WDG_RESET()s in. But I don't like that approach
   // during boot up.)
-#if defined(PCBTARANIS)
+#if defined(LCD_CONTRAST_DEFAULT)
   g_eeGeneral.contrast = LCD_CONTRAST_DEFAULT;
 #endif
 
@@ -2073,6 +2083,10 @@ int main()
 
 inline uint32_t PWR_PRESS_SHUTDOWN_DELAY()
 {
+  // Instant off when both power button are pressed
+  if (pwrForcePressed())
+    return 0;
+
   return (2 - g_eeGeneral.pwrOffSpeed) * 100;
 }
 

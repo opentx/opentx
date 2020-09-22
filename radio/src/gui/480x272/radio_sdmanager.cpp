@@ -365,18 +365,28 @@ bool menuRadioSdManager(event_t _event)
           else if (!READ_ONLY() && !strcasecmp(ext, SPORT_FIRMWARE_EXT)) {
             if (HAS_SPORT_UPDATE_CONNECTOR())
               POPUP_MENU_ADD_ITEM(STR_FLASH_EXTERNAL_DEVICE);
+#if defined(INTERNAL_MODULE_PXX1) || defined(INTERNAL_MODULE_PXX2)
             POPUP_MENU_ADD_ITEM(STR_FLASH_INTERNAL_MODULE);
+#endif
             POPUP_MENU_ADD_ITEM(STR_FLASH_EXTERNAL_MODULE);
           }
           else if (!READ_ONLY() && !strcasecmp(ext, FRSKY_FIRMWARE_EXT)) {
             FrSkyFirmwareInformation information;
             if (readFrSkyFirmwareInformation(line, information) == nullptr) {
+#if defined(INTERNAL_MODULE_PXX1) || defined(INTERNAL_MODULE_PXX2)
               if (information.productFamily == FIRMWARE_FAMILY_INTERNAL_MODULE)
                 POPUP_MENU_ADD_ITEM(STR_FLASH_INTERNAL_MODULE);
+#endif
               if (information.productFamily == FIRMWARE_FAMILY_EXTERNAL_MODULE)
                 POPUP_MENU_ADD_ITEM(STR_FLASH_EXTERNAL_MODULE);
-              if (HAS_SPORT_UPDATE_CONNECTOR() && (information.productFamily == FIRMWARE_FAMILY_RECEIVER || information.productFamily == FIRMWARE_FAMILY_SENSOR))
-                POPUP_MENU_ADD_ITEM(STR_FLASH_EXTERNAL_DEVICE);
+              if (information.productFamily == FIRMWARE_FAMILY_RECEIVER || information.productFamily == FIRMWARE_FAMILY_SENSOR) {
+                if (HAS_SPORT_UPDATE_CONNECTOR()) {
+                  POPUP_MENU_ADD_ITEM(STR_FLASH_EXTERNAL_DEVICE);
+                }
+                else {
+                  POPUP_MENU_ADD_ITEM(STR_FLASH_EXTERNAL_MODULE);
+                }
+              }
 #if defined(PXX2)
               if (information.productFamily == FIRMWARE_FAMILY_RECEIVER) {
                 if (isReceiverOTAEnabledFromModule(INTERNAL_MODULE, information.productId))
@@ -523,7 +533,7 @@ bool menuRadioSdManager(event_t _event)
 
   reusableBuffer.sdManager.offset = menuVerticalOffset;
 
-  for (uint8_t i=0; i<NUM_BODY_LINES; i++) {
+  for (uint8_t i = 0; i < NUM_BODY_LINES; i++) {
     coord_t y = MENU_CONTENT_TOP + i*FH;
     LcdFlags attr = (index == i ? INVERS : 0);
     if (reusableBuffer.sdManager.lines[i][0]) {
@@ -568,12 +578,12 @@ bool menuRadioSdManager(event_t _event)
           for (auto rx = 0; rx < popupMenuItemsCount; rx++) {
             popupMenuItems[rx] = reusableBuffer.sdManager.otaUpdateInformation.candidateReceiversNames[rx];
           }
-          //popupMenuTitle = STR_PXX2_SELECT_RX;
+          POPUP_MENU_TITLE(STR_PXX2_SELECT_RX);
           POPUP_MENU_START(onUpdateReceiverSelection);
         }
       }
       else {
-        POPUP_WAIT(STR_WAITING_FOR_RX);
+        DRAW_POPUP_WAIT(STR_WAITING_FOR_RX);
       }
     }
   }

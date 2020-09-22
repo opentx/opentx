@@ -260,7 +260,7 @@
 #define LEN_VUNITSSYSTEM             TR("\006", "\010")
 #define TR_VUNITSSYSTEM              TR("Metr.\0""Imper.", "Metrické""Imperial")
 #define LEN_VTELEMUNIT               "\003"
-#define TR_VTELEMUNIT                "-\0 ""V\0 ""A\0 ""mA\0""kts""m/s""f/s""kmh""mph""m\0 ""ft\0""@C\0""@F\0""%\0 ""mAh""W\0 ""mW\0""dB\0""rpm""g\0 ""@\0 ""rad""ml\0""fOz"
+#define TR_VTELEMUNIT                "-\0 ""V\0 ""A\0 ""mA\0""kts""m/s""f/s""kmh""mph""m\0 ""ft\0""@C\0""@F\0""%\0 ""mAh""W\0 ""mW\0""dB\0""rpm""g\0 ""@\0 ""rad""ml\0""fOz""mlm""Hz\0""mS\0""uS\0"
 
 #define STR_V                          (STR_VTELEMUNIT+1)
 #define STR_A                          (STR_VTELEMUNIT+4)
@@ -441,6 +441,7 @@
 #define TR_PPMFRAME                    INDENT "PPM modulace"
 #define TR_REFRESHRATE                 TR(INDENT "Obnovit", INDENT "Obn. frekv.")
 #define STR_WARN_BATTVOLTAGE           TR(INDENT "Výstup VBAT: ", INDENT "Varování: výstupní hodnota VBAT: ")
+#define TR_WARN_5VOLTS                 "Warning: output level is 5 volts"
 #define TR_MS                          "ms"
 #define TR_FREQUENCY                   INDENT "Frequence"
 #define TR_SWITCH                      "Spínač"
@@ -522,6 +523,7 @@
 #define TR_BLDELAY                     INDENT"Zhasnout po"
 #define TR_BLONBRIGHTNESS              TR3(INDENT"Jas Zap.", INDENT"Jas Zap.", INDENT"Jas zapnutého LCD")
 #define TR_BLOFFBRIGHTNESS             TR3(INDENT"Jas Vyp.", INDENT"Jas Vyp.", INDENT"Jas vypnutého LCD")
+#define TR_KEYS_BACKLIGHT              "Keys backlight"
 #define TR_BLCOLOR                     INDENT "Barva"
 #define TR_SPLASHSCREEN                TR("úvodní logo", "Zobrazit úvodní logo")
 #define TR_PWR_ON_DELAY                "Pwr On delay"
@@ -628,6 +630,7 @@
 #define TR_RECEIVER_NUM                TR("RX číslo", "Číslo přijímače")
 #define TR_RECEIVER                    "Přijímač"
 #define TR_MULTI_RFTUNE                TR(INDENT "Ladění frek", INDENT "Jemné ladění frek. RF")
+#define TR_MULTI_RFPOWER               "RF power"
 #define TR_MULTI_TELEMETRY             "Telemetrie"
 #define TR_MULTI_VIDFREQ               TR(INDENT "Freq. videa", INDENT "Frekvence videa")
 #define TR_RFPOWER                     "Výkon RF"
@@ -679,6 +682,7 @@
 #define TR_VOLTAGE                     INDENT"Napětí"
 #define TR_CURRENT                     INDENT"Proud"
 #define TR_SELECT_MODEL                "Vyber model"
+#define TR_SELECT_MODE                 "Select mode"
 #define TR_CREATE_CATEGORY             "Nová kategorie"
 #define TR_RENAME_CATEGORY             "Přejmenovat kategorii"
 #define TR_DELETE_CATEGORY             "Odstranit kategorii"
@@ -816,7 +820,7 @@
 #define TR_MENUGLOBALVARS              "GLOBÁLNÍ PROMĚNNÉ"
 #define TR_OWN                         " \043 "
 #define TR_DATE                        "Datum"
-#define TR_MONTHS                      { "Led", "Úno", "Bře", "Dub", "Kvě", "Čer", "Čec", "Srp", "Zář", "Říj", "Lis", "Pro" }
+#define TR_MONTHS                      { "Led", "Úno", "Bře", "Dub", "Kvě", "Čvn", "Čvc", "Srp", "Zář", "Říj", "Lis", "Pro" }
 #define TR_ROTARY_ENCODER              "R.Enko"
 #define TR_CHANNELS_MONITOR            "MONITOR KANÁLU"
 #define TR_MIXERS_MONITOR              "MONITOR MIXU"
@@ -901,7 +905,7 @@
 #define TR_POWERMETER_ATTN_NEEDED      "Útlumový člen nutný!"
 #define TR_PXX2_SELECT_RX              "Vyber RX..."
 #define TR_PXX2_DEFAULT                "<výchozí>"
-#define TR_BT_SELECT_DEVICE            "Vyberte zařízení..."
+#define TR_BT_SELECT_DEVICE            "Vyberte zařízení"
 #define TR_DISCOVER                    "Hledat"
 #define TR_BUTTON_INIT                 BUTTON("Init")
 #define TR_WAITING                     "Čekám..."
@@ -934,6 +938,11 @@
 #define TR_UNIT                        "Jednotky"
 #define TR_TELEMETRY_NEWSENSOR         INDENT "Přidat senzor ručně"
 #define TR_CHANNELRANGE                TR(INDENT "Kanály", INDENT "Rozsah kanálů")
+#define TR_AFHDS3_RX_FREQ              TR("RX freq.", "RX frequency")
+#define TR_AFHDS3_ONE_TO_ONE_TELEMETRY TR("Unicast/Tel.", "Unicast/Telemetry")
+#define TR_AFHDS3_ONE_TO_MANY          "Multicast"
+#define TR_AFHDS3_ACTUAL_POWER         TR("Act. pow", "Actual power")
+#define TR_AFHDS3_POWER_SOURCE         TR("Power src.", TR("Power src.", "Power source"))
 #define TR_ANTENNACONFIRM1             "Opravdu přepnout?"
 #if defined(PCBX12S)
 #define LEN_ANTENNA_MODES      "\023"
@@ -1171,6 +1180,9 @@
 #define TR_ADDMAINVIEW                 "Přidat hlavní panel"
 #define TR_BACKGROUND_COLOR            "Barva pozadí"
 #define TR_MAIN_COLOR                  "Hlavní barva"
+#define TR_BAR2_COLOR                  "Secondary bar color"
+#define TR_BAR1_COLOR                  "Main bar color"
+#define TR_TEXT_COLOR                  "Text color"
 #define TR_TEXT_VIEWER                 "Prohlížeč textu"
 
 #define TR_MENU_INPUTS                 "\314Vstupy"
@@ -1338,3 +1350,9 @@
 #define ZSTR_CL16                      "Cl16"
 #define ZSTR_CL17                      "Cl17"
 #define ZSTR_CL18                      "Cl18"
+#define ZSTR_FRAME_RATE                "FRat"
+#define ZSTR_TOTAL_LATENCY             "TLat"
+#define ZSTR_VTX_FREQ                  "VFrq"
+#define ZSTR_VTX_PWR                   "VPwr"
+#define ZSTR_VTX_CHAN                  "VChn"
+#define ZSTR_VTX_BAND                  "VBan"

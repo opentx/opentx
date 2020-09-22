@@ -381,25 +381,7 @@ PACK(struct TelemetrySensor {
     bool isPrecConfigurable() const;
     int32_t getPrecMultiplier() const;
     int32_t getPrecDivisor() const;
-    bool isSameInstance(TelemetryProtocol protocol, uint8_t instance)
-    {
-      if (this->instance == instance)
-        return true;
-
-      if (protocol == PROTOCOL_TELEMETRY_FRSKY_SPORT) {
-#if defined(SIMU)
-        if (((this->instance ^ instance) & 0x1F) == 0)
-          return true;
-#else
-        if (((this->instance ^ instance) & 0x9F) == 0 && (this->instance >> 5) != TELEMETRY_ENDPOINT_SPORT && (instance >> 5) != TELEMETRY_ENDPOINT_SPORT) {
-          this->instance = instance; // update the instance in case we had telemetry switching
-          return true;
-        }
-#endif
-      }
-
-      return false;
-    }
+    bool isSameInstance(TelemetryProtocol protocol, uint8_t instance);
   );
 });
 
@@ -472,6 +454,24 @@ PACK(struct ModuleData {
       uint8_t receivers; // 5 bits spare
       char receiverName[PXX2_MAX_RECEIVERS_PER_MODULE][PXX2_LEN_RX_NAME];
     }) pxx2);
+    NOBACKUP(PACK(struct {
+      uint8_t bindPower:3;
+      uint8_t runPower:3;
+      uint8_t emi:1;
+      uint8_t telemetry:1;
+      uint16_t failsafeTimeout;
+      uint8_t rx_freq[2];
+      uint16_t rxFreq()
+      {
+        return (uint16_t)rx_freq[0] | (((uint16_t)rx_freq[1]) << 8);
+      }
+
+      void setRxFreq(uint16_t value)
+      {
+        rx_freq[0] = value & 0xFF;
+        rx_freq[1] = value >> 8;
+      }
+    } afhds3));
   };
 
   // Helper functions to set both of the rfProto protocol at the same time
@@ -744,7 +744,8 @@ PACK(struct RadioData {
   uint8_t backlightMode:3;
   int8_t antennaMode:2;
   uint8_t disableRtcWarning:1;
-  int8_t spare1:2;
+  uint8_t keysBacklight:1;
+  int8_t spare1:1;
   NOBACKUP(TrainerData trainer);
   NOBACKUP(uint8_t view);            // index of view in main screen
   NOBACKUP(BUZZER_FIELD); /* 2bits */

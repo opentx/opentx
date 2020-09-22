@@ -487,6 +487,7 @@ void doMixerCalculations();
 void scheduleNextMixerCalculation(uint8_t module, uint32_t period_ms);
 
 void checkTrims();
+extern uint8_t currentBacklightBright;
 void perMain();
 void per10ms();
 
@@ -536,7 +537,7 @@ bool setTrimValue(uint8_t phase, uint8_t idx, int trim);
 
 #if defined(PCBSKY9X)
   #define ROTARY_ENCODER_GRANULARITY (2 << g_eeGeneral.rotarySteps)
-#elif defined(RADIO_FAMILY_T16)
+#elif defined(RADIO_FAMILY_T16) && !defined(RADIO_T18)
   #define ROTARY_ENCODER_GRANULARITY (1)
 #else
   #define ROTARY_ENCODER_GRANULARITY (2)
@@ -678,6 +679,7 @@ inline int calcRESXto100(int x)
 
 
 #if defined(COLORLCD)
+extern const char fw_stamp[];
 extern const char vers_stamp[];
 extern const char date_stamp[];
 extern const char time_stamp[];
@@ -691,7 +693,7 @@ extern const char vers_stamp[];
  * @param buffer If non-null find the firmware version in the buffer instead
  * @return The opentx version string starting with "opentx-" or "no version found" if the version string is not found
  */
-const char * getOtherVersion(char * buffer);
+const char * getFirmwareVersion(const char * buffer = nullptr);
 
 #define g_blinkTmr10ms    (*(uint8_t*)&g_tmr10ms)
 
@@ -845,7 +847,6 @@ enum FunctionsActive {
   FUNCTION_TRAINER_CHANNELS = FUNCTION_TRAINER_STICK1 + NUM_STICKS,
   FUNCTION_INSTANT_TRIM,
   FUNCTION_VARIO,
-  FUNCTION_BACKLIGHT,
 #if defined(SDCARD)
   FUNCTION_LOGS,
 #endif

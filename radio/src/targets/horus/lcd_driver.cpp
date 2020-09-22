@@ -20,14 +20,25 @@
 
 #include "opentx.h"
 
-#define HBP  42
-#define VBP  12
+#if defined(RADIO_T18)
+  #define HBP  43
+  #define VBP  12
 
-#define HSW  2
-#define VSW  10
+  #define HSW  2
+  #define VSW  4
 
-#define HFP  3
-#define VFP  2
+  #define HFP  8
+  #define VFP  8
+#else
+  #define HBP  42
+  #define VBP  12
+
+  #define HSW  2
+  #define VSW  10
+
+  #define HFP  3
+  #define VFP  2
+#endif
 
 #define LCD_FIRST_LAYER                0
 #define LCD_SECOND_LAYER               1
@@ -142,6 +153,9 @@ static void delay3(uint32_t nCount)
 
 static void lcd_reset(void)
 {
+#if defined(RADIO_T18)     // T18 screen has issues if NRST is ever brought low
+  NRST_HIGH();
+#else
   NRST_HIGH();
   delay3(1);
 
@@ -150,6 +164,7 @@ static void lcd_reset(void)
 
   NRST_HIGH();
   delay3(30);
+#endif
 }
 
 void LCD_Init_LTDC(void)
@@ -383,7 +398,7 @@ void lcdInit(void)
 
 void DMAFillRect(uint16_t * dest, uint16_t destw, uint16_t desth, uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t color)
 {
-#if defined(PCBX10)
+#if defined(LCD_VERTICAL_INVERT)
   x = destw - (x + w);
   y = desth - (y + h);
 #endif
@@ -415,7 +430,7 @@ void DMAFillRect(uint16_t * dest, uint16_t destw, uint16_t desth, uint16_t x, ui
 
 void DMACopyBitmap(uint16_t * dest, uint16_t destw, uint16_t desth, uint16_t x, uint16_t y, const uint16_t * src, uint16_t srcw, uint16_t srch, uint16_t srcx, uint16_t srcy, uint16_t w, uint16_t h)
 {
-#if defined(PCBX10)
+#if defined(LCD_VERTICAL_INVERT)
   x = destw - (x + w);
   y = desth - (y + h);
   srcx = srcw - (srcx + w);
@@ -458,7 +473,7 @@ void DMACopyBitmap(uint16_t * dest, uint16_t destw, uint16_t desth, uint16_t x, 
 
 void DMACopyAlphaBitmap(uint16_t * dest, uint16_t destw, uint16_t desth, uint16_t x, uint16_t y, const uint16_t * src, uint16_t srcw, uint16_t srch, uint16_t srcx, uint16_t srcy, uint16_t w, uint16_t h)
 {
-#if defined(PCBX10)
+#if defined(LCD_VERTICAL_INVERT)
   x = destw - (x + w);
   y = desth - (y + h);
   srcx = srcw - (srcx + w);
