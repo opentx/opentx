@@ -24,7 +24,7 @@
 #define MODEL_SPECIAL_FUNC_2ND_COLUMN          120
 #define MODEL_SPECIAL_FUNC_2ND_COLUMN_EXT      (lcdNextPos + 5)
 #define MODEL_SPECIAL_FUNC_3RD_COLUMN          295
-#define MODEL_SPECIAL_FUNC_4TH_COLUMN          440
+#define MODEL_SPECIAL_FUNC_4TH_COLUMN          463
 #define MODEL_SPECIAL_FUNC_4TH_COLUMN_ONOFF    450
 
 void onCustomFunctionsFileSelectionMenu(const char * result)
@@ -333,6 +333,14 @@ bool menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
               INCDEC_ENABLE_CHECK(isSourceAvailable);
             }
           }
+          else if (func == FUNC_BACKLIGHT) {
+            val_max = MIXSRC_LAST_CH;
+            drawSource(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, val_displayed, attr);
+            if (active) {
+              INCDEC_SET_FLAG(eeFlags | INCDEC_SOURCE);
+              INCDEC_ENABLE_CHECK(isSourceAvailable);
+            }
+          }
           else if (func == FUNC_LOGS) {
             if (val_displayed) {
               lcdDrawNumber(MODEL_SPECIAL_FUNC_3RD_COLUMN, y, val_displayed, attr|PREC1|LEFT, 0, NULL, "s");
@@ -403,13 +411,13 @@ bool menuSpecialFunctions(event_t event, CustomFunctionData * functions, CustomF
           else if (HAS_REPEAT_PARAM(func)) {
             if (active) CFN_PLAY_REPEAT(cfn) = checkIncDec(event, CFN_PLAY_REPEAT(cfn)==CFN_PLAY_REPEAT_NOSTART?-1:CFN_PLAY_REPEAT(cfn), -1, 60/CFN_PLAY_REPEAT_MUL, eeFlags);
             if (CFN_PLAY_REPEAT(cfn) == 0) {
-              lcdDrawText(MODEL_SPECIAL_FUNC_4TH_COLUMN+2, y, "1x", attr);
+              lcdDrawText(MODEL_SPECIAL_FUNC_4TH_COLUMN, y, "1x", attr|RIGHT);
             }
             else if (CFN_PLAY_REPEAT(cfn) == CFN_PLAY_REPEAT_NOSTART) {
-              lcdDrawText(MODEL_SPECIAL_FUNC_4TH_COLUMN-1, y, "!1x", attr);
+              lcdDrawText(MODEL_SPECIAL_FUNC_4TH_COLUMN, y, "!1x", attr|RIGHT);
             }
             else {
-              lcdDrawNumber(MODEL_SPECIAL_FUNC_4TH_COLUMN+12, y, CFN_PLAY_REPEAT(cfn)*CFN_PLAY_REPEAT_MUL, attr|RIGHT, 0, NULL, "s");
+              lcdDrawNumber(MODEL_SPECIAL_FUNC_4TH_COLUMN, y, CFN_PLAY_REPEAT(cfn)*CFN_PLAY_REPEAT_MUL, attr|RIGHT, 0, NULL, "s");
             }
           }
           else if (attr) {

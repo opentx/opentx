@@ -159,9 +159,17 @@ extern const char STR_XJT_ACCST_RF_PROTOCOLS[];
 extern const char STR_ISRM_RF_PROTOCOLS[];
 extern const char STR_R9M_PXX2_RF_PROTOCOLS[];
 extern const char STR_DSM_PROTOCOLS[];
-
-#if defined(MULTIMODULE)
 extern const char STR_MULTI_PROTOCOLS[];
+extern const char STR_MULTI_POWER[];
+
+#if defined(AFHDS3)
+extern const char STR_AFHDS3_ONE_TO_ONE_TELEMETRY[];
+extern const char STR_AFHDS3_ONE_TO_MANY[];
+extern const char STR_AFHDS3_PROTOCOLS[];
+extern const char STR_AFHDS3_POWERS[];
+extern const char STR_AFHDS3_RX_FREQ[];
+extern const char STR_AFHDS3_ACTUAL_POWER[];
+extern const char STR_AFHDS3_POWER_SOURCE[];
 #endif
 
 extern const char STR_CURVE_TYPES[];
@@ -295,6 +303,7 @@ extern const char STR_BLDELAY[];
 #if defined(PWM_BACKLIGHT) || defined(COLORLCD)
 extern const char STR_BLONBRIGHTNESS[];
 extern const char STR_BLOFFBRIGHTNESS[];
+extern const char STR_KEYS_BACKLIGHT[];
 #endif
 
 extern const char STR_SPLASHSCREEN[];
@@ -389,6 +398,7 @@ extern const char STR_MULTI_FIXEDID[];
 extern const char STR_MULTI_OPTION[];
 extern const char STR_MULTI_VIDFREQ[];
 extern const char STR_MULTI_RFTUNE[];
+extern const char STR_MULTI_RFPOWER[];
 extern const char STR_MULTI_TELEMETRY[];
 extern const char STR_MULTI_AUTOBIND[];
 extern const char STR_DISABLE_CH_MAP[];
@@ -465,6 +475,7 @@ extern const char STR_BEEP_VOLUME[];
 extern const char STR_WAV_VOLUME[];
 extern const char STR_BG_VOLUME[];
 extern const char STR_SELECT_MODEL[];
+extern const char STR_SELECT_MODE[];
 extern const char STR_CREATE_CATEGORY[];
 extern const char STR_RENAME_CATEGORY[];
 extern const char STR_DELETE_CATEGORY[];
@@ -530,6 +541,7 @@ extern const char STR_SPECTRUM_ANALYSER_EXT[];
 extern const char STR_SPECTRUM_ANALYSER_INT[];
 extern const char STR_WAITING_FOR_RX[];
 extern const char STR_WAITING_FOR_TX[];
+extern const char STR_WARN_5VOLTS[];
 
 #if defined(SDCARD)
   extern const char STR_BACKUP_MODEL[];
@@ -824,6 +836,9 @@ extern const char STR_LAYOUT[];
 extern const char STR_ADDMAINVIEW[];
 extern const char STR_BACKGROUND_COLOR[];
 extern const char STR_MAIN_COLOR[];
+extern const char STR_BAR2_COLOR[];
+extern const char STR_BAR1_COLOR[];
+extern const char STR_TEXT_COLOR[];
 extern const char STR_TEXT_VIEWER[];
 extern const char STR_RFPOWER[];
 

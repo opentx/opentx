@@ -699,10 +699,12 @@ bool Curves::moveUpAllowed() const
   return selectedIndex > 0;
 }
 
-void Curves::cmClear()
+void Curves::cmClear(bool prompt)
 {
-  if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Clear Curve. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
-    return;
+  if (prompt) {
+    if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Clear Curve. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+      return;
+  }
 
   model->curves[selectedIndex].clear();
   model->updateAllReferences(ModelData::REF_UPD_TYPE_CURVE, ModelData::REF_UPD_ACT_CLEAR, selectedIndex);
@@ -734,8 +736,10 @@ void Curves::cmCopy()
 
 void Curves::cmCut()
 {
+  if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Cut Curve. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+    return;
   cmCopy();
-  cmClear();
+  cmClear(false);
 }
 
 void Curves::cmDelete()

@@ -247,6 +247,8 @@ extern int8_t s_copySrcRow;
 extern int8_t s_copyTgtOfs;
 extern uint8_t s_currIdx;
 extern uint8_t s_currIdxSubMenu;
+extern uint16_t s_currSrcRaw;
+extern uint16_t s_currScale;
 extern uint8_t s_maxLines;
 extern uint8_t s_copySrcIdx;
 extern uint8_t s_copySrcCh;
@@ -283,9 +285,6 @@ void menuChannelsView(event_t event);
 #define REPEAT_LAST_CURSOR_MOVE()      { if (CURSOR_MOVED_LEFT(event) || CURSOR_MOVED_RIGHT(event)) putEvent(event); else menuHorizontalPosition = 0; }
 #define POS_HORZ_INIT(posVert)         ((COLATTR(posVert) & NAVIGATION_LINE_BY_LINE) ? -1 : 0)
 #define EDIT_MODE_INIT                 0 // TODO enum
-
-typedef int (*FnFuncP) (int x);
-void drawFunction(FnFuncP fn, uint8_t offset=0);
 
 void onSourceLongEnterPress(const char *result);
 

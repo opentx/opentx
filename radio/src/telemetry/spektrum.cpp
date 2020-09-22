@@ -47,6 +47,7 @@
 #define DSM_BIND_PACKET_LENGTH 12
 
 #define I2C_HIGH_CURRENT 0x03
+#define I2C_FWD_PGM 0x09
 #define I2C_TEXTGEN 0x0c
 #define I2C_GPS  0x17
 #define I2C_GPS2 0x17
@@ -349,6 +350,20 @@ void processSpektrumPacket(const uint8_t *packet)
   // highest bit indicates that TM1100 is in use, ignore it
   uint8_t i2cAddress = (packet[2] & 0x7f);
 
+  if (i2cAddress == I2C_FWD_PGM) {
+#if defined(LUA)
+    // Forward Programming
+    if (Multi_Buffer && memcmp(Multi_Buffer, "DSM", 3) == 0) {
+      // Multi_Buffer[0..2]=="DSM" -> Lua script is running
+      // Multi_Buffer[3]==0x70 -> TX to RX data ready to be sent
+      // Multi_Buffer[4..9]=6 bytes of TX to RX data
+      // Multi_Buffer[10..25]=16 bytes of RX to TX data
+      Multi_Buffer[10] = i2cAddress;
+      memcpy(&Multi_Buffer[11], &packet[3], 15); // Store the received RX answer in the buffer
+    }
+#endif
+    return; // Not a sensor
+  }
   //SmartBat Hack
   if (i2cAddress == I2C_SMART_BAT_BASE_ADDRESS) {
     i2cAddress = i2cAddress + (packet[4] >> 4); // use type to create virtual I2CAddresses
@@ -468,17 +483,17 @@ void processSpektrumPacket(const uint8_t *packet)
 // "I"  here means the multi module
 
 /*
-0-3   4 bytes -> Cyrf ID of the TX xor 0xFF but you don't care as I've checked it already...
-4     1 byte -> RX version but you don't care...
+0-3   4 bytes -> Cyrf ID of the TX xor 0xFF but don't care...
+4     1 byte -> RX version but don't care...
 5     1 byte -> number of channels, example 0x06=6 channels
 6     1 byte -> max DSM type allowed:
-        0x01 => 22ms 1024 DSM2 1 packet => number of channels is <8 and no telemetry
-        0x02 => 22ms 1024 DSM2 2 packets => either a number of channel >7 or telemetry enable RX
-        0x12 => 11ms 2048 DSM2 2 packets => can be any number of channels with/without telemetry -> this mode might be supported following Mike's trials, note the channels should be duplicated between the packets which is not the case today
-        0xa2 => 22ms 2048 DSMX 1 packet => number of channels is <8 and no telemetry
-        0xb2 => 11ms 2048 DSMX => can be any number of channels with/without telemetry -> this mode is only half supported since the channels should be duplicated between the packets which is not the case but might be supported following Mike's trials
+        0x01 => 1024 DSM2 1 packet => number of channels is <8 and no telemetry
+        0x02 => 1024 DSM2 2 packets => either a number of channel >7 or telemetry enable RX
+        0x12 => 2048 DSM2 2 packets => can be any number of channels with/without telemetry -> this mode might be supported following Mike's trials, note the channels should be duplicated between the packets which is not the case today
+        0xa2 => 2048 DSMX 1 packet => number of channels is <8 and no telemetry
+        0xb2 => 2048 DSMX 2 packets => can be any number of channels with/without telemetry -> this mode is only half supported since the channels should be duplicated between the packets which is not the case but might be supported following Mike's trials
 7     0x00: not sure of the use of this byte since I've always seen it at 0...
-8-9   2 bytes CRC but you don't care as I've checked it already...
+8-9   2 bytes CRC but don't care...
 
  Examples:           DSM   #Chan  RXver
  Inductrix           0xa2   07     1
@@ -488,22 +503,40 @@ void processSpektrumPacket(const uint8_t *packet)
 void processDSMBindPacket(uint8_t module, const uint8_t *packet)
 {
   uint32_t debugval;
-  if (g_model.moduleData[module].type == MODULE_TYPE_MULTIMODULE && g_model.moduleData[module].getMultiProtocol() == MODULE_SUBTYPE_MULTI_DSM2
-    && g_model.moduleData[module].multi.autoBindMode) {
-
+  if (g_model.moduleData[module].type == MODULE_TYPE_MULTIMODULE && g_model.moduleData[module].getMultiProtocol() == MODULE_SUBTYPE_MULTI_DSM2 && g_model.moduleData[module].subType == MM_RF_DSM2_SUBTYPE_AUTO) {
+    // Only sets channel etc when in DSM/AUTO mode
     int channels = packet[5];
-    // Only sets channel etc when in DSM multi mode
-    g_model.moduleData[module].channelsCount = channels - 8;
+    if (channels > 12) {
+      channels = 12;
+    }
+    else if (channels < 3) {
+      channels = 3;
+    }
 
-    // bool use11ms = (packet[8] & 0x10) ;
-    if (packet[6] >= 0xb2)
-      g_model.moduleData[module].subType = MM_RF_DSM2_SUBTYPE_DSMX_11;
-    else if (packet[6] >= 0xa2)
-      g_model.moduleData[module].subType = MM_RF_DSM2_SUBTYPE_DSMX_22;
-    else if (packet[6] >= 0x12)
-      g_model.moduleData[module].subType = MM_RF_DSM2_SUBTYPE_DSM2_11;
-    else
-      g_model.moduleData[module].subType = MM_RF_DSM2_SUBTYPE_DSM2_22;
+    switch(packet[6]) {
+      case 0xa2:
+        g_model.moduleData[module].subType = MM_RF_DSM2_SUBTYPE_DSMX_22;
+        break;
+      case 0x12:
+        g_model.moduleData[module].subType = MM_RF_DSM2_SUBTYPE_DSM2_11;
+        if (channels == 7) {
+          channels = 12;    // change the number of channels if 7
+        }
+        break;
+      case 0x01:
+      case 0x02:
+        g_model.moduleData[module].subType = MM_RF_DSM2_SUBTYPE_DSM2_22;
+        break;
+      default: // 0xb2 or unknown
+        g_model.moduleData[module].subType = MM_RF_DSM2_SUBTYPE_DSMX_11;
+        if (channels == 7) {
+          channels = 12;    // change the number of channels if 7
+        }
+        break;
+    }
+
+    g_model.moduleData[module].channelsCount = channels - 8;
+    g_model.moduleData[module].multi.optionValue &= 0xFD;    // clear the 11ms servo refresh rate flag
 
     storageDirty(EE_MODEL);
   }

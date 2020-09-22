@@ -329,7 +329,7 @@ void stop_trainer_module_sbus()
 }
 #endif
 
-#if defined(SBUS)
+#if defined(SBUS_TRAINER)
 int sbusGetByte(uint8_t * byte)
 {
   switch (currentTrainerMode) {

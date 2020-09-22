@@ -380,7 +380,7 @@ void TelemetryItem::eval(const TelemetrySensor & sensor)
         result = isqrt32(result);
 
         if (altItem) {
-          dist = abs(altItem->value) / g_model.telemetrySensors[sensor.dist.alt-1].getPrecDivisor();
+          dist = convertTelemetryValue(abs(altItem->value), g_model.telemetrySensors[sensor.dist.alt-1].unit, g_model.telemetrySensors[sensor.dist.alt-1].prec, UNIT_METERS, 0);
           result = (dist * dist) + (result * result);
           result = isqrt32(result);
         }
@@ -526,12 +526,19 @@ int setTelemetryValue(TelemetryProtocol protocol, uint16_t id, uint8_t subId, ui
         crossfireSetDefault(index, id, instance);
         break;
 #endif
+#if defined(GHOST)
+      case PROTOCOL_TELEMETRY_GHOST:
+        ghostSetDefault(index, id, instance);
+        break;
+#endif
+#if defined(MULTIMODULE) || defined(AFHDS3)
+      case PROTOCOL_TELEMETRY_FLYSKY_IBUS:
+        flySkySetDefault(index,id, subId, instance);
+        break;
+#endif
 #if defined(MULTIMODULE)
       case PROTOCOL_TELEMETRY_SPEKTRUM:
         spektrumSetDefault(index, id, subId, instance);
-        break;
-      case PROTOCOL_TELEMETRY_FLYSKY_IBUS:
-        flySkySetDefault(index,id, subId, instance);
         break;
       case PROTOCOL_TELEMETRY_HITEC:
         hitecSetDefault(index, id, subId, instance);
@@ -598,6 +605,7 @@ PACK(typedef struct {
 const UnitConversionRule unitConversionTable[] = {
   /* unitFrom     unitTo                    multiplier   divisor */
   { UNIT_METERS,            UNIT_FEET,             105,    32},
+  { UNIT_FEET,              UNIT_METERS,            32,   105},
   { UNIT_METERS_PER_SECOND, UNIT_FEET_PER_SECOND,  105,    32},
 
   { UNIT_KTS, UNIT_KMH,                           1852,  1000}, // 1 knot = 1.85200 kilometers per hour
@@ -719,4 +727,24 @@ int32_t TelemetrySensor::getPrecDivisor() const
   if (prec == 2) return 100;
   if (prec == 1) return 10;
   return 1;
+}
+
+bool TelemetrySensor::isSameInstance(TelemetryProtocol protocol, uint8_t instance)
+{
+  if (this->instance == instance)
+    return true;
+
+  if (protocol == PROTOCOL_TELEMETRY_FRSKY_SPORT) {
+#if defined(SIMU)
+    if (((this->instance ^ instance) & 0x1F) == 0)
+      return true;
+#else
+    if (((this->instance ^ instance) & 0x9F) == 0 && (this->instance >> 5) != TELEMETRY_ENDPOINT_SPORT && (instance >> 5) != TELEMETRY_ENDPOINT_SPORT) {
+              this->instance = instance; // update the instance in case we had telemetry switching
+              return true;
+            }
+#endif
+  }
+
+  return false;
 }

@@ -67,24 +67,22 @@ void bootloaderDrawScreen(BootloaderState st, int opt, const char* str)
     lcdDrawSolidFilledRect(0, 0, LCD_W, LCD_H, TEXT_BGCOLOR);
     
     if (st == ST_START) {
+      bootloaderDrawTitle(88, BOOTLOADER_TITLE);
 
-        bootloaderDrawTitle(88, BOOTLOADER_TITLE);
-        
-        lcdDrawBitmapPattern(90, 72, LBM_FLASH, TEXT_COLOR);
-        lcdDrawText(124,  75, "Write Firmware");
+      lcdDrawBitmapPattern(90, 72, LBM_FLASH, TEXT_COLOR);
+      lcdDrawText(124,  75, "Write Firmware");
 
-        lcdDrawBitmapPattern(90, 107, LBM_EXIT, TEXT_COLOR);
-        lcdDrawText(124, 110, "Exit");
+      lcdDrawBitmapPattern(90, 107, LBM_EXIT, TEXT_COLOR);
+      lcdDrawText(124, 110, "Exit");
 
-        lcdDrawSolidRect(119, (opt == 0) ? 72 : 107, 270, 26, 2, LINE_COLOR);
-        
-        lcd->drawBitmap(60, 166, &BMP_PLUG_USB);
-        lcdDrawText(195, 175, "Or plug in a USB cable");
-        lcdDrawText(195, 200, "for mass storage");
+      lcdDrawSolidRect(119, (opt == 0) ? 72 : 107, 270, 26, 2, LINE_COLOR);
 
-        bootloaderDrawFooter();
-        lcdDrawText( 36, 242, "Current Firmware:");
-        lcdDrawText(200, 242, getOtherVersion(nullptr));
+      lcd->drawBitmap(60, 166, &BMP_PLUG_USB);
+      lcdDrawText(195, 175, "Or plug in a USB cable");
+      lcdDrawText(195, 200, "for mass storage");
+
+      bootloaderDrawFooter();
+      lcdDrawText(LCD_W / 2, 242, getFirmwareVersion(), CENTERED);
     }
     else if (st == ST_USB) {
 

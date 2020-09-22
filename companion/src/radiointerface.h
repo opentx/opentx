@@ -30,12 +30,8 @@ QString getRadioInterfaceCmd();
 
 QString findMassstoragePath(const QString &filename, bool onlyPath = false);
 
-QStringList getAvrdudeArgs(const QString &cmd, const QString &filename);
 QStringList getSambaArgs(const QString &tcl);
 QStringList getDfuArgs(const QString &cmd, const QString &filename);
-
-void readAvrdudeFuses(ProgressWidget *progress);
-void resetAvrdudeFuses(bool eepromProtect, ProgressWidget *progress);
 
 QStringList getReadEEpromCmd(const QString &filename);
 QStringList getWriteEEpromCmd(const QString &filename);

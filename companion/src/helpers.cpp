@@ -565,7 +565,6 @@ QPixmap makePixMap(const QImage & image)
   return QPixmap::fromImage(result);
 }
 
-
 int version2index(const QString & version)
 {
   int result = 999;
@@ -579,6 +578,10 @@ int version2index(const QString & version)
   else if (version.contains("N")) {
     parts = version.split("N");
     result = parts[1].toInt(); // nightly build up to 899
+    mainVersion = parts[0];
+  }
+  else if (version.contains("-")) {
+    parts = version.split("-");
     mainVersion = parts[0];
   }
   parts = mainVersion.split('.');

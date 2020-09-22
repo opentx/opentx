@@ -160,7 +160,7 @@ const uint8_t * FrskyDeviceFirmwareUpdate::readFullDuplexFrame(ModuleFifo & fifo
 
 const uint8_t * FrskyDeviceFirmwareUpdate::readHalfDuplexFrame(uint32_t timeout)
 {
-  for (int i=timeout; i>=0; i--) {
+  for (int i = timeout; i >= 0; i--) {
     uint8_t byte ;
     while (telemetryGetByte(&byte)) {
       if (pushFrskyTelemetryData(byte)) {

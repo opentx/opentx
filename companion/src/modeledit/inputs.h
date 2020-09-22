@@ -46,7 +46,7 @@ class InputsPanel : public ModelPanel
     void expolistWidget_customContextMenuRequested(QPoint pos);
     void expolistWidget_doubleClicked(QModelIndex index);
     void expolistWidget_KeyPress(QKeyEvent *event);
-    void exposDelete(bool ask=true);
+    void exposDelete(bool prompt = true);
     void exposCut();
     void exposCopy();
     void exposPaste();

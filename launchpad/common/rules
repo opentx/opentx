@@ -15,9 +15,6 @@ STM32_OPTIONS = -DLUA=YES
 build:
 	mkdir $(BUILDDIR);
 
-	cd $(BUILDDIR); cmake $(COMMON_OPTIONS) -DPCB=9X       ../ ; make libsimulator
-	cd $(BUILDDIR); cmake $(COMMON_OPTIONS) -DPCB=GRUVIN9X ../ ; make libsimulator
-	cd $(BUILDDIR); cmake $(COMMON_OPTIONS) -DPCB=MEGA2560 ../ ; make libsimulator
 	cd $(BUILDDIR); cmake $(COMMON_OPTIONS) -DPCB=SKY9X    ../ ; make libsimulator
 	cd $(BUILDDIR); cmake $(COMMON_OPTIONS) -DPCB=9XRPRO   ../ ; make libsimulator
 

@@ -73,7 +73,7 @@ bool menuRadioDiagKeys(event_t event)
 #if defined(ROTARY_ENCODER_NAVIGATION)
   coord_t y = MENU_HEADER_HEIGHT + FH * (8 - KEY_START);
   lcdDrawText(MENUS_MARGIN_LEFT, y, STR_ROTARY_ENCODER);
-  lcdDrawNumber(70, y, rotencValue, 0);
+  lcdDrawNumber(70, y, rotencValue / ROTARY_ENCODER_GRANULARITY, 0);
 #endif
 
   return true;
