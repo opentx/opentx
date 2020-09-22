@@ -380,7 +380,7 @@ void TelemetryItem::eval(const TelemetrySensor & sensor)
         result = isqrt32(result);
 
         if (altItem) {
-          dist = convertTelemetryValue(abs(altItem->value), g_model.telemetrySensors[sensor.dist.alt-1].unit, g_model.telemetrySensors[sensor.dist.alt-1].prec, UNIT_METERS,  0);
+          dist = convertTelemetryValue(abs(altItem->value), g_model.telemetrySensors[sensor.dist.alt-1].unit, g_model.telemetrySensors[sensor.dist.alt-1].prec, UNIT_METERS, 0);
           result = (dist * dist) + (result * result);
           result = isqrt32(result);
         }
