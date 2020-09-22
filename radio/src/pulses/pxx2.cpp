@@ -227,6 +227,8 @@ void Pxx2Pulses::setupReceiverSettingsFrame(uint8_t module)
         flag1 |= PXX2_RX_SETTINGS_FLAG1_TELEMETRY_25MW;
       if (reusableBuffer.hardwareAndSettings.receiverSettings.enablePwmCh5Ch6)
         flag1 |= PXX2_RX_SETTINGS_FLAG1_ENABLE_PWM_CH5_CH6;
+      if (reusableBuffer.hardwareAndSettings.receiverSettings.fport2)
+        flag1 |= PXX2_RX_SETTINGS_FLAG1_FPORT2;
       Pxx2Transport::addByte(flag1);
       uint8_t outputsCount = min<uint8_t>(24, reusableBuffer.hardwareAndSettings.receiverSettings.outputsCount);
       for (int i = 0; i < outputsCount; i++) {
