@@ -380,7 +380,7 @@ void TelemetryItem::eval(const TelemetrySensor & sensor)
         result = isqrt32(result);
 
         if (altItem) {
-          dist = abs(altItem->value) / g_model.telemetrySensors[sensor.dist.alt-1].getPrecDivisor();
+          dist = convertTelemetryValue(abs(altItem->value), g_model.telemetrySensors[sensor.dist.alt-1].unit, g_model.telemetrySensors[sensor.dist.alt-1].prec, UNIT_METERS, 0);
           result = (dist * dist) + (result * result);
           result = isqrt32(result);
         }
@@ -605,6 +605,7 @@ PACK(typedef struct {
 const UnitConversionRule unitConversionTable[] = {
   /* unitFrom     unitTo                    multiplier   divisor */
   { UNIT_METERS,            UNIT_FEET,             105,    32},
+  { UNIT_FEET,              UNIT_METERS,            32,   105},
   { UNIT_METERS_PER_SECOND, UNIT_FEET_PER_SECOND,  105,    32},
 
   { UNIT_KTS, UNIT_KMH,                           1852,  1000}, // 1 knot = 1.85200 kilometers per hour
