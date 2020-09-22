@@ -152,6 +152,8 @@ void editName(coord_t x, coord_t y, char * name, uint8_t size, event_t event, ui
 
 uint8_t s_currIdx;
 uint8_t s_currIdxSubMenu;
+uint16_t s_currSrcRaw;
+uint16_t s_currScale;
 
 void copySelection(char * dst, const char * src, uint8_t size)
 {
