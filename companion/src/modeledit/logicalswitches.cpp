@@ -51,7 +51,6 @@ LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, 
 
   const int channelsMax = model.getChannelsMax(true);
 
-  lock = true;
   for (int i = 0; i < lsCapability; i++) {
     // The label
     QLabel * label = new QLabel(this);
@@ -156,7 +155,6 @@ LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, 
   }
 
   disableMouseScrolling();
-  lock = false;
   tableLayout->resizeColumnsToContents();
   tableLayout->pushRowsUp(lsCapability+1);
 }
@@ -176,12 +174,11 @@ void LogicalSwitchesPanel::onFunctionChanged()
     if (model->logicalSw[i].func == newFunc)
       return;
 
-    const unsigned oldFunc = model->logicalSw[i].func;
     CSFunctionFamily oldFuncFamily = model->logicalSw[i].getFunctionFamily();
     model->logicalSw[i].func = newFunc;
     CSFunctionFamily newFuncFamily = model->logicalSw[i].getFunctionFamily();
 
-    if (oldFuncFamily != newFuncFamily) {
+    if (oldFuncFamily != newFuncFamily || newFunc == LS_FN_OFF) {
       model->logicalSw[i].clear();
       model->logicalSw[i].func = newFunc;
       if (newFuncFamily == LS_FAMILY_TIMER) {
@@ -345,15 +342,12 @@ void LogicalSwitchesPanel::updateTimerParam(QDoubleSpinBox *sb, int timer, doubl
 void LogicalSwitchesPanel::updateLine(int i)
 {
   lock = true;
-  unsigned int mask;
+  unsigned int mask = 0;
 
   cbFunction[i]->setCurrentIndex(cbFunction[i]->findData(model->logicalSw[i].func));
   cbAndSwitch[i]->setCurrentIndex(cbAndSwitch[i]->findData(RawSwitch(model->logicalSw[i].andsw).toValue()));
 
-  if (model->logicalSw[i].isEmpty()) {
-    mask = 0;
-  }
-  else {
+  //if (!model->logicalSw[i].isEmpty()) {
     mask = LINE_ENABLED | DELAY_ENABLED | DURATION_ENABLED;
 
     switch (model->logicalSw[i].getFunctionFamily())
@@ -423,7 +417,7 @@ void LogicalSwitchesPanel::updateLine(int i)
         updateTimerParam(dsbOffset[i], model->logicalSw[i].val2, 0.1);
         break;
     }
-  }
+  //}
 
   cbSource1[i]->setVisible(mask & SOURCE1_VISIBLE);
   cbSource2[i]->setVisible(mask & SOURCE2_VISIBLE);
