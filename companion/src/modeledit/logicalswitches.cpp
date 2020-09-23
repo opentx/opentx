@@ -193,26 +193,10 @@ void LogicalSwitchesPanel::onFunctionChanged()
 
     if (oldFunc == LS_FN_OFF || newFunc == LS_FN_OFF)
       updateCBLists();
+    else
+      updateLine(i);
     emit modified();
   }
-}
-
-void LogicalSwitchesPanel::updateCBLists()
-{
-  //  We need to update the data models as (de)activating the current LS needs to be reflected in all LS source and switch lists
-  //  However triggering after the input or mix edit dialogs displayed causes the application to crash
-  //  So this workaround gives time for other events to be processed before refreshing
-  //  Not sure if this an OS related issue or a QT bug in QT 5.7 (and higher?)
-  //  The delay is abitary
-  QTimer::singleShot(1000, this, &LogicalSwitchesPanel::updateDataModels);
-}
-
-void LogicalSwitchesPanel::updateDataModels()
-{
-  //  This is inconsistent but needed as part of the workaround
-  //emit updateCBLists();  adds to the event stack so call direct
-  rawSourceModel->update();
-  rawSwitchModel->update();
 }
 
 void LogicalSwitchesPanel::onV1Changed(int value)
@@ -649,6 +633,24 @@ void LogicalSwitchesPanel::swapData(int idx1, int idx2)
     updateCBLists();
     emit modified();
   }
+}
+
+void LogicalSwitchesPanel::updateCBLists()
+{
+  //  We need to update the data models as (de)activating the current LS needs to be reflected in all LS source and switch lists
+  //  However triggering after the input or mix edit dialogs displayed causes the application to crash
+  //  So this workaround gives time for other events to be processed before refreshing
+  //  Not sure if this an OS related issue or a QT bug in QT 5.7 (and higher?)
+  //  The delay is abitary
+  QTimer::singleShot(1000, this, &LogicalSwitchesPanel::updateDataModels);
+}
+
+void LogicalSwitchesPanel::updateDataModels()
+{
+  //  This is inconsistent but needed as part of the workaround
+  //emit updateCBLists();  adds to the event stack so call direct
+  rawSourceModel->update();
+  rawSwitchModel->update();
 }
 
 void LogicalSwitchesPanel::onModelDataAboutToBeUpdated()
