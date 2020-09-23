@@ -65,9 +65,6 @@ class LogicalSwitchesPanel : public ModelPanel
     void onModelDataAboutToBeUpdated();
     void onModelDataUpdateComplete();
 
-  signals:
-    void updateDataModels();
-
   private:
     QComboBox * cbFunction[CPN_MAX_LOGICAL_SWITCHES];
     QDoubleSpinBox * dsbValue[CPN_MAX_LOGICAL_SWITCHES];
@@ -92,6 +89,8 @@ class LogicalSwitchesPanel : public ModelPanel
     bool moveDownAllowed() const;
     bool moveUpAllowed() const;
     int modelsUpdateCnt;
+    void updateCBLists();
+    void updateDataModels();
 };
 
 #endif // _LOGICALSWITCHES_H_

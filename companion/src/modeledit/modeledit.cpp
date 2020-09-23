@@ -122,9 +122,6 @@ ModelEdit::ModelEdit(QWidget * parent, RadioData & radioData, int modelId, Firmw
 
   connect(curvesPanel, &CurvesPanel::updateDataModels, curveModel, &CurveItemModel::update);
 
-  connect(logicalSwitchesPanel, &LogicalSwitchesPanel::updateDataModels, rawSourceModel, &RawSourceItemModel::update);
-  connect(logicalSwitchesPanel, &LogicalSwitchesPanel::updateDataModels, rawSwitchModel, &RawSwitchItemModel::update);
-
   connect(ui->tabWidget, &QTabWidget::currentChanged, this, &ModelEdit::onTabIndexChanged);
   connect(ui->pushButton, &QPushButton::clicked, this, &ModelEdit::launchSimulation);
 

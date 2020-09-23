@@ -174,6 +174,7 @@ void LogicalSwitchesPanel::onFunctionChanged()
     if (model->logicalSw[i].func == newFunc)
       return;
 
+    unsigned oldFunc = model->logicalSw[i].func;
     CSFunctionFamily oldFuncFamily = model->logicalSw[i].getFunctionFamily();
     model->logicalSw[i].func = newFunc;
     CSFunctionFamily newFuncFamily = model->logicalSw[i].getFunctionFamily();
@@ -190,9 +191,28 @@ void LogicalSwitchesPanel::onFunctionChanged()
       }
     }
 
-    updateLine(i);
+    if (oldFunc == LS_FN_OFF || newFunc == LS_FN_OFF)
+      updateCBLists();
     emit modified();
   }
+}
+
+void LogicalSwitchesPanel::updateCBLists()
+{
+  //  We need to update the data models as (de)activating the current LS needs to be reflected in all LS source and switch lists
+  //  However triggering after the input or mix edit dialogs displayed causes the application to crash
+  //  So this workaround gives time for other events to be processed before refreshing
+  //  Not sure if this an OS related issue or a QT bug in QT 5.7 (and higher?)
+  //  The delay is abitary
+  QTimer::singleShot(1000, this, &LogicalSwitchesPanel::updateDataModels);
+}
+
+void LogicalSwitchesPanel::updateDataModels()
+{
+  //  This is inconsistent but needed as part of the workaround
+  //emit updateCBLists();  adds to the event stack so call direct
+  rawSourceModel->update();
+  rawSwitchModel->update();
 }
 
 void LogicalSwitchesPanel::onV1Changed(int value)
@@ -347,7 +367,7 @@ void LogicalSwitchesPanel::updateLine(int i)
   cbFunction[i]->setCurrentIndex(cbFunction[i]->findData(model->logicalSw[i].func));
   cbAndSwitch[i]->setCurrentIndex(cbAndSwitch[i]->findData(RawSwitch(model->logicalSw[i].andsw).toValue()));
 
-  //if (!model->logicalSw[i].isEmpty()) {
+  if (!model->logicalSw[i].isEmpty()) {
     mask = LINE_ENABLED | DELAY_ENABLED | DURATION_ENABLED;
 
     switch (model->logicalSw[i].getFunctionFamily())
@@ -417,7 +437,7 @@ void LogicalSwitchesPanel::updateLine(int i)
         updateTimerParam(dsbOffset[i], model->logicalSw[i].val2, 0.1);
         break;
     }
-  //}
+  }
 
   cbSource1[i]->setVisible(mask & SOURCE1_VISIBLE);
   cbSource2[i]->setVisible(mask & SOURCE2_VISIBLE);
@@ -487,8 +507,7 @@ void LogicalSwitchesPanel::cmPaste()
   QByteArray data;
   if (hasClipboardData(&data)) {
     memcpy(&model->logicalSw[selectedIndex], data.constData(), sizeof(LogicalSwitchData));
-    emit updateDataModels();
-    updateLine(selectedIndex);
+    updateCBLists();
     emit modified();
   }
 }
@@ -502,8 +521,7 @@ void LogicalSwitchesPanel::cmDelete()
   model->logicalSw[lsCapability - 1].clear();
 
   model->updateAllReferences(ModelData::REF_UPD_TYPE_LOGICAL_SWITCH, ModelData::REF_UPD_ACT_SHIFT, selectedIndex, 0, -1);
-  emit updateDataModels();
-  update();
+  updateCBLists();
   emit modified();
 }
 
@@ -593,8 +611,7 @@ void LogicalSwitchesPanel::cmClear(bool prompt)
 
   model->logicalSw[selectedIndex].clear();
   model->updateAllReferences(ModelData::REF_UPD_TYPE_LOGICAL_SWITCH, ModelData::REF_UPD_ACT_CLEAR, selectedIndex);
-  update();
-  emit updateDataModels();
+  updateCBLists();
   emit modified();
 }
 
@@ -607,8 +624,7 @@ void LogicalSwitchesPanel::cmClearAll()
     model->logicalSw[i].clear();
     model->updateAllReferences(ModelData::REF_UPD_TYPE_LOGICAL_SWITCH, ModelData::REF_UPD_ACT_CLEAR, i);
   }
-  update();
-  emit updateDataModels();
+  updateCBLists();
   emit modified();
 }
 
@@ -617,8 +633,7 @@ void LogicalSwitchesPanel::cmInsert()
   memmove(&model->logicalSw[selectedIndex + 1], &model->logicalSw[selectedIndex], (CPN_MAX_LOGICAL_SWITCHES - (selectedIndex + 1)) * sizeof(LogicalSwitchData));
   model->logicalSw[selectedIndex].clear();
   model->updateAllReferences(ModelData::REF_UPD_TYPE_LOGICAL_SWITCH, ModelData::REF_UPD_ACT_SHIFT, selectedIndex, 0, 1);
-  update();
-  emit updateDataModels();
+  updateCBLists();
   emit modified();
 }
 
@@ -631,8 +646,7 @@ void LogicalSwitchesPanel::swapData(int idx1, int idx2)
     memcpy(lsw2, lsw1, sizeof(LogicalSwitchData));
     memcpy(lsw1, &lstmp, sizeof(LogicalSwitchData));
     model->updateAllReferences(ModelData::REF_UPD_TYPE_LOGICAL_SWITCH, ModelData::REF_UPD_ACT_SWAP, idx1, idx2);
-    update();
-    emit updateDataModels();
+    updateCBLists();
     emit modified();
   }
 }
