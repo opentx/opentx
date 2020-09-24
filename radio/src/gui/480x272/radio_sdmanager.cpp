@@ -394,7 +394,7 @@ bool menuRadioSdManager(event_t _event)
                 if (isReceiverOTAEnabledFromModule(EXTERNAL_MODULE, information.productId))
                   POPUP_MENU_ADD_ITEM(STR_FLASH_RECEIVER_OTA_BY_EXTERNAL);
               }
-              if (information.productFamily == FIRMWARE_FAMILY_FLIGHT_CONTROL) {
+              if (information.productFamily == FIRMWARE_FAMILY_FLIGHT_CONTROLLER) {
                 POPUP_MENU_ADD_ITEM(STR_FLASH_RECEIVER_OTA_BY_INTERNAL);
                 POPUP_MENU_ADD_ITEM(STR_FLASH_RECEIVER_OTA_BY_EXTERNAL);
               }
