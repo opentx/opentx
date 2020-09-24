@@ -1283,6 +1283,7 @@ void registerOpenTxFirmwares()
   firmware = new OpenTxFirmware("opentx-t18", Firmware::tr("Jumper T18"), BOARD_JUMPER_T18);
   addOpenTxFrskyOptions(firmware);
   firmware->addOption("bluetooth", Firmware::tr("Support for bluetooth module"));
+  firmware->addOption("externalaccessmod", Firmware::tr("Support hardware mod: R9M ACCESS"));
   registerOpenTxFirmware(firmware);
   addOpenTxRfOptions(firmware, FLEX);
 
