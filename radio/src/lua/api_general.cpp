@@ -867,7 +867,7 @@ Return the internal GPS position or nil if no valid hardware found
 static int luaGetTxGPS(lua_State * L)
 {
 #if defined(INTERNAL_GPS)
-  lua_createtable(L, 0, 7);
+  lua_createtable(L, 0, 8);
   lua_pushtablenumber(L, "lat", gpsData.latitude * 0.000001);
   lua_pushtablenumber(L, "lon", gpsData.longitude * 0.000001);
   lua_pushtableinteger(L, "numsat", gpsData.numSat);
