@@ -170,6 +170,10 @@ char * strAppendStringWithIndex(char * dest, const char * s, int idx)
   return strAppendUnsigned(strAppend(dest, s), abs(idx));
 }
 
+constexpr int32_t secondsPerDay = 24 * 3600;
+constexpr int32_t secondsPer99Hours = 99*3600 + 59*60 + 59;
+constexpr int32_t secondsPerYear = 365 * secondsPerDay;
+
 char * getTimerString(char * dest, int32_t tme, uint8_t hours)
 {
   char * s = dest;
@@ -180,28 +184,63 @@ char * getTimerString(char * dest, int32_t tme, uint8_t hours)
     *s++ = '-';
   }
 
-  qr = div((int)tme, 60);
+  if (tme < secondsPerDay) {
+    qr = div((int) tme, 60);
 
-  if (hours) {
-    div_t qr2 = div(qr.quot, 60);
+    if (hours) {
+      div_t qr2 = div(qr.quot, 60);
+      *s++ = '0' + (qr2.quot / 10);
+      *s++ = '0' + (qr2.quot % 10);
+      *s++ = ':';
+      qr.quot = qr2.rem;
+    }
+
+    if (!hours && qr.quot > 99) {
+      *s++ = '0' + (qr.quot / 100);
+      qr.quot = qr.quot % 100;
+    }
+
+    *s++ = '0' + (qr.quot / 10);
+    *s++ = '0' + (qr.quot % 10);
+    *s++ = ':';
+    *s++ = '0' + (qr.rem / 10);
+    *s++ = '0' + (qr.rem % 10);
+    *s = '\0';
+  }
+  else if (tme < secondsPer99Hours) {
+    qr = div((int) tme, 3600);
+    div_t qr2 = div(qr.rem, 60);
+    *s++ = '0' + (qr.quot / 10);
+    *s++ = '0' + (qr.quot % 10);
+    *s++ = 'H';
     *s++ = '0' + (qr2.quot / 10);
     *s++ = '0' + (qr2.quot % 10);
-    *s++ = ':';
-    qr.quot = qr2.rem;
+    *s = '\0';
   }
-
-  if (!hours && qr.quot > 99) {
+  else if (tme < secondsPerYear) {
+    qr = div((int) tme, secondsPerDay);
+    div_t qr2 = div(qr.rem, 60);
     *s++ = '0' + (qr.quot / 100);
-    qr.quot = qr.quot % 100;
+    *s++ = '0' + (qr.quot / 10);
+    *s++ = '0' + (qr.quot % 10);
+    *s++ = 'D';
+    *s++ = '0' + (qr2.quot / 10);
+    *s++ = '0' + (qr2.quot % 10);
+    *s++ = 'H';
+    *s = '\0';
   }
-
-  *s++ = '0' + (qr.quot / 10);
-  *s++ = '0' + (qr.quot % 10);
-  *s++ = ':';
-  *s++ = '0' + (qr.rem / 10);
-  *s++ = '0' + (qr.rem % 10);
-  *s = '\0';
-
+  else {
+    qr = div((int) tme, secondsPerYear);
+    div_t qr2 = div(qr.rem, secondsPerDay);
+    *s++ = '0' + (qr.quot / 10);
+    *s++ = '0' + (qr.quot % 10);
+    *s++ = 'Y';
+    *s++ = 'Y';
+    *s++ = '0' + (qr2.quot / 10);
+    *s++ = '0' + (qr2.quot % 10);
+    *s++ = 'D';
+    *s = '\0';
+  }
   return dest;
 }
 
