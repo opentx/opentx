@@ -102,7 +102,7 @@ class MultiFirmwareInformation {
 };
 
 enum MultiModuleType {
-  MULTI_TYPE_MULTIMODULE=0,
+  MULTI_TYPE_MULTIMODULE = 0,
   MULTI_TYPE_ELRS,
 };
 

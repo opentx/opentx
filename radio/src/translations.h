@@ -962,8 +962,6 @@ extern const char STR_ABOUT_PARENTS_4[];
 
 extern const char STR_AUTH_FAILURE[];
 
-extern const char STR_FLASH_EXTERNAL_ELRS[];
-
 #define CHR_HOUR   TR_CHR_HOUR
 #define CHR_INPUT  TR_CHR_INPUT
 
