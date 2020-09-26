@@ -261,6 +261,11 @@ const char * MultiFirmwareUpdateDriver::waitForInitialSync(bool &inverted) const
     return "NoSync";
   }
 
+  // avoids sending STK_READ_SIGN with STK_OK
+  // in case the receiver is too slow changing
+  // to RX mode (half-duplex).
+  RTOS_WAIT_TICKS(1);
+  
   return nullptr;
 }
 
