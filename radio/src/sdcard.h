@@ -72,6 +72,7 @@ const char RADIO_SETTINGS_PATH[] = RADIO_PATH "/radio.bin";
 #define SPORT_FIRMWARE_EXT  ".frk"
 #define FRSKY_FIRMWARE_EXT  ".frsk"
 #define MULTI_FIRMWARE_EXT  ".bin"
+#define ELRS_FIRMWARE_EXT   ".elrs"
 
 #define LEN_FILE_EXTENSION_MAX  5  // longest used, including the dot, excluding null term.
 

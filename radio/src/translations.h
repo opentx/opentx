@@ -670,6 +670,7 @@ extern const char STR_FLASH_INTERNAL_MODULE[];
 extern const char STR_FLASH_INTERNAL_MULTI[];
 extern const char STR_FLASH_EXTERNAL_MODULE[];
 extern const char STR_FLASH_EXTERNAL_MULTI[];
+extern const char STR_FLASH_EXTERNAL_ELRS[];
 extern const char STR_FIRMWARE_UPDATE_ERROR[];
 extern const char STR_FIRMWARE_UPDATE_SUCCESS[];
 extern const char STR_WRITING[];
@@ -960,6 +961,8 @@ extern const char STR_ABOUT_PARENTS_3[];
 extern const char STR_ABOUT_PARENTS_4[];
 
 extern const char STR_AUTH_FAILURE[];
+
+extern const char STR_FLASH_EXTERNAL_ELRS[];
 
 #define CHR_HOUR   TR_CHR_HOUR
 #define CHR_INPUT  TR_CHR_INPUT

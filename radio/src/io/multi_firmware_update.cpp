@@ -150,6 +150,47 @@ class MultiExternalUpdateDriver: public MultiFirmwareUpdateDriver
 
 static const MultiExternalUpdateDriver multiExternalUpdateDriver;
 
+class MultiExtSportUpdateDriver: public MultiFirmwareUpdateDriver
+{
+  public:
+    MultiExtSportUpdateDriver(): MultiFirmwareUpdateDriver() {}
+
+  protected:
+    void moduleOn() const override
+    {
+      EXTERNAL_MODULE_ON();
+    }
+
+    void init(bool inverted) const override
+    {
+      telemetryPortInit(57600, TELEMETRY_SERIAL_DEFAULT);
+    }
+
+    bool getByte(uint8_t& byte) const override
+    {
+      return telemetryGetByte(&byte);
+    }
+
+    void sendByte(uint8_t byte) const override
+    {
+      sportSendByte(byte);
+      telemetryPortSetDirectionInput();
+    }
+
+    void clear() const override
+    {
+      telemetryClearFifo();
+    }
+
+    void deinit(bool inverted) const override
+    {
+      telemetryPortInit(0, 0);
+      clear();
+    }
+};
+
+static const MultiExtSportUpdateDriver multiExtSportUpdateDriver;
+
 bool MultiFirmwareUpdateDriver::getRxByte(uint8_t& byte) const
 {
   uint16_t time;
@@ -180,6 +221,10 @@ const char * MultiFirmwareUpdateDriver::waitForInitialSync(bool& inverted) const
   uint8_t byte;
   int retries = 200;
 
+#if defined(DEBUG_EXT_MODULE_FLASH)
+  TRACE("[Wait for Sync]");
+#endif
+
   clear();
   do {
 
@@ -204,10 +249,16 @@ const char * MultiFirmwareUpdateDriver::waitForInitialSync(bool& inverted) const
   }
 
   if (byte != STK_INSYNC) {
+#if defined(DEBUG_EXT_MODULE_FLASH)
+    TRACE("[byte != STK_INSYNC]");
+#endif
     return "NoSync";
   }
 
   if (!checkRxByte(STK_OK)) {
+#if defined(DEBUG_EXT_MODULE_FLASH)
+    TRACE("[!checkRxByte(STK_OK)]");
+#endif
     return "NoSync";
   }
 
@@ -244,6 +295,10 @@ const char * MultiFirmwareUpdateDriver::loadAddress(uint32_t offset) const
     return "NoSync";
   }
 
+  // avoids sending next page back-to-back with STK_OK
+  // in case the receiver is to slow changing to RX mode (half-duplex).
+  RTOS_WAIT_TICKS(1);
+
   return nullptr;
 }
 
@@ -261,6 +316,7 @@ const char * MultiFirmwareUpdateDriver::progPage(uint8_t* buffer, uint16_t size)
   for (uint16_t i=0; i < size; i++) {
     sendByte(buffer[i]);
   }
+  
   sendByte(CRC_EOP);
 
   if (!checkRxByte(STK_INSYNC))
@@ -478,7 +534,7 @@ const char * MultiFirmwareInformation::readMultiFirmwareInformation(FIL * file)
   return readV1Signature(buffer);
 }
 
-bool multiFlashFirmware(uint8_t moduleIdx, const char * filename)
+bool multiFlashFirmware(uint8_t moduleIdx, const char * filename, MultiModuleType type)
 {
   FIL file;
 
@@ -487,28 +543,30 @@ bool multiFlashFirmware(uint8_t moduleIdx, const char * filename)
     return false;
   }
 
-  MultiFirmwareInformation firmwareFile;
-  if (firmwareFile.readMultiFirmwareInformation(&file)) {
-    f_close(&file);
-    POPUP_WARNING("Not a valid file");
-    return false;
-  }
-  f_lseek(&file, 0);
-
-  if (moduleIdx == EXTERNAL_MODULE) {
-    if (!firmwareFile.isMultiExternalFirmware()) {
+  if (type == MULTI_TYPE_MULTIMODULE) {
+    MultiFirmwareInformation firmwareFile;
+    if (firmwareFile.readMultiFirmwareInformation(&file)) {
       f_close(&file);
-      POPUP_WARNING(STR_NEEDS_FILE);
-      SET_WARNING_INFO(STR_EXT_MULTI_SPEC, strlen(STR_EXT_MULTI_SPEC), 0);
+      POPUP_WARNING("Not a valid file");
       return false;
     }
-  }
-  else {
-    if (!firmwareFile.isMultiInternalFirmware()) {
-      f_close(&file);
-      POPUP_WARNING(STR_NEEDS_FILE);
-      SET_WARNING_INFO(STR_INT_MULTI_SPEC, strlen(STR_INT_MULTI_SPEC), 0);
-      return false;
+    f_lseek(&file, 0);
+
+    if (moduleIdx == EXTERNAL_MODULE) {
+      if (!firmwareFile.isMultiExternalFirmware()) {
+        f_close(&file);
+        POPUP_WARNING(STR_NEEDS_FILE);
+        SET_WARNING_INFO(STR_EXT_MULTI_SPEC, strlen(STR_EXT_MULTI_SPEC), 0);
+        return false;
+      }
+    }
+    else {
+      if (!firmwareFile.isMultiInternalFirmware()) {
+        f_close(&file);
+        POPUP_WARNING(STR_NEEDS_FILE);
+        SET_WARNING_INFO(STR_INT_MULTI_SPEC, strlen(STR_INT_MULTI_SPEC), 0);
+        return false;
+      }
     }
   }
 
@@ -517,7 +575,9 @@ bool multiFlashFirmware(uint8_t moduleIdx, const char * filename)
   if (moduleIdx == INTERNAL_MODULE)
     driver = &multiInternalUpdateDriver;
 #endif
-
+  if (type == MULTI_TYPE_ELRS)
+    driver = &multiExtSportUpdateDriver;
+  
   pausePulses();
 
 #if defined(HARDWARE_INTERNAL_MODULE)

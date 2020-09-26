@@ -861,6 +861,7 @@
 #define TR_FLASH_EXTERNAL_MODULE       "Progr. modulo est."
 #define TR_FLASH_INTERNAL_MULTI        "Prog. Multi int."
 #define TR_FLASH_EXTERNAL_MULTI        "Prog. Multi est."
+#define TR_FLASH_EXTERNAL_ELRS         "Flash Ext. ELRS"
 #define TR_FIRMWARE_UPDATE_ERROR TR(INDENT "Errore agg. FW",INDENT "Errore aggiornamento firmware")
 #define TR_FIRMWARE_UPDATE_SUCCESS     "Aggiornamento" BREAKSPACE "riuscito"
 #define TR_WRITING             "Scrittura..."
