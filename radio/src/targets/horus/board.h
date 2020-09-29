@@ -637,6 +637,9 @@ void sportUpdatePowerInit();
 #if defined(AUX_SERIAL_GPIO)
 #define DEBUG_BAUDRATE                  115200
 extern uint8_t auxSerialMode;
+#if defined __cplusplus
+void auxSerialSetup(unsigned int baudrate, bool dma, uint16_t lenght = USART_WordLength_8b, uint16_t parity = USART_Parity_No, uint16_t stop = USART_StopBits_1);
+#endif
 void auxSerialInit(unsigned int mode, unsigned int protocol);
 void auxSerialPutc(char c);
 #define auxSerialTelemetryInit(protocol) auxSerialInit(UART_MODE_TELEMETRY, protocol)
@@ -656,6 +659,9 @@ void auxSerialPowerOff();
 // Aux2 serial port driver
 #if defined(AUX2_SERIAL)
 extern uint8_t aux2SerialMode;
+#if defined __cplusplus
+void aux2SerialSetup(unsigned int baudrate, bool dma, uint16_t lenght = USART_WordLength_8b, uint16_t parity = USART_Parity_No, uint16_t stop = USART_StopBits_1);
+#endif
 void aux2SerialInit(unsigned int mode, unsigned int protocol);
 void aux2SerialPutc(char c);
 #define aux2SerialTelemetryInit(protocol) aux2SerialInit(UART_MODE_TELEMETRY, protocol)

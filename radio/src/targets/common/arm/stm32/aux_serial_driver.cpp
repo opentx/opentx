@@ -30,7 +30,7 @@ uint8_t auxSerialMode = 0;
 Fifo<uint8_t, 512> auxSerialTxFifo;
 AuxSerialRxFifo auxSerialRxFifo __DMA (AUX_SERIAL_DMA_Stream_RX);
 
-void auxSerialSetup(unsigned int baudrate, bool dma, uint16_t lenght = USART_WordLength_8b, uint16_t parity = USART_Parity_No, uint16_t stop = USART_StopBits_1)
+void auxSerialSetup(unsigned int baudrate, bool dma, uint16_t lenght, uint16_t parity, uint16_t stop)
 {
   USART_InitTypeDef USART_InitStructure;
   GPIO_InitTypeDef GPIO_InitStructure;
@@ -230,7 +230,7 @@ uint8_t aux2SerialMode = 0;
 Fifo<uint8_t, 512> aux2SerialTxFifo;
 AuxSerialRxFifo aux2SerialRxFifo __DMA (AUX2_SERIAL_DMA_Stream_RX);
 
-void aux2SerialSetup(unsigned int baudrate, bool dma, uint16_t lenght = USART_WordLength_8b, uint16_t parity = USART_Parity_No, uint16_t stop = USART_StopBits_1)
+void aux2SerialSetup(unsigned int baudrate, bool dma, uint16_t lenght, uint16_t parity, uint16_t stop)
 {
   USART_InitTypeDef USART_InitStructure;
   GPIO_InitTypeDef GPIO_InitStructure;

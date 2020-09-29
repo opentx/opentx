@@ -1595,12 +1595,40 @@ static int luaMultiBuffer(lua_State * L)
 #endif
 
 /*luadoc
+@function serialSetup(port, baudrate)
+
+@param port (number) ID of the port you want to setup. (AUX1: 0, AUX2:1)
+
+@param baudrate (number) baudrate for the port
+
+@status current Introduced in 2.3.10
+*/
+static int luaSerialSetup(lua_State * L)
+{
+  uint8_t port = luaL_checkunsigned(L, 1);
+  uint16_t baudrate = luaL_checkunsigned(L, 2);
+
+#if !defined(SIMU)
+#if defined(AUX_SERIAL)
+  if (port == 0)
+    auxSerialSetup(baudrate, false);
+#endif
+#if defined(AUX2_SERIAL)
+  if (port == 1)
+    aux2SerialSetup(baudrate, false);
+#endif
+#endif
+
+  return 1;
+}
+
+/*luadoc
 @function serialWrite(str)
 @param str (string) String to be written to the serial port.
 
 Writes a string to the serial port. The string is allowed to contain any character, including 0.
 
-@status current Introduced in TODO
+@status current Introduced in 2.3.8
 */
 static int luaSerialWrite(lua_State * L)
 {
