@@ -24,20 +24,20 @@
 
 #include <TimerEdit>
 
-LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware,
-                                              RawSourceItemModel * rawSourceItemModel, RawSwitchItemModel * rawSwitchItemModel):
+LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, CommonItemModels * commonItemModels):
   ModelPanel(parent, model, generalSettings, firmware),
+  commonItemModels(commonItemModels),
   selectedIndex(0),
   modelsUpdateCnt(0)
 {
-  rawSwitchModel = new RawItemFilteredModel(rawSwitchItemModel, RawSwitch::LogicalSwitchesContext);
-  connect(rawSwitchModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &LogicalSwitchesPanel::onModelDataAboutToBeUpdated);
-  connect(rawSwitchModel, &RawItemFilteredModel::dataUpdateComplete, this, &LogicalSwitchesPanel::onModelDataUpdateComplete);
+  rawSwitchFilteredModel = new RawItemFilteredModel(commonItemModels->rawSwitchItemModel(), RawSwitch::LogicalSwitchesContext, this);
+  connect(rawSwitchFilteredModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &LogicalSwitchesPanel::onModelDataAboutToBeUpdated);
+  connect(rawSwitchFilteredModel, &RawItemFilteredModel::dataUpdateComplete, this, &LogicalSwitchesPanel::onModelDataUpdateComplete);
 
   const int srcGroups = firmware->getCapability(GvarsInCS) ? 0 : (RawSource::AllSourceGroups & ~RawSource::GVarsGroup);
-  rawSourceModel = new RawItemFilteredModel(rawSourceItemModel, srcGroups, this);
-  connect(rawSourceModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &LogicalSwitchesPanel::onModelDataAboutToBeUpdated);
-  connect(rawSourceModel, &RawItemFilteredModel::dataUpdateComplete, this, &LogicalSwitchesPanel::onModelDataUpdateComplete);
+  rawSourceFilteredModel = new RawItemFilteredModel(commonItemModels->rawSourceItemModel(), srcGroups, this);
+  connect(rawSourceFilteredModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &LogicalSwitchesPanel::onModelDataAboutToBeUpdated);
+  connect(rawSourceFilteredModel, &RawItemFilteredModel::dataUpdateComplete, this, &LogicalSwitchesPanel::onModelDataUpdateComplete);
 
   lsCapability = firmware->getCapability(LogicalSwitches);
   lsCapabilityExt = firmware->getCapability(LogicalSwitchesExt);
@@ -124,7 +124,7 @@ LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, 
     // AND
     cbAndSwitch[i] = new QComboBox(this);
     cbAndSwitch[i]->setProperty("index", i);
-    cbAndSwitch[i]->setModel(rawSwitchModel);
+    cbAndSwitch[i]->setModel(rawSwitchFilteredModel);
     cbAndSwitch[i]->setVisible(true);
     connect(cbAndSwitch[i], SIGNAL(currentIndexChanged(int)), this, SLOT(onAndSwitchChanged(int)));
     tableLayout->addWidget(i, 4, cbAndSwitch[i]);
@@ -161,8 +161,6 @@ LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, 
 
 LogicalSwitchesPanel::~LogicalSwitchesPanel()
 {
-  delete rawSourceModel;
-  delete rawSwitchModel;
 }
 
 void LogicalSwitchesPanel::onFunctionChanged()
@@ -174,7 +172,6 @@ void LogicalSwitchesPanel::onFunctionChanged()
     if (model->logicalSw[i].func == newFunc)
       return;
 
-    unsigned oldFunc = model->logicalSw[i].func;
     CSFunctionFamily oldFuncFamily = model->logicalSw[i].getFunctionFamily();
     model->logicalSw[i].func = newFunc;
     CSFunctionFamily newFuncFamily = model->logicalSw[i].getFunctionFamily();
@@ -191,10 +188,7 @@ void LogicalSwitchesPanel::onFunctionChanged()
       }
     }
 
-    if (oldFunc == LS_FN_OFF || newFunc == LS_FN_OFF)
-      updateCBLists();
-    else
-      updateLine(i);
+    updateLine(i);
     emit modified();
   }
 }
@@ -345,6 +339,7 @@ void LogicalSwitchesPanel::updateTimerParam(QDoubleSpinBox *sb, int timer, doubl
 
 void LogicalSwitchesPanel::updateLine(int i)
 {
+  const bool savelock = lock;
   lock = true;
   unsigned int mask = 0;
 
@@ -362,7 +357,7 @@ void LogicalSwitchesPanel::updateLine(int i)
         RawSource source = RawSource(model->logicalSw[i].val1);
         RawSourceRange range = source.getRange(model, generalSettings, model->logicalSw[i].getRangeFlags());
         double value = range.step * model->logicalSw[i].val2 + range.offset;  /* TODO+source.getRawOffset(model)*/
-        cbSource1[i]->setModel(rawSourceModel);
+        cbSource1[i]->setModel(rawSourceFilteredModel);
         cbSource1[i]->setCurrentIndex(cbSource1[i]->findData(source.toValue()));
         if (source.isTimeBased()) {
           mask |= VALUE_TO_VISIBLE;
@@ -391,16 +386,16 @@ void LogicalSwitchesPanel::updateLine(int i)
       case LS_FAMILY_STICKY:  // no break
       case LS_FAMILY_VBOOL:
         mask |= SOURCE1_VISIBLE | SOURCE2_VISIBLE;
-        cbSource1[i]->setModel(rawSwitchModel);
+        cbSource1[i]->setModel(rawSwitchFilteredModel);
         cbSource1[i]->setCurrentIndex(cbSource1[i]->findData(model->logicalSw[i].val1));
-        cbSource2[i]->setModel(rawSwitchModel);
+        cbSource2[i]->setModel(rawSwitchFilteredModel);
         cbSource2[i]->setCurrentIndex(cbSource2[i]->findData(model->logicalSw[i].val2));
         break;
 
       case LS_FAMILY_EDGE:
         mask |= SOURCE1_VISIBLE | VALUE2_VISIBLE | VALUE3_VISIBLE;
         mask &= ~DELAY_ENABLED;
-        cbSource1[i]->setModel(rawSwitchModel);
+        cbSource1[i]->setModel(rawSwitchFilteredModel);
         cbSource1[i]->setCurrentIndex(cbSource1[i]->findData(model->logicalSw[i].val1));
         updateTimerParam(dsbOffset[i], model->logicalSw[i].val2, 0.0);
         updateTimerParam(dsbOffset2[i], model->logicalSw[i].val2 + model->logicalSw[i].val3, ValToTim(TimToVal(dsbOffset[i]->value()) - 1));
@@ -409,9 +404,9 @@ void LogicalSwitchesPanel::updateLine(int i)
 
       case LS_FAMILY_VCOMP:
         mask |= SOURCE1_VISIBLE | SOURCE2_VISIBLE;
-        cbSource1[i]->setModel(rawSourceModel);
+        cbSource1[i]->setModel(rawSourceFilteredModel);
         cbSource1[i]->setCurrentIndex(cbSource1[i]->findData(model->logicalSw[i].val1));
-        cbSource2[i]->setModel(rawSourceModel);
+        cbSource2[i]->setModel(rawSourceFilteredModel);
         cbSource2[i]->setCurrentIndex(cbSource2[i]->findData(model->logicalSw[i].val2));
         break;
 
@@ -439,7 +434,7 @@ void LogicalSwitchesPanel::updateLine(int i)
       dsbDelay[i]->setValue(model->logicalSw[i].delay / 10.0);
   }
 
-  lock = false;
+  lock = savelock;
 }
 
 void LogicalSwitchesPanel::populateFunctionCB(QComboBox *b)
@@ -491,6 +486,7 @@ void LogicalSwitchesPanel::cmPaste()
   QByteArray data;
   if (hasClipboardData(&data)) {
     memcpy(&model->logicalSw[selectedIndex], data.constData(), sizeof(LogicalSwitchData));
+    updateLine(selectedIndex);
     updateCBLists();
     emit modified();
   }
@@ -505,6 +501,7 @@ void LogicalSwitchesPanel::cmDelete()
   model->logicalSw[lsCapability - 1].clear();
 
   model->updateAllReferences(ModelData::REF_UPD_TYPE_LOGICAL_SWITCH, ModelData::REF_UPD_ACT_SHIFT, selectedIndex, 0, -1);
+  update();
   updateCBLists();
   emit modified();
 }
@@ -515,7 +512,7 @@ void LogicalSwitchesPanel::cmCopy()
   data.append((char*)&model->logicalSw[selectedIndex], sizeof(LogicalSwitchData));
   QMimeData *mimeData = new QMimeData;
   mimeData->setData(MIMETYPE_LOGICAL_SWITCH, data);
-  QApplication::clipboard()->setMimeData(mimeData,QClipboard::Clipboard);
+  QApplication::clipboard()->setMimeData(mimeData, QClipboard::Clipboard);
 }
 
 void LogicalSwitchesPanel::cmCut()
@@ -526,7 +523,6 @@ void LogicalSwitchesPanel::cmCut()
   cmClear(false);
 }
 
-// TODO make something generic here!
 void LogicalSwitchesPanel::onCustomContextMenuRequested(QPoint pos)
 {
   QLabel *label = (QLabel *)sender();
@@ -595,6 +591,7 @@ void LogicalSwitchesPanel::cmClear(bool prompt)
 
   model->logicalSw[selectedIndex].clear();
   model->updateAllReferences(ModelData::REF_UPD_TYPE_LOGICAL_SWITCH, ModelData::REF_UPD_ACT_CLEAR, selectedIndex);
+  updateLine(selectedIndex);
   updateCBLists();
   emit modified();
 }
@@ -608,6 +605,7 @@ void LogicalSwitchesPanel::cmClearAll()
     model->logicalSw[i].clear();
     model->updateAllReferences(ModelData::REF_UPD_TYPE_LOGICAL_SWITCH, ModelData::REF_UPD_ACT_CLEAR, i);
   }
+  update();
   updateCBLists();
   emit modified();
 }
@@ -617,6 +615,7 @@ void LogicalSwitchesPanel::cmInsert()
   memmove(&model->logicalSw[selectedIndex + 1], &model->logicalSw[selectedIndex], (CPN_MAX_LOGICAL_SWITCHES - (selectedIndex + 1)) * sizeof(LogicalSwitchData));
   model->logicalSw[selectedIndex].clear();
   model->updateAllReferences(ModelData::REF_UPD_TYPE_LOGICAL_SWITCH, ModelData::REF_UPD_ACT_SHIFT, selectedIndex, 0, 1);
+  update();
   updateCBLists();
   emit modified();
 }
@@ -630,6 +629,8 @@ void LogicalSwitchesPanel::swapData(int idx1, int idx2)
     memcpy(lsw2, lsw1, sizeof(LogicalSwitchData));
     memcpy(lsw1, &lstmp, sizeof(LogicalSwitchData));
     model->updateAllReferences(ModelData::REF_UPD_TYPE_LOGICAL_SWITCH, ModelData::REF_UPD_ACT_SWAP, idx1, idx2);
+    updateLine(idx1);
+    updateLine(idx2);
     updateCBLists();
     emit modified();
   }
@@ -642,15 +643,14 @@ void LogicalSwitchesPanel::updateCBLists()
   //  So this workaround gives time for other events to be processed before refreshing
   //  Not sure if this an OS related issue or a QT bug in QT 5.7 (and higher?)
   //  The delay is abitary
-  QTimer::singleShot(1000, this, &LogicalSwitchesPanel::updateDataModels);
+  //QTimer::singleShot(1000, this, &LogicalSwitchesPanel::updateItemModels);
+  updateItemModels();
 }
 
-void LogicalSwitchesPanel::updateDataModels()
+void LogicalSwitchesPanel::updateItemModels()
 {
-  //  This is inconsistent but needed as part of the workaround
-  //emit updateCBLists();  adds to the event stack so call direct
-  rawSourceModel->update();
-  rawSwitchModel->update();
+  lock = true;
+  commonItemModels->update(CommonItemModels::RMO_LOGICAL_SWITCHES);
 }
 
 void LogicalSwitchesPanel::onModelDataAboutToBeUpdated()
@@ -662,6 +662,8 @@ void LogicalSwitchesPanel::onModelDataAboutToBeUpdated()
 void LogicalSwitchesPanel::onModelDataUpdateComplete()
 {
   modelsUpdateCnt--;
-  if (modelsUpdateCnt < 1)
+  if (modelsUpdateCnt < 1) {
     update();
+    lock = false;
+  }
 }

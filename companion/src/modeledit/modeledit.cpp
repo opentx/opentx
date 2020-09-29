@@ -53,89 +53,65 @@ ModelEdit::ModelEdit(QWidget * parent, RadioData & radioData, int modelId, Firmw
   GeneralSettings &generalSettings = radioData.generalSettings;
   ModelData &model = radioData.models[modelId];
 
-  /*
-    Create reusable model specific ui datamodels here and pass pointers as needed
-    They should be referenced through filters in each use case
-    Code that updates the source for one or more ui datamodels should emit a SIGNAL that can be trapped (see below) and the datamodels refreshed
-    WARNING: beware of looping signals and slots and unnecessary data field updates from refreshing datamodels
-             where practical make signals granular to only those fields that affect datamodels thus needing to be refreshed
-  */
-  rawSourceModel = new RawSourceItemModel(&generalSettings, &model, this);
-  rawSwitchModel = new RawSwitchItemModel(&generalSettings, &model, this);
-  curveModel = new CurveItemModel(&generalSettings, &model, this);
+  commonItemModels = new CommonItemModels(&generalSettings, &model, this);
   s1.report("Init");
 
-  SetupPanel * setupPanel = new SetupPanel(this, model, generalSettings, firmware, rawSwitchModel);
+  SetupPanel * setupPanel = new SetupPanel(this, model, generalSettings, firmware, commonItemModels);
   addTab(setupPanel, tr("Setup"));
   s1.report("Setup");
 
   if (firmware->getCapability(Heli)) {
-    HeliPanel * heliPanel = new HeliPanel(this, model, generalSettings, firmware, rawSourceModel);
+    HeliPanel * heliPanel = new HeliPanel(this, model, generalSettings, firmware, commonItemModels);
     addTab(heliPanel, tr("Heli"));
     s1.report("Heli");
   }
 
-  FlightModesPanel * flightModesPanel = new FlightModesPanel(this, model, generalSettings, firmware, rawSwitchModel);
+  FlightModesPanel * flightModesPanel = new FlightModesPanel(this, model, generalSettings, firmware, commonItemModels);
   addTab(flightModesPanel, tr("Flight Modes"));
   s1.report("Flight Modes");
 
-  InputsPanel * inputsPanel = new InputsPanel(this, model, generalSettings, firmware, rawSourceModel, rawSwitchModel);
+  InputsPanel * inputsPanel = new InputsPanel(this, model, generalSettings, firmware, commonItemModels);
   addTab(inputsPanel, tr("Inputs"));
   s1.report("Inputs");
 
-  MixesPanel * mixesPanel = new MixesPanel(this, model, generalSettings, firmware, rawSourceModel, rawSwitchModel);
+  MixesPanel * mixesPanel = new MixesPanel(this, model, generalSettings, firmware, commonItemModels);
   addTab(mixesPanel, tr("Mixes"));
   s1.report("Mixes");
 
-  ChannelsPanel * channelsPanel = new ChannelsPanel(this, model, generalSettings, firmware, curveModel);
+  ChannelsPanel * channelsPanel = new ChannelsPanel(this, model, generalSettings, firmware, commonItemModels);
   addTab(channelsPanel, tr("Outputs"));
   s1.report("Outputs");
 
-  CurvesPanel * curvesPanel = new CurvesPanel(this, model, generalSettings, firmware);
+  CurvesPanel * curvesPanel = new CurvesPanel(this, model, generalSettings, firmware, commonItemModels);
   addTab(curvesPanel, tr("Curves"));
   s1.report("Curves");
 
-  LogicalSwitchesPanel * logicalSwitchesPanel = new LogicalSwitchesPanel(this, model, generalSettings, firmware, rawSourceModel, rawSwitchModel);
+  LogicalSwitchesPanel * logicalSwitchesPanel = new LogicalSwitchesPanel(this, model, generalSettings, firmware, commonItemModels);
   addTab(logicalSwitchesPanel, tr("Logical Switches"));
   s1.report("Logical Switches");
 
-  CustomFunctionsPanel * customFunctionsPanel = new CustomFunctionsPanel(this, &model, generalSettings, firmware, rawSourceModel, rawSwitchModel);
+  CustomFunctionsPanel * customFunctionsPanel = new CustomFunctionsPanel(this, &model, generalSettings, firmware, commonItemModels);
   addTab(customFunctionsPanel, tr("Special Functions"));
   s1.report("Special Functions");
 
   if (firmware->getCapability(Telemetry)) {
-    TelemetryPanel * telemetryPanel = new TelemetryPanel(this, model, generalSettings, firmware, rawSourceModel);
+    TelemetryPanel * telemetryPanel = new TelemetryPanel(this, model, generalSettings, firmware, commonItemModels);
     addTab(telemetryPanel, tr("Telemetry"));
-    connect(telemetryPanel, &TelemetryPanel::updateDataModels, rawSourceModel, &RawSourceItemModel::update);
     s1.report("Telemetry");
   }
 
   connect(setupPanel, &SetupPanel::extendedLimitsToggled, channelsPanel, &ChannelsPanel::refreshExtendedLimits);
-  connect(setupPanel, &SetupPanel::updateDataModels, rawSourceModel, &RawSourceItemModel::update);
-
-  connect(flightModesPanel, &FlightModesPanel::updateDataModels, rawSourceModel, &RawSourceItemModel::update);
-  connect(flightModesPanel, &FlightModesPanel::updateDataModels, rawSwitchModel, &RawSwitchItemModel::update);
-
-  connect(inputsPanel, &InputsPanel::updateDataModels, rawSourceModel, &RawSourceItemModel::update);
-
-  connect(channelsPanel, &ChannelsPanel::updateDataModels, rawSourceModel, &RawSourceItemModel::update);
-
-  connect(curvesPanel, &CurvesPanel::updateDataModels, curveModel, &CurveItemModel::update);
 
   connect(ui->tabWidget, &QTabWidget::currentChanged, this, &ModelEdit::onTabIndexChanged);
   connect(ui->pushButton, &QPushButton::clicked, this, &ModelEdit::launchSimulation);
 
   onTabIndexChanged(ui->tabWidget->currentIndex());  // make sure to trigger update on default tab panel
 
-  s1.report("Signals and Slots");
   gStopwatch.report("ModelEdit end constructor");
 }
 
 ModelEdit::~ModelEdit()
 {
-  delete rawSourceModel;
-  delete rawSwitchModel;
-  delete curveModel;
   delete ui;
 }
 

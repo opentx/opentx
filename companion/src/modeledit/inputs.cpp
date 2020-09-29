@@ -23,19 +23,19 @@
 #include "helpers.h"
 #include "rawitemfilteredmodel.h"
 
-InputsPanel::InputsPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware,
-                            RawSourceItemModel * rawSourceItemModel, RawSwitchItemModel * rawSwitchItemModel):
+InputsPanel::InputsPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, CommonItemModels * commonItemModels):
   ModelPanel(parent, model, generalSettings, firmware),
   expoInserted(false),
-  modelPrinter(firmware, generalSettings, model)
+  modelPrinter(firmware, generalSettings, model),
+  commonItemModels(commonItemModels)
 {
-  rawSourceModel = new RawItemFilteredModel(rawSourceItemModel, (RawSource::InputSourceGroups & ~ RawSource::NoneGroup & ~RawSource::InputsGroup), this);
-  connect(rawSourceModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &InputsPanel::onModelDataAboutToBeUpdated);
-  connect(rawSourceModel, &RawItemFilteredModel::dataUpdateComplete, this, &InputsPanel::onModelDataUpdateComplete);
+  rawSourceFilteredModel = new RawItemFilteredModel(commonItemModels->rawSourceItemModel(), (RawSource::InputSourceGroups & ~ RawSource::NoneGroup & ~RawSource::InputsGroup), this);
+  connect(rawSourceFilteredModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &InputsPanel::onModelDataAboutToBeUpdated);
+  connect(rawSourceFilteredModel, &RawItemFilteredModel::dataUpdateComplete, this, &InputsPanel::onModelDataUpdateComplete);
 
-  rawSwitchModel = new RawItemFilteredModel(rawSwitchItemModel, RawSwitch::MixesContext, this);
-  connect(rawSwitchModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &InputsPanel::onModelDataAboutToBeUpdated);
-  connect(rawSwitchModel, &RawItemFilteredModel::dataUpdateComplete, this, &InputsPanel::onModelDataUpdateComplete);
+  rawSwitchFilteredModel = new RawItemFilteredModel(commonItemModels->rawSwitchItemModel(), RawSwitch::MixesContext, this);
+  connect(rawSwitchFilteredModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &InputsPanel::onModelDataAboutToBeUpdated);
+  connect(rawSwitchFilteredModel, &RawItemFilteredModel::dataUpdateComplete, this, &InputsPanel::onModelDataUpdateComplete);
 
   inputsCount = firmware->getCapability(VirtualInputs);
   if (inputsCount == 0)
@@ -75,8 +75,6 @@ InputsPanel::InputsPanel(QWidget *parent, ModelData & model, GeneralSettings & g
 
 InputsPanel::~InputsPanel()
 {
-  delete rawSourceModel;
-  delete rawSwitchModel;
 }
 
 void InputsPanel::update()
@@ -192,13 +190,13 @@ void InputsPanel::gm_openExpo(int index)
   if (firmware->getCapability(VirtualInputs))
     inputName = model->inputNames[ed.chn];
 
-  ExpoDialog *g = new ExpoDialog(this, *model, &ed, generalSettings, firmware, inputName, rawSourceModel, rawSwitchModel);
+  ExpoDialog *g = new ExpoDialog(this, *model, &ed, generalSettings, firmware, inputName, rawSourceFilteredModel, rawSwitchFilteredModel);
   if (g->exec())  {
     model->expoData[index] = ed;
     if (firmware->getCapability(VirtualInputs))
       strncpy(model->inputNames[ed.chn], inputName.toLatin1().data(), INPUT_NAME_LEN);
     update();
-    emit updateDataModels();
+    updateItemModels();
     emit modified();
   }
   else {
@@ -253,7 +251,7 @@ void InputsPanel::exposDelete(bool prompt)
 
   exposDeleteList(list, prompt);
   update();
-  emit updateDataModels();
+  updateItemModels();
   emit modified();
 }
 
@@ -328,7 +326,7 @@ void InputsPanel::pasteExpoMimeData(const QMimeData * mimeData, int destIdx)
     }
 
     update();
-    emit updateDataModels();
+    updateItemModels();
     emit modified();
   }
 }
@@ -497,7 +495,7 @@ void InputsPanel::moveExpoList(bool down)
   }
   if (mod) {
     update();
-    emit updateDataModels();
+    updateItemModels();
     emit modified();
   }
   setSelectedByExpoList(highlightList);
@@ -537,7 +535,7 @@ void InputsPanel::clearExpos()
       model->updateAllReferences(ModelData::REF_UPD_TYPE_INPUT, ModelData::REF_UPD_ACT_CLEAR, i);
     }
     update();
-    emit updateDataModels();
+    updateItemModels();
     emit modified();
   }
 }
@@ -586,7 +584,7 @@ void InputsPanel::cmInputClear()
   }
   model->updateAllReferences(ModelData::REF_UPD_TYPE_INPUT, ModelData::REF_UPD_ACT_CLEAR, inputIdx);
   update();
-  emit updateDataModels();
+  updateItemModels();
   emit modified();
 }
 
@@ -610,7 +608,7 @@ void InputsPanel::cmInputDelete()
 
   model->updateAllReferences(ModelData::REF_UPD_TYPE_INPUT, ModelData::REF_UPD_ACT_SHIFT, inputIdx, 0, -1);
   update();
-  emit updateDataModels();
+  updateItemModels();
   emit modified();
 }
 
@@ -629,7 +627,7 @@ void InputsPanel::cmInputInsert()
 
   model->updateAllReferences(ModelData::REF_UPD_TYPE_INPUT, ModelData::REF_UPD_ACT_SHIFT, inputIdx, 0, 1);
   update();
-  emit updateDataModels();
+  updateItemModels();
   emit modified();
 }
 
@@ -691,7 +689,7 @@ void InputsPanel::cmInputSwapData(int idx1, int idx2)
 
   model->updateAllReferences(ModelData::REF_UPD_TYPE_INPUT, ModelData::REF_UPD_ACT_SWAP, idx1, idx2);
   update();
-  emit updateDataModels();
+  updateItemModels();
   emit modified();
 }
 
@@ -735,4 +733,10 @@ void InputsPanel::onModelDataAboutToBeUpdated()
 void InputsPanel::onModelDataUpdateComplete()
 {
   update();
+  lock = false;
+}
+
+void InputsPanel::updateItemModels()
+{
+  commonItemModels->update(CommonItemModels::RMO_INPUTS);
 }

@@ -297,6 +297,7 @@ void TelemetryCustomScreen::onModelDataAboutToBeUpdated()
 void TelemetryCustomScreen::onModelDataUpdateComplete()
 {
   update();
+  lock = false;
 }
 
 /******************************************************/
@@ -690,12 +691,13 @@ void TelemetrySensorPanel::cmMoveDown()
 
 /******************************************************/
 
-TelemetryPanel::TelemetryPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, RawSourceItemModel * rawSourceItemModel):
+TelemetryPanel::TelemetryPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, CommonItemModels * commonItemModels):
   ModelPanel(parent, model, generalSettings, firmware),
-  ui(new Ui::Telemetry)
+  ui(new Ui::Telemetry),
+  commonItemModels(commonItemModels)
 {
   ui->setupUi(this);
-  rawSourceModel = new RawItemFilteredModel(rawSourceItemModel, this);
+  rawSourceFilteredModel = new RawItemFilteredModel(commonItemModels->rawSourceItemModel(), this);
 
   sensorCapability = firmware->getCapability(Sensors);
   if (sensorCapability > CPN_MAX_SENSORS) //  TODO should be role of getCapability
@@ -732,7 +734,7 @@ TelemetryPanel::TelemetryPanel(QWidget *parent, ModelData & model, GeneralSettin
   }
 
   for (int i = 0; i < firmware->getCapability(TelemetryCustomScreens); i++) {
-    TelemetryCustomScreen * tab = new TelemetryCustomScreen(this, model, model.frsky.screens[i], generalSettings, firmware, rawSourceModel);
+    TelemetryCustomScreen * tab = new TelemetryCustomScreen(this, model, model.frsky.screens[i], generalSettings, firmware, rawSourceFilteredModel);
     ui->customScreens->addTab(tab, tr("Telemetry screen %1").arg(i + 1));
     telemetryCustomScreens[i] = tab;
     connect(tab, &TelemetryCustomScreen::modified, this, &TelemetryPanel::onModified);
@@ -745,7 +747,6 @@ TelemetryPanel::TelemetryPanel(QWidget *parent, ModelData & model, GeneralSettin
 
 TelemetryPanel::~TelemetryPanel()
 {
-  delete rawSourceModel;
   delete ui;
 }
 
@@ -983,7 +984,7 @@ void TelemetryPanel::on_clearAllSensors()
   }
 
   update();
-  emit updateDataModels();
+  updateItemModels();
   emit modified();
 }
 
@@ -994,7 +995,7 @@ void TelemetryPanel::on_insertSensor(int selectedIndex)
   model->updateAllReferences(ModelData::REF_UPD_TYPE_SENSOR, ModelData::REF_UPD_ACT_SHIFT, selectedIndex, 0, 1);
 
   update();
-  emit updateDataModels();
+  updateItemModels();
   emit modified();
 }
 
@@ -1008,7 +1009,7 @@ void TelemetryPanel::on_deleteSensor(int selectedIndex)
   model->updateAllReferences(ModelData::REF_UPD_TYPE_SENSOR, ModelData::REF_UPD_ACT_SHIFT, selectedIndex, 0, -1);
 
   update();
-  emit updateDataModels();
+  updateItemModels();
   emit modified();
 }
 
@@ -1032,7 +1033,12 @@ void TelemetryPanel::swapData(int idx1, int idx2)
     memcpy(sd1, &sdtmp, sizeof(SensorData));
     model->updateAllReferences(ModelData::REF_UPD_TYPE_SENSOR, ModelData::REF_UPD_ACT_SWAP, idx1, idx2);
     update();
-    emit updateDataModels();
+    updateItemModels();
     emit modified();
   }
+}
+
+void TelemetryPanel::updateItemModels()
+{
+  commonItemModels->update(CommonItemModels::RMO_TELEMETRY_SENSORS);
 }

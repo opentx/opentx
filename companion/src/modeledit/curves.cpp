@@ -23,6 +23,7 @@
 #include "node.h"
 #include "edge.h"
 #include "helpers.h"
+#include "rawitemfilteredmodel.h"
 
 #define GFX_MARGIN 16
 
@@ -108,10 +109,11 @@ float curveSymmetricalX(float x, float coeff, float yMin, float yMid, float yMax
   return y;
 }
 
-CurvesPanel::CurvesPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware):
+CurvesPanel::CurvesPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, CommonItemModels * commonItemModels):
   ModelPanel(parent, model, generalSettings, firmware),
   ui(new Ui::Curves),
-  currentCurve(0)
+  currentCurve(0),
+  commonItemModels(commonItemModels)
 {
   ui->setupUi(this);
 
@@ -523,7 +525,7 @@ void CurvesPanel::on_curveName_editingFinished()
   if (ui->curveName->text() != model->curves[currentCurve].name) {
     memset(model->curves[currentCurve].name, 0, sizeof(model->curves[currentCurve].name));
     strcpy(model->curves[currentCurve].name, ui->curveName->text().toLatin1());
-    emit updateDataModels();
+    updateItemModels();
     emit modified();
   }
 }
@@ -712,7 +714,7 @@ void CurvesPanel::cmClear(bool prompt)
   model->curves[selectedIndex].clear();
   model->updateAllReferences(ModelData::REF_UPD_TYPE_CURVE, ModelData::REF_UPD_ACT_CLEAR, selectedIndex);
   update();
-  emit updateDataModels();
+  updateItemModels();
   emit modified();
 }
 
@@ -726,7 +728,7 @@ void CurvesPanel::cmClearAll()
     model->updateAllReferences(ModelData::REF_UPD_TYPE_CURVE, ModelData::REF_UPD_ACT_CLEAR, i);
   }
   update();
-  emit updateDataModels();
+  updateItemModels();
   emit modified();
 }
 
@@ -756,7 +758,7 @@ void CurvesPanel::cmDelete()
   model->curves[maxCurves - 1].clear();
   model->updateAllReferences(ModelData::REF_UPD_TYPE_CURVE, ModelData::REF_UPD_ACT_SHIFT, selectedIndex, 0, -1);
   update();
-  emit updateDataModels();
+  updateItemModels();
   emit modified();
 }
 
@@ -766,7 +768,7 @@ void CurvesPanel::cmInsert()
   model->curves[selectedIndex].clear();
   model->updateAllReferences(ModelData::REF_UPD_TYPE_CURVE, ModelData::REF_UPD_ACT_SHIFT, selectedIndex, 0, 1);
   update();
-  emit updateDataModels();
+  updateItemModels();
   emit modified();
 }
 
@@ -787,7 +789,7 @@ void CurvesPanel::cmPaste()
     CurveData *cd = &model->curves[selectedIndex];
     memcpy(cd, data.constData(), sizeof(CurveData));
     update();
-    emit updateDataModels();
+    updateItemModels();
     emit modified();
   }
 }
@@ -802,9 +804,14 @@ void CurvesPanel::swapData(int idx1, int idx2)
     memcpy(cd1, &cdtmp, sizeof(CurveData));
     model->updateAllReferences(ModelData::REF_UPD_TYPE_CURVE, ModelData::REF_UPD_ACT_SWAP, idx1, idx2);
     update();
-    emit updateDataModels();
+    updateItemModels();
     emit modified();
   }
+}
+
+void CurvesPanel::updateItemModels()
+{
+  commonItemModels->update(CommonItemModels::RMO_CURVES);
 }
 
 CustomScene::CustomScene(QGraphicsView * view) :

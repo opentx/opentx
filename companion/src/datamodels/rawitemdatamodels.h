@@ -105,4 +105,36 @@ class CurveItemModel: public AbstractRawItemDataModel
     void setDynamicItemData(QStandardItem * item, int index) const;
 };
 
+
+class CommonItemModels: public QObject
+{
+    Q_OBJECT
+  public:
+    enum RadioModelObjects {
+      RMO_CHANNELS,
+      RMO_CURVES,
+      RMO_FLIGHT_MODES,
+      RMO_GLOBAL_VARIABLES,
+      RMO_INPUTS,
+      RMO_LOGICAL_SWITCHES,
+      RMO_SCRIPTS,
+      RMO_TELEMETRY_SENSORS,
+      RMO_TIMERS
+    };
+    Q_ENUM(RadioModelObjects)
+
+    explicit CommonItemModels(const GeneralSettings * const generalSettings, const ModelData * const modelData, QObject * parent = nullptr);
+    ~CommonItemModels();
+
+    void update(const RadioModelObjects radioModelObjects);
+    RawSourceItemModel * rawSourceItemModel() const { return m_rawSourceItemModel; }
+    RawSwitchItemModel * rawSwitchItemModel() const { return m_rawSwitchItemModel; }
+    CurveItemModel * curveItemModel() const { return m_curveItemModel; }
+
+  private:
+    RawSourceItemModel *m_rawSourceItemModel;
+    RawSwitchItemModel *m_rawSwitchItemModel;
+    CurveItemModel *m_curveItemModel;
+};
+
 #endif // RAWITEMDATAMODELS_H

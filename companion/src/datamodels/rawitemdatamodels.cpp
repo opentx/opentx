@@ -43,7 +43,7 @@ RawSourceItemModel::RawSourceItemModel(const GeneralSettings * const generalSett
   addItems(SOURCE_TYPE_PPM,            RawSource::SourcesGroup,  fw->getCapability(TrainerInputs));
   addItems(SOURCE_TYPE_CH,             RawSource::SourcesGroup,  fw->getCapability(Outputs));
   addItems(SOURCE_TYPE_SPECIAL,        RawSource::TelemGroup,    5);
-  addItems(SOURCE_TYPE_TELEMETRY,      RawSource::TelemGroup,    CPN_MAX_SENSORS * 3);
+  addItems(SOURCE_TYPE_TELEMETRY,      RawSource::TelemGroup,    fw->getCapability(Sensors) * 3);
   addItems(SOURCE_TYPE_GVAR,           RawSource::GVarsGroup,    fw->getCapability(Gvars));
 }
 
@@ -90,7 +90,7 @@ RawSwitchItemModel::RawSwitchItemModel(const GeneralSettings * const generalSett
 
   // Descending switch direction: NOT (!) switches
   addItems(SWITCH_TYPE_ACT,            -1);
-  addItems(SWITCH_TYPE_SENSOR,         -CPN_MAX_SENSORS);
+  addItems(SWITCH_TYPE_SENSOR,         -fw->getCapability(Sensors));
   addItems(SWITCH_TYPE_TELEMETRY,      -1);
   addItems(SWITCH_TYPE_FLIGHT_MODE,    -fw->getCapability(FlightModes));
   addItems(SWITCH_TYPE_VIRTUAL,        -fw->getCapability(LogicalSwitches));
@@ -109,7 +109,7 @@ RawSwitchItemModel::RawSwitchItemModel(const GeneralSettings * const generalSett
   addItems(SWITCH_TYPE_VIRTUAL,        fw->getCapability(LogicalSwitches));
   addItems(SWITCH_TYPE_FLIGHT_MODE,    fw->getCapability(FlightModes));
   addItems(SWITCH_TYPE_TELEMETRY,      1);
-  addItems(SWITCH_TYPE_SENSOR,         CPN_MAX_SENSORS);
+  addItems(SWITCH_TYPE_SENSOR,         fw->getCapability(Sensors));
   addItems(SWITCH_TYPE_ON,             1);
   addItems(SWITCH_TYPE_ONE,            1);
   addItems(SWITCH_TYPE_ACT,            1);
@@ -219,4 +219,45 @@ void CurveItemModel::update()
    setDynamicItemData(item(i), item(i)->data(ItemIdRole).toInt());
 
   emit dataUpdateComplete();
+}
+
+//
+//  CommonItemModels
+//
+
+CommonItemModels::CommonItemModels(const GeneralSettings * const generalSettings, const ModelData * const modelData, QObject * parent)
+{
+  m_rawSourceItemModel = new RawSourceItemModel(generalSettings, modelData, parent);
+  m_rawSwitchItemModel = new RawSwitchItemModel(generalSettings, modelData, parent);
+  m_curveItemModel = new CurveItemModel(generalSettings, modelData, parent);
+}
+
+CommonItemModels::~CommonItemModels()
+{
+}
+
+void CommonItemModels::update(const RadioModelObjects radioModelObjects)
+{
+  switch (radioModelObjects) {
+    case RMO_CHANNELS:
+    case RMO_INPUTS:
+    case RMO_TELEMETRY_SENSORS:
+    case RMO_TIMERS:
+      m_rawSourceItemModel->update();
+      break;
+    case RMO_FLIGHT_MODES:
+    case RMO_GLOBAL_VARIABLES:
+    case RMO_LOGICAL_SWITCHES:
+      m_rawSourceItemModel->update();
+      m_rawSwitchItemModel->update();
+      break;
+    case RMO_CURVES:
+      m_curveItemModel->update();
+      break;
+    case RMO_SCRIPTS:
+      //  no need to refresh
+      break;
+    default:
+      qDebug() << "Unknown RadioModelObject:" << radioModelObjects;
+  }
 }

@@ -27,7 +27,7 @@
 constexpr char MIMETYPE_TELE_SENSOR[] = "application/x-companion-tele-sensor";
 
 class AutoComboBox;
-class RawSourceItemModel;
+class CommonItemModels;
 class RawItemFilteredModel;
 class TimerEdit;
 
@@ -125,14 +125,12 @@ class TelemetryPanel : public ModelPanel
     Q_OBJECT
 
   public:
-    TelemetryPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, RawSourceItemModel * rawSourceItemModel);
+    TelemetryPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, CommonItemModels * commonItemModels);
     virtual ~TelemetryPanel();
     virtual void update();
 
   signals:
     void updated();
-    void updateDataModels();
-
 
   private slots:
     void on_telemetryProtocol_currentIndexChanged(int index);
@@ -159,7 +157,8 @@ class TelemetryPanel : public ModelPanel
     TelemetryCustomScreen * telemetryCustomScreens[4];
     TelemetrySensorPanel * sensorPanels[CPN_MAX_SENSORS];
     int sensorCapability;
-    RawItemFilteredModel * rawSourceModel;
+    CommonItemModels * commonItemModels;
+    RawItemFilteredModel * rawSourceFilteredModel;
 
     void setup();
     void telBarUpdate();
@@ -167,6 +166,7 @@ class TelemetryPanel : public ModelPanel
     void populateCurrentSource();
     void populateVarioSource();
     void swapData(int idx1, int idx2);
+    void updateItemModels();
 };
 
 #endif // _TELEMETRY_H_

@@ -148,10 +148,10 @@ MixerDialog::MixerDialog(QWidget *parent, ModelData & model, MixData * mixdata, 
 
 MixerDialog::~MixerDialog()
 {
+  delete ui;
   delete gvWeightGroup;
   delete gvOffsetGroup;
   delete curveGroup;
-  delete ui;
 }
 
 void MixerDialog::changeEvent(QEvent *e)

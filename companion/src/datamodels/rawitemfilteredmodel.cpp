@@ -19,7 +19,6 @@
  */
 
 #include "rawitemfilteredmodel.h"
-#include "rawitemdatamodels.h"
 
 RawItemFilteredModel::RawItemFilteredModel(QAbstractItemModel * sourceModel, int flags, QObject * parent) :
   QSortFilterProxyModel(parent),
@@ -31,10 +30,10 @@ RawItemFilteredModel::RawItemFilteredModel(QAbstractItemModel * sourceModel, int
   setDynamicSortFilter(true);
   setSourceModel(sourceModel);
 
-  AbstractRawItemDataModel * model = qobject_cast<AbstractRawItemDataModel *>(sourceModel);
-  if (model) {
-    connect(model, &AbstractRawItemDataModel::dataAboutToBeUpdated, this, &RawItemFilteredModel::onDataAboutToBeUpdated);
-    connect(model, &AbstractRawItemDataModel::dataUpdateComplete, this, &RawItemFilteredModel::onDataUpdateComplete);
+  AbstractRawItemDataModel * itemModel = qobject_cast<AbstractRawItemDataModel *>(sourceModel);
+  if (itemModel) {
+    connect(itemModel, &AbstractRawItemDataModel::dataAboutToBeUpdated, this, &RawItemFilteredModel::onDataAboutToBeUpdated);
+    connect(itemModel, &AbstractRawItemDataModel::dataUpdateComplete, this, &RawItemFilteredModel::onDataUpdateComplete);
   }
 }
 
@@ -62,9 +61,9 @@ bool RawItemFilteredModel::filterAcceptsRow(int sourceRow, const QModelIndex & s
 
 void RawItemFilteredModel::update() const
 {
-  AbstractRawItemDataModel * model = qobject_cast<AbstractRawItemDataModel *>(sourceModel());
-  if (model)
-    model->update();
+  AbstractRawItemDataModel * itemModel = qobject_cast<AbstractRawItemDataModel *>(sourceModel());
+  if (itemModel)
+    itemModel->update();
 }
 
 void RawItemFilteredModel::onDataAboutToBeUpdated()

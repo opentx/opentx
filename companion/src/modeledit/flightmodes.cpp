@@ -24,15 +24,15 @@
 #include "helpers.h"
 #include "customdebug.h"
 
-FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseIdx, GeneralSettings & generalSettings, Firmware * firmware, RawItemFilteredModel * switchModel):
+FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseIdx, GeneralSettings & generalSettings, Firmware * firmware, RawItemFilteredModel * rawSwitchFilteredModel):
   ModelPanel(parent, model, generalSettings, firmware),
   ui(new Ui::FlightMode),
   phaseIdx(phaseIdx),
   phase(model.flightModeData[phaseIdx])
 {
   ui->setupUi(this);
-  connect(switchModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &FlightModePanel::onModelDataAboutToBeUpdated);
-  connect(switchModel, &RawItemFilteredModel::dataUpdateComplete, this, &FlightModePanel::onModelDataUpdateComplete);
+  connect(rawSwitchFilteredModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &FlightModePanel::onModelDataAboutToBeUpdated);
+  connect(rawSwitchFilteredModel, &RawItemFilteredModel::dataUpdateComplete, this, &FlightModePanel::onModelDataUpdateComplete);
 
   ui->labelName->setContextMenuPolicy(Qt::CustomContextMenu);
   ui->labelName->setToolTip(tr("Popup menu available"));
@@ -57,7 +57,7 @@ FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseI
 
   // Flight mode switch
   if (phaseIdx > 0) {
-    ui->swtch->setModel(switchModel);
+    ui->swtch->setModel(rawSwitchFilteredModel);
     connect(ui->swtch, SIGNAL(currentIndexChanged(int)), this, SLOT(phaseSwitch_currentIndexChanged(int)));
   }
   else {
@@ -1374,10 +1374,11 @@ void FlightModePanel::onModelDataUpdateComplete()
 
 /**********************************************************/
 
-FlightModesPanel::FlightModesPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, RawSwitchItemModel * rawSwitchItemModel):
-  ModelPanel(parent, model, generalSettings, firmware)
+FlightModesPanel::FlightModesPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, CommonItemModels * commonItemModels):
+  ModelPanel(parent, model, generalSettings, firmware),
+  commonItemModels(commonItemModels)
 {
-  rawSwitchFilteredModel = new RawItemFilteredModel(rawSwitchItemModel, RawSwitch::MixesContext, this);
+  rawSwitchFilteredModel = new RawItemFilteredModel(commonItemModels->rawSwitchItemModel(), RawSwitch::MixesContext, this);
   modesCount = firmware->getCapability(FlightModes);
 
   QGridLayout * gridLayout = new QGridLayout(this);
@@ -1388,8 +1389,8 @@ FlightModesPanel::FlightModesPanel(QWidget * parent, ModelData & model, GeneralS
     connect(tab, &FlightModePanel::modified,           this, &FlightModesPanel::modified);
     connect(tab, &FlightModePanel::phaseDataChanged,   this, &FlightModesPanel::onPhaseNameChanged);
     connect(tab, &FlightModePanel::phaseNameChanged,   this, &FlightModesPanel::onPhaseNameChanged);
-    connect(tab, &FlightModePanel::phaseSwitchChanged, this, &FlightModesPanel::refreshDataModels);
-    connect(tab, &FlightModePanel::gvNameChanged,      this, &FlightModesPanel::refreshDataModels);
+    connect(tab, &FlightModePanel::phaseSwitchChanged, this, &FlightModesPanel::updateItemModels);
+    connect(tab, &FlightModePanel::gvNameChanged,      this, &FlightModesPanel::updateItemModels);
 
     connect(this, &FlightModesPanel::updated,          tab, &FlightModePanel::update);
     tabWidget->addTab(tab, getTabName(i));
@@ -1402,7 +1403,6 @@ FlightModesPanel::FlightModesPanel(QWidget * parent, ModelData & model, GeneralS
 
 FlightModesPanel::~FlightModesPanel()
 {
-  delete rawSwitchFilteredModel;
 }
 
 QString FlightModesPanel::getTabName(int index)
@@ -1423,7 +1423,7 @@ void FlightModesPanel::onPhaseNameChanged()
 {
   int index = sender()->property("index").toInt();
   tabWidget->setTabText(index, getTabName(index));
-  refreshDataModels();
+  updateItemModels();
 }
 
 void FlightModesPanel::update()
@@ -1431,9 +1431,10 @@ void FlightModesPanel::update()
   emit updated();
 }
 
-void FlightModesPanel::refreshDataModels()
+void FlightModesPanel::updateItemModels()
 {
-  emit updateDataModels();
+  commonItemModels->update(CommonItemModels::RMO_FLIGHT_MODES);
+  commonItemModels->update(CommonItemModels::RMO_GLOBAL_VARIABLES);
 }
 
 void FlightModesPanel::onTabIndexChanged(int index)

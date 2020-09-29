@@ -26,8 +26,7 @@
 #include "mixerdialog.h"
 #include "modelprinter.h"
 
-class RawSourceItemModel;
-class RawSwitchItemModel;
+class CommonItemModels;
 class RawItemFilteredModel;
 
 class MixesPanel : public ModelPanel
@@ -35,8 +34,7 @@ class MixesPanel : public ModelPanel
     Q_OBJECT
 
   public:
-    MixesPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware,
-                  RawSourceItemModel * rawSourceItemModel, RawSwitchItemModel * rawSwitchItemModel);
+    MixesPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, CommonItemModels * commonItemModels);
     virtual ~MixesPanel();
 
     virtual void update();
@@ -70,8 +68,9 @@ class MixesPanel : public ModelPanel
     bool mixInserted;
     unsigned int highlightedSource;
     ModelPrinter modelPrinter;
-    RawItemFilteredModel *rawSourceModel;
-    RawItemFilteredModel *rawSwitchModel;
+    CommonItemModels * commonItemModels;
+    RawItemFilteredModel *rawSourceFilteredModel;
+    RawItemFilteredModel *rawSwitchFilteredModel;
 
     int getMixerIndex(unsigned int dch);
     bool gm_insertMix(int idx);

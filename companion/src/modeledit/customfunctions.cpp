@@ -66,10 +66,10 @@ void RepeatComboBox::update()
   setCurrentIndex(value);
 }
 
-CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, GeneralSettings & generalSettings, Firmware * firmware,
-                                              RawSourceItemModel * rawSourceItemModel, RawSwitchItemModel * rawSwitchItemModel):
+CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, GeneralSettings & generalSettings, Firmware * firmware, CommonItemModels * commonItemModels):
   GenericPanel(parent, model, generalSettings, firmware),
   functions(model ? model->customFn : generalSettings.customFn),
+  commonItemModels(commonItemModels),
   mediaPlayerCurrent(-1),
   mediaPlayer(nullptr),
   modelsUpdateCnt(0)
@@ -77,21 +77,21 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
   lock = true;
   fswCapability = model ? firmware->getCapability(CustomFunctions) : firmware->getCapability(GlobalFunctions);
 
-  rawSwitchModel = new RawItemFilteredModel(rawSwitchItemModel, model ? RawSwitch::SpecialFunctionsContext : RawSwitch::GlobalFunctionsContext);
-  connect(rawSwitchModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &CustomFunctionsPanel::onModelDataAboutToBeUpdated);
-  connect(rawSwitchModel, &RawItemFilteredModel::dataUpdateComplete, this, &CustomFunctionsPanel::onModelDataUpdateComplete);
+  rawSwitchFilteredModel = new RawItemFilteredModel(commonItemModels->rawSwitchItemModel(), model ? RawSwitch::SpecialFunctionsContext : RawSwitch::GlobalFunctionsContext, this);
+  connect(rawSwitchFilteredModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &CustomFunctionsPanel::onModelDataAboutToBeUpdated);
+  connect(rawSwitchFilteredModel, &RawItemFilteredModel::dataUpdateComplete, this, &CustomFunctionsPanel::onModelDataUpdateComplete);
 
-  rawSrcAllModel = new RawItemFilteredModel(rawSourceItemModel);
-  connect(rawSrcAllModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &CustomFunctionsPanel::onModelDataAboutToBeUpdated);
-  connect(rawSrcAllModel, &RawItemFilteredModel::dataUpdateComplete, this, &CustomFunctionsPanel::onModelDataUpdateComplete);
+  rawSourceAllModel = new RawItemFilteredModel(commonItemModels->rawSourceItemModel(), this);
+  connect(rawSourceAllModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &CustomFunctionsPanel::onModelDataAboutToBeUpdated);
+  connect(rawSourceAllModel, &RawItemFilteredModel::dataUpdateComplete, this, &CustomFunctionsPanel::onModelDataUpdateComplete);
 
-  rawSrcInputsModel = new RawItemFilteredModel(rawSourceItemModel, RawSource::InputSourceGroups);
-  connect(rawSrcInputsModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &CustomFunctionsPanel::onModelDataAboutToBeUpdated);
-  connect(rawSrcInputsModel, &RawItemFilteredModel::dataUpdateComplete, this, &CustomFunctionsPanel::onModelDataUpdateComplete);
+  rawSourceInputsModel = new RawItemFilteredModel(commonItemModels->rawSourceItemModel(), RawSource::InputSourceGroups, this);
+  connect(rawSourceInputsModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &CustomFunctionsPanel::onModelDataAboutToBeUpdated);
+  connect(rawSourceInputsModel, &RawItemFilteredModel::dataUpdateComplete, this, &CustomFunctionsPanel::onModelDataUpdateComplete);
 
-  rawSrcGVarsModel = new RawItemFilteredModel(rawSourceItemModel, RawSource::GVarsGroup);
-  connect(rawSrcGVarsModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &CustomFunctionsPanel::onModelDataAboutToBeUpdated);
-  connect(rawSrcGVarsModel, &RawItemFilteredModel::dataUpdateComplete, this, &CustomFunctionsPanel::onModelDataUpdateComplete);
+  rawSourceGVarsModel = new RawItemFilteredModel(commonItemModels->rawSourceItemModel(), RawSource::GVarsGroup, this);
+  connect(rawSourceGVarsModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &CustomFunctionsPanel::onModelDataAboutToBeUpdated);
+  connect(rawSourceGVarsModel, &RawItemFilteredModel::dataUpdateComplete, this, &CustomFunctionsPanel::onModelDataUpdateComplete);
 
   if (!firmware->getCapability(VoicesAsNumbers)) {
     tracksSet = getFilesSet(getSoundsPath(generalSettings), QStringList() << "*.wav" << "*.WAV", firmware->getCapability(VoicesMaxLength));
@@ -142,7 +142,7 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
 
     // The switch
     fswtchSwtch[i] = new QComboBox(this);
-    fswtchSwtch[i]->setModel(rawSwitchModel);
+    fswtchSwtch[i]->setModel(rawSwitchFilteredModel);
     fswtchSwtch[i]->setCurrentIndex(fswtchSwtch[i]->findData(functions[i].swtch.toValue()));
     fswtchSwtch[i]->setProperty("index", i);
     fswtchSwtch[i]->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Minimum);
@@ -253,10 +253,6 @@ CustomFunctionsPanel::~CustomFunctionsPanel()
 {
   if (mediaPlayer)
     stopSound(mediaPlayerCurrent);
-  delete rawSwitchModel;
-  delete rawSrcAllModel;
-  delete rawSrcInputsModel;
-  delete rawSrcGVarsModel;
 }
 
 void CustomFunctionsPanel::onMediaPlayerStateChanged(QMediaPlayer::State state)
@@ -707,21 +703,21 @@ void CustomFunctionsPanel::populateFuncParamCB(QComboBox *b, uint function, unsi
     CustomFunctionData::populateResetParams(model, b, value);
   }
   else if (function == FuncVolume || function == FuncBacklight) {
-    b->setModel(rawSrcInputsModel);
+    b->setModel(rawSourceInputsModel);
     b->setCurrentIndex(b->findData(value));
   }
   else if (function == FuncPlayValue) {
-    b->setModel(rawSrcAllModel);
+    b->setModel(rawSourceAllModel);
     b->setCurrentIndex(b->findData(value));
   }
   else if (function >= FuncAdjustGV1 && function <= FuncAdjustGVLast) {
     switch (adjustmode) {
       case 1:
-        b->setModel(rawSrcInputsModel);
+        b->setModel(rawSourceInputsModel);
         b->setCurrentIndex(b->findData(value));
         break;
       case 2:
-        b->setModel(rawSrcGVarsModel);
+        b->setModel(rawSourceGVarsModel);
         b->setCurrentIndex(b->findData(value));
         break;
     }
@@ -836,11 +832,13 @@ void CustomFunctionsPanel::onModelDataAboutToBeUpdated()
 void CustomFunctionsPanel::onModelDataUpdateComplete()
 {
   modelsUpdateCnt--;
-  if (modelsUpdateCnt < 1)
+  if (modelsUpdateCnt < 1) {
     lock = true;
     for (int i = 0; i < fswCapability; i++) {
       fswtchSwtch[i]->setCurrentIndex(fswtchSwtch[i]->findData(functions[i].swtch.toValue()));
       fswtchFunc[i]->setCurrentIndex(fswtchFunc[i]->findData(functions[i].func));
     }
     update();
+    lock = false;
+  }
 }

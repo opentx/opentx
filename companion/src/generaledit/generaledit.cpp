@@ -56,11 +56,10 @@ GeneralEdit::GeneralEdit(QWidget * parent, RadioData & radioData, Firmware * fir
     }
   }
 
-  RawSourceItemModel *rawSourceModel = new RawSourceItemModel(&generalSettings, nullptr, this);
-  RawSwitchItemModel *rawSwitchModel = new RawSwitchItemModel(&generalSettings, nullptr, this);
+  commonItemModels = new CommonItemModels(&generalSettings, nullptr, this);
 
   addTab(new GeneralSetupPanel(this, generalSettings, firmware), tr("Setup"));
-  addTab(new CustomFunctionsPanel(this, nullptr, generalSettings, firmware, rawSourceModel, rawSwitchModel), tr("Global Functions"));
+  addTab(new CustomFunctionsPanel(this, nullptr, generalSettings, firmware, commonItemModels), tr("Global Functions"));
   addTab(new TrainerPanel(this, generalSettings, firmware), tr("Trainer"));
   addTab(new HardwarePanel(this, generalSettings, firmware), tr("Hardware"));
   addTab(new CalibrationPanel(this, generalSettings, firmware), tr("Calibration"));

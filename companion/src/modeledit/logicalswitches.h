@@ -24,8 +24,7 @@
 #include "modeledit.h"
 #include "radiodata.h"
 
-class RawSourceItemModel;
-class RawSwitchItemModel;
+class CommonItemModels;
 class RawItemFilteredModel;
 class TimerEdit;
 
@@ -36,8 +35,7 @@ class LogicalSwitchesPanel : public ModelPanel
     Q_OBJECT
 
   public:
-    LogicalSwitchesPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware,
-                            RawSourceItemModel * rawSourceItemModel, RawSwitchItemModel * rawSwitchItemModel);
+    LogicalSwitchesPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, CommonItemModels * commonItemModels);
     virtual ~LogicalSwitchesPanel();
 
     virtual void update();
@@ -76,8 +74,9 @@ class LogicalSwitchesPanel : public ModelPanel
     QDoubleSpinBox * dsbDelay[CPN_MAX_LOGICAL_SWITCHES];
     QComboBox * cbSource1[CPN_MAX_LOGICAL_SWITCHES];
     QComboBox * cbSource2[CPN_MAX_LOGICAL_SWITCHES];
-    RawItemFilteredModel * rawSwitchModel;
-    RawItemFilteredModel * rawSourceModel;
+    CommonItemModels * commonItemModels;
+    RawItemFilteredModel * rawSwitchFilteredModel;
+    RawItemFilteredModel * rawSourceFilteredModel;
     int selectedIndex;
     void populateFunctionCB(QComboBox *b);
     void updateTimerParam(QDoubleSpinBox *sb, int timer, double minimum=0);
@@ -90,7 +89,7 @@ class LogicalSwitchesPanel : public ModelPanel
     bool moveUpAllowed() const;
     int modelsUpdateCnt;
     void updateCBLists();
-    void updateDataModels();
+    void updateItemModels();
 };
 
 #endif // _LOGICALSWITCHES_H_

@@ -24,7 +24,7 @@
 #include "modeledit.h"
 #include "eeprominterface.h"
 
-class RawSwitchItemModel;
+class CommonItemModels;
 class RawItemFilteredModel;
 
 constexpr char MIMETYPE_FLIGHTMODE[] = "application/x-companion-flightmode";
@@ -41,7 +41,7 @@ class FlightModePanel : public ModelPanel
     Q_OBJECT
 
   public:
-    FlightModePanel(QWidget *parent, ModelData &model, int modeIdx, GeneralSettings & generalSettings, Firmware * firmware, RawItemFilteredModel * switchModel);
+    FlightModePanel(QWidget *parent, ModelData &model, int modeIdx, GeneralSettings & generalSettings, Firmware * firmware, RawItemFilteredModel * rawSwitchFilteredModel);
     virtual ~FlightModePanel();
 
     virtual void update();
@@ -145,19 +145,17 @@ class FlightModesPanel : public ModelPanel
     Q_OBJECT
 
   public:
-    FlightModesPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, RawSwitchItemModel * rawSwitchItemModel);
+    FlightModesPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, CommonItemModels * commonItemModels);
     virtual ~FlightModesPanel();
 
   public slots:
     virtual void update() override;
 
   signals:
-    void updateDataModels();
     void updated();
 
   private slots:
     void onPhaseNameChanged();
-    void refreshDataModels();
     void onTabIndexChanged(int index);
 
   private:
@@ -165,8 +163,10 @@ class FlightModesPanel : public ModelPanel
 
     int modesCount;
     QTabWidget *tabWidget;
+    CommonItemModels *commonItemModels;
     RawItemFilteredModel *rawSwitchFilteredModel;
     QVector<GenericPanel *> panels;
+    void updateItemModels();
 };
 
 #endif // _FLIGHTMODES_H_

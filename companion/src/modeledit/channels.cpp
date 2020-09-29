@@ -96,15 +96,16 @@ void LimitsGroup::updateMinMax(int max)
     }
   }
 }
-ChannelsPanel::ChannelsPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, CurveItemModel * curveItemModel):
-  ModelPanel(parent, model, generalSettings, firmware)
+ChannelsPanel::ChannelsPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, CommonItemModels * commonItemModels):
+  ModelPanel(parent, model, generalSettings, firmware),
+  commonItemModels(commonItemModels)
 {
   chnCapability = firmware->getCapability(Outputs);
   int channelNameMaxLen = firmware->getCapability(ChannelsName);
 
-  curveModel = new RawItemFilteredModel(curveItemModel, RawItemFilteredModel::AllFilter, this);
-  connect(curveModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &ChannelsPanel::onModelDataAboutToBeUpdated);
-  connect(curveModel, &RawItemFilteredModel::dataUpdateComplete, this, &ChannelsPanel::onModelDataUpdateComplete);
+  curveFilteredModel = new RawItemFilteredModel(commonItemModels->curveItemModel(), RawItemFilteredModel::AllFilter, this);
+  connect(curveFilteredModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &ChannelsPanel::onModelDataAboutToBeUpdated);
+  connect(curveFilteredModel, &RawItemFilteredModel::dataUpdateComplete, this, &ChannelsPanel::onModelDataUpdateComplete);
 
   QStringList headerLabels;
   headerLabels << "#";
@@ -165,7 +166,7 @@ ChannelsPanel::ChannelsPanel(QWidget * parent, ModelData & model, GeneralSetting
     if (IS_HORUS_OR_TARANIS(firmware->getBoard())) {
       curveCB[i] = new QComboBox(this);
       curveCB[i]->setProperty("index", i);
-      curveCB[i]->setModel(curveModel);
+      curveCB[i]->setModel(curveFilteredModel);
       connect(curveCB[i], SIGNAL(currentIndexChanged(int)), this, SLOT(curveEdited()));
       tableLayout->addWidget(i, col++, curveCB[i]);
     }
@@ -213,7 +214,6 @@ ChannelsPanel::~ChannelsPanel()
     delete centerSB[i];
     delete symlimitsChk[i];
   }
-  delete curveModel;
 }
 
 void ChannelsPanel::symlimitsEdited()
@@ -233,7 +233,7 @@ void ChannelsPanel::nameEdited()
     int index = le->property("index").toInt();
     if (model->limitData[index].name != le->text()) {
       strcpy(model->limitData[index].name, le->text().toLatin1());
-      emit updateDataModels();
+      updateItemModels();
       emit modified();
     }
   }
@@ -321,7 +321,7 @@ void ChannelsPanel::cmPaste()
   if (hasClipboardData(&data)) {
     memcpy(&model->limitData[selectedIndex], data.constData(), sizeof(LimitData));
     updateLine(selectedIndex);
-    emit updateDataModels();
+    updateItemModels();
     emit modified();
   }
 }
@@ -339,7 +339,7 @@ void ChannelsPanel::cmDelete()
     updateLine(i);
   }
 
-  emit updateDataModels();
+  updateItemModels();
   emit modified();
 }
 
@@ -430,7 +430,7 @@ void ChannelsPanel::cmClear(bool prompt)
   model->limitData[selectedIndex].clear();
   model->updateAllReferences(ModelData::REF_UPD_TYPE_CHANNEL, ModelData::REF_UPD_ACT_CLEAR, selectedIndex);
   updateLine(selectedIndex);
-  emit updateDataModels();
+  updateItemModels();
   emit modified();
 }
 
@@ -444,7 +444,7 @@ void ChannelsPanel::cmClearAll()
     model->updateAllReferences(ModelData::REF_UPD_TYPE_CHANNEL, ModelData::REF_UPD_ACT_CLEAR, i);
     updateLine(i);
   }
-  emit updateDataModels();
+  updateItemModels();
   emit modified();
 }
 
@@ -454,7 +454,7 @@ void ChannelsPanel::cmInsert()
   model->limitData[selectedIndex].clear();
   model->updateAllReferences(ModelData::REF_UPD_TYPE_CHANNEL, ModelData::REF_UPD_ACT_SHIFT, selectedIndex, 0, 1);
   update();
-  emit updateDataModels();
+  updateItemModels();
   emit modified();
 }
 
@@ -469,7 +469,7 @@ void ChannelsPanel::swapData(int idx1, int idx2)
     model->updateAllReferences(ModelData::REF_UPD_TYPE_CHANNEL, ModelData::REF_UPD_ACT_SWAP, idx1, idx2);
     updateLine(idx1);
     updateLine(idx2);
-    emit updateDataModels();
+    updateItemModels();
     emit modified();
   }
 }
@@ -482,4 +482,10 @@ void ChannelsPanel::onModelDataAboutToBeUpdated()
 void ChannelsPanel::onModelDataUpdateComplete()
 {
   update();
+  lock = false;
+}
+
+void ChannelsPanel::updateItemModels()
+{
+  commonItemModels->update(CommonItemModels::RMO_CHANNELS);
 }

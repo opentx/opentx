@@ -27,8 +27,6 @@
 
 class GeneralSettings;
 class ModelData;
-class RawSourceItemModel;
-class RawSwitchItemModel;
 
 class RawItemFilteredModel: public QSortFilterProxyModel
 {
@@ -36,9 +34,11 @@ class RawItemFilteredModel: public QSortFilterProxyModel
   public:
     enum DataFilters {
       AllFilter = AbstractRawItemDataModel::NegativeGroup | AbstractRawItemDataModel::NoneGroup | AbstractRawItemDataModel::PositiveGroup,
-      HideNegativeFilter = AllFilter &~ AbstractRawItemDataModel::NegativeGroup,
-      NonePositiveFilter = AbstractRawItemDataModel::NoneGroup | AbstractRawItemDataModel::PositiveGroup,
-      PositiveFilter = AbstractRawItemDataModel::PositiveGroup
+      AllExcludeNoneFilter = AllFilter &~ AbstractRawItemDataModel::NoneGroup,
+      NegativeFilter = AbstractRawItemDataModel::NegativeGroup | AbstractRawItemDataModel::NoneGroup,
+      NegativeExcludeNoneFilter = AbstractRawItemDataModel::NegativeGroup,
+      PositiveFilter = AbstractRawItemDataModel::PositiveGroup | AbstractRawItemDataModel::NoneGroup,
+      PositiveExcludeNoneFilter = AbstractRawItemDataModel::PositiveGroup
     };
     Q_ENUM(DataFilters)
 

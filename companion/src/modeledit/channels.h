@@ -26,7 +26,7 @@
 
 #include <QtCore>
 
-class CurveItemModel;
+class CommonItemModels;
 class RawItemFilteredModel;
 
 constexpr char MIMETYPE_CHANNEL[] = "application/x-companion-channel";
@@ -57,7 +57,7 @@ class ChannelsPanel : public ModelPanel
     Q_OBJECT
 
   public:
-    ChannelsPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, CurveItemModel * curveItemModel);
+    ChannelsPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, CommonItemModels * commonItemModels);
     ~ChannelsPanel();
 
   public slots:
@@ -84,9 +84,6 @@ class ChannelsPanel : public ModelPanel
     void onModelDataAboutToBeUpdated();
     void onModelDataUpdateComplete();
 
-  signals:
-    void updateDataModels();
-
   private:
     bool hasClipboardData(QByteArray * data = nullptr) const;
     bool insertAllowed() const;
@@ -103,7 +100,9 @@ class ChannelsPanel : public ModelPanel
     QCheckBox *symlimitsChk[CPN_MAX_CHNOUT];
     int selectedIndex;
     int chnCapability;
-    RawItemFilteredModel *curveModel;
+    CommonItemModels * commonItemModels;
+    RawItemFilteredModel *curveFilteredModel;
+    void updateItemModels();
 };
 
 #endif // _CHANNELS_H_
