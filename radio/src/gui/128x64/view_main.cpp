@@ -105,7 +105,7 @@ void doMainScreenGraphics()
   drawPotsBars();
 }
 
-#if defined(PCBTBS) && !defined(SIMU)
+#if defined(RADIO_FAMILY_TBS) && !defined(SIMU)
 void doMainScreenGraphics( uint8_t views, uint32_t ptr )
 {
   int16_t *calibStickValPtr = NULL;
@@ -254,7 +254,7 @@ void displayBattVoltage()
   lcdDrawSolidFilledRect(VBATT_X - 25, VBATT_Y + 9, 21, 5);
   lcdDrawSolidVerticalLine(VBATT_X - 4, VBATT_Y + 10, 3);
   uint8_t count = GET_TXBATT_BARS(20);
-#if defined(PCBTBS)
+#if defined(RADIO_FAMILY_TBS)
   if (IS_CHARGING_STATE())
     count = (get_tmr10ms() % 100) * count / 100;
 #endif
@@ -316,12 +316,6 @@ void displayVoltageOrAlarm()
 
 void onMainViewMenu(const char * result)
 {
-#if defined(PCBTBS)
-  if (result == STR_MODEL_SELECT) {
-    chainMenu(menuModelSelect);
-  }
-  else
-#endif
   if (result == STR_RESET_TIMER1) {
     timerReset(0);
   }
@@ -429,9 +423,6 @@ void menuMainView(event_t event)
     case EVT_KEY_CONTEXT_MENU:
       killEvents(event);
 
-#if defined(PCBTBS)
-      POPUP_MENU_ADD_ITEM(STR_MODEL_SELECT);
-#endif
       if (modelHasNotes()) {
         POPUP_MENU_ADD_ITEM(STR_VIEW_NOTES);
       }
@@ -452,11 +443,7 @@ void menuMainView(event_t event)
 #endif
 
     case EVT_KEY_MODEL_MENU:
-#if defined(PCBTBS)
-      pushMenu(menuCrossfireSetup);
-#else
       pushMenu(menuModelSelect);
-#endif
       killEvents(event);
       break;
 
@@ -506,11 +493,6 @@ void menuMainView(event_t event)
 #else
     case EVT_KEY_NEXT_VIEW:
       g_eeGeneral.view = (view_base == 0 ? VIEW_COUNT - 1 : view_base - 1);
-#if defined(PCBTBS)
-      if (g_eeGeneral.view == VIEW_TIMER2 && !g_model.timers[1].mode) {
-        g_eeGeneral.view--;
-      }
-#endif
       storageDirty(EE_GENERAL);
       break;
 #endif
