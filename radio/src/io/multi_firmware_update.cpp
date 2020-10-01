@@ -31,23 +31,23 @@ class MultiFirmwareUpdateDriver
 {
   public:
     MultiFirmwareUpdateDriver() {}
-    const char* flashFirmware(FIL* file, const char* label) const;
+    const char * flashFirmware(FIL * file, const char * label) const;
 
   protected:
     virtual void moduleOn() const = 0;
     virtual void init(bool inverted) const = 0;
-    virtual bool getByte(uint8_t& byte) const = 0;
+    virtual bool getByte(uint8_t & byte) const = 0;
     virtual void sendByte(uint8_t byte) const = 0;
     virtual void clear() const = 0;
     virtual void deinit(bool inverted) const {}
 
   private:
-    bool getRxByte(uint8_t& byte) const;
+    bool getRxByte(uint8_t & byte) const;
     bool checkRxByte(uint8_t byte) const;
     const char * waitForInitialSync(bool& inverted) const;
-    const char * getDeviceSignature(uint8_t* signature) const;
+    const char * getDeviceSignature(uint8_t * signature) const;
     const char * loadAddress(uint32_t offset) const;
-    const char * progPage(uint8_t* buffer, uint16_t size) const;
+    const char * progPage(uint8_t * buffer, uint16_t size) const;
     void leaveProgMode(bool inverted) const;
 };
 
@@ -68,7 +68,7 @@ class MultiInternalUpdateDriver: public MultiFirmwareUpdateDriver
       intmoduleSerialStart(57600, true, USART_Parity_No, USART_StopBits_1, USART_WordLength_8b);
     }
 
-    bool getByte(uint8_t& byte) const override
+    bool getByte(uint8_t & byte) const override
     {
       return intmoduleFifo.pop(byte);
     }
@@ -121,7 +121,7 @@ class MultiExternalUpdateDriver: public MultiFirmwareUpdateDriver
         telemetryPortInit(57600, TELEMETRY_SERIAL_DEFAULT);
     }
 
-    bool getByte(uint8_t &byte) const override
+    bool getByte(uint8_t & byte) const override
     {
       return telemetryGetByte(&byte);
     }
@@ -165,7 +165,7 @@ class MultiExtSportUpdateDriver: public MultiFirmwareUpdateDriver
       telemetryPortInit(57600, TELEMETRY_SERIAL_DEFAULT);
     }
 
-    bool getByte(uint8_t &byte) const override
+    bool getByte(uint8_t & byte) const override
     {
       return telemetryGetByte(&byte);
     }
@@ -190,7 +190,7 @@ class MultiExtSportUpdateDriver: public MultiFirmwareUpdateDriver
 
 static const MultiExtSportUpdateDriver multiExtSportUpdateDriver;
 
-bool MultiFirmwareUpdateDriver::getRxByte(uint8_t &byte) const
+bool MultiFirmwareUpdateDriver::getRxByte(uint8_t & byte) const
 {
   uint16_t time;
 
@@ -215,7 +215,7 @@ bool MultiFirmwareUpdateDriver::checkRxByte(uint8_t byte) const
   return getRxByte(rxchar) ? rxchar == byte : false;
 }
 
-const char * MultiFirmwareUpdateDriver::waitForInitialSync(bool &inverted) const
+const char * MultiFirmwareUpdateDriver::waitForInitialSync(bool & inverted) const
 {
   uint8_t byte;
   int retries = 200;
