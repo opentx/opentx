@@ -176,12 +176,6 @@ void registerBitmapClass(lua_State * L);
 void luaSetInstructionsLimit(lua_State* L, int count);
 int luaLoadScriptFileToState(lua_State * L, const char * filename, const char * mode);
 
-#if LCD_W > 350
-  #define RADIO_TOOL_NAME_MAXLEN  40
-#else
-  #define RADIO_TOOL_NAME_MAXLEN  16
-#endif
-
 bool readToolName(char * toolName, const char * filename);
 bool isRadioScriptTool(const char * filename);
 
