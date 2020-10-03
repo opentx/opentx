@@ -54,6 +54,7 @@ void addRadioScriptTool(const char * path)
         if (i < NUM_BODY_LINES-1) memmove(&reusableBuffer.radioTools.lines[i+1], line, sizeof(reusableBuffer.radioTools.lines[i]) * (NUM_BODY_LINES-1-i));
         memset(line, 0, sizeof(reusableBuffer.radioTools.lines[i].displayname));
         strcpy(line, label);
+        *ext = '.';
         strcpy(reusableBuffer.radioTools.lines[i].filename, getBasename(path));
         break;
       }
@@ -66,6 +67,7 @@ void addRadioScriptTool(const char * path)
         if (i > 0) memmove(&reusableBuffer.radioTools.lines[0], &reusableBuffer.radioTools.lines[1], sizeof(reusableBuffer.radioTools.lines[0]) * i);
         memset(line, 0, sizeof(reusableBuffer.radioTools.lines[i].displayname));
         strcpy(line, label);
+        *ext = '.';
         strcpy(reusableBuffer.radioTools.lines[i].filename, getBasename(path));
         break;
       }
@@ -131,7 +133,12 @@ bool menuRadioTools(event_t event)
     case EVT_KEY_BREAK(KEY_ENTER):
       if (IS_LUA_TOOLS(index)) {
         f_chdir("/SCRIPTS/TOOLS/");
-        luaExec(reusableBuffer.radioTools.lines[index].filename);
+
+        TCHAR path[_MAX_LFN+1] = SCRIPTS_TOOLS_PATH "/";
+        strcat(path, reusableBuffer.radioTools.lines[index].filename);
+        luaExec(path);
+        REFRESH_TOOSLFILES();
+        s_editMode = 0;
       }
       else {
         g_moduleIdx = reusableBuffer.radioTools.lines[index].module;
