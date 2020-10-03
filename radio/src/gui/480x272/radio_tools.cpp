@@ -26,6 +26,7 @@ extern uint8_t g_moduleIdx;
 inline void REFRESH_TOOSLFILES()
 {
   reusableBuffer.radioTools.offset = 65535;
+  menuVerticalOffset = 0;
 }
 
 inline bool IS_LUA_TOOLS(uint8_t index)
@@ -72,6 +73,18 @@ void addRadioScriptTool(const char * path)
         break;
       }
     }
+  }
+  else if (menuVerticalOffset > reusableBuffer.radioTools.offset) {
+    memset(&reusableBuffer.radioTools.lines[NUM_BODY_LINES - 1], 0, sizeof(reusableBuffer.radioTools.lines[0]));
+    strcpy(reusableBuffer.radioTools.lines[NUM_BODY_LINES - 1].displayname, label);
+    *ext = '.';
+    strcpy(reusableBuffer.radioTools.lines[NUM_BODY_LINES - 1].filename, getBasename(path));
+  }
+  else {
+    memset(&reusableBuffer.radioTools.lines[0], 0, sizeof(reusableBuffer.radioTools.lines[0]));
+    strcpy(reusableBuffer.radioTools.lines[0].filename, label);
+    *ext = '.';
+    strcpy(reusableBuffer.radioTools.lines[0].filename, getBasename(path));
   }
   reusableBuffer.radioTools.count++;
 }
@@ -143,6 +156,7 @@ bool menuRadioTools(event_t event)
       else {
         g_moduleIdx = reusableBuffer.radioTools.lines[index].module;
         pushMenu(reusableBuffer.radioTools.lines[index].exec);
+        REFRESH_TOOSLFILES();
       }
       break;
   }
