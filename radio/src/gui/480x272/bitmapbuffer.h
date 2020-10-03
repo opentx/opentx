@@ -25,7 +25,7 @@
 #include "colors.h"
 #include "rle.h"
 
-#if defined(PCBX10) && !defined(SIMU)
+#if defined(LCD_VERTICAL_INVERT)
   #define MOVE_PIXEL_RIGHT(p, count)   p -= count
 #else
   #define MOVE_PIXEL_RIGHT(p, count)   p += count
@@ -100,7 +100,7 @@ class BitmapBufferBase
 
     inline const display_t * getPixelPtr(coord_t x, coord_t y) const
     {
-#if defined(PCBX10) && !defined(SIMU)
+#if defined(LCD_VERTICAL_INVERT)
       x = width - x - 1;
       y = height - y - 1;
 #endif
@@ -201,7 +201,7 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
 
     inline const display_t * getPixelPtr(coord_t x, coord_t y) const
     {
-#if defined(PCBX10) && !defined(SIMU)
+#if defined(LCD_VERTICAL_INVERT)
       x = width - x - 1;
       y = height - y - 1;
 #endif
@@ -210,7 +210,7 @@ class BitmapBuffer: public BitmapBufferBase<uint16_t>
 
     inline display_t * getPixelPtr(coord_t x, coord_t y)
     {
-#if defined(PCBX10) && !defined(SIMU)
+#if defined(LCD_VERTICAL_INVERT)
       x = width - x - 1;
       y = height - y - 1;
 #endif

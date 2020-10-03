@@ -227,6 +227,8 @@ void processHubPacket(uint8_t id, int16_t value)
   else if (id == VOLTS_ID) {
     unit = UNIT_CELLS;
     uint32_t cellData = (uint32_t)data;
+    if (((cellData & 0x00F0) >> 4) >= MAX_CELLS)
+      return;
     data = ((cellData & 0x00F0) << 12) + (((((cellData & 0xFF00) >> 8) + ((cellData & 0x000F) << 8))) / 5);
   }
   else if (id == GPS_DAY_MONTH_ID) {
@@ -264,7 +266,7 @@ void processHubPacket(uint8_t id, int16_t value)
       data *= 10;
     }
   }
-  
+
   setTelemetryValue(PROTOCOL_TELEMETRY_FRSKY_D, id, 0, 0, data, unit, precision);
 }
 

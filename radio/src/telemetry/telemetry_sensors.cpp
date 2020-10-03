@@ -78,19 +78,27 @@ uint32_t getDistFromEarthAxis(int32_t latitude)
   return 139*(((uint32_t)10000000 - ((angle2*(uint32_t)123370)/81) + (angle4/25))/12500);
 }
 
+void TelemetryItem::setValue(const TelemetrySensor & sensor, const char * val, uint32_t, uint32_t)
+{
+  strncpy(text, val, sizeof(text));
+  setFresh();
+}
+
 void TelemetryItem::setValue(const TelemetrySensor & sensor, int32_t val, uint32_t unit, uint32_t prec)
 {
   int32_t newVal = val;
 
-  if(prec == 255) {
+  if (prec == 255) {
     prec = sensor.prec;
   }
 
   if (unit == UNIT_CELLS) {
-    uint32_t data = uint32_t(newVal);
-    uint8_t cellsCount = (data >> 24);
-    uint8_t cellIndex = ((data >> 16) & 0x0F);
-    uint16_t cellValue = (data & 0xFFFF);
+    auto data = uint32_t(newVal);
+    uint8_t cellsCount = (data >> 24u);
+    uint8_t cellIndex = ((data >> 16u) & 0x0Fu);
+    if (cellIndex >= MAX_CELLS)
+      return;
+    uint16_t cellValue = (data & 0xFFFFu);
     if (cellsCount == 0) {
       cellsCount = (cellIndex >= cells.count ? cellIndex + 1 : cells.count);
       if (cellsCount != cells.count) {
@@ -176,18 +184,18 @@ void TelemetryItem::setValue(const TelemetrySensor & sensor, int32_t val, uint32
   }
   else if (unit == UNIT_DATETIME_DAY_MONTH) {
     auto data = uint32_t(newVal);
-    datetime.month = data >> 8;
-    datetime.day = data & 0xFF;
+    datetime.month = data >> 8u;
+    datetime.day = data & 0xFFu;
     return;
   }
   else if (unit == UNIT_DATETIME_HOUR_MIN) {
     auto data = uint32_t(newVal);
-    datetime.hour = (data & 0xFF);
-    datetime.min = data >> 8;
+    datetime.hour = (data & 0xFFu);
+    datetime.min = data >> 8u;
     return;
   }
   else if (unit == UNIT_DATETIME_SEC) {
-    datetime.sec = newVal & 0xFF;
+    datetime.sec = newVal & 0xFFu;
     newVal = 0;
   }
   else if (unit == UNIT_RPMS) {
@@ -196,8 +204,6 @@ void TelemetryItem::setValue(const TelemetrySensor & sensor, int32_t val, uint32
     }
   }
   else if (unit == UNIT_TEXT) {
-    *((uint32_t*)&text[prec]) = newVal;
-    setFresh();
     return;
   }
   else {
@@ -378,7 +384,7 @@ void TelemetryItem::eval(const TelemetrySensor & sensor)
         result = isqrt32(result);
 
         if (altItem) {
-          dist = abs(altItem->value) / g_model.telemetrySensors[sensor.dist.alt-1].getPrecDivisor();
+          dist = convertTelemetryValue(abs(altItem->value), g_model.telemetrySensors[sensor.dist.alt-1].unit, g_model.telemetrySensors[sensor.dist.alt-1].prec, UNIT_METERS, 0);
           result = (dist * dist) + (result * result);
           result = isqrt32(result);
         }
@@ -493,11 +499,12 @@ int lastUsedTelemetryIndex()
   return -1;
 }
 
-int setTelemetryValue(TelemetryProtocol protocol, uint16_t id, uint8_t subId, uint8_t instance, int32_t value, uint32_t unit, uint32_t prec)
+template <class T>
+int setTelemetryValue(TelemetryProtocol protocol, uint16_t id, uint8_t subId, uint8_t instance, T value, uint32_t unit = 0, uint32_t prec = 0)
 {
   bool sensorFound = false;
 
-  for (int index=0; index<MAX_TELEMETRY_SENSORS; index++) {
+  for (int index = 0; index < MAX_TELEMETRY_SENSORS; index++) {
     TelemetrySensor & telemetrySensor = g_model.telemetrySensors[index];
     if (telemetrySensor.type == TELEM_TYPE_CUSTOM && telemetrySensor.id == id && telemetrySensor.subId == subId && (telemetrySensor.isSameInstance(protocol, instance) || g_model.ignoreSensorIds)) {
       telemetryItems[index].setValue(telemetrySensor, value, unit, prec);
@@ -516,34 +523,50 @@ int setTelemetryValue(TelemetryProtocol protocol, uint16_t id, uint8_t subId, ui
       case PROTOCOL_TELEMETRY_FRSKY_SPORT:
         frskySportSetDefault(index, id, subId, instance);
         break;
+
       case PROTOCOL_TELEMETRY_FRSKY_D:
         frskyDSetDefault(index, id);
         break;
+
 #if defined(CROSSFIRE)
       case PROTOCOL_TELEMETRY_CROSSFIRE:
         crossfireSetDefault(index, id, instance);
         break;
 #endif
+
+#if defined(GHOST)
+      case PROTOCOL_TELEMETRY_GHOST:
+        ghostSetDefault(index, id, instance);
+        break;
+#endif
+
+#if defined(MULTIMODULE) || defined(AFHDS3)
+      case PROTOCOL_TELEMETRY_FLYSKY_IBUS:
+        flySkySetDefault(index,id, subId, instance);
+        break;
+#endif
+
 #if defined(MULTIMODULE)
       case PROTOCOL_TELEMETRY_SPEKTRUM:
         spektrumSetDefault(index, id, subId, instance);
         break;
-      case PROTOCOL_TELEMETRY_FLYSKY_IBUS:
-        flySkySetDefault(index,id, subId, instance);
-        break;
+
       case PROTOCOL_TELEMETRY_HITEC:
         hitecSetDefault(index, id, subId, instance);
         break;
+
       case PROTOCOL_TELEMETRY_HOTT:
         hottSetDefault(index, id, subId, instance);
         break;
 #endif
+
 #if defined(LUA)
      case PROTOCOL_TELEMETRY_LUA:
         // Sensor will be initialized by calling function
         // This drops the first value
         return index;
 #endif
+
       default:
         return index;
     }
@@ -554,7 +577,16 @@ int setTelemetryValue(TelemetryProtocol protocol, uint16_t id, uint8_t subId, ui
     POPUP_WARNING(STR_TELEMETRYFULL);
     return -1;
   }
+}
 
+int setTelemetryValue(TelemetryProtocol protocol, uint16_t id, uint8_t subId, uint8_t instance, int32_t value, uint32_t unit, uint32_t prec)
+{
+  return setTelemetryValue<int32_t>(protocol, id, subId, instance, value, unit, prec);
+}
+
+int setTelemetryText(TelemetryProtocol protocol, uint16_t id, uint8_t subId, uint8_t instance, const char * text)
+{
+  return setTelemetryValue<const char *>(protocol, id, subId, instance, text);
 }
 
 void TelemetrySensor::init(const char * label, uint8_t unit, uint8_t prec)
@@ -596,6 +628,7 @@ PACK(typedef struct {
 const UnitConversionRule unitConversionTable[] = {
   /* unitFrom     unitTo                    multiplier   divisor */
   { UNIT_METERS,            UNIT_FEET,             105,    32},
+  { UNIT_FEET,              UNIT_METERS,            32,   105},
   { UNIT_METERS_PER_SECOND, UNIT_FEET_PER_SECOND,  105,    32},
 
   { UNIT_KTS, UNIT_KMH,                           1852,  1000}, // 1 knot = 1.85200 kilometers per hour
@@ -717,4 +750,24 @@ int32_t TelemetrySensor::getPrecDivisor() const
   if (prec == 2) return 100;
   if (prec == 1) return 10;
   return 1;
+}
+
+bool TelemetrySensor::isSameInstance(TelemetryProtocol protocol, uint8_t instance)
+{
+  if (this->instance == instance)
+    return true;
+
+  if (protocol == PROTOCOL_TELEMETRY_FRSKY_SPORT) {
+#if defined(SIMU)
+    if (((this->instance ^ instance) & 0x1F) == 0)
+      return true;
+#else
+    if (((this->instance ^ instance) & 0x9F) == 0 && (this->instance >> 5) != TELEMETRY_ENDPOINT_SPORT && (instance >> 5) != TELEMETRY_ENDPOINT_SPORT) {
+      this->instance = instance; // update the instance in case we had telemetry switching
+      return true;
+    }
+#endif
+  }
+
+  return false;
 }

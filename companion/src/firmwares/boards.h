@@ -32,10 +32,6 @@ namespace Board {
   enum Type
   {
     BOARD_UNKNOWN = -1,
-    BOARD_9X_M64 = 0,
-    BOARD_9X_M128,
-    BOARD_MEGA2560,
-    BOARD_GRUVIN9X,
     BOARD_SKY9X,
     BOARD_9XRPRO,
     BOARD_AR9X,
@@ -55,9 +51,10 @@ namespace Board {
     BOARD_JUMPER_T12,
     BOARD_JUMPER_T16,
     BOARD_RADIOMASTER_TX16S,
+    BOARD_JUMPER_T18,
   };
 
-  constexpr int BOARD_TYPE_MAX = BOARD_RADIOMASTER_TX16S ;
+  constexpr int BOARD_TYPE_MAX = BOARD_JUMPER_T18;
 
   enum PotType
   {
@@ -191,26 +188,6 @@ class Boards
 // temporary aliases for transition period, use Boards class instead.
 #define getBoardCapability(b__, c__)   Boards::getCapability(b__, c__)
 
-inline bool IS_9X(Board::Type board)
-{
-  return board == Board::BOARD_9X_M64 || board == Board::BOARD_9X_M128;
-}
-
-inline bool IS_STOCK(Board::Type board)
-{
-  return board == Board::BOARD_9X_M64;
-}
-
-inline bool IS_M128(Board::Type board)
-{
-  return board == Board::BOARD_9X_M128;
-}
-
-inline bool IS_2560(Board::Type board)
-{
-  return board == Board::BOARD_GRUVIN9X || board == Board::BOARD_MEGA2560;
-}
-
 inline bool IS_SKY9X(Board::Type board)
 {
   return board == Board::BOARD_SKY9X || board == Board::BOARD_9XRPRO || board == Board::BOARD_AR9X;
@@ -231,6 +208,11 @@ inline bool IS_JUMPER_T16(Board::Type board)
   return board == Board::BOARD_JUMPER_T16;
 }
 
+inline bool IS_JUMPER_T18(Board::Type board)
+{
+  return board == Board::BOARD_JUMPER_T18;
+}
+
 inline bool IS_RADIOMASTER_TX16S(Board::Type board)
 {
   return board == Board::BOARD_RADIOMASTER_TX16S;
@@ -238,7 +220,7 @@ inline bool IS_RADIOMASTER_TX16S(Board::Type board)
 
 inline bool IS_FAMILY_T16(Board::Type board)
 {
-  return board == Board::BOARD_JUMPER_T16 || board == Board::BOARD_RADIOMASTER_TX16S;
+  return board == Board::BOARD_JUMPER_T16 || board == Board::BOARD_RADIOMASTER_TX16S || board == Board::BOARD_JUMPER_T18;
 }
 
 inline bool IS_TARANIS_XLITE(Board::Type board)
@@ -346,7 +328,12 @@ inline bool HAS_EXTERNAL_ANTENNA(Board::Type board)
   return (board == Board::BOARD_X10 || board == Board::BOARD_HORUS_X12S || (IS_TARANIS_XLITE(board) && !IS_TARANIS_XLITES(board)));
 }
 
-inline bool IS_ACCESS_RADIO(Board::Type board, QString &id)
+inline bool IS_TARANIS_X9DP_2019(Board::Type board)
+{
+  return (board == Board::BOARD_TARANIS_X9DP_2019);
+}
+
+inline bool IS_ACCESS_RADIO(Board::Type board, const QString & id)
 {
   return (IS_TARANIS_XLITES(board) || IS_TARANIS_X9LITE(board) || board == Board::BOARD_TARANIS_X9DP_2019 || board == Board::BOARD_X10_EXPRESS || IS_TARANIS_X7_ACCESS(board) ||
           (IS_FAMILY_HORUS_OR_T16(board) && id.contains("internalaccess")));

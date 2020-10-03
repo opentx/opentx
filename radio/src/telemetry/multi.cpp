@@ -21,6 +21,7 @@
 #include "telemetry.h"
 #include "multi.h"
 
+constexpr int32_t MULTI_DESIRED_VERSION = (1 << 24) | (3 << 16) | (1 << 8)  | 65;
 #define MULTI_CHAN_BITS 11
 
 extern uint8_t g_moduleIdx;
@@ -318,13 +319,13 @@ static void processMultiTelemetryPaket(const uint8_t * packet, uint8_t module)
 
 #if defined(AUX_SERIAL)
   if (g_eeGeneral.auxSerialMode == UART_MODE_TELEMETRY_MIRROR) {
-    for (uint8_t c=0; c < len; c++)
+    for (uint8_t c = 0; c < len + 2; c++)
       auxSerialPutc(packet[c]);
   }
 #endif
 #if defined(AUX2_SERIAL)
   if (g_eeGeneral.aux2SerialMode == UART_MODE_TELEMETRY_MIRROR) {
-    for (uint8_t c=0; c < len; c++)
+    for (uint8_t c = 0; c < len + 2; c++)
       aux2SerialPutc(packet[c]);
   }
 #endif
@@ -561,7 +562,7 @@ void MultiModuleStatus::getStatusString(char * statusText) const
     return;
   }
 
-  if (major <= 1 && minor <= 3 && revision <= 0 && patch < 91 && SLOW_BLINK_ON_PHASE) {
+  if ((((major << 24) | (minor << 16) | (revision << 8) | patch) < MULTI_DESIRED_VERSION) && SLOW_BLINK_ON_PHASE) {
     strcpy(statusText, STR_MODULE_UPGRADE);
   }
   else {

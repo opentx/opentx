@@ -197,7 +197,8 @@ int main()
 
   RCC_AHB1PeriphClockCmd(PWR_RCC_AHB1Periph | KEYS_RCC_AHB1Periph |
                          LCD_RCC_AHB1Periph | BACKLIGHT_RCC_AHB1Periph |
-                         AUX_SERIAL_RCC_AHB1Periph | AUX2_SERIAL_RCC_AHB1Periph | I2C_RCC_AHB1Periph |
+                         AUX_SERIAL_RCC_AHB1Periph | AUX2_SERIAL_RCC_AHB1Periph |
+                         I2C_RCC_AHB1Periph | KEYS_BACKLIGHT_RCC_AHB1Periph |
                          SD_RCC_AHB1Periph, ENABLE);
 
   RCC_APB1PeriphClockCmd(ROTARY_ENCODER_RCC_APB1Periph | LCD_RCC_APB1Periph | BACKLIGHT_RCC_APB1Periph |
@@ -209,21 +210,6 @@ int main()
 
   pwrInit();
   keysInit();
-
-  // USB charger handling
-#if defined(USB_CHARGER)
-  if (!WAS_RESET_BY_WATCHDOG_OR_SOFTWARE() && !pwrPressed()) {
-    ledInit();
-    usbChargerInit();
-    ledOff();
-    while (!pwrPressed()) {
-      if(usbChargerLed())
-        GPIO_SetBits(LED_GPIO, LED_GREEN_GPIO_PIN);
-      else
-        ledOff();
-    }
-  }
-#endif
 
   // wait a bit for the inputs to stabilize...
   if (!WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()) {

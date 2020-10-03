@@ -21,6 +21,7 @@
 #include "moduledata.h"
 #include "eeprominterface.h"
 #include "multiprotocols.h"
+#include "afhds3.h"
 #include "radiodataconversionstate.h"
 
 void ModuleData::convert(RadioDataConversionState & cstate)
@@ -65,6 +66,7 @@ bool ModuleData::supportRxNum() const
     case PULSES_PXX_R9M_LITE:
     case PULSES_PXX_R9M_LITE_PRO:
     case PULSES_MULTIMODULE:
+    case PULSES_CROSSFIRE:
     case PULSES_ACCESS_ISRM:
     case PULSES_ACCST_ISRM_D16:
     case PULSES_ACCESS_R9M:
@@ -87,7 +89,6 @@ QString ModuleData::rfProtocolToString() const
   switch (protocol) {
     case PULSES_MULTIMODULE:
       return Multiprotocols::protocolToString((int)multi.rfProtocol);
-
     default:
       return CPN_STR_UNKNOWN_ITEM;
   }
@@ -108,10 +109,10 @@ QString ModuleData::subTypeToString(int type) const
   switch (protocol) {
     case PULSES_MULTIMODULE:
       return Multiprotocols::subTypeToString((int)multi.rfProtocol, (unsigned)type);
-
     case PULSES_PXX_R9M:
       return CHECK_IN_ARRAY(strings, type);
-
+    case PULSES_AFHDS3:
+      return Afhds3Data::protocolToString(type);
     default:
       return CPN_STR_UNKNOWN_ITEM;
   }
@@ -119,8 +120,8 @@ QString ModuleData::subTypeToString(int type) const
 
 QString ModuleData::powerValueToString(Firmware * fw) const
 {
-  const QStringList & strRef = powerValueStrings(subType, fw);
-  return strRef.value(pxx.power, CPN_STR_UNKNOWN_ITEM);
+  const QStringList & strRef = powerValueStrings((enum PulsesProtocol)protocol, subType, fw);
+  return strRef.value(protocol == PULSES_AFHDS3 ? afhds3.rfPower : pxx.power, CPN_STR_UNKNOWN_ITEM);
 }
 
 // static
@@ -159,14 +160,16 @@ QString ModuleData::protocolToString(unsigned protocol)
     "FrSky ACCESS R9M 2019",
     "FrSky ACCESS R9M Lite",
     "FrSky ACCESS R9M Lite Pro",
-    "FrSky XJT lite (D16)", "FrSky XJT lite (D8)", "FrSky XJT lite (LR12)"
+    "FrSky XJT lite (D16)", "FrSky XJT lite (D8)", "FrSky XJT lite (LR12)",
+    "AFHDS3",
+    "ImmersionRC Ghost"
   };
 
   return CHECK_IN_ARRAY(strings, protocol);
 }
 
 // static
-QStringList ModuleData::powerValueStrings(int subType, Firmware * fw)
+QStringList ModuleData::powerValueStrings(enum PulsesProtocol protocol, int subType, Firmware * fw)
 {
   static const QStringList strings[] = {
     { tr("10mW - 16CH"), tr("100mW - 16CH"), tr("500mW - 16CH"), tr("Auto <= 1W - 16CH") },                         // full-size FCC
@@ -174,12 +177,21 @@ QStringList ModuleData::powerValueStrings(int subType, Firmware * fw)
     { tr("100mW - 16CH") },                                                                                         // mini FCC
     { tr("25mW - 8CH"), tr("25mW - 16CH"), tr("100mW - 16CH (no telemetry)") }                                      // mini EU
   };
-  int strIdx = 0;
-  if (subType == MODULE_SUBTYPE_R9M_EU)
-    strIdx += 1;
-  if (fw->getCapability(HasModuleR9MMini))
-    strIdx += 2;
-  return strings[strIdx];
+  static const QStringList afhds3Strings = {
+    tr("25 mW"), tr("100 mW"), tr("500 mW"), tr("1 W"), tr("2 W")
+  };
+
+  switch(protocol) {
+    case PULSES_AFHDS3:
+      return afhds3Strings;
+    default:
+      int strIdx = 0;
+      if (subType == MODULE_SUBTYPE_R9M_EU)
+        strIdx += 1;
+      if (fw->getCapability(HasModuleR9MMini))
+        strIdx += 2;
+      return strings[strIdx];
+  }
 }
 
 bool ModuleData::hasFailsafes(Firmware * fw) const
@@ -193,7 +205,8 @@ bool ModuleData::hasFailsafes(Firmware * fw) const
     protocol == PULSES_ACCESS_R9M_LITE ||
     protocol == PULSES_ACCESS_R9M_LITE_PRO ||
     protocol == PULSES_XJT_LITE_X16 ||
-    protocol == PULSES_MULTIMODULE
+    protocol == PULSES_MULTIMODULE ||
+    protocol == PULSES_AFHDS3
     );
 }
 
@@ -210,6 +223,7 @@ int ModuleData::getMaxChannelCount()
     case PULSES_XJT_LITE_X16:
     case PULSES_PXX_XJT_X16:
     case PULSES_CROSSFIRE:
+    case PULSES_GHOST:
     case PULSES_SBUS:
     case PULSES_PPM:
       return 16;
@@ -230,6 +244,8 @@ int ModuleData::getMaxChannelCount()
       else
         return 16;
       break;
+    case PULSES_AFHDS3:
+      return 18;
     case PULSES_OFF:
       break;
     default:

@@ -162,7 +162,7 @@ enum {
   ITEM_RADIO_HARDWARE_CAPACITY_CALIB,
 #endif
 
-#if defined(CROSSFIRE) && SPORT_MAX_BAUDRATE < 400000
+#if (defined(CROSSFIRE) || defined(GHOST)) && SPORT_MAX_BAUDRATE < 400000
   ITEM_RADIO_HARDWARE_SERIAL_BAUDRATE,
 #endif
 
@@ -278,7 +278,7 @@ void onHardwareAntennaSwitchConfirm(const char * result)
   #define TX_CAPACITY_MEASUREMENT_ROWS
 #endif
 
-#if defined(CROSSFIRE) && SPORT_MAX_BAUDRATE < 400000
+#if (defined(CROSSFIRE) || defined(GHOST)) && SPORT_MAX_BAUDRATE < 400000
   #define MAX_BAUD_ROWS                  0,
 #else
   #define MAX_BAUD_ROWS
@@ -292,7 +292,7 @@ void onHardwareAntennaSwitchConfirm(const char * result)
 
 #if LCD_W >= 212
   #define HW_SETTINGS_COLUMN1            12*FW
-  #define HW_SETTINGS_COLUMN2            (HW_SETTINGS_COLUMN1 + 6*FW)
+  #define HW_SETTINGS_COLUMN2            (20*FW - 3)
 #else
   #define HW_SETTINGS_COLUMN1            30
   #define HW_SETTINGS_COLUMN2            (HW_SETTINGS_COLUMN1 + 5*FW)
@@ -544,7 +544,7 @@ void menuRadioHardware(event_t event)
         break;
 #endif
 
-#if defined(CROSSFIRE) && SPORT_MAX_BAUDRATE < 400000
+#if (defined(CROSSFIRE) || defined(GHOST)) && SPORT_MAX_BAUDRATE < 400000
       case ITEM_RADIO_HARDWARE_SERIAL_BAUDRATE:
         lcdDrawTextAlignedLeft(y, STR_MAXBAUDRATE);
         lcdDrawNumber(HW_SETTINGS_COLUMN2, y, CROSSFIRE_BAUDRATES[g_eeGeneral.telemetryBaudrate], attr|LEFT);
@@ -569,7 +569,7 @@ void menuRadioHardware(event_t event)
         lcdDrawTextAlignedLeft(y, STR_BLUETOOTH);
         lcdDrawTextAtIndex(HW_SETTINGS_COLUMN2, y, STR_BLUETOOTH_MODES, g_eeGeneral.bluetoothMode, attr);
         if (attr) {
-          g_eeGeneral.bluetoothMode = checkIncDecGen(event, g_eeGeneral.bluetoothMode, BLUETOOTH_OFF, BLUETOOTH_TRAINER);
+          g_eeGeneral.bluetoothMode = checkIncDecGen(event, g_eeGeneral.bluetoothMode, BLUETOOTH_OFF, BLUETOOTH_MAX);
         }
         break;
 

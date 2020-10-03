@@ -292,7 +292,7 @@ QString MultiModelPrinter::print(QTextDocument * document)
   if (firmware->getCapability(GlobalFunctions))
     str.append(printGlobalFunctions());
   str.append(printSpecialFunctions());
-  if (firmware->getCapability(Telemetry) & TM_HASTELEMETRY) {
+  if (firmware->getCapability(Telemetry)) {
     str.append(printTelemetry());
     str.append(printSensors());
     if (firmware->getCapability(TelemetryCustomScreens)) {
@@ -310,7 +310,9 @@ QString MultiModelPrinter::printSetup()
   MultiColumns columns(modelPrinterMap.size());
   columns.appendSectionTableStart();
   ROWLABELCOMPARECELL(tr("Name"), 20, model->name, 80);
-  ROWLABELCOMPARECELL(tr("EEprom Size"), 0, modelPrinter->printEEpromSize(), 0);
+  if (!IS_FAMILY_HORUS_OR_T16(firmware->getBoard())) {
+    ROWLABELCOMPARECELL(tr("EEprom Size"), 0, modelPrinter->printEEpromSize(), 0);
+  }
   if (firmware->getCapability(ModelImage)) {
     ROWLABELCOMPARECELL(tr("Model Image"), 0, model->bitmap, 0);
   }
@@ -751,32 +753,19 @@ QString MultiModelPrinter::printTelemetry()
   MultiColumns columns(modelPrinterMap.size());
   columns.appendSectionTableStart();
 
-  // Analogs on non ARM boards
-  if (!IS_ARM(firmware->getBoard())) {
-    columns.appendRowHeader(QStringList() << tr("Analogs") << tr("Unit") << tr("Scale") << tr("Offset"));
-    for (int i=0; i<2; i++) {
-      columns.appendRowStart(QString("A%1").arg(i+1), 20);
-      COMPARECELLWIDTH(FrSkyChannelData::unitString(model->frsky.channels[i].type), 20);
-      COMPARECELLWIDTH(QString::number((model->frsky.channels[i].ratio / (model->frsky.channels[i].type==0 ? 10.0 : 1)), 10, (model->frsky.channels[i].type==0 ? 1 : 0)), 20);
-      COMPARECELLWIDTH(QString::number((model->frsky.channels[i].offset*(model->frsky.channels[i].ratio / (model->frsky.channels[i].type==0 ?10.0 : 1)))/255, 10, (model->frsky.channels[i].type==0 ? 1 : 0)), 40);
-      columns.appendRowEnd();
-    }
-  }
-  else {
-    // Protocol
-    columns.appendRowStart(tr("Protocol"), 20);
-    COMPARECELL(modelPrinter->printTelemetryProtocol(model->telemetryProtocol));
-    columns.appendRowEnd();
-  }
+  // Protocol
+  columns.appendRowStart(tr("Protocol"), 20);
+  COMPARECELL(modelPrinter->printTelemetryProtocol(model->telemetryProtocol));
+  columns.appendRowEnd();
 
   // RSSI alarms
   {
     columns.appendRowStart(tr("RSSI Alarms"), 20);
     columns.appendCellStart(80);
-    COMPARESTRING("", (IS_ARM(getCurrentBoard()) ? tr("Low") : FrSkyAlarmData::alarmLevelName(model->rssiAlarms.level[0])), false);
+    COMPARESTRING("", tr("Low"), false);
     columns.append(": ");
     COMPARESTRING("", QString("&lt; %1").arg(QString::number(model->rssiAlarms.warning, 10)), true);
-    COMPARESTRING("", (IS_ARM(getCurrentBoard()) ? tr("Critical") : FrSkyAlarmData::alarmLevelName(model->rssiAlarms.level[1])), false);
+    COMPARESTRING("", tr("Critical"), false);
     columns.append(": ");
     COMPARESTRING("", QString("&lt; %1").arg(QString::number(model->rssiAlarms.critical, 10)), true);
     COMPARESTRING(tr("Telemetry audio"), modelPrinter->printRssiAlarmsDisabled(model->rssiAlarms.disabled), false);
@@ -818,39 +807,9 @@ QString MultiModelPrinter::printTelemetry()
     columns.appendRowEnd();
   }
 
-  if (IS_ARM(firmware->getBoard())) {
-    ROWLABELCOMPARECELL("Multi sensors", 0, modelPrinter->printIgnoreSensorIds(!model->frsky.ignoreSensorIds), 0);
-  }
+  ROWLABELCOMPARECELL("Multi sensors", 0, modelPrinter->printIgnoreSensorIds(!model->frsky.ignoreSensorIds), 0);
 
   // Various
-  if (!IS_ARM(firmware->getBoard())) {
-    columns.appendRowHeader(QStringList() << tr("Various"));
-    if (!firmware->getCapability(NoTelemetryProtocol)) {
-      columns.appendRowStart("", 20);
-      LABELCOMPARECELL(tr("Serial protocol"), modelPrinter->printTelemetrySource(model->frsky.voltsSource), 80);
-      columns.appendRowEnd();
-    }
-    columns.appendRowStart("", 20);
-    columns.appendCellStart(80);
-    QString firmware_id = g.profile[g.id()].fwType();
-    if (firmware->getCapability(HasFasOffset) && firmware_id.contains("fasoffset")) {
-      COMPARESTRING(tr("FAS offset"), QString("%1 A").arg(model->frsky.fasOffset/10.0), true);
-    }
-    if (firmware->getCapability(HasMahPersistent)) {
-      COMPARESTRING(tr("mAh count"), QString("%1 mAh").arg(model->frsky.storedMah), true);
-      COMPARESTRING(tr("Persistent mAh"), modelPrinter->printMahPersistent(model->frsky.mAhPersistent), false);
-    }
-    columns.appendRowEnd();
-    columns.appendRowStart("", 20);
-    columns.appendCellStart(80);
-    COMPARESTRING(tr("Volts source"), modelPrinter->printVoltsSource(model->frsky.voltsSource), true);
-    COMPARESTRING(tr("Current source"), modelPrinter->printCurrentSource(model->frsky.currentSource), false);
-    columns.appendCellEnd();
-    columns.appendRowEnd();
-    columns.appendRowStart("", 20);
-    LABELCOMPARECELL(tr("Blades"), model->frsky.blades, 80);
-    columns.appendRowEnd();
-  }
   columns.appendTableEnd();
   str.append(columns.print());
   return str;

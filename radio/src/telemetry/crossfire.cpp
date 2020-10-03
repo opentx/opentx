@@ -69,7 +69,7 @@ const CrossfireSensor & getCrossfireSensor(uint8_t id, uint8_t subId)
 
 void processCrossfireTelemetryValue(uint8_t index, int32_t value)
 {
-  if(!TELEMETRY_STREAMING())
+  if (!TELEMETRY_STREAMING())
     return;
 
   const CrossfireSensor & sensor = crossfireSensors[index];
@@ -104,6 +104,10 @@ void processCrossfireTelemetryFrame()
   if (!checkCrossfireTelemetryFrameCRC()) {
     TRACE("[XF] CRC error");
     return;
+  }
+
+  if (telemetryState == TELEMETRY_INIT && moduleState[EXTERNAL_MODULE].counter != CRSF_FRAME_MODELID_SENT) {
+    moduleState[EXTERNAL_MODULE].counter = CRSF_FRAME_MODELID;
   }
 
   uint8_t id = telemetryRxBuffer[2];
@@ -201,6 +205,7 @@ void processCrossfireTelemetryData(uint8_t data)
     auxSerialPutc(data);
   }
 #endif
+
 #if defined(AUX2_SERIAL)
   if (g_eeGeneral.aux2SerialMode == UART_MODE_TELEMETRY_MIRROR) {
     aux2SerialPutc(data);

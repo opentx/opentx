@@ -648,6 +648,7 @@ bool pwrPressed();
 uint32_t pwrPressedDuration();
 #endif
 void pwrResetHandler();
+#define pwrForcePressed()   false
 
 #if defined(SIMU)
 #define UNEXPECTED_SHUTDOWN()           false
@@ -664,10 +665,10 @@ uint8_t isBacklightEnabled();
   #define backlightEnable(...)
 #elif defined(PCBX9E) || defined(PCBX9DP)
   void backlightEnable(uint8_t level = 0, uint8_t color = 0);
-  #define BACKLIGHT_ENABLE()            backlightEnable(g_eeGeneral.backlightBright, g_eeGeneral.backlightColor)
+  #define BACKLIGHT_ENABLE()            backlightEnable(currentBacklightBright, g_eeGeneral.backlightColor)
 #else
   void backlightEnable(uint8_t level = 0);
-  #define BACKLIGHT_ENABLE()            backlightEnable(g_eeGeneral.backlightBright)
+  #define BACKLIGHT_ENABLE()            backlightEnable(currentBacklightBright)
 #endif
 
 #if !defined(SIMU)
@@ -808,7 +809,7 @@ void auxSerialStop();
 #define BLUETOOTH_FACTORY_BAUDRATE      57600
 #endif
 #define BT_TX_FIFO_SIZE    64
-#define BT_RX_FIFO_SIZE    128
+#define BT_RX_FIFO_SIZE    256
 void bluetoothInit(uint32_t baudrate, bool enable);
 void bluetoothWriteWakeup();
 uint8_t bluetoothIsWriting();
@@ -846,7 +847,7 @@ void ledBlue();
 #define IS_LCD_RESET_NEEDED()           true
 #define LCD_CONTRAST_MIN                10
 #define LCD_CONTRAST_MAX                30
-#define LCD_CONTRAST_DEFAULT            20
+#define LCD_CONTRAST_DEFAULT            15
 #endif
 
 #if defined(PCBX9D) || defined(PCBX9E) || (defined(PCBX9DP) && PCBREV < 2019)

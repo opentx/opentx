@@ -54,7 +54,7 @@ DownloadDialog::DownloadDialog(QWidget *parent, QString src, QString tgt):
       reply = qnam.get(QNetworkRequest(QUrl(src)));
       connect(reply, SIGNAL(finished()), this, SLOT(httpFinished()));
       connect(reply, SIGNAL(readyRead()), this, SLOT(httpReadyRead()));
-      connect(reply, SIGNAL(downloadProgress(qint64,qint64)), this, SLOT(updateDataReadProgress(qint64,qint64)));
+      connect(reply, SIGNAL(downloadProgress(qint64, qint64)), this, SLOT(updateDataReadProgress(qint64, qint64)));
     }
 }
 
@@ -114,7 +114,7 @@ void DownloadDialog::updateDataReadProgress(qint64 bytesRead, qint64 totalBytes)
 void DownloadDialog::fileError()
 {
   delete file;
-  file = NULL;
+  file = nullptr;
   reject();
 }
 

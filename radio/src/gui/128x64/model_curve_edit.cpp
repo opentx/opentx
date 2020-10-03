@@ -125,6 +125,9 @@ void menuModelCurveOne(event_t event)
   lcdDrawNumber(INDENT_WIDTH, 6*FH+1, 5+crv.points, LEFT|attr);
   lcdDrawText(lcdLastRightPos, 6*FH+1, STR_PTS, attr);
   if (attr) {
+#if defined(ROTARY_ENCODER_NAVIGATION)
+    rotencSpeed = ROTENC_LOWSPEED;
+#endif
     int8_t count = checkIncDecModel(event, crv.points, -3, 12); // 2pts - 17pts
     if (checkIncDec_Ret) {
       int8_t newPoints[MAX_POINTS_PER_CURVE];
@@ -168,14 +171,18 @@ void menuModelCurveOne(event_t event)
       killEvents(event);
       break;
 #elif defined(NAVIGATION_XLITE)
-    case EVT_KEY_LONG(KEY_SHIFT):
-      pushMenu(menuChannelsView);
-      killEvents(event);
+    case EVT_KEY_FIRST(KEY_ENTER):
+      if (IS_SHIFT_PRESSED()) {
+        pushMenu(menuChannelsView);
+        killEvents(event);
+      }
       break;
 #endif
   }
 
-  drawCurve(0);
+  drawCurve();
+  if (s_currSrcRaw != MIXSRC_NONE)
+    drawCursor(applyCurrentCurve);
 
   attr = (s_editMode > 0 ? INVERS|BLINK : INVERS);
   for (uint8_t i=0; i<5+crv.points; i++) {

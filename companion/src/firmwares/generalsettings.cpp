@@ -110,9 +110,7 @@ GeneralSettings::GeneralSettings()
     backlightOffBright = 20;
   }
 
-  if (IS_ARM(board)) {
-    speakerVolume = 12;
-  }
+  speakerVolume = 12;
 
   if (IS_JUMPER_T16(board))
     strcpy(bluetoothName, "t16");

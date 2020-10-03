@@ -953,7 +953,7 @@ void evalMixes(uint8_t tick10ms)
         mixerCurrentFlightMode = p;
         evalFlightModeMixes(p==fm ? e_perout_mode_normal : e_perout_mode_inactive_flight_mode, p==fm ? tick10ms : 0);
         for (uint8_t i=0; i<MAX_OUTPUT_CHANNELS; i++)
-          sum_chans512[i] += (chans[i] >> 4) * fp_act[p];
+          sum_chans512[i] += limit<int32_t>(-0x6fff, chans[i] >> 4, 0x6fff) * fp_act[p];
         weight += fp_act[p];
       }
     }
@@ -970,6 +970,7 @@ void evalMixes(uint8_t tick10ms)
   // must be done before limits because of the applyLimit function: it checks for safety switches which would be not initialized otherwise
   if (tick10ms) {
     requiredSpeakerVolume = g_eeGeneral.speakerVolume + VOLUME_LEVEL_DEF;
+    requiredBacklightBright = g_eeGeneral.backlightBright;
 
     if (!g_model.noGlobalFunctions) {
       evalFunctions(g_eeGeneral.customFn, globalFunctionsContext);
@@ -1017,5 +1018,4 @@ void evalMixes(uint8_t tick10ms)
       }
     }
   }
-
 }
