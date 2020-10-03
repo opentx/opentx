@@ -31,9 +31,9 @@ inline void REFRESH_TOOSLFILES()
 void addRadioModuleTool(uint8_t index, const char * label, bool (* tool)(event_t), uint8_t module) {
   if (menuVerticalOffset == 0) {
     for (uint8_t i=0; i<NUM_BODY_LINES; i++) {
-      char * line = reusableBuffer.radioTools.lines[i];
+      char * line = reusableBuffer.radioTools.lines[i].displayname;
       if (line[0] == '\0') {
-        if (i < NUM_BODY_LINES-1) memmove(reusableBuffer.radioTools.lines[i+1], line, sizeof(reusableBuffer.radioTools.lines[i]) * (NUM_BODY_LINES-1-i));
+        if (i < NUM_BODY_LINES-1) memmove(&reusableBuffer.radioTools.lines[i+1], line, sizeof(reusableBuffer.radioTools.lines[i]) * (NUM_BODY_LINES-1-i));
         memset(line, 0, sizeof(reusableBuffer.radioTools.lines[0]));
         strcpy(line, label);
         break;
@@ -42,9 +42,9 @@ void addRadioModuleTool(uint8_t index, const char * label, bool (* tool)(event_t
   }
   else if (reusableBuffer.radioTools.offset == menuVerticalOffset) {
     for (int8_t i=NUM_BODY_LINES-1; i>=0; i--) {
-      char *line = reusableBuffer.radioTools.lines[i];
+      char *line = reusableBuffer.radioTools.lines[i].displayname;
       if (line[0] == '\0') {
-        if (i > 0) memmove(reusableBuffer.radioTools.lines[0], reusableBuffer.radioTools.lines[1], sizeof(reusableBuffer.radioTools.lines[0]) * i);
+        if (i > 0) memmove(&reusableBuffer.radioTools.lines[0], &reusableBuffer.radioTools.lines[1], sizeof(reusableBuffer.radioTools.lines[0]) * i);
         memset(line, 0, sizeof(reusableBuffer.radioTools.lines[0]));
         strcpy(line, label);
         break;
@@ -87,12 +87,12 @@ bool menuRadioTools(event_t _event)
   if (reusableBuffer.radioTools.offset != menuVerticalOffset) {
 
     if (menuVerticalOffset == reusableBuffer.radioTools.offset + 1) {
-      memmove(reusableBuffer.radioTools.lines[0], reusableBuffer.radioTools.lines[1], (NUM_BODY_LINES-1)*sizeof(reusableBuffer.radioTools.lines[0]));
-      memset(reusableBuffer.radioTools.lines[NUM_BODY_LINES-1], 0xff, SD_SCREEN_FILE_LENGTH);
+      memmove(&reusableBuffer.radioTools.lines[0], &reusableBuffer.radioTools.lines[1], (NUM_BODY_LINES-1)*sizeof(reusableBuffer.radioTools.lines[0]));
+      memset(&reusableBuffer.radioTools.lines[NUM_BODY_LINES-1], 0xff, SD_SCREEN_FILE_LENGTH);
     }
     else if (menuVerticalOffset == reusableBuffer.radioTools.offset - 1) {
-      memmove(reusableBuffer.radioTools.lines[1], reusableBuffer.radioTools.lines[0], (NUM_BODY_LINES-1)*sizeof(reusableBuffer.radioTools.lines[0]));
-      memset(reusableBuffer.radioTools.lines[0], 0, sizeof(reusableBuffer.radioTools.lines[0]));
+      memmove(&reusableBuffer.radioTools.lines[1], &reusableBuffer.radioTools.lines[0], (NUM_BODY_LINES-1)*sizeof(reusableBuffer.radioTools.lines[0]));
+      memset(&reusableBuffer.radioTools.lines[0], 0, sizeof(reusableBuffer.radioTools.lines[0]));
     }
     else {
       reusableBuffer.radioTools.offset = menuVerticalOffset;
@@ -151,9 +151,9 @@ bool menuRadioTools(event_t _event)
 
         if (menuVerticalOffset == 0) {
           for (uint8_t i=0; i<NUM_BODY_LINES; i++) {
-            char * line = reusableBuffer.radioTools.lines[i];
+            char * line = reusableBuffer.radioTools.lines[i].displayname;
             if (line[0] == '\0') {
-              if (i < NUM_BODY_LINES-1) memmove(reusableBuffer.radioTools.lines[i+1], line, sizeof(reusableBuffer.radioTools.lines[i]) * (NUM_BODY_LINES-1-i));
+              if (i < NUM_BODY_LINES-1) memmove(&reusableBuffer.radioTools.lines[i+1], line, sizeof(reusableBuffer.radioTools.lines[i]) * (NUM_BODY_LINES-1-i));
               memset(line, 0, sizeof(reusableBuffer.radioTools.lines[0]));
               strcpy(line, label);
               break;
@@ -162,9 +162,9 @@ bool menuRadioTools(event_t _event)
         }
         else if (reusableBuffer.radioTools.offset == menuVerticalOffset) {
           for (int8_t i=NUM_BODY_LINES-1; i>=0; i--) {
-            char *line = reusableBuffer.radioTools.lines[i];
+            char *line = reusableBuffer.radioTools.lines[i].displayname;
             if (line[0] == '\0') {
-              if (i > 0) memmove(reusableBuffer.radioTools.lines[0], reusableBuffer.radioTools.lines[1], sizeof(reusableBuffer.radioTools.lines[0]) * i);
+              if (i > 0) memmove(&reusableBuffer.radioTools.lines[0], &reusableBuffer.radioTools.lines[1], sizeof(reusableBuffer.radioTools.lines[0]) * i);
               memset(line, 0, sizeof(reusableBuffer.radioTools.lines[0]));
               strcpy(line, label);
               break;
@@ -173,26 +173,7 @@ bool menuRadioTools(event_t _event)
         }
       }
       f_closedir(&dir);
-/*
-#if defined(INTERNAL_MODULE_PXX2)
-      if (isPXX2ModuleOptionAvailable(reusableBuffer.hardwareAndSettings.modules[INTERNAL_MODULE].information.modelID, MODULE_OPTION_SPECTRUM_ANALYSER))
-        addRadioModuleTool(index++, STR_SPECTRUM_ANALYSER_INT, menuRadioSpectrumAnalyser, INTERNAL_MODULE);
 
-      if (isPXX2ModuleOptionAvailable(reusableBuffer.hardwareAndSettings.modules[INTERNAL_MODULE].information.modelID, MODULE_OPTION_POWER_METER))
-        addRadioModuleTool(index++, STR_POWER_METER_INT, menuRadioPowerMeter, INTERNAL_MODULE);
-#elif defined(INTERNAL_MODULE_MULTI)
-      addRadioModuleTool(index++, STR_SPECTRUM_ANALYSER_INT, menuRadioSpectrumAnalyser, INTERNAL_MODULE);
-#endif
-#if defined(PXX2) || defined(MULTIMODULE)
-      if (isPXX2ModuleOptionAvailable(reusableBuffer.hardwareAndSettings.modules[EXTERNAL_MODULE].information.modelID, MODULE_OPTION_SPECTRUM_ANALYSER) ||
-          isModuleMultimodule(EXTERNAL_MODULE))
-        addRadioModuleTool(index++, STR_SPECTRUM_ANALYSER_EXT, menuRadioSpectrumAnalyser, EXTERNAL_MODULE);
-#endif
-#if defined(PXX2)
-      if (isPXX2ModuleOptionAvailable(reusableBuffer.hardwareAndSettings.modules[EXTERNAL_MODULE].information.modelID, MODULE_OPTION_POWER_METER))
-        addRadioModuleTool(index++, STR_POWER_METER_EXT, menuRadioPowerMeter, EXTERNAL_MODULE);
-#endif
-*/
       if (index == 0) {
         lcdDrawCenteredText(LCD_H / 2, STR_NO_TOOLS);
       }
@@ -204,8 +185,8 @@ bool menuRadioTools(event_t _event)
   for (uint8_t i = 0; i < NUM_BODY_LINES; i++) {
     coord_t y = MENU_CONTENT_TOP + i * FH;
     LcdFlags attr = (index == i ? INVERS : 0);
-    if (reusableBuffer.radioTools.lines[i][0]) {
-      lcdDrawText(MENUS_MARGIN_LEFT, y, reusableBuffer.radioTools.lines[i], attr);
+    if (reusableBuffer.radioTools.lines[i].displayname[0]) {
+      lcdDrawText(MENUS_MARGIN_LEFT, y, reusableBuffer.radioTools.lines[i].displayname, attr);
     }
   }
 

@@ -1103,8 +1103,11 @@ union ReusableBuffer
   } hardwareAndSettings; // moduleOptions, receiverOptions, radioVersion
 
   struct {
-    ModuleInformation modules[NUM_MODULES];
-    char lines[NUM_BODY_LINES][RADIO_TOOL_NAME_MAXLEN+1+1]; // the last char is used to store the flags (directory) of the line
+    struct {
+      char displayname[RADIO_TOOL_NAME_MAXLEN + 1];
+      char filename[SD_SCREEN_FILE_LENGTH + 1];
+      bool (* exec)(event_t);
+    } lines[NUM_BODY_LINES];
     uint16_t offset;
     uint16_t count;
     uint8_t linesCount;
