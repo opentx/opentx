@@ -605,9 +605,9 @@ PACK(struct ModelData {
 
   NOBACKUP(RssiAlarmData rssiAlarms);
 
-  NOBACKUP(uint8_t spare1:3);
-  NOBACKUP(uint8_t thrTrimSw:3);
-  NOBACKUP(uint8_t potsWarnMode:2);
+  uint8_t spare1:3;
+  uint8_t thrTrimSw:3;
+  uint8_t potsWarnMode:2;
 
   ModuleData moduleData[NUM_MODULES];
   int16_t failsafeChannels[MAX_OUTPUT_CHANNELS];
