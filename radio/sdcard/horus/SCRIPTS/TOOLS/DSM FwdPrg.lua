@@ -359,7 +359,7 @@ local function DSM_Display()
             attrib = 0
           end
           if Line[i] ~= nil and Line[i].Type ~= nil then
-            if Line[i].Type ~= MENU then-- list/value
+            if Line[i].Type ~= MENU then -- list/value
               if Line[i].Val ~= nil then
                 local text=""
                 if Line[i].Type == LIST_MENU_NOCHANGING or Line[i].Type == LIST_MENU2 then
@@ -390,14 +390,14 @@ local function DSM_Display()
         else
           lcd.drawText(437,32, "Back", 0)
         end
-        lcd.drawRectangle(437-5, 32-2, 48, 25)
+        lcd.drawRectangle(437-5, 32-2, 47, 25)
         if Menu.Next ~= 0 then
           if Menu.SelLine == 7 then
             lcd.drawText(437,220, "Next",INVERS)
           else
             lcd.drawText(437,220, "Next")
           end
-          lcd.drawRectangle(437-5, 220-2, 48, 25)
+          lcd.drawRectangle(437-5, 220-2, 47, 25)
         end
         if Menu.Prev ~= 0 then
           if Menu.SelLine == 8 then
@@ -405,7 +405,7 @@ local function DSM_Display()
           else
             lcd.drawText(5,220, "Prev")
           end
-          lcd.drawRectangle(5-5, 220-2, 48, 25)
+          lcd.drawRectangle(5-5, 220-2, 47, 25)
         end
       end
       lcd.drawText(170,252, "RX "..RX.Name.." v"..RX.Version) -- display RX info
