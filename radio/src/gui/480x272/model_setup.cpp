@@ -838,19 +838,11 @@ bool menuModelSetup(event_t event)
         break;
 
       case ITEM_MODEL_SETUP_THROTTLE_TRIM_SWITCH:
-      {
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_TTRIM_SW);
-        if (attr) CHECK_INCDEC_MODELVAR_ZERO(event, g_model.thrTrimSw, NUM_TRIMS-1);
-        uint8_t idx;
-        if (g_model.thrTrimSw == 0) //this is needed for compatibility with existing models
-          idx = MIXSRC_TrimThr;
-        else if (g_model.thrTrimSw == (MIXSRC_TrimThr - MIXSRC_FIRST_TRIM))
-          idx = MIXSRC_FIRST_TRIM;
-        else
-          idx = g_model.thrTrimSw + MIXSRC_FIRST_TRIM;
-        drawSource(MODEL_SETUP_2ND_COLUMN, y, idx, attr);
+        if (attr)
+          CHECK_INCDEC_MODELVAR_ZERO(event, g_model.thrTrimSw, NUM_TRIMS - 1);
+        drawSource(MODEL_SETUP_2ND_COLUMN, y, g_model.getThrottleStickTrimSource(), attr);
         break;
-      }
 
       case ITEM_MODEL_SETUP_PREFLIGHT_LABEL:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_PREFLIGHT);

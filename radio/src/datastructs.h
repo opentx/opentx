@@ -626,6 +626,20 @@ PACK(struct ModelData {
   CUSTOM_SCREENS_DATA
 
   char modelRegistrationID[PXX2_LEN_REGISTRATION_ID];
+
+
+  uint8_t getThrottleStickTrimSource() const
+  {
+    // The order here is TERA, so that 0 (default) means Throttle
+    switch (thrTrimSw) {
+      case 0:
+        return MIXSRC_TrimThr;
+      case 2:
+        return MIXSRC_TrimRud;
+      default:
+        return thrTrimSw + MIXSRC_FIRST_TRIM;
+    }
+  }
 });
 
 /*

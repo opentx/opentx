@@ -527,14 +527,7 @@ int getStickTrimValue(int stick, int stickValue)
     return 0;
 
   int trim = trims[stick];
-  uint8_t thrTrimSw;
-  // The order here is TERA, so that 0 (default) means Throttle
-  if (g_model.thrTrimSw == 0) // Throttle
-    thrTrimSw = MIXSRC_TrimThr - MIXSRC_FIRST_TRIM;
-  else if (g_model.thrTrimSw == 2) // Rudder
-    thrTrimSw = 0;
-  else
-    thrTrimSw = g_model.thrTrimSw;
+  uint8_t thrTrimSw = g_model.getThrottleStickTrimSource() - MIXSRC_FIRST_TRIM;
   if (stick == thrTrimSw) {
     if (g_model.throttleReversed)
       trim = -trim;
