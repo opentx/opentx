@@ -28,7 +28,20 @@ inline void REFRESH_TOOSLFILES()
   reusableBuffer.radioTools.offset = 65535;
 }
 
-void addRadioModuleTool(uint8_t index, const char * label, bool (* tool)(event_t), uint8_t module) {
+#if defined(LUA)
+void addRadioScriptTool(uint8_t index, const char * path)
+{
+  char toolName[RADIO_TOOL_NAME_MAXLEN + 1];
+  const char * label;
+  char * ext = (char *)getFileExtension(path);
+  if (readToolName(toolName, path)) {
+    label = toolName;
+  }
+  else {
+    *ext = '\0';
+    label = getBasename(path);
+  }
+
   if (menuVerticalOffset == 0) {
     for (uint8_t i=0; i<NUM_BODY_LINES; i++) {
       char * line = reusableBuffer.radioTools.lines[i].displayname;
@@ -47,6 +60,35 @@ void addRadioModuleTool(uint8_t index, const char * label, bool (* tool)(event_t
         if (i > 0) memmove(&reusableBuffer.radioTools.lines[0], &reusableBuffer.radioTools.lines[1], sizeof(reusableBuffer.radioTools.lines[0]) * i);
         memset(line, 0, sizeof(reusableBuffer.radioTools.lines[0]));
         strcpy(line, label);
+        break;
+      }
+    }
+  }
+  reusableBuffer.radioTools.count++;
+}
+#endif
+
+void addRadioModuleTool(uint8_t index, const char * label, bool (* tool)(event_t), uint8_t module) {
+  if (menuVerticalOffset == 0) {
+    for (uint8_t i=0; i<NUM_BODY_LINES; i++) {
+      char * line = reusableBuffer.radioTools.lines[i].displayname;
+      if (line[0] == '\0') {
+        if (i < NUM_BODY_LINES-1) memmove(&reusableBuffer.radioTools.lines[i+1], line, sizeof(reusableBuffer.radioTools.lines[i]) * (NUM_BODY_LINES-1-i));
+        memset(line, 0, sizeof(reusableBuffer.radioTools.lines[0].displayname));
+        strcpy(line, label);
+        reusableBuffer.radioTools.lines[0].exec = tool;
+        break;
+      }
+    }
+  }
+  else if (reusableBuffer.radioTools.offset == menuVerticalOffset) {
+    for (int8_t i=NUM_BODY_LINES-1; i>=0; i--) {
+      char *line = reusableBuffer.radioTools.lines[i].displayname;
+      if (line[0] == '\0') {
+        if (i > 0) memmove(&reusableBuffer.radioTools.lines[0], &reusableBuffer.radioTools.lines[1], sizeof(reusableBuffer.radioTools.lines[0]) * i);
+        memset(line, 0, sizeof(reusableBuffer.radioTools.lines[0]));
+        strcpy(line, label);
+        reusableBuffer.radioTools.lines[0].exec = tool;
         break;
       }
     }
@@ -137,40 +179,7 @@ bool menuRadioTools(event_t _event)
         if (!isRadioScriptTool(fno.fname))
           continue;
 
-        reusableBuffer.radioTools.count++;
-        char toolName[RADIO_TOOL_NAME_MAXLEN + 1];
-        const char * label;
-        char * ext = (char *)getFileExtension(path);
-        if (readToolName(toolName, path)) {
-          label = toolName;
-        }
-        else {
-          *ext = '\0';
-          label = getBasename(path);
-        }
-
-        if (menuVerticalOffset == 0) {
-          for (uint8_t i=0; i<NUM_BODY_LINES; i++) {
-            char * line = reusableBuffer.radioTools.lines[i].displayname;
-            if (line[0] == '\0') {
-              if (i < NUM_BODY_LINES-1) memmove(&reusableBuffer.radioTools.lines[i+1], line, sizeof(reusableBuffer.radioTools.lines[i]) * (NUM_BODY_LINES-1-i));
-              memset(line, 0, sizeof(reusableBuffer.radioTools.lines[0]));
-              strcpy(line, label);
-              break;
-            }
-          }
-        }
-        else if (reusableBuffer.radioTools.offset == menuVerticalOffset) {
-          for (int8_t i=NUM_BODY_LINES-1; i>=0; i--) {
-            char *line = reusableBuffer.radioTools.lines[i].displayname;
-            if (line[0] == '\0') {
-              if (i > 0) memmove(&reusableBuffer.radioTools.lines[0], &reusableBuffer.radioTools.lines[1], sizeof(reusableBuffer.radioTools.lines[0]) * i);
-              memset(line, 0, sizeof(reusableBuffer.radioTools.lines[0]));
-              strcpy(line, label);
-              break;
-            }
-          }
-        }
+        addRadioScriptTool(index, path);
       }
       f_closedir(&dir);
 
