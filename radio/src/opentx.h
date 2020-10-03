@@ -1103,10 +1103,12 @@ union ReusableBuffer
   } hardwareAndSettings; // moduleOptions, receiverOptions, radioVersion
 
   struct {
+    ModuleInformation modules[NUM_MODULES];
     struct {
       char displayname[RADIO_TOOL_NAME_MAXLEN + 1];
       char filename[SD_SCREEN_FILE_LENGTH + 1];
       bool (* exec)(event_t);
+      uint8_t module;
     } lines[NUM_BODY_LINES];
     uint16_t offset;
     uint16_t count;

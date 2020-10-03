@@ -28,8 +28,13 @@ inline void REFRESH_TOOSLFILES()
   reusableBuffer.radioTools.offset = 65535;
 }
 
+inline bool IS_LUA_TOOLS(uint8_t index)
+{
+  return reusableBuffer.radioTools.lines[index].exec != nullptr ;
+}
+
 #if defined(LUA)
-void addRadioScriptTool(uint8_t index, const char * path)
+void addRadioScriptTool(const char * path)
 {
   char toolName[RADIO_TOOL_NAME_MAXLEN + 1];
   const char * label;
@@ -47,8 +52,9 @@ void addRadioScriptTool(uint8_t index, const char * path)
       char * line = reusableBuffer.radioTools.lines[i].displayname;
       if (line[0] == '\0') {
         if (i < NUM_BODY_LINES-1) memmove(&reusableBuffer.radioTools.lines[i+1], line, sizeof(reusableBuffer.radioTools.lines[i]) * (NUM_BODY_LINES-1-i));
-        memset(line, 0, sizeof(reusableBuffer.radioTools.lines[0]));
+        memset(line, 0, sizeof(reusableBuffer.radioTools.lines[i].displayname));
         strcpy(line, label);
+        strcpy(reusableBuffer.radioTools.lines[i].filename, getBasename(path));
         break;
       }
     }
@@ -58,8 +64,9 @@ void addRadioScriptTool(uint8_t index, const char * path)
       char *line = reusableBuffer.radioTools.lines[i].displayname;
       if (line[0] == '\0') {
         if (i > 0) memmove(&reusableBuffer.radioTools.lines[0], &reusableBuffer.radioTools.lines[1], sizeof(reusableBuffer.radioTools.lines[0]) * i);
-        memset(line, 0, sizeof(reusableBuffer.radioTools.lines[0]));
+        memset(line, 0, sizeof(reusableBuffer.radioTools.lines[i].displayname));
         strcpy(line, label);
+        strcpy(reusableBuffer.radioTools.lines[i].filename, getBasename(path));
         break;
       }
     }
@@ -68,7 +75,7 @@ void addRadioScriptTool(uint8_t index, const char * path)
 }
 #endif
 
-void addRadioModuleTool(uint8_t index, const char * label, bool (* tool)(event_t), uint8_t module) {
+void addRadioModuleTool(const char * label, bool (* tool)(event_t), uint8_t module) {
   if (menuVerticalOffset == 0) {
     for (uint8_t i=0; i<NUM_BODY_LINES; i++) {
       char * line = reusableBuffer.radioTools.lines[i].displayname;
@@ -76,7 +83,8 @@ void addRadioModuleTool(uint8_t index, const char * label, bool (* tool)(event_t
         if (i < NUM_BODY_LINES-1) memmove(&reusableBuffer.radioTools.lines[i+1], line, sizeof(reusableBuffer.radioTools.lines[i]) * (NUM_BODY_LINES-1-i));
         memset(line, 0, sizeof(reusableBuffer.radioTools.lines[0].displayname));
         strcpy(line, label);
-        reusableBuffer.radioTools.lines[0].exec = tool;
+        reusableBuffer.radioTools.lines[i].exec = tool;
+        reusableBuffer.radioTools.lines[i].module = module;
         break;
       }
     }
@@ -86,23 +94,23 @@ void addRadioModuleTool(uint8_t index, const char * label, bool (* tool)(event_t
       char *line = reusableBuffer.radioTools.lines[i].displayname;
       if (line[0] == '\0') {
         if (i > 0) memmove(&reusableBuffer.radioTools.lines[0], &reusableBuffer.radioTools.lines[1], sizeof(reusableBuffer.radioTools.lines[0]) * i);
-        memset(line, 0, sizeof(reusableBuffer.radioTools.lines[0]));
+        memset(line, 0, sizeof(reusableBuffer.radioTools.lines[0].displayname));
         strcpy(line, label);
-        reusableBuffer.radioTools.lines[0].exec = tool;
+        reusableBuffer.radioTools.lines[i].exec = tool;
+        reusableBuffer.radioTools.lines[i].module = module;
         break;
       }
     }
   }
   reusableBuffer.radioTools.count++;
 }
-bool menuRadioTools(event_t _event)
+bool menuRadioTools(event_t event)
 {
-  event_t event = (EVT_KEY_MASK(_event) == KEY_ENTER ? 0 : _event);
   SIMPLE_MENU(STR_MENUTOOLS, RADIO_ICONS, menuTabGeneral, MENU_RADIO_TOOLS, reusableBuffer.radioTools.count);
 
   int index = menuVerticalPosition - menuVerticalOffset;
 
-  switch (_event) {
+  switch (event) {
     case EVT_ENTRY:
       f_chdir(ROOT_PATH);
       // no break;
@@ -121,7 +129,14 @@ bool menuRadioTools(event_t _event)
       break;
 
     case EVT_KEY_BREAK(KEY_ENTER):
-      // TODO : launch the selected tool
+      if (IS_LUA_TOOLS(index)) {
+        g_moduleIdx = reusableBuffer.radioTools.lines[index].module;
+        pushMenu(reusableBuffer.radioTools.lines[index].exec);
+      }
+      else {
+        f_chdir("/SCRIPTS/TOOLS/");
+        luaExec(reusableBuffer.radioTools.lines[index].filename);
+      }
       break;
   }
 
@@ -130,7 +145,7 @@ bool menuRadioTools(event_t _event)
 
     if (menuVerticalOffset == reusableBuffer.radioTools.offset + 1) {
       memmove(&reusableBuffer.radioTools.lines[0], &reusableBuffer.radioTools.lines[1], (NUM_BODY_LINES-1)*sizeof(reusableBuffer.radioTools.lines[0]));
-      memset(&reusableBuffer.radioTools.lines[NUM_BODY_LINES-1], 0xff, SD_SCREEN_FILE_LENGTH);
+      //memset(&reusableBuffer.radioTools.lines[NUM_BODY_LINES-1], 0xff, LEN_FILE_PATH_MAX);
     }
     else if (menuVerticalOffset == reusableBuffer.radioTools.offset - 1) {
       memmove(&reusableBuffer.radioTools.lines[1], &reusableBuffer.radioTools.lines[0], (NUM_BODY_LINES-1)*sizeof(reusableBuffer.radioTools.lines[0]));
@@ -150,12 +165,12 @@ bool menuRadioTools(event_t _event)
     if (isPXX2ModuleOptionAvailable(reusableBuffer.hardwareAndSettings.modules[INTERNAL_MODULE].information.modelID, MODULE_OPTION_POWER_METER))
       addRadioModuleTool(index++, STR_POWER_METER_INT, menuRadioPowerMeter, INTERNAL_MODULE);
 #elif defined(INTERNAL_MODULE_MULTI)
-    addRadioModuleTool(index++, STR_SPECTRUM_ANALYSER_INT, menuRadioSpectrumAnalyser, INTERNAL_MODULE);
+    addRadioModuleTool(STR_SPECTRUM_ANALYSER_INT, menuRadioSpectrumAnalyser, INTERNAL_MODULE);
 #endif
 #if defined(PXX2) || defined(MULTIMODULE)
     if (isPXX2ModuleOptionAvailable(reusableBuffer.hardwareAndSettings.modules[EXTERNAL_MODULE].information.modelID, MODULE_OPTION_SPECTRUM_ANALYSER) ||
         isModuleMultimodule(EXTERNAL_MODULE))
-      addRadioModuleTool(index++, STR_SPECTRUM_ANALYSER_EXT, menuRadioSpectrumAnalyser, EXTERNAL_MODULE);
+      addRadioModuleTool(STR_SPECTRUM_ANALYSER_EXT, menuRadioSpectrumAnalyser, EXTERNAL_MODULE);
 #endif
 #if defined(PXX2)
     if (isPXX2ModuleOptionAvailable(reusableBuffer.hardwareAndSettings.modules[EXTERNAL_MODULE].information.modelID, MODULE_OPTION_POWER_METER))
@@ -179,7 +194,7 @@ bool menuRadioTools(event_t _event)
         if (!isRadioScriptTool(fno.fname))
           continue;
 
-        addRadioScriptTool(index, path);
+        addRadioScriptTool(path);
       }
       f_closedir(&dir);
 
