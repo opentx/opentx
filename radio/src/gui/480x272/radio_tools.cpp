@@ -28,6 +28,31 @@ inline void REFRESH_TOOSLFILES()
   reusableBuffer.radioTools.offset = 65535;
 }
 
+void addRadioModuleTool(uint8_t index, const char * label, bool (* tool)(event_t), uint8_t module) {
+  if (menuVerticalOffset == 0) {
+    for (uint8_t i=0; i<NUM_BODY_LINES; i++) {
+      char * line = reusableBuffer.radioTools.lines[i];
+      if (line[0] == '\0') {
+        if (i < NUM_BODY_LINES-1) memmove(reusableBuffer.radioTools.lines[i+1], line, sizeof(reusableBuffer.radioTools.lines[i]) * (NUM_BODY_LINES-1-i));
+        memset(line, 0, sizeof(reusableBuffer.radioTools.lines[0]));
+        strcpy(line, label);
+        break;
+      }
+    }
+  }
+  else if (reusableBuffer.radioTools.offset == menuVerticalOffset) {
+    for (int8_t i=NUM_BODY_LINES-1; i>=0; i--) {
+      char *line = reusableBuffer.radioTools.lines[i];
+      if (line[0] == '\0') {
+        if (i > 0) memmove(reusableBuffer.radioTools.lines[0], reusableBuffer.radioTools.lines[1], sizeof(reusableBuffer.radioTools.lines[0]) * i);
+        memset(line, 0, sizeof(reusableBuffer.radioTools.lines[0]));
+        strcpy(line, label);
+        break;
+      }
+    }
+  }
+  reusableBuffer.radioTools.count++;
+}
 bool menuRadioTools(event_t _event)
 {
   event_t event = (EVT_KEY_MASK(_event) == KEY_ENTER ? 0 : _event);
@@ -60,8 +85,6 @@ bool menuRadioTools(event_t _event)
 
 #if defined(LUA)
   if (reusableBuffer.radioTools.offset != menuVerticalOffset) {
-    FILINFO fno;
-    DIR dir;
 
     if (menuVerticalOffset == reusableBuffer.radioTools.offset + 1) {
       memmove(reusableBuffer.radioTools.lines[0], reusableBuffer.radioTools.lines[1], (NUM_BODY_LINES-1)*sizeof(reusableBuffer.radioTools.lines[0]));
@@ -78,6 +101,28 @@ bool menuRadioTools(event_t _event)
 
     reusableBuffer.radioTools.count = 0;
 
+#if defined(INTERNAL_MODULE_PXX2)
+    if (isPXX2ModuleOptionAvailable(reusableBuffer.hardwareAndSettings.modules[INTERNAL_MODULE].information.modelID, MODULE_OPTION_SPECTRUM_ANALYSER))
+      addRadioModuleTool(index++, STR_SPECTRUM_ANALYSER_INT, menuRadioSpectrumAnalyser, INTERNAL_MODULE);
+
+    if (isPXX2ModuleOptionAvailable(reusableBuffer.hardwareAndSettings.modules[INTERNAL_MODULE].information.modelID, MODULE_OPTION_POWER_METER))
+      addRadioModuleTool(index++, STR_POWER_METER_INT, menuRadioPowerMeter, INTERNAL_MODULE);
+#elif defined(INTERNAL_MODULE_MULTI)
+    addRadioModuleTool(index++, STR_SPECTRUM_ANALYSER_INT, menuRadioSpectrumAnalyser, INTERNAL_MODULE);
+#endif
+#if defined(PXX2) || defined(MULTIMODULE)
+    if (isPXX2ModuleOptionAvailable(reusableBuffer.hardwareAndSettings.modules[EXTERNAL_MODULE].information.modelID, MODULE_OPTION_SPECTRUM_ANALYSER) ||
+        isModuleMultimodule(EXTERNAL_MODULE))
+      addRadioModuleTool(index++, STR_SPECTRUM_ANALYSER_EXT, menuRadioSpectrumAnalyser, EXTERNAL_MODULE);
+#endif
+#if defined(PXX2)
+    if (isPXX2ModuleOptionAvailable(reusableBuffer.hardwareAndSettings.modules[EXTERNAL_MODULE].information.modelID, MODULE_OPTION_POWER_METER))
+        addRadioModuleTool(index++, STR_POWER_METER_EXT, menuRadioPowerMeter, EXTERNAL_MODULE);
+#endif
+
+
+    FILINFO fno;
+    DIR dir;
     FRESULT res = f_opendir(&dir, SCRIPTS_TOOLS_PATH);
     if (res == FR_OK) {
       for (;;) {
