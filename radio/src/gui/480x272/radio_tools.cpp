@@ -30,7 +30,7 @@ inline void REFRESH_TOOSLFILES()
 
 inline bool IS_LUA_TOOLS(uint8_t index)
 {
-  return reusableBuffer.radioTools.lines[index].exec != nullptr ;
+  return reusableBuffer.radioTools.lines[index].exec == nullptr ;
 }
 
 #if defined(LUA)
@@ -130,12 +130,12 @@ bool menuRadioTools(event_t event)
 
     case EVT_KEY_BREAK(KEY_ENTER):
       if (IS_LUA_TOOLS(index)) {
-        g_moduleIdx = reusableBuffer.radioTools.lines[index].module;
-        pushMenu(reusableBuffer.radioTools.lines[index].exec);
-      }
-      else {
         f_chdir("/SCRIPTS/TOOLS/");
         luaExec(reusableBuffer.radioTools.lines[index].filename);
+      }
+      else {
+        g_moduleIdx = reusableBuffer.radioTools.lines[index].module;
+        pushMenu(reusableBuffer.radioTools.lines[index].exec);
       }
       break;
   }
