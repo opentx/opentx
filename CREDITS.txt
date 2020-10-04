@@ -1936,3 +1936,5 @@ Philip Hawkey
 Lonnie Misner
 Michael Hirschauer
 Brian Bracken
+Stuart Olson
+Terry McKinley
