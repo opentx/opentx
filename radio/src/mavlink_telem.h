@@ -25,10 +25,10 @@
 #define MAVLINK_COMM_NUM_BUFFERS      1 // 4
 #define MAVLINK_MAX_SIGNING_STREAMS   1 // 16
 
-#include "thirdparty/Mavlink/mavlink_types.h"
-//#include "thirdparty/Mavlink/common/mavlink.h"
+#include "thirdparty/Mavlink/out/mavlink_types.h"
 // checking for lost frames by analyzing seq won't work if we use common and not ardupilotmega
-#include "thirdparty/Mavlink/ardupilotmega/mavlink.h"
+#include "thirdparty/Mavlink/out/opentx/mavlink.h"
+
 
 #define MAVLINK_TELEM_MY_SYSID        254 //MissionPlanner is 255, QGroundControl is 255
 #define MAVLINK_TELEM_MY_COMPID       (MAV_COMP_ID_MISSIONPLANNER + 4) //191 I use for companion

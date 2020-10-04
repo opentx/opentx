@@ -25,7 +25,7 @@
 #include <stdio.h>
 #include "opentx.h"
 #include "lua_api.h"
-#include "thirdparty/Mavlink/common/mavlink.h"
+#include "thirdparty/Mavlink/out/opentx/mavlink.h"
 
 static int luaMavlinkGetVersion(lua_State * L)
 {
@@ -390,7 +390,6 @@ mavlink_message_t msg; // FIXME: should be a reference/pointer to save stack, bu
   { "MSG_ID_DEBUG_FLOAT_ARRAY", MAVLINK_MSG_ID_DEBUG_FLOAT_ARRAY }, \
   { "MSG_ID_ORBIT_EXECUTION_STATUS", MAVLINK_MSG_ID_ORBIT_EXECUTION_STATUS }, \
   { "MSG_ID_SMART_BATTERY_INFO", MAVLINK_MSG_ID_SMART_BATTERY_INFO }, \
-  { "MSG_ID_SMART_BATTERY_STATUS", MAVLINK_MSG_ID_SMART_BATTERY_STATUS }, \
   { "MSG_ID_ACTUATOR_OUTPUT_STATUS", MAVLINK_MSG_ID_ACTUATOR_OUTPUT_STATUS }, \
   { "MSG_ID_TIME_ESTIMATE_TO_TARGET", MAVLINK_MSG_ID_TIME_ESTIMATE_TO_TARGET }, \
   { "MSG_ID_TUNNEL", MAVLINK_MSG_ID_TUNNEL }, \
