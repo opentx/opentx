@@ -1,3 +1,6 @@
 [submodule "radio/src/thirdparty/libACCESS"]
 	path = radio/src/thirdparty/libACCESS
 	url = https://github.com/FrSkyRC/libACCESS.git
+[submodule "radio/src/thirdparty/Mavlink/mavlink"]
+	path = radio/src/thirdparty/Mavlink/mavlink
+	url = https://github.com/mavlink/mavlink.git
