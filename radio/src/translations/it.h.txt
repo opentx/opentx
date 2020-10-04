@@ -454,6 +454,7 @@
 #define TR_DISPLAY_TRIMS       TR("Mos. Trims", "Mostra Trims")
 #define TR_TTRACE              TR("So. motore", INDENT "Sorgente Motore")
 #define TR_TTRIM               TR("Trim Mot.", INDENT "Trim Motore")
+#define TR_TTRIM_SW            TR("T-Trim-Sw", INDENT "Trim switch")
 #define TR_BEEPCTR             TR("Beep al c.", "Beep al centro")
 #define TR_USE_GLOBAL_FUNCS    "Usa Funz. Globali"
 #if defined(PCBSKY9X) && defined(REVX)

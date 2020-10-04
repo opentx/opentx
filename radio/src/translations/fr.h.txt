@@ -452,6 +452,7 @@
 #define TR_DISPLAY_TRIMS               TR("Aff. trims", "Affichage trims")
 #define TR_TTRACE                      TR("Source gaz", INDENT "Source")
 #define TR_TTRIM                       TR("Trim gaz", INDENT "Trim ralenti uniq.")
+#define TR_TTRIM_SW                    TR("T-Trim-Sw", INDENT "Trim switch")
 #define TR_BEEPCTR                     TR("Bips centr", "Bips centrage")
 #define TR_USE_GLOBAL_FUNCS            TR("Fonc. glob.", "Fonctions globales")
 #if defined(PCBSKY9X) && defined(REVX)
