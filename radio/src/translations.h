@@ -855,7 +855,6 @@ extern const char STR_MIN[];
 extern const char STR_MAX[];
 extern const char STR_CURVE_PRESET[];
 extern const char STR_PRESET[];
-extern const char STR_MIRROR[];
 extern const char STR_CLEAR[];
 extern const char STR_RESET[];
 extern const char STR_COUNT[];
