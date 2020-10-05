@@ -39,15 +39,6 @@ const ZoneOption OPTIONS_LAYOUT_4P2[] = {
   { NULL, ZoneOption::Bool }
 };
 
-const Zone ZONES_LAYOUT_4P2[6] = {
-  { 240, 60, 192, 76 },
-  { 240, 142, 192, 76 },
-  { 48, 60, 180, 35 },
-  { 48, 102, 180, 35 },
-  { 48, 144, 180, 35 },
-  { 48, 186, 180, 35 },
-};
-
 class Layout4P2: public Layout
 {
   public:
