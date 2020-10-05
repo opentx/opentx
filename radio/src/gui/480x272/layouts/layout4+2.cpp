@@ -80,7 +80,7 @@ class Layout4P2: public Layout
       Zone zone;
       zone.x = IS_MIRRORED() ? ((index >= 4) ? (LCD_W - areaw) / 2 - 4 : 245) : ((index >= 4) ? 245 : (LCD_W - areaw) / 2 - 4);
       zone.h = (index >= 4) ?  (areah / 2) :  (areah / 4) - 2;
-      zone.y = (index >= 4) ? (HAS_TOPBAR() ? 52 : 6) + (index == 5 ? zone.h + 8: 0): (HAS_TOPBAR() ? 52 : 6) + (index % 4) * (zone.h + 6);
+      zone.y = (index >= 4) ? (HAS_TOPBAR() ? 52 : 6) + (index == 5 ? zone.h + (HAS_TRIMS() ? 10 : 8): 0): (HAS_TOPBAR() ? 52 : 6) + (index % 4) * (zone.h + 6);
       zone.w = areaw / 2;
 
       return zone;
