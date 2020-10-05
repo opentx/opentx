@@ -75,12 +75,12 @@ class Layout4P2: public Layout
     virtual Zone getZone(unsigned int index) const
     {
       coord_t areaw = LCD_W - (HAS_SLIDERS() ? 55 : 8) - (HAS_TRIMS() ? 55 : 8);
-      coord_t areah = LCD_H - 4 - (HAS_TOPBAR() ? 55 : 0) - (HAS_SLIDERS() ? 26 : 0) - (HAS_TRIMS() ? 26 : 0);
+      coord_t areah = LCD_H - 4 - (HAS_TOPBAR() ? 55 : 8) - (HAS_SLIDERS() ? 26 : 0) - (HAS_TRIMS() ? 26 : 0);
 
       Zone zone;
       zone.x = IS_MIRRORED() ? ((index >= 4) ? (LCD_W - areaw) / 2 - 4 : 245) : ((index >= 4) ? 245 : (LCD_W - areaw) / 2 - 4);
       zone.h = (index >= 4) ?  (areah / 2) :  (areah / 4) - 2;
-      zone.y = (index >= 4) ? (HAS_TOPBAR() ? 52 : 0) + (index == 5 ? zone.h + 8: 0): (HAS_TOPBAR() ? 52 : 0) + (index % 4) * (zone.h + 6);
+      zone.y = (index >= 4) ? (HAS_TOPBAR() ? 52 : 6) + (index == 5 ? zone.h + 8: 0): (HAS_TOPBAR() ? 52 : 6) + (index % 4) * (zone.h + 6);
       zone.w = areaw / 2;
 
       return zone;
