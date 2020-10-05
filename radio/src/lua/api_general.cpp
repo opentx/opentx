@@ -385,7 +385,7 @@ Return rotary encoder current speed
 
 @status current Introduced in 2.3.10
 */
-static int luGetRotEncSpeed(lua_State * L)
+static int luaGetRotEncSpeed(lua_State * L)
 {
 #if defined(ROTARY_ENCODER_NAVIGATION)
   lua_pushunsigned(L, rotencSpeed);
@@ -1700,7 +1700,7 @@ const luaL_Reg opentxLib[] = {
   { "getVersion", luaGetVersion },
   { "getGeneralSettings", luaGetGeneralSettings },
   { "getGlobalTimer", luaGetGlobalTimer },
-  { "getRotEncSpeed", luGetRotEncSpeed },
+  { "getRotEncSpeed", luaGetRotEncSpeed },
   { "getValue", luaGetValue },
   { "getRAS", luaGetRAS },
   { "getTxGPS", luaGetTxGPS },
