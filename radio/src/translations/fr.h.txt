@@ -452,6 +452,7 @@
 #define TR_DISPLAY_TRIMS               TR("Aff. trims", "Affichage trims")
 #define TR_TTRACE                      TR("Source gaz", INDENT "Source")
 #define TR_TTRIM                       TR("Trim gaz", INDENT "Trim ralenti uniq.")
+#define TR_TTRIM_SW                    TR("T-Trim-Sw", INDENT "Trim switch")
 #define TR_BEEPCTR                     TR("Bips centr", "Bips centrage")
 #define TR_USE_GLOBAL_FUNCS            TR("Fonc. glob.", "Fonctions globales")
 #if defined(PCBSKY9X) && defined(REVX)
@@ -731,7 +732,7 @@
 #define TR_16CH_WITHOUT_TELEMETRY      TR("16CH sans télém.", "16CH sans télémétrie")
 #define TR_16CH_WITH_TELEMETRY         TR("16CH avec télém.", "16CH avec télémétrie")
 #define TR_8CH_WITH_TELEMETRY          TR("8CH avec télém.", "8CH avec télémétrie")
-#define TR_EXT_ANTENNA                 "Antenne externe"
+#define TR_EXT_ANTENNA                 "Antenne Ext."
 #define TR_PIN                         "Pin"
 #define TR_UPDATE_RX_OPTIONS           "Sauver options RX?"
 #define TR_UPDATE_TX_OPTIONS           "Sauver options TX?"
@@ -850,8 +851,10 @@
 #define TR_FLASH_BOOTLOADER            "Flasher BootLoader"
 #define TR_FLASH_EXTERNAL_DEVICE       TR("Flasher S.Port", "Flasher S.Port externe")
 #define TR_FLASH_RECEIVER_OTA          "Flasher RX OTA"
-#define TR_FLASH_RECEIVER_OTA_BY_EXTERNAL "Flash RX by ext. OTA"
-#define TR_FLASH_RECEIVER_OTA_BY_INTERNAL "Flash RX by int. OTA"
+#define TR_FLASH_RECEIVER_BY_EXTERNAL_MODULE_OTA "Flash RX by ext. OTA"
+#define TR_FLASH_RECEIVER_BY_INTERNAL_MODULE_OTA "Flash RX by int. OTA"
+#define TR_FLASH_FLIGHT_CONTROLLER_BY_EXTERNAL_MODULE_OTA "Flash FC by ext. OTA"
+#define TR_FLASH_FLIGHT_CONTROLLER_BY_INTERNAL_MODULE_OTA "Flash FC by int. OTA"
 #define TR_FLASH_BLUETOOTH_MODULE      TR("Flash module BT", "Flash module Bluetooth")
 #define TR_FLASH_POWER_MANAGEMENT_UNIT "Flasher pwr mngt unit"
 #define TR_CURRENT_VERSION             "Version courante :"
@@ -1058,7 +1061,7 @@
 #define TR_LSW_HEADERS_V1              "V1"
 #define TR_LSW_HEADERS_V2              "V2"
 #define TR_LSW_HEADERS_ANDSW           "ET suppl."
-#define TR_LSW_HEADERS_DURATION        "Durée min."
+#define TR_LSW_HEADERS_DURATION        "Durée"
 #define TR_LSW_HEADERS_DELAY           "Délai"
 
 #define TR_GVAR_HEADERS_NAME           "Nom"
@@ -1384,3 +1387,7 @@
 #define ZSTR_VTX_PWR                   "VPwr"
 #define ZSTR_VTX_CHAN                  "VChn"
 #define ZSTR_VTX_BAND                  "VBan"
+#define ZSTR_SERVO_CURRENT             "SrvA"
+#define ZSTR_SERVO_VOLTAGE             "SrvV"
+#define ZSTR_SERVO_TEMPERATURE         "SrvT"
+#define ZSTR_SERVO_STATUS              "SrvS"

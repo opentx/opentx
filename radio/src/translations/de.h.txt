@@ -434,6 +434,7 @@
 #define TR_DISPLAY_TRIMS               TR("Trimanzeige", "Trimwerte anzeigen")
 #define TR_TTRACE                      TR("Gasquelle", INDENT "Gas-Timerquelle")
 #define TR_TTRIM 	       	           TR("Gastrim", INDENT "Gas-Leerlauftrim")
+#define TR_TTRIM_SW                    TR("T-Trim-Sw", INDENT "Trim switch")
 #define TR_BEEPCTR                     TR("MittePieps", "Mittelstell. -Pieps")
 #define TR_USE_GLOBAL_FUNCS            TR("Glob. Funkt.", "Globale Funkt verw.")
 #if defined(PCBSKY9X) && defined(REVX)
@@ -831,8 +832,10 @@
 #define TR_FLASH_BOOTLOADER            TR("Flash bootloader","Flash bootloader")      //
 #define TR_FLASH_EXTERNAL_DEVICE       TR("Flash ext. Gerät","Flash externes Gerät")
 #define TR_FLASH_RECEIVER_OTA          "Flash receiver OTA"
-#define TR_FLASH_RECEIVER_OTA_BY_EXTERNAL "Flash RX by ext. OTA"
-#define TR_FLASH_RECEIVER_OTA_BY_INTERNAL "Flash RX by int. OTA"
+#define TR_FLASH_RECEIVER_BY_EXTERNAL_MODULE_OTA "Flash RX by ext. OTA"
+#define TR_FLASH_RECEIVER_BY_INTERNAL_MODULE_OTA "Flash RX by int. OTA"
+#define TR_FLASH_FLIGHT_CONTROLLER_BY_EXTERNAL_MODULE_OTA "Flash FC by ext. OTA"
+#define TR_FLASH_FLIGHT_CONTROLLER_BY_INTERNAL_MODULE_OTA "Flash FC by int. OTA"
 #define TR_FLASH_BLUETOOTH_MODULE      TR("Flash BT module", "Flash Bluetoothmodul")
 #define TR_FLASH_POWER_MANAGEMENT_UNIT TR("Flash pwr mngt unit", "Flash power management unit")
 #define TR_CURRENT_VERSION             TR("Current vers. ", "Current version: ")
@@ -1053,7 +1056,7 @@
 #define TR_LSW_HEADERS_V1              "V1"
 #define TR_LSW_HEADERS_V2              "V2"
 #define TR_LSW_HEADERS_ANDSW           "UND Schalter"
-#define TR_LSW_HEADERS_DURATION        "Min Dauer"
+#define TR_LSW_HEADERS_DURATION        "Dauer"
 #define TR_LSW_HEADERS_DELAY           "Verzögerung"
 
 #define TR_GVAR_HEADERS_NAME           "Name"
@@ -1363,3 +1366,7 @@
 #define ZSTR_VTX_PWR                   "VPwr"
 #define ZSTR_VTX_CHAN                  "VChn"
 #define ZSTR_VTX_BAND                  "VBan"
+#define ZSTR_SERVO_CURRENT             "SrvA"
+#define ZSTR_SERVO_VOLTAGE             "SrvV"
+#define ZSTR_SERVO_TEMPERATURE         "SrvT"
+#define ZSTR_SERVO_STATUS              "SrvS"

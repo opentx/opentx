@@ -432,6 +432,7 @@
 #define TR_DISPLAY_TRIMS       "Ver trims"
 #define TR_TTRACE              TR("Fuente-A", INDENT "Fuente acelerador")
 #define TR_TTRIM               TR("Trim-A", INDENT "Trim acelerador")
+#define TR_TTRIM_SW            TR("T-Trim-Sw", INDENT "Trim switch")
 #define TR_BEEPCTR             TR("Beep ctr", "Beep centro")
 #define TR_USE_GLOBAL_FUNCS    TR("Funcs. glob.", "Usar func. globales")
 #if defined(PCBSKY9X) && defined(REVX)
@@ -832,8 +833,10 @@
 #define TR_FLASH_BOOTLOADER            "Flash bootloader"
 #define TR_FLASH_EXTERNAL_DEVICE       "Flash disp. externo"
 #define TR_FLASH_RECEIVER_OTA          "Flash RX OTA"
-#define TR_FLASH_RECEIVER_OTA_BY_EXTERNAL "Flash RX por ext. OTA"
-#define TR_FLASH_RECEIVER_OTA_BY_INTERNAL "Flash RX por int. OTA"
+#define TR_FLASH_RECEIVER_BY_EXTERNAL_MODULE_OTA "Flash RX por ext. OTA"
+#define TR_FLASH_RECEIVER_BY_INTERNAL_MODULE_OTA "Flash RX por int. OTA"
+#define TR_FLASH_FLIGHT_CONTROLLER_BY_EXTERNAL_MODULE_OTA "Flash FC by ext. OTA"
+#define TR_FLASH_FLIGHT_CONTROLLER_BY_INTERNAL_MODULE_OTA "Flash FC by int. OTA"
 #define TR_FLASH_BLUETOOTH_MODULE      TR("Flash módulo BT", "Flash módulo bluetooth")
 #define TR_FLASH_POWER_MANAGEMENT_UNIT "Flash unid. pwr mngt"
 #define TR_CURRENT_VERSION             TR("Vers. actual", "Versión actual: ")
@@ -1359,3 +1362,7 @@
 #define ZSTR_VTX_PWR                   "VPwr"
 #define ZSTR_VTX_CHAN                  "VChn"
 #define ZSTR_VTX_BAND                  "VBan"
+#define ZSTR_SERVO_CURRENT             "SrvA"
+#define ZSTR_SERVO_VOLTAGE             "SrvV"
+#define ZSTR_SERVO_TEMPERATURE         "SrvT"
+#define ZSTR_SERVO_STATUS              "SrvS"

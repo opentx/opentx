@@ -94,7 +94,11 @@ const FrSkySportSensor sportSensors[] = {
   { RB3040_CH5_6_FIRST_ID, RB3040_CH5_6_LAST_ID, 1, ZSTR_RB3040_CHANNEL6, UNIT_AMPS, 2 },
   { RB3040_CH7_8_FIRST_ID, RB3040_CH7_8_LAST_ID, 0, ZSTR_RB3040_CHANNEL7, UNIT_AMPS, 2 },
   { RB3040_CH7_8_FIRST_ID, RB3040_CH7_8_LAST_ID, 1, ZSTR_RB3040_CHANNEL8, UNIT_AMPS, 2 },
-  { 0, 0, 0, NULL, UNIT_RAW, 0 } // sentinel
+  { SERVO_FIRST_ID, SERVO_LAST_ID, 0, ZSTR_SERVO_CURRENT, UNIT_AMPS, 1 },
+  { SERVO_FIRST_ID, SERVO_LAST_ID, 1, ZSTR_SERVO_VOLTAGE, UNIT_VOLTS, 1 },
+  { SERVO_FIRST_ID, SERVO_LAST_ID, 2, ZSTR_SERVO_TEMPERATURE, UNIT_CELSIUS, 0 },
+  { SERVO_FIRST_ID, SERVO_LAST_ID, 3, ZSTR_SERVO_STATUS, UNIT_TEXT, 0 },
+  { 0, 0, 0, nullptr, UNIT_RAW, 0 } // sentinel
 };
 
 const FrSkySportSensor * getFrSkySportSensor(uint16_t id, uint8_t subId=0)
@@ -110,13 +114,13 @@ const FrSkySportSensor * getFrSkySportSensor(uint16_t id, uint8_t subId=0)
 bool checkSportPacket(const uint8_t * packet)
 {
   short crc = 0;
-  for (int i=1; i<FRSKY_SPORT_PACKET_SIZE; ++i) {
+  for (int i = 1; i < FRSKY_SPORT_PACKET_SIZE; ++i) {
     crc += packet[i]; // 0-1FE
-    crc += crc >> 8;  // 0-1FF
-    crc &= 0x00ff;    // 0-FF
+    crc += crc >> 8u;  // 0-1FF
+    crc &= 0x00FFu;    // 0-FF
   }
   // TRACE("crc: 0x%02x", crc);
-  return (crc == 0x00ff);
+  return crc == 0x00FF;
 }
 
 #define SPORT_DATA_U8(packet)   (packet[4])
@@ -137,15 +141,15 @@ void sportProcessTelemetryPacket(uint16_t id, uint8_t subId, uint8_t instance, u
     precision = sensor->prec;
   }
   if (unit == UNIT_CELLS) {
-    uint8_t cellsCount = (data & 0xF0) >> 4;
-    uint8_t cellIndex = (data & 0x0F);
+    uint8_t cellsCount = (data & 0xF0u) >> 4u;
+    uint8_t cellIndex = (data & 0x0Fu);
     if (cellIndex >= MAX_CELLS)
       return;
-    uint32_t mask = (cellsCount << 24) + (cellIndex << 16);
-    setTelemetryValue(PROTOCOL_TELEMETRY_FRSKY_SPORT, id, subId, instance, mask + (((data & 0x000FFF00) >> 8) / 5), unit, precision);
-    if (cellIndex+1 < cellsCount) {
-      mask += (1 << 16);
-      setTelemetryValue(PROTOCOL_TELEMETRY_FRSKY_SPORT, id, subId, instance, mask + (((data & 0xFFF00000) >> 20) / 5), unit, precision);
+    uint32_t mask = (cellsCount << 24u) + (cellIndex << 16u);
+    setTelemetryValue(PROTOCOL_TELEMETRY_FRSKY_SPORT, id, subId, instance, mask + (((data & 0x000FFF00u) >> 8u) / 5), unit, precision);
+    if (cellIndex + 1 < cellsCount) {
+      mask += (1 << 16u);
+      setTelemetryValue(PROTOCOL_TELEMETRY_FRSKY_SPORT, id, subId, instance, mask + (((data & 0xFFF00000u) >> 20u) / 5), unit, precision);
     }
   }
   else {
@@ -219,7 +223,7 @@ void sportProcessTelemetryPacketWithoutCrc(uint8_t origin, const uint8_t * packe
       }
 #if defined(MULTIMODULE)
       if (telemetryProtocol == PROTOCOL_TELEMETRY_MULTIMODULE) {
-        sportProcessTelemetryPacket(TX_RSSI_ID, 0, instance, packet[5] >> 1, UNIT_DB);
+        sportProcessTelemetryPacket(TX_RSSI_ID, 0, instance, packet[5] >> 1u, UNIT_DB);
         sportProcessTelemetryPacket(TX_LQI_ID, 0, instance, packet[7], UNIT_RAW);
       }
 #endif
@@ -263,40 +267,40 @@ void sportProcessTelemetryPacketWithoutCrc(uint8_t origin, const uint8_t * packe
 
         if (dataId >= GPS_LONG_LATI_FIRST_ID && dataId <= GPS_LONG_LATI_LAST_ID) {
           int32_t value = (data & 0x3fffffff);
-          if (data & (1 << 30))
+          if (data & (1 << 30u))
             value = -value;
           value = (value * 5) / 3; // min/10000 => deg/1000000
-          if (data & (1 << 31))
+          if (data & (1 << 31u))
             sportProcessTelemetryPacket(dataId, 0, instance, value, UNIT_GPS_LONGITUDE);
           else
             sportProcessTelemetryPacket(dataId, 0, instance, value, UNIT_GPS_LATITUDE);
         }
         else if (dataId >= RBOX_BATT1_FIRST_ID && dataId <= RBOX_BATT2_LAST_ID) {
-          sportProcessTelemetryPacket(dataId, 0, instance, data & 0xffff);
-          sportProcessTelemetryPacket(dataId, 1, instance, data >> 16);
+          sportProcessTelemetryPacket(dataId, 0, instance, data & 0xFFFFu);
+          sportProcessTelemetryPacket(dataId, 1, instance, data >> 16u);
         }
         else if (dataId >= RBOX_CNSP_FIRST_ID && dataId <= RBOX_CNSP_LAST_ID) {
-          sportProcessTelemetryPacket(dataId, 0, instance, data & 0xffff);
-          sportProcessTelemetryPacket(dataId, 1, instance, data >> 16);
+          sportProcessTelemetryPacket(dataId, 0, instance, data & 0xFFFFu);
+          sportProcessTelemetryPacket(dataId, 1, instance, data >> 16u);
         }
         else if (dataId >= RBOX_STATE_FIRST_ID && dataId <= RBOX_STATE_LAST_ID) {
           bool static isRB10 = false;
           uint16_t newServosState;
 
-          if (servosState == 0 && (data & 0xff00) == 0xff00) {
+          if (servosState == 0 && (data & 0xFF00u) == 0xFF00u) {
             isRB10 = true;
           }
           if (isRB10) {
-            newServosState = data & 0x00ff; // 8ch only RB10
+            newServosState = data & 0x00FFu; // 8ch only RB10
           }
           else {
-            newServosState = data & 0xffff;
+            newServosState = data & 0xFFFFu;
           }
           if (newServosState != 0 && servosState == 0) {
             audioEvent(AU_SERVO_KO);
           }
-          uint16_t newRboxState = data >> 16;
-          if ((newRboxState & 0x07) && (rboxState & 0x07) == 0) {
+          uint16_t newRboxState = data >> 16u;
+          if ((newRboxState & 0x07u) && (rboxState & 0x07u) == 0) {
             audioEvent(AU_RX_OVERLOAD);
           }
           servosState = newServosState;
@@ -305,19 +309,19 @@ void sportProcessTelemetryPacketWithoutCrc(uint8_t origin, const uint8_t * packe
           sportProcessTelemetryPacket(dataId, 1, instance, rboxState);
         }
         else if (dataId >= ESC_POWER_FIRST_ID && dataId <= ESC_POWER_LAST_ID) {
-          sportProcessTelemetryPacket(dataId, 0, instance, data & 0xffff);
-          sportProcessTelemetryPacket(dataId, 1, instance, data >> 16);
+          sportProcessTelemetryPacket(dataId, 0, instance, data & 0xFFFFu);
+          sportProcessTelemetryPacket(dataId, 1, instance, data >> 16u);
         }
         else if (dataId >= ESC_RPM_CONS_FIRST_ID && dataId <= ESC_RPM_CONS_LAST_ID) {
-          sportProcessTelemetryPacket(dataId, 0, instance, 100 * (data & 0xffff));
-          sportProcessTelemetryPacket(dataId, 1, instance, data >> 16);
+          sportProcessTelemetryPacket(dataId, 0, instance, 100 * (data & 0xFFFFu));
+          sportProcessTelemetryPacket(dataId, 1, instance, data >> 16u);
         }
         else if (dataId >= ESC_TEMPERATURE_FIRST_ID && dataId <= ESC_TEMPERATURE_LAST_ID) {
-          sportProcessTelemetryPacket(dataId, 0, instance, data & 0x00ff);
+          sportProcessTelemetryPacket(dataId, 0, instance, data & 0x00FFu);
         }
         else if (dataId >= SBEC_POWER_FIRST_ID && dataId <= SBEC_POWER_LAST_ID) {
-          sportProcessTelemetryPacket(dataId, 0, instance, (data & 0xffff) / 10);
-          sportProcessTelemetryPacket(dataId, 1, instance, (data >> 16) / 10);
+          sportProcessTelemetryPacket(dataId, 0, instance, (data & 0xFFFFu) / 10);
+          sportProcessTelemetryPacket(dataId, 1, instance, (data >> 16u) / 10);
         }
         else if (dataId >= DIY_STREAM_FIRST_ID && dataId <= DIY_STREAM_LAST_ID) {
 #if defined(LUA)
@@ -334,8 +338,19 @@ void sportProcessTelemetryPacketWithoutCrc(uint8_t origin, const uint8_t * packe
 #endif
         }
         else if (dataId >= RB3040_CH1_2_FIRST_ID && dataId <= RB3040_CH7_8_LAST_ID) {
-          sportProcessTelemetryPacket(dataId, 0, instance, data & 0xffff);
-          sportProcessTelemetryPacket(dataId, 1, instance, (data >> 16u) & 0xffff);
+          sportProcessTelemetryPacket(dataId, 0, instance, data & 0xFFFFu);
+          sportProcessTelemetryPacket(dataId, 1, instance, (data >> 16u) & 0xFFFFu);
+        }
+        else if (dataId >= SERVO_FIRST_ID && dataId <= SERVO_LAST_ID) {
+          sportProcessTelemetryPacket(dataId, 0, instance, data & 0xFFu);
+          sportProcessTelemetryPacket(dataId, 1, instance, (data >> 8u) & 0xFFu);
+          sportProcessTelemetryPacket(dataId, 2, instance, (data >> 16u) & 0xFFu);
+          uint8_t newServosState = data >> 24u;
+          setTelemetryText(PROTOCOL_TELEMETRY_FRSKY_SPORT, dataId, 3, instance, newServosState ? "STALL" : "OK");
+          if (newServosState != 0 && servosState == 0) {
+            audioEvent(AU_SERVO_KO);
+            servosState = newServosState;
+          }
         }
         else {
           sportProcessTelemetryPacket(dataId, 0, instance, data);

@@ -460,6 +460,8 @@ extern int8_t s_copySrcRow;
 extern int8_t s_copyTgtOfs;
 extern uint8_t s_currIdx;
 extern uint8_t s_currIdxSubMenu;
+extern uint16_t s_currSrcRaw;
+extern uint16_t s_currScale;
 extern int8_t s_currCh;
 extern uint8_t s_copySrcIdx;
 extern uint8_t s_copySrcCh;
@@ -626,6 +628,7 @@ void readModelNotes();
 
 typedef int (*FnFuncP) (int x);
 void drawFunction(FnFuncP fn, int x, int y, int width);
+void drawCursor(FnFuncP fn);
 
 void onSourceLongEnterPress(const char *result);
 

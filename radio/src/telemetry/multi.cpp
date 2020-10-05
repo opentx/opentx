@@ -21,7 +21,7 @@
 #include "telemetry.h"
 #include "multi.h"
 
-constexpr int32_t MULTI_DESIRED_VERSION = (1 << 24) | (3 << 16) | (1 << 8)  | 1;
+constexpr int32_t MULTI_DESIRED_VERSION = (1 << 24) | (3 << 16) | (1 << 8)  | 69;
 #define MULTI_CHAN_BITS 11
 
 extern uint8_t g_moduleIdx;

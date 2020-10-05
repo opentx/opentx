@@ -86,11 +86,8 @@ void processGhostTelemetryValue(uint8_t index, int32_t value)
 
 void processGhostTelemetryValueString(const GhostSensor * sensor, const char * str)
 {
-  int i = 0;
   if (TELEMETRY_STREAMING()) {
-    do {
-      setTelemetryValue(PROTOCOL_TELEMETRY_GHOST, sensor->id, 0, 0, str[i], UNIT_TEXT, i);
-    } while (str[i++] != 0);
+    setTelemetryText(PROTOCOL_TELEMETRY_GHOST, sensor->id, 0, 0, str);
   }
 }
 

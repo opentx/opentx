@@ -454,6 +454,7 @@
 #define TR_DISPLAY_TRIMS       TR("Mos. Trims", "Mostra Trims")
 #define TR_TTRACE              TR("So. motore", INDENT "Sorgente Motore")
 #define TR_TTRIM               TR("Trim Mot.", INDENT "Trim Motore")
+#define TR_TTRIM_SW            TR("T-Trim-Sw", INDENT "Trim switch")
 #define TR_BEEPCTR             TR("Beep al c.", "Beep al centro")
 #define TR_USE_GLOBAL_FUNCS    "Usa Funz. Globali"
 #if defined(PCBSKY9X) && defined(REVX)
@@ -847,23 +848,25 @@
 #define TR_MIXERS_MONITOR      "MONITOR MIXER"
 #define TR_PATH_TOO_LONG       "Path troppo lungo"
 #define TR_VIEW_TEXT           "Vedi testo"
-#define TR_FLASH_BOOTLOADER    "Prog. bootloader"
-#define TR_FLASH_EXTERNAL_DEVICE "Progr. dispositivo Esterno"
-#define TR_FLASH_RECEIVER_OTA          TR("Prog. RX OTA", INDENT "Prog. ricevente OTA")
-#define TR_FLASH_RECEIVER_OTA_BY_EXTERNAL "Flash RX by ext. OTA"
-#define TR_FLASH_RECEIVER_OTA_BY_INTERNAL "Flash RX by int. OTA"
+#define TR_FLASH_BOOTLOADER            TR("Prog. bootloader", "Programma bootloader")
+#define TR_FLASH_EXTERNAL_DEVICE       TR("Prog. disp. est.", "Programma dispositivo esterno")
+#define TR_FLASH_RECEIVER_OTA          TR("Prog. RX OTA", INDENT "Programma RX OTA")
+#define TR_FLASH_RECEIVER_BY_EXTERNAL_MODULE_OTA          TR("Prog. RX da OTA est.", INDENT "Prog. RX da OTA esterno")
+#define TR_FLASH_RECEIVER_BY_INTERNAL_MODULE_OTA          TR("Prog. RX da OTA int.", INDENT "Prog. RX da OTA interno")
+#define TR_FLASH_FLIGHT_CONTROLLER_BY_EXTERNAL_MODULE_OTA TR("Prog. FC da OTA est.", INDENT "Prog. FC da OTA esterno")
+#define TR_FLASH_FLIGHT_CONTROLLER_BY_INTERNAL_MODULE_OTA TR("Prog. FC da OTA int.", INDENT "Prog. FC da OTA interno")
 #define TR_FLASH_BLUETOOTH_MODULE      TR("Prog. mod. BT", INDENT "Prog. modulo Bluetooth")
-#define TR_FLASH_POWER_MANAGEMENT_UNIT TR("Prog. PMU", "Program. PMU")
+#define TR_FLASH_POWER_MANAGEMENT_UNIT TR("Prog. PMU", "Programma PMU")
 #define TR_CURRENT_VERSION             TR("Vers. currente ", "Versione corrente: ")
-#define TR_FLASH_INTERNAL_MODULE       "Progr. modulo int."
-#define TR_FLASH_EXTERNAL_MODULE       "Progr. modulo est."
-#define TR_FLASH_INTERNAL_MULTI        "Prog. Multi int."
-#define TR_FLASH_EXTERNAL_MULTI        "Prog. Multi est."
+#define TR_FLASH_INTERNAL_MODULE       TR("Prog. modulo int.", "Programma modulo interno")
+#define TR_FLASH_EXTERNAL_MODULE       TR("Prog. modulo est.", "Programma modulo esterno")
+#define TR_FLASH_INTERNAL_MULTI        TR("Prog. MULTI int.", "Programma MULTI interno")
+#define TR_FLASH_EXTERNAL_MULTI        TR("Prog. MULTI est.", "Programma MULTI esterno")
 #define TR_FIRMWARE_UPDATE_ERROR TR(INDENT "Errore agg. FW",INDENT "Errore aggiornamento firmware")
 #define TR_FIRMWARE_UPDATE_SUCCESS     "Aggiornamento" BREAKSPACE "riuscito"
 #define TR_WRITING             "Scrittura..."
-#define TR_CONFIRM_FORMAT      "Confermi Formattazione?"
-#define TR_INTERNALRF          "Modulo Interno"
+#define TR_CONFIRM_FORMAT      "Confermi formattazione?"
+#define TR_INTERNALRF          "Modulo interno"
 #define TR_INTERNAL_MODULE             TR("Modulo int.", "Modulo interno")
 #define TR_EXTERNAL_MODULE             TR("Modulo est.", "Modulo esterno")
 #define TR_OPENTX_UPGRADE_REQUIRED     "OpenTX richiede aggiornamento"
@@ -880,8 +883,8 @@
 #define TR_HOLD_UPPERCASE              "HOLD"
 #define TR_NONE                "None"
 #define TR_NONE_UPPERCASE              "NONE"
-#define TR_MENUSENSOR          "SENSOR"
-#define TR_POWERMETER_PEAK             "Peak"
+#define TR_MENUSENSOR          "SENSORE"
+#define TR_POWERMETER_PEAK             "Picco"
 #define TR_POWERMETER_POWER            "Potenza"
 #define TR_POWERMETER_ATTN             "Att."
 #define TR_POWERMETER_FREQ             "Freq."
@@ -894,7 +897,7 @@
 #define TR_COUNTRYCODE         TR("Cod. Paese", "Codice del Paese")
 #define TR_USBMODE             "Modo USB"
 #define TR_JACKMODE            "Modo JACK"
-#define TR_VOICELANG           "Lingua Voce"
+#define TR_VOICELANG           "Lingua vocale"
 #define TR_UNITSSYSTEM         "Unità"
 #define TR_EDIT                "Modifica"
 #define TR_INSERT_BEFORE       "Inserisci prima"
@@ -1377,3 +1380,7 @@
 #define ZSTR_VTX_PWR                   "VPwr"
 #define ZSTR_VTX_CHAN                  "VChn"
 #define ZSTR_VTX_BAND                  "VBan"
+#define ZSTR_SERVO_CURRENT             "SrvA"
+#define ZSTR_SERVO_VOLTAGE             "SrvV"
+#define ZSTR_SERVO_TEMPERATURE         "SrvT"
+#define ZSTR_SERVO_STATUS              "SrvS"

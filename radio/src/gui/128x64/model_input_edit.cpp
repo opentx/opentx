@@ -21,7 +21,6 @@
 #include "opentx.h"
 
 #define EXPO_ONE_2ND_COLUMN (7*FW+3*FW+2)
-#define EXPO_ONE_FM_WIDTH   (5*FW)
 
 int expoFn(int x)
 {
@@ -29,28 +28,6 @@ int expoFn(int x)
   int16_t anas[MAX_INPUTS] = {0};
   applyExpos(anas, e_perout_mode_inactive_flight_mode, ed->srcRaw, x);
   return anas[ed->chn];
-}
-
-void drawFunction(FnFuncP fn, uint8_t offset)
-{
-  lcdDrawVerticalLine(CURVE_CENTER_X-offset, 0/*TODO CURVE_CENTER_Y-CURVE_SIDE_WIDTH*/, CURVE_SIDE_WIDTH*2, 0xee);
-  lcdDrawHorizontalLine(CURVE_CENTER_X-CURVE_SIDE_WIDTH-offset, CURVE_CENTER_Y, CURVE_SIDE_WIDTH*2, 0xee);
-
-  coord_t prev_yv = (coord_t)-1;
-
-  for (int xv=-CURVE_SIDE_WIDTH; xv<=CURVE_SIDE_WIDTH; xv++) {
-    coord_t yv = (LCD_H-1) - (((uint16_t)RESX + fn(xv * (RESX/CURVE_SIDE_WIDTH))) / 2 * (LCD_H-1) / RESX);
-    if (prev_yv != (coord_t)-1) {
-      if (abs((int8_t)yv-prev_yv) <= 1) {
-        lcdDrawPoint(CURVE_CENTER_X+xv-offset-1, prev_yv, FORCE);
-      }
-      else {
-        uint8_t tmp = (prev_yv < yv ? 0 : 1);
-        lcdDrawSolidVerticalLine(CURVE_CENTER_X+xv-offset-1, yv+tmp, prev_yv-yv);
-      }
-    }
-    prev_yv = yv;
-  }
 }
 
 enum ExposFields {
@@ -113,13 +90,15 @@ void menuModelExpoOne(event_t event)
       case EXPO_FIELD_SOURCE:
         lcdDrawTextAlignedLeft(y, STR_SOURCE);
         drawSource(EXPO_ONE_2ND_COLUMN, y, ed->srcRaw, RIGHT|STREXPANDED|attr);
-        if (attr) ed->srcRaw = checkIncDec(event, ed->srcRaw, INPUTSRC_FIRST, INPUTSRC_LAST, EE_MODEL|INCDEC_SOURCE|NO_INCDEC_MARKS, isSourceAvailableInInputs);
+        if (attr)
+          ed->srcRaw = checkIncDec(event, ed->srcRaw, INPUTSRC_FIRST, INPUTSRC_LAST, EE_MODEL|INCDEC_SOURCE|NO_INCDEC_MARKS, isSourceAvailableInInputs);
         break;
 
       case EXPO_FIELD_SCALE:
         lcdDrawTextAlignedLeft(y, STR_SCALE);
         drawSensorCustomValue(EXPO_ONE_2ND_COLUMN, y, (ed->srcRaw - MIXSRC_FIRST_TELEM)/3, convertTelemValue(ed->srcRaw - MIXSRC_FIRST_TELEM + 1, ed->scale),  RIGHT | attr);
-        if (attr) ed->scale = checkIncDec(event, ed->scale, 0, maxTelemValue(ed->srcRaw - MIXSRC_FIRST_TELEM + 1), EE_MODEL);
+        if (attr)
+          ed->scale = checkIncDec(event, ed->scale, 0, maxTelemValue(ed->srcRaw - MIXSRC_FIRST_TELEM + 1), EE_MODEL);
         break;
 
       case EXPO_FIELD_WEIGHT:
@@ -159,34 +138,20 @@ void menuModelExpoOne(event_t event)
         break;
 
       case EXPO_FIELD_TRIM:
-        uint8_t not_stick = (ed->srcRaw > MIXSRC_Ail);
+        uint8_t notStick = (ed->srcRaw > MIXSRC_Ail);
         int8_t carryTrim = -ed->carryTrim;
         lcdDrawTextAlignedLeft(y, STR_TRIM);
-        lcdDrawTextAtIndex(EXPO_ONE_2ND_COLUMN, y, STR_VMIXTRIMS, (not_stick && carryTrim == 0) ? 0 : carryTrim+1, RIGHT | (menuHorizontalPosition==0 ? attr : 0));
-        if (attr) ed->carryTrim = -checkIncDecModel(event, carryTrim, not_stick ? TRIM_ON : -TRIM_OFF, -TRIM_LAST);
+        lcdDrawTextAtIndex(EXPO_ONE_2ND_COLUMN, y, STR_VMIXTRIMS, (notStick && carryTrim == 0) ? 0 : carryTrim+1, RIGHT | (menuHorizontalPosition==0 ? attr : 0));
+        if (attr)
+          ed->carryTrim = -checkIncDecModel(event, carryTrim, notStick ? TRIM_ON : -TRIM_OFF, -TRIM_LAST);
         break;
     }
     y += FH;
   }
 
   drawFunction(expoFn);
-
-  int x512 = getValue(ed->srcRaw);
-  if (ed->srcRaw >= MIXSRC_FIRST_TELEM) {
-    drawSensorCustomValue(LCD_W-FW, 6*FH, (ed->srcRaw - MIXSRC_FIRST_TELEM) / 3, x512, 0);
-    if (ed->scale > 0) x512 = (x512 * 1024) / convertTelemValue(ed->srcRaw - MIXSRC_FIRST_TELEM + 1, ed->scale);
-  }
-  else {
-    lcdDrawNumber(LCD_W-FW, 6*FH, calcRESXto1000(x512), RIGHT | PREC1);
-  }
-  x512 = limit(-1024, x512, 1024);
-  int y512 = expoFn(x512);
-  y512 = limit(-1024, y512, 1024);
-  lcdDrawNumber(CURVE_CENTER_X-FWNUM, 1*FH, calcRESXto1000(y512), RIGHT | PREC1);
-
-  x512 = CURVE_CENTER_X+x512/(RESX/CURVE_SIDE_WIDTH);
-  y512 = (LCD_H-1) - ((y512+RESX)/2) * (LCD_H-1) / RESX;
-
-  lcdDrawSolidVerticalLine(x512, y512-3, 3*2+1);
-  lcdDrawSolidHorizontalLine(x512-3, y512, 3*2+1);
+  // those parameters are global so that they can be reused in the curve edit screen
+  s_currSrcRaw = ed->srcRaw;
+  s_currScale = ed->scale;
+  drawCursor(expoFn);
 }

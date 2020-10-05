@@ -432,6 +432,7 @@
 #define TR_DISPLAY_TRIMS               TR3("Číslo v Trm", "Zobr.hodnotu trimu", "Číslo v liště trimu")
 #define TR_TTRACE                      TR("StopaPlynu", INDENT "Stopa plynu")
 #define TR_TTRIM                       TR3("TrimVolnob.", INDENT "Trim jen volnoběh", "Trim jen pro volnoběh")
+#define TR_TTRIM_SW                    TR("T-Trim-Sw", INDENT "Trim switch")
 #define TR_BEEPCTR                     TR3("Středy \221\222", "Pípat středy \221\222", "Pípat středy")
 #define TR_USE_GLOBAL_FUNCS            TR("Glob.Funkce", "Použít Glob.Funkce")
 #if defined(PCBSKY9X) && defined(REVX)
@@ -829,8 +830,10 @@
 #define TR_FLASH_BOOTLOADER            "Flash bootloaderu"
 #define TR_FLASH_EXTERNAL_DEVICE       TR("Flash S.Portem", "Flash S.Portem")
 #define TR_FLASH_RECEIVER_OTA          "Flash příjímače OTA"
-#define TR_FLASH_RECEIVER_OTA_BY_EXTERNAL "Flash RX by ext. OTA"
-#define TR_FLASH_RECEIVER_OTA_BY_INTERNAL "Flash RX by int. OTA"
+#define TR_FLASH_RECEIVER_BY_EXTERNAL_MODULE_OTA "Flash RX by ext. OTA"
+#define TR_FLASH_RECEIVER_BY_INTERNAL_MODULE_OTA "Flash RX by int. OTA"
+#define TR_FLASH_FLIGHT_CONTROLLER_BY_EXTERNAL_MODULE_OTA "Flash FC by ext. OTA"
+#define TR_FLASH_FLIGHT_CONTROLLER_BY_INTERNAL_MODULE_OTA "Flash FC by int. OTA"
 #define TR_FLASH_BLUETOOTH_MODULE      TR("Flash modulu BT", "Flash modulu Bluetooth")
 #define TR_FLASH_POWER_MANAGEMENT_UNIT TR("Flash řízení spotř.", "Flash jednotky řízení spotřeby")
 #define TR_CURRENT_VERSION             TR("Současná ver. ", "Současná verze: ")
@@ -1356,3 +1359,7 @@
 #define ZSTR_VTX_PWR                   "VPwr"
 #define ZSTR_VTX_CHAN                  "VChn"
 #define ZSTR_VTX_BAND                  "VBan"
+#define ZSTR_SERVO_CURRENT             "SrvA"
+#define ZSTR_SERVO_VOLTAGE             "SrvV"
+#define ZSTR_SERVO_TEMPERATURE         "SrvT"
+#define ZSTR_SERVO_STATUS              "SrvS"

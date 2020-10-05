@@ -247,10 +247,16 @@ void onSdManagerMenu(const char * result)
   }
 #endif
 #if defined(PXX2)
-  else if (result == STR_FLASH_RECEIVER_OTA_BY_INTERNAL || result == STR_FLASH_RECEIVER_OTA_BY_EXTERNAL) {
+  else if (result == STR_FLASH_RECEIVER_BY_INTERNAL_MODULE_OTA || result == STR_FLASH_RECEIVER_BY_EXTERNAL_MODULE_OTA) {
     memclear(&reusableBuffer.sdManager.otaUpdateInformation, sizeof(OtaUpdateInformation));
     getSelectionFullPath(reusableBuffer.sdManager.otaUpdateInformation.filename);
-    reusableBuffer.sdManager.otaUpdateInformation.module = result == STR_FLASH_RECEIVER_OTA_BY_INTERNAL ? INTERNAL_MODULE : EXTERNAL_MODULE;
+    reusableBuffer.sdManager.otaUpdateInformation.module = (result == STR_FLASH_RECEIVER_BY_INTERNAL_MODULE_OTA ? INTERNAL_MODULE : EXTERNAL_MODULE);
+    moduleState[reusableBuffer.sdManager.otaUpdateInformation.module].startBind(&reusableBuffer.sdManager.otaUpdateInformation, onUpdateStateChanged);
+  }
+  else if (result == STR_FLASH_FLIGHT_CONTROLLER_BY_INTERNAL_MODULE_OTA || result == STR_FLASH_FLIGHT_CONTROLLER_BY_EXTERNAL_MODULE_OTA) {
+    memclear(&reusableBuffer.sdManager.otaUpdateInformation, sizeof(OtaUpdateInformation));
+    getSelectionFullPath(reusableBuffer.sdManager.otaUpdateInformation.filename);
+    reusableBuffer.sdManager.otaUpdateInformation.module = (result == STR_FLASH_FLIGHT_CONTROLLER_BY_INTERNAL_MODULE_OTA ? INTERNAL_MODULE : EXTERNAL_MODULE);
     moduleState[reusableBuffer.sdManager.otaUpdateInformation.module].startBind(&reusableBuffer.sdManager.otaUpdateInformation, onUpdateStateChanged);
   }
 #endif
@@ -390,9 +396,13 @@ bool menuRadioSdManager(event_t _event)
 #if defined(PXX2)
               if (information.productFamily == FIRMWARE_FAMILY_RECEIVER) {
                 if (isReceiverOTAEnabledFromModule(INTERNAL_MODULE, information.productId))
-                  POPUP_MENU_ADD_ITEM(STR_FLASH_RECEIVER_OTA_BY_INTERNAL);
+                  POPUP_MENU_ADD_ITEM(STR_FLASH_RECEIVER_BY_INTERNAL_MODULE_OTA);
                 if (isReceiverOTAEnabledFromModule(EXTERNAL_MODULE, information.productId))
-                  POPUP_MENU_ADD_ITEM(STR_FLASH_RECEIVER_OTA_BY_EXTERNAL);
+                  POPUP_MENU_ADD_ITEM(STR_FLASH_RECEIVER_BY_EXTERNAL_MODULE_OTA);
+              }
+              if (information.productFamily == FIRMWARE_FAMILY_FLIGHT_CONTROLLER) {
+                POPUP_MENU_ADD_ITEM(STR_FLASH_FLIGHT_CONTROLLER_BY_INTERNAL_MODULE_OTA);
+                POPUP_MENU_ADD_ITEM(STR_FLASH_FLIGHT_CONTROLLER_BY_EXTERNAL_MODULE_OTA);
               }
 #endif
 #if defined(BLUETOOTH)

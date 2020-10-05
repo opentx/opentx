@@ -21,6 +21,10 @@
 #include <io/frsky_firmware_update.h>
 #include "opentx.h"
 
+#if defined(PCBSKY9X)
+#include "audio_driver.h"
+#endif
+
 RadioData  g_eeGeneral;
 ModelData  g_model;
 
@@ -1662,28 +1666,40 @@ void opentxResume()
 
 void instantTrim()
 {
-  int16_t  anas_0[MAX_INPUTS];
+  int16_t anas_0[MAX_INPUTS];
   evalInputs(e_perout_mode_notrainer | e_perout_mode_nosticks);
   memcpy(anas_0, anas, sizeof(anas_0));
 
   evalInputs(e_perout_mode_notrainer);
 
-  for (uint8_t stick=0; stick<NUM_STICKS; stick++) {
-    if (stick!=THR_STICK) {
-      // don't instant trim the throttle stick
-      uint8_t trim_phase = getTrimFlightMode(mixerCurrentFlightMode, stick);
+  for (uint8_t stick = 0; stick < NUM_STICKS; stick++) {
+    if (stick != THR_STICK) { // don't instant trim the throttle stick
+      bool addTrim = false;
       int16_t delta = 0;
-      for (int e=0; e<MAX_EXPOS; e++) {
-        ExpoData * ed = expoAddress(e);
-        if (!EXPO_VALID(ed)) break; // end of list
-        if (ed->srcRaw-MIXSRC_Rud == stick) {
-          delta = anas[ed->chn] - anas_0[ed->chn];
-          break;
+      uint8_t trimFlightMode = getTrimFlightMode(mixerCurrentFlightMode, stick);
+      for (uint8_t i = 0; i < MAX_EXPOS; i++) {
+        ExpoData * expo = expoAddress(i);
+        if (!EXPO_VALID(expo))
+          break; // end of list
+        if (stick == expo->srcRaw - MIXSRC_FIRST_STICK) {
+          if (expo->carryTrim < 0) {
+            // only default trims will be taken into account
+            addTrim = false;
+            break;
+          }
+          auto newDelta = anas[expo->chn] - anas_0[expo->chn];
+          if (addTrim && delta != newDelta) {
+            // avoid 2 different delta values
+            addTrim = false;
+            break;
+          }
+          addTrim = true;
+          delta = newDelta;
         }
       }
-      if (abs(delta) >= INSTANT_TRIM_MARGIN) {
+      if (addTrim && abs(delta) >= INSTANT_TRIM_MARGIN) {
         int16_t trim = limit<int16_t>(TRIM_EXTENDED_MIN, (delta + trims[stick]) / 2, TRIM_EXTENDED_MAX);
-        setTrimValue(trim_phase, stick, trim);
+        setTrimValue(trimFlightMode, stick, trim);
       }
     }
   }

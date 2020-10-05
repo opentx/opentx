@@ -97,6 +97,7 @@ PACK(struct CellValue
 });
 
 int setTelemetryValue(TelemetryProtocol protocol, uint16_t id, uint8_t subId, uint8_t instance, int32_t value, uint32_t unit, uint32_t prec);
+int setTelemetryText(TelemetryProtocol protocol, uint16_t id, uint8_t subId, uint8_t instance, const char * text);
 void delTelemetryIndex(uint8_t index);
 int availableTelemetryIndex();
 int lastUsedTelemetryIndex();

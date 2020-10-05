@@ -385,7 +385,7 @@ Return rotary encoder current speed
 
 @status current Introduced in 2.3.10
 */
-static int luGetRotEncSpeed(lua_State * L)
+static int luaGetRotEncSpeed(lua_State * L)
 {
 #if defined(ROTARY_ENCODER_NAVIGATION)
   lua_pushunsigned(L, rotencSpeed);
@@ -867,7 +867,7 @@ Return the internal GPS position or nil if no valid hardware found
 static int luaGetTxGPS(lua_State * L)
 {
 #if defined(INTERNAL_GPS)
-  lua_createtable(L, 0, 7);
+  lua_createtable(L, 0, 8);
   lua_pushtablenumber(L, "lat", gpsData.latitude * 0.000001);
   lua_pushtablenumber(L, "lon", gpsData.longitude * 0.000001);
   lua_pushtableinteger(L, "numsat", gpsData.numSat);
@@ -1700,7 +1700,7 @@ const luaL_Reg opentxLib[] = {
   { "getVersion", luaGetVersion },
   { "getGeneralSettings", luaGetGeneralSettings },
   { "getGlobalTimer", luaGetGlobalTimer },
-  { "getRotEncSpeed", luGetRotEncSpeed },
+  { "getRotEncSpeed", luaGetRotEncSpeed },
   { "getValue", luaGetValue },
   { "getRAS", luaGetRAS },
   { "getTxGPS", luaGetTxGPS },
