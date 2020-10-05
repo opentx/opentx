@@ -228,6 +228,7 @@ extern const char STR_REFRESHRATE[];
 extern const char STR_MS[];
 extern const char STR_SWITCH[];
 extern const char STR_TRIMS[];
+extern const char STR_MIRROR[];
 extern const char STR_FADEIN[];
 extern const char STR_FADEOUT[];
 extern const char STR_DEFAULT[];

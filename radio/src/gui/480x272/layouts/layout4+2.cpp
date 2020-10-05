@@ -20,6 +20,12 @@
 
 #include "opentx.h"
 
+#define HAS_TOPBAR()      (persistentData->options[0].boolValue == true)
+#define HAS_FM()          (persistentData->options[1].boolValue == true)
+#define HAS_SLIDERS()     (persistentData->options[2].boolValue == true)
+#define HAS_TRIMS()       (persistentData->options[3].boolValue == true)
+#define IS_MIRRORED()     (persistentData->options[4].boolValue == true)
+
 const uint8_t LBM_LAYOUT_4P2[] = {
 #include "mask_layout4+2.lbm"
 };
@@ -29,6 +35,7 @@ const ZoneOption OPTIONS_LAYOUT_4P2[] = {
   { STR_FLIGHT_MODE, ZoneOption::Bool },
   { STR_SLIDERS, ZoneOption::Bool },
   { STR_TRIMS, ZoneOption::Bool },
+  { STR_MIRROR, ZoneOption::Bool },
   { NULL, ZoneOption::Bool }
 };
 
@@ -67,19 +74,15 @@ class Layout4P2: public Layout
 
     virtual Zone getZone(unsigned int index) const
     {
-      constexpr coord_t xoffset = 3; // lines are drawn left of pos
-      constexpr coord_t vseparator = 8;
-      constexpr coord_t trims = 20;
-      constexpr coord_t sliders = 20;
-      constexpr coord_t left = 1;
-
-      coord_t blockw =  239 - (persistentData->options[2].boolValue == true ? sliders : 0) - (persistentData->options[3].boolValue == true ? trims : 0) - vseparator - xoffset;
+      coord_t areaw = LCD_W - (HAS_SLIDERS() ? 55 : 8) - (HAS_TRIMS() ? 55 : 8);
+      coord_t areah = LCD_H - 4 - (HAS_TOPBAR() ? 55 : 0) - (HAS_SLIDERS() ? 26 : 0) - (HAS_TRIMS() ? 26 : 0);
 
       Zone zone;
-      zone.x = (index >= 4) ? 2 * xoffset + 240 : xoffset + left + (persistentData->options[2].boolValue == true ? sliders : 0) + (persistentData->options[3].boolValue == true ? trims : 0);
-      zone.y = (index >= 4) ? 56 + (index % 2) * 84 : 56 + (index % 4) * 42 ;
-      zone.w = blockw;
-      zone.h = (index >= 4) ? 74 : 32;
+      zone.x = IS_MIRRORED() ? ((index >= 4) ? (LCD_W - areaw) / 2 - 4 : 245) : ((index >= 4) ? 245 : (LCD_W - areaw) / 2 - 4);
+      zone.h = (index >= 4) ?  (areah / 2) :  (areah / 4) - 2;
+      zone.y = (index >= 4) ? (HAS_TOPBAR() ? 52 : 0) + (index == 5 ? zone.h + 8: 0): (HAS_TOPBAR() ? 52 : 0) + (index % 4) * (zone.h + 6);
+      zone.w = areaw / 2;
+
       return zone;
     }
 
@@ -90,11 +93,11 @@ void Layout4P2::refresh()
 {
   theme->drawBackground();
 
-  if (persistentData->options[0].boolValue) {
+  if (HAS_TOPBAR()) {
     drawTopBar();
   }
 
-  if (persistentData->options[1].boolValue) {
+  if (HAS_FM()) {
     // Flight mode
     lcdDrawSizedText(LCD_W / 2 - getTextWidth(g_model.flightModeData[mixerCurrentFlightMode].name,
                                               sizeof(g_model.flightModeData[mixerCurrentFlightMode].name),
@@ -104,14 +107,14 @@ void Layout4P2::refresh()
                      sizeof(g_model.flightModeData[mixerCurrentFlightMode].name), ZCHAR | SMLSIZE);
   }
 
-  if (persistentData->options[2].boolValue) {
+  if (HAS_SLIDERS()) {
     // Pots and rear sliders positions
     drawMainPots();
   }
 
-  if (persistentData->options[3].boolValue) {
+  if (HAS_TRIMS()) {
     // Trims
-    drawTrims(mixerCurrentFlightMode);
+    drawTrims(mixerCurrentFlightMode, HAS_SLIDERS());
   }
 
   Layout::refresh();
