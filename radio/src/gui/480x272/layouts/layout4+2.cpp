@@ -63,8 +63,8 @@ class Layout4P2: public Layout
       persistentData->options[1].boolValue = true;
       persistentData->options[2].boolValue = true;
       persistentData->options[3].boolValue = true;
-      persistentData->options[4].boolValue = true;
-      persistentData->options[5].boolValue = true;
+      persistentData->options[4].boolValue = false;
+      persistentData->options[5].boolValue = false;
     }
 
     virtual unsigned int getZonesCount() const
@@ -80,7 +80,7 @@ class Layout4P2: public Layout
       Zone zone;
       zone.x = IS_MIRRORED() ? ((index >= 4) ? (LCD_W - areaw) / 2 - 4 : 245) : ((index >= 4) ? 245 : (LCD_W - areaw) / 2 - 4);
       zone.h = (index >= 4) ?  (areah / 2) :  (areah / 4) - 2;
-      zone.y = (index >= 4) ? (HAS_TOPBAR() ? 52 : 6) + (index == 5 ? zone.h + ((persistentData->options[2].boolValue + persistentData->options[3].boolValue == 1) ? 8 : 10): 0): (HAS_TOPBAR() ? 52 : 6) + (index % 4) * (zone.h + 6);
+      zone.y = (index >= 4) ? (HAS_TOPBAR() ? 52 : 6) + (index == 5 ? zone.h + ((HAS_TRIMS() + HAS_SLIDERS() == 1) ? 8 : 10): 0): (HAS_TOPBAR() ? 52 : 6) + (index % 4) * (zone.h + 6);
       zone.w = areaw / 2;
 
       return zone;
