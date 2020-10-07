@@ -259,9 +259,9 @@ void MavlinkTelem::handleMessage(void)
     }
   }
 
-  if ((gimbalmanager.compid == 0) && (gimbal.compid > 0) && (_msg.msgid == MAVLINK_MSG_ID_GIMBAL_MANAGER_STATUS)) {
-    mavlink_gimbal_manager_status_t payload;
-    mavlink_msg_gimbal_manager_status_decode(&_msg, &payload);
+  if ((gimbalmanager.compid == 0) && (gimbal.compid > 0) && (_msg.msgid == MAVLINK_MSG_ID_STORM32_GIMBAL_MANAGER_STATUS)) {
+    mavlink_storm32_gimbal_manager_status_t payload;
+    mavlink_msg_storm32_gimbal_manager_status_decode(&_msg, &payload);
     if (payload.gimbal_device_id == gimbal.compid) { //this is the gimbal's gimbal manager
       _resetGimbalClient();
       gimbalmanager.compid = _msg.compid;

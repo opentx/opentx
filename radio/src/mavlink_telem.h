@@ -92,11 +92,11 @@ class MavlinkTelem
     void generateCmdDoMountConfigure(uint8_t tsystem, uint8_t tcomponent, uint8_t mode);
     void generateCmdDoMountControl(uint8_t tsystem, uint8_t tcomponent, float pitch_deg, float yaw_deg);
     void generateCmdRequestGimbalDeviceInformation(uint8_t tsystem, uint8_t tcomponent);
-    void generateGimbalDeviceSetAttitude(uint8_t tsystem, uint8_t tcomponent, float pitch_deg, float yaw_deg, uint16_t flags);
-    void generateCmdRequestGimbalManagerInformation(uint8_t tsystem, uint8_t tcomponent);
-    void generateGimbalManagerSetAttitude(uint8_t tsystem, uint8_t tcomponent, uint8_t gimbal_device_id, float pitch_deg, float yaw_deg, uint32_t flags);
-    void generateGimbalManagerSetTiltPan(uint8_t tsystem, uint8_t tcomponent, uint8_t gimbal_device_id, float pitch_deg, float yaw_deg, uint32_t flags);
-    void generateCmdDoGimbalManagerTiltPan(uint8_t tsystem, uint8_t tcomponent, uint8_t gimbal_device_id, float pitch_deg, float yaw_deg, uint32_t flags);
+    void generateStorm32GimbalDeviceControl(uint8_t tsystem, uint8_t tcomponent, float pitch_deg, float yaw_deg, uint16_t flags);
+    void generateCmdRequestStorm32GimbalManagerInformation(uint8_t tsystem, uint8_t tcomponent);
+    void generateStorm32GimbalManagerControl(uint8_t tsystem, uint8_t tcomponent, uint8_t gimbal_device_id, float pitch_deg, float yaw_deg, uint16_t device_flags, uint16_t manager_flags);
+    void generateStorm32GimbalManagerControlTiltPan(uint8_t tsystem, uint8_t tcomponent, uint8_t gimbal_device_id, float pitch_deg, float yaw_deg, uint16_t device_flags, uint16_t manager_flags);
+    void generateCmdStorm32DoGimbalManagerControlTiltPan(uint8_t tsystem, uint8_t tcomponent, uint8_t gimbal_device_id, float pitch_deg, float yaw_deg, uint16_t device_flags, uint16_t manager_flags);
 
     // TASK AND MESSAGE HANDLERS
 
@@ -419,7 +419,6 @@ class MavlinkTelem
       float pitch_deg;
       float yaw_deg_relative;
       float yaw_deg_absolute;
-      int32_t flags;  //uint16_t, GIMBAL_DEVICE_FLAGS, these may not be available, so use -1 if so
       uint8_t updated;
     };
     struct GimbalAtt gimbalAtt;
@@ -430,7 +429,6 @@ class MavlinkTelem
 
     //convenience task wrapper
     void setGimbalTargetingMode(uint8_t mode);
-    uint8_t getGimbalTargetingMode(void);
     void setGimbalPitchYawDeg(float pitch, float yaw);
 
     // MAVSDK GIMBAL CLIENT only
@@ -438,89 +436,65 @@ class MavlinkTelem
     struct GimbalDeviceInfo {
       char vendor_name[32+1];
       char model_name[32+1];
+      char custom_name[32+1];
       uint32_t firmware_version;
-      uint16_t cap_flags;
+      uint32_t hardware_version;
+      uint32_t cap_flags;
       uint8_t updated;
     };
     struct GimbalDeviceInfo gimbaldeviceInfo;
 
-    struct GimbalManagerInfo {
-      uint32_t cap_flags;
+    struct Storm32GimbalManagerInfo {
+      uint32_t device_cap_flags;
+      uint32_t manager_cap_flags;
       uint8_t updated;
     };
-    struct GimbalManagerInfo gimbalmanagerInfo;
+    struct Storm32GimbalManagerInfo gimbalmanagerInfo;
 
-    struct GimbalManagerStatus {
-      uint32_t flags;
+    struct Storm32GimbalManagerStatus {
+      uint8_t supervisor;
+      uint16_t device_flags;
+      uint16_t manager_flags;
+      uint8_t profile;
       uint8_t updated;
     };
-    struct GimbalManagerStatus gimbalmanagerStatus;
+    struct Storm32GimbalManagerStatus gimbalmanagerStatus;
 
     //some tasks need some additional data
-    float _t_gimbaldevice_pitch_deg, _t_gimbaldevice_yaw_deg;
-    uint16_t _t_gimbaldevice_flags;
-    float _t_gimbalmanager_setatt_pitch_deg, _t_gimbalmanager_setatt_yaw_deg;
-    uint32_t _t_gimbalmanager_setatt_flags;
-    float _t_gimbalmanager_settiltpan_pitch_deg, _t_gimbalmanager_settiltpan_yaw_deg;
-    uint32_t _t_gimbalmanager_settiltpan_flags;
-    float _t_gimbalmanager_cmdtiltpan_pitch_deg, _t_gimbalmanager_cmdtiltpan_yaw_deg;
-    uint32_t _t_gimbalmanager_cmdtiltpan_flags;
+    float _t_storm32GD_pitch_deg, _t_storm32GD_yaw_deg;
+    uint16_t _t_storm32GD_flags;
+    float _t_storm32GM_pitch_deg, _t_storm32GM_yaw_deg;
+    uint16_t _t_storm32GM_gdflags, _t_storm32GM_gmflags;
+    float _t_storm32GM_control_pitch_deg, _t_storm32GM_control_yaw_deg;
+    uint16_t _t_storm32GM_control_gdflags, _t_storm32GM_control_gmflags;
+    float _t_storm32GM_cmd_pitch_deg, _t_storm32GM_cmd_yaw_deg;
+    uint16_t _t_storm32GM_cmd_gdflags, _t_storm32GM_cmd_gmflags;
 
     //convenience task wrapper
-    void setGimbalDevicePitchYawDeg(float pitch, float yaw);
-    void setGimbalManagerPitchYawDeg(float pitch, float yaw);
-    void setGimbalManagerAttitudePitchYawDeg(float pitch, float yaw);
-    void setGimbalManagerCmdPitchYawDeg(float pitch, float yaw);
+    void setStorm32GimbalDevicePitchYawDeg(float pitch, float yaw);
+    void setStorm32GimbalManagerPitchYawDeg(float pitch, float yaw);
+    void setStorm32GimbalManagerControlPitchYawDeg(float pitch, float yaw);
+    void setStorm32GimbalManagerCmdPitchYawDeg(float pitch, float yaw);
 
-    //my gimbal protocol v2 flags
-    enum MyGimbalManagerSetFlagsEnum {
-      MYGIMBALMANAGER_SET_FLAGS_RC_ACTIVE       = (uint32_t)1 << 16,
-      MYGIMBALMANAGER_SET_FLAGS_CLIENT1_ACTIVE  = (uint32_t)1 << 17, //companion
-      MYGIMBALMANAGER_SET_FLAGS_CLIENT2_ACTIVE  = (uint32_t)1 << 18, //gcs
-      MYGIMBALMANAGER_SET_FLAGS_CLIENT3_ACTIVE  = (uint32_t)1 << 19, //autopilot
-      MYGIMBALMANAGER_SET_FLAGS_CLIENT4_ACTIVE  = (uint32_t)1 << 20,
-      MYGIMBALMANAGER_SET_FLAGS_CLIENT5_ACTIVE  = (uint32_t)1 << 21,
-      MYGIMBALMANAGER_SET_FLAGS_CONTROL         = (uint32_t)1 << 22,
-
-      MYGIMBALMANAGER_SET_FLAGS_ISCLIENT1       = (uint32_t)1 << 23, //companion
-      MYGIMBALMANAGER_SET_FLAGS_ISCLIENT2       = (uint32_t)1 << 24, //gcs
-      MYGIMBALMANAGER_SET_FLAGS_ISCLIENT3       = (uint32_t)1 << 25, //autopilot
-      MYGIMBALMANAGER_SET_FLAGS_ISCLIENT4       = (uint32_t)1 << 26,
-      MYGIMBALMANAGER_SET_FLAGS_ISCLIENT5       = (uint32_t)1 << 27,
+    struct GimbalManagerOut { //collective structure to handle gimbalmanager outgoing flags
+      uint8_t mount_mode; //copy of the mount_mode
+      uint16_t device_flags;
+      uint16_t manager_flags;
     };
+    struct GimbalManagerOut gimbalmanagerOut;
 
-    enum MyGimbalManagerFlagsEnum {
-      MYGIMBALMANAGER_FLAGS_RC_ISACTIVE         = (uint32_t)1 << 16,
-      MYGIMBALMANAGER_FLAGS_CLIENT1_ISACTIVE    = (uint32_t)1 << 17,
-      MYGIMBALMANAGER_FLAGS_CLIENT2_ISACTIVE    = (uint32_t)1 << 18,
-      MYGIMBALMANAGER_FLAGS_CLIENT3_ISACTIVE    = (uint32_t)1 << 19,
-      MYGIMBALMANAGER_FLAGS_CLIENT4_ISACTIVE    = (uint32_t)1 << 20,
-      MYGIMBALMANAGER_FLAGS_CLIENT5_ISACTIVE    = (uint32_t)1 << 21,
-
-      MYGIMBALMANAGER_FLAGS_CLIENT1_HASCONTROL  = (uint32_t)1 << 22,
-      MYGIMBALMANAGER_FLAGS_CLIENT2_HASCONTROL  = (uint32_t)1 << 23,
-      MYGIMBALMANAGER_FLAGS_CLIENT3_HASCONTROL  = (uint32_t)1 << 24,
-      MYGIMBALMANAGER_FLAGS_CLIENT4_HASCONTROL  = (uint32_t)1 << 25,
-      MYGIMBALMANAGER_FLAGS_CLIENT5_HASCONTROL  = (uint32_t)1 << 26,
-    };
-
-    struct GimbalManagerMode {
-      uint8_t mode;
-      uint32_t flags;
-    };
-    struct GimbalManagerMode gimbalmanagerMode;
-
-    uint32_t _gimbalManagerFlags(void);
-    void setGimbalClientFlags(uint32_t flags);
+    void _storm32UpdateGimbalManagerFlags(uint16_t* device_flags, uint16_t* manager_flags);
+    void setStorm32GimbalFlags(uint16_t device_flags);
+    void setStorm32GimbalClientFlags(uint16_t manager_flags);
 
     //gimbal protocol v1 vs v2
-    void setGimbalProtocolV2(bool flag)
+    void setStorm32GimbalProtocolV2(bool flag)
     {
-      _gimbal_protocol_v2 = flag;
+      _storm32_gimbal_protocol_v2 = flag;
     }
-    bool isGimbalProtocolV2(void)
+    bool isStorm32GimbalProtocolV2(void)
     {
-      return _gimbal_protocol_v2;
+      return _storm32_gimbal_protocol_v2;
     }
 
     // SOME more MAVLINK stuff
@@ -618,13 +592,13 @@ class MavlinkTelem
       TASK_SENDCMD_DO_MOUNT_CONFIGURE             = 0x00000001, //this goes to the autopilot
       TASK_SENDCMD_DO_MOUNT_CONTROL               = 0x00000002, //this goes to the autopilot
 
-      TASK_SENDREQUEST_GIMBAL_DEVICE_INFORMATION  = 0x00000004, //this goes to the gimbal
-      TASK_SENDMSG_GIMBAL_DEVICE_SET_ATTITUDE     = 0x00000008, //this goes to the gimbal device
-      TASK_SENDREQUEST_GIMBAL_MANAGER_INFORMATION = 0x00000020, //this goes to the gimbal manager
-      TASK_SENDMSG_GIMBAL_MANAGER_SET_ATTITUDE    = 0x00000040, //this goes to the gimbal manager
-      TASK_SENDMSG_GIMBAL_MANAGER_SET_TILTPAN     = 0x00000080, //this goes to the gimbal manager
-      TASK_SENDCMD_DO_GIMBAL_MANAGER_TILTPAN      = 0x00000100, //this goes to the gimbal manager
-      TASK_SENDCMD_DO_MOUNT_CONFIGURE_BROADCAST   = 0x00000200, //this goes to the all vehicle components
+      TASK_SENDREQUEST_GIMBAL_DEVICE_INFORMATION  = 0x00000008, //this goes to the gimbal device
+
+      TASK_SENDMSG_GIMBAL_DEVICE_CONTROL              = 0x00000010, //this goes to the storm32 gimbal device
+      TASK_SENDREQUEST_GIMBAL_MANAGER_INFORMATION     = 0x00000020, //this goes to the storm32 gimbal manager
+      TASK_SENDMSG_GIMBAL_MANAGER_CONTROL             = 0x00000040, //this goes to the storm32 gimbal manager
+      TASK_SENDMSG_GIMBAL_MANAGER_CONTROL_TILTPAN     = 0x00000080, //this goes to the storm32 gimbal manager
+      TASK_SENDCMD_DO_GIMBAL_MANAGER_CONTROL_TILTPAN  = 0x00000100, //this goes to the storm32 gimbal manager
     };
 
     uint32_t _task[TASKIDX_MAX];
@@ -697,7 +671,7 @@ class MavlinkTelem
     bool _interface_enabled = false;
     uint8_t _interface_config = UINT8_MAX; //to enforce change
 
-    bool _gimbal_protocol_v2 = false;
+    bool _storm32_gimbal_protocol_v2 = false;
 };
 
 extern MavlinkTelem mavlinkTelem;

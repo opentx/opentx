@@ -29,11 +29,12 @@
 #include "opentx_helpers.h"
 
 //OW
-#define OWVERSIONSTR  "olliw-v15"
+#define OWVERSIONSTR  "olliw-v16"
 //OWEND
 
 /*
-v11 2020-06-07:
+v16 2020-10-04:
+mavlink submodule changed to main git repo, file generator added
 modified files in radio/src/
 
     CMakeList.txt:  1x

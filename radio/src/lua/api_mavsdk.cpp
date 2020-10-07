@@ -69,21 +69,24 @@ static int luaMavsdkGimbalGetInfo(lua_State *L)
 
   lua_pushtablestring(L, "vendor_name", mavlinkTelem.gimbaldeviceInfo.vendor_name);
   lua_pushtablestring(L, "model_name", mavlinkTelem.gimbaldeviceInfo.model_name);
-  char s[32], ss[20]; s[0] = '\0';
+  lua_pushtablestring(L, "custom_name", mavlinkTelem.gimbaldeviceInfo.custom_name);
+  char s[32], ss[20];
+  s[0] = '\0';
   if (mavlinkTelem.gimbaldeviceInfo.firmware_version) {
-    u8toBCDstr((mavlinkTelem.gimbaldeviceInfo.firmware_version >> 0) & 0xFF, ss); 
-    strcat(s, ss); 
-    strcat(s, ".");
-    u8toBCDstr((mavlinkTelem.gimbaldeviceInfo.firmware_version >> 8) & 0xFF, ss); 
-    strcat(s, ss); 
-    strcat(s, ".");
-    u8toBCDstr((mavlinkTelem.gimbaldeviceInfo.firmware_version >> 16) & 0xFF, ss); 
-    strcat(s, ss); 
-    strcat(s, ".");
-    u8toBCDstr((mavlinkTelem.gimbaldeviceInfo.firmware_version >> 24) & 0xFF, ss); 
-    strcat(s, ss);
+    u8toBCDstr((mavlinkTelem.gimbaldeviceInfo.firmware_version >> 0) & 0xFF, ss); strcat(s, ss); strcat(s, ".");
+    u8toBCDstr((mavlinkTelem.gimbaldeviceInfo.firmware_version >> 8) & 0xFF, ss); strcat(s, ss); strcat(s, ".");
+    u8toBCDstr((mavlinkTelem.gimbaldeviceInfo.firmware_version >> 16) & 0xFF, ss); strcat(s, ss); strcat(s, ".");
+    u8toBCDstr((mavlinkTelem.gimbaldeviceInfo.firmware_version >> 24) & 0xFF, ss); strcat(s, ss);
   }
   lua_pushtablestring(L, "firmware_version", s);
+  s[0] = '\0';
+  if (mavlinkTelem.gimbaldeviceInfo.hardware_version) {
+    u8toBCDstr((mavlinkTelem.gimbaldeviceInfo.hardware_version >> 0) & 0xFF, ss); strcat(s, ss); strcat(s, ".");
+    u8toBCDstr((mavlinkTelem.gimbaldeviceInfo.hardware_version >> 8) & 0xFF, ss); strcat(s, ss); strcat(s, ".");
+    u8toBCDstr((mavlinkTelem.gimbaldeviceInfo.hardware_version >> 16) & 0xFF, ss); strcat(s, ss); strcat(s, ".");
+    u8toBCDstr((mavlinkTelem.gimbaldeviceInfo.hardware_version >> 24) & 0xFF, ss); strcat(s, ss);
+  }
+  lua_pushtablestring(L, "hardware_version", s);
   lua_pushtableinteger(L, "capability_flags", mavlinkTelem.gimbaldeviceInfo.cap_flags);
   return 1;
 }
@@ -161,7 +164,7 @@ static int luaMavsdkGimbalSetPitchYawDeg(lua_State *L)
 
 static int luaMavsdkIsGimbalProtocolV2(lua_State *L)
 {
-  bool flag = mavlinkTelem.isGimbalProtocolV2();
+  bool flag = mavlinkTelem.isStorm32GimbalProtocolV2();
   lua_pushboolean(L, flag);
   return 1;
 }
@@ -169,7 +172,7 @@ static int luaMavsdkIsGimbalProtocolV2(lua_State *L)
 static int luaMavsdkSetGimbalProtocolV2(lua_State *L)
 {
   bool flag = (luaL_checknumber(L, 1) > 0);
-  mavlinkTelem.setGimbalProtocolV2(flag);
+  mavlinkTelem.setStorm32GimbalProtocolV2(flag);
   return 0;
 }
 
@@ -192,21 +195,32 @@ static int luaMavsdkGimbalClientGetInfo(lua_State *L)
   lua_newtable(L);
   lua_pushtableinteger(L, "gimbal_manager_id", mavlinkTelem.gimbalmanager.compid);
   lua_pushtableinteger(L, "gimbal_device_id", mavlinkTelem.gimbal.compid);
-  lua_pushtableinteger(L, "capability_flags", mavlinkTelem.gimbalmanagerInfo.cap_flags);
+  lua_pushtableinteger(L, "device_capability_flags", mavlinkTelem.gimbalmanagerInfo.device_cap_flags);
+  lua_pushtableinteger(L, "manager_capability_flags", mavlinkTelem.gimbalmanagerInfo.manager_cap_flags);
   return 1;
 }
 
 static int luaMavsdkGimbalClientGetStatus(lua_State *L)
 {
   lua_newtable(L);
-  lua_pushtableinteger(L, "flags", mavlinkTelem.gimbalmanagerStatus.flags);
+  lua_pushtableinteger(L, "supervisor", mavlinkTelem.gimbalmanagerStatus.supervisor);
+  lua_pushtableinteger(L, "device_flags", mavlinkTelem.gimbalmanagerStatus.device_flags);
+  lua_pushtableinteger(L, "manager_flags", mavlinkTelem.gimbalmanagerStatus.manager_flags);
+  lua_pushtableinteger(L, "profile", mavlinkTelem.gimbalmanagerStatus.profile);
   return 1;
+}
+
+static int luaMavsdkGimbalSetFlags(lua_State *L)
+{
+  uint16_t device_flags = luaL_checkinteger(L, 1);
+  mavlinkTelem.setStorm32GimbalFlags(device_flags);
+  return 0;
 }
 
 static int luaMavsdkGimbalClientSetFlags(lua_State *L)
 {
-  uint32_t flags = luaL_checkinteger(L, 1);
-  mavlinkTelem.setGimbalClientFlags(flags);
+  uint16_t manager_flags = luaL_checkinteger(L, 1);
+  mavlinkTelem.setStorm32GimbalClientFlags(manager_flags);
   return 0;
 }
 
@@ -214,15 +228,15 @@ static int luaMavsdkGimbalClientSetPitchYawDeg(lua_State *L)
 {
   float pitch = luaL_checknumber(L, 1);
   float yaw = luaL_checknumber(L, 2);
-  mavlinkTelem.setGimbalManagerPitchYawDeg(pitch, yaw);
+  mavlinkTelem.setStorm32GimbalManagerPitchYawDeg(pitch, yaw);
   return 0;
 }
 
-static int luaMavsdkGimbalClientSetAttitudePitchYawDeg(lua_State *L)
+static int luaMavsdkGimbalClientControlSetPitchYawDeg(lua_State *L)
 {
   float pitch = luaL_checknumber(L, 1);
   float yaw = luaL_checknumber(L, 2);
-  mavlinkTelem.setGimbalManagerAttitudePitchYawDeg(pitch, yaw);
+  mavlinkTelem.setStorm32GimbalManagerControlPitchYawDeg(pitch, yaw);
   return 0;
 }
 
@@ -230,7 +244,7 @@ static int luaMavsdkGimbalClientCmdSetPitchYawDeg(lua_State *L)
 {
   float pitch = luaL_checknumber(L, 1);
   float yaw = luaL_checknumber(L, 2);
-  mavlinkTelem.setGimbalManagerCmdPitchYawDeg(pitch, yaw);
+  mavlinkTelem.setStorm32GimbalManagerCmdPitchYawDeg(pitch, yaw);
   return 0;
 }
 
@@ -238,7 +252,7 @@ static int luaMavsdkGimbalDeviceSetPitchYawDeg(lua_State *L)
 {
   float pitch = luaL_checknumber(L, 1);
   float yaw = luaL_checknumber(L, 2);
-  mavlinkTelem.setGimbalDevicePitchYawDeg(pitch, yaw);
+  mavlinkTelem.setStorm32GimbalDevicePitchYawDeg(pitch, yaw);
   return 0;
 }
 
@@ -1122,10 +1136,11 @@ const luaL_Reg mavsdkLib[] = {
   { "gimbalClientIsInitialized", luaMavsdkGimbalClientIsInitialized },
   { "gimbalClientGetInfo", luaMavsdkGimbalClientGetInfo },
   { "gimbalClientGetStatus", luaMavsdkGimbalClientGetStatus },
+  { "gimbalSetFlags", luaMavsdkGimbalSetFlags },
   { "gimbalClientSetFlags", luaMavsdkGimbalClientSetFlags },
   { "gimbalClientSetPitchYawDeg", luaMavsdkGimbalClientSetPitchYawDeg },
   //for testing only
-  { "gimbalClientSetAttPitchYawDeg", luaMavsdkGimbalClientSetAttitudePitchYawDeg },
+  { "gimbalClientControlSetPitchYawDeg", luaMavsdkGimbalClientControlSetPitchYawDeg },
   { "gimbalClientCmdSetPitchYawDeg", luaMavsdkGimbalClientCmdSetPitchYawDeg },
   { "gimbalDeviceSetPitchYawDeg", luaMavsdkGimbalDeviceSetPitchYawDeg },
 
@@ -1240,25 +1255,32 @@ const luaR_value_entry mavsdkConstants[] = {
   { "VEHICLECLASS_BOAT", MAVSDK_VEHICLECLASS_BOAT },
   { "VEHICLECLASS_SUB", MAVSDK_VEHICLECLASS_SUB },
 
-  { "GMFLAGS_SET_RC_ACTIVE", MavlinkTelem::MYGIMBALMANAGER_SET_FLAGS_RC_ACTIVE },
-  { "GMFLAGS_SET_CLIENT1_ACTIVE", MavlinkTelem::MYGIMBALMANAGER_SET_FLAGS_CLIENT1_ACTIVE },
-  { "GMFLAGS_SET_CLIENT2_ACTIVE", MavlinkTelem::MYGIMBALMANAGER_SET_FLAGS_CLIENT2_ACTIVE },
-  { "GMFLAGS_SET_CLIENT3_ACTIVE", MavlinkTelem::MYGIMBALMANAGER_SET_FLAGS_CLIENT3_ACTIVE },
-  { "GMFLAGS_SET_CLIENT4_ACTIVE", MavlinkTelem::MYGIMBALMANAGER_SET_FLAGS_CLIENT4_ACTIVE },
-  { "GMFLAGS_SET_CLIENT5_ACTIVE", MavlinkTelem::MYGIMBALMANAGER_SET_FLAGS_CLIENT5_ACTIVE },
-  { "GMFLAGS_SET_CONTROL", MavlinkTelem::MYGIMBALMANAGER_SET_FLAGS_CONTROL },
+  { "GDFLAGS_RETRACT", MAV_STORM32_GIMBAL_DEVICE_FLAGS_RETRACT },
+  { "GDFLAGS_NEUTRAL", MAV_STORM32_GIMBAL_DEVICE_FLAGS_NEUTRAL },
+  { "GDFLAGS_ROLL_LOCK", MAV_STORM32_GIMBAL_DEVICE_FLAGS_ROLL_LOCK },
+  { "GDFLAGS_PITCH_LOCK", MAV_STORM32_GIMBAL_DEVICE_FLAGS_PITCH_LOCK },
+  { "GDFLAGS_YAW_LOCK", MAV_STORM32_GIMBAL_DEVICE_FLAGS_YAW_LOCK },
+  { "GDFLAGS_CAN_ACCEPT_YAW_ABSOLUTE", MAV_STORM32_GIMBAL_DEVICE_FLAGS_CAN_ACCEPT_YAW_ABSOLUTE },
+  { "GDFLAGS_YAW_ABSOLUTE", MAV_STORM32_GIMBAL_DEVICE_FLAGS_YAW_ABSOLUTE },
+  { "GDFLAGS_RC_EXCLUSIVE", MAV_STORM32_GIMBAL_DEVICE_FLAGS_RC_EXCLUSIVE },
+  { "GDFLAGS_RC_MIXED", MAV_STORM32_GIMBAL_DEVICE_FLAGS_RC_MIXED },
 
-  { "GMFLAGS_RC_ISACTIVE", MavlinkTelem::MYGIMBALMANAGER_FLAGS_RC_ISACTIVE },
-  { "GMFLAGS_CLIENT1_ISACTIVE", MavlinkTelem::MYGIMBALMANAGER_FLAGS_CLIENT1_ISACTIVE },
-  { "GMFLAGS_CLIENT2_ISACTIVE", MavlinkTelem::MYGIMBALMANAGER_FLAGS_CLIENT2_ISACTIVE },
-  { "GMFLAGS_CLIENT3_ISACTIVE", MavlinkTelem::MYGIMBALMANAGER_FLAGS_CLIENT3_ISACTIVE },
-  { "GMFLAGS_CLIENT4_ISACTIVE", MavlinkTelem::MYGIMBALMANAGER_FLAGS_CLIENT4_ISACTIVE },
-  { "GMFLAGS_CLIENT5_ISACTIVE", MavlinkTelem::MYGIMBALMANAGER_FLAGS_CLIENT5_ISACTIVE },
-  { "GMFLAGS_CLIENT1_HASCONTROL", MavlinkTelem::MYGIMBALMANAGER_FLAGS_CLIENT1_HASCONTROL },
-  { "GMFLAGS_CLIENT2_HASCONTROL", MavlinkTelem::MYGIMBALMANAGER_FLAGS_CLIENT2_HASCONTROL },
-  { "GMFLAGS_CLIENT3_HASCONTROL", MavlinkTelem::MYGIMBALMANAGER_FLAGS_CLIENT3_HASCONTROL },
-  { "GMFLAGS_CLIENT4_HASCONTROL", MavlinkTelem::MYGIMBALMANAGER_FLAGS_CLIENT4_HASCONTROL },
-  { "GMFLAGS_CLIENT5_HASCONTROL", MavlinkTelem::MYGIMBALMANAGER_FLAGS_CLIENT5_HASCONTROL },
+  { "GMFLAGS_RC_ACTIVE", MAV_STORM32_GIMBAL_MANAGER_FLAGS_RC_ACTIVE },
+  { "GMFLAGS_ONBOARD_ACTIVE", MAV_STORM32_GIMBAL_MANAGER_FLAGS_CLIENT_ONBOARD_ACTIVE },
+  { "GMFLAGS_AUTOPILOT_ACTIVE", MAV_STORM32_GIMBAL_MANAGER_FLAGS_CLIENT_AUTOPILOT_ACTIVE },
+  { "GMFLAGS_GCS_ACTIVE", MAV_STORM32_GIMBAL_MANAGER_FLAGS_CLIENT_GCS_ACTIVE },
+  { "GMFLAGS_CAMERA_ACTIVE", MAV_STORM32_GIMBAL_MANAGER_FLAGS_CLIENT_CAMERA_ACTIVE },
+  { "GMFLAGS_CLIENT1_ACTIVE", MAV_STORM32_GIMBAL_MANAGER_FLAGS_CLIENT_USER1_ACTIVE },
+  { "GMFLAGS_CLIENT2_ACTIVE", MAV_STORM32_GIMBAL_MANAGER_FLAGS_CLIENT_USER2_ACTIVE },
+  { "GMFLAGS_SET_SUPERVISON", MAV_STORM32_GIMBAL_MANAGER_FLAGS_SET_SUPERVISON },
+  { "GMFLAGS_SET_RELEASE", MAV_STORM32_GIMBAL_MANAGER_FLAGS_SET_RELEASE },
+
+  { "GMCLIENT_ONBOARD", MAV_STORM32_GIMBAL_MANAGER_CLIENTS_ONBOARD },
+  { "GMCLIENT_AUTOPILOT", MAV_STORM32_GIMBAL_MANAGER_CLIENTS_AUTOPILOT },
+  { "GMCLIENT_GCS", MAV_STORM32_GIMBAL_MANAGER_CLIENTS_GCS },
+  { "GMCLIENT_CAMERA", MAV_STORM32_GIMBAL_MANAGER_CLIENTS_CAMERA },
+  { "GMCLIENT_USER1", MAV_STORM32_GIMBAL_MANAGER_CLIENTS_USER1 },
+  { "GMCLIENT_USER2", MAV_STORM32_GIMBAL_MANAGER_CLIENTS_USER2 },
 
   { nullptr, 0 }  /* sentinel */
 };
