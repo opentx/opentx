@@ -115,9 +115,16 @@ void checkTrainerSettings()
 
 #if defined(HARDWARE_TRAINER_AUX_SERIAL)
       case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:
+#if defined(AUX_SERIAL)
         if (g_eeGeneral.auxSerialMode == UART_MODE_SBUS_TRAINER)
           auxSerialSbusInit();
         else
+#endif
+#if defined(AUX2_SERIAL)
+        if (g_eeGeneral.aux2SerialMode == UART_MODE_SBUS_TRAINER)
+          aux2SerialSbusInit();
+        else
+#endif
           init_trainer_capture();
         break;
 #endif

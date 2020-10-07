@@ -149,7 +149,7 @@ void ModelCell::setModelId(uint8_t moduleIdx, uint8_t id)
 //     getTimerString(timer, 0);
 //     for (uint8_t i = 0; i < MAX_TIMERS; i++) {
 //       if (partialmodel.timers[i].mode != 0 && partialmodel.timers[i].persistent) {
-//         getTimerString(timer, partialmodel.timers[i].value);
+//         getTimerString(timer, partialmodel.timers[i].value, 1);
 //         break;
 //       }
 //     }

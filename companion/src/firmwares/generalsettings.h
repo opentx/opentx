@@ -142,6 +142,7 @@ class GeneralSettings {
     unsigned int countryCode;
     bool jitterFilter;
     bool rtcCheckDisable;
+    bool keysBacklight;
     unsigned int imperial;
     char ttsLanguage[2+1];
     int beepVolume;

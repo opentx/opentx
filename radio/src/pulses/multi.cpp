@@ -42,6 +42,7 @@ static void sendD16BindOption(uint8_t moduleIdx);
 #if defined(LUA)
 static void sendSport(uint8_t moduleIdx);
 static void sendHott(uint8_t moduleIdx);
+static void sendDSM(uint8_t moduleIdx);
 #endif
 
 void multiPatchCustom(uint8_t moduleIdx)
@@ -167,18 +168,23 @@ void setupPulsesMulti(uint8_t moduleIdx)
     sendChannels(moduleIdx);
 
   // Multi V1.3.X.X -> Send byte 26, Protocol (bits 7 & 6), RX_Num (bits 5 & 4), invert, not used, disable telemetry, disable mapping
-  sendMulti(moduleIdx, (uint8_t) (((g_model.moduleData[moduleIdx].getMultiProtocol()+3)&0xC0)
-                                  | (g_model.header.modelId[moduleIdx] & 0x30)
-                                  | (invert[moduleIdx] & 0x08)
-                                  //| 0x04 // Future use
-                                  | (g_model.moduleData[moduleIdx].multi.disableTelemetry << 1)
-                                  | g_model.moduleData[moduleIdx].multi.disableMapping));
-  
+  if (moduleState[moduleIdx].mode == MODULE_MODE_SPECTRUM_ANALYSER) {
+    sendMulti(moduleIdx, invert[moduleIdx] & 0x08);
+  }
+  else {
+    sendMulti(moduleIdx, (uint8_t) (((g_model.moduleData[moduleIdx].getMultiProtocol() + 3) & 0xC0)
+                                    | (g_model.header.modelId[moduleIdx] & 0x30)
+                                    | (invert[moduleIdx] & 0x08)
+                                    //| 0x04 // Future use
+                                    | (g_model.moduleData[moduleIdx].multi.disableTelemetry << 1)
+                                    | g_model.moduleData[moduleIdx].multi.disableMapping));
+  }
+
   // Multi V1.3.X.X -> Send protocol additional data: max 9 bytes
   if (getMultiModuleStatus(moduleIdx).isValid()) {
     MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
     if (status.minor >= 3 && !(status.flags & 0x80)) { //Version 1.3.x.x or more and Buffer not full
-      if (IS_D16_MULTI(moduleIdx) && moduleState[moduleIdx].mode == MODULE_MODE_BIND) {
+      if ((IS_D16_MULTI(moduleIdx) || IS_R9_MULTI(moduleIdx)) && moduleState[moduleIdx].mode == MODULE_MODE_BIND) {
         sendD16BindOption(moduleIdx);//1 byte of additional data
       }
 #if defined(LUA)
@@ -188,6 +194,9 @@ void setupPulsesMulti(uint8_t moduleIdx)
       }
       else if (IS_HOTT_MULTI(moduleIdx)) {
         sendHott(moduleIdx);        //1 byte of additional data
+      }
+      else if (IS_DSM_MULTI(moduleIdx)) {
+        sendDSM(moduleIdx);         //7 bytes of additional data
       }
 #endif
     }
@@ -313,15 +322,14 @@ void sendFrameProtocolHeader(uint8_t moduleIdx, bool failsafe)
 
   // rfProtocol
   if (type == MODULE_SUBTYPE_MULTI_DSM2 +1 ) {
-    // Autobinding should always be done in DSMX 11ms
-    if (g_model.moduleData[moduleIdx].multi.autoBindMode && moduleState[moduleIdx].mode == MODULE_MODE_BIND)
-      subtype = MM_RF_DSM2_SUBTYPE_AUTO;
-
-    // Multi module in DSM mode wants the number of channels to be used as option value
-    if (optionValue)
-      optionValue = 0x80 | sentModuleChannels(moduleIdx); // Max throw
+    // Multi module in DSM mode wants the number of channels to be used as option value along with other flags
+    if (optionValue & 0x01)
+      optionValue = 0x80; // Max throw
     else
-      optionValue = sentModuleChannels(moduleIdx);
+      optionValue = 0x00;
+    if (g_model.moduleData[moduleIdx].multi.optionValue & 0x02)
+      optionValue |= 0x40; // 11ms servo refresh
+    optionValue |= sentModuleChannels(moduleIdx); //add number of channels
   }
 
   // Special treatment for the FrSky entry...
@@ -335,7 +343,6 @@ void sendFrameProtocolHeader(uint8_t moduleIdx, bool failsafe)
   // For custom protocol send unmodified type byte
   if (g_model.moduleData[moduleIdx].getMultiProtocol() == MM_RF_CUSTOM_SELECTED)
     type = g_model.moduleData[moduleIdx].getMultiProtocol();
-
 
   uint8_t headerByte = 0x55;
   // header, byte 0,  0x55 for proto 0-31, 0x54 for proto 32-63
@@ -396,6 +403,20 @@ void sendHott(uint8_t moduleIdx)
   if (Multi_Buffer && memcmp(Multi_Buffer, "HoTT", 4) == 0 && (Multi_Buffer[5] & 0x80) && (Multi_Buffer[5] & 0x0F) >= 0x07) {
     // HoTT Lua script is running
     sendMulti(moduleIdx, Multi_Buffer[5]);
+  }
+}
+
+void sendDSM(uint8_t moduleIdx)
+{
+  // Multi_Buffer[0..2]=="DSM" -> Lua script is running
+  // Multi_Buffer[3]==0x70 + len -> TX to RX data ready to be sent
+  // Multi_Buffer[4..9]=6 bytes of TX to RX data
+  // Multi_Buffer[10..25]=16 bytes of RX to TX data
+  if (Multi_Buffer && memcmp(Multi_Buffer, "DSM", 3) == 0 && (Multi_Buffer[3] & 0xF8) == 0x70) {
+    for(uint8_t i = 0; i < 7; i++) {
+        sendMulti(moduleIdx, Multi_Buffer[3+i]);
+    }
+    Multi_Buffer[3] = 0x00;    // Data sent
   }
 }
 #endif

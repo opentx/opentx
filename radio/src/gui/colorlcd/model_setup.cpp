@@ -711,9 +711,9 @@ class ModuleWindow : public FormGroup {
       }
 #endif
 #if defined (PCBNV14)
-      else if (isModuleFlysky(moduleIdx)) {
+      else if (isModuleAFHDS3(moduleIdx)) {
         grid.nextLine();
-        rfChoice = new Choice(this, grid.getFieldSlot(), STR_FLYSKY_PROTOCOLS, 0, 3,
+        rfChoice = new Choice(this, grid.getFieldSlot(), STR_AFHDS3_PROTOCOLS, 0, 3,
                    GET_DEFAULT(g_model.moduleData[moduleIdx].flysky.mode),
                    [=](int32_t newValue) -> void {
                      g_model.moduleData[moduleIdx].flysky.mode = newValue;

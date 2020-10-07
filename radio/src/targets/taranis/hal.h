@@ -928,6 +928,14 @@
   #define GPIO_LED_GPIO_OFF             GPIO_SetBits
   #define LED_RED_GPIO                  GPIOA
   #define LED_RED_GPIO_PIN              GPIO_Pin_13 // PA.13
+#elif defined(PCBXLITES)
+  #define STATUS_LEDS
+  #define GPIO_LED_GPIO_ON              GPIO_ResetBits
+  #define GPIO_LED_GPIO_OFF             GPIO_SetBits
+  #define LED_BLUE_GPIO                 GPIOE
+  #define LED_BLUE_GPIO_PIN             GPIO_Pin_6  // PE.06
+  #define LED_RED_GPIO                  GPIOE
+  #define LED_RED_GPIO_PIN              GPIO_Pin_4  // PE.04
 #elif defined(PCBXLITE)
   #define STATUS_LEDS
   #define GPIO_LED_GPIO_ON              GPIO_ResetBits
@@ -1646,6 +1654,7 @@
   #define BACKLIGHT_GPIO_PinSource      GPIO_PinSource8
   #define BACKLIGHT_GPIO_AF             GPIO_AF_TIM10
 #endif
+#define KEYS_BACKLIGHT_RCC_AHB1Periph        0
 
 // LCD driver
 #if defined(PCBX9E)

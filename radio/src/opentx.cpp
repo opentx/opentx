@@ -27,6 +27,10 @@
 #include "view_main.h"
 #endif
 
+#if defined(PCBSKY9X)
+#include "audio_driver.h"
+#endif
+
 RadioData  g_eeGeneral;
 ModelData  g_model;
 
@@ -276,7 +280,9 @@ void generalDefault()
 
 #if defined(PCBHORUS)
   g_eeGeneral.blOffBright = 20;
-#else
+#endif
+
+#if defined(LCD_CONTRAST_DEFAULT)
   g_eeGeneral.contrast = LCD_CONTRAST_DEFAULT;
 #endif
 
@@ -694,12 +700,19 @@ void checkBacklight()
       }
     }
 
-    bool backlightOn = (g_eeGeneral.backlightMode == e_backlight_mode_on || (g_eeGeneral.backlightMode != e_backlight_mode_off && lightOffCounter) || isFunctionActive(FUNCTION_BACKLIGHT));
-    if (flashCounter) backlightOn = !backlightOn;
-    if (backlightOn)
+    bool backlightOn = (g_eeGeneral.backlightMode == e_backlight_mode_on || (g_eeGeneral.backlightMode != e_backlight_mode_off && lightOffCounter));
+
+    if (flashCounter) {
+      backlightOn = !backlightOn;
+    }
+
+    if (backlightOn) {
+      currentBacklightBright = requiredBacklightBright;
       BACKLIGHT_ENABLE();
-    else
+    }
+    else {
       BACKLIGHT_DISABLE();
+    }
   }
 }
 
@@ -1690,28 +1703,40 @@ void opentxResume()
 
 void instantTrim()
 {
-  int16_t  anas_0[MAX_INPUTS];
+  int16_t anas_0[MAX_INPUTS];
   evalInputs(e_perout_mode_notrainer | e_perout_mode_nosticks);
   memcpy(anas_0, anas, sizeof(anas_0));
 
   evalInputs(e_perout_mode_notrainer);
 
-  for (uint8_t stick=0; stick<NUM_STICKS; stick++) {
-    if (stick!=THR_STICK) {
-      // don't instant trim the throttle stick
-      uint8_t trim_phase = getTrimFlightMode(mixerCurrentFlightMode, stick);
+  for (uint8_t stick = 0; stick < NUM_STICKS; stick++) {
+    if (stick != THR_STICK) { // don't instant trim the throttle stick
+      bool addTrim = false;
       int16_t delta = 0;
-      for (int e=0; e<MAX_EXPOS; e++) {
-        ExpoData * ed = expoAddress(e);
-        if (!EXPO_VALID(ed)) break; // end of list
-        if (ed->srcRaw-MIXSRC_Rud == stick) {
-          delta = anas[ed->chn] - anas_0[ed->chn];
-          break;
+      uint8_t trimFlightMode = getTrimFlightMode(mixerCurrentFlightMode, stick);
+      for (uint8_t i = 0; i < MAX_EXPOS; i++) {
+        ExpoData * expo = expoAddress(i);
+        if (!EXPO_VALID(expo))
+          break; // end of list
+        if (stick == expo->srcRaw - MIXSRC_FIRST_STICK) {
+          if (expo->carryTrim < 0) {
+            // only default trims will be taken into account
+            addTrim = false;
+            break;
+          }
+          auto newDelta = anas[expo->chn] - anas_0[expo->chn];
+          if (addTrim && delta != newDelta) {
+            // avoid 2 different delta values
+            addTrim = false;
+            break;
+          }
+          addTrim = true;
+          delta = newDelta;
         }
       }
-      if (abs(delta) >= INSTANT_TRIM_MARGIN) {
+      if (addTrim && abs(delta) >= INSTANT_TRIM_MARGIN) {
         int16_t trim = limit<int16_t>(TRIM_EXTENDED_MIN, (delta + trims[stick]) / 2, TRIM_EXTENDED_MAX);
-        setTrimValue(trim_phase, stick, trim);
+        setTrimValue(trimFlightMode, stick, trim);
       }
     }
   }
@@ -2005,6 +2030,7 @@ void opentxInit()
 #endif
 
   currentSpeakerVolume = requiredSpeakerVolume = g_eeGeneral.speakerVolume + VOLUME_LEVEL_DEF;
+  currentBacklightBright = requiredBacklightBright = g_eeGeneral.backlightBright;
 #if !defined(SOFTWARE_VOLUME)
   setScaledVolume(currentSpeakerVolume);
 #endif
@@ -2086,7 +2112,7 @@ int main()
   // important to disable it before commencing with system initialisation (or
   // we could put a bunch more WDG_RESET()s in. But I don't like that approach
   // during boot up.)
-#if defined(PCBTARANIS)
+#if defined(LCD_CONTRAST_DEFAULT)
   g_eeGeneral.contrast = LCD_CONTRAST_DEFAULT;
 #endif
 
@@ -2127,6 +2153,10 @@ int main()
 
 inline uint32_t PWR_PRESS_SHUTDOWN_DELAY()
 {
+  // Instant off when both power button are pressed
+  if (pwrForcePressed())
+    return 0;
+
   return (2 - g_eeGeneral.pwrOffSpeed) * 100;
 }
 

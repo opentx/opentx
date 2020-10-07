@@ -208,7 +208,7 @@ void Pxx1Pulses<PxxTransport>::setupFrame(uint8_t module)
   add8ChannelsFrame(module, sendUpperChannels, sendFailsafe);
 
   if (moduleState[module].counter-- == 0) {
-    moduleState[module].counter = 1000;
+    moduleState[module].counter = 999;
   }
 }
 

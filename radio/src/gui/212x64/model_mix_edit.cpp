@@ -140,6 +140,8 @@ void menuModelMixOne(event_t event)
 
       case MIX_FIELD_CURVE:
         lcdDrawTextAlignedLeft(y, STR_CURVE);
+        s_currSrcRaw = md2->srcRaw;
+        s_currScale = 0;
         editCurveRef(MIXES_2ND_COLUMN, y, md2->curve, event, attr);
         break;
 

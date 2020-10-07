@@ -42,7 +42,6 @@ set(modeledit_UIS
   setup_timer.ui
   setup_module.ui
   flightmode.ui
-  telemetry_analog.ui
   telemetry_customscreen.ui
   telemetry_sensor.ui
 )

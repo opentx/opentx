@@ -30,7 +30,7 @@ class ModelBitmapWidget: public Widget
     {
     }
 
-    virtual ~ModelBitmapWidget()
+    ~ModelBitmapWidget() override
     {
       delete buffer;
     }

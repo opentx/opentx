@@ -126,10 +126,7 @@ extern const char STR_FUNCSOUNDS[];
 extern const char STR_VTELEMUNIT[];
 extern const char STR_GPSFORMAT[];
 extern const char STR_VTELEMSCREENTYPE[];
-
-#if defined(HELI)
 extern const char STR_VSWASHTYPE[];
-#endif
 
 extern const char STR_VKEYS[];
 extern const char STR_VSWITCHES[];
@@ -166,13 +163,19 @@ extern const char STR_XJT_ACCST_RF_PROTOCOLS[];
 extern const char STR_ISRM_RF_PROTOCOLS[];
 extern const char STR_R9M_PXX2_RF_PROTOCOLS[];
 extern const char STR_DSM_PROTOCOLS[];
-extern const char STR_FLYSKY_PROTOCOLS[];
 extern const char STR_CRSF_BAUDRATE[];
 extern const char STR_PPM_POL[];
 
-#if defined(MULTIMODULE)
 extern const char STR_MULTI_PROTOCOLS[];
-#endif
+extern const char STR_MULTI_POWER[];
+
+extern const char STR_AFHDS3_ONE_TO_ONE_TELEMETRY[];
+extern const char STR_AFHDS3_ONE_TO_MANY[];
+extern const char STR_AFHDS3_PROTOCOLS[];
+extern const char STR_AFHDS3_POWERS[];
+extern const char STR_AFHDS3_RX_FREQ[];
+extern const char STR_AFHDS3_ACTUAL_POWER[];
+extern const char STR_AFHDS3_POWER_SOURCE[];
 
 extern const char STR_CURVE_TYPES[];
 extern const char STR_VSENSORTYPES[];
@@ -181,7 +184,6 @@ extern const char STR_VPREC[];
 extern const char STR_VCELLINDEX[];
 extern const char STR_TOUCH_PANEL[];
 
-#if defined(BLUETOOTH)
 extern const char STR_BLUETOOTH[];
 extern const char STR_BLUETOOTH_DISC[];
 extern const char STR_BLUETOOTH_INIT[];
@@ -189,9 +191,8 @@ extern const char STR_BLUETOOTH_DIST_ADDR[];
 extern const char STR_BLUETOOTH_LOCAL_ADDR[];
 extern const char STR_BLUETOOTH_PIN_CODE[];
 extern const char STR_BLUETOOTH_MODES[];
-#endif
 
-#define NO_INDENT(x) (x)+LEN_INDENT
+#define NO_INDENT(x) (x) + LEN_INDENT
 
 extern const char STR_POPUPS_ENTER_EXIT[];
 extern const char STR_OK[];
@@ -218,6 +219,7 @@ extern const char STR_TRIMINC[];
 extern const char STR_DISPLAY_TRIMS[];
 extern const char STR_TTRACE[];
 extern const char STR_TTRIM[];
+extern const char STR_TTRIM_SW[];
 extern const char STR_BEEPCTR[];
 extern const char STR_USE_GLOBAL_FUNCS[];
 
@@ -308,6 +310,7 @@ extern const char STR_BACKLIGHT_LABEL[];
 #if defined(PWM_BACKLIGHT) || defined(COLORLCD)
 extern const char STR_BLONBRIGHTNESS[];
 extern const char STR_BLOFFBRIGHTNESS[];
+extern const char STR_KEYS_BACKLIGHT[];
 #endif
 
 extern const char STR_SPLASHSCREEN[];
@@ -405,6 +408,7 @@ extern const char STR_MULTI_FIXEDID[];
 extern const char STR_MULTI_OPTION[];
 extern const char STR_MULTI_VIDFREQ[];
 extern const char STR_MULTI_RFTUNE[];
+extern const char STR_MULTI_RFPOWER[];
 extern const char STR_MULTI_TELEMETRY[];
 extern const char STR_MULTI_AUTOBIND[];
 extern const char STR_DISABLE_CH_MAP[];
@@ -549,6 +553,7 @@ extern const char STR_SPECTRUM_ANALYSER_EXT[];
 extern const char STR_SPECTRUM_ANALYSER_INT[];
 extern const char STR_WAITING_FOR_RX[];
 extern const char STR_WAITING_FOR_TX[];
+extern const char STR_WARN_5VOLTS[];
 
 #if defined(SDCARD)
   extern const char STR_BACKUP_MODEL[];
@@ -668,8 +673,10 @@ extern const char STR_VIEW_TEXT[];
 extern const char STR_FLASH_BOOTLOADER[];
 extern const char STR_FLASH_EXTERNAL_DEVICE[];
 extern const char STR_FLASH_RECEIVER_OTA[];
-extern const char STR_FLASH_RECEIVER_OTA_BY_EXTERNAL[];
-extern const char STR_FLASH_RECEIVER_OTA_BY_INTERNAL[];
+extern const char STR_FLASH_RECEIVER_BY_EXTERNAL_MODULE_OTA[];
+extern const char STR_FLASH_RECEIVER_BY_INTERNAL_MODULE_OTA[];
+extern const char STR_FLASH_FLIGHT_CONTROLLER_BY_EXTERNAL_MODULE_OTA[];
+extern const char STR_FLASH_FLIGHT_CONTROLLER_BY_INTERNAL_MODULE_OTA[];
 extern const char STR_FLASH_BLUETOOTH_MODULE[];
 extern const char STR_FLASH_POWER_MANAGEMENT_UNIT[];
 extern const char STR_CURRENT_VERSION[];
@@ -949,6 +956,9 @@ extern const char STR_LAYOUT[];
 extern const char STR_ADD_MAIN_VIEW[];
 extern const char STR_BACKGROUND_COLOR[];
 extern const char STR_MAIN_COLOR[];
+extern const char STR_BAR2_COLOR[];
+extern const char STR_BAR1_COLOR[];
+extern const char STR_TEXT_COLOR[];
 extern const char STR_TEXT_VIEWER[];
 extern const char STR_RF_POWER[];
 

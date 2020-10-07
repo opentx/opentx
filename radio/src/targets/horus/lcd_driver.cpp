@@ -20,14 +20,25 @@
 
 #include "opentx.h"
 
-#define HBP  42
-#define VBP  12
+#if defined(RADIO_T18)
+  #define HBP  43
+  #define VBP  12
 
-#define HSW  2
-#define VSW  10
+  #define HSW  2
+  #define VSW  4
 
-#define HFP  3
-#define VFP  2
+  #define HFP  8
+  #define VFP  8
+#else
+  #define HBP  42
+  #define VBP  12
+
+  #define HSW  2
+  #define VSW  10
+
+  #define HFP  3
+  #define VFP  2
+#endif
 
 #define LCD_FIRST_LAYER                0
 #define LCD_SECOND_LAYER               1
@@ -142,14 +153,18 @@ static void LCD_NRSTConfig(void)
 
 static void lcdReset()
 {
-  LCD_NRST_HIGH();
-  delay_ms(1);
+#if defined(RADIO_T18)     // T18 screen has issues if NRST is ever brought low
+  NRST_HIGH();
+#else
+  NRST_HIGH();
+  delay3(1);
 
-  LCD_NRST_LOW(); // RESET;
-  delay_ms(20);
+  NRST_LOW(); //  RESET();
+  delay3(20);
 
-  LCD_NRST_HIGH();
-  delay_ms(20);
+  NRST_HIGH();
+  delay3(30);
+#endif
 }
 
 void LCD_Init_LTDC()

@@ -180,6 +180,30 @@ if(CROSSFIRE)
     )
 endif()
 
+if(AFHDS3)
+  add_definitions(-DAFHDS3)
+  set(PULSES_SRC
+    ${PULSES_SRC}
+    afhds3.cpp
+    )
+endif()
+
+if(MULTIMODULE OR AFHDS3)
+ set(SRC ${SRC} telemetry/flysky_ibus.cpp )
+endif()
+
+if(GHOST)
+  add_definitions(-DGHOST)
+  set(PULSES_SRC
+    ${PULSES_SRC}
+    ghost.cpp
+    )
+  set(SRC
+    ${SRC}
+    telemetry/ghost.cpp
+    )
+endif()
+
 add_definitions(-g)
 
 add_definitions(-DCPUARM)
@@ -254,11 +278,11 @@ if(SBUS)
     sbus.cpp
     )
 endif()
+
 if(AFHDS2)
   set(PULSES_SRC
     ${PULSES_SRC}
     afhds2.cpp
-    flysky.cpp
     )
 endif()
 

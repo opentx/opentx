@@ -37,9 +37,6 @@
 #define TARANIS_X9LITES_VARIANT        0x0801
 #define JUMPER_T12_VARIANT             0x4001
 
-#define SIMU_STOCK_VARIANTS            (GVARS_VARIANT|FRSKY_VARIANT)
-#define SIMU_M128_VARIANTS             (M128_VARIANT|SIMU_STOCK_VARIANTS)
-
 class OpenTxGeneralData: public TransformedField {
   public:
     OpenTxGeneralData(GeneralSettings & generalData, Board::Type board, unsigned int version, unsigned int variant=0);
@@ -99,7 +96,7 @@ class ProtocolsConversionTable: public ConversionTable
       addConversion(PULSES_ACCESS_R9M, val++);
       addConversion(PULSES_PXX_R9M_LITE, val++);
       addConversion(PULSES_ACCESS_R9M_LITE, val++);
-      addConversion(PULSES_PXX_R9M_LITE_PRO, val++);
+      addConversion(PULSES_GHOST, val++);
       addConversion(PULSES_ACCESS_R9M_LITE_PRO, val++);
 
       addConversion(PULSES_SBUS, val++);
@@ -107,6 +104,10 @@ class ProtocolsConversionTable: public ConversionTable
       addConversion(PULSES_XJT_LITE_X16, val);
       addConversion(PULSES_XJT_LITE_D8, val);
       addConversion(PULSES_XJT_LITE_LR12, val++);
+
+      if (version >= 219) {
+        addConversion(PULSES_AFHDS3, val++);
+      }
     }
 };
 

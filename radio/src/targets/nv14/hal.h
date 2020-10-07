@@ -412,6 +412,7 @@
 #define EXTMODULE_RX_GPIO               GPIOC
 #define EXTMODULE_RX_GPIO_PIN           GPIO_Pin_7 // PC.07
 #define EXTMODULE_RX_GPIO_PinSource     GPIO_PinSource7
+#define EXTMODULE_USART                 USART6
 #define EXTMODULE_RX_GPIO_AF_USART      GPIO_AF_USART6
 #define EXTMODULE_TIMER                 TIM8
 #define EXTMODULE_TIMER_IRQn            TIM8_CC_IRQn

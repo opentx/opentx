@@ -41,13 +41,10 @@ class RadioDataConversionState;
 class RSSIAlarmData {
   public:
     RSSIAlarmData() { clear(); }
-    unsigned int level[2];  // AVR Only
     int warning;
     int critical;
     bool disabled;
     void clear() {
-      this->level[0] = 2;
-      this->level[1] = 3;
       this->warning = 45;
       this->critical = 42;
       this->disabled = false;
@@ -78,6 +75,7 @@ class TimerData {
     void convert(RadioDataConversionState & cstate);
     bool isEmpty();
     bool isModeOff() { return mode == RawSwitch(SWITCH_TYPE_TIMER_MODE, 0); }
+    QString nameToString(int index) const;
 };
 
 #define CPN_MAX_SCRIPTS       9
@@ -184,6 +182,7 @@ class ModelData {
     unsigned int thrTraceSrc;
     uint64_t switchWarningStates;
     unsigned int switchWarningEnable;
+    unsigned int thrTrimSwitch;
     unsigned int potsWarningMode;
     bool potsWarnEnabled[CPN_MAX_POTS];
     int potsWarnPosition[CPN_MAX_POTS];
@@ -300,6 +299,7 @@ class ModelData {
       int shift;
       int updcnt;
       int maxindex;
+      int occurences;
       RawSourceType srcType;
       RawSwitchType swtchType;
     };
@@ -317,6 +317,7 @@ class ModelData {
     void updateDestCh(MixData * md);
     void updateLimitCurveRef(CurveReference & crv);
     void updateFlightModeFlags(unsigned int & flags);
+    void updateTelemetryRef(int & idx);
     void updateTelemetryRef(unsigned int & idx);
     void updateModuleFailsafes(ModuleData * md);
     inline void updateSourceRef(RawSource & src) { updateTypeIndexRef<RawSource, RawSourceType>(src, updRefInfo.srcType); }
@@ -336,6 +337,7 @@ class ModelData {
       if (value != swtch.toValue())
         value = swtch.toValue();
     }
+    void sortMixes();
 };
 
 #endif // MODELDATA_H

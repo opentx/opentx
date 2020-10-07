@@ -19,7 +19,6 @@
  */
 
 #include "opentx.h"
-#include "pulses/flysky.h"
 
 DMAFifo<HALLSTICK_BUFF_SIZE> hallDMAFifo __DMA (HALL_DMA_Stream_RX);
 Fifo<uint8_t, HALLSTICK_BUFF_SIZE> hallStickTxFifo;

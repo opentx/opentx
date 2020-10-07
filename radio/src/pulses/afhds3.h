@@ -18,26 +18,174 @@
  * GNU General Public License for more details.
  */
 
-
 #ifndef PULSES_AFHDS3_H_
 #define PULSES_AFHDS3_H_
 
-#include "afhds2.h"
-#include "../datastructs.h"
+#include "libopenui/src/bitfield.h"
+#include "definitions.h"
+#include "dataconstants.h"
+#include "opentx_types.h"
+#include "myeeprom.h"
+#include "opentx_helpers.h"
+#include "pulses_common.h"
 #include <cstring>
-#include <queue>
+#include "fifo.h"
 
-#define AFHDS3_BAUDRATE 1500000
-namespace afhds3 {
+#define AFHDS_MAX_PULSES 72
+//max number of transitions measured so far 290 + 10%
+#define AFHDS_MAX_PULSES_TRANSITIONS 320
+//#define AFHDS3_SLOW
 
-typedef void (*bindCallback_t) (bool);
-typedef void (*processSensor_t) (const uint8_t *, uint8_t);
-typedef int32_t (*getChannelValue_t)(uint8_t);
-enum DeviceAddress {
-  TRANSMITTER = 0x01, MODULE = 0x03,
+#if defined(EXTMODULE_USART) && defined(EXTMODULE_TX_INVERT_GPIO)
+#define AFHDS3_BAUDRATE        1500000
+#define AFHDS3_COMMAND_TIMEOUT 5
+#elif !defined(AFHDS3_SLOW)
+// 1s = 1 000 000 us
+// 1000000/115200 = 8,68 us
+// actual timer is ticking in 0,5 us  = 8,68*2 = 17,36 because it must be integer take 17
+// difference 1000000 / x = 8.5 -->  x = 117 647 = difference = 1.2 %
+// allowed half a bit difference on the last bit -- should be fine
+#define AFHDS3_BAUDRATE        115200
+//Because timer is ticking with 0.5us
+#define BITLEN_AFHDS           (17)
+
+#define AFHDS3_COMMAND_TIMEOUT 15
+#else
+// 1000000/57600 = 17,36 us
+#define AFHDS3_BAUDRATE        57600
+// 64* 86 = 11 110
+#define AFHDS3_COMMAND_TIMEOUT 20
+#define BITLEN_AFHDS           (35)
+#endif
+
+#define AFHDS3_FRAME_HALF_US AFHDS3_COMMAND_TIMEOUT * 2000
+
+//get channel value outside of afhds3 namespace
+int32_t getChannelValue(uint8_t channel);
+
+//use uint16_t instead of pulse_duration_t
+namespace afhds3
+{
+enum AfhdsSpecialChars
+{
+  END = 0xC0,             //Frame end
+  START = END,
+  ESC_END = 0xDC,         //Escaped frame end - in case END occurs in fame then ESC ESC_END must be used
+  ESC = 0xDB,             //Escaping character
+  ESC_ESC = 0xDD,         //Escaping character in case ESC occurs in fame then ESC ESC_ESC  must be used
 };
 
-enum FRAME_TYPE {
+struct Data
+{
+#if defined(EXTMODULE_USART) && defined(EXTMODULE_TX_INVERT_GPIO)
+  uint8_t pulses[AFHDS_MAX_PULSES];
+  uint8_t * ptr;
+#else
+  uint32_t pulsesSize;
+  uint16_t pulses[AFHDS_MAX_PULSES_TRANSITIONS];
+  uint32_t total;
+#endif
+
+  uint8_t frame_index;
+  uint8_t crc;
+  uint8_t state;
+  uint8_t timeout;
+  uint8_t esc_state;
+
+  void reset()
+  {
+#if !(defined(EXTMODULE_USART) && defined(EXTMODULE_TX_INVERT_GPIO))
+    total = 0;
+    pulsesSize = 0;
+#endif
+  }
+
+#if defined(EXTMODULE_USART) && defined(EXTMODULE_TX_INVERT_GPIO)
+  void sendByte(uint8_t b)
+  {
+    *ptr++ = b;
+  }
+
+  const uint8_t* getData()
+  {
+    return pulses;
+  }
+
+  void flush()
+  {
+  }
+#else
+  inline void _send_level(uint16_t v)
+  {
+    if (pulsesSize >= AFHDS_MAX_PULSES_TRANSITIONS) {
+      return;
+    }
+    pulses[pulsesSize++] = v;
+    total += v;
+  }
+  void sendByte(uint8_t b)
+  {
+    if (pulsesSize >= AFHDS_MAX_PULSES_TRANSITIONS) {
+      return;
+    }
+    //use 8n1
+    //parity: If the parity is enabled, then the MSB bit of the data to be transmitted is changed by the parity bit
+    //start is always 0
+    bool level = 0;
+    uint16_t length = BITLEN_AFHDS; //start bit
+    for (uint8_t i = 0; i <= 8; i++)
+    { //8 data bits + Stop=1
+      bool next_level = b & 1;
+      if (level == next_level) {
+        length += BITLEN_AFHDS;
+      }
+      else {
+        _send_level(length);
+        length = BITLEN_AFHDS;
+        level = next_level;
+      }
+      b = (b >> 1) | 0x80; // shift left to get next bit, fill msb with stop bit - needed just once
+    }
+    _send_level(length); //last bit (stop)
+
+  }
+  //add remaining time of frame
+  void flush()
+  {
+    uint16_t diff = AFHDS3_FRAME_HALF_US - total;
+    pulses[pulsesSize - 1] += diff;
+    //ensure 2 ms break
+    if (pulses[pulsesSize - 1] < 4000)
+    {
+      pulses[pulsesSize - 1] = 4050;
+    }
+    total += diff;
+  }
+
+  const uint16_t * getData()
+  {
+    return pulses;
+  }
+#endif
+
+  uint32_t getSize() const
+  {
+#if defined(EXTMODULE_USART) && defined(EXTMODULE_TX_INVERT_GPIO)
+    return ptr - pulses;
+#else
+    return pulsesSize;
+#endif
+  }
+};
+
+enum DeviceAddress
+{
+  TRANSMITTER = 0x01,
+  MODULE = 0x03,
+};
+
+enum FRAME_TYPE: uint8_t
+{
   REQUEST_GET_DATA = 0x01,  //Get data response: ACK + DATA
   REQUEST_SET_EXPECT_DATA = 0x02,  //Set data response: ACK + DATA
   REQUEST_SET_EXPECT_ACK = 0x03,  //Set data response: ACK
@@ -47,7 +195,8 @@ enum FRAME_TYPE {
   NOT_USED = 0xff
 };
 
-enum COMMAND {
+enum COMMAND: uint8_t
+{
   MODULE_READY = 0x01,
   MODULE_STATE = 0x02,
   MODULE_MODE = 0x03,
@@ -59,13 +208,18 @@ enum COMMAND {
   COMMAND_RESULT = 0x0D,
   MODULE_POWER_STATUS = 0x0F,
   MODULE_VERSION = 0x1F,
+  VIRTUAL_FAILSAFE = 0x99, // virtual command used to trigger failsafe
+  UNDEFINED = 0xFF
 };
 
-enum COMMAND_DIRECTION {
-  RADIO_TO_MODULE = 0, MODULE_TO_RADIO = 1
+enum COMMAND_DIRECTION
+{
+  RADIO_TO_MODULE = 0,
+  MODULE_TO_RADIO = 1
 };
 
-enum DATA_TYPE {
+enum DATA_TYPE
+{
   READY_DT,  // 8 bytes 0x01 Not ready 0x02 Ready
   STATE_DT,  // See MODULE_STATE
   MODE_DT,
@@ -76,14 +230,18 @@ enum DATA_TYPE {
   MODULE_VERSION_DT,
   EMPTY_DT,
 };
+
 //enum used by command response -> translate to ModuleState
-enum MODULE_READY_E {
+enum MODULE_READY_E
+{
   MODULE_STATUS_UNKNOWN = 0x00,
   MODULE_STATUS_NOT_READY = 0x01,
   MODULE_STATUS_READY = 0x02
 };
 
-enum ModuleState {
+enum ModuleState
+{
+  STATE_NOT_READY = 0x00, //virtual
   STATE_HW_ERROR = 0x01,
   STATE_BINDING = 0x02,
   STATE_SYNC_RUNNING = 0x03,
@@ -94,24 +252,25 @@ enum ModuleState {
   STATE_UPDATING_RX = 0x08,
   STATE_UPDATING_RX_FAILED = 0x09,
   STATE_RF_TESTING = 0x0a,
-  STATE_NOT_READY = 0x0b, //virtual
-  STATE_READY = 0x0c,     //virtual
+  STATE_READY = 0x0b,      //virtual
   STATE_HW_TEST = 0xff,
 };
 
 //used for set command
-enum MODULE_MODE_E {
+enum MODULE_MODE_E
+{
   STANDBY = 0x01,
   BIND = 0x02,  //after bind module will enter run mode
   RUN = 0x03,
   RX_UPDATE = 0x04, //after successful update module will enter standby mode, otherwise hw error will be raised
+  MODULE_MODE_UNKNOWN = 0xFF
 };
 
-enum CMD_RESULT {
+enum CMD_RESULT
+{
   FAILURE = 0x01,
   SUCCESS = 0x02,
 };
-
 
 #define MIN_FREQ 50
 #define MAX_FREQ 400
@@ -120,39 +279,53 @@ enum CMD_RESULT {
 #define FAILSAFE_MIN -15000
 #define FAILSAFE_MAX 15000
 
-enum BIND_POWER {
+enum BIND_POWER
+{
   MIN_16dBm = 0x00,
+  BIND_POWER_FIRST = MIN_16dBm,
   MIN_5dBm = 0x01,
   MIN_0dbm = 0x02,
   PLUS_5dBm = 0x03,
-  PLUS_14dBm = 0x04
+  PLUS_14dBm = 0x04,
+  BIND_POWER_LAST = PLUS_14dBm,
 };
 
-enum RUN_POWER {
+enum RUN_POWER
+{
   PLUS_15bBm = 0x00,
+  RUN_POWER_FIRST = PLUS_15bBm,
   PLUS_20bBm = 0x01,
   PLUS_27dbm = 0x02,
   PLUS_30dBm = 0x03,
-  PLUS_33dBm = 0x04
+  PLUS_33dBm = 0x04,
+  RUN_POWER_LAST = PLUS_33dBm,
 };
 
-enum EMI_STANDARD {
-  FCC = 0x00, CE = 0x01
+enum EMI_STANDARD
+{
+  FCC = 0x00,
+  CE = 0x01
 };
 
-enum TELEMETRY {
-  TELEMETRY_DISABLED = 0x00, TELEMETRY_ENABLED = 0x01
+enum TELEMETRY
+{
+  TELEMETRY_DISABLED = 0x00,
+  TELEMETRY_ENABLED = 0x01
 };
 
-enum PULSE_MODE {
-  PWM = 0x00, PPM_MODE = 0x01,
+enum PULSE_MODE
+{
+  PWM_MODE = 0x00,
+  PPM_MODE = 0x01,
 };
 
-enum SERIAL_MODE {
-  IBUS = 0x00, SBUS_MODE = 0x02
+enum SERIAL_MODE
+{
+  IBUS = 0x00,
+  SBUS_MODE = 0x02
 };
 
-struct __attribute__ ((packed)) Config_s {
+PACK(struct Config_s {
   uint8_t bindPower;
   uint8_t runPower;
   uint8_t emiStandard;
@@ -163,58 +336,75 @@ struct __attribute__ ((packed)) Config_s {
   uint8_t channelCount;
   uint16_t failSafeTimout;
   int16_t failSafeMode[MAX_CHANNELS];
-};
+});
 
-union Config_u {
+union Config_u
+{
   Config_s config;
   uint8_t buffer[sizeof(Config_s)];
 };
 
-enum CHANNELS_DATA_MODE {
-  CHANNELS = 0x01, FAIL_SAFE = 0x02,
+enum CHANNELS_DATA_MODE
+{
+  CHANNELS = 0x01,
+  FAIL_SAFE = 0x02,
 };
 
-struct __attribute__ ((packed)) ChannelsData {
+PACK(struct ChannelsData {
   uint8_t mode;
   uint8_t channelsNumber;
   int16_t data[MAX_CHANNELS];
-};
+});
 
-union ChannelsData_u {
+union ChannelsData_u
+{
   ChannelsData data;
   uint8_t buffer[sizeof(ChannelsData)];
 };
 
-struct __attribute__ ((packed)) TelemetryData {
+PACK(struct TelemetryData
+{
   uint8_t sensorType;
   uint8_t length;
   uint8_t type;
   uint8_t semsorID;
   uint8_t data[8];
+});
+
+enum MODULE_POWER_SOURCE
+{
+  INTERNAL = 0x01,
+  EXTERNAL = 0x02,
 };
 
-enum MODULE_POWER_SOURCE {
-  INTERNAL = 0x01, EXTERNAL = 0x02,
-};
-
-struct __attribute__ ((packed)) ModuleVersion {
+PACK(struct ModuleVersion
+{
   uint32_t productNumber;
   uint32_t hardwereVersion;
   uint32_t bootloaderVersion;
   uint32_t firmwareVersion;
   uint32_t rfVersion;
-};
+});
 
+PACK(struct CommandResult_s
+{
+  uint16_t command;
+  uint8_t result;
+  uint8_t respLen;
+});
 
-union AfhdsFrameData {
+union AfhdsFrameData
+{
   uint8_t value;
   Config_s Config;
   ChannelsData Channels;
   TelemetryData Telemetry;
   ModuleVersion Version;
+  CommandResult_s CommandResult;
 };
 
-struct __attribute__ ((packed)) AfhdsFrame {
+PACK(struct AfhdsFrame
+{
   uint8_t startByte;
   uint8_t address;
   uint8_t frameNumber;
@@ -222,114 +412,193 @@ struct __attribute__ ((packed)) AfhdsFrame {
   uint8_t command;
   uint8_t value;
 
-  AfhdsFrameData* GetData() {
+  AfhdsFrameData * GetData()
+  {
     return reinterpret_cast<AfhdsFrameData*>(&value);
   }
-};
+});
 
 #define FRM302_STATUS 0x56
 
-enum State {
+enum State
+{
   UNKNOWN = 0,
   SENDING_COMMAND,
   AWAITING_RESPONSE,
   IDLE
 };
 
-class request {
-  public:
-  request(COMMAND command, FRAME_TYPE frameType, const uint8_t* data = nullptr, uint8_t length = 0) {
-    this->command = command;
-    this->frameType = frameType;
-    if(data && length){
-      payload = new uint8_t[length];
-      std::memcpy(payload, data, length);
-    }
-    else payload = nullptr;
-    payloadSize = length;
-  }
-  ~request() {
-    if(payload != nullptr) {
-      delete[] payload;
-      payload = nullptr;
-    }
-  }
+// one byte frames for request queue
+struct Frame
+{
   enum COMMAND command;
   enum FRAME_TYPE frameType;
-  uint8_t* payload;
+  uint8_t payload;
+  uint8_t frameNumber;
+  bool useFrameNumber;
   uint8_t payloadSize;
 };
 
-class afhds3 {
-public:
-  afhds3(FlySkySerialPulsesData* data, ModuleData* moduleData, int16_t* failsafeChannels, getChannelValue_t getChannelValue, processSensor_t processSensor) {
-    this->data = data;
-    this->moduleData = moduleData;
-    this->getChannelValue = getChannelValue;
-    this->processSensor = processSensor;
-	this->failsafeChannels = failsafeChannels;
-    reset();
+// simple fifo implementation because Pulses is used as member of union and can not be non trivial type
+struct CommandFifo
+{
+  Frame commandFifo[8];
+  volatile uint32_t setIndex;
+  volatile uint32_t getIndex;
+
+  void clearCommandFifo();
+
+  inline uint32_t nextIndex(uint32_t idx) const
+  {
+    return (idx + 1) & (sizeof(commandFifo) / sizeof(commandFifo[0]) - 1);
   }
 
-  virtual ~afhds3() {
-    clearQueue();
+  inline uint32_t prevIndex(uint32_t idx) const
+  {
+     if (idx == 0)
+     {
+       return (sizeof(commandFifo) / sizeof(commandFifo[0]) - 1);
+     }
+     return (idx - 1);
   }
 
-  const uint32_t baudrate = AFHDS3_BAUDRATE;
-  const uint16_t parity = ((uint16_t)0x0000); //USART_Parity_No
-  const uint16_t stopBits = ((uint16_t)0x0000); //USART_StopBits_1
-  const uint16_t wordLength = ((uint16_t)0x0000); //USART_WordLength_8b
-  const uint16_t commandTimout = 5; //ms
+  inline bool isEmpty() const
+  {
+    return (getIndex == setIndex);
+  }
 
-  void setupPulses();
-  void onDataReceived(uint8_t data, uint8_t* rxBuffer, uint8_t& rxBufferCount, uint8_t maxSize);
-  void reset(bool resetFrameCount = true);
-  void bind(bindCallback_t callback);
-  void range(bindCallback_t callback);
-  void cancel();
-  const char* getState();
-  void stop();
-  void setToDefault();
-  void setModelData();
-private:
-  const uint8_t FrameAddress = DeviceAddress::TRANSMITTER | (DeviceAddress::MODULE << 4);
-  const uint16_t commandRepeatCount = 5;
-  void putByte(uint8_t byte);
-  void putBytes(uint8_t* data, int length);
-  void putHeader(COMMAND command, FRAME_TYPE frameType);
-  void putFooter();
-  void putFrame(COMMAND command, FRAME_TYPE frameType, uint8_t* data = nullptr, uint8_t dataLength = 0);
-  void addToQueue(COMMAND command, FRAME_TYPE frameType, uint8_t* data = nullptr, uint8_t dataLength = 0);
-  void parseData(uint8_t* rxBuffer, uint8_t rxBufferCount);
-  void setState(uint8_t state);
-  bool syncSettings();
-  void trace(const char* message);
-  uint8_t setFailSafe(int16_t* target);
-  int16_t convert(int channelValue);
-  void onModelSwitch();
-  void sendChannelsData();
-  void clearQueue();
+  inline void skip()
+  {
+    getIndex = nextIndex(getIndex);
+  }
 
-  //external data
-  FlySkySerialPulsesData* data;
-  ModuleData* moduleData;
-  int16_t* failsafeChannels;
-  int16_t* channelOutputs;
-  bindCallback_t operationCallback;
-  getChannelValue_t getChannelValue;
-  processSensor_t processSensor;
-  //missing ppm center!
+  void enqueueACK(COMMAND command, uint8_t frameNumber);
 
-  //local config
-  Config_u cfg;
-  ModuleVersion version;
-  enum MODULE_POWER_SOURCE powerSource;
-  //buffer where the channels are
-  State operationState;
-  uint16_t repeatCount;
-  uint32_t idleCount;
-  std::queue<request*> commandQueue;
+  void enqueue(COMMAND command, FRAME_TYPE frameType, bool useData = false, uint8_t byteContent = 0);
+
 };
 
-}
+void processTelemetryData(uint8_t module, uint8_t byte, uint8_t* rxBuffer, uint8_t& rxBufferCount, uint8_t maxSize);
+
+class PulsesData: public Data, CommandFifo
+{
+  public:
+    /**
+    * Initialize class for operation
+    * @param moduleIndex index of module one of INTERNAL_MODULE, EXTERNAL_MODULE
+    * @param resetFrameCount flag if current frame count should be reseted
+    */
+
+    void init(uint8_t moduleIndex, bool resetFrameCount = true);
+
+    /**
+    * Fills DMA buffers with frame to be send depending on actual state
+    */
+    void setupFrame();
+
+    /**
+    * Gets actual module status into provided buffer
+    * @param statusText target buffer for status
+    */
+    void getStatusString(char * statusText) const;
+
+    /**
+    * Gets actual power source and voltage
+    */
+    void getPowerStatus(char* buffer) const;
+
+    RUN_POWER actualRunPower() const;
+
+    /**
+    * Sends stop command to prevent any further module operations
+    */
+    void stop();
+
+  protected:
+
+    void setConfigFromModel();
+
+  private:
+
+    inline void putBytes(uint8_t* data, int length);
+
+    inline void putFrame(COMMAND command, FRAME_TYPE frameType, uint8_t* data = nullptr, uint8_t dataLength = 0, uint8_t* frame_index = nullptr);
+
+    void parseData(uint8_t* rxBuffer, uint8_t rxBufferCount);
+
+    void setState(uint8_t state);
+
+    bool syncSettings();
+
+    void requestInfoAndRun(bool send = false);
+
+    uint8_t setFailSafe(int16_t* target);
+
+    inline int16_t convert(int channelValue);
+
+    void sendChannelsData();
+
+    void clearFrameData();
+
+    void processTelemetryData(uint8_t byte, uint8_t* rxBuffer, uint8_t& rxBufferCount, uint8_t maxSize);
+
+    //friendship declaration - use for passing telemetry
+    friend void processTelemetryData(uint8_t module, uint8_t byte, uint8_t* rxBuffer, uint8_t& rxBufferCount, uint8_t maxSize);
+
+    /**
+    * Returns max power that currently can be set - use it to validate before synchronization of settings
+    */
+    RUN_POWER getMaxRunPower() const;
+
+    RUN_POWER getRunPower() const;
+
+    bool isConnectedUnicast();
+
+    bool isConnectedMulticast();
+
+    /**
+    * Index of the module
+    */
+    uint8_t module_index;
+    /**
+     * Target mode to be set to the module one of MODULE_MODE_E
+     */
+    uint8_t requestedModuleMode;
+    /**
+     * Internal operation state one of UNKNOWN, SENDING_COMMAND, AWAITING_RESPONSE, IDLE
+     * Used to avoid sending commands when not allowed to
+     */
+    State operationState;
+    /**
+     * Actual repeat count for requested command/operation - incremented by every attempt sending anything
+     */
+    uint16_t repeatCount;
+    /**
+     * Command count used for counting actual number of commands sent in run mode
+     */
+    uint32_t cmdCount;
+    /**
+     * Command index of command to be send when cmdCount reached necessary value
+     */
+    uint32_t cmdIndex;
+    /**
+     * Actual power source of the module - should be requested time to time
+     * Currently requested once
+     */
+    enum MODULE_POWER_SOURCE powerSource;
+    /**
+     * Pointer to module config - it is making operations easier and faster
+     */
+    ModuleData* moduleData;
+    /**
+     * Actual module configuration - must be requested from module
+     */
+    Config_u cfg;
+
+    /**
+     * Actual module version - must be requested from module
+     */
+    ModuleVersion version;
+};
+} /* Namespace ahfds3 */
 #endif /* PULSES_AFHDS3_H_ */

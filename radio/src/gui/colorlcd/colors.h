@@ -24,6 +24,7 @@
 #include "libopenui_config.h"
 
 #define WHITE                          RGB(0xFF, 0xFF, 0xFF)
+#define LIGHTWHITE                     RGB(238, 234, 238)
 #define BLACK                          RGB(0, 0, 0)
 #define YELLOW                         RGB(0xF0, 0xD0, 0x10)
 #define BLUE                           RGB(0x30, 0xA0, 0xE0)
@@ -34,6 +35,10 @@
 #define RED                            RGB(229, 32, 30)
 #define DARKRED                        RGB(160, 0, 6)
 #define GREEN                          RGB(25, 150, 50)
+#define LIGHTBROWN                     RGB(156, 109, 32)
+#define DARKBROWN                      RGB(106, 72, 16)
+#define BRIGHTGREEN                    RGB(0, 180, 60)
+#define ORANGE                         RGB(229, 100, 30)
 
 #define TEXT_STATUSBAR_COLOR           COLOR(TEXT_STATUSBAR_COLOR_INDEX)
 #define LINE_COLOR                     COLOR(LINE_COLOR_INDEX)

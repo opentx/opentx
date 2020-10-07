@@ -273,7 +273,7 @@ extern "C" {
 #endif
 
 // Backlight driver
-#define backlightEnable()              (PWM->PWM_CH_NUM[0].PWM_CDTY = g_eeGeneral.backlightBright)
+#define backlightEnable()              (PWM->PWM_CH_NUM[0].PWM_CDTY = currentBacklightBright)
 #define backlightDisable()             (PWM->PWM_CH_NUM[0].PWM_CDTY = 100)
 #define isBacklightEnabled()           (PWM->PWM_CH_NUM[0].PWM_CDTY != 100)
 #define BACKLIGHT_ENABLE()             backlightEnable()
@@ -381,6 +381,7 @@ void pwrOn();
 uint32_t pwrCheck();
 bool pwrPressed();
 #define UNEXPECTED_SHUTDOWN()          (g_eeGeneral.unexpectedShutdown)
+#define pwrForcePressed()              (false)
 
 // EEPROM driver
 #define EEPROM_SIZE           (4*1024*1024/8)

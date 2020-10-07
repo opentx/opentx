@@ -21,6 +21,10 @@
 #include "opentx.h"
 #include "targets/horus/board.h"
 
+#if defined(SBUS)
+extern Fifo<uint8_t, 32> trainerSbusFifo;
+#endif
+
 #if defined(AUX_SERIAL)
 uint8_t auxSerialMode = 0;
 Fifo<uint8_t, 512> auxSerialTxFifo;
@@ -31,7 +35,7 @@ AuxSerialRxFifo auxSerialRxFifo __DMA (AUX_SERIAL_DMA_Stream_RX);
 AuxSerialRxFifo auxSerialRxFifo;
 #endif
 
-void auxSerialSetup(unsigned int baudrate, bool dma)
+void auxSerialSetup(unsigned int baudrate, bool dma, uint16_t lenght = USART_WordLength_8b, uint16_t parity = USART_Parity_No, uint16_t stop = USART_StopBits_1)
 {
   USART_InitTypeDef USART_InitStructure;
   GPIO_InitTypeDef GPIO_InitStructure;
@@ -54,9 +58,9 @@ void auxSerialSetup(unsigned int baudrate, bool dma)
 #endif
 
   USART_InitStructure.USART_BaudRate = baudrate;
-  USART_InitStructure.USART_WordLength = USART_WordLength_8b;
-  USART_InitStructure.USART_StopBits = USART_StopBits_1;
-  USART_InitStructure.USART_Parity = USART_Parity_No;
+  USART_InitStructure.USART_WordLength = lenght;
+  USART_InitStructure.USART_StopBits = stop;
+  USART_InitStructure.USART_Parity = parity;
   USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
   USART_InitStructure.USART_Mode = USART_Mode_Tx | USART_Mode_Rx;
   USART_Init(AUX_SERIAL_USART, &USART_InitStructure);
@@ -123,11 +127,12 @@ void auxSerialInit(unsigned int mode, unsigned int protocol)
 #if defined(CROSSFIRE)
       if (protocol == PROTOCOL_TELEMETRY_CROSSFIRE) {
         auxSerialSetup(CROSSFIRE_TELEM_MIRROR_BAUDRATE, false);
-        AUX_SERIAL_POWER_OFF();
+        AUX_SERIAL_POWER_ON();
         break;
       }
 #endif
       auxSerialSetup(FRSKY_TELEM_MIRROR_BAUDRATE, false);
+      AUX_SERIAL_POWER_ON();
       break;
 
 #if defined(DEBUG) || defined(CLI)
@@ -140,8 +145,13 @@ void auxSerialInit(unsigned int mode, unsigned int protocol)
     case UART_MODE_TELEMETRY:
       if (protocol == PROTOCOL_TELEMETRY_FRSKY_D_SECONDARY) {
         auxSerialSetup(FRSKY_D_BAUDRATE, true);
-        AUX_SERIAL_POWER_OFF();
+        AUX_SERIAL_POWER_ON();
       }
+      break;
+
+    case UART_MODE_SBUS_TRAINER:
+      auxSerialSetup(SBUS_BAUDRATE, false, USART_WordLength_9b, USART_Parity_Even, USART_StopBits_2); // 2 stop bits requires USART_WordLength_9b
+      AUX_SERIAL_POWER_ON();
       break;
 
     case UART_MODE_LUA:
@@ -165,9 +175,7 @@ void auxSerialPutc(char c)
 
 void auxSerialSbusInit()
 {
-  auxSerialSetup(SBUS_BAUDRATE, true);
-  AUX_SERIAL_USART->CR1 |= USART_CR1_M | USART_CR1_PCE ;
-  AUX_SERIAL_POWER_ON();
+  auxSerialInit(UART_MODE_SBUS_TRAINER, 0);
 }
 
 void auxSerialStop()
@@ -225,10 +233,15 @@ extern "C" void AUX_SERIAL_USART_IRQHandler(void)
   uint32_t status = AUX_SERIAL_USART->SR;
   while (status & (USART_FLAG_RXNE | USART_FLAG_ERRORS)) {
     uint8_t data = AUX_SERIAL_USART->DR;
+    UNUSED(data);
     if (!(status & USART_FLAG_ERRORS)) {
 #if defined(LUA) & !defined(CLI)
       if (luaRxFifo && auxSerialMode == UART_MODE_LUA)
         luaRxFifo->push(data);
+#endif
+#if !defined(BOOT)
+      if (auxSerialMode == UART_MODE_SBUS_TRAINER)
+        trainerSbusFifo.push(data);
 #endif
     }
     status = AUX_SERIAL_USART->SR;
@@ -241,7 +254,7 @@ uint8_t aux2SerialMode = 0;
 Fifo<uint8_t, 512> aux2SerialTxFifo;
 AuxSerialRxFifo aux2SerialRxFifo __DMA (AUX2_SERIAL_DMA_Stream_RX);
 
-void aux2SerialSetup(unsigned int baudrate, bool dma)
+void aux2SerialSetup(unsigned int baudrate, bool dma, uint16_t lenght = USART_WordLength_8b, uint16_t parity = USART_Parity_No, uint16_t stop = USART_StopBits_1)
 {
   USART_InitTypeDef USART_InitStructure;
   GPIO_InitTypeDef GPIO_InitStructure;
@@ -264,9 +277,9 @@ void aux2SerialSetup(unsigned int baudrate, bool dma)
 #endif
 
   USART_InitStructure.USART_BaudRate = baudrate;
-  USART_InitStructure.USART_WordLength = USART_WordLength_8b;
-  USART_InitStructure.USART_StopBits = USART_StopBits_1;
-  USART_InitStructure.USART_Parity = USART_Parity_No;
+  USART_InitStructure.USART_WordLength = lenght;
+  USART_InitStructure.USART_StopBits = stop;
+  USART_InitStructure.USART_Parity = parity;
   USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
   USART_InitStructure.USART_Mode = USART_Mode_Tx | USART_Mode_Rx;
   USART_Init(AUX2_SERIAL_USART, &USART_InitStructure);
@@ -316,12 +329,12 @@ void aux2SerialInit(unsigned int mode, unsigned int protocol)
 #if defined(CROSSFIRE)
       if (protocol == PROTOCOL_TELEMETRY_CROSSFIRE) {
         aux2SerialSetup(CROSSFIRE_TELEM_MIRROR_BAUDRATE, false);
-        AUX2_SERIAL_POWER_OFF();
+        AUX2_SERIAL_POWER_ON();
         break;
       }
 #endif
       aux2SerialSetup(FRSKY_TELEM_MIRROR_BAUDRATE, false);
-      AUX2_SERIAL_POWER_OFF();
+      AUX2_SERIAL_POWER_ON();
       break;
 
 #if defined(DEBUG) || defined(CLI)
@@ -334,8 +347,13 @@ void aux2SerialInit(unsigned int mode, unsigned int protocol)
     case UART_MODE_TELEMETRY:
       if (protocol == PROTOCOL_TELEMETRY_FRSKY_D_SECONDARY) {
         aux2SerialSetup(FRSKY_D_BAUDRATE, true);
-        AUX2_SERIAL_POWER_OFF();
+        AUX2_SERIAL_POWER_ON();
       }
+      break;
+
+    case UART_MODE_SBUS_TRAINER:
+      aux2SerialSetup(SBUS_BAUDRATE, false, USART_WordLength_9b, USART_Parity_Even, USART_StopBits_2); // 2 stop bits requires USART_WordLength_9b
+      AUX2_SERIAL_POWER_ON();
       break;
 
     case UART_MODE_LUA:
@@ -359,9 +377,7 @@ void aux2SerialPutc(char c)
 
 void aux2SerialSbusInit()
 {
-  aux2SerialSetup(SBUS_BAUDRATE, true);
-  AUX2_SERIAL_USART->CR1 |= USART_CR1_M | USART_CR1_PCE ;
-  AUX2_SERIAL_POWER_ON();
+  aux2SerialInit(UART_MODE_SBUS_TRAINER, 0);
 }
 
 void aux2SerialStop()
@@ -416,10 +432,17 @@ extern "C" void AUX2_SERIAL_USART_IRQHandler(void)
   uint32_t status = AUX2_SERIAL_USART->SR;
   while (status & (USART_FLAG_RXNE | USART_FLAG_ERRORS)) {
     uint8_t data = AUX2_SERIAL_USART->DR;
+    UNUSED(data);
     if (!(status & USART_FLAG_ERRORS)) {
-#if defined(LUA)
-      if (luaRxFifo && aux2SerialMode == UART_MODE_LUA)
+#if defined(LUA) & !defined(CLI)
+      if (luaRxFifo && aux2SerialMode == UART_MODE_LUA) {
         luaRxFifo->push(data);
+      }
+#endif
+#if !defined(BOOT)
+      if (aux2SerialMode == UART_MODE_SBUS_TRAINER) {
+        trainerSbusFifo.push(data);
+      }
 #endif
     }
     status = AUX2_SERIAL_USART->SR;

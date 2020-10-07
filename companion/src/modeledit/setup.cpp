@@ -36,7 +36,6 @@ TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, Ge
   timer(timer),
   ui(new Ui::Timer)
 {
-  Board::Type board = firmware->getBoard();
 
   ui->setupUi(this);
 
@@ -65,10 +64,8 @@ TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, Ge
   ui->countdownBeep->setField(timer.countdownBeep, this);
   ui->countdownBeep->addItem(tr("Silent"), TimerData::COUNTDOWN_SILENT);
   ui->countdownBeep->addItem(tr("Beeps"), TimerData::COUNTDOWN_BEEPS);
-  if (IS_ARM(board) || IS_2560(board)) {
-    ui->countdownBeep->addItem(tr("Voice"), TimerData::COUNTDOWN_VOICE);
-    ui->countdownBeep->addItem(tr("Haptic"), TimerData::COUNTDOWN_HAPTIC);
-  }
+  ui->countdownBeep->addItem(tr("Voice"), TimerData::COUNTDOWN_VOICE);
+  ui->countdownBeep->addItem(tr("Haptic"), TimerData::COUNTDOWN_HAPTIC);
 
   ui->value->setMaximumTime(firmware->getMaxTimerStart());
 
@@ -192,6 +189,8 @@ void TimerPanel::on_name_editingFinished()
 #define MASK_SBUSPPM_FIELDS (1<<11)
 #define MASK_SUBTYPES       (1<<12)
 #define MASK_ACCESS         (1<<13)
+#define MASK_RX_FREQ        (1<<14)
+#define MASK_RF_POWER       (1<<15)
 
 quint8 ModulePanel::failsafesValueDisplayType = ModulePanel::FAILSAFE_DISPLAY_PERCENT;
 
@@ -207,7 +206,7 @@ ModulePanel::ModulePanel(QWidget * parent, ModelData & model, ModuleData & modul
 
   ui->label_module->setText(ModuleData::indexToString(moduleIdx, firmware));
   if (moduleIdx < 0) {
-    if (!IS_TARANIS(firmware->getBoard())) {
+    if (!IS_TARANIS(firmware->getBoard()) || IS_ACCESS_RADIO(firmware->getBoard(), Firmware::getCurrentVariant()->getId())) {
       ui->trainerMode->setItemData(TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE, 0, Qt::UserRole - 1);
       ui->trainerMode->setItemData(TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE, 0, Qt::UserRole - 1);
       ui->trainerMode->setItemData(TRAINER_MODE_MASTER_BATTERY_COMPARTMENT, 0, Qt::UserRole - 1);
@@ -271,7 +270,7 @@ ModulePanel::ModulePanel(QWidget * parent, ModelData & model, ModuleData & modul
   connect(ui->multiProtocol, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &ModulePanel::onMultiProtocolChanged);
   connect(this, &ModulePanel::channelsRangeChanged, this, &ModulePanel::setupFailsafes);
   connect(ui->btnGrpValueType, static_cast<void(QButtonGroup::*)(int)>(&QButtonGroup::buttonClicked), this, &ModulePanel::onFailsafesDisplayValueTypeChanged);
-
+  connect(ui->rxFreq, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &ModulePanel::onRfFreqChanged);
   connect(ui->clearRx1, SIGNAL(clicked()), this, SLOT(onClearAccessRxClicked()));
   connect(ui->clearRx2, SIGNAL(clicked()), this, SLOT(onClearAccessRxClicked()));
   connect(ui->clearRx3, SIGNAL(clicked()), this, SLOT(onClearAccessRxClicked()));
@@ -391,7 +390,7 @@ void ModulePanel::update()
     mask |= MASK_PROTOCOL;
     switch (protocol) {
       case PULSES_PXX_R9M:
-        mask |= MASK_R9M | MASK_SUBTYPES;
+        mask |= MASK_R9M | MASK_RF_POWER | MASK_SUBTYPES;
       case PULSES_ACCESS_R9M:
       case PULSES_ACCESS_R9M_LITE:
       case PULSES_ACCESS_R9M_LITE_PRO:
@@ -425,6 +424,8 @@ void ModulePanel::update()
         max_rx_num = 20;
         break;
       case PULSES_CROSSFIRE:
+        mask |= MASK_CHANNELS_RANGE | MASK_RX_NUMBER;
+      case PULSES_GHOST:
         mask |= MASK_CHANNELS_RANGE;
         module.channelsCount = 16;
         break;
@@ -449,6 +450,11 @@ void ModulePanel::update()
           mask |= MASK_MULTIOPTION;
         if (pdef.hasFailsafe || (module.multi.rfProtocol == MODULE_SUBTYPE_MULTI_FRSKY && (module.subType == 0 || module.subType == 2 || module.subType > 3 )))
           mask |= MASK_FAILSAFES;
+        break;
+      case PULSES_AFHDS3:
+        module.channelsCount = 18;
+        mask |= MASK_CHANNELS_RANGE| MASK_CHANNELS_COUNT | MASK_FAILSAFES;
+        mask |= MASK_SUBTYPES | MASK_RX_FREQ | MASK_RF_POWER;
         break;
       case PULSES_OFF:
         break;
@@ -516,16 +522,16 @@ void ModulePanel::update()
   }
 
   // R9M options
-  ui->r9mPower->setVisible(mask & MASK_R9M);
-  ui->label_r9mPower->setVisible(mask & MASK_R9M);
+  ui->r9mPower->setVisible(mask & MASK_RF_POWER);
+  ui->label_r9mPower->setVisible(mask & MASK_RF_POWER);
   ui->warning_r9mPower->setVisible((mask & MASK_R9M) && module.subType == MODULE_SUBTYPE_R9M_EU);
   ui->warning_r9mFlex->setVisible((mask & MASK_R9M) && module.subType > MODULE_SUBTYPE_R9M_EU);
 
-  if (mask & MASK_R9M) {
+  if (mask & MASK_RF_POWER) {
     const QSignalBlocker blocker(ui->r9mPower);
     ui->r9mPower->clear();
-    ui->r9mPower->addItems(ModuleData::powerValueStrings(module.subType, firmware));
-    ui->r9mPower->setCurrentIndex(module.pxx.power);
+    ui->r9mPower->addItems(ModuleData::powerValueStrings(protocol, module.subType, firmware));
+    ui->r9mPower->setCurrentIndex(mask & MASK_R9M ? module.pxx.power : module.afhds3.rfPower);
   }
 
   // module subtype
@@ -542,6 +548,9 @@ void ModulePanel::update()
       if (firmware->getCapability(HasModuleR9MFlex))
         i = 2;
       break;
+    case PULSES_AFHDS3:
+        numEntries = 4;
+        break;
     default:
       break;
     }
@@ -563,7 +572,7 @@ void ModulePanel::update()
   ui->lowPower->setVisible(mask & MASK_MULTIMODULE);
   ui->autoBind->setVisible(mask & MASK_MULTIMODULE);
   if (module.multi.rfProtocol == MODULE_SUBTYPE_MULTI_DSM2)
-    ui->autoBind->setText(tr("Autodetect Format"));
+    ui->autoBind->setVisible(false);
   else
     ui->autoBind->setText(tr("Bind on channel"));
 
@@ -606,6 +615,8 @@ void ModulePanel::update()
   // Failsafes
   ui->label_failsafeMode->setVisible(mask & MASK_FAILSAFES);
   ui->failsafeMode->setVisible(mask & MASK_FAILSAFES);
+  //hide reciever mode for afhds3
+  qobject_cast<QListView *>(ui->failsafeMode->view())->setRowHidden(FAILSAFE_RECEIVER, protocol == PULSES_AFHDS3);
 
   if ((mask & MASK_FAILSAFES) && module.failsafeMode == FAILSAFE_CUSTOM) {
     if (ui->failsafesGroupBox->isHidden()) {
@@ -635,6 +646,9 @@ void ModulePanel::update()
       }
     }
   }
+
+  ui->label_rxFreq->setVisible((mask & MASK_RX_FREQ));
+  ui->rxFreq->setVisible((mask & MASK_RX_FREQ));
 }
 
 void ModulePanel::on_trainerMode_currentIndexChanged(int index)
@@ -666,9 +680,14 @@ void ModulePanel::on_ppmPolarity_currentIndexChanged(int index)
 
 void ModulePanel::on_r9mPower_currentIndexChanged(int index)
 {
-  if (!lock && module.pxx.power != (unsigned int)index) {
-    module.pxx.power = index;
-    emit modified();
+  if (!lock) {
+
+    if (module.protocol == PULSES_AFHDS3 && module.afhds3.rfPower != (unsigned int)index) {
+      module.afhds3.rfPower = index;
+      emit modified();
+    }
+    else if(module.pxx.power != (unsigned int)index)
+      module.pxx.power = index;
   }
 }
 
@@ -766,9 +785,18 @@ void ModulePanel::onSubTypeChanged()
   if (!lock && module.subType != type) {
     lock=true;
     module.subType = type;
-    update();
+    if (module.protocol != PULSES_AFHDS3) {
+      update();
+    }
     emit modified();
     lock =  false;
+  }
+}
+
+void ModulePanel::onRfFreqChanged(int freq) {
+  if (module.afhds3.rxFreq != (unsigned int)freq) {
+    module.afhds3.rxFreq = (unsigned int)freq;
+    emit modified();
   }
 }
 
@@ -1176,13 +1204,7 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
     ui->potWarningMode->hide();
   }
 
-  if (IS_ARM(board)) {
-    ui->trimsDisplay->setField(model.trimsDisplay, this);
-  }
-  else {
-    ui->labelTrimsDisplay->hide();
-    ui->trimsDisplay->hide();
-  }
+  ui->trimsDisplay->setField(model.trimsDisplay, this);
 
   for (int i = firmware->getCapability(NumFirstUsableModule); i < firmware->getCapability(NumModules); i++) {
     modules[i] = new ModulePanel(this, model, model.moduleData[i], generalSettings, firmware, i);
@@ -1250,6 +1272,14 @@ void SetupPanel::on_throttleSource_currentIndexChanged(int index)
 {
   if (!lock) {
     model->thrTraceSrc = ui->throttleSource->currentData().toUInt();
+    emit modified();
+  }
+}
+
+void SetupPanel::on_throttleTrimSwitch_currentIndexChanged(int index)
+{
+  if (!lock) {
+    model->thrTrimSwitch = ui->throttleTrimSwitch->currentData().toUInt();
     emit modified();
   }
 }
@@ -1326,11 +1356,29 @@ void SetupPanel::populateThrottleSourceCB()
   lock = false;
 }
 
+void SetupPanel::populateThrottleTrimSwitchCB()
+{
+  Board::Type board = firmware->getBoard();
+  lock = true;
+  ui->throttleTrimSwitch->clear();
+  int idx=0;
+  for (int i=0; i<getBoardCapability(board, Board::NumTrims); i++, idx++) {
+    QString trim = RawSource(SOURCE_TYPE_TRIM, i).toString(model, &generalSettings);
+    trim = (trim == "TrmR") ? "TrmT" : (trim == "TmrT") ? "TmrR" : trim;
+    ui->throttleTrimSwitch->addItem(trim, idx);
+  }
+
+  int thrTrimSwitchIdx = ui->throttleTrimSwitch->findData(model->thrTrimSwitch);
+  ui->throttleTrimSwitch->setCurrentIndex(thrTrimSwitchIdx);
+  lock = false;
+}
+
 void SetupPanel::update()
 {
   ui->name->setText(model->name);
   ui->throttleReverse->setChecked(model->throttleReversed);
   populateThrottleSourceCB();
+  populateThrottleTrimSwitchCB();
   ui->throttleWarning->setChecked(!model->disableThrottleWarning);
   ui->trimIncrement->setCurrentIndex(model->trimInc+2);
   ui->throttleTrim->setChecked(model->thrTrim);
@@ -1570,10 +1618,12 @@ bool SetupPanel::moveTimerUpAllowed() const
   return selectedTimerIndex > 0;
 }
 
-void SetupPanel::cmTimerClear()
+void SetupPanel::cmTimerClear(bool prompt)
 {
-  if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Clear Timer. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
-    return;
+  if (prompt) {
+    if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Clear Timer. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+      return;
+  }
 
   model->timers[selectedTimerIndex].clear();
   model->updateAllReferences(ModelData::REF_UPD_TYPE_TIMER, ModelData::REF_UPD_ACT_CLEAR, selectedTimerIndex);
@@ -1605,8 +1655,10 @@ void SetupPanel::cmTimerCopy()
 
 void SetupPanel::cmTimerCut()
 {
+  if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Cut Timer. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+    return;
   cmTimerCopy();
-  cmTimerClear();
+  cmTimerClear(false);
 }
 
 void SetupPanel::cmTimerDelete()
