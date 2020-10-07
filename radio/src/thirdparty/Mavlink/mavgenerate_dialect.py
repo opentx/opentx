@@ -15,7 +15,7 @@ mavlinkoutputdirectory = 'out'
 mavlinkpathtorepository = r'mavlink'
 
 #you need to do that manually if your dialect has more non-standard dialects 
-dialectstocorrect = [mavlinkdialect,'storm32']
+dialectstocorrect = [mavlinkdialect,'storm32_4otx']
 
 mavlinklight = False
 #mavlinklight = True
