@@ -1066,6 +1066,11 @@ void ModelSetupPage::build(FormWindow * window)
     new StaticText(window, grid.getLabelSlot(true), STR_TTRIM);
     new CheckBox(window, grid.getFieldSlot(), GET_SET_DEFAULT(g_model.thrTrim));
     grid.nextLine();
+
+    // Throttle trim source
+    new StaticText(window, grid.getLabelSlot(true), STR_TTRIM_SW);
+    new SourceChoice(window, grid.getFieldSlot(), 0, NUM_TRIMS - 1, GET_SET_DEFAULT( g_model.thrTrimSw));
+    grid.nextLine();
   }
 
   // Preflight parameters
