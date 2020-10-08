@@ -165,6 +165,7 @@ extern const char STR_R9M_PXX2_RF_PROTOCOLS[];
 extern const char STR_DSM_PROTOCOLS[];
 extern const char STR_CRSF_BAUDRATE[];
 extern const char STR_PPM_POL[];
+extern const char STR_SBUS_INVERSION_VALUES[];
 
 extern const char STR_MULTI_PROTOCOLS[];
 extern const char STR_MULTI_POWER[];

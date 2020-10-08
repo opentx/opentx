@@ -150,6 +150,9 @@
 #define LEN_PPM_POL                    "\001"
 #define TR_PPM_POL                     "+""-"
 
+#define LEN_SBUS_INVERSION_VALUES      "\014"
+#define TR_SBUS_INVERSION_VALUES       "normal\0     ""not inverted"
+
 #define TR_SENSOR_RSSI                      "RSSI"
 #define TR_SENSOR_R9PW                      "R9PW"
 #define TR_SENSOR_RAS                       "SWR"

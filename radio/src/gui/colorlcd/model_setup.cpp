@@ -893,6 +893,22 @@ class ModuleWindow : public FormGroup {
         }
       }
 
+      // SBUS refresh rate
+      if (isModuleSBUS(moduleIdx)) {
+        new StaticText(this, grid.getLabelSlot(true), STR_REFRESHRATE);
+        auto edit = new NumberEdit(this, grid.getFieldSlot(2, 0), 60, 400,
+                                           GET_DEFAULT((int16_t)g_model.moduleData[moduleIdx].ppm.frameLength*5 + 225),
+                                           SET_VALUE(g_model.moduleData[moduleIdx].ppm.frameLength, (newValue - 225)/5),
+                                           0, PREC1);
+        edit->setSuffix(STR_MS);
+        new Choice(this, grid.getFieldSlot(2, 1), STR_SBUS_INVERSION_VALUES, 0, 1, GET_SET_DEFAULT(g_model.moduleData[moduleIdx].sbus.noninverted));
+#if defined(RADIO_TX16S)
+        grid.nextLine();
+        new StaticText(this, grid.getFieldSlot(1, 0), STR_WARN_5VOLTS);
+#endif
+        grid.nextLine();
+      }
+
       getParent()->moveWindowsTop(top() + 1, adjustHeight());
     }
 };
