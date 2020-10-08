@@ -120,6 +120,9 @@ void boardInit()
                          I2C_RCC_AHB1Periph |
                          GPS_RCC_AHB1Periph |
                          SPORT_UPDATE_RCC_AHB1Periph |
+//OW
+                         MAVLINK_TELEM_RCC_AHB1Periph |
+//OWEND
                          TOUCH_INT_RCC_AHB1Periph |
                          TOUCH_RST_RCC_AHB1Periph,
                          ENABLE);
@@ -138,6 +141,9 @@ void boardInit()
                          EXTMODULE_RCC_APB1Periph |
                          I2C_RCC_APB1Periph |
                          GPS_RCC_APB1Periph |
+//OW
+                         MAVLINK_TELEM_RCC_APB1Periph |
+//OWEND
                          BACKLIGHT_RCC_APB1Periph,
                          ENABLE);
 
@@ -152,6 +158,9 @@ void boardInit()
                          AUX_SERIAL_RCC_APB2Periph |
                          AUX2_SERIAL_RCC_APB2Periph |
                          GPS_RCC_APB2Periph |
+//OW
+                         MAVLINK_TELEM_RCC_APB2Periph |
+//OWEND
                          BACKLIGHT_RCC_APB2Periph,
                          ENABLE);
 
@@ -204,6 +213,12 @@ void boardInit()
 #if defined(INTERNAL_GPS)
   gpsInit(GPS_USART_BAUDRATE);
 #endif
+
+//OW
+#if defined(TELEMETRY_MAVLINK)
+//  mavlinkTelemInit();
+#endif
+//OWEND
 
 #if defined(DEBUG)
   DBGMCU_APB1PeriphConfig(DBGMCU_IWDG_STOP|DBGMCU_TIM1_STOP|DBGMCU_TIM2_STOP|DBGMCU_TIM3_STOP|DBGMCU_TIM4_STOP|DBGMCU_TIM5_STOP|DBGMCU_TIM6_STOP|DBGMCU_TIM7_STOP|DBGMCU_TIM8_STOP|DBGMCU_TIM9_STOP|DBGMCU_TIM10_STOP|DBGMCU_TIM11_STOP|DBGMCU_TIM12_STOP|DBGMCU_TIM13_STOP|DBGMCU_TIM14_STOP, ENABLE);

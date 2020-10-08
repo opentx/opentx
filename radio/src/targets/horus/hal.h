@@ -955,4 +955,26 @@
   #define GPS_RCC_APB2Periph            0
 #endif
 
+//OW
+//MAVLINK_TELEM
+#if defined(TELEMETRY_MAVLINK)
+  #define MAVLINK_TELEM_RCC_AHB1Periph              RCC_AHB1Periph_GPIOB
+  #define MAVLINK_TELEM_RCC_APB1Periph              RCC_APB1Periph_USART3
+  #define MAVLINK_TELEM_RCC_APB2Periph              0
+  #define MAVLINK_TELEM_USART_GPIO                  GPIOB
+  #define MAVLINK_TELEM_USART_TX_GPIO_PIN           GPIO_Pin_10 // PB.10
+  #define MAVLINK_TELEM_USART_RX_GPIO_PIN           GPIO_Pin_11 // PB.11
+  #define MAVLINK_TELEM_USART_TX_GPIO_PinSource     GPIO_PinSource10
+  #define MAVLINK_TELEM_USART_RX_GPIO_PinSource     GPIO_PinSource11
+  #define MAVLINK_TELEM_USART_GPIO_AF               GPIO_AF_USART3
+  #define MAVLINK_TELEM_USART                       USART3
+  #define MAVLINK_TELEM_USART_IRQHandler            USART3_IRQHandler
+  #define MAVLINK_TELEM_USART_IRQn                  USART3_IRQn
+#else
+  #define MAVLINK_TELEM_RCC_AHB1Periph              0
+  #define MAVLINK_TELEM_RCC_APB1Periph              0
+  #define MAVLINK_TELEM_RCC_APB2Periph              0
+#endif
+//OWEND
+
 #endif // _HAL_H_

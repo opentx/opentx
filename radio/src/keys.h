@@ -113,5 +113,11 @@ void killAllEvents();
 bool waitKeysReleased();
 event_t getEvent(bool trim=false);
 bool keyDown();
+//OW
+void lockKeys(uint16_t mask);
+void unlockKeys(void);
+void checkEventLockTmo(void);
+bool eventIsLocked(event_t evt);
+//OWEND
 
 #endif // _KEYS_H_

@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<mavlink>
+  <include>storm32_4otx.xml</include>
+  <!--<include>mavlink\message_definitions\v1.0\ardupilotmega.xml</include>-->
+  <version>1</version>
+  <dialect>0</dialect>
+  <messages>
+  </messages>
+</mavlink>
