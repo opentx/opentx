@@ -151,18 +151,27 @@ static void LCD_NRSTConfig(void)
   GPIO_Init(LCD_GPIO_NRST, &GPIO_InitStructure);
 }
 
+static void delay3(uint32_t nCount)
+{
+  uint32_t index = 0;
+  for(index = (1000 * 100 * nCount); index != 0; --index)
+  {
+    __asm("nop\n");
+  }
+}
+
 static void lcdReset()
 {
 #if defined(RADIO_T18)     // T18 screen has issues if NRST is ever brought low
   NRST_HIGH();
 #else
-  NRST_HIGH();
+  LCD_NRST_HIGH();
   delay3(1);
 
-  NRST_LOW(); //  RESET();
+  LCD_NRST_LOW(); //  RESET();
   delay3(20);
 
-  NRST_HIGH();
+  LCD_NRST_HIGH();
   delay3(30);
 #endif
 }
