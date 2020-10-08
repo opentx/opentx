@@ -20,6 +20,15 @@
 
 #include "opentx.h"
 
+#if defined(PCBTANGO)
+struct {
+  int8_t preStickIdx = -1;
+  int8_t curStickIdx = -1;
+  tmr10ms_t preEnterTime;
+  bool preEnterValid = false;
+} trimSelection;
+#endif
+
 #define BIGSIZE       DBLSIZE
 #if defined (PCBTARANIS)
   #define LBOX_CENTERX  (LCD_W/4 + 14)
@@ -51,13 +60,6 @@
 #define RSSSI_Y       (31)
 #define RSSI_MAX      105
 #define TRIM_LEN      23
-
-#if defined(PCBTANGO)
-int8_t pre_stick_idx = -1;
-int8_t cur_stick_idx = -1;
-tmr10ms_t pre_enter_time;
-bool pre_enter_valid = false;
-#endif
 
 void drawExternalAntennaAndRSSI()
 {
@@ -117,8 +119,7 @@ void doMainScreenGraphics( uint8_t views, uint32_t ptr )
     calibStickValPtr = calibratedAnalogs;
   calibStickVert = calibStickValPtr[CONVERT_MODE(1)];
 
-  if (views & MAINSCREEN_GRAPHICS_STICKS)
-  {
+  if (views & MAINSCREEN_GRAPHICS_STICKS) {
     if (g_model.throttleReversed && CONVERT_MODE(1) == THR_STICK)
       calibStickVert = -calibStickVert;
     drawStick(LBOX_CENTERX, calibStickValPtr[CONVERT_MODE(0)], calibStickVert);
@@ -129,8 +130,7 @@ void doMainScreenGraphics( uint8_t views, uint32_t ptr )
     drawStick(RBOX_CENTERX, calibStickValPtr[CONVERT_MODE(3)], calibStickVert);
   }
 
-  if (views & MAINSCREEN_GRAPHICS_POTS)
-  {
+  if (views & MAINSCREEN_GRAPHICS_POTS) {
     drawPotsBars();
   }
 }
@@ -168,7 +168,7 @@ void displayTrims(uint8_t phase)
     if (vert[i]) {
 #if defined(PCBTANGO)
       ym = 61;
-      if (cur_stick_idx == i) {
+      if (trimSelection.curStickIdx == i) {
         lcdDrawSolidVerticalLine(xm, ym - TRIM_LEN, TRIM_LEN * 2);
         if (i != 2 || !g_model.thrTrim) {
           lcdDrawSolidVerticalLine(xm - 1, ym - TRIM_LEN, TRIM_LEN * 2);
@@ -210,7 +210,7 @@ void displayTrims(uint8_t phase)
     else {
 #if defined(PCBTANGO)
       ym = 92;
-      if (cur_stick_idx == i) {
+      if (trimSelection.curStickIdx == i) {
         lcdDrawSolidHorizontalLine(xm - TRIM_LEN, ym,   TRIM_LEN * 2);
         lcdDrawSolidHorizontalLine(xm - TRIM_LEN, ym - 1, TRIM_LEN * 2);
         lcdDrawSolidHorizontalLine(xm - TRIM_LEN, ym + 1, TRIM_LEN * 2);
@@ -272,8 +272,9 @@ void displayBattVoltage()
 #if defined(PCBSKY9X)
 void displayVoltageOrAlarm()
 {
-  if (g_eeGeneral.mAhWarn && (g_eeGeneral.mAhUsed + Current_used * (488 + g_eeGeneral.txCurrentCalibration)/8192/36) / 500 >= g_eeGeneral.mAhWarn) {
-    drawValueWithUnit(7*FW-1, 2*FH, (g_eeGeneral.mAhUsed + Current_used*(488 + g_eeGeneral.txCurrentCalibration)/8192/36)/10, UNIT_MAH, BLINK|INVERS|DBLSIZE|RIGHT);
+  if (g_eeGeneral.mAhWarn && (g_eeGeneral.mAhUsed + Current_used * (488 + g_eeGeneral.txCurrentCalibration) / 8192 / 36) / 500 >= g_eeGeneral.mAhWarn) {
+    drawValueWithUnit(7 * FW - 1, 2 * FH, (g_eeGeneral.mAhUsed + Current_used * (488 + g_eeGeneral.txCurrentCalibration) / 8192 / 36) / 10, UNIT_MAH,
+                      BLINK | INVERS | DBLSIZE | RIGHT);
   }
   else {
     displayBattVoltage();
@@ -409,14 +410,14 @@ void menuMainView(event_t event)
         if (view_base == VIEW_INPUTS)
           g_eeGeneral.view ^= ALTERNATE_VIEW;
         else
-          g_eeGeneral.view = (g_eeGeneral.view + (4*ALTERNATE_VIEW) + ((event==EVT_KEY_PREVIOUS_PAGE) ? -ALTERNATE_VIEW : ALTERNATE_VIEW)) % (4*ALTERNATE_VIEW);
+          g_eeGeneral.view = (g_eeGeneral.view + (4 * ALTERNATE_VIEW) + ((event == EVT_KEY_PREVIOUS_PAGE) ? -ALTERNATE_VIEW : ALTERNATE_VIEW)) % (4 * ALTERNATE_VIEW);
       }
       break;
 #else
       if (view_base == VIEW_INPUTS)
         g_eeGeneral.view ^= ALTERNATE_VIEW;
       else
-        g_eeGeneral.view = (g_eeGeneral.view + (4*ALTERNATE_VIEW) + ((event==EVT_KEY_PREVIOUS_PAGE) ? -ALTERNATE_VIEW : ALTERNATE_VIEW)) % (4*ALTERNATE_VIEW);
+        g_eeGeneral.view = (g_eeGeneral.view + (4 * ALTERNATE_VIEW) + ((event == EVT_KEY_PREVIOUS_PAGE) ? -ALTERNATE_VIEW : ALTERNATE_VIEW)) % (4 * ALTERNATE_VIEW);
       break;
 #endif
 
@@ -453,33 +454,33 @@ void menuMainView(event_t event)
       break;
 #endif
 #if defined(PCBTANGO)
-    case EVT_KEY_FIRST(KEY_ENTER):
-      if (!pre_enter_valid) {
-        pre_enter_valid = true;
-        pre_enter_time = get_tmr10ms();
-      }
-      else {
-        pre_enter_valid = false;
-        if (++g_trimEditMode > EDIT_TRIM_MAX) {
-          g_trimEditMode = EDIT_TRIM_1;
+      case EVT_KEY_FIRST(KEY_ENTER):
+        if (!trimSelection.preEnterValid) {
+          trimSelection.preEnterValid = true;
+          trimSelection.preEnterTime = get_tmr10ms();
         }
-
-        cur_stick_idx = CONVERT_MODE_TRIMS(g_trimEditMode - 1);
-
-        if (pre_stick_idx != cur_stick_idx) {
-          if (cur_stick_idx == RUD_STICK) {
-            AUDIO_RUDDER_TIME();
-          } else if (cur_stick_idx == ELE_STICK) {
-            AUDIO_ELEVATOR_TRIM();
-          } else if (cur_stick_idx == THR_STICK) {
-            AUDIO_THROTTLE_TRIM();
-          } else if (cur_stick_idx == AIL_STICK) {
-            AUDIO_AILERON_TRIM();
+        else {
+          trimSelection.preEnterValid = false;
+          if (++g_trimEditMode > EDIT_TRIM_MAX) {
+            g_trimEditMode = EDIT_TRIM_1;
           }
-          pre_stick_idx = cur_stick_idx;
+
+          trimSelection.curStickIdx = CONVERT_MODE_TRIMS(g_trimEditMode - 1);
+
+          if (trimSelection.preStickIdx != trimSelection.curStickIdx) {
+            if (trimSelection.curStickIdx == RUD_STICK) {
+              AUDIO_RUDDER_TIME();
+            } else if (trimSelection.curStickIdx == ELE_STICK) {
+              AUDIO_ELEVATOR_TRIM();
+            } else if (trimSelection.curStickIdx == THR_STICK) {
+              AUDIO_THROTTLE_TRIM();
+            } else if (trimSelection.curStickIdx == AIL_STICK) {
+              AUDIO_AILERON_TRIM();
+            }
+            trimSelection.preStickIdx = trimSelection.curStickIdx;
+          }
         }
-      }
-      break;
+        break;
 #endif
 #if defined(EVT_KEY_PREVIOUS_VIEW)
       // TODO try to split those 2 cases on 9X
@@ -519,15 +520,15 @@ void menuMainView(event_t event)
       if (g_trimEditMode != EDIT_TRIM_DISABLED) {
         g_trimEditMode = EDIT_TRIM_DISABLED;
         AUDIO_MAIN_MENU();
-        cur_stick_idx = -1;
-        pre_stick_idx = -1;
+        trimSelection.curStickIdx = -1;
+        trimSelection.preStickIdx = -1;
       }
 #endif
       break;
   }
 #if defined(PCBTANGO)
-  if (pre_enter_valid && (get_tmr10ms() - pre_enter_time) > 50) {
-    pre_enter_valid = false;
+  if (trimSelection.preEnterValid && (get_tmr10ms() - trimSelection.preEnterTime) > 50) {
+    trimSelection.preEnterValid = false;
   }
 #endif
 
@@ -541,7 +542,7 @@ void menuMainView(event_t event)
       // scroll bar
       lcdDrawHorizontalLine(38, 34, 54, DOTTED);
       lcdDrawSolidHorizontalLine(38 + (g_eeGeneral.view / ALTERNATE_VIEW) * 13, 34, 13, SOLID);
-      for (uint8_t i=0; i<8; i++) {
+      for (uint8_t i = 0; i < 8; i++) {
         uint8_t x0, y0;
         uint8_t chan = 8 * (g_eeGeneral.view / ALTERNATE_VIEW) + i;
         int16_t val = channelOutputs[chan];
@@ -562,27 +563,27 @@ void menuMainView(event_t event)
 #endif
         }
         else {
-          constexpr coord_t WBAR2 =  (50/2);
-          x0 = i<4 ? LCD_W/4+2 : LCD_W*3/4-2;
+          constexpr coord_t WBAR2 = (50 / 2);
+          x0 = i < 4 ? LCD_W / 4 + 2 : LCD_W * 3 / 4 - 2;
 #if defined(PCBTANGO)
-          y0 = 45+(i%4)*10;
+          y0 = 45 + (i % 4) * 10;
 #else
-          y0 = 38+(i%4)*5;
+          y0 = 38 + (i % 4) * 5;
 #endif
 
-          const uint16_t lim = (g_model.extendedLimits ? (512 * (long)LIMIT_EXT_PERCENT / 100) : 512) * 2;
-          int8_t len = (abs(val) * WBAR2 + lim/2) / lim;
+          const uint16_t lim = (g_model.extendedLimits ? (512 * (long) LIMIT_EXT_PERCENT / 100) : 512) * 2;
+          int8_t len = (abs(val) * WBAR2 + lim / 2) / lim;
 
-          if (len>WBAR2)
+          if (len > WBAR2)
             len = WBAR2; // prevent bars from going over the end - comment for debugging
-          lcdDrawHorizontalLine(x0-WBAR2, y0, WBAR2*2+1, DOTTED);
-          lcdDrawSolidVerticalLine(x0, y0-2,5 );
+          lcdDrawHorizontalLine(x0 - WBAR2, y0, WBAR2 * 2 + 1, DOTTED);
+          lcdDrawSolidVerticalLine(x0, y0 - 2, 5);
           if (val > 0)
             x0 += 1;
           else
             x0 -= len;
-          lcdDrawSolidHorizontalLine(x0, y0+1, len);
-          lcdDrawSolidHorizontalLine(x0, y0-1, len);
+          lcdDrawSolidHorizontalLine(x0, y0 + 1, len);
+          lcdDrawSolidHorizontalLine(x0, y0 - 1, len);
         }
       }
       break;
@@ -645,46 +646,46 @@ void menuMainView(event_t event)
         }
 #elif defined(PCBTANGO)
         int sw_i;
-        for (int i=0; i<NUM_SWITCHES; ++i) {
+        for (int i = 0; i < NUM_SWITCHES; ++i) {
           if (SWITCH_EXISTS(i)) {
-            uint8_t x = 2*FW-2, y = 4*FH+i*FH+20;
-            if (i >= NUM_SWITCHES/2) {
-              x = 16*FW+6;
-              y -= (NUM_SWITCHES/2)*FH;
+            uint8_t x = 2 * FW - 2, y = 4 * FH + i * FH + 20;
+            if (i >= NUM_SWITCHES / 2) {
+              x = 16 * FW + 6;
+              y -= (NUM_SWITCHES / 2) * FH;
             }
             // re-arrange order according to physical layout
-            if(i == 0)      sw_i = 0;
-            else if(i == 1) sw_i = 1;
-            else if(i == 2) sw_i = 5;
-            else if(i == 3) sw_i = 3;
-            else if(i == 4) sw_i = 2;
-            else if(i == 5) sw_i = 4;
-            getvalue_t val = getValue(MIXSRC_FIRST_SWITCH+sw_i);
-            getvalue_t sw = ((val < 0) ? 3*sw_i+1 : ((val == 0) ? 3*sw_i+2 : 3*sw_i+3));
+            if (i == 0) sw_i = 0;
+            else if (i == 1) sw_i = 1;
+            else if (i == 2) sw_i = 5;
+            else if (i == 3) sw_i = 3;
+            else if (i == 4) sw_i = 2;
+            else if (i == 5) sw_i = 4;
+            getvalue_t val = getValue(MIXSRC_FIRST_SWITCH + sw_i);
+            getvalue_t sw = ((val < 0) ? 3 * sw_i + 1 : ((val == 0) ? 3 * sw_i + 2 : 3 * sw_i + 3));
             drawSwitch(x, y, sw, 0);
           }
         }
 #elif defined(PCBMAMBO)
-        for (int i=0; i<NUM_SWITCHES; ++i) {
-        if (SWITCH_EXISTS(i)) {
-          uint8_t x = 2*FW-2, y = 4*FH+i*FH+1;
-          if (i >= NUM_SWITCHES/2) {
-            x = 16*FW+6;
-            y -= (NUM_SWITCHES/2)*FH;
+        for (int i = 0; i < NUM_SWITCHES; ++i) {
+          if (SWITCH_EXISTS(i)) {
+            uint8_t x = 2 * FW - 2, y = 4 * FH + i * FH + 1;
+            if (i >= NUM_SWITCHES / 2) {
+              x = 16 * FW + 6;
+              y -= (NUM_SWITCHES / 2) * FH;
+            }
+            getvalue_t val = getValue(MIXSRC_FIRST_SWITCH + i);
+            getvalue_t sw = ((val < 0) ? 3 * i + 1 : ((val == 0) ? 3 * i + 2 : 3 * i + 3));
+            drawSwitch(x, y, sw, 0);
           }
-          getvalue_t val = getValue(MIXSRC_FIRST_SWITCH+i);
-          getvalue_t sw = ((val < 0) ? 3*i+1 : ((val == 0) ? 3*i+2 : 3*i+3));
-          drawSwitch(x, y, sw, 0);
         }
-      }
 #else
         // The ID0 3-POS switch is merged with the TRN switch
-        for (uint8_t i=SWSRC_THR; i<=SWSRC_TRN; i++) {
+        for (uint8_t i = SWSRC_THR; i <= SWSRC_TRN; i++) {
           int8_t sw = (i == SWSRC_TRN ? (switchState(SW_ID0) ? SWSRC_ID0 : (switchState(SW_ID1) ? SWSRC_ID1 : SWSRC_ID2)) : i);
-          uint8_t x = 2*FW-2, y = i*FH+1;
+          uint8_t x = 2 * FW - 2, y = i * FH + 1;
           if (i >= SWSRC_AIL) {
-            x = 17*FW-1;
-            y -= 3*FH;
+            x = 17 * FW - 1;
+            y -= 3 * FH;
           }
           drawSwitch(x, y, sw, getSwitch(i) ? INVERS : 0, false);
         }

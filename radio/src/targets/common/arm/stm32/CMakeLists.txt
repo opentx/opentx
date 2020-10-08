@@ -16,8 +16,6 @@ include_directories(${STM32USB_DIR}/STM32_USB_Device_Library/Core/inc)
 include_directories(${STM32USB_DIR}/STM32_USB_Device_Library/Class/msc/inc)
 include_directories(${STM32USB_DIR}/STM32_USB_Device_Library/Class/hid/inc)
 include_directories(${STM32USB_DIR}/STM32_USB_Device_Library/Class/cdc/inc)
-include_directories(${STM32USB_DIR}/STM32_USB_Device_Library/Core/inc/)
-include_directories(${STM32USB_DIR}/STM32_USB_OTG_Driver/inc)
 
 set(STM32USB_SRC
   STM32_USB_OTG_Driver/src/usb_core.c
