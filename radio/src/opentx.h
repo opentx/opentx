@@ -35,6 +35,7 @@
 /*
 v16 2020-10-04:
 mavlink submodule changed to main git repo, file generator added
+one needs to run mavgenerate_dialect.py to generate the mavlink c code files
 modified files in radio/src/
 
     CMakeList.txt:  1x
