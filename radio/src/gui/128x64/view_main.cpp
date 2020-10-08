@@ -26,7 +26,7 @@ struct {
   int8_t curStickIdx = -1;
   tmr10ms_t preEnterTime;
   bool preEnterValid = false;
-} TrimSelection;
+} trimSelection;
 #endif
 
 #define BIGSIZE       DBLSIZE
@@ -168,7 +168,7 @@ void displayTrims(uint8_t phase)
     if (vert[i]) {
 #if defined(PCBTANGO)
       ym = 61;
-      if (TrimSelection.curStickIdx == i) {
+      if (trimSelection.curStickIdx == i) {
         lcdDrawSolidVerticalLine(xm, ym - TRIM_LEN, TRIM_LEN * 2);
         if (i != 2 || !g_model.thrTrim) {
           lcdDrawSolidVerticalLine(xm - 1, ym - TRIM_LEN, TRIM_LEN * 2);
@@ -210,7 +210,7 @@ void displayTrims(uint8_t phase)
     else {
 #if defined(PCBTANGO)
       ym = 92;
-      if (TrimSelection.curStickIdx == i) {
+      if (trimSelection.curStickIdx == i) {
         lcdDrawSolidHorizontalLine(xm - TRIM_LEN, ym,   TRIM_LEN * 2);
         lcdDrawSolidHorizontalLine(xm - TRIM_LEN, ym - 1, TRIM_LEN * 2);
         lcdDrawSolidHorizontalLine(xm - TRIM_LEN, ym + 1, TRIM_LEN * 2);
@@ -455,29 +455,29 @@ void menuMainView(event_t event)
 #endif
 #if defined(PCBTANGO)
       case EVT_KEY_FIRST(KEY_ENTER):
-        if (!TrimSelection.preEnterValid) {
-          TrimSelection.preEnterValid = true;
-          TrimSelection.preEnterTime = get_tmr10ms();
+        if (!trimSelection.preEnterValid) {
+          trimSelection.preEnterValid = true;
+          trimSelection.preEnterTime = get_tmr10ms();
         }
         else {
-          TrimSelection.preEnterValid = false;
+          trimSelection.preEnterValid = false;
           if (++g_trimEditMode > EDIT_TRIM_MAX) {
             g_trimEditMode = EDIT_TRIM_1;
           }
 
-          TrimSelection.curStickIdx = CONVERT_MODE_TRIMS(g_trimEditMode - 1);
+          trimSelection.curStickIdx = CONVERT_MODE_TRIMS(g_trimEditMode - 1);
 
-          if (TrimSelection.preStickIdx != TrimSelection.curStickIdx) {
-            if (TrimSelection.curStickIdx == RUD_STICK) {
+          if (trimSelection.preStickIdx != trimSelection.curStickIdx) {
+            if (trimSelection.curStickIdx == RUD_STICK) {
               AUDIO_RUDDER_TIME();
-            } else if (TrimSelection.curStickIdx == ELE_STICK) {
+            } else if (trimSelection.curStickIdx == ELE_STICK) {
               AUDIO_ELEVATOR_TRIM();
-            } else if (TrimSelection.curStickIdx == THR_STICK) {
+            } else if (trimSelection.curStickIdx == THR_STICK) {
               AUDIO_THROTTLE_TRIM();
-            } else if (TrimSelection.curStickIdx == AIL_STICK) {
+            } else if (trimSelection.curStickIdx == AIL_STICK) {
               AUDIO_AILERON_TRIM();
             }
-            TrimSelection.preStickIdx = TrimSelection.curStickIdx;
+            trimSelection.preStickIdx = trimSelection.curStickIdx;
           }
         }
         break;
@@ -520,15 +520,15 @@ void menuMainView(event_t event)
       if (g_trimEditMode != EDIT_TRIM_DISABLED) {
         g_trimEditMode = EDIT_TRIM_DISABLED;
         AUDIO_MAIN_MENU();
-        TrimSelection.curStickIdx = -1;
-        TrimSelection.preStickIdx = -1;
+        trimSelection.curStickIdx = -1;
+        trimSelection.preStickIdx = -1;
       }
 #endif
       break;
   }
 #if defined(PCBTANGO)
-  if (TrimSelection.preEnterValid && (get_tmr10ms() - TrimSelection.preEnterTime) > 50) {
-    TrimSelection.preEnterValid = false;
+  if (trimSelection.preEnterValid && (get_tmr10ms() - trimSelection.preEnterTime) > 50) {
+    trimSelection.preEnterValid = false;
   }
 #endif
 
