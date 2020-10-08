@@ -601,6 +601,7 @@
 #define TR_ACCEL               "Acc:"
 #define TR_NODATA              CENTER "BrakDAN"
 #define TR_US                         "us"
+#define TR_HZ                          "Hz"
 #define TR_TMIXMAXMS         "TmixMaks"
 #define TR_FREE_STACK     "Wolny stos"
 #define TR_MENUTORESET         TR_ENTER " >> Reset"

@@ -353,6 +353,7 @@ extern const char STR_TX[];
 #define STR_RX (STR_TX+OFS_RX)
 extern const char STR_NODATA[];
 extern const char STR_US[];
+extern const char STR_HZ[];
 extern const char STR_TMIXMAXMS[];
 extern const char STR_FREE_STACK[];
 extern const char STR_MENUTORESET[];

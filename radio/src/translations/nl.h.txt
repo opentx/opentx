@@ -584,6 +584,7 @@
 #define TR_ACCEL               "Acc:"
 #define TR_NODATA              CENTER"Geen Data"
 #define TR_US                         "us"
+#define TR_HZ                          "Hz"
 #define TR_TMIXMAXMS         "Tmix max"
 #define TR_FREE_STACK     "Free stack"
 #define TR_MENUTORESET         TR_ENTER" voor Reset"

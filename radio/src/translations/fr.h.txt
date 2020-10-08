@@ -601,6 +601,7 @@
 #define TR_ACCEL                       "Acc:"
 #define TR_NODATA                      CENTER "NO DATA"
 #define TR_US                          "us"
+#define TR_HZ                          "Hz"
 #define TR_TMR1LATMINUS                "Tmr1Lat min\037\124us"
 
 #define TR_TMIXMAXMS                   "Tmix max"

@@ -37,10 +37,10 @@ std::string switchWarninglabel(swsrc_t index)
   return TEXT_AT_INDEX(STR_VSRCRAW, (index + MIXSRC_FIRST_SWITCH - MIXSRC_Rud + 1)) + std::string(&switchPositions[g_model.switchWarningState >> (3*index) & 0x07], 1);
 }
 
-class MultimoduleStatus: public StaticText
+class ModuleStatus: public StaticText
 {
   public:
-    MultimoduleStatus(Window * parent, const rect_t & rect, uint8_t moduleIdx):
+    ModuleStatus(Window * parent, const rect_t & rect, uint8_t moduleIdx):
       StaticText(parent, rect),
       moduleIdx(moduleIdx)
     {
@@ -48,7 +48,51 @@ class MultimoduleStatus: public StaticText
 
     void checkEvents() override
     {
-      getMultiModuleStatus(moduleIdx).getStatusString(reusableBuffer.moduleSetup.msg);
+      getModuleStatusString(moduleIdx, reusableBuffer.moduleSetup.msg);
+      if (text != reusableBuffer.moduleSetup.msg) {
+        setText(reusableBuffer.moduleSetup.msg);
+        invalidate();
+      }
+    }
+
+  protected:
+    uint8_t moduleIdx;
+};
+
+class ModuleCurrentPower: public StaticText
+{
+  public:
+    ModuleCurrentPower(Window * parent, const rect_t & rect, uint8_t moduleIdx):
+      StaticText(parent, rect),
+      moduleIdx(moduleIdx)
+    {
+    }
+
+    void checkEvents() override
+    {
+      getStringAtIndex(reusableBuffer.moduleSetup.msg, STR_AFHDS3_POWERS, actualAfhdsRunPower(moduleIdx));
+      if (text != reusableBuffer.moduleSetup.msg) {
+        setText(reusableBuffer.moduleSetup.msg);
+        invalidate();
+      }
+    }
+
+  protected:
+    uint8_t moduleIdx;
+};
+
+class ModuleSyncStatus: public StaticText
+{
+  public:
+    ModuleSyncStatus(Window * parent, const rect_t & rect, uint8_t moduleIdx):
+      StaticText(parent, rect),
+      moduleIdx(moduleIdx)
+    {
+    }
+
+    void checkEvents() override
+    {
+      getModuleSyncStatusString(moduleIdx, reusableBuffer.moduleSetup.msg);
       if (text != reusableBuffer.moduleSetup.msg) {
         setText(reusableBuffer.moduleSetup.msg);
         invalidate();
@@ -670,7 +714,7 @@ class ModuleWindow : public FormGroup {
 
         // Multimodule status
         new StaticText(this, grid.getLabelSlot(true), STR_MODULE_STATUS);
-        new MultimoduleStatus(this, grid.getFieldSlot(), moduleIdx);
+        new ModuleStatus(this, grid.getFieldSlot(), moduleIdx);
 
         // Multimodule sync
         /*if (multiSyncStatus.isValid()) {
@@ -710,22 +754,46 @@ class ModuleWindow : public FormGroup {
         new CheckBox(this, grid.getFieldSlot(), GET_SET_DEFAULT(g_model.moduleData[moduleIdx].multi.lowPowerMode));
       }
 #endif
-#if defined (PCBNV14)
+#if defined(AFHDS3)
       else if (isModuleAFHDS3(moduleIdx)) {
-        grid.nextLine();
-        rfChoice = new Choice(this, grid.getFieldSlot(), STR_AFHDS3_PROTOCOLS, 0, 3,
-                   GET_DEFAULT(g_model.moduleData[moduleIdx].flysky.mode),
-                   [=](int32_t newValue) -> void {
-                     g_model.moduleData[moduleIdx].flysky.mode = newValue;
-                     SET_DIRTY();
-                     //TODO moduleFlagBackNormal(moduleIdx);
-                     //TODO onFlySkyReceiverSetPulse(INTERNAL_MODULE, newValue);
-                   });
+        rfChoice = new Choice(this, grid.getFieldSlot(2, 1), STR_AFHDS3_PROTOCOLS, AFHDS_SUBTYPE_FIRST, AFHDS_SUBTYPE_LAST,
+                              GET_SET_DEFAULT(g_model.moduleData[moduleIdx].subType));
 
-
+        // TYPE
         grid.nextLine();
-        new StaticText(this, grid.getLabelSlot(true), STR_FLYSKY_TELEMETRY);
-        new CheckBox(this, grid.getFieldSlot(), GET_SET_DEFAULT(g_model.rssiAlarms.flysky_telemetry));
+        new StaticText(this, grid.getLabelSlot(true), STR_TYPE);
+        new StaticText(this, grid.getFieldSlot(),
+                       g_model.moduleData[EXTERNAL_MODULE].afhds3.telemetry ? STR_AFHDS3_ONE_TO_ONE_TELEMETRY : TR_AFHDS3_ONE_TO_MANY);
+
+        // Status
+        grid.nextLine();
+        new StaticText(this, grid.getLabelSlot(true), STR_MODULE_STATUS);
+        new ModuleStatus(this, grid.getFieldSlot(), moduleIdx);
+
+        // Power source
+        grid.nextLine();
+        new StaticText(this, grid.getLabelSlot(true), STR_AFHDS3_POWER_SOURCE);
+        new ModuleSyncStatus(this, grid.getFieldSlot(), moduleIdx);
+
+        // RX Freq
+        grid.nextLine();
+        new StaticText(this, grid.getLabelSlot(true), STR_AFHDS3_RX_FREQ);
+        auto edit = new NumberEdit(this, grid.getFieldSlot(2,0), MIN_FREQ, MAX_FREQ, GET_DEFAULT(g_model.moduleData[moduleIdx].afhds3.rxFreq()));
+        edit->setSetValueHandler([=](int32_t newValue) {
+            g_model.moduleData[EXTERNAL_MODULE].afhds3.setRxFreq((uint16_t)newValue);
+        });
+        edit->setSuffix(STR_HZ);
+
+        // Module actual power
+        grid.nextLine();
+        new StaticText(this, grid.getLabelSlot(true), STR_AFHDS3_ACTUAL_POWER);
+        new ModuleCurrentPower(this, grid.getFieldSlot(), moduleIdx);
+
+        // Module power
+        grid.nextLine();
+        new StaticText(this, grid.getLabelSlot(true), STR_RF_POWER);
+        new Choice(this, grid.getFieldSlot(2, 0), STR_AFHDS3_POWERS, afhds3::RUN_POWER::RUN_POWER_FIRST, afhds3::RUN_POWER::RUN_POWER_LAST,
+                    GET_SET_DEFAULT(g_model.moduleData[moduleIdx].afhds3.runPower));
       }
 #endif
       grid.nextLine();
@@ -911,6 +979,8 @@ class ModuleWindow : public FormGroup {
 
       getParent()->moveWindowsTop(top() + 1, adjustHeight());
     }
+
+
 };
 
 ModelSetupPage::ModelSetupPage() :

@@ -208,6 +208,7 @@ const char STR_MOVESTICKSPOTS[] = TR_MOVESTICKSPOTS;
 const char STR_TX[] = TR_TXnRX;
 const char STR_NODATA[] = TR_NODATA;
 const char STR_US[] = TR_US;
+const char STR_HZ[]  = TR_HZ;
 const char STR_TMIXMAXMS[] = TR_TMIXMAXMS;
 const char STR_FREE_STACK[] = TR_FREE_STACK;
 const char STR_MENUTORESET[] = TR_MENUTORESET;
