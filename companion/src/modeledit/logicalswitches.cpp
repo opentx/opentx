@@ -479,10 +479,6 @@ void LogicalSwitchesPanel::populateFunctionCB(QComboBox *b)
     int func = order[i];
     if (func == LS_FN_NEQUAL || func == LS_FN_EGREATER || func == LS_FN_ELESS)
       continue;
-    if (!IS_ARM(firmware->getBoard())) {
-      if (func == LS_FN_VEQUAL || func == LS_FN_EDGE)
-        continue;
-    }
     b->addItem(LogicalSwitchData(func).funcToString(), func);
   }
   b->setMaxVisibleItems(10);
@@ -490,27 +486,7 @@ void LogicalSwitchesPanel::populateFunctionCB(QComboBox *b)
 
 void LogicalSwitchesPanel::populateAndSwitchCB(QComboBox *b)
 {
-  if (IS_ARM(firmware->getBoard())) {
-    b->setModel(rawSwitchItemModel);
-  }
-  else {
-    RawSwitch item;
-
-    b->clear();
-
-    item = RawSwitch(SWITCH_TYPE_NONE);
-    b->addItem(item.toString(), item.toValue());
-
-    for (int i=1; i <= Boards::getCapability(firmware->getBoard(), Board::SwitchPositions); i++) {
-      item = RawSwitch(SWITCH_TYPE_SWITCH, i);
-      b->addItem(item.toString(), item.toValue());
-    }
-
-    for (int i=1; i<=6; i++) {
-      item = RawSwitch(SWITCH_TYPE_VIRTUAL, i);
-      b->addItem(item.toString(), item.toValue());
-    }
-  }
+  b->setModel(rawSwitchItemModel);
   b->setVisible(true);
 }
 
@@ -557,8 +533,10 @@ void LogicalSwitchesPanel::cmCopy()
 
 void LogicalSwitchesPanel::cmCut()
 {
+  if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Cut Logical Switch. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+    return;
   cmCopy();
-  cmClear();
+  cmClear(false);
 }
 
 // TODO make something generic here!
@@ -621,8 +599,13 @@ void LogicalSwitchesPanel::cmMoveDown()
   swapData(selectedIndex, selectedIndex + 1);
 }
 
-void LogicalSwitchesPanel::cmClear()
+void LogicalSwitchesPanel::cmClear(bool prompt)
 {
+  if (prompt) {
+    if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Clear Logical Switch. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+      return;
+  }
+
   model->logicalSw[selectedIndex].clear();
   model->updateAllReferences(ModelData::REF_UPD_TYPE_LOGICAL_SWITCH, ModelData::REF_UPD_ACT_CLEAR, selectedIndex);
   update();

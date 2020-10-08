@@ -32,6 +32,15 @@ void backlightInit()
   GPIO_Init(BACKLIGHT_GPIO, &GPIO_InitStructure);
   GPIO_PinAFConfig(BACKLIGHT_GPIO, BACKLIGHT_GPIO_PinSource, BACKLIGHT_GPIO_AF);
 
+#if defined(KEYS_BACKLIGHT_GPIO)
+  GPIO_InitStructure.GPIO_Pin = KEYS_BACKLIGHT_GPIO_PIN;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_NOPULL;
+  GPIO_Init(KEYS_BACKLIGHT_GPIO, &GPIO_InitStructure);
+#endif
+
   // TIMER init
 #if defined(PCBX12S) && PCBREV >= 13
   BACKLIGHT_TIMER->ARR = 100;
@@ -70,6 +79,15 @@ void backlightEnable(uint8_t dutyCycle)
   BACKLIGHT_TIMER->CCR1 = BACKLIGHT_LEVEL_MAX - dutyCycle;
 #elif defined(PCBX10)
   BACKLIGHT_TIMER->CCR3 = BACKLIGHT_LEVEL_MAX - dutyCycle;
+#endif
+
+#if defined(KEYS_BACKLIGHT_GPIO) && !defined(BOOT)
+  if (dutyCycle == 0 || g_eeGeneral.keysBacklight == 0) {
+    GPIO_ResetBits(KEYS_BACKLIGHT_GPIO, KEYS_BACKLIGHT_GPIO_PIN);
+  }
+  else {
+    GPIO_SetBits(KEYS_BACKLIGHT_GPIO, KEYS_BACKLIGHT_GPIO_PIN);
+  }
 #endif
 
   if (dutyCycle == 0) {

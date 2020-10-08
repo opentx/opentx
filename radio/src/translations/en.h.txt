@@ -263,7 +263,7 @@
 #define LEN_VUNITSSYSTEM               TR("\006", "\010")
 #define TR_VUNITSSYSTEM                TR("Metric""Imper.", "Metric\0 ""Imperial")
 #define LEN_VTELEMUNIT                 "\003"
-#define TR_VTELEMUNIT                  "-\0 ""V\0 ""A\0 ""mA\0""kts""m/s""f/s""kmh""mph""m\0 ""ft\0""@C\0""@F\0""%\0 ""mAh""W\0 ""mW\0""dB\0""rpm""g\0 ""@\0 ""rad""ml\0""fOz""mlm"
+#define TR_VTELEMUNIT                  "-\0 ""V\0 ""A\0 ""mA\0""kts""m/s""f/s""kmh""mph""m\0 ""ft\0""@C\0""@F\0""%\0 ""mAh""W\0 ""mW\0""dB\0""rpm""g\0 ""@\0 ""rad""ml\0""fOz""mlm""Hz\0""mS\0""uS\0"
 
 #define STR_V                          (STR_VTELEMUNIT+1)
 #define STR_A                          (STR_VTELEMUNIT+4)
@@ -432,7 +432,8 @@
 #define TR_TRIMINC                     "Trim Step"
 #define TR_DISPLAY_TRIMS               TR("Show Trims", "Display trims")
 #define TR_TTRACE                      TR("T-Source", INDENT "Source")
-#define TR_TTRIM                       TR("T-Trim", INDENT "Trim idle only")
+#define TR_TTRIM                       TR("T-Trim-Idle", INDENT "Trim idle only")
+#define TR_TTRIM_SW                    TR("T-Trim-Sw", INDENT "Trim switch")
 #define TR_BEEPCTR                     TR("Ctr Beep", "Center Beep")
 #define TR_USE_GLOBAL_FUNCS            TR("Glob.Funcs", "Use global funcs")
 #if defined(PCBSKY9X) && defined(REVX)
@@ -442,6 +443,7 @@
   #define TR_PPMFRAME                  INDENT "PPM frame"
   #define TR_REFRESHRATE               TR(INDENT "Refresh", INDENT "Refresh rate")
   #define STR_WARN_BATTVOLTAGE         TR(INDENT "Output is VBAT: ", INDENT "Warning: output level is VBAT: ")
+#define TR_WARN_5VOLTS                 "Warning: output level is 5 volts"
 #define TR_MS                          "ms"
 #define TR_FREQUENCY                   INDENT "Frequency"
 #define TR_SWITCH                      "Switch"
@@ -523,6 +525,7 @@
 #define TR_BLDELAY                     INDENT "Duration"
 #define TR_BLONBRIGHTNESS              INDENT "ON brightness"
 #define TR_BLOFFBRIGHTNESS             INDENT "OFF brightness"
+#define TR_KEYS_BACKLIGHT              "Keys backlight"
 #define TR_BLCOLOR                     INDENT "Color"
 #define TR_SPLASHSCREEN                "Splash screen"
 #define TR_PWR_ON_DELAY                "Pwr On delay"
@@ -629,6 +632,7 @@
   #define TR_RECEIVER_NUM              TR("RxNum", "Receiver No.")
   #define TR_RECEIVER                  "Receiver"
 #define TR_MULTI_RFTUNE                TR("Freq tune", "RF Freq. fine tune")
+#define TR_MULTI_RFPOWER               "RF power"
 #define TR_MULTI_TELEMETRY             "Telemetry"
 #define TR_MULTI_VIDFREQ               TR("Vid. freq.", "Video frequency")
 #define TR_RFPOWER                     "RF Power"
@@ -663,6 +667,11 @@
 #define TR_MULTI_SERVOFREQ             TR("Servo rate", "Servo update rate")
 #define TR_MULTI_MAX_THROW             TR("Max. Throw", "Enable max. throw")
 #define TR_MULTI_RFCHAN                TR("RF Channel", "Select RF channel")
+#define TR_AFHDS3_RX_FREQ              TR("RX freq.", "RX frequency")
+#define TR_AFHDS3_ONE_TO_ONE_TELEMETRY TR("Unicast/Tel.", "Unicast/Telemetry")
+#define TR_AFHDS3_ONE_TO_MANY          "Multicast"
+#define TR_AFHDS3_ACTUAL_POWER         TR("Act. pow", "Actual power")
+#define TR_AFHDS3_POWER_SOURCE         TR("Power src.", "Power source")
 #define TR_SYNCMENU                    "[Sync]"
 #define TR_LIMIT                       INDENT "Limit"
 #define TR_MINRSSI                     "Min Rssi"
@@ -680,6 +689,7 @@
 #define TR_VOLTAGE                     TR(INDENT "Voltage", INDENT "Voltage source")
 #define TR_CURRENT                     TR(INDENT "Current", INDENT "Current source")
 #define TR_SELECT_MODEL                "Select model"
+#define TR_SELECT_MODE                 "Select mode"
 #define TR_CREATE_CATEGORY             "Create category"
 #define TR_RENAME_CATEGORY             "Rename category"
 #define TR_DELETE_CATEGORY             "Delete category"
@@ -826,8 +836,10 @@
 #define TR_FLASH_BOOTLOADER            "Flash bootloader"
 #define TR_FLASH_EXTERNAL_DEVICE       TR("Flash S.Port", "Flash S.Port device")
 #define TR_FLASH_RECEIVER_OTA          "Flash receiver OTA"
-#define TR_FLASH_RECEIVER_OTA_BY_EXTERNAL "Flash RX by ext. OTA"
-#define TR_FLASH_RECEIVER_OTA_BY_INTERNAL "Flash RX by int. OTA"
+#define TR_FLASH_RECEIVER_BY_EXTERNAL_MODULE_OTA "Flash RX by ext. OTA"
+#define TR_FLASH_RECEIVER_BY_INTERNAL_MODULE_OTA "Flash RX by int. OTA"
+#define TR_FLASH_FLIGHT_CONTROLLER_BY_EXTERNAL_MODULE_OTA "Flash FC by ext. OTA"
+#define TR_FLASH_FLIGHT_CONTROLLER_BY_INTERNAL_MODULE_OTA "Flash FC by int. OTA"
 #define TR_FLASH_BLUETOOTH_MODULE      TR("Flash BT module", "Flash Bluetooth module")
 #define TR_FLASH_POWER_MANAGEMENT_UNIT "Flash pwr mngt unit"
 #define TR_CURRENT_VERSION             TR("Curr Vers: ", "Current version: ")
@@ -840,8 +852,8 @@
 #define TR_WRITING                     "Writing..."
 #define TR_CONFIRM_FORMAT              "Confirm Format?"
 #define TR_INTERNALRF                  "Internal RF"
-#define TR_INTERNAL_MODULE             TR("Int. module","Internal module")
-#define TR_EXTERNAL_MODULE             TR("Ext. module","External module")
+#define TR_INTERNAL_MODULE             TR("Int. module", "Internal module")
+#define TR_EXTERNAL_MODULE             TR("Ext. module", "External module")
 #define TR_OPENTX_UPGRADE_REQUIRED     "OpenTX upgrade required"
 #define TR_TELEMETRY_DISABLED          "Telem. disabled"
 #define TR_MORE_OPTIONS_AVAILABLE      "More options available"
@@ -900,9 +912,9 @@
 #define TR_BYTES                       "bytes"
 #define TR_MODULE_BIND                 BUTTON(TR("Bnd", "Bind"))
 #define TR_POWERMETER_ATTN_NEEDED      "Attenuator needed"
-#define TR_PXX2_SELECT_RX              "Select RX..."
+#define TR_PXX2_SELECT_RX              "Select RX"
 #define TR_PXX2_DEFAULT                "<default>"
-#define TR_BT_SELECT_DEVICE            "Select device..."
+#define TR_BT_SELECT_DEVICE            "Select device"
 #define TR_DISCOVER                    "Discover"
 #define TR_BUTTON_INIT                 BUTTON("Init")
 #define TR_WAITING                     "Waiting..."
@@ -916,7 +928,7 @@
 #define TR_DEL_BUTTON                  BUTTON(TR("Del", "Delete"))
 #define TR_RESET_BTN                   BUTTON("Reset")
 #define TR_DEBUG                       "Debug"
-#define TR_KEYS_BTN                    BUTTON(TR("Keys", "Switches"))
+#define TR_KEYS_BTN                    BUTTON("Keys")
 #define TR_ANALOGS_BTN                 BUTTON(TR("Anas", "Analogs"))
 #define TR_TOUCH_NOTFOUND              "Touch hardware not found"
 #define TR_TOUCH_EXIT                  "Touch screen to exit"
@@ -1025,7 +1037,7 @@
 #define TR_LSW_HEADERS_V1              "V1"
 #define TR_LSW_HEADERS_V2              "V2"
 #define TR_LSW_HEADERS_ANDSW           "AND Switch"
-#define TR_LSW_HEADERS_DURATION        "Min Duration"
+#define TR_LSW_HEADERS_DURATION        "Duration"
 #define TR_LSW_HEADERS_DELAY           "Delay"
 
 #define TR_GVAR_HEADERS_NAME           "Name"
@@ -1175,6 +1187,9 @@
 #define TR_ADDMAINVIEW                 "Add main view"
 #define TR_BACKGROUND_COLOR            "Background color"
 #define TR_MAIN_COLOR                  "Main color"
+#define TR_BAR2_COLOR                  "Secondary bar color"
+#define TR_BAR1_COLOR                  "Main bar color"
+#define TR_TEXT_COLOR                  "Text color"
 #define TR_TEXT_VIEWER                 "Text Viewer"
 
 #define TR_MENU_INPUTS                 "\314Inputs"
@@ -1342,3 +1357,13 @@
 #define ZSTR_CL16                      "Cl16"
 #define ZSTR_CL17                      "Cl17"
 #define ZSTR_CL18                      "Cl18"
+#define ZSTR_FRAME_RATE                "FRat"
+#define ZSTR_TOTAL_LATENCY             "TLat"
+#define ZSTR_VTX_FREQ                  "VFrq"
+#define ZSTR_VTX_PWR                   "VPwr"
+#define ZSTR_VTX_CHAN                  "VChn"
+#define ZSTR_VTX_BAND                  "VBan"
+#define ZSTR_SERVO_CURRENT             "SrvA"
+#define ZSTR_SERVO_VOLTAGE             "SrvV"
+#define ZSTR_SERVO_TEMPERATURE         "SrvT"
+#define ZSTR_SERVO_STATUS              "SrvS"

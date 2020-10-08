@@ -46,7 +46,7 @@ QString CustomFunctionData::funcToString(const ModelData * model) const
   if (func >= FuncOverrideCH1 && func <= FuncOverrideCH32)
     return tr("Override %1").arg(RawSource(SOURCE_TYPE_CH, func).toString(model));
   else if (func == FuncTrainer)
-    return tr("Trainer");
+    return tr("Trainer Sticks");
   else if (func == FuncTrainerRUD)
     return tr("Trainer RUD");
   else if (func == FuncTrainerELE)
@@ -112,13 +112,10 @@ void CustomFunctionData::populateResetParams(const ModelData * model, QComboBox 
 {
   int val = 0;
   Firmware * firmware = Firmware::getCurrentVariant();
-  Board::Type board = firmware->getBoard();
 
   b->addItem(tr("Timer1"), val++);
   b->addItem(tr("Timer2"), val++);
-  if (IS_ARM(board)) {
-    b->addItem( tr("Timer3"), val++);
-  }
+  b->addItem( tr("Timer3"), val++);
   b->addItem(tr("Flight"), val++);
   b->addItem(tr("Telemetry"), val++);
   int reCount = firmware->getCapability(RotaryEncoders);
@@ -132,7 +129,7 @@ void CustomFunctionData::populateResetParams(const ModelData * model, QComboBox 
   if ((int)value < b->count()) {
     b->setCurrentIndex(value);
   }
-  if (model && IS_ARM(board)) {
+  if (model) {
     for (unsigned i=0; i<CPN_MAX_SENSORS; ++i) {
       if (model->sensorData[i].isAvailable()) {
         RawSource item = RawSource(SOURCE_TYPE_TELEMETRY, 3*i);
@@ -162,24 +159,24 @@ QString CustomFunctionData::paramToString(const ModelData * model) const
   if (func <= FuncInstantTrim) {
     return QString("%1").arg(param);
   }
-  else if (func==FuncLogs) {
+  else if (func == FuncLogs) {
     return QString("%1").arg(param/10.0) + tr("s");
   }
-  else if (func==FuncPlaySound) {
+  else if (func == FuncPlaySound) {
     CustomFunctionData::populatePlaySoundParams(qs);
     if (param>=0 && param<(int)qs.count())
       return qs.at(param);
     else
       return tr("<font color=red><b>Inconsistent parameter</b></font>");
   }
-  else if (func==FuncPlayHaptic) {
+  else if (func == FuncPlayHaptic) {
     CustomFunctionData::populateHapticParams(qs);
     if (param>=0 && param<(int)qs.count())
       return qs.at(param);
     else
       return tr("<font color=red><b>Inconsistent parameter</b></font>");
   }
-  else if (func==FuncReset) {
+  else if (func == FuncReset) {
     QComboBox cb;
     CustomFunctionData::populateResetParams(model, &cb);
     int pos = cb.findData(param);
@@ -188,11 +185,11 @@ QString CustomFunctionData::paramToString(const ModelData * model) const
     else
       return tr("<font color=red><b>Inconsistent parameter</b></font>");
   }
-  else if ((func==FuncVolume)|| (func==FuncPlayValue)) {
+  else if (func == FuncVolume || func == FuncPlayValue || func == FuncBacklight) {
     RawSource item(param);
     return item.toString(model);
   }
-  else if ((func==FuncPlayPrompt) || (func==FuncPlayBoth)) {
+  else if (func == FuncPlayPrompt || func == FuncPlayBoth) {
     if ( getCurrentFirmware()->getCapability(VoicesAsNumbers)) {
       return QString("%1").arg(param);
     }
@@ -200,7 +197,7 @@ QString CustomFunctionData::paramToString(const ModelData * model) const
       return paramarm;
     }
   }
-  else if ((func>=FuncAdjustGV1) && (func<FuncCount)) {
+  else if (func >= FuncAdjustGV1 && func < FuncCount) {
     switch (adjustMode) {
       case FUNC_ADJUST_GVAR_CONSTANT:
         return tr("Value ")+QString("%1").arg(param);
@@ -210,14 +207,8 @@ QString CustomFunctionData::paramToString(const ModelData * model) const
       case FUNC_ADJUST_GVAR_INCDEC:
         float val;
         QString unit;
-        if (IS_ARM(getCurrentBoard())) {
-          val = param * model->gvarData[func - FuncAdjustGV1].multiplierGet();
-          unit = model->gvarData[func - FuncAdjustGV1].unitToString();
-        }
-        else {
-          val = param;
-          unit = "";
-        }
+        val = param * model->gvarData[func - FuncAdjustGV1].multiplierGet();
+        unit = model->gvarData[func - FuncAdjustGV1].unitToString();
         return QString("Increment: %1%2").arg(val).arg(unit);
     }
   }
@@ -233,18 +224,19 @@ QString CustomFunctionData::repeatToString() const
     return "";
   }
   else {
-    unsigned int step = IS_ARM(getCurrentBoard()) ? 1 : 10;
+    unsigned int step = 1;
     return tr("repeat(%1s)").arg(step*repeatParam);
   }
 }
 
 QString CustomFunctionData::enabledToString() const
 {
-  if ((func>=FuncOverrideCH1 && func<=FuncOverrideCH32) ||
-      (func>=FuncAdjustGV1 && func<=FuncAdjustGVLast) ||
-      (func==FuncReset) ||
-      (func>=FuncSetTimer1 && func<=FuncSetTimer2) ||
-      (func==FuncVolume) ||
+  if ((func >= FuncOverrideCH1 && func <= FuncOverrideCH32) ||
+      (func >= FuncAdjustGV1 && func <= FuncAdjustGVLast) ||
+      (func == FuncReset) ||
+      (func >= FuncSetTimer1 && func <= FuncSetTimer2) ||
+      (func == FuncVolume) ||
+      (func == FuncBacklight) ||
       (func <= FuncInstantTrim)) {
     if (!enabled) {
       return tr("DISABLED");
@@ -258,7 +250,7 @@ void CustomFunctionData::convert(RadioDataConversionState & cstate)
   cstate.setComponent(tr("CFN"), 8);
   cstate.setSubComp(nameToString(cstate.subCompIdx, (cstate.toModel() ? false : true)));
   swtch.convert(cstate);
-  if (func == FuncVolume || func == FuncPlayValue || (func >= FuncAdjustGV1 && func <= FuncAdjustGVLast && adjustMode == 1)) {
+  if (func == FuncVolume || func == FuncBacklight || func == FuncPlayValue || (func >= FuncAdjustGV1 && func <= FuncAdjustGVLast && adjustMode == 1)) {
     param = RawSource(param).convert(cstate.withComponentField("PARAM")).toValue();
   }
 }

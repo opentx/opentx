@@ -58,6 +58,8 @@ enum PulsesProtocol {
   PULSES_XJT_LITE_X16,
   PULSES_XJT_LITE_D8,
   PULSES_XJT_LITE_LR12,
+  PULSES_AFHDS3,
+  PULSES_GHOST,
   PULSES_PROTOCOL_LAST
 };
 
@@ -132,7 +134,8 @@ enum MultiModuleRFProtocols {
   MODULE_SUBTYPE_MULTI_ESKY150V2,
   MODULE_SUBTYPE_MULTI_DSM_RX,
   MODULE_SUBTYPE_MULTI_JJRC345,
-  MODULE_SUBTYPE_MULTI_LAST = MODULE_SUBTYPE_MULTI_JJRC345
+  MODULE_SUBTYPE_MULTI_Q90C,
+  MODULE_SUBTYPE_MULTI_LAST = MODULE_SUBTYPE_MULTI_Q90C
 };
 
 enum TrainerProtocol {
@@ -189,6 +192,11 @@ class ModuleData {
       int optionValue;
     } multi;
 
+    struct Afhds3 {
+      unsigned int rxFreq;
+      unsigned int rfPower;
+    } afhds3;
+
     struct PXX {
       unsigned int power;          // 0 10 mW, 1 100 mW, 2 500 mW, 3 1W
       bool receiverTelemetryOff;     // false = receiver telem enabled
@@ -212,7 +220,7 @@ class ModuleData {
     QString powerValueToString(Firmware * fw) const;
     static QString indexToString(int index, Firmware * fw);
     static QString protocolToString(unsigned protocol);
-    static QStringList powerValueStrings(int subType, Firmware * fw);
+    static QStringList powerValueStrings(enum PulsesProtocol protocol, int subType, Firmware * fw);
     bool hasFailsafes(Firmware * fw) const;
     int getMaxChannelCount();
 };

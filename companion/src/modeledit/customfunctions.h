@@ -82,7 +82,7 @@ class CustomFunctionsPanel : public GenericPanel
     void cmMoveUp();
     void cmMoveDown();
     void cmInsert();
-    void cmClear();
+    void cmClear(bool prompt = true);
     void cmClearAll();
 
   private:

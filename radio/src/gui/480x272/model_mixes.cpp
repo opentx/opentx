@@ -207,10 +207,12 @@ bool menuModelMixOne(event_t event)
         drawSource(MIXES_2ND_COLUMN, y, md2->srcRaw, attr);
         if (attr) CHECK_INCDEC_MODELSOURCE(event, md2->srcRaw, 1, MIXSRC_LAST);
         break;
+
       case MIX_FIELD_WEIGHT:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_WEIGHT);
         gvarWeightItem(MIXES_2ND_COLUMN, y, md2, attr|LEFT, event);
         break;
+
       case MIX_FIELD_OFFSET:
       {
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_OFFSET);
@@ -230,6 +232,8 @@ bool menuModelMixOne(event_t event)
         break;
       case MIX_FIELD_CURVE:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_CURVE);
+        s_currSrcRaw = md2->srcRaw;
+        s_currScale = 0;
         editCurveRef(MIXES_2ND_COLUMN, y, md2->curve, event, attr);
         break;
 #if defined(FLIGHT_MODES)

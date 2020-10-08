@@ -45,7 +45,7 @@ LimitsGroup::LimitsGroup(Firmware * firmware, TableLayout * tableLayout, int row
     spinbox->setSuffix("%");
   }
 
-  if (IS_ARM(board) || deflt == 0 /*it's the offset*/) {
+  if (deflt == 0 /*it's the offset*/) {
     spinbox->setDecimals(1);
   }
   else {
@@ -349,8 +349,11 @@ void Channels::cmCopy()
 
 void Channels::cmCut()
 {
+  if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Cut Channel. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+    return;
+
   cmCopy();
-  cmClear();
+  cmClear(false);
 }
 
 void Channels::onCustomContextMenuRequested(QPoint pos)
@@ -412,10 +415,12 @@ void Channels::cmMoveDown()
   swapData(selectedIndex, selectedIndex + 1);
 }
 
-void Channels::cmClear()
+void Channels::cmClear(bool prompt)
 {
-  if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Clear Channel. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
-    return;
+  if (prompt) {
+    if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Clear Channel. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+      return;
+  }
 
   model->limitData[selectedIndex].clear();
   model->updateAllReferences(ModelData::REF_UPD_TYPE_CHANNEL, ModelData::REF_UPD_ACT_CLEAR, selectedIndex);

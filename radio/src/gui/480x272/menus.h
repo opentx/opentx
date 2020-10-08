@@ -460,6 +460,8 @@ extern int8_t s_copySrcRow;
 extern int8_t s_copyTgtOfs;
 extern uint8_t s_currIdx;
 extern uint8_t s_currIdxSubMenu;
+extern uint16_t s_currSrcRaw;
+extern uint16_t s_currScale;
 extern int8_t s_currCh;
 extern uint8_t s_copySrcIdx;
 extern uint8_t s_copySrcCh;
@@ -544,6 +546,11 @@ inline void POPUP_MENU_SELECT_ITEM(uint8_t index)
   popupMenuSelectedItem =  (index > 0 ? (index < popupMenuItemsCount ? index : popupMenuItemsCount - 1) : 0);
 }
 
+inline void POPUP_MENU_TITLE(const char * s)
+{
+  popupMenuTitle = s;
+}
+
 inline void POPUP_MENU_START(PopupMenuHandler handler)
 {
   if (handler != popupMenuHandler) {
@@ -557,6 +564,7 @@ inline void CLEAR_POPUP()
 {
   warningText = nullptr;
   warningInfoText = nullptr;
+  popupMenuTitle = nullptr;
   popupMenuHandler = nullptr;
   popupMenuItemsCount = 0;
   // TODO ? popupFunc = nullptr;
@@ -620,6 +628,7 @@ void readModelNotes();
 
 typedef int (*FnFuncP) (int x);
 void drawFunction(FnFuncP fn, int x, int y, int width);
+void drawCursor(FnFuncP fn);
 
 void onSourceLongEnterPress(const char *result);
 

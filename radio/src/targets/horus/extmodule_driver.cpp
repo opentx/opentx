@@ -316,6 +316,30 @@ void extmoduleSendNextFrame()
       break;
 #endif
 
+#if defined(AFHDS3)
+    case PROTOCOL_CHANNELS_AFHDS3:
+    {
+#if defined(EXTMODULE_USART) && defined(EXTMODULE_TX_INVERT_GPIO)
+      extmoduleSendBuffer(extmodulePulsesData.afhds3.getData(), extmodulePulsesData.afhds3.getSize());
+#else
+      const uint16_t* dataPtr = extmodulePulsesData.afhds3.getData();
+      uint32_t dataSize = extmodulePulsesData.afhds3.getSize();
+      //Peripheral data size
+      //we know that afdhds3 uses 2 byte values!
+      uint32_t dmaSize = (EXTMODULE_TIMER_DMA_SIZE & (DMA_SxCR_PSIZE_0 | DMA_SxCR_PSIZE_1)) | DMA_SxCR_MSIZE_0;
+
+      EXTMODULE_TIMER->CCR2 = dataPtr[dataSize -1] - 4000; // 2mS in advance
+      EXTMODULE_TIMER_DMA_STREAM->CR &= ~DMA_SxCR_EN; // Disable DMA
+      EXTMODULE_TIMER_DMA_STREAM->CR |= EXTMODULE_TIMER_DMA_CHANNEL | DMA_SxCR_DIR_0 | DMA_SxCR_MINC | dmaSize | DMA_SxCR_PL_0 | DMA_SxCR_PL_1;
+      EXTMODULE_TIMER_DMA_STREAM->PAR = CONVERT_PTR_UINT(&EXTMODULE_TIMER->ARR);
+      EXTMODULE_TIMER_DMA_STREAM->M0AR = CONVERT_PTR_UINT(dataPtr);
+      EXTMODULE_TIMER_DMA_STREAM->NDTR = (uint32_t)dataSize;
+      EXTMODULE_TIMER_DMA_STREAM->CR |= DMA_SxCR_EN | DMA_SxCR_TCIE; // Enable DMA
+#endif
+      }
+      break;
+#endif
+
 #if defined(DSM2)
     case PROTOCOL_CHANNELS_SBUS:
 #if defined(PCBX10) || PCBREV >= 13
@@ -341,6 +365,12 @@ void extmoduleSendNextFrame()
 #if defined(CROSSFIRE)
     case PROTOCOL_CHANNELS_CROSSFIRE:
       sportSendBuffer(extmodulePulsesData.crossfire.pulses, extmodulePulsesData.crossfire.length);
+      break;
+#endif
+
+#if defined(GHOST)
+    case PROTOCOL_CHANNELS_GHOST:
+      sportSendBuffer(extmodulePulsesData.ghost.pulses, extmodulePulsesData.ghost.length);
       break;
 #endif
 
