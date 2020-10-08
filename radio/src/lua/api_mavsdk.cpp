@@ -210,10 +210,26 @@ static int luaMavsdkGimbalClientGetStatus(lua_State *L)
   return 1;
 }
 
-static int luaMavsdkGimbalSetFlags(lua_State *L)
+static int luaMavsdkGimbalClientSetRetract(lua_State *L)
 {
-  uint16_t device_flags = luaL_checkinteger(L, 1);
-  mavlinkTelem.setStorm32GimbalFlags(device_flags);
+  bool enable = luaL_checkinteger(L, 1);
+  mavlinkTelem.setStorm32GimbalClientRetract(enable);
+  return 0;
+}
+
+static int luaMavsdkGimbalClientSetNeutral(lua_State *L)
+{
+  bool enable = luaL_checkinteger(L, 1);
+  mavlinkTelem.setStorm32GimbalClientNeutral(enable);
+  return 0;
+}
+
+static int luaMavsdkGimbalClientSetLock(lua_State *L)
+{
+  bool roll_lock = luaL_checkinteger(L, 1);
+  bool pitch_lock = luaL_checkinteger(L, 1);
+  bool yaw_lock = luaL_checkinteger(L, 1);
+  mavlinkTelem.setStorm32GimbalClientLock(roll_lock, pitch_lock, yaw_lock);
   return 0;
 }
 
@@ -1136,7 +1152,9 @@ const luaL_Reg mavsdkLib[] = {
   { "gimbalClientIsInitialized", luaMavsdkGimbalClientIsInitialized },
   { "gimbalClientGetInfo", luaMavsdkGimbalClientGetInfo },
   { "gimbalClientGetStatus", luaMavsdkGimbalClientGetStatus },
-  { "gimbalSetFlags", luaMavsdkGimbalSetFlags },
+  { "gimbalClientSetRetract", luaMavsdkGimbalClientSetRetract },
+  { "gimbalClientSetNeutral", luaMavsdkGimbalClientSetNeutral },
+  { "gimbalClientSetLock", luaMavsdkGimbalClientSetLock },
   { "gimbalClientSetFlags", luaMavsdkGimbalClientSetFlags },
   { "gimbalClientSetPitchYawDeg", luaMavsdkGimbalClientSetPitchYawDeg },
   //for testing only
@@ -1265,22 +1283,25 @@ const luaR_value_entry mavsdkConstants[] = {
   { "GDFLAGS_RC_EXCLUSIVE", MAV_STORM32_GIMBAL_DEVICE_FLAGS_RC_EXCLUSIVE },
   { "GDFLAGS_RC_MIXED", MAV_STORM32_GIMBAL_DEVICE_FLAGS_RC_MIXED },
 
+  { "GMFLAGS_NONE", MAV_STORM32_GIMBAL_MANAGER_FLAGS_NONE },
   { "GMFLAGS_RC_ACTIVE", MAV_STORM32_GIMBAL_MANAGER_FLAGS_RC_ACTIVE },
   { "GMFLAGS_ONBOARD_ACTIVE", MAV_STORM32_GIMBAL_MANAGER_FLAGS_CLIENT_ONBOARD_ACTIVE },
   { "GMFLAGS_AUTOPILOT_ACTIVE", MAV_STORM32_GIMBAL_MANAGER_FLAGS_CLIENT_AUTOPILOT_ACTIVE },
   { "GMFLAGS_GCS_ACTIVE", MAV_STORM32_GIMBAL_MANAGER_FLAGS_CLIENT_GCS_ACTIVE },
   { "GMFLAGS_CAMERA_ACTIVE", MAV_STORM32_GIMBAL_MANAGER_FLAGS_CLIENT_CAMERA_ACTIVE },
-  { "GMFLAGS_CLIENT1_ACTIVE", MAV_STORM32_GIMBAL_MANAGER_FLAGS_CLIENT_USER1_ACTIVE },
-  { "GMFLAGS_CLIENT2_ACTIVE", MAV_STORM32_GIMBAL_MANAGER_FLAGS_CLIENT_USER2_ACTIVE },
+  { "GMFLAGS_GCS2_ACTIVE", MAV_STORM32_GIMBAL_MANAGER_FLAGS_CLIENT_GCS2_ACTIVE },
+  { "GMFLAGS_CLIENT1_ACTIVE", MAV_STORM32_GIMBAL_MANAGER_FLAGS_CLIENT_CUSTOM1_ACTIVE },
+  { "GMFLAGS_CLIENT2_ACTIVE", MAV_STORM32_GIMBAL_MANAGER_FLAGS_CLIENT_CUSTOM2_ACTIVE },
   { "GMFLAGS_SET_SUPERVISON", MAV_STORM32_GIMBAL_MANAGER_FLAGS_SET_SUPERVISON },
   { "GMFLAGS_SET_RELEASE", MAV_STORM32_GIMBAL_MANAGER_FLAGS_SET_RELEASE },
 
-  { "GMCLIENT_ONBOARD", MAV_STORM32_GIMBAL_MANAGER_CLIENTS_ONBOARD },
-  { "GMCLIENT_AUTOPILOT", MAV_STORM32_GIMBAL_MANAGER_CLIENTS_AUTOPILOT },
-  { "GMCLIENT_GCS", MAV_STORM32_GIMBAL_MANAGER_CLIENTS_GCS },
-  { "GMCLIENT_CAMERA", MAV_STORM32_GIMBAL_MANAGER_CLIENTS_CAMERA },
-  { "GMCLIENT_USER1", MAV_STORM32_GIMBAL_MANAGER_CLIENTS_USER1 },
-  { "GMCLIENT_USER2", MAV_STORM32_GIMBAL_MANAGER_CLIENTS_USER2 },
+  { "GMCLIENT_ONBOARD", MAV_STORM32_GIMBAL_MANAGER_CLIENT_ONBOARD },
+  { "GMCLIENT_AUTOPILOT", MAV_STORM32_GIMBAL_MANAGER_CLIENT_AUTOPILOT },
+  { "GMCLIENT_GCS", MAV_STORM32_GIMBAL_MANAGER_CLIENT_GCS },
+  { "GMCLIENT_CAMERA", MAV_STORM32_GIMBAL_MANAGER_CLIENT_CAMERA },
+  { "GMCLIENT_GCS2", MAV_STORM32_GIMBAL_MANAGER_CLIENT_GCS2 },
+  { "GMCLIENT_CUSTOM1", MAV_STORM32_GIMBAL_MANAGER_CLIENT_CUSTOM1 },
+  { "GMCLIENT_CUSTOM2", MAV_STORM32_GIMBAL_MANAGER_CLIENT_CUSTOM2 },
 
   { nullptr, 0 }  /* sentinel */
 };

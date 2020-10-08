@@ -483,8 +483,10 @@ class MavlinkTelem
     };
     struct GimbalManagerOut gimbalmanagerOut;
 
-    void _storm32UpdateGimbalManagerFlags(uint16_t* device_flags, uint16_t* manager_flags);
-    void setStorm32GimbalFlags(uint16_t device_flags);
+    void _refreshGimbalClientFlags(uint16_t* device_flags, uint16_t* manager_flags);
+    void setStorm32GimbalClientRetract(bool enable);
+    void setStorm32GimbalClientNeutral(bool enable);
+    void setStorm32GimbalClientLock(bool roll_lock, bool pitch_lock, bool yaw_lock);
     void setStorm32GimbalClientFlags(uint16_t manager_flags);
 
     //gimbal protocol v1 vs v2

@@ -265,6 +265,8 @@ void MavlinkTelem::handleMessage(void)
     if (payload.gimbal_device_id == gimbal.compid) { //this is the gimbal's gimbal manager
       _resetGimbalClient();
       gimbalmanager.compid = _msg.compid;
+      gimbalmanagerOut.device_flags = payload.device_flags;
+      gimbalmanagerOut.manager_flags = payload.manager_flags;
       gimbalmanager.requests_triggered = 1; //we schedule them
     }
   }
