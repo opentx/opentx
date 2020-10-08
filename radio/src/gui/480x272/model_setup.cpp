@@ -53,6 +53,7 @@ enum MenuModelSetupItems {
   ITEM_MODEL_SETUP_THROTTLE_REVERSED,
   ITEM_MODEL_SETUP_THROTTLE_TRACE,
   ITEM_MODEL_SETUP_THROTTLE_TRIM,
+  ITEM_MODEL_SETUP_THROTTLE_TRIM_SWITCH,
   ITEM_MODEL_SETUP_PREFLIGHT_LABEL,
   ITEM_MODEL_SETUP_CHECKLIST_DISPLAY,
   ITEM_MODEL_SETUP_THROTTLE_WARNING,
@@ -614,6 +615,7 @@ bool menuModelSetup(event_t event)
            0, // Throttle reverse
            0, // Throttle trace source
            0, // Throttle trim
+           0, // Throttle trim switch
 
          LABEL(PreflightCheck),
            0, // Display checklist
@@ -833,6 +835,13 @@ bool menuModelSetup(event_t event)
       case ITEM_MODEL_SETUP_THROTTLE_TRIM:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_TTRIM);
         g_model.thrTrim = editCheckBox(g_model.thrTrim, MODEL_SETUP_2ND_COLUMN, y, attr, event);
+        break;
+
+      case ITEM_MODEL_SETUP_THROTTLE_TRIM_SWITCH:
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_TTRIM_SW);
+        if (attr)
+          CHECK_INCDEC_MODELVAR_ZERO(event, g_model.thrTrimSw, NUM_TRIMS - 1);
+        drawSource(MODEL_SETUP_2ND_COLUMN, y, g_model.getThrottleStickTrimSource(), attr);
         break;
 
       case ITEM_MODEL_SETUP_PREFLIGHT_LABEL:

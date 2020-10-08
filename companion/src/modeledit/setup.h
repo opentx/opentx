@@ -138,6 +138,7 @@ class SetupPanel : public ModelPanel
   private slots:
     void on_name_editingFinished();
     void on_throttleSource_currentIndexChanged(int index);
+    void on_throttleTrimSwitch_currentIndexChanged(int index);
     void on_throttleTrim_toggled(bool checked);
     void on_extendedLimits_toggled(bool checked);
     void on_extendedTrims_toggled(bool checked);
@@ -176,6 +177,7 @@ class SetupPanel : public ModelPanel
     void updatePotWarnings();
     void updateBeepCenter();
     void populateThrottleSourceCB();
+    void populateThrottleTrimSwitchCB();
     int timersCount;
     int selectedTimerIndex;
     bool hasTimerClipboardData(QByteArray * data = nullptr) const;

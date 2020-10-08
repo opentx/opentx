@@ -2421,7 +2421,8 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, Board::Type board, unsig
     internalField.Append(new UnsignedField<2>(this, modelData.potsWarningMode));
   }
   else {
-    internalField.Append(new SpareBitsField<6>(this));
+    internalField.Append(new SpareBitsField<3>(this));
+    internalField.Append(new UnsignedField<3>(this, modelData.thrTrimSwitch));
     internalField.Append(new UnsignedField<2>(this, modelData.potsWarningMode));
   }
 

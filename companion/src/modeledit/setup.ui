@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>893</width>
+    <width>1007</width>
     <height>405</height>
    </rect>
   </property>
@@ -26,22 +26,6 @@
        </property>
        <property name="text">
         <string>Timer 1</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="0">
-      <widget class="QLabel" name="toplcdTimerLabel">
-       <property name="font">
-        <font>
-         <weight>50</weight>
-         <bold>false</bold>
-        </font>
-       </property>
-       <property name="text">
-        <string>Top LCD Timer</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -149,6 +133,106 @@
        </item>
       </layout>
      </item>
+     <item row="0" column="0" alignment="Qt::AlignLeft|Qt::AlignTop">
+      <widget class="QLabel" name="label">
+       <property name="font">
+        <font>
+         <weight>75</weight>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>Model</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="label_timer3">
+       <property name="font">
+        <font>
+         <weight>50</weight>
+         <bold>false</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>Timer 3</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="6" column="0">
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item alignment="Qt::AlignRight">
+        <widget class="QLabel" name="label_ttrace">
+         <property name="font">
+          <font>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Throttle Source</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item alignment="Qt::AlignRight">
+        <widget class="QLabel" name="label_10">
+         <property name="font">
+          <font>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Trim Step</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QLabel" name="labelTrimsDisplay">
+         <property name="font">
+          <font>
+           <weight>50</weight>
+           <bold>false</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Trims Display</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item row="4" column="0">
+      <widget class="QLabel" name="toplcdTimerLabel">
+       <property name="font">
+        <font>
+         <weight>50</weight>
+         <bold>false</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>Top LCD Timer</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
      <item row="10" column="0" alignment="Qt::AlignLeft|Qt::AlignTop">
       <widget class="QLabel" name="swwarn_label">
        <property name="sizePolicy">
@@ -168,6 +252,66 @@
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="4" column="1">
+      <widget class="AutoComboBox" name="toplcdTimer">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
+     </item>
+     <item row="8" column="1">
+      <layout class="QHBoxLayout" name="horizontalLayout_7">
+       <item>
+        <layout class="QGridLayout" name="centerBeepLayout"/>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_4">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+      </layout>
+     </item>
+     <item row="7" column="1">
+      <widget class="Line" name="line_4">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0" alignment="Qt::AlignRight|Qt::AlignVCenter">
+      <widget class="QLabel" name="label_timer2">
+       <property name="font">
+        <font>
+         <weight>50</weight>
+         <bold>false</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>Timer 2</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item row="9" column="0" colspan="2">
+      <widget class="Line" name="line_3">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
        </property>
       </widget>
      </item>
@@ -275,44 +419,8 @@
        </item>
       </layout>
      </item>
-     <item row="0" column="0" alignment="Qt::AlignLeft|Qt::AlignTop">
-      <widget class="QLabel" name="label">
-       <property name="font">
-        <font>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="text">
-        <string>Model</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="8" column="1">
-      <layout class="QHBoxLayout" name="horizontalLayout_7">
-       <item>
-        <layout class="QGridLayout" name="centerBeepLayout"/>
-       </item>
-       <item>
-        <spacer name="horizontalSpacer_4">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-      </layout>
-     </item>
-     <item row="9" column="0" colspan="2">
-      <widget class="Line" name="line_3">
+     <item row="5" column="1">
+      <widget class="Line" name="line_2">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
@@ -334,86 +442,13 @@
        </property>
       </widget>
      </item>
-     <item row="7" column="1">
-      <widget class="Line" name="line_4">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-      </widget>
-     </item>
      <item row="6" column="1">
-      <layout class="QGridLayout" name="gridLayout_2">
-       <item row="1" column="3">
-        <widget class="QCheckBox" name="displayText">
-         <property name="layoutDirection">
-          <enum>Qt::LeftToRight</enum>
-         </property>
-         <property name="text">
-          <string>Display Checklist</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="0">
-        <widget class="AutoComboBox" name="trimsDisplay">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-         <item>
-          <property name="text">
-           <string>Never</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>On change</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Always</string>
-          </property>
-         </item>
-        </widget>
-       </item>
-       <item row="0" column="1">
-        <widget class="QCheckBox" name="throttleTrim">
-         <property name="layoutDirection">
-          <enum>Qt::LeftToRight</enum>
-         </property>
-         <property name="text">
-          <string>Throttle Trim Idle Only</string>
-         </property>
-        </widget>
-       </item>
-       <item row="2" column="1">
-        <widget class="QCheckBox" name="gfEnabled">
-         <property name="text">
-          <string>Global Functions</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="2">
-        <widget class="QCheckBox" name="throttleWarning">
-         <property name="layoutDirection">
-          <enum>Qt::LeftToRight</enum>
-         </property>
-         <property name="text">
-          <string>Throttle Warning</string>
-         </property>
-        </widget>
-       </item>
-       <item row="0" column="0">
-        <widget class="QComboBox" name="throttleSource">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
-        </widget>
+      <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,0,0,0,0,0,0">
+       <property name="verticalSpacing">
+        <number>6</number>
+       </property>
+       <item row="0" column="5">
+        <widget class="QComboBox" name="throttleTrimSwitch"/>
        </item>
        <item row="1" column="0">
         <widget class="QComboBox" name="trimIncrement">
@@ -450,6 +485,81 @@
          </item>
         </widget>
        </item>
+       <item row="2" column="0">
+        <widget class="AutoComboBox" name="trimsDisplay">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <item>
+          <property name="text">
+           <string>Never</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>On change</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Always</string>
+          </property>
+         </item>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QCheckBox" name="throttleWarning">
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="text">
+          <string>Throttle Warning</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="3">
+        <widget class="QCheckBox" name="displayText">
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="text">
+          <string>Display Checklist</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QCheckBox" name="gfEnabled">
+         <property name="text">
+          <string>Global Functions</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="4">
+        <widget class="QPushButton" name="editText">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Edit Checklist...</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QCheckBox" name="throttleTrim">
+         <property name="layoutDirection">
+          <enum>Qt::LeftToRight</enum>
+         </property>
+         <property name="text">
+          <string>Throttle Trim Idle Only</string>
+         </property>
+        </widget>
+       </item>
        <item row="0" column="3">
         <widget class="QCheckBox" name="throttleReverse">
          <property name="whatsThis">
@@ -466,16 +576,10 @@ If this is checked the throttle will be reversed.  Idle will be forward, trim wi
          </property>
         </widget>
        </item>
-       <item row="1" column="4">
-        <widget class="QPushButton" name="editText">
-         <property name="sizePolicy">
-          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-           <horstretch>0</horstretch>
-           <verstretch>0</verstretch>
-          </sizepolicy>
-         </property>
+       <item row="0" column="4">
+        <widget class="QLabel" name="label_2">
          <property name="text">
-          <string>Edit Checklist...</string>
+          <string>Throttle trim switch</string>
          </property>
         </widget>
        </item>
@@ -499,7 +603,17 @@ If this is checked the throttle will be reversed.  Idle will be forward, trim wi
          </property>
         </widget>
        </item>
-       <item row="1" column="5">
+       <item row="0" column="0">
+        <widget class="QComboBox" name="throttleSource">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="6">
         <spacer name="horizontalSpacer">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -513,107 +627,6 @@ If this is checked the throttle will be reversed.  Idle will be forward, trim wi
         </spacer>
        </item>
       </layout>
-     </item>
-     <item row="6" column="0">
-      <layout class="QVBoxLayout" name="verticalLayout_2">
-       <item alignment="Qt::AlignRight">
-        <widget class="QLabel" name="label_ttrace">
-         <property name="font">
-          <font>
-           <weight>50</weight>
-           <bold>false</bold>
-          </font>
-         </property>
-         <property name="text">
-          <string>Throttle Source</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item alignment="Qt::AlignRight">
-        <widget class="QLabel" name="label_10">
-         <property name="font">
-          <font>
-           <weight>50</weight>
-           <bold>false</bold>
-          </font>
-         </property>
-         <property name="text">
-          <string>Trim Step</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="labelTrimsDisplay">
-         <property name="font">
-          <font>
-           <weight>50</weight>
-           <bold>false</bold>
-          </font>
-         </property>
-         <property name="text">
-          <string>Trims Display</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item row="5" column="1">
-      <widget class="Line" name="line_2">
-       <property name="orientation">
-        <enum>Qt::Horizontal</enum>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="0" alignment="Qt::AlignRight|Qt::AlignVCenter">
-      <widget class="QLabel" name="label_timer2">
-       <property name="font">
-        <font>
-         <weight>50</weight>
-         <bold>false</bold>
-        </font>
-       </property>
-       <property name="text">
-        <string>Timer 2</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="label_timer3">
-       <property name="font">
-        <font>
-         <weight>50</weight>
-         <bold>false</bold>
-        </font>
-       </property>
-       <property name="text">
-        <string>Timer 3</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="1">
-      <widget class="AutoComboBox" name="toplcdTimer">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-      </widget>
      </item>
     </layout>
    </item>

@@ -763,9 +763,9 @@ bool TelemetrySensor::isSameInstance(TelemetryProtocol protocol, uint8_t instanc
       return true;
 #else
     if (((this->instance ^ instance) & 0x9F) == 0 && (this->instance >> 5) != TELEMETRY_ENDPOINT_SPORT && (instance >> 5) != TELEMETRY_ENDPOINT_SPORT) {
-              this->instance = instance; // update the instance in case we had telemetry switching
-              return true;
-            }
+      this->instance = instance; // update the instance in case we had telemetry switching
+      return true;
+    }
 #endif
   }
 

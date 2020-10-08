@@ -317,24 +317,6 @@ inline bool isModuleAFHDS3(uint8_t idx)
   return g_model.moduleData[idx].type == MODULE_TYPE_AFHDS3;
 }
 
-inline bool isModulePxx2(uint8_t idx)
-{
-  if (idx != EXTERNAL_MODULE)
-    return false;
-#if defined(PXX2)
-  #if defined(HARDWARE_EXTERNAL_MODULE_SIZE_SML)
-     if (g_model.moduleData[idx].type == MODULE_TYPE_XJT_LITE_PXX2 ||
-        g_model.moduleData[idx].type == MODULE_TYPE_R9M_LITE_PRO_PXX2)
-       return true;
-  #endif
-  #if defined(HARDWARE_EXTERNAL_MODULE_SIZE_SML)
-    if (g_model.moduleData[idx].type == MODULE_TYPE_R9M_LITE_PXX2)
-      return true;
-  #endif
-#endif
-  return false;
-}
-
 // order is the same as in enum Protocols in myeeprom.h (none, ppm, pxx, pxx2, dsm, crossfire, multi, r9m, r9m2, sbus)
 //qba667 count is not matching!
 static const int8_t maxChannelsModules[] = { 0, 8, 8, 16, -2, 8, 4, 8, 16, 8, 10}; // relative to 8!

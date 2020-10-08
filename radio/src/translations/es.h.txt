@@ -432,6 +432,7 @@
 #define TR_DISPLAY_TRIMS       "Ver trims"
 #define TR_TTRACE              TR("Fuente-A", INDENT "Fuente acelerador")
 #define TR_TTRIM               TR("Trim-A", INDENT "Trim acelerador")
+#define TR_TTRIM_SW            TR("T-Trim-Sw", INDENT "Trim switch")
 #define TR_BEEPCTR             TR("Beep ctr", "Beep centro")
 #define TR_USE_GLOBAL_FUNCS    TR("Funcs. glob.", "Usar func. globales")
 #if defined(PCBSKY9X) && defined(REVX)

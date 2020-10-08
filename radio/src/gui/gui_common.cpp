@@ -390,6 +390,10 @@ bool isAux1ModeAvailable(int mode)
 #if defined(AUX2_SERIAL)
   if (mode == UART_MODE_SBUS_TRAINER)
     return g_eeGeneral.aux2SerialMode != UART_MODE_SBUS_TRAINER;
+#if defined(RADIO_TX16S)
+  else
+    return (g_model.trainerData.mode != TRAINER_MODE_MASTER_BATTERY_COMPARTMENT || g_eeGeneral.aux2SerialMode == UART_MODE_SBUS_TRAINER);
+#endif
 #endif
   return true;
 }
@@ -399,6 +403,10 @@ bool isAux2ModeAvailable(int mode)
 #if defined(AUX_SERIAL)
   if (mode == UART_MODE_SBUS_TRAINER)
     return g_eeGeneral.auxSerialMode != UART_MODE_SBUS_TRAINER;
+#if defined(RADIO_TX16S)
+  else
+    return (g_model.trainerData.mode != TRAINER_MODE_MASTER_BATTERY_COMPARTMENT || g_eeGeneral.auxSerialMode == UART_MODE_SBUS_TRAINER);
+#endif
 #endif
   return true;
 }
@@ -783,7 +791,10 @@ bool isTrainerModeAvailable(int mode)
   }
 #endif
 
-#if defined(PCBTARANIS) && !defined(TRAINER_BATTERY_COMPARTMENT)
+#if defined(RADIO_TX16S)
+  if (mode == TRAINER_MODE_MASTER_BATTERY_COMPARTMENT)
+    return (g_eeGeneral.auxSerialMode == UART_MODE_SBUS_TRAINER || g_eeGeneral.aux2SerialMode == UART_MODE_SBUS_TRAINER);
+#elif defined(PCBTARANIS) && !defined(TRAINER_BATTERY_COMPARTMENT)
   if (mode == TRAINER_MODE_MASTER_BATTERY_COMPARTMENT)
     return false;
 #elif defined(PCBTARANIS)
