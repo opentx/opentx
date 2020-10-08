@@ -19,7 +19,7 @@
  */
 
 #include "opentx.h"
-#define PCBTANGO 1
+
 #if defined(PCBTANGO)
 struct {
   int8_t preStickIdx = -1;
