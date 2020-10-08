@@ -699,13 +699,13 @@ void bluetoothWriteWakeup();
 uint8_t bluetoothIsWriting();
 void bluetoothDisable();
 
-//#if defined(__cplusplus)
-//#include "fifo.h"
-//#include "dmafifo.h"
-//extern DMAFifo<512> telemetryFifo;
-//typedef DMAFifo<32> AuxSerialRxFifo;
-//extern AuxSerialRxFifo auxSerialRxFifo;
-//extern volatile uint32_t externalModulePort;
-//#endif
+#if defined(__cplusplus)
+#include "fifo.h"
+#include "dmafifo.h"
+extern DMAFifo<512> telemetryFifo;
+typedef DMAFifo<32> AuxSerialRxFifo;
+extern AuxSerialRxFifo auxSerialRxFifo;
+extern volatile uint32_t externalModulePort;
+#endif
 
 #endif // _BOARD_H_

@@ -84,7 +84,7 @@ if (PCB STREQUAL X10)
     set(USB_CHARGER YES)
     set(DEFAULT_THEME "DARKBLUE")
     set(SBUS_TRAINER ON)
-    set(AUX_SERIAL OFF) # todo ON
+    set(AUX_SERIAL ON)
     if (NOT BLUETOOTH AND NOT INTERNAL_GPS)
       set(AUX2_SERIAL OFF) # todo ON
     endif()
