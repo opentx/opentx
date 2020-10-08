@@ -122,41 +122,41 @@ static int luaMavsdkGimbalGetAttYawDeg(lua_State *L)
 // gimbal protocol v1
 // can also be used for gimbal protocol v2, if _gimbal_protocol_v2 is set accordingly
 
-static int luaMavsdkGimbalSetNeutralMode(lua_State *L)
+static int luaMavsdkGimbalSendNeutralMode(lua_State *L)
 {
-  mavlinkTelem.setGimbalTargetingMode(MAV_MOUNT_MODE_NEUTRAL);
+  mavlinkTelem.sendGimbalTargetingMode(MAV_MOUNT_MODE_NEUTRAL);
   return 0;
 }
 
-static int luaMavsdkGimbalSetMavlinkTargetingMode(lua_State *L)
+static int luaMavsdkGimbalSendMavlinkTargetingMode(lua_State *L)
 {
-  mavlinkTelem.setGimbalTargetingMode(MAV_MOUNT_MODE_MAVLINK_TARGETING);
+  mavlinkTelem.sendGimbalTargetingMode(MAV_MOUNT_MODE_MAVLINK_TARGETING);
   return 0;
 }
 
-static int luaMavsdkGimbalSetRcTargetingMode(lua_State *L)
+static int luaMavsdkGimbalSendRcTargetingMode(lua_State *L)
 {
-  mavlinkTelem.setGimbalTargetingMode(MAV_MOUNT_MODE_RC_TARGETING);
+  mavlinkTelem.sendGimbalTargetingMode(MAV_MOUNT_MODE_RC_TARGETING);
   return 0;
 }
 
-static int luaMavsdkGimbalSetGpsPointMode(lua_State *L)
+static int luaMavsdkGimbalSendGpsPointMode(lua_State *L)
 {
-  mavlinkTelem.setGimbalTargetingMode(MAV_MOUNT_MODE_GPS_POINT);
+  mavlinkTelem.sendGimbalTargetingMode(MAV_MOUNT_MODE_GPS_POINT);
   return 0;
 }
 
-static int luaMavsdkGimbalSetSysIdTargetingMode(lua_State *L)
+static int luaMavsdkGimbalSendSysIdTargetingMode(lua_State *L)
 {
-  mavlinkTelem.setGimbalTargetingMode(MAV_MOUNT_MODE_SYSID_TARGET);
+  mavlinkTelem.sendGimbalTargetingMode(MAV_MOUNT_MODE_SYSID_TARGET);
   return 0;
 }
 
-static int luaMavsdkGimbalSetPitchYawDeg(lua_State *L)
+static int luaMavsdkGimbalSendPitchYawDeg(lua_State *L)
 {
   float pitch = luaL_checknumber(L, 1);
   float yaw = luaL_checknumber(L, 2);
-  mavlinkTelem.setGimbalPitchYawDeg(pitch, yaw);
+  mavlinkTelem.sendGimbalPitchYawDeg(pitch, yaw);
   return 0;
 }
 
@@ -240,35 +240,35 @@ static int luaMavsdkGimbalClientSetFlags(lua_State *L)
   return 0;
 }
 
-static int luaMavsdkGimbalClientSetPitchYawDeg(lua_State *L)
+static int luaMavsdkGimbalClientSendPitchYawDeg(lua_State *L)
 {
   float pitch = luaL_checknumber(L, 1);
   float yaw = luaL_checknumber(L, 2);
-  mavlinkTelem.setStorm32GimbalManagerPitchYawDeg(pitch, yaw);
+  mavlinkTelem.sendStorm32GimbalManagerPitchYawDeg(pitch, yaw);
   return 0;
 }
 
-static int luaMavsdkGimbalClientControlSetPitchYawDeg(lua_State *L)
+static int luaMavsdkGimbalClientSendControlPitchYawDeg(lua_State *L)
 {
   float pitch = luaL_checknumber(L, 1);
   float yaw = luaL_checknumber(L, 2);
-  mavlinkTelem.setStorm32GimbalManagerControlPitchYawDeg(pitch, yaw);
+  mavlinkTelem.sendStorm32GimbalManagerControlPitchYawDeg(pitch, yaw);
   return 0;
 }
 
-static int luaMavsdkGimbalClientCmdSetPitchYawDeg(lua_State *L)
+static int luaMavsdkGimbalClientSendCmdPitchYawDeg(lua_State *L)
 {
   float pitch = luaL_checknumber(L, 1);
   float yaw = luaL_checknumber(L, 2);
-  mavlinkTelem.setStorm32GimbalManagerCmdPitchYawDeg(pitch, yaw);
+  mavlinkTelem.sendStorm32GimbalManagerCmdPitchYawDeg(pitch, yaw);
   return 0;
 }
 
-static int luaMavsdkGimbalDeviceSetPitchYawDeg(lua_State *L)
+static int luaMavsdkGimbalDeviceSendPitchYawDeg(lua_State *L)
 {
   float pitch = luaL_checknumber(L, 1);
   float yaw = luaL_checknumber(L, 2);
-  mavlinkTelem.setStorm32GimbalDevicePitchYawDeg(pitch, yaw);
+  mavlinkTelem.sendStorm32GimbalDevicePitchYawDeg(pitch, yaw);
   return 0;
 }
 
@@ -343,33 +343,33 @@ static int luaMavsdkCameraGetStatus(lua_State *L)
   return 1;
 }
 
-static int luaMavsdkCameraSetVideoMode(lua_State *L)
+static int luaMavsdkCameraSendVideoMode(lua_State *L)
 {
-  mavlinkTelem.setCameraSetVideoMode();
+  mavlinkTelem.sendCameraSetVideoMode();
   return 0;
 }
 
-static int luaMavsdkCameraSetPhotoMode(lua_State *L)
+static int luaMavsdkCameraSendPhotoMode(lua_State *L)
 {
-  mavlinkTelem.setCameraSetPhotoMode();
+  mavlinkTelem.sendCameraSetPhotoMode();
   return 0;
 }
 
 static int luaMavsdkCameraStartVideo(lua_State *L)
 {
-  mavlinkTelem.setCameraStartVideo();
+  mavlinkTelem.sendCameraStartVideo();
   return 0;
 }
 
 static int luaMavsdkCameraStopVideo(lua_State *L)
 {
-  mavlinkTelem.setCameraStopVideo();
+  mavlinkTelem.sendCameraStopVideo();
   return 0;
 }
 
 static int luaMavsdkCameraTakePhoto(lua_State *L)
 {
-  mavlinkTelem.setCameraTakePhoto();
+  mavlinkTelem.sendCameraTakePhoto();
   return 0;
 }
 
@@ -1139,12 +1139,12 @@ const luaL_Reg mavsdkLib[] = {
   { "gimbalGetAttPitchDeg", luaMavsdkGimbalGetAttPitchDeg },
   { "gimbalGetAttYawDeg", luaMavsdkGimbalGetAttYawDeg },
   // gimbal protocol v1
-  { "gimbalSetNeutralMode", luaMavsdkGimbalSetNeutralMode },
-  { "gimbalSetMavlinkTargetingMode", luaMavsdkGimbalSetMavlinkTargetingMode },
-  { "gimbalSetRcTargetingMode", luaMavsdkGimbalSetRcTargetingMode },
-  { "gimbalSetGpsPointMode", luaMavsdkGimbalSetGpsPointMode },
-  { "gimbalSetSysIdTargetingMode", luaMavsdkGimbalSetSysIdTargetingMode },
-  { "gimbalSetPitchYawDeg", luaMavsdkGimbalSetPitchYawDeg },
+  { "gimbalSendNeutralMode", luaMavsdkGimbalSendNeutralMode },
+  { "gimbalSendMavlinkTargetingMode", luaMavsdkGimbalSendMavlinkTargetingMode },
+  { "gimbalSendRcTargetingMode", luaMavsdkGimbalSendRcTargetingMode },
+  { "gimbalSendGpsPointMode", luaMavsdkGimbalSendGpsPointMode },
+  { "gimbalSendSysIdTargetingMode", luaMavsdkGimbalSendSysIdTargetingMode },
+  { "gimbalSendPitchYawDeg", luaMavsdkGimbalSendPitchYawDeg },
   // gimbal protocol v2
   { "gimbalIsProtocolV2", luaMavsdkIsGimbalProtocolV2 },
   { "gimbalSetProtocolV2", luaMavsdkSetGimbalProtocolV2 },
@@ -1156,18 +1156,18 @@ const luaL_Reg mavsdkLib[] = {
   { "gimbalClientSetNeutral", luaMavsdkGimbalClientSetNeutral },
   { "gimbalClientSetLock", luaMavsdkGimbalClientSetLock },
   { "gimbalClientSetFlags", luaMavsdkGimbalClientSetFlags },
-  { "gimbalClientSetPitchYawDeg", luaMavsdkGimbalClientSetPitchYawDeg },
+  { "gimbalClientSendPitchYawDeg", luaMavsdkGimbalClientSendPitchYawDeg },
   //for testing only
-  { "gimbalClientControlSetPitchYawDeg", luaMavsdkGimbalClientControlSetPitchYawDeg },
-  { "gimbalClientCmdSetPitchYawDeg", luaMavsdkGimbalClientCmdSetPitchYawDeg },
-  { "gimbalDeviceSetPitchYawDeg", luaMavsdkGimbalDeviceSetPitchYawDeg },
+  { "gimbalClientSendControlPitchYawDeg", luaMavsdkGimbalClientSendControlPitchYawDeg },
+  { "gimbalClientSendCmdPitchYawDeg", luaMavsdkGimbalClientSendCmdPitchYawDeg },
+  { "gimbalDeviceSendPitchYawDeg", luaMavsdkGimbalDeviceSendPitchYawDeg },
 
   { "cameraIsReceiving", luaMavsdkCameraIsReceiving },
   { "cameraIsInitialized", luaMavsdkCameraIsInitialized },
   { "cameraGetInfo", luaMavsdkCameraGetInfo },
   { "cameraGetStatus", luaMavsdkCameraGetStatus },
-  { "cameraSetVideoMode", luaMavsdkCameraSetVideoMode },
-  { "cameraSetPhotoMode", luaMavsdkCameraSetPhotoMode },
+  { "cameraSendVideoMode", luaMavsdkCameraSendVideoMode },
+  { "cameraSendPhotoMode", luaMavsdkCameraSendPhotoMode },
   { "cameraStartVideo", luaMavsdkCameraStartVideo },
   { "cameraStopVideo", luaMavsdkCameraStopVideo },
   { "cameraTakePhoto", luaMavsdkCameraTakePhoto },

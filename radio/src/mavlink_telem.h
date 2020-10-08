@@ -391,23 +391,23 @@ class MavlinkTelem
     struct CameraStatus cameraStatus; // Status: variable data
 
     //convenience task wrapper
-    void setCameraSetVideoMode(void)
+    void sendCameraSetVideoMode(void)
     {
       SETTASK(TASK_CAMERA, TASK_SENDCMD_SET_CAMERA_VIDEO_MODE);
     }
-    void setCameraSetPhotoMode(void)
+    void sendCameraSetPhotoMode(void)
     {
       SETTASK(TASK_CAMERA, TASK_SENDCMD_SET_CAMERA_PHOTO_MODE);
     }
-    void setCameraStartVideo(void)
+    void sendCameraStartVideo(void)
     {
       SETTASK(TASK_CAMERA, TASK_SENDCMD_VIDEO_START_CAPTURE);
     }
-    void setCameraStopVideo(void)
+    void sendCameraStopVideo(void)
     {
       SETTASK(TASK_CAMERA, TASK_SENDCMD_VIDEO_STOP_CAPTURE);
     }
-    void setCameraTakePhoto(void)
+    void sendCameraTakePhoto(void)
     {
       SETTASK(TASK_CAMERA, TASK_SENDCMD_IMAGE_START_CAPTURE);
     }
@@ -428,8 +428,8 @@ class MavlinkTelem
     float _t_gimbal_pitch_deg, _t_gimbal_yaw_deg;
 
     //convenience task wrapper
-    void setGimbalTargetingMode(uint8_t mode);
-    void setGimbalPitchYawDeg(float pitch, float yaw);
+    void sendGimbalTargetingMode(uint8_t mode);
+    void sendGimbalPitchYawDeg(float pitch, float yaw);
 
     // MAVSDK GIMBAL CLIENT only
 
@@ -471,10 +471,10 @@ class MavlinkTelem
     uint16_t _t_storm32GM_cmd_gdflags, _t_storm32GM_cmd_gmflags;
 
     //convenience task wrapper
-    void setStorm32GimbalDevicePitchYawDeg(float pitch, float yaw);
-    void setStorm32GimbalManagerPitchYawDeg(float pitch, float yaw);
-    void setStorm32GimbalManagerControlPitchYawDeg(float pitch, float yaw);
-    void setStorm32GimbalManagerCmdPitchYawDeg(float pitch, float yaw);
+    void sendStorm32GimbalDevicePitchYawDeg(float pitch, float yaw);
+    void sendStorm32GimbalManagerPitchYawDeg(float pitch, float yaw);
+    void sendStorm32GimbalManagerControlPitchYawDeg(float pitch, float yaw);
+    void sendStorm32GimbalManagerCmdPitchYawDeg(float pitch, float yaw);
 
     struct GimbalManagerOut { //collective structure to handle gimbalmanager outgoing flags
       uint8_t mount_mode; //copy of the mount_mode

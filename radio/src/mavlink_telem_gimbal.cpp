@@ -219,17 +219,17 @@ void MavlinkTelem::generateCmdStorm32DoGimbalManagerControlTiltPan(uint8_t tsyst
 // -- Mavsdk Convenience Task Wrapper --
 // to make it easy for api_mavsdk to call functions
 
-void MavlinkTelem::setGimbalTargetingMode(uint8_t mode)
+void MavlinkTelem::sendGimbalTargetingMode(uint8_t mode)
 {
   _t_gimbal_mode = mode;
   gimbalmanagerOut.mount_mode = mode;
   SETTASK(TASK_GIMBAL, TASK_SENDCMD_DO_MOUNT_CONFIGURE);
 }
 
-void MavlinkTelem::setGimbalPitchYawDeg(float pitch, float yaw)
+void MavlinkTelem::sendGimbalPitchYawDeg(float pitch, float yaw)
 {
   if (_storm32_gimbal_protocol_v2) {
-    setStorm32GimbalManagerPitchYawDeg(pitch, yaw);
+    sendStorm32GimbalManagerPitchYawDeg(pitch, yaw);
     return;
   }
   _t_gimbal_pitch_deg = pitch;
@@ -238,7 +238,7 @@ void MavlinkTelem::setGimbalPitchYawDeg(float pitch, float yaw)
 }
 
 //we shouldn't use this
-void MavlinkTelem::setStorm32GimbalDevicePitchYawDeg(float pitch, float yaw)
+void MavlinkTelem::sendStorm32GimbalDevicePitchYawDeg(float pitch, float yaw)
 {
   _t_storm32GD_pitch_deg = pitch;
   _t_storm32GD_yaw_deg = yaw;
@@ -310,7 +310,7 @@ void MavlinkTelem::_refreshGimbalClientFlags(uint16_t* device_flags, uint16_t* m
   *manager_flags = gimbalmanagerOut.manager_flags;
 }
 
-void MavlinkTelem::setStorm32GimbalManagerPitchYawDeg(float pitch, float yaw)
+void MavlinkTelem::sendStorm32GimbalManagerPitchYawDeg(float pitch, float yaw)
 {
   if (!gimbalmanager.compid) return; //no gimbal manager
 
@@ -325,7 +325,7 @@ void MavlinkTelem::setStorm32GimbalManagerPitchYawDeg(float pitch, float yaw)
   SETTASK(TASK_GIMBAL, TASK_SENDMSG_GIMBAL_MANAGER_CONTROL_TILTPAN);
 }
 
-void MavlinkTelem::setStorm32GimbalManagerControlPitchYawDeg(float pitch, float yaw)
+void MavlinkTelem::sendStorm32GimbalManagerControlPitchYawDeg(float pitch, float yaw)
 {
   if (!gimbalmanager.compid) return; //no gimbal manager
 
@@ -340,7 +340,7 @@ void MavlinkTelem::setStorm32GimbalManagerControlPitchYawDeg(float pitch, float 
   SETTASK(TASK_GIMBAL, TASK_SENDMSG_GIMBAL_MANAGER_CONTROL);
 }
 
-void MavlinkTelem::setStorm32GimbalManagerCmdPitchYawDeg(float pitch, float yaw)
+void MavlinkTelem::sendStorm32GimbalManagerCmdPitchYawDeg(float pitch, float yaw)
 {
   if (!gimbalmanager.compid) return; //no gimbal manager
 
