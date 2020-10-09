@@ -32,9 +32,6 @@
 
 uint8_t g_moduleIdx;
 
-#if defined(RADIO_FAMILY_TBS)
-bool set_model_id_needed = false;
-#endif
 
 #if defined(PCBTARANIS) || defined(RADIO_FAMILY_TBS)
 uint8_t getSwitchWarningsCount()
@@ -82,6 +79,8 @@ enum MenuModelSetupItems {
   ITEM_MODEL_SETUP_SWITCHES_WARNING1,
 #if defined(PCBTARANIS) || defined(PCBMAMBO)
   ITEM_MODEL_SETUP_SWITCHES_WARNING2,
+  ITEM_MODEL_SETUP_POTS_WARNING,
+#elif defined(PCBTANGO)
   ITEM_MODEL_SETUP_POTS_WARNING,
 #endif
   ITEM_MODEL_SETUP_BEEP_CENTER,
@@ -244,7 +243,11 @@ inline uint8_t MODULE_SUBTYPE_ROWS(int moduleIdx)
   return HIDDEN_ROW;
 }
 
+#if defined(PCBTANGO)
+#define POT_WARN_ROWS                  HIDDEN_ROW
+#else
 #define POT_WARN_ROWS                  ((g_model.potsWarnMode) ? (uint8_t)(NUM_POTS+NUM_SLIDERS) : (uint8_t)0)
+#endif
 #define TIMER_ROWS                     1, 0, 1, 0, 0, 0
 
 #if defined(PCBSKY9X)
@@ -371,9 +374,8 @@ void menuModelSetup(event_t event)
       0, // Checklist
       0, // Throttle warning
       SW_WARN_ROWS, // Switch warning
-#if !defined(PCBTANGO)
       POT_WARN_ROWS, // Pot warning
-#endif
+
     NUM_STICKS + NUM_POTS + NUM_SLIDERS - 1, // Center beeps
     0, // Global functions
 
@@ -889,16 +891,12 @@ void menuModelSetup(event_t event)
             uint8_t moduleType = checkIncDec(event, g_model.moduleData[INTERNAL_MODULE].type, MODULE_TYPE_NONE, MODULE_TYPE_MAX, EE_MODEL, isInternalModuleAvailable);
             if (checkIncDec_Ret) {
               setModuleType(INTERNAL_MODULE, moduleType);
-              if (g_model.moduleData[moduleIdx].type == MODULE_TYPE_NONE) {
 #if defined(CROSSFIRE_TASK)
+              if (g_model.moduleData[moduleIdx].type == MODULE_TYPE_NONE)
                 crossfireTurnOffRf(false);
-#endif
-              }
-              else {
-#if defined(CROSSFIRE_TASK)
+              else
                 crossfireTurnOnRf();
 #endif
-              }
             }
           }
         }
@@ -946,7 +944,7 @@ void menuModelSetup(event_t event)
           if (s_editMode == 0) {
             if (modelHeaders[g_eeGeneral.currModel].modelId[moduleIdx] != new_id) {
               modelHeaders[g_eeGeneral.currModel].modelId[moduleIdx] = new_id;
-              set_model_id_needed = true;
+              bkregSetStatusFlag(CRSF_SET_MODEL_ID_PENDING);
             }
           }
         }
