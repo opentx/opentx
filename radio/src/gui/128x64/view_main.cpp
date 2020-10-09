@@ -20,7 +20,7 @@
 
 #include "opentx.h"
 
-#if defined(PCBTANGO)
+#if defined(HARDWARE_NO_TRIMS)
 struct {
   int8_t preStickIdx = -1;
   int8_t curStickIdx = -1;
@@ -166,7 +166,7 @@ void displayTrims(uint8_t phase)
     }
 
     if (vert[i]) {
-#if defined(PCBTANGO)
+#if defined(HARDWARE_NO_TRIMS)
       ym = 61;
       if (trimSelection.curStickIdx == i) {
         lcdDrawSolidVerticalLine(xm, ym - TRIM_LEN, TRIM_LEN * 2);
@@ -208,7 +208,7 @@ void displayTrims(uint8_t phase)
       }
     }
     else {
-#if defined(PCBTANGO)
+#if defined(HARDWARE_NO_TRIMS)
       ym = 92;
       if (trimSelection.curStickIdx == i) {
         lcdDrawSolidHorizontalLine(xm - TRIM_LEN, ym,   TRIM_LEN * 2);
@@ -455,7 +455,7 @@ void menuMainView(event_t event)
       killEvents(event);
       break;
 #endif
-#if defined(PCBTANGO)
+#if defined(HARDWARE_NO_TRIMS)
       case EVT_KEY_FIRST(KEY_ENTER):
         if (!trimSelection.preEnterValid) {
           trimSelection.preEnterValid = true;
@@ -521,7 +521,7 @@ void menuMainView(event_t event)
         gvarDisplayTimer = 0;
       }
 #endif
-#if defined(PCBTANGO)
+#if defined(HARDWARE_NO_TRIMS)
       if (g_trimEditMode != EDIT_TRIM_DISABLED) {
         g_trimEditMode = EDIT_TRIM_DISABLED;
         AUDIO_MAIN_MENU();
@@ -531,7 +531,7 @@ void menuMainView(event_t event)
 #endif
       break;
   }
-#if defined(PCBTANGO)
+#if defined(HARDWARE_NO_TRIMS)
   if (trimSelection.preEnterValid && (get_tmr10ms() - trimSelection.preEnterTime) > 50) {
     trimSelection.preEnterValid = false;
   }
@@ -554,7 +554,7 @@ void menuMainView(event_t event)
 
         if (view_base == VIEW_OUTPUTS_VALUES) {
           x0 = (i % 4 * 9 + 3) * FW / 2;
-#if defined(LCD_H > 64)
+#if LCD_H == 96
           y0 = i / 4 * FH * 2 + 50;
 #else
           y0 = i / 4 * FH + 40;
@@ -570,7 +570,7 @@ void menuMainView(event_t event)
         else {
           constexpr coord_t WBAR2 = (50 / 2);
           x0 = i < 4 ? LCD_W / 4 + 2 : LCD_W * 3 / 4 - 2;
-#if defined(PCBTANGO)
+#if LCD_H == 96
           y0 = 45 + (i % 4) * 10;
 #else
           y0 = 38 + (i % 4) * 5;
