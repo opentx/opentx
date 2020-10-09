@@ -107,10 +107,10 @@ void doMainScreenGraphics()
   drawPotsBars();
 }
 
-#if defined(RADIO_FAMILY_TBS) && !defined(SIMU)
-void doMainScreenGraphics( uint8_t views, uint32_t ptr )
+#if defined(HARDWARE_NO_TRIMS)
+void doMainScreenGraphics(uint8_t views, uint32_t ptr)
 {
-  int16_t *calibStickValPtr = NULL;
+  int16_t * calibStickValPtr = nulptr;
   int16_t calibStickVert = 0;
 
   if (ptr)
@@ -254,9 +254,11 @@ void displayBattVoltage()
   lcdDrawSolidFilledRect(VBATT_X - 25, VBATT_Y + 9, 21, 5);
   lcdDrawSolidVerticalLine(VBATT_X - 4, VBATT_Y + 10, 3);
   uint8_t count = GET_TXBATT_BARS(20);
-#if defined(RADIO_FAMILY_TBS)
-  if (IS_CHARGING_STATE())
-    count = (get_tmr10ms() % 100) * count / 100;
+
+  #if defined(HARDWARE_CHARGING_STATE)
+  if (IS_CHARGING_STATE()) {
+    count = (get_tmr10ms() & 127u) * count / 128;
+  }
 #endif
   for (uint8_t i = 0; i < count; i += 2)
     lcdDrawSolidVerticalLine(VBATT_X - 24 + i, VBATT_Y + 10, 3);
@@ -469,12 +471,15 @@ void menuMainView(event_t event)
 
           if (trimSelection.preStickIdx != trimSelection.curStickIdx) {
             if (trimSelection.curStickIdx == RUD_STICK) {
-              AUDIO_RUDDER_TIME();
-            } else if (trimSelection.curStickIdx == ELE_STICK) {
+              AUDIO_RUDDER_TRIM();
+            }
+            else if (trimSelection.curStickIdx == ELE_STICK) {
               AUDIO_ELEVATOR_TRIM();
-            } else if (trimSelection.curStickIdx == THR_STICK) {
+            }
+            else if (trimSelection.curStickIdx == THR_STICK) {
               AUDIO_THROTTLE_TRIM();
-            } else if (trimSelection.curStickIdx == AIL_STICK) {
+            }
+            else if (trimSelection.curStickIdx == AIL_STICK) {
               AUDIO_AILERON_TRIM();
             }
             trimSelection.preStickIdx = trimSelection.curStickIdx;
@@ -549,7 +554,7 @@ void menuMainView(event_t event)
 
         if (view_base == VIEW_OUTPUTS_VALUES) {
           x0 = (i % 4 * 9 + 3) * FW / 2;
-#if defined(PCBTANGO)
+#if defined(LCD_H > 64)
           y0 = i / 4 * FH * 2 + 50;
 #else
           y0 = i / 4 * FH + 40;
@@ -653,13 +658,11 @@ void menuMainView(event_t event)
               x = 16 * FW + 6;
               y -= (NUM_SWITCHES / 2) * FH;
             }
+            //TDOD : move switchReOrder definition in board.h
+            static const uint8_t switchReOrder[] = {0, 1, 5, 3, 2, 4};
+
             // re-arrange order according to physical layout
-            if (i == 0) sw_i = 0;
-            else if (i == 1) sw_i = 1;
-            else if (i == 2) sw_i = 5;
-            else if (i == 3) sw_i = 3;
-            else if (i == 4) sw_i = 2;
-            else if (i == 5) sw_i = 4;
+            i = switchReOrder[i];
             getvalue_t val = getValue(MIXSRC_FIRST_SWITCH + sw_i);
             getvalue_t sw = ((val < 0) ? 3 * sw_i + 1 : ((val == 0) ? 3 * sw_i + 2 : 3 * sw_i + 3));
             drawSwitch(x, y, sw, 0);
