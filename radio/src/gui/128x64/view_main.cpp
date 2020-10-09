@@ -199,7 +199,8 @@ void displayBattVoltage()
 void displayVoltageOrAlarm()
 {
   if (g_eeGeneral.mAhWarn && (g_eeGeneral.mAhUsed + Current_used * (488 + g_eeGeneral.txCurrentCalibration)/8192/36) / 500 >= g_eeGeneral.mAhWarn) {
-    drawValueWithUnit(7*FW-1, 2*FH, (g_eeGeneral.mAhUsed + Current_used*(488 + g_eeGeneral.txCurrentCalibration)/8192/36)/10, UNIT_MAH, BLINK|INVERS|DBLSIZE|RIGHT);
+    drawValueWithUnit(7*FW-1, 2*FH, (g_eeGeneral.mAhUsed + Current_used*(488 + g_eeGeneral.txCurrentCalibration)/8192/36)/10, UNIT_MAH,
+                      BLINK|INVERS|DBLSIZE|RIGHT);
   }
   else {
     displayBattVoltage();
@@ -433,23 +434,23 @@ void menuMainView(event_t event)
 #endif
         }
         else {
-          constexpr coord_t WBAR2 =  (50/2);
-          x0 = i<4 ? LCD_W/4+2 : LCD_W*3/4-2;
-          y0 = 38+(i%4)*5;
+          constexpr coord_t WBAR2 = (50 / 2);
+          x0 = i < 4 ? LCD_W / 4 + 2 : LCD_W * 3 / 4 - 2;
+          y0 = 38 + (i % 4) * 5;
 
-          const uint16_t lim = (g_model.extendedLimits ? (512 * (long)LIMIT_EXT_PERCENT / 100) : 512) * 2;
-          int8_t len = (abs(val) * WBAR2 + lim/2) / lim;
+          const uint16_t lim = (g_model.extendedLimits ? (512 * (long) LIMIT_EXT_PERCENT / 100) : 512) * 2;
+          int8_t len = (abs(val) * WBAR2 + lim / 2) / lim;
 
-          if (len>WBAR2)
+          if (len > WBAR2)
             len = WBAR2; // prevent bars from going over the end - comment for debugging
-          lcdDrawHorizontalLine(x0-WBAR2, y0, WBAR2*2+1, DOTTED);
-          lcdDrawSolidVerticalLine(x0, y0-2,5 );
+          lcdDrawHorizontalLine(x0 - WBAR2, y0, WBAR2 * 2 + 1, DOTTED);
+          lcdDrawSolidVerticalLine(x0, y0 - 2, 5);
           if (val > 0)
             x0 += 1;
           else
             x0 -= len;
-          lcdDrawSolidHorizontalLine(x0, y0+1, len);
-          lcdDrawSolidHorizontalLine(x0, y0-1, len);
+          lcdDrawSolidHorizontalLine(x0, y0 + 1, len);
+          lcdDrawSolidHorizontalLine(x0, y0 - 1, len);
         }
       }
       break;
@@ -512,12 +513,12 @@ void menuMainView(event_t event)
         }
 #else
         // The ID0 3-POS switch is merged with the TRN switch
-        for (uint8_t i=SWSRC_THR; i<=SWSRC_TRN; i++) {
+        for (uint8_t i = SWSRC_THR; i <= SWSRC_TRN; i++) {
           int8_t sw = (i == SWSRC_TRN ? (switchState(SW_ID0) ? SWSRC_ID0 : (switchState(SW_ID1) ? SWSRC_ID1 : SWSRC_ID2)) : i);
-          uint8_t x = 2*FW-2, y = i*FH+1;
+          uint8_t x = 2 * FW - 2, y = i * FH + 1;
           if (i >= SWSRC_AIL) {
-            x = 17*FW-1;
-            y -= 3*FH;
+            x = 17 * FW - 1;
+            y -= 3 * FH;
           }
           drawSwitch(x, y, sw, getSwitch(i) ? INVERS : 0, false);
         }
