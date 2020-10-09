@@ -38,7 +38,8 @@
 #else
   #define IS_TRAINER_EXTERNAL_MODULE()           false
 #endif
-#define IS_TRAINER_AUX_SERIAL()                  (g_eeGeneral.auxSerialMode==UART_MODE_SBUS_TRAINER)
+
+#define IS_TRAINER_AUX_SERIAL()                  (g_eeGeneral.auxSerialMode == UART_MODE_SBUS_TRAINER)
 
 #define IS_PLAY_FUNC(func)             ((func) >= FUNC_PLAY_SOUND && func <= FUNC_PLAY_VALUE)
 
@@ -54,7 +55,7 @@
   #define IS_HAPTIC_FUNC(func)         (0)
 #endif
 
-#define HAS_ENABLE_PARAM(func)         ((func) < FUNC_FIRST_WITHOUT_ENABLE)
+#define HAS_ENABLE_PARAM(func)         ((func) < FUNC_FIRST_WITHOUT_ENABLE || (func == FUNC_BACKLIGHT))
 #define HAS_REPEAT_PARAM(func)         (IS_PLAY_FUNC(func) || IS_HAPTIC_FUNC(func))
 
 #define CFN_EMPTY(p)                   (!(p)->swtch)

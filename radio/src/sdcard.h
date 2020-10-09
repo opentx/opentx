@@ -130,6 +130,8 @@ const char * getBasename(const char * path);
   #define OTX_FOURCC 0x3478746F // otx for X12S
 #elif defined(RADIO_T16)
   #define OTX_FOURCC 0x3F78746F // otx for Jumper T16
+#elif defined(RADIO_T18)
+  #define OTX_FOURCC 0x4078746F // otx for Jumper T18
 #elif defined(RADIO_TX16S)
   #define OTX_FOURCC 0x3878746F // otx for Radiomaster TX16S
 #elif defined(PCBX10)

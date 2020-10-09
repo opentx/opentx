@@ -469,18 +469,18 @@ PACK(struct ModuleData {
       uint8_t bindPower:3;
       uint8_t runPower:3;
       uint8_t emi:1;
-      uint8_t spare:1;
       uint8_t telemetry:1;
-      uint8_t mode:4;
-      uint8_t spare2:3;
-      uint16_t failsafeTimeout; //4
-      uint16_t rxFreq;
-      //one more free byte
-      bool isSbus() {
-        return (mode & 1);
+      uint16_t failsafeTimeout;
+      uint8_t rx_freq[2];
+      uint16_t rxFreq()
+      {
+        return (uint16_t)rx_freq[0] | (((uint16_t)rx_freq[1]) << 8);
       }
-      bool isPWM() {
-        return mode < 2;
+
+      void setRxFreq(uint16_t value)
+      {
+        rx_freq[0] = value & 0xFF;
+        rx_freq[1] = value >> 8;
       }
     } afhds3));
 #endif
@@ -617,8 +617,9 @@ PACK(struct ModelData {
 
   NOBACKUP(RssiAlarmData rssiAlarms);
 
-  NOBACKUP(uint8_t spare1:6 SKIP);
-  NOBACKUP(uint8_t potsWarnMode:2);
+  uint8_t spare1:3;
+  uint8_t thrTrimSw:3;
+  uint8_t potsWarnMode:2;
 
   ModuleData moduleData[NUM_MODULES];
   int16_t failsafeChannels[MAX_OUTPUT_CHANNELS];
@@ -637,6 +638,20 @@ PACK(struct ModelData {
   CUSTOM_SCREENS_DATA
 
   char modelRegistrationID[PXX2_LEN_REGISTRATION_ID];
+
+
+  uint8_t getThrottleStickTrimSource() const
+  {
+    // The order here is TERA, so that 0 (default) means Throttle
+    switch (thrTrimSw) {
+      case 0:
+        return MIXSRC_TrimThr;
+      case 2:
+        return MIXSRC_TrimRud;
+      default:
+        return thrTrimSw + MIXSRC_FIRST_TRIM;
+    }
+  }
 });
 
 /*
@@ -756,7 +771,8 @@ PACK(struct RadioData {
   uint8_t backlightMode:3;
   int8_t antennaMode:2;
   uint8_t disableRtcWarning:1;
-  int8_t spare1:2 SKIP;
+  uint8_t keysBacklight:1;
+  int8_t spare1:1 SKIP;
   NOBACKUP(TrainerData trainer);
   NOBACKUP(uint8_t view);            // index of view in main screen
   NOBACKUP(BUZZER_FIELD); /* 2bits */

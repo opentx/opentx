@@ -170,7 +170,7 @@ constexpr LcdFlags MENU_FONT = FONT(STD);
 constexpr LcdFlags TABLE_HEADER_FONT = FONT(STD);
 constexpr LcdFlags TABLE_BODY_FONT = FONT(STD);
 
-constexpr int CJK_FIRST_LETTER_INDEX = 168;
+constexpr int CJK_FIRST_LETTER_INDEX = 189;
 constexpr coord_t CHAR_SPACING = 0;
 
 #endif // _LIBOPENUI_CONFIG_H_

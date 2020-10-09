@@ -212,7 +212,7 @@ QString ModelPrinter::printModule(int idx)
           str << printLabelValue(tr("Delay"), QString("%1us").arg(module.ppm.delay));
       }
       else {
-        if (!(module.protocol == PULSES_PXX_XJT_D8 || module.protocol == PULSES_CROSSFIRE || module.protocol == PULSES_SBUS)) {
+        if (!(module.protocol == PULSES_PXX_XJT_D8 || module.protocol == PULSES_CROSSFIRE || module.protocol == PULSES_GHOST || module.protocol == PULSES_SBUS)) {
           str << printLabelValue(tr("Receiver"), QString::number(module.modelId));
         }
         if (module.protocol == PULSES_MULTIMODULE) {
@@ -223,6 +223,11 @@ QString ModelPrinter::printModule(int idx)
         if (module.protocol == PULSES_PXX_R9M) {
           str << printLabelValue(tr("Sub Type"), module.subTypeToString());
           str << printLabelValue(tr("RF Output Power"), module.powerValueToString(firmware));
+        }
+        if (module.protocol == PULSES_AFHDS3) {
+          str << printLabelValue(tr("Output Type"), module.subTypeToString());
+          str << printLabelValue(tr("RF Output Power"), module.powerValueToString(firmware));
+          str << printLabelValue(tr("RX Output Frequency"), QString("%1Hz").arg(module.afhds3.rxFreq));
         }
       }
     }
@@ -968,8 +973,7 @@ QString ModelPrinter::printSettingsTrim()
 {
   QStringList str;
   str << printLabelValue(tr("Step"), printTrimIncrementMode());
-  if (IS_ARM(firmware->getBoard()))
-    str << printLabelValue(tr("Display"), printTrimsDisplayMode());
+  str << printLabelValue(tr("Display"), printTrimsDisplayMode());
   str << printLabelValue(tr("Extended"), printBoolean(model.extendedTrims, BOOLEAN_YESNO));
   return str.join(" ");
 }

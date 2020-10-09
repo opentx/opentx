@@ -93,6 +93,8 @@ enum {
 #elif defined(PCBX10)
   #if defined(PCBREV_EXPRESS)
     #define IS_FIRMWARE_COMPATIBLE_WITH_BOARD() (hardwareOptions.pcbrev == PCBREV_X10_EXPRESS)
+  #elif defined(RADIO_FAMILY_T16)
+    #define IS_FIRMWARE_COMPATIBLE_WITH_BOARD() (true)
   #else
     #define IS_FIRMWARE_COMPATIBLE_WITH_BOARD() (hardwareOptions.pcbrev == PCBREV_X10_STD)
   #endif
@@ -191,6 +193,9 @@ void init_trainer_ppm();
 void stop_trainer_ppm();
 void init_trainer_capture();
 void stop_trainer_capture();
+
+// SBUS
+int sbusGetByte(uint8_t * byte);
 
 // Keys driver
 enum EnumKeys
@@ -381,7 +386,11 @@ enum Analogs {
 #define SLIDER2 SLIDER_FRONT_RIGHT
 
 #define DEFAULT_SWITCH_CONFIG  (SWITCH_TOGGLE << 14) + (SWITCH_3POS << 12) + (SWITCH_2POS << 10) + (SWITCH_3POS << 8) + (SWITCH_3POS << 6) + (SWITCH_3POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0)
-#define DEFAULT_POTS_CONFIG    (POT_WITH_DETENT << 4) + (POT_MULTIPOS_SWITCH << 2) + (POT_WITHOUT_DETENT << 0)
+#if defined(RADIO_FAMILY_T16)
+  #define DEFAULT_POTS_CONFIG    (POT_WITH_DETENT << 4) + (POT_MULTIPOS_SWITCH << 2) + (POT_WITH_DETENT << 0)
+#else
+  #define DEFAULT_POTS_CONFIG    (POT_WITH_DETENT << 4) + (POT_MULTIPOS_SWITCH << 2) + (POT_WITHOUT_DETENT << 0)
+#endif
 
 #if defined(PCBX12S)
 #define DEFAULT_SLIDERS_CONFIG (SLIDER_WITH_DETENT << 3) + (SLIDER_WITH_DETENT << 2) + (SLIDER_WITH_DETENT << 1) + (SLIDER_WITH_DETENT << 0)
@@ -487,6 +496,11 @@ void pwrOn();
 void pwrOff();
 void pwrResetHandler();
 bool pwrPressed();
+#if defined(PWR_EXTRA_SWITCH_GPIO)
+  bool pwrForcePressed();
+#else
+  #define pwrForcePressed() false
+#endif
 uint32_t pwrPressedDuration();
 
 // USB Charger
@@ -535,7 +549,7 @@ void backlightEnable(uint8_t dutyCycle = 0);
 #else
 #define BACKLIGHT_LEVEL_MIN   46
 #endif
-#define BACKLIGHT_ENABLE()    backlightEnable(globalData.unexpectedShutdown ? BACKLIGHT_LEVEL_MAX : BACKLIGHT_LEVEL_MAX - g_eeGeneral.backlightBright)
+#define BACKLIGHT_ENABLE()    backlightEnable(globalData.unexpectedShutdown ? BACKLIGHT_LEVEL_MAX : BACKLIGHT_LEVEL_MAX - currentBacklightBright)
 #define BACKLIGHT_DISABLE()   backlightEnable(globalData.unexpectedShutdown ? BACKLIGHT_LEVEL_MAX : ((g_eeGeneral.blOffBright == BACKLIGHT_LEVEL_MIN) && (g_eeGeneral.backlightMode != e_backlight_mode_off)) ? 0 : g_eeGeneral.blOffBright)
 #define isBacklightEnabled()  true
 
@@ -550,6 +564,10 @@ void usbJoystickUpdate();
   #define USB_NAME                     "Jumper T16"
   #define USB_MANUFACTURER             'J', 'u', 'm', 'p', 'e', 'r', ' ', ' '  /* 8 bytes */
   #define USB_PRODUCT                  'T', '1', '6', ' ', ' ', ' ', ' ', ' '  /* 8 Bytes */  
+#elif defined(RADIO_T18)
+  #define USB_NAME                     "Jumper T18"
+  #define USB_MANUFACTURER             'J', 'u', 'm', 'p', 'e', 'r', ' ', ' '  /* 8 bytes */
+  #define USB_PRODUCT                  'T', '1', '8', ' ', ' ', ' ', ' ', ' '  /* 8 Bytes */
 #elif defined(RADIO_TX16S)
   #define USB_NAME                     "RadioMas TX16S"
   #define USB_MANUFACTURER             'R', 'a', 'd', 'i', 'o', 'M', 'a', 's'  /* 8 bytes */
@@ -681,13 +699,13 @@ void bluetoothWriteWakeup();
 uint8_t bluetoothIsWriting();
 void bluetoothDisable();
 
-//#if defined(__cplusplus)
-//#include "fifo.h"
-//#include "dmafifo.h"
-//extern DMAFifo<512> telemetryFifo;
-//typedef DMAFifo<32> AuxSerialRxFifo;
-//extern AuxSerialRxFifo auxSerialRxFifo;
-//extern volatile uint32_t externalModulePort;
-//#endif
+#if defined(__cplusplus)
+#include "fifo.h"
+#include "dmafifo.h"
+extern DMAFifo<512> telemetryFifo;
+typedef DMAFifo<32> AuxSerialRxFifo;
+extern AuxSerialRxFifo auxSerialRxFifo;
+extern volatile uint32_t externalModulePort;
+#endif
 
 #endif // _BOARD_H_

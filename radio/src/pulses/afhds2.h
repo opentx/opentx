@@ -21,6 +21,8 @@
 
 #ifndef PULSES_AFHDS2_H_
 #define PULSES_AFHDS2_H_
+
+#include <inttypes.h>
 #include <functional>
 #include <map>
 #include <list>

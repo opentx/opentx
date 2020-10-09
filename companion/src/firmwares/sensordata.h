@@ -24,6 +24,7 @@
 #include <QtCore>
 
 constexpr int CPN_MAX_SENSORS = 60;
+constexpr int SENSOR_LABEL_LEN = 4;
 
 class ModelData;
 
@@ -94,10 +95,10 @@ class SensorData {
       UNIT_MILLILITERS,
       UNIT_FLOZ,
       UNIT_MILLILITERS_PER_MINUTE,
-      UNIT_MAX = UNIT_MILLILITERS_PER_MINUTE,
-      UNIT_SPARE1,
-      UNIT_SPARE2,
-      UNIT_SPARE3,
+      UNIT_HERZ,
+      UNIT_MS,
+      UNIT_US,
+      UNIT_MAX = UNIT_US,
       UNIT_SPARE4,
       UNIT_SPARE5,
       UNIT_SPARE6,
@@ -133,7 +134,7 @@ class SensorData {
     unsigned int moduleIdx;
     unsigned int persistentValue;
     unsigned int formula;
-    char label[4+1];
+    char label[SENSOR_LABEL_LEN + 1];
     unsigned int unit;
     unsigned int prec;
     bool autoOffset;
@@ -166,6 +167,7 @@ class SensorData {
     QString nameToString(int index) const;
     QString getOrigin(const ModelData* model) const;
     void clear() { memset(this, 0, sizeof(SensorData)); }
+    bool isEmpty() const;
 };
 
 #endif // SENSORDATA_H

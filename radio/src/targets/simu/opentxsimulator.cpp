@@ -613,10 +613,8 @@ class OpenTxSimulatorFactory: public SimulatorFactory
       return Board::BOARD_TARANIS_X9LITES;
 #elif defined(PCBX9LITE)
       return Board::BOARD_TARANIS_X9LITE;
-#elif defined(PCBTARANIS)
-      return Board::BOARD_TARANIS_X9D;
 #else
-      return Board::BOARD_9X_M64;
+      return Board::BOARD_TARANIS_X9D;
 #endif
     }
 };

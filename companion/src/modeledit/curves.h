@@ -81,7 +81,7 @@ class Curves : public ModelPanel
     void onPointSizeEdited();
     void onNodeDelete();
     void onCustomContextMenuRequested(QPoint pos);
-    void cmClear();
+    void cmClear(bool prompt = true);
     void cmClearAll();
     void cmCopy();
     void cmCut();

@@ -20,6 +20,7 @@
 
 #include "opentx.h"
 #include "tp_gt911.h"
+#include "touch.h"
 
 //GT911 param table
 const uint8_t TOUCH_GT911_Cfg[] =
@@ -438,53 +439,59 @@ bool touchPanelInit(void)
 {
   uint8_t tmp[4] = {0};
 
-  TRACE("Touchpanel init start ...");
-
-  TOUCH_AF_GPIOConfig(); //SET RST=OUT INT=OUT INT=LOW
-  I2C_Init();
-
-  TPRST_LOW();
-  TPINT_HIGH();
-  delay_us(200);
-
-  TPRST_HIGH();
-  delay_ms(6);
-
-  TPINT_LOW();
-  delay_ms(55);
-
-  TOUCH_AF_INT_Change();  //Set INT INPUT INT=LOW
-
-  delay_ms(50);
-
-  TRACE("Reading Touch registry");
-  I2C_GT911_ReadRegister(GT_PID_REG, tmp, 4);
-
-  if (strcmp((char *) tmp, "911") == 0) //ID==9147
-  {
-    TRACE("GT911 chip detected");
-    tmp[0] = 0X02;
-    I2C_GT911_WriteRegister(GT_CTRL_REG, tmp, 1);
-    I2C_GT911_ReadRegister(GT_CFGS_REG, tmp, 1);
-
-    TRACE("Chip config Ver:%x\r\n",tmp[0]);
-    if (tmp[0] < GT911_CFG_NUMER)  //Config ver
-    {
-      TRACE("Sending new config %d", GT911_CFG_NUMER);
-      I2C_GT911_SendConfig(1);
-    }
-
-    delay_ms(10);
-    tmp[0] = 0X00;
-    I2C_GT911_WriteRegister(GT_CTRL_REG, tmp, 1);  //end reset
-    touchGT911Flag = true;
-
+  if (touchGT911Flag) {
     TOUCH_AF_ExtiConfig();
-
     return true;
   }
-  TRACE("GT911 chip NOT FOUND");
-  return false;
+  else {
+    TRACE("Touchpanel init start ...");
+
+    TOUCH_AF_GPIOConfig(); //SET RST=OUT INT=OUT INT=LOW
+    I2C_Init();
+
+    TPRST_LOW();
+    TPINT_HIGH();
+    delay_us(200);
+
+    TPRST_HIGH();
+    delay_ms(6);
+
+    TPINT_LOW();
+    delay_ms(55);
+
+    TOUCH_AF_INT_Change();  //Set INT INPUT INT=LOW
+
+    delay_ms(50);
+
+    TRACE("Reading Touch registry");
+    I2C_GT911_ReadRegister(GT_PID_REG, tmp, 4);
+
+    if (strcmp((char *) tmp, "911") == 0) //ID==9147
+    {
+      TRACE("GT911 chip detected");
+      tmp[0] = 0X02;
+      I2C_GT911_WriteRegister(GT_CTRL_REG, tmp, 1);
+      I2C_GT911_ReadRegister(GT_CFGS_REG, tmp, 1);
+
+      TRACE("Chip config Ver:%x\r\n", tmp[0]);
+      if (tmp[0] < GT911_CFG_NUMER)  //Config ver
+      {
+        TRACE("Sending new config %d", GT911_CFG_NUMER);
+        I2C_GT911_SendConfig(1);
+      }
+
+      delay_ms(10);
+      tmp[0] = 0X00;
+      I2C_GT911_WriteRegister(GT_CTRL_REG, tmp, 1);  //end reset
+      touchGT911Flag = true;
+
+      TOUCH_AF_ExtiConfig();
+
+      return true;
+    }
+    TRACE("GT911 chip NOT FOUND");
+    return false;
+  }
 }
 
 void touchPanelRead()

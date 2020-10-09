@@ -534,7 +534,7 @@ bool MultiDeviceFirmwareUpdate::flashFirmware(const char * filename, ProgressHan
   uint8_t extPwr = IS_EXTERNAL_MODULE_ON();
   EXTERNAL_MODULE_OFF();
 
-#if HAS_SPORT_UPDATE_CONNECTOR()
+#if defined(SPORT_UPDATE_PWR_GPIO)
   uint8_t spuPwr = IS_SPORT_UPDATE_POWER_ON();
   SPORT_UPDATE_POWER_OFF();
 #endif
@@ -583,7 +583,7 @@ bool MultiDeviceFirmwareUpdate::flashFirmware(const char * filename, ProgressHan
     setupPulsesExternalModule();
   }
 
-#if HAS_SPORT_UPDATE_CONNECTOR()
+#if defined(SPORT_UPDATE_PWR_GPIO)
   if (spuPwr) {
     SPORT_UPDATE_POWER_ON();
   }

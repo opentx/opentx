@@ -253,28 +253,27 @@ void MixesPanel::setSelectedByMixList(QList<int> list)
 }
 
 
-void MixesPanel::mixersDelete(bool ask)
+void MixesPanel::mixersDelete(bool prompt)
 {
   QList<int> list = createMixListFromSelected();
-  if(list.isEmpty()) return;
+  if(list.isEmpty())
+    return;
 
-  QMessageBox::StandardButton ret = QMessageBox::No;
-
-  if(ask) {
-    ret = QMessageBox::warning(this, "companion",
-             tr("Delete Selected Mixes?"),
-             QMessageBox::Yes | QMessageBox::No);
+  if (prompt) {
+    if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Delete selected Mix lines. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+      return;
   }
 
-  if ((ret == QMessageBox::Yes) || (!ask)) {
-    mixersDeleteList(list);
-    emit modified();
-    update();
-  }
+  mixersDeleteList(list);
+  emit modified();
+  update();
 }
 
 void MixesPanel::mixersCut()
 {
+  if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Cut selected Mix lines. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+    return;
+
   mixersCopy();
   mixersDelete(false);
 }

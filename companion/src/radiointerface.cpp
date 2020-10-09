@@ -36,43 +36,8 @@ QString getRadioInterfaceCmd()
   if (IS_STM32(board)) {
     return bcd.getDFU();
   }
-  else if (IS_SKY9X(board)) {
+  else
     return bcd.getSAMBA();
-  }
-  else {
-    return bcd.getAVRDUDE();
-  }
-}
-
-QStringList getAvrdudeArgs(const QString & cmd, const QString & filename)
-{
-  QStringList args;
-  burnConfigDialog bcd;
-  QString programmer = bcd.getProgrammer();
-  QString mcu = bcd.getMCU();
-  Board::Type board = getCurrentBoard();
-
-  args << "-c" << programmer << "-p";
-  if (IS_2560(board))
-    args << "m2560";
-  else if (board == Board::BOARD_9X_M128)
-    args << "m128";
-  else
-    args << mcu;
-
-  args << bcd.getAvrdudeArgs();
-
-  QString fullcmd = cmd + filename;
-  if (QFileInfo(filename).suffix().toUpper() == "HEX")
-    fullcmd += ":i";
-  else if (QFileInfo(filename).suffix().toUpper()=="BIN")
-    fullcmd += ":r";
-  else
-    fullcmd += ":a";
-
-  args << "-U" << fullcmd;
-
-  return args;
 }
 
 QStringList getDfuArgs(const QString & cmd, const QString & filename)
@@ -119,11 +84,8 @@ QStringList getReadEEpromCmd(const QString & filename)
   if (IS_STM32(eepromInterface->getBoard())) {
     // impossible
   }
-  else if (IS_SKY9X(eepromInterface->getBoard())) {
-    result = getSambaArgs(QString("SERIALFLASH::Init 0\n") + "receive_file {SerialFlash AT25} \"" + filename + "\" 0x0 0x80000 0\n");
-  }
   else {
-    result = getAvrdudeArgs("eeprom:r:", filename);
+    result = getSambaArgs(QString("SERIALFLASH::Init 0\n") + "receive_file {SerialFlash AT25} \"" + filename + "\" 0x0 0x80000 0\n");
   }
   return result;
 }
@@ -135,11 +97,8 @@ QStringList getWriteEEpromCmd(const QString & filename)
     // impossible
     return QStringList();
   }
-  else if (IS_SKY9X(board)) {
-    return getSambaArgs(QString("SERIALFLASH::Init 0\n") + "send_file {SerialFlash AT25} \"" + filename + "\" 0x0 0\n");
-  }
   else {
-    return getAvrdudeArgs("eeprom:w:", filename);
+    return getSambaArgs(QString("SERIALFLASH::Init 0\n") + "send_file {SerialFlash AT25} \"" + filename + "\" 0x0 0\n");
   }
 }
 
@@ -152,11 +111,8 @@ QStringList getWriteFirmwareArgs(const QString & filename)
   else if (board == Board::BOARD_SKY9X) {
     return getSambaArgs(QString("send_file {Flash} \"") + filename + "\" 0x400000 0\n" + "FLASH::ScriptGPNMV 2\n");
   }
-  else if (board == Board::BOARD_9XRPRO || board == Board::BOARD_AR9X) {
-    return getSambaArgs(QString("send_file {Flash} \"") + filename + "\" 0x400000 0\n" + "FLASH::ScriptGPNMV 2\n");
-  }
   else {
-    return getAvrdudeArgs("flash:w:", filename);
+    return getSambaArgs(QString("send_file {Flash} \"") + filename + "\" 0x400000 0\n" + "FLASH::ScriptGPNMV 2\n");
   }
 }
 
@@ -169,87 +125,8 @@ QStringList getReadFirmwareArgs(const QString & filename)
   else if (board == Board::BOARD_SKY9X) {
     return getSambaArgs(QString("receive_file {Flash} \"") + filename + "\" 0x400000 0x40000 0\n");
   }
-  else if (board == Board::BOARD_9XRPRO) {
-    return getSambaArgs(QString("receive_file {Flash} \"") + filename + "\" 0x400000 0x80000 0\n");
-  }
   else {
-    return getAvrdudeArgs("flash:r:", filename);
-  }
-}
-
-void readAvrdudeFuses(ProgressWidget * progress)
-{
-  burnConfigDialog bcd;
-  QStringList args;
-  args << "-c" << bcd.getProgrammer() << "-p" << bcd.getMCU() << bcd.getAvrdudeArgs() << "-U" << "lfuse:r:-:i" << "-U" << "hfuse:r:-:i" << "-U" << "efuse:r:-:i";
-  FlashProcess flashProcess(bcd.getAVRDUDE(), args, progress);
-  flashProcess.run();
-}
-
-void resetAvrdudeFuses(bool eepromProtect, ProgressWidget * progress)
-{
-  //fuses
-  //avrdude -c usbasp -p m64 -U lfuse:w:<0x0E>:m
-  //avrdude -c usbasp -p m64 -U hfuse:w:<0x89>:m  0x81 for eeprom protection
-  //avrdude -c usbasp -p m64 -U efuse:w:<0xFF>:m
-
-  burnConfigDialog bcd;
-  QMessageBox::StandardButton ret = QMessageBox::No;
-  ret = QMessageBox::warning(NULL, CPN_STR_APP_NAME,
-                             QCoreApplication::translate("RadioInterface",
-                                                         "<b><u>WARNING!</u></b>" \
-                                                         "<br>This will reset the fuses of  %1 to the factory settings.<br>"
-                                                         "Writing fuses can mess up your radio.<br>Do this only if you are sure they are wrong!<br>"
-                                                         "Are you sure you want to continue?").arg(bcd.getMCU()),
-                             QMessageBox::Yes | QMessageBox::No);
-  if (ret == QMessageBox::Yes) {
-    QStringList args = bcd.getAvrdudeArgs();
-    QStringList str;
-    if (bcd.getMCU() == "m2560") {
-      args << "-B8";
-      QString erStr = eepromProtect ? "hfuse:w:0x51:m" : "hfuse:w:0x59:m";
-      str << "-U" << "lfuse:w:0xD7:m" << "-U" << erStr << "-U" << "efuse:w:0xFC:m";
-      //use hfuse = 0x81 to prevent eeprom being erased with every flashing
-    }
-    else {
-      QString lfuses;
-      QString tempFile = generateProcessUniqueTempFileName("ftemp.bin");
-      QStringList argread;
-      argread << "-c" << bcd.getProgrammer() << "-p" << bcd.getMCU() << args  <<"-U" << "lfuse:r:"+tempFile+":r";
-      FlashProcess flashProcess(bcd.getAVRDUDE(), argread, progress);
-      flashProcess.run();
-      QFile file(tempFile);
-      if (file.exists() && file.size()==1) {
-        file.open(QIODevice::ReadOnly);
-        char bin_flash[1];
-        file.read(bin_flash, 1);
-        if (bin_flash[0]==0x0E) {
-          lfuses = "lfuse:w:0x0E:m";
-        }
-        else {
-          lfuses = "lfuse:w:0x3F:m";
-        }
-        file.close();
-        qunlink(tempFile);
-      }
-      else {
-        lfuses = "lfuse:w:0x3F:m";
-      }
-
-      QString erStr = eepromProtect ? "hfuse:w:0xC1:m" : "hfuse:w:0xC9:m";
-      str << "-U" << lfuses << "-U" << erStr << "-U" << "efuse:w:0xFF:m";
-      //use hfuse = 0x81 to prevent eeprom being erased with every flashing
-    }
-
-    QStringList arguments;
-    if (bcd.getMCU() == "m2560") {
-      arguments << "-c" << bcd.getProgrammer() << "-p" << bcd.getMCU() << args << "-u" << str;
-    }
-    else {
-      arguments << "-c" << bcd.getProgrammer() << "-p" << bcd.getMCU() << args << "-B" << "100" << "-u" << str;
-    }
-    FlashProcess flashProcess(bcd.getAVRDUDE(), arguments, progress);
-    flashProcess.run();
+    return getSambaArgs(QString("receive_file {Flash} \"") + filename + "\" 0x400000 0x80000 0\n");
   }
 }
 
@@ -264,13 +141,11 @@ bool readFirmware(const QString & filename, ProgressWidget * progress)
     return false;
   }
 
-  if (IS_ARM(getCurrentBoard())) {
-    QString path = findMassstoragePath("FIRMWARE.BIN");
-    if (!path.isEmpty()) {
-      qDebug() << "readFirmware: reading" << path << "into" << filename;
-      CopyProcess copyProcess(path, filename, progress);
-      result = copyProcess.run();
-    }
+  QString path = findMassstoragePath("FIRMWARE.BIN");
+  if (!path.isEmpty()) {
+    qDebug() << "readFirmware: reading" << path << "into" << filename;
+    CopyProcess copyProcess(path, filename, progress);
+    result = copyProcess.run();
   }
 
   if (!result) {
@@ -288,13 +163,11 @@ bool readFirmware(const QString & filename, ProgressWidget * progress)
 
 bool writeFirmware(const QString & filename, ProgressWidget * progress)
 {
-  if (IS_ARM(getCurrentBoard())) {
-    QString path = findMassstoragePath("FIRMWARE.BIN");
-    if (!path.isEmpty()) {
-      qDebug() << "writeFirmware: writing" << path << "from" << filename;
-      CopyProcess copyProcess(filename, path, progress);
-      return copyProcess.run();
-    }
+  QString path = findMassstoragePath("FIRMWARE.BIN");
+  if (!path.isEmpty()) {
+    qDebug() << "writeFirmware: writing" << path << "from" << filename;
+    CopyProcess copyProcess(filename, path, progress);
+    return copyProcess.run();
   }
 
   qDebug() << "writeFirmware: writing" << filename << "with" << getRadioInterfaceCmd() << getWriteFirmwareArgs(filename);
@@ -339,26 +212,25 @@ bool readEeprom(const QString & filename, ProgressWidget * progress)
     }
   }
   else {
-    if (IS_ARM(board)) {
-      QString path = findMassstoragePath("EEPROM.BIN");
-      if (path.isEmpty()) {
-        // On previous OpenTX we called the EEPROM file "TARANIS.BIN" :(
-        path = findMassstoragePath("TARANIS.BIN");
-      }
-      if (path.isEmpty()) {
-        // Mike's bootloader calls the EEPROM file "ERSKY9X.BIN" :(
-        path = findMassstoragePath("ERSKY9X.BIN");
-      }
-      if (path.isEmpty()) {
-        RadioNotFoundDialog dialog(progress);
-        dialog.exec();
-        return false;
-      }
-      CopyProcess copyProcess(path, filename, progress);
-      if (!copyProcess.run()) {
-        return false;
-      }
+    QString path = findMassstoragePath("EEPROM.BIN");
+    if (path.isEmpty()) {
+      // On previous OpenTX we called the EEPROM file "TARANIS.BIN" :(
+      path = findMassstoragePath("TARANIS.BIN");
     }
+    if (path.isEmpty()) {
+      // Mike's bootloader calls the EEPROM file "ERSKY9X.BIN" :(
+      path = findMassstoragePath("ERSKY9X.BIN");
+    }
+    if (path.isEmpty()) {
+      RadioNotFoundDialog dialog(progress);
+      dialog.exec();
+      return false;
+    }
+    CopyProcess copyProcess(path, filename, progress);
+    if (!copyProcess.run()) {
+      return false;
+    }
+
 
     if (!IS_STM32(board)) {
       FlashProcess flashProcess(getRadioInterfaceCmd(), getReadEEpromCmd(filename), progress);
@@ -375,20 +247,18 @@ bool writeEeprom(const QString & filename, ProgressWidget * progress)
 {
   Board::Type board = getCurrentBoard();
 
-  if (IS_ARM(board)) {
-    QString path = findMassstoragePath("EEPROM.BIN");
-    if (path.isEmpty()) {
-      // On previous OpenTX we called the EEPROM file "TARANIS.BIN" :(
-      path = findMassstoragePath("TARANIS.BIN");
-    }
-    if (path.isEmpty()) {
-      // Mike's bootloader calls the EEPROM file "ERSKY9X.BIN" :(
-      path = findMassstoragePath("ERSKY9X.BIN");
-    }
-    if (!path.isEmpty()) {
-      CopyProcess copyProcess(filename, path, progress);
-      return copyProcess.run();
-    }
+  QString path = findMassstoragePath("EEPROM.BIN");
+  if (path.isEmpty()) {
+    // On previous OpenTX we called the EEPROM file "TARANIS.BIN" :(
+    path = findMassstoragePath("TARANIS.BIN");
+  }
+  if (path.isEmpty()) {
+    // Mike's bootloader calls the EEPROM file "ERSKY9X.BIN" :(
+    path = findMassstoragePath("ERSKY9X.BIN");
+  }
+  if (!path.isEmpty()) {
+    CopyProcess copyProcess(filename, path, progress);
+    return copyProcess.run();
   }
 
   if (!IS_TARANIS(board)) {
@@ -396,10 +266,8 @@ bool writeEeprom(const QString & filename, ProgressWidget * progress)
     return flashProcess.run();
   }
 
-  if (IS_ARM(board)) {
-    RadioNotFoundDialog dialog(progress);
-    dialog.exec();
-  }
+  RadioNotFoundDialog dialog(progress);
+  dialog.exec();
 
   return false;
 }

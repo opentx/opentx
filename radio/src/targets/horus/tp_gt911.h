@@ -24,7 +24,7 @@
 #define HAS_TOUCH_PANEL()     touchGT911Flag == true
 
 extern uint8_t touchGT911Flag;
-extern bool touchPanelInit(void);
+extern bool touchPanelInit();
 
 void touchPanelRead();
 bool touchPanelEventOccured();
@@ -60,8 +60,7 @@ bool touchPanelEventOccured();
 #define GT911_CONFIG_CHECKSUM_REG       0x80FF
 #define GT911_FIRMWARE_VERSION_REG      0x8144
 
-PACK(typedef struct
-{
+PACK(typedef struct {
   uint8_t track;
   uint16_t x;
   uint16_t y;
@@ -69,8 +68,7 @@ PACK(typedef struct
   uint8_t reserved;
 }) TouchPoint;
 
-PACK(struct TouchData
-{
+PACK(struct TouchData {
   uint8_t pointsCount;
   union
   {

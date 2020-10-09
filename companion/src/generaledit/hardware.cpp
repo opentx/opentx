@@ -172,7 +172,7 @@ HardwarePanel::HardwarePanel(QWidget * parent, GeneralSettings & generalSettings
     ui->txCurrentCalibrationLabel->hide();
   }
 
-  if (IS_TARANIS_X7(board) || IS_TARANIS_XLITE(board)|| IS_TARANIS_X9E(board) || IS_FAMILY_HORUS_OR_T16(board)) {
+  if (IS_TARANIS_X7(board) || IS_TARANIS_XLITE(board)|| IS_TARANIS_X9E(board) || IS_TARANIS_X9DP_2019(board) || IS_FAMILY_HORUS_OR_T16(board)) {
     ui->bluetoothMode->addItem(tr("OFF"), 0);
     if (IS_TARANIS_X9E(board)) {
       ui->bluetoothMode->addItem(tr("Enabled"), 1);

@@ -161,7 +161,7 @@ const uint8_t * FrskyDeviceFirmwareUpdate::readFullDuplexFrame(ModuleFifo & fifo
 
 const uint8_t * FrskyDeviceFirmwareUpdate::readHalfDuplexFrame(uint32_t timeout)
 {
-  for (int i=timeout; i>=0; i--) {
+  for (int i = timeout; i >= 0; i--) {
     uint8_t byte ;
     while (telemetryGetByte(&byte)) {
       if (pushFrskyTelemetryData(byte)) {
@@ -488,7 +488,7 @@ const char * FrskyDeviceFirmwareUpdate::flashFirmware(const char * filename, Pro
   uint8_t extPwr = IS_EXTERNAL_MODULE_ON();
   EXTERNAL_MODULE_OFF();
 
-#if HAS_SPORT_UPDATE_CONNECTOR()
+#if defined(SPORT_UPDATE_PWR_GPIO)
   uint8_t spuPwr = IS_SPORT_UPDATE_POWER_ON();
   SPORT_UPDATE_POWER_OFF();
 #endif
@@ -534,7 +534,7 @@ const char * FrskyDeviceFirmwareUpdate::flashFirmware(const char * filename, Pro
     setupPulsesExternalModule();
   }
 
-#if HAS_SPORT_UPDATE_CONNECTOR()
+#if defined(SPORT_UPDATE_PWR_GPIO)
   if (spuPwr) {
     SPORT_UPDATE_POWER_ON();
   }
@@ -761,7 +761,7 @@ const char * FrskyChipFirmwareUpdate::flashFirmware(const char * filename, Progr
   uint8_t extPwr = IS_EXTERNAL_MODULE_ON();
   EXTERNAL_MODULE_OFF();
 
-#if HAS_SPORT_UPDATE_CONNECTOR()
+#if defined(SPORT_UPDATE_PWR_GPIO)
   uint8_t spuPwr = IS_SPORT_UPDATE_POWER_ON();
   SPORT_UPDATE_POWER_OFF();
 #endif
@@ -802,7 +802,7 @@ const char * FrskyChipFirmwareUpdate::flashFirmware(const char * filename, Progr
     setupPulsesExternalModule();
   }
 
-#if HAS_SPORT_UPDATE_CONNECTOR()
+#if defined(SPORT_UPDATE_PWR_GPIO)
   if (spuPwr) {
     SPORT_UPDATE_POWER_ON();
   }

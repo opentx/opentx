@@ -324,7 +324,7 @@
   #define ADC_TRANSFER_COMPLETE()       (ADC_DMA->LISR & DMA_LISR_TCIF0)
   #if defined(RADIO_TX16S)
     #define ADC_VREF_PREC2              330
-  #elif defined(RADIO_T16)
+  #elif defined(RADIO_T16) || defined(RADIO_T18)
     #define ADC_VREF_PREC2              300
   #else
     #define ADC_VREF_PREC2              250
@@ -332,11 +332,21 @@
 #endif
 
 // Power
+#if defined(RADIO_T18)
+#define PWR_RCC_AHB1Periph              RCC_AHB1Periph_GPIOJ | RCC_AHB1Periph_GPIOB
+#define PWR_ON_GPIO                     GPIOJ
+#define PWR_ON_GPIO_PIN                 GPIO_Pin_1  // PJ.01
+#define PWR_SWITCH_GPIO                 GPIOJ
+#define PWR_SWITCH_GPIO_PIN             GPIO_Pin_0  // PJ.00
+#define PWR_EXTRA_SWITCH_GPIO           GPIOB
+#define PWR_EXTRA_SWITCH_GPIO_PIN       GPIO_Pin_0  // PB.00
+#else
 #define PWR_RCC_AHB1Periph              RCC_AHB1Periph_GPIOJ
 #define PWR_ON_GPIO                     GPIOJ
 #define PWR_ON_GPIO_PIN                 GPIO_Pin_1  // PJ.01
 #define PWR_SWITCH_GPIO                 GPIOJ
 #define PWR_SWITCH_GPIO_PIN             GPIO_Pin_0  // PJ.00
+#endif
 
 // USB Charger
 #if defined(USB_CHARGER)
@@ -516,6 +526,9 @@
   #define LCD_GPIO_NRST                 GPIOI
   #define LCD_GPIO_PIN_NRST             GPIO_Pin_10 // PI.10
 #endif
+#if defined(PCBX10) && !defined(RADIO_T18) && !defined(SIMU)
+  #define LCD_VERTICAL_INVERT
+#endif
 #if defined(PCBX10) && !defined(SIMU)
   #define LCD_VERTICAL_INVERT
 #endif
@@ -553,6 +566,14 @@
   #define BACKLIGHT_RCC_APB2Periph             RCC_APB2Periph_TIM8
   #define BACKLIGHT_GPIO_AF                    GPIO_AF_TIM8
   #define BACKLIGHT_TIMER_FREQ                 (PERI2_FREQUENCY * TIMER_MULT_APB2)
+#endif
+#if defined(RADIO_T18)
+  #define KEYS_BACKLIGHT_RCC_AHB1Periph        RCC_AHB1Periph_GPIOC
+  #define KEYS_BACKLIGHT_GPIO                  GPIOC
+  #define KEYS_BACKLIGHT_GPIO_PIN              GPIO_Pin_4  // PC.04
+  #define KEYS_BACKLIGHT_GPIO_PinSource        GPIO_PinSource4
+#else
+  #define KEYS_BACKLIGHT_RCC_AHB1Periph        0
 #endif
 
 // SD
@@ -840,7 +861,7 @@
 #define INTMODULE_HEARTBEAT
 #define INTMODULE_HEARTBEAT_RCC_AHB1Periph      RCC_AHB1Periph_GPIOD
 #define INTMODULE_HEARTBEAT_GPIO                GPIOD
-#define INTMODULE_HEARTBEAT_GPIO_PIN            GPIO_Pin_12
+#define INTMODULE_HEARTBEAT_GPIO_PIN            GPIO_Pin_12   // PD.12
 #define INTMODULE_HEARTBEAT_EXTI_PortSource     EXTI_PortSourceGPIOD
 #define INTMODULE_HEARTBEAT_EXTI_PinSource      GPIO_PinSource12
 #define INTMODULE_HEARTBEAT_EXTI_LINE           EXTI_Line12

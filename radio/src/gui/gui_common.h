@@ -85,6 +85,8 @@ bool isSourceAvailableInCustomSwitches(int source);
 bool isSourceAvailableInResetSpecialFunction(int index);
 bool isSourceAvailableInGlobalResetSpecialFunction(int index);
 bool isSwitchAvailable(int swtch, SwitchContext context);
+bool isAux1ModeAvailable(int mode);
+bool isAux2ModeAvailable(int mode);
 bool isSwitchAvailableInLogicalSwitches(int swtch);
 bool isSwitchAvailableInCustomFunctions(int swtch);
 bool isSwitchAvailableInMixes(int swtch);
@@ -114,6 +116,8 @@ bool isRssiSensorAvailable(int sensor);
 
 bool modelHasNotes();
 
+bool confirmModelChange();
+
 #if defined(COLORLCD)
 bool isSwitch2POSWarningStateAvailable(int state);
 #endif
@@ -128,6 +132,7 @@ bool isSwitch2POSWarningStateAvailable(int state);
 
 swsrc_t checkIncDecMovedSwitch(swsrc_t val);
 
+// TODO move this to stdlcd/draw_functions.h ?
 void drawCurveRef(coord_t x, coord_t y, CurveRef & curve, LcdFlags flags=0);
 void drawDate(coord_t x, coord_t y, TelemetryItem & telemetryItem, LcdFlags flags=0);
 void drawTelemScreenDate(coord_t x, coord_t y, source_t sensor, LcdFlags flags=0);
@@ -139,21 +144,22 @@ void drawSourceValue(coord_t x, coord_t y, source_t channel, LcdFlags flags=0);
 
 int convertMultiToOtx(int type);
 
-void drawCurve(coord_t offset=0);
-
 // model_setup Defines that are used in all uis in the same way
 #define IF_INTERNAL_MODULE_ON(x)                  (IS_INTERNAL_MODULE_ENABLED() ? (uint8_t)(x) : HIDDEN_ROW)
 #define IF_MODULE_ON(moduleIndex, x)              (IS_MODULE_ENABLED(moduleIndex) ? (uint8_t)(x) : HIDDEN_ROW)
 
 inline uint8_t MODULE_BIND_ROWS(int moduleIdx)
 {
+  if (isModuleCrossfire(moduleIdx))
+    return 0;
+
   if (isModuleMultimodule(moduleIdx)) {
-   if (IS_RX_MULTI(moduleIdx))
-     return 1;
-   else
-     return 2;
+    if (IS_RX_MULTI(moduleIdx))
+      return 1;
+    else
+      return 2;
   }
-  else if (isModuleXJTD8(moduleIdx) || isModuleSBUS(moduleIdx)) {
+  else if (isModuleXJTD8(moduleIdx) || isModuleSBUS(moduleIdx) || isModuleAFHDS3(moduleIdx)) {
     return 1;
   }
   else if (isModulePPM(moduleIdx) || isModulePXX1(moduleIdx) || isModulePXX2(moduleIdx) || isModuleDSM2(moduleIdx)) {
@@ -177,7 +183,7 @@ inline uint8_t MODULE_CHANNELS_ROWS(int moduleIdx)
     else
       return 0;
   }
-  else if (isModuleDSM2(moduleIdx) || isModuleCrossfire(moduleIdx) || isModuleSBUS(moduleIdx)) {
+  else if (isModuleDSM2(moduleIdx) || isModuleCrossfire(moduleIdx) || isModuleGhost(moduleIdx) || isModuleSBUS(moduleIdx)) {
     return 0;
   }
   else {
@@ -282,9 +288,10 @@ inline uint8_t MULTIMODULE_HASOPTIONS(uint8_t moduleIdx)
 #define MULTIMODULE_TYPE_ROWS(moduleIdx)        isModuleMultimodule(moduleIdx) ? (uint8_t) 0 : HIDDEN_ROW,
 #define MULTIMODULE_SUBTYPE_ROWS(moduleIdx)     isModuleMultimodule(moduleIdx) ? MULTIMODULE_RFPROTO_COLUMNS(moduleIdx) : HIDDEN_ROW,
 #define MULTIMODULE_OPTIONS_ROW(moduleIdx)      (isModuleMultimodule(moduleIdx) && MULTIMODULE_HASOPTIONS(moduleIdx)) ? (uint8_t) 0: HIDDEN_ROW
-#define MODULE_POWER_ROW(moduleIdx)             (MULTIMODULE_PROTOCOL_KNOWN(moduleIdx) || isModuleR9MNonAccess(moduleIdx)) ? (isModuleR9MLiteNonPro(moduleIdx) ? (isModuleR9M_FCC_VARIANT(moduleIdx) ? READONLY_ROW : (uint8_t)0) : (uint8_t)0) : HIDDEN_ROW
+#define MODULE_POWER_ROW(moduleIdx)            (MULTIMODULE_PROTOCOL_KNOWN(moduleIdx) || isModuleR9MNonAccess(moduleIdx) || isModuleAFHDS3(moduleIdx)) ? (isModuleR9MLiteNonPro(moduleIdx) ? (isModuleR9M_FCC_VARIANT(moduleIdx) ? READONLY_ROW : (uint8_t)0) : (uint8_t)0) : HIDDEN_ROW
 
 #else
+#define MULTIMODULE_TYPE_ROWS(moduleIdx)
 #define MULTIMODULE_STATUS_ROWS(moduleIdx)
 #define MULTIMODULE_MODULE_ROWS(moduleIdx)
 #define MULTIMODULE_TYPE_ROW(moduleIdx)
@@ -292,11 +299,28 @@ inline uint8_t MULTIMODULE_HASOPTIONS(uint8_t moduleIdx)
 #define MULTIMODULE_TYPE_ROWS(moduleIdx)
 #define MULTIMODULE_MODE_ROWS(moduleIdx)        (uint8_t)0
 #define MULTIMODULE_OPTIONS_ROW(moduleIdx)      HIDDEN_ROW
-#define MODULE_POWER_ROW(moduleIdx)            isModuleR9MNonAccess(moduleIdx) ? (isModuleR9MLiteNonPro(moduleIdx) ? (isModuleR9M_FCC_VARIANT(moduleIdx) ? READONLY_ROW : (uint8_t)0) : (uint8_t)0) : HIDDEN_ROW
+#define MODULE_POWER_ROW(moduleIdx)            isModuleR9MNonAccess(moduleIdx) || isModuleAFHDS3(moduleIdx) ? (isModuleR9MLiteNonPro(moduleIdx) ? (isModuleR9M_FCC_VARIANT(moduleIdx) ? READONLY_ROW : (uint8_t)0) : (uint8_t)0) : HIDDEN_ROW
+#endif
+
+#if defined(AFHDS3)
+#define AFHDS3_PROTOCOL_ROW(moduleIdx)          isModuleAFHDS3(moduleIdx) ? TITLE_ROW : HIDDEN_ROW,
+#define AFHDS3_MODE_ROWS(moduleIdx)             isModuleAFHDS3(moduleIdx) ? TITLE_ROW : HIDDEN_ROW, isModuleAFHDS3(moduleIdx) ? TITLE_ROW : HIDDEN_ROW, isModuleAFHDS3(moduleIdx) ? TITLE_ROW : HIDDEN_ROW,
+#define AFHDS3_MODULE_ROWS(moduleIdx)           isModuleAFHDS3(moduleIdx) ? (uint8_t) 0 : HIDDEN_ROW, isModuleAFHDS3(moduleIdx) ? (uint8_t) TITLE_ROW : HIDDEN_ROW,
+#else
+#define AFHDS3_PROTOCOL_ROW(moduleIdx)
+#define AFHDS3_MODE_ROWS(moduleIdx)
+#define AFHDS3_MODULE_ROWS(moduleIdx)
 #endif
 
 #define FAILSAFE_ROWS(moduleIdx)               isModuleFailsafeAvailable(moduleIdx) ? (g_model.moduleData[moduleIdx].failsafeMode==FAILSAFE_CUSTOM ? (uint8_t)1 : (uint8_t)0) : HIDDEN_ROW
-#define MODULE_OPTION_ROW(moduleIdx)           (isModuleR9MNonAccess(moduleIdx) || isModuleSBUS(moduleIdx)  ? TITLE_ROW : MULTIMODULE_OPTIONS_ROW(moduleIdx))
+
+inline uint8_t MODULE_OPTION_ROW(uint8_t moduleIdx) {
+  if(isModuleR9MNonAccess(moduleIdx) || isModuleSBUS(moduleIdx))
+    return TITLE_ROW;
+  if(isModuleAFHDS3(moduleIdx))
+    return HIDDEN_ROW;
+  return MULTIMODULE_OPTIONS_ROW(moduleIdx);
+}
 
 void editStickHardwareSettings(coord_t x, coord_t y, int idx, event_t event, LcdFlags flags);
 

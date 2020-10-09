@@ -19,6 +19,7 @@
  */
 
 #include "opentx.h"
+#include "flysky_nv14.h"
 
 #define FLYSKY_FIXED_RX_VOLTAGE (uint8_t)(FLYSKY_SENSOR_RX_VOLTAGE + (uint8_t)0xA0)
 

@@ -227,26 +227,27 @@ void InputsPanel::setSelectedByExpoList(QList<int> list)
   }
 }
 
-void InputsPanel::exposDelete(bool ask)
+void InputsPanel::exposDelete(bool prompt)
 {
   QList<int> list = createExpoListFromSelected();
   if (list.isEmpty())
     return;
 
-  QMessageBox::StandardButton ret = QMessageBox::No;
-
-  if (ask)
-    ret = QMessageBox::warning(this, CPN_STR_APP_NAME, tr("Delete selected Inputs. Are you sure?"), QMessageBox::Yes | QMessageBox::No);
-
-  if ((ret == QMessageBox::Yes) || (!ask)) {
-      exposDeleteList(list, ask);
-      emit modified();
-      update();
+  if (prompt) {
+    if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Delete selected Input lines. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+      return;
   }
+
+  exposDeleteList(list, prompt);
+  emit modified();
+  update();
 }
 
 void InputsPanel::exposCut()
 {
+  if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Cut selected Input lines. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+    return;
+
   exposCopy();
   exposDelete(false);
 }
@@ -316,7 +317,6 @@ void InputsPanel::pasteExpoMimeData(const QMimeData * mimeData, int destIdx)
     update();
   }
 }
-
 
 void InputsPanel::exposPaste()
 {
@@ -515,7 +515,7 @@ void InputsPanel::exposDeleteList(QList<int> list, bool clearName)
 
 void InputsPanel::clearExpos()
 {
-  if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Clear all Inputs. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes) {
+  if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Clear all Input lines. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes) {
     model->clearInputs();
     for (int i = 0; i < inputsCount; i++) {
       model->updateAllReferences(ModelData::REF_UPD_TYPE_INPUT, ModelData::REF_UPD_ACT_CLEAR, i);
@@ -559,7 +559,7 @@ bool InputsPanel::cmInputMoveUpAllowed() const
 
 void InputsPanel::cmInputClear()
 {
-  if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Clear Input. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+  if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Clear all lines for the selected Inputs. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
     return;
 
   for (int i = CPN_MAX_EXPOS - 1; i >= 0; i--) {
@@ -574,7 +574,7 @@ void InputsPanel::cmInputClear()
 
 void InputsPanel::cmInputDelete()
 {
-  if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Delete Input. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+  if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Delete all lines for the selected Inputs. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
     return;
 
   for (int i = 0; i < CPN_MAX_EXPOS; i++) {

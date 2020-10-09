@@ -8,6 +8,7 @@ Romolo Manfredini (romoloman)
 Martin Hotař (mhotar)
 Maxim (Max) Paperno (mpaperno)
 Arne Schwabe (schwabe)
+Daniel Gorbea (dgatf)
 
 [Translators]
 [fr] Sebastien Charpentier (LapinFou)
@@ -31,6 +32,7 @@ Michael Byrne
 <a href="https://www.flysky-cn.com/home">FlySky (monthly)</a>
 <a href="https://www.jumper-rc.com">JumperRC (monthly)</a>
 <a href="https://www.radiomasterrc.com">RadioMaster (monthly)</a>
+<a href="http://www.happymodel.cn">HappyModel (monthly)</a>
 <a href="https://alofthobbies.com">Aloft Hobbies</a>
 <a href="https://jonathan.it">Jonathan Modellismo</a>
 <a href="http://wstech.de">WsTech</a>
@@ -1761,3 +1763,182 @@ Paul Pearson
 Stuart Olson
 Pierre Connan
 Henk Eeltink
+Robert Miller
+George Walker
+Александр Щитов
+Heiko Polig
+Gary Wild
+Peter Sarcher
+Steve Schoonover
+Francisco Orcera Exposito
+Alan Powell
+Martin Eriksson
+Wayne J Podaima
+Tom Wilkinson
+Fred Ceratt
+Stefan Grunenberg
+Aram Parsamyan
+Wolfgang Rauser
+John Wall
+Martin Haggas
+Denis Kelly
+James Houck
+Brian Stephanik
+William McNeice
+Sven De Boeck
+SB Europe Ltd
+Evening Shade Pottery
+D van Oostveen
+Michael Grosso
+Carlos Marcal
+d@taweb
+Justin Digby
+Hermann Vocat
+Michael Francini
+Michael Chambers
+Harold H Youngren
+Yann Orselli
+Dieter Schaad
+Ernst Camenzind
+Ciobanu Rivelino Costel
+David Jolly
+Aram Parsamyan
+Stewart Davies
+Karsten Schwarz
+Robert Mckay
+Michael Oeschger
+Randy Ling
+Jonathan Wise
+David Gardner
+Christophe Judas
+Lachlan Peters
+Patrick C Kutschke
+Thomas Halenbeck
+Barry Wright
+Nicolas Ducher
+Giampiero Sintoni
+Sidney B Harden
+John Moody
+Sylvain Cubizolles
+Adam Kouse
+FCG Kas
+Dennis Marinus
+James Donelson
+Stefan Hassler
+Reinhard Prix
+Jeffrey Johnson
+Michael Conway
+Ryan Buffington
+Thomas Horns
+Michael Carnes
+William Hallman
+James Snodgrass
+Michal Mesaros
+James Lindner
+Laurence Gerrard
+Nico Wagner
+Christoph Rössner
+Ruben Flores
+Jim Cukla
+Lee Taylor
+Stefan Kuster
+Barry Wright
+Steven Gilley
+Lloyd Evans
+Nolan O'Hearne
+Jeffrey James N Buffie
+James Houck
+Andreas Arlt
+William Walker
+Salvador Munoz Vinas
+Chris Geiger Photography
+John F Smith
+Robert Zecha
+Fernando Martins
+Martin Brungard
+Paul Witko
+Michael Campbell
+Stuart Posnett
+PK Doddema
+Leonard MacKey
+Andrew Peterson
+Dominik Sedlacek
+Ronald Hellstern
+Vicente Suarez
+Patrick Geerts
+Rossi Giampaolo
+Jose Luis Franco Torres
+Bart Sillen
+Antonio Moreno
+Carolina Carcione
+Lonnie Misner
+John Eppling
+Phillip Elliott
+Robin Bayer
+Jurij Peternel
+George Aandahl
+Guy Dangerfield
+Thomas Limpert
+Ismael G Zapater
+Alan Hall
+Bradley Goodwin
+Paul Dittman
+John Johnson
+Liam Mahoney
+Joseph Carr
+Fiorenzo Agnelli
+Brian Ramsey
+Angelo Movio
+Weldon Parks
+Simon Brink
+Weldon Parks
+Ralf Herzenbruch
+Ashley Pearce
+SneakIT
+Soaring Stuff  
+Jörg Lemnitz
+Johann Gross
+Mark Gibson
+Rendall Assoc
+Cozyn Holdings Pty Ltd
+Tim Karsten
+Nick Hesson
+Laurent Lapassade
+Peter Deacon
+Gilles Dando
+Philippe Desrichard
+Jón Haase
+Michael Hansen
+Sylvain Vanston
+Helmut Nemecek
+Alexander Mathis
+Jay Watkins
+Patrice Oudjaoudi
+Didier Hochedez
+Robert Hunter
+Christophe Gilsoul
+Lincoln Roberts
+Johan Jurriens
+Michael Ledward
+Dave Waldesbuehl
+Dale Rhoads
+Denis Kelly
+SBEurope LTD
+Jean-Louis Mouche
+Grant Mills
+Fernando Rimoldi
+Jim Cukla
+Tomas Kirnak
+Raymond Henderson
+James Jewitt
+Martin Sauter
+Philip Hawkey
+Lonnie Misner
+Michael Hirschauer
+Brian Bracken
+Stuart Olson
+Terry McKinley
+Miklos Turcsin
+Edward Skerness
+Stefano Perinetti
+Toni Marchante

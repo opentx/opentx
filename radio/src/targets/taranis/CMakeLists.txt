@@ -2,6 +2,8 @@ option(SHUTDOWN_CONFIRMATION "Shutdown confirmation" OFF)
 option(LCD_DUAL_BUFFER "Dual LCD Buffer" OFF)
 option(PXX1 "PXX1 protocol support" ON)
 option(PXX2 "PXX2 protocol support" OFF)
+option(AFHDS3 "AFHDS3 TX Module" OFF)
+option(GHOST "Ghost TX Module" ON)
 option(INTERNAL_MODULE_PPM "Support for PPM internal module" OFF)
 option(AUTOUPDATE "Auto update internal chips from SD" OFF)
 
@@ -353,6 +355,7 @@ endif()
 
 add_definitions(-DPCBTARANIS)
 add_definitions(-DAUDIO -DVOICE -DRTCLOCK)
+add_definitions(-DSBUS_TRAINER)
 
 set(SRC
   ${SRC}
