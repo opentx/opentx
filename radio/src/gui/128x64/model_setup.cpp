@@ -19,6 +19,9 @@
  */
 
 #include "opentx.h"
+#if defined(RADIO_FAMILY_TBS)
+#include "storage/modelslist.h"
+#endif
 
 // TODO find why we need this (for REGISTER at least)
 #if defined(PCBXLITE)
@@ -29,7 +32,11 @@
 
 uint8_t g_moduleIdx;
 
-#if defined(PCBTARANIS)
+#if defined(RADIO_FAMILY_TBS)
+bool set_model_id_needed = false;
+#endif
+
+#if defined(PCBTARANIS) || defined(RADIO_FAMILY_TBS)
 uint8_t getSwitchWarningsCount()
 {
   uint8_t count = 0;
@@ -73,7 +80,7 @@ enum MenuModelSetupItems {
   ITEM_MODEL_SETUP_CHECKLIST_DISPLAY,
   ITEM_MODEL_SETUP_THROTTLE_WARNING,
   ITEM_MODEL_SETUP_SWITCHES_WARNING1,
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBMAMBO)
   ITEM_MODEL_SETUP_SWITCHES_WARNING2,
   ITEM_MODEL_SETUP_POTS_WARNING,
 #endif
@@ -87,6 +94,9 @@ enum MenuModelSetupItems {
 #if defined(HARDWARE_INTERNAL_MODULE)
   ITEM_MODEL_SETUP_INTERNAL_MODULE_LABEL,
   ITEM_MODEL_SETUP_INTERNAL_MODULE_TYPE,
+#if defined(INTERNAL_MODULE_CRSF)
+  ITEM_MODEL_SETUP_CROSSFIRE_RECEIVER_ID,
+#endif
 #if defined(MULTIMODULE)
   ITEM_MODEL_SETUP_INTERNAL_MODULE_PROTOCOL,
   ITEM_MODEL_SETUP_INTERNAL_MODULE_SUBTYPE,
@@ -187,6 +197,8 @@ enum MenuModelSetupItems {
 #define MAX_SWITCH_PER_LINE             (getSwitchWarningsCount() > 5 ? 4 : 5)
 #if defined(PCBXLITE)
   #define SW_WARN_ROWS                    uint8_t(NAVIGATION_LINE_BY_LINE|getSwitchWarningsCount()), uint8_t(getSwitchWarningsCount() > 4 ? TITLE_ROW : HIDDEN_ROW) // X-Lite needs an additional column for full line selection (<])
+#elif defined(PCBTANGO)
+  #define SW_WARN_ROWS                    uint8_t(NAVIGATION_LINE_BY_LINE|(getSwitchWarningsCount()-1))
 #else
   #define SW_WARN_ROWS                    uint8_t(NAVIGATION_LINE_BY_LINE|(getSwitchWarningsCount()-1)), uint8_t(getSwitchWarningsCount() > MAX_SWITCH_PER_LINE ? TITLE_ROW : HIDDEN_ROW)
 #endif
@@ -210,6 +222,11 @@ inline uint8_t MODULE_TYPE_ROWS(int moduleIdx)
 #if defined(MULTIMODULE)
   else if (isModuleMultimodule(moduleIdx)) {
     return 0;
+  }
+#endif
+#if defined(PCBTANGO)
+  else if (IS_PCBREV_01()) {
+    return HIDDEN_ROW;
   }
 #endif
   else
@@ -308,6 +325,7 @@ void onBluetoothConnectMenu(const char * result)
   #define INTERNAL_MODULE_ROWS \
     LABEL(InternalModule), \
     MODULE_TYPE_ROWS(INTERNAL_MODULE),         /* ITEM_MODEL_SETUP_INTERNAL_MODULE_TYPE */ \
+    MODULE_CROSSFIRE_ROWS(INTERNAL_MODULE),    /* ITEM_MODEL_SETUP_CROSSFIRE_RECEIVER_ID */ \
     MULTIMODULE_TYPE_ROWS(INTERNAL_MODULE)     /* ITEM_MODEL_SETUP_INTERNAL_MODULE_PROTOCOL */ \
     MULTIMODULE_SUBTYPE_ROWS(INTERNAL_MODULE)  /* ITEM_MODEL_SETUP_INTERNAL_MODULE_SUBTYPE */ \
     MULTIMODULE_STATUS_ROWS(INTERNAL_MODULE)   /* ITEM_MODEL_SETUP_INTERNAL_MODULE_STATUS, ITEM_MODEL_SETUP_INTERNAL_MODULE_SYNCSTATUS */ \
@@ -332,7 +350,7 @@ void menuModelSetup(event_t event)
 {
   int8_t old_editMode = s_editMode;
 
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(RADIO_FAMILY_TBS)
   int8_t old_posHorz = menuHorizontalPosition;
 
   MENU_TAB({
@@ -353,8 +371,9 @@ void menuModelSetup(event_t event)
       0, // Checklist
       0, // Throttle warning
       SW_WARN_ROWS, // Switch warning
+#if !defined(PCBTANGO)
       POT_WARN_ROWS, // Pot warning
-
+#endif
     NUM_STICKS + NUM_POTS + NUM_SLIDERS - 1, // Center beeps
     0, // Global functions
 
@@ -619,7 +638,7 @@ void menuModelSetup(event_t event)
         g_model.disableThrottleWarning = !editCheckBox(!g_model.disableThrottleWarning, MODEL_SETUP_2ND_COLUMN, y, STR_THROTTLE_WARNING, attr, event);
         break;
 
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBMAMBO)
       case ITEM_MODEL_SETUP_SWITCHES_WARNING2:
         if (i==0) {
           if (CURSOR_MOVED_LEFT(event))
@@ -631,7 +650,7 @@ void menuModelSetup(event_t event)
 #endif
 
       case ITEM_MODEL_SETUP_SWITCHES_WARNING1:
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(RADIO_FAMILY_TBS)
         {
           #define FIRSTSW_STR   STR_VSRCRAW+(MIXSRC_FIRST_SWITCH-MIXSRC_Rud+1)*length
           uint8_t switchWarningsCount = getSwitchWarningsCount();
@@ -757,7 +776,7 @@ void menuModelSetup(event_t event)
         break;
       }
 
-#if defined(PCBTARANIS)
+#if defined(PCBTARANIS) || defined(PCBMAMBO)
       case ITEM_MODEL_SETUP_POTS_WARNING:
         lcdDrawTextAlignedLeft(y, STR_POTWARNING);
         lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, "\004""OFF\0""Man\0""Auto", g_model.potsWarnMode, (menuHorizontalPosition == 0) ? attr : 0);
@@ -863,6 +882,27 @@ void menuModelSetup(event_t event)
             g_model.moduleData[INTERNAL_MODULE].subType = checkIncDec(event, g_model.moduleData[INTERNAL_MODULE].subType, 0, MODULE_SUBTYPE_ISRM_PXX2_ACCST_D16, EE_MODEL, isRfProtocolAvailable);
           }
         }
+#elif defined(INTERNAL_MODULE_CRSF)
+        lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_INTERNAL_MODULE_PROTOCOLS, g_model.moduleData[INTERNAL_MODULE].type, menuHorizontalPosition==0 ? attr : 0);
+        if (attr) {
+          if (menuHorizontalPosition == 0) {
+            uint8_t moduleType = checkIncDec(event, g_model.moduleData[INTERNAL_MODULE].type, MODULE_TYPE_NONE, MODULE_TYPE_MAX, EE_MODEL, isInternalModuleAvailable);
+            if (checkIncDec_Ret) {
+              setModuleType(INTERNAL_MODULE, moduleType);
+              if (g_model.moduleData[moduleIdx].type == MODULE_TYPE_NONE) {
+#if defined(CROSSFIRE_TASK)
+                crossfireTurnOffRf(false);
+#endif
+              }
+              else {
+#if defined(CROSSFIRE_TASK)
+                crossfireTurnOnRf();
+#endif
+              }
+            }
+          }
+        }
+        break;
 #else
       uint8_t index = 0;
       if (g_model.moduleData[INTERNAL_MODULE].type == MODULE_TYPE_ISRM_PXX2) {
@@ -891,6 +931,27 @@ void menuModelSetup(event_t event)
         lcdDrawTextAlignedLeft(y, "RF Port 2 (PPM)");
         break;
 #endif
+
+      case ITEM_MODEL_SETUP_CROSSFIRE_RECEIVER_ID: {
+        uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
+        lcdDrawText(INDENT_WIDTH, y, STR_RECEIVER_NUM);
+        lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, g_model.header.modelId[moduleIdx], attr | LEADING0 | LEFT, 2);
+
+        if (attr) {
+          uint8_t new_id = g_model.header.modelId[moduleIdx];
+          CHECK_INCDEC_MODELVAR_ZERO(event, g_model.header.modelId[moduleIdx], getMaxRxNum(moduleIdx));
+          if (checkIncDec_Ret) {
+            new_id = g_model.header.modelId[moduleIdx];
+          }
+          if (s_editMode == 0) {
+            if (modelHeaders[g_eeGeneral.currModel].modelId[moduleIdx] != new_id) {
+              modelHeaders[g_eeGeneral.currModel].modelId[moduleIdx] = new_id;
+              set_model_id_needed = true;
+            }
+          }
+        }
+        break;
+      }
 
       case ITEM_MODEL_SETUP_EXTERNAL_MODULE_LABEL:
         lcdDrawTextAlignedLeft(y, STR_EXTERNALRF);
@@ -1333,7 +1394,11 @@ void menuModelSetup(event_t event)
                 }
                 else if (event == EVT_KEY_LONG(KEY_ENTER)) {
                   killEvents(event);
+#if defined(RADIO_FAMILY_TBS)
+                  uint8_t newVal = modelslist.findNextUnusedModelId(moduleIdx);
+#else
                   uint8_t newVal = findNextUnusedModelId(g_eeGeneral.currModel, moduleIdx);
+#endif
                   if (newVal != g_model.header.modelId[moduleIdx]) {
                     modelHeaders[g_eeGeneral.currModel].modelId[moduleIdx] = g_model.header.modelId[moduleIdx] = newVal;
                     storageDirty(EE_MODEL);
