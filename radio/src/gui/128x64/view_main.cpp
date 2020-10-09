@@ -407,7 +407,7 @@ void menuMainView(event_t event)
       */
     case EVT_KEY_NEXT_PAGE:
     case EVT_KEY_PREVIOUS_PAGE:
-#if defined(PCBTANGO)
+#if defined(HARDWARE_NO_TRIMS)
       if (g_trimEditMode == EDIT_TRIM_DISABLED) {
         if (view_base == VIEW_INPUTS)
           g_eeGeneral.view ^= ALTERNATE_VIEW;
