@@ -334,7 +334,7 @@ void menuMainView(event_t event)
       if (view_base == VIEW_INPUTS)
         g_eeGeneral.view ^= ALTERNATE_VIEW;
       else
-        g_eeGeneral.view = (g_eeGeneral.view + (4*ALTERNATE_VIEW) + ((event==EVT_KEY_PREVIOUS_PAGE) ? -ALTERNATE_VIEW : ALTERNATE_VIEW)) % (4*ALTERNATE_VIEW);
+        g_eeGeneral.view = (g_eeGeneral.view + (4 * ALTERNATE_VIEW) + ((event == EVT_KEY_PREVIOUS_PAGE) ? -ALTERNATE_VIEW : ALTERNATE_VIEW)) % (4 * ALTERNATE_VIEW);
       break;
 
     case EVT_KEY_CONTEXT_MENU:
@@ -417,7 +417,7 @@ void menuMainView(event_t event)
       // scroll bar
       lcdDrawHorizontalLine(38, 34, 54, DOTTED);
       lcdDrawSolidHorizontalLine(38 + (g_eeGeneral.view / ALTERNATE_VIEW) * 13, 34, 13, SOLID);
-      for (uint8_t i=0; i<8; i++) {
+      for (uint8_t i = 0; i < 8; i++) {
         uint8_t x0, y0;
         uint8_t chan = 8 * (g_eeGeneral.view / ALTERNATE_VIEW) + i;
         int16_t val = channelOutputs[chan];
