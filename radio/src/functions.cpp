@@ -356,6 +356,11 @@ void evalFunctions(const CustomFunctionData * functions, CustomFunctionsContext 
 
           case FUNC_BACKLIGHT:
           {
+            if (!CFN_PARAM(cfn)) {  // When no source is set, backlight works like original backlight and turn on regardless of backlight settings
+              requiredBacklightBright = 101;
+              break;
+            }
+
             getvalue_t raw = getValue(CFN_PARAM(cfn));
 #if defined(COLORLCD)
             if (raw == -1024)
