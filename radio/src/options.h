@@ -95,7 +95,7 @@ static const char * const options[] = {
 #if defined(SHUTDOWN_CONFIRMATION)
   "shutdownconfirm",
 #endif
-#if defined(EXTERNAL_ACCESS_MOD)
+#if defined(HARDWARE_EXTERNAL_ACCESS_MOD)
   "externalaccessmod",
 #endif
   nullptr //sentinel

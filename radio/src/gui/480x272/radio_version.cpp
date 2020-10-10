@@ -92,7 +92,7 @@ bool menuRadioModulesVersion(event_t event)
           y += FH;
           continue;
         }
-#if defined(EXTERNAL_ACCESS_MOD)
+#if defined(HARDWARE_EXTERNAL_ACCESS_MOD)
         if (isModuleMultimodule(INTERNAL_MODULE)) {
           char statusText[64];
           lcdDrawText(COLUMN2_X, y, "Multimodule");
