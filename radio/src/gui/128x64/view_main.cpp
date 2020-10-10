@@ -110,7 +110,7 @@ void doMainScreenGraphics()
 #if defined(HARDWARE_NO_TRIMS)
 void doMainScreenGraphics(uint8_t views, uint32_t ptr)
 {
-  int16_t * calibStickValPtr = nulptr;
+  int16_t * calibStickValPtr = nullptr;
   int16_t calibStickVert = 0;
 
   if (ptr)
