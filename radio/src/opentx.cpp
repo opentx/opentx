@@ -701,7 +701,7 @@ void checkBacklight()
       backlightOn = !backlightOn;
     }
 
-    if (requiredBacklightBright == 101) {
+    if (requiredBacklightBright == BACKLIGHT_OLD_MODE) {
       currentBacklightBright = 0;
       BACKLIGHT_ENABLE();
     }

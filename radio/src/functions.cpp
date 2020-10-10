@@ -357,7 +357,7 @@ void evalFunctions(const CustomFunctionData * functions, CustomFunctionsContext 
           case FUNC_BACKLIGHT:
           {
             if (!CFN_PARAM(cfn)) {  // When no source is set, backlight works like original backlight and turn on regardless of backlight settings
-              requiredBacklightBright = 101;
+              requiredBacklightBright = BACKLIGHT_OLD_MODE;
               break;
             }
 
