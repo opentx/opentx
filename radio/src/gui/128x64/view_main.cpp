@@ -554,7 +554,7 @@ void menuMainView(event_t event)
 
         if (view_base == VIEW_OUTPUTS_VALUES) {
           x0 = (i % 4 * 9 + 3) * FW / 2;
-#if LCD_H == 96
+#if LCD_H >= 96
           y0 = i / 4 * FH * 2 + 50;
 #else
           y0 = i / 4 * FH + 40;
@@ -570,7 +570,7 @@ void menuMainView(event_t event)
         else {
           constexpr coord_t WBAR2 = (50 / 2);
           x0 = i < 4 ? LCD_W / 4 + 2 : LCD_W * 3 / 4 - 2;
-#if LCD_H == 96
+#if LCD_H >= 96
           y0 = 45 + (i % 4) * 10;
 #else
           y0 = 38 + (i % 4) * 5;
@@ -658,11 +658,11 @@ void menuMainView(event_t event)
               x = 16 * FW + 6;
               y -= (NUM_SWITCHES / 2) * FH;
             }
-            //TDOD : move switchReOrder definition in board.h
-            static const uint8_t switchReOrder[] = {0, 1, 5, 3, 2, 4};
+            //TDOD : move switchesReorder definition in board.h
+            static const uint8_t switchesReorder[] = {0, 1, 5, 3, 2, 4};
 
             // re-arrange order according to physical layout
-            i = switchReOrder[i];
+            i = switchesReorder[i];
             getvalue_t val = getValue(MIXSRC_FIRST_SWITCH + sw_i);
             getvalue_t sw = ((val < 0) ? 3 * sw_i + 1 : ((val == 0) ? 3 * sw_i + 2 : 3 * sw_i + 3));
             drawSwitch(x, y, sw, 0);
