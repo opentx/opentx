@@ -702,7 +702,7 @@ void checkBacklight()
     }
 
     if (requiredBacklightBright == BACKLIGHT_OLD_MODE) {
-      currentBacklightBright = 0;
+      currentBacklightBright = g_eeGeneral.backlightBright;
       BACKLIGHT_ENABLE();
     }
     else if (backlightOn) {
