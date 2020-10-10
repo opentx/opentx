@@ -649,33 +649,26 @@ void menuMainView(event_t event)
             drawSwitch(x, y, sw, 0, false);
           }
         }
-#elif defined(PCBTANGO)
-        int sw_i;
-        for (int i = 0; i < NUM_SWITCHES; ++i) {
-          if (SWITCH_EXISTS(i)) {
-            uint8_t x = 2 * FW - 2, y = 4 * FH + i * FH + 20;
-            if (i >= NUM_SWITCHES / 2) {
-              x = 16 * FW + 6;
-              y -= (NUM_SWITCHES / 2) * FH;
-            }
-            //TDOD : move switchesReorder definition in board.h
-            static const uint8_t switchesReorder[] = {0, 1, 5, 3, 2, 4};
+#elif defined(PCBTANGO) || defined(PCBMAMBO)
+        //TODO : move switchReOrder definition in board.h and define SWITCHES_REORDER
+        static const uint8_t switchReOrder[] = {0, 1, 5, 3, 2, 4};
 
-            // re-arrange order according to physical layout
-            i = switchesReorder[i];
-            getvalue_t val = getValue(MIXSRC_FIRST_SWITCH + sw_i);
-            getvalue_t sw = ((val < 0) ? 3 * sw_i + 1 : ((val == 0) ? 3 * sw_i + 2 : 3 * sw_i + 3));
-            drawSwitch(x, y, sw, 0);
-          }
-        }
-#elif defined(PCBMAMBO)
         for (int i = 0; i < NUM_SWITCHES; ++i) {
           if (SWITCH_EXISTS(i)) {
+#if defined(LCD_H >= 96)
+            uint8_t x = 2 * FW - 2, y = 4 * FH + i * FH + 20;
+#else
             uint8_t x = 2 * FW - 2, y = 4 * FH + i * FH + 1;
+#endif
             if (i >= NUM_SWITCHES / 2) {
               x = 16 * FW + 6;
               y -= (NUM_SWITCHES / 2) * FH;
             }
+
+#if defined(SWITCHES_REORDER)
+            // re-arrange order according to physical layout
+            i = switchReOrder[i];
+#endif
             getvalue_t val = getValue(MIXSRC_FIRST_SWITCH + i);
             getvalue_t sw = ((val < 0) ? 3 * i + 1 : ((val == 0) ? 3 * i + 2 : 3 * i + 3));
             drawSwitch(x, y, sw, 0);
