@@ -33,7 +33,7 @@ class OutputsWidget: public Widget
     {
     }
 
-    virtual void refresh();
+    void refresh() override;
 
     uint8_t drawChannels(const uint16_t & x, const uint16_t & y, const uint16_t & w, const uint16_t & h, const uint8_t & firstChan, const bool & bg_shown, const uint16_t & bg_color)
     {
@@ -89,7 +89,7 @@ const ZoneOption OutputsWidget::options[] = {
   { STR_FIRST_CHANNEL, ZoneOption::Integer, OPTION_VALUE_UNSIGNED(1), OPTION_VALUE_UNSIGNED(1), OPTION_VALUE_UNSIGNED(32) },
   { STR_FILL_BACKGROUND, ZoneOption::Bool, OPTION_VALUE_BOOL(false) },
   { STR_BG_COLOR, ZoneOption::Color, OPTION_VALUE_UNSIGNED(LIGHTGREY) },
-  { NULL, ZoneOption::Bool }
+  { nullptr, ZoneOption::Bool }
 };
 
 

@@ -247,10 +247,16 @@ void onSdManagerMenu(const char * result)
   }
 #endif
 #if defined(PXX2)
-  else if (result == STR_FLASH_RECEIVER_OTA_BY_INTERNAL || result == STR_FLASH_RECEIVER_OTA_BY_EXTERNAL) {
+  else if (result == STR_FLASH_RECEIVER_BY_INTERNAL_MODULE_OTA || result == STR_FLASH_RECEIVER_BY_EXTERNAL_MODULE_OTA) {
     memclear(&reusableBuffer.sdManager.otaUpdateInformation, sizeof(OtaUpdateInformation));
     getSelectionFullPath(reusableBuffer.sdManager.otaUpdateInformation.filename);
-    reusableBuffer.sdManager.otaUpdateInformation.module = result == STR_FLASH_RECEIVER_OTA_BY_INTERNAL ? INTERNAL_MODULE : EXTERNAL_MODULE;
+    reusableBuffer.sdManager.otaUpdateInformation.module = (result == STR_FLASH_RECEIVER_BY_INTERNAL_MODULE_OTA ? INTERNAL_MODULE : EXTERNAL_MODULE);
+    moduleState[reusableBuffer.sdManager.otaUpdateInformation.module].startBind(&reusableBuffer.sdManager.otaUpdateInformation, onUpdateStateChanged);
+  }
+  else if (result == STR_FLASH_FLIGHT_CONTROLLER_BY_INTERNAL_MODULE_OTA || result == STR_FLASH_FLIGHT_CONTROLLER_BY_EXTERNAL_MODULE_OTA) {
+    memclear(&reusableBuffer.sdManager.otaUpdateInformation, sizeof(OtaUpdateInformation));
+    getSelectionFullPath(reusableBuffer.sdManager.otaUpdateInformation.filename);
+    reusableBuffer.sdManager.otaUpdateInformation.module = (result == STR_FLASH_FLIGHT_CONTROLLER_BY_INTERNAL_MODULE_OTA ? INTERNAL_MODULE : EXTERNAL_MODULE);
     moduleState[reusableBuffer.sdManager.otaUpdateInformation.module].startBind(&reusableBuffer.sdManager.otaUpdateInformation, onUpdateStateChanged);
   }
 #endif
@@ -365,24 +371,38 @@ bool menuRadioSdManager(event_t _event)
           else if (!READ_ONLY() && !strcasecmp(ext, SPORT_FIRMWARE_EXT)) {
             if (HAS_SPORT_UPDATE_CONNECTOR())
               POPUP_MENU_ADD_ITEM(STR_FLASH_EXTERNAL_DEVICE);
+#if defined(INTERNAL_MODULE_PXX1) || defined(INTERNAL_MODULE_PXX2)
             POPUP_MENU_ADD_ITEM(STR_FLASH_INTERNAL_MODULE);
+#endif
             POPUP_MENU_ADD_ITEM(STR_FLASH_EXTERNAL_MODULE);
           }
           else if (!READ_ONLY() && !strcasecmp(ext, FRSKY_FIRMWARE_EXT)) {
             FrSkyFirmwareInformation information;
             if (readFrSkyFirmwareInformation(line, information) == nullptr) {
+#if defined(INTERNAL_MODULE_PXX1) || defined(INTERNAL_MODULE_PXX2)
               if (information.productFamily == FIRMWARE_FAMILY_INTERNAL_MODULE)
                 POPUP_MENU_ADD_ITEM(STR_FLASH_INTERNAL_MODULE);
+#endif
               if (information.productFamily == FIRMWARE_FAMILY_EXTERNAL_MODULE)
                 POPUP_MENU_ADD_ITEM(STR_FLASH_EXTERNAL_MODULE);
-              if (HAS_SPORT_UPDATE_CONNECTOR() && (information.productFamily == FIRMWARE_FAMILY_RECEIVER || information.productFamily == FIRMWARE_FAMILY_SENSOR))
-                POPUP_MENU_ADD_ITEM(STR_FLASH_EXTERNAL_DEVICE);
+              if (information.productFamily == FIRMWARE_FAMILY_RECEIVER || information.productFamily == FIRMWARE_FAMILY_SENSOR) {
+                if (HAS_SPORT_UPDATE_CONNECTOR()) {
+                  POPUP_MENU_ADD_ITEM(STR_FLASH_EXTERNAL_DEVICE);
+                }
+                else {
+                  POPUP_MENU_ADD_ITEM(STR_FLASH_EXTERNAL_MODULE);
+                }
+              }
 #if defined(PXX2)
               if (information.productFamily == FIRMWARE_FAMILY_RECEIVER) {
                 if (isReceiverOTAEnabledFromModule(INTERNAL_MODULE, information.productId))
-                  POPUP_MENU_ADD_ITEM(STR_FLASH_RECEIVER_OTA_BY_INTERNAL);
+                  POPUP_MENU_ADD_ITEM(STR_FLASH_RECEIVER_BY_INTERNAL_MODULE_OTA);
                 if (isReceiverOTAEnabledFromModule(EXTERNAL_MODULE, information.productId))
-                  POPUP_MENU_ADD_ITEM(STR_FLASH_RECEIVER_OTA_BY_EXTERNAL);
+                  POPUP_MENU_ADD_ITEM(STR_FLASH_RECEIVER_BY_EXTERNAL_MODULE_OTA);
+              }
+              if (information.productFamily == FIRMWARE_FAMILY_FLIGHT_CONTROLLER) {
+                POPUP_MENU_ADD_ITEM(STR_FLASH_FLIGHT_CONTROLLER_BY_INTERNAL_MODULE_OTA);
+                POPUP_MENU_ADD_ITEM(STR_FLASH_FLIGHT_CONTROLLER_BY_EXTERNAL_MODULE_OTA);
               }
 #endif
 #if defined(BLUETOOTH)
@@ -523,7 +543,7 @@ bool menuRadioSdManager(event_t _event)
 
   reusableBuffer.sdManager.offset = menuVerticalOffset;
 
-  for (uint8_t i=0; i<NUM_BODY_LINES; i++) {
+  for (uint8_t i = 0; i < NUM_BODY_LINES; i++) {
     coord_t y = MENU_CONTENT_TOP + i*FH;
     LcdFlags attr = (index == i ? INVERS : 0);
     if (reusableBuffer.sdManager.lines[i][0]) {
@@ -568,12 +588,12 @@ bool menuRadioSdManager(event_t _event)
           for (auto rx = 0; rx < popupMenuItemsCount; rx++) {
             popupMenuItems[rx] = reusableBuffer.sdManager.otaUpdateInformation.candidateReceiversNames[rx];
           }
-          //popupMenuTitle = STR_PXX2_SELECT_RX;
+          POPUP_MENU_TITLE(STR_PXX2_SELECT_RX);
           POPUP_MENU_START(onUpdateReceiverSelection);
         }
       }
       else {
-        POPUP_WAIT(STR_WAITING_FOR_RX);
+        DRAW_POPUP_WAIT(STR_WAITING_FOR_RX);
       }
     }
   }

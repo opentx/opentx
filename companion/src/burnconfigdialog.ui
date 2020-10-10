@@ -45,615 +45,7 @@
    </item>
    <item row="0" column="0">
     <layout class="QGridLayout" name="gridLayout">
-     <item row="9" column="2">
-      <widget class="QLineEdit" name="dfu_location">
-       <property name="toolTip">
-        <string>Location of sam-ba executable</string>
-       </property>
-       <property name="whatsThis">
-        <string>The location of the AVRDUDE executable.</string>
-       </property>
-       <property name="text">
-        <string notr="true">dfu-util</string>
-       </property>
-      </widget>
-     </item>
-     <item row="9" column="0">
-      <widget class="QLabel" name="label_dfu1">
-       <property name="text">
-        <string>DFU-Util Location</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="2">
-      <widget class="QLineEdit" name="avrdude_location">
-       <property name="toolTip">
-        <string>Location of AVRDUDE executable</string>
-       </property>
-       <property name="whatsThis">
-        <string>The location of the AVRDUDE executable.</string>
-       </property>
-       <property name="text">
-        <string notr="true"/>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="4" rowspan="2">
-      <widget class="QPushButton" name="pushButton">
-       <property name="whatsThis">
-        <string>Use this button to browse and look for the AVRDUDE executable file.</string>
-       </property>
-       <property name="text">
-        <string>Browse...</string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="label_av2">
-       <property name="text">
-        <string>Programmer</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="2">
-      <widget class="QComboBox" name="avrdude_programmer">
-       <property name="whatsThis">
-        <string>Programmer used for communicating with the controller.
-Please consult the programmer's documentation and the AVRDUDE documentation to select the appropriate programmer.</string>
-       </property>
-       <property name="insertPolicy">
-        <enum>QComboBox::InsertAlphabetically</enum>
-       </property>
-       <item>
-        <property name="text">
-         <string notr="true">c2n232i</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">dasa3</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">dasa</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">siprog</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">ponyser</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">89isp</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">frank-stk200</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">blaster</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">ere-isp-avr</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">atisp</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">dapa</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">xil</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">futurlec</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">abcmini</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">picoweb</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">sp12</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">alf</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">bascom</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">dt006</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">pony-stk200</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">stk200</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">bsd</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">pavr</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">dragon_pdi</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">dragon_dw</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">dragon_hvsp</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">dragon_pp</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">dragon_isp</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">dragon_jtag</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">jtag2pdi</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">jtag2avr32</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">jtagmkII_avr32</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">jtag2dw</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">jtag2isp</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">jtag2</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">jtag2fast</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">jtag2slow</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">jtagmkII</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">jtag1slow</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">jtag1</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">jtagmkI</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">avr911</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">avr109</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">butterfly</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">usbtiny</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">usbasp</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">avr910</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">stk600hvsp</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">stk600pp</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">stk600</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">stk500hvsp</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">stk500pp</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">stk500v2</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">mib510</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">stk500v1</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">stk500</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">buspirate</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">avrisp2</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">avrispmkII</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">avrispv2</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">avrisp</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">arduino</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-     <item row="2" column="4">
-      <widget class="QPushButton" name="pushButton_3">
-       <property name="whatsThis">
-        <string>List all available programmers.</string>
-       </property>
-       <property name="text">
-        <string>List Available</string>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="2">
-      <widget class="QLineEdit" name="avrArgs">
-       <property name="toolTip">
-        <string>Extra arguments that will be passed to AVRDUDE on every call</string>
-       </property>
-       <property name="whatsThis">
-        <string>Extra arguments used in AVRDUDE.
-This can be used for providing extra information to AVRDUDE.
-
-Please only use this if you know what you are doing.  There are no error checks and you could cripple your controller.</string>
-       </property>
-       <property name="text">
-        <string notr="true"/>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="0">
-      <widget class="QLabel" name="label_av5">
-       <property name="text">
-        <string>Extra Arguments</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="5" column="4">
-      <widget class="QPushButton" name="pushButton_4">
-       <property name="whatsThis">
-        <string>Show AVRDUDE help</string>
-       </property>
-       <property name="text">
-        <string>Show Help</string>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="2">
-      <widget class="QComboBox" name="avrdude_port">
-       <property name="whatsThis">
-        <string>Communication port to the programmer.
-</string>
-       </property>
-       <item>
-        <property name="text">
-         <string notr="true"/>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">usb</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">com1</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">com2</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">com3</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">com4</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">com5</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">com6</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">com7</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">com8</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">com9</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">com10</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">com11</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">com12</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">com13</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">com14</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">com15</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">lpt1</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">lpt2</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">lpt3</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">lpt4</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">avrdoper</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">/dev/ttyUSB0</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">/dev/ttyUSB1</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-     <item row="4" column="0">
-      <widget class="QLabel" name="label_av4">
-       <property name="text">
-        <string>Port</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="0">
-      <widget class="QLabel" name="label_av1">
-       <property name="text">
-        <string>AVRDUDE Location</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="0">
-      <widget class="QLabel" name="label_av3">
-       <property name="text">
-        <string>MCU</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="2">
-      <widget class="QComboBox" name="avrdude_mcu">
-       <property name="toolTip">
-        <string>CPU of your TX</string>
-       </property>
-       <property name="whatsThis">
-        <string>CPU present on your 9x radio
-Should be m64 for stock radios
-m2560 for v4.1 boards</string>
-       </property>
-       <property name="insertPolicy">
-        <enum>QComboBox::InsertAlphabetically</enum>
-       </property>
-       <item>
-        <property name="text">
-         <string notr="true">m64</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">m128</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string notr="true">m2560</string>
-        </property>
-       </item>
-      </widget>
-     </item>
-     <item row="7" column="2">
+     <item row="1" column="2">
       <widget class="QComboBox" name="arm_mcu">
        <property name="toolTip">
         <string>CPU of your TX</string>
@@ -678,7 +70,27 @@ m2560 for v4.1 boards</string>
        </item>
       </widget>
      </item>
-     <item row="6" column="0">
+     <item row="3" column="2">
+      <widget class="QLineEdit" name="dfu_location">
+       <property name="toolTip">
+        <string>Location of sam-ba executable</string>
+       </property>
+       <property name="whatsThis">
+        <string>The location of the AVRDUDE executable.</string>
+       </property>
+       <property name="text">
+        <string notr="true">dfu-util</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="label_dfu1">
+       <property name="text">
+        <string>DFU-Util Location</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
       <widget class="QLabel" name="label_sb1">
        <property name="text">
         <string>SAM-BA Location</string>
@@ -688,7 +100,7 @@ m2560 for v4.1 boards</string>
        </property>
       </widget>
      </item>
-     <item row="6" column="2">
+     <item row="0" column="2">
       <widget class="QLineEdit" name="samba_location">
        <property name="toolTip">
         <string>Location of sam-ba executable</string>
@@ -701,7 +113,7 @@ m2560 for v4.1 boards</string>
        </property>
       </widget>
      </item>
-     <item row="7" column="0">
+     <item row="1" column="0">
       <widget class="QLabel" name="label_sb2">
        <property name="text">
         <string>ARM MCU</string>
@@ -711,7 +123,7 @@ m2560 for v4.1 boards</string>
        </property>
       </widget>
      </item>
-     <item row="8" column="0">
+     <item row="2" column="0">
       <widget class="QLabel" name="label_sb3">
        <property name="text">
         <string>Port</string>
@@ -721,7 +133,7 @@ m2560 for v4.1 boards</string>
        </property>
       </widget>
      </item>
-     <item row="8" column="2">
+     <item row="2" column="2">
       <widget class="QLineEdit" name="samba_port">
        <property name="toolTip">
         <string>sam-ba serial port</string>
@@ -734,14 +146,14 @@ m2560 for v4.1 boards</string>
        </property>
       </widget>
      </item>
-     <item row="10" column="0">
+     <item row="4" column="0">
       <widget class="QLabel" name="label_dfu2">
        <property name="text">
         <string>Alternate device</string>
        </property>
       </widget>
      </item>
-     <item row="10" column="2">
+     <item row="4" column="2">
       <widget class="QLineEdit" name="dfuArgs">
        <property name="toolTip">
         <string>Extra arguments that will be passed to AVRDUDE on every call</string>
@@ -757,7 +169,7 @@ Please only use this if you know what you are doing.  There are no error checks 
        </property>
       </widget>
      </item>
-     <item row="6" column="4">
+     <item row="0" column="4">
       <widget class="QPushButton" name="sb_browse">
        <property name="whatsThis">
         <string>Use this button to browse and look for the AVRDUDE executable file.</string>
@@ -767,7 +179,7 @@ Please only use this if you know what you are doing.  There are no error checks 
        </property>
       </widget>
      </item>
-     <item row="9" column="4">
+     <item row="3" column="4">
       <widget class="QPushButton" name="dfu_browse">
        <property name="whatsThis">
         <string>Use this button to browse and look for the AVRDUDE executable file.</string>
@@ -777,14 +189,14 @@ Please only use this if you know what you are doing.  There are no error checks 
        </property>
       </widget>
      </item>
-     <item row="11" column="2">
+     <item row="5" column="2">
       <widget class="QCheckBox" name="advCtrChkB">
        <property name="text">
         <string/>
        </property>
       </widget>
      </item>
-     <item row="11" column="0">
+     <item row="5" column="0">
       <widget class="QLabel" name="label">
        <property name="text">
         <string>Use advanced controls</string>
@@ -809,14 +221,6 @@ Please only use this if you know what you are doing.  There are no error checks 
   </layout>
  </widget>
  <tabstops>
-  <tabstop>avrdude_location</tabstop>
-  <tabstop>pushButton</tabstop>
-  <tabstop>avrdude_programmer</tabstop>
-  <tabstop>pushButton_3</tabstop>
-  <tabstop>avrdude_mcu</tabstop>
-  <tabstop>avrdude_port</tabstop>
-  <tabstop>avrArgs</tabstop>
-  <tabstop>pushButton_4</tabstop>
   <tabstop>samba_location</tabstop>
   <tabstop>sb_browse</tabstop>
   <tabstop>arm_mcu</tabstop>

@@ -91,6 +91,8 @@ class TelemetryItem
     void eval(const TelemetrySensor & sensor);
     void per10ms(const TelemetrySensor & sensor);
 
+    void setValue(const TelemetrySensor & sensor, const char * newVal, uint32_t unit=UNIT_TEXT, uint32_t prec=0);
+
     void setValue(const TelemetrySensor & sensor, int32_t newVal, uint32_t unit, uint32_t prec=0);
 
     inline bool isAvailable()

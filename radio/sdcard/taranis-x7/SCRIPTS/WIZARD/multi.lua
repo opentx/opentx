@@ -99,11 +99,11 @@ local function navigate(event, fieldMax, prevPage, nextPage)
       dirty = blinkChanged()
     end
   else
-    if event == EVT_PAGE_BREAK or event == EVT_RIGHT_FIRST then
+    if event == EVT_VIRTUAL_NEXT_PAGE then
       page = nextPage
       field = 0
       dirty = true
-    elseif event == EVT_PAGE_LONG or event == EVT_LEFT_FIRST then
+    elseif event == EVT_VIRTUAL_PREV_PAGE then
       page = prevPage
       field = 0
       killEvents(event);
@@ -165,8 +165,8 @@ end
 -- Init function
 local function init()
   thrCH1 = defaultChannel(2)
-  rollCH1 = defaultChannel(0)
-  yawCH1 = defaultChannel(3)
+  rollCH1 = defaultChannel(3)
+  yawCH1 = defaultChannel(0)
   pitchCH1 = defaultChannel(1)
   local ver, radio, maj, minor, rev = getVersion()
   if string.match(radio, "x7") then

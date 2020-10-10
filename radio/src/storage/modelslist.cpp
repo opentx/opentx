@@ -111,7 +111,7 @@ void ModelCell::loadBitmap()
     getTimerString(timer, 0);
     for (uint8_t i = 0; i < MAX_TIMERS; i++) {
       if (partialmodel.timers[i].mode != 0 && partialmodel.timers[i].persistent) {
-        getTimerString(timer, partialmodel.timers[i].value);
+        getTimerString(timer, partialmodel.timers[i].value, 1);
         break;
       }
     }
@@ -288,8 +288,8 @@ ModelsList::~ModelsList()
 void ModelsList::init()
 {
   loaded = false;
-  currentCategory = NULL;
-  currentModel = NULL;
+  currentCategory = nullptr;
+  currentModel = nullptr;
   modelsCount = 0;
 }
 
@@ -368,12 +368,12 @@ void ModelsList::save()
   f_close(&file);
 }
 
-void ModelsList::setCurrentCategorie(ModelsCategory* cat)
+void ModelsList::setCurrentCategory(ModelsCategory * cat)
 {
   currentCategory = cat;
 }
 
-void ModelsList::setCurrentModel(ModelCell* cell)
+void ModelsList::setCurrentModel(ModelCell * cell)
 {
   currentModel = cell;
   if (!currentModel->valid_rfData)

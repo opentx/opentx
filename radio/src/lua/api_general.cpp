@@ -376,6 +376,26 @@ bool luaFindFieldByName(const char * name, LuaField & field, unsigned int flags)
 }
 
 /*luadoc
+@function getRotEncSpeed()
+
+Return rotary encoder current speed
+
+@retval number in list: ROTENC_LOWSPEED, ROTENC_MIDSPEED, ROTENC_HIGHSPEED
+        return 0 on radio without rotary encoder
+
+@status current Introduced in 2.3.10
+*/
+static int luaGetRotEncSpeed(lua_State * L)
+{
+#if defined(ROTARY_ENCODER_NAVIGATION)
+  lua_pushunsigned(L, rotencSpeed);
+#else
+  lua_pushunsigned(L, 0);
+#endif
+  return 1;
+}
+
+/*luadoc
 @function sportTelemetryPop()
 
 Pops a received SPORT packet from the queue. Please note that only packets using a data ID within 0x5000 to 0x50FF
@@ -847,7 +867,7 @@ Return the internal GPS position or nil if no valid hardware found
 static int luaGetTxGPS(lua_State * L)
 {
 #if defined(INTERNAL_GPS)
-  lua_createtable(L, 0, 7);
+  lua_createtable(L, 0, 8);
   lua_pushtablenumber(L, "lat", gpsData.latitude * 0.000001);
   lua_pushtablenumber(L, "lon", gpsData.longitude * 0.000001);
   lua_pushtableinteger(L, "numsat", gpsData.numSat);
@@ -1680,6 +1700,7 @@ const luaL_Reg opentxLib[] = {
   { "getVersion", luaGetVersion },
   { "getGeneralSettings", luaGetGeneralSettings },
   { "getGlobalTimer", luaGetGlobalTimer },
+  { "getRotEncSpeed", luaGetRotEncSpeed },
   { "getValue", luaGetValue },
   { "getRAS", luaGetRAS },
   { "getTxGPS", luaGetTxGPS },
@@ -1742,6 +1763,7 @@ const luaR_value_entry opentxConstants[] = {
   { "VALUE", INPUT_TYPE_VALUE },
   { "SOURCE", INPUT_TYPE_SOURCE },
   { "REPLACE", MLTPX_REP },
+  { "MIXSRC_MAX", MIXSRC_MAX },
   { "MIXSRC_FIRST_INPUT", MIXSRC_FIRST_INPUT },
   { "MIXSRC_Rud", MIXSRC_Rud },
   { "MIXSRC_Ele", MIXSRC_Ele },
@@ -1813,6 +1835,9 @@ const luaR_value_entry opentxConstants[] = {
   { "EVT_VIRTUAL_NEXT", EVT_ROTARY_RIGHT },
   { "EVT_VIRTUAL_DEC", EVT_ROTARY_LEFT },
   { "EVT_VIRTUAL_INC", EVT_ROTARY_RIGHT },
+  { "ROTENC_LOWSPEED", ROTENC_LOWSPEED },
+  { "ROTENC_MIDSPEED", ROTENC_MIDSPEED },
+  { "ROTENC_HIGHSPEED", ROTENC_HIGHSPEED },
 #elif defined(PCBX9D) || defined(PCBX9DP)  // key reverted between field nav and value change
   { "EVT_VIRTUAL_PREV", EVT_KEY_FIRST(KEY_PLUS) },
   { "EVT_VIRTUAL_PREV_REPT", EVT_KEY_REPT(KEY_PLUS) },
@@ -1980,6 +2005,9 @@ const luaR_value_entry opentxConstants[] = {
   {"UNIT_MILLILITERS", UNIT_MILLILITERS },
   {"UNIT_FLOZ", UNIT_FLOZ },
   {"UNIT_MILLILITERS_PER_MINUTE", UNIT_MILLILITERS_PER_MINUTE },
+  {"UNIT_HERTZ", UNIT_HERTZ },
+  {"UNIT_MS", UNIT_MS },
+  {"UNIT_US", UNIT_US },
   {"UNIT_HOURS", UNIT_HOURS },
   {"UNIT_MINUTES", UNIT_MINUTES },
   {"UNIT_SECONDS", UNIT_SECONDS },

@@ -190,6 +190,16 @@
     <file>images/simulator/JumperT16/left_tele.png</file>
     <file>images/simulator/JumperT16/right_ent.png</file>
     <file>images/simulator/JumperT16/right_rtn.png</file>
+    <file>images/simulator/JumperT18/left.png</file>
+    <file>images/simulator/JumperT18/right.png</file>
+    <file>images/simulator/JumperT18/top.png</file>
+    <file>images/simulator/JumperT18/bottom.png</file>
+    <file>images/simulator/JumperT18/left_mdl.png</file>
+    <file>images/simulator/JumperT18/left_page.png</file>
+    <file>images/simulator/JumperT18/left_sys.png</file>
+    <file>images/simulator/JumperT18/left_tele.png</file>
+    <file>images/simulator/JumperT18/right_ent.png</file>
+    <file>images/simulator/JumperT18/right_rtn.png</file>
     <file>images/simulator/TX16S/left.png</file>
     <file>images/simulator/TX16S/right.png</file>
     <file>images/simulator/TX16S/top.png</file>

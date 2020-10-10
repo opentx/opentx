@@ -123,7 +123,7 @@ const HottSensor hottSensors[] = {
   {HOTT_ID_RPM1,         ZSTR_RPM,                UNIT_RPMS,              0},  // RPM1
   {HOTT_ID_RPM2,         ZSTR_RPM2,               UNIT_RPMS,              0},  // RPM2
   {HOTT_ID_ESC_VIN,      ZSTR_ESC_VIN,            UNIT_VOLTS,             1},  // ESC VIN
-  {HOTT_ID_BCAPA,        ZSTR_SMART_BAT_CAPACITY, UNIT_MAH,               2},  // Batt Capa
+  {HOTT_ID_BCAPA,        ZSTR_SMART_BAT_CAPACITY, UNIT_MAH,               0},  // Batt Capa
   {HOTT_ID_ESC_CUR,      ZSTR_ESC_CUR,            UNIT_AMPS,              1},  // ESC Amp
   {HOTT_ID_ESC_TBEC,     ZSTR_ESC_TBEC,           UNIT_CELSIUS,           0},  // ESC BEC Temp
   {HOTT_ID_ESC_BCUR,     ZSTR_ESC_BCUR,           UNIT_AMPS,              1},  // ESC BEC Amp
@@ -358,7 +358,7 @@ void processHottPacket(const uint8_t * packet)
           setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_ESC_VIN, 0, HOTT_TELEM_ESC, value, sensor->unit, sensor->precision);
           // packet[11] uint8_t batt_cap_L;     //#11 battery capacity in 10mAh steps
           // packet[12] uint8_t batt_cap_H;     //#12
-          value = packet[11] + (packet[12] << 8);
+          value = (packet[11] + (packet[12] << 8)) * 10;
           sensor = getHottSensor(HOTT_ID_BCAPA);
           setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_BCAPA, 0, HOTT_TELEM_ESC, value, sensor->unit, sensor->precision);
           // packet[13] uint8_t esc_temp;       //#13 ESC temperature
@@ -411,22 +411,22 @@ void processHottPacket(const uint8_t * packet)
           sensor = getHottSensor(HOTT_ID_CELS);
           // packet[7 ] uint8_t cell1_L;             //#07 cell 1 voltage lower value. 0.02V steps, 124=2.48V
           value = packet[7] << 1;
-          if (value) setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_CELS, 0, HOTT_TELEM_EAM, 0 << 16 | value, sensor->unit, sensor->precision);
+          if (value) setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_CELS, 0, HOTT_TELEM_GAM, 0 << 16 | value, sensor->unit, sensor->precision);
           // packet[8 ] uint8_t cell2_L;             //#08
           value = packet[8] << 1;
-          if (value) setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_CELS, 0, HOTT_TELEM_EAM, 1 << 16 | value, sensor->unit, sensor->precision);
+          if (value) setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_CELS, 0, HOTT_TELEM_GAM, 1 << 16 | value, sensor->unit, sensor->precision);
           // packet[9 ] uint8_t cell3_L;             //#09
           value = packet[9] << 1;
-          if (value) setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_CELS, 0, HOTT_TELEM_EAM, 2 << 16 | value, sensor->unit, sensor->precision);
+          if (value) setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_CELS, 0, HOTT_TELEM_GAM, 2 << 16 | value, sensor->unit, sensor->precision);
           // packet[10] uint8_t cell4_L;             //#10
           value = packet[10] << 1;
-          if (value) setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_CELS, 0, HOTT_TELEM_EAM, 3 << 16 | value, sensor->unit, sensor->precision);
+          if (value) setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_CELS, 0, HOTT_TELEM_GAM, 3 << 16 | value, sensor->unit, sensor->precision);
           // packet[11] uint8_t cell5_L;             //#11
           value = packet[11] << 1;
-          if (value) setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_CELS, 0, HOTT_TELEM_EAM, 4 << 16 | value, sensor->unit, sensor->precision);
+          if (value) setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_CELS, 0, HOTT_TELEM_GAM, 4 << 16 | value, sensor->unit, sensor->precision);
           // packet[12] uint8_t cell6_L;             //#12
           value = packet[12] << 1;
-          if (value) setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_CELS, 0, HOTT_TELEM_EAM, 5 << 16 | value, sensor->unit, sensor->precision);
+          if (value) setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_CELS, 0, HOTT_TELEM_GAM, 5 << 16 | value, sensor->unit, sensor->precision);
           // packet[13] uint8_t batt1_L;             //#13 battery 1 voltage LSB value. 0.1V steps. 50 = 5.5V
           break;
 
@@ -491,7 +491,7 @@ void processHottPacket(const uint8_t * packet)
         case HOTT_PAGE_04:
           // packet[4 ] uint8_t batt_cap_H;          //#34
           if (prev_page == ((HOTT_TELEM_GAM << 4) | HOTT_PAGE_03)) {
-            value = prev_value + (packet[4] << 8);
+            value = (prev_value + (packet[4] << 8)) * 10;
             sensor = getHottSensor(HOTT_ID_BCAPA);
             setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_BCAPA, 0, HOTT_TELEM_GAM, value, sensor->unit, sensor->precision);
           }
@@ -611,7 +611,7 @@ void processHottPacket(const uint8_t * packet)
         case HOTT_PAGE_04:
           // packet[4 ] uint8_t batt_cap_H;          //#34
           if (prev_page == ((HOTT_TELEM_EAM << 4) | HOTT_PAGE_03)) {
-            value = prev_value + (packet[4] << 8);
+            value = (prev_value + (packet[4] << 8)) * 10;
             sensor = getHottSensor(HOTT_ID_BCAPA);
             setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_BCAPA, 0, HOTT_TELEM_EAM, value, sensor->unit, sensor->precision);
           }

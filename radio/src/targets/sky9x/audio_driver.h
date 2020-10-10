@@ -21,6 +21,8 @@
 #ifndef _AUDIO_DRIVER_H_
 #define _AUDIO_DRIVER_H_
 
+#include <inttypes.h>
+
 void audioInit( void ) ;
 void audioEnd( void ) ;
 void audioConsumeCurrentBuffer();

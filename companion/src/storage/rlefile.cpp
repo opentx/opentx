@@ -64,7 +64,7 @@ void RleFile::EeFsCreate(uint8_t *eeprom, int size, Board::Type board, unsigned 
       }
     }
   }
-  else if (IS_TARANIS(board)) {
+  else {
     eeFsArm = (EeFsArm *)eeprom;
     eeFsVersion = 5;
     eeFsSize = 8+4*62;
@@ -82,36 +82,6 @@ void RleFile::EeFsCreate(uint8_t *eeprom, int size, Board::Type board, unsigned 
       EeFsSetLink(i, i+1);
     EeFsSetLink(eeFsBlocksMax-1, 0);
     eeFsArm->freeList = eeFsFirstBlock;
-    // EeFsFlush();
-  }
-  else {
-    eeFs = (EeFs *)eeprom;
-    eeFsVersion = (IS_2560(board) || board==Board::BOARD_9X_M128) ? 5 : 4;
-    eeFsBlockSize = 16;
-    eeFsLinkSize = 1;
-
-    if (eeFsVersion == 5) {
-      eeFsSize = 4+3*36;
-      eeFsFirstBlock = 1;
-      eeFsBlocksOffset = 112 - 16;
-      eeFsBlocksMax = 1 + (4096-112)/16;
-    }
-    else {
-      eeFsSize = 4+3*20;
-      eeFsFirstBlock = 4;
-      eeFsBlocksOffset = 0;
-      eeFsBlocksMax = 2048/16;
-    }
-
-    memset(eeprom, 0, size);
-    eeFs->version  = eeFsVersion;
-    eeFs->mySize   = eeFsSize;
-    eeFs->freeList = 0;
-    eeFs->bs       = eeFsBlockSize;
-    for (unsigned int i=eeFsFirstBlock; i<eeFsBlocksMax-1; i++)
-      EeFsSetLink(i, i+1);
-    EeFsSetLink(eeFsBlocksMax-1, 0);
-    eeFs->freeList = eeFsFirstBlock;
     // EeFsFlush();
   }
 }
@@ -146,7 +116,7 @@ bool RleFile::EeFsOpen(uint8_t *eeprom, int size, Board::Type board)
     searchFat();
     return 1;
   }
-  else if (IS_TARANIS(board)) {
+  else {
     eeFsArm = (EeFsArm *)eeprom;
     eeFsVersion = eeFsArm->version;
     eeFsSize = 8+4*62;
@@ -156,29 +126,6 @@ bool RleFile::EeFsOpen(uint8_t *eeprom, int size, Board::Type board)
     eeFsBlocksOffset = eeFsSize - eeFsBlockSize;
     eeFsBlocksMax = 1 + (Boards::getEEpromSize(board)-eeFsSize) / eeFsBlockSize;
     return eeFsArm->mySize == eeFsSize;
-  }
-  else {
-    eeFs = (EeFs *)eeprom;
-    eeFsVersion = eeFs->version;
-    eeFsBlockSize = 16;
-    eeFsLinkSize = 1;
-    if (eeFsVersion == 5) {
-      eeFsSize = 4+3*36;
-      eeFsFirstBlock = 1;
-      eeFsBlocksOffset = 112 - 16;
-      eeFsBlocksMax = 1 + (4096-112)/16;
-    }
-    else if (eeFsVersion == 4) {
-      eeFsSize = 4+3*20;
-      eeFsFirstBlock = 4;
-      eeFsBlocksOffset = 0;
-      eeFsBlocksMax = 2048/16;
-    }
-    else {
-      return 0;
-    }
-
-    return eeFs->mySize == eeFsSize;
   }
 }
 
@@ -206,25 +153,16 @@ void RleFile::EeFsWrite(unsigned int blk, unsigned int ofs, uint8_t val)
 
 unsigned int RleFile::EeFsGetLink(unsigned int blk)
 {
-  if (IS_ARM(board)) {
-    int16_t ret;
-    eeprom_read_block((uint8_t *)&ret, blk*eeFsBlockSize+eeFsBlocksOffset, eeFsLinkSize);
-    return ret;
-  }
-  else {
-    return EeFsRead(blk, 0);
-  }
+  int16_t ret;
+  eeprom_read_block((uint8_t *)&ret, blk*eeFsBlockSize+eeFsBlocksOffset, eeFsLinkSize);
+  return ret;
 }
 
 void RleFile::EeFsSetLink(unsigned int blk, unsigned int val)
 {
-  if (IS_ARM(board)) {
-    int16_t s_link = val;
-    eeprom_write_block((uint8_t *)&s_link, (blk*eeFsBlockSize)+eeFsBlocksOffset, eeFsLinkSize);
-  }
-  else {
-    EeFsWrite(blk, 0, val);
-  }
+  int16_t s_link = val;
+  eeprom_write_block((uint8_t *)&s_link, (blk*eeFsBlockSize)+eeFsBlocksOffset, eeFsLinkSize);
+
 }
 
 uint8_t RleFile::EeFsGetDat(unsigned int blk, unsigned int ofs)
@@ -244,10 +182,7 @@ unsigned int RleFile::EeFsGetFree()
 
   unsigned int ret = 0;
   unsigned int i;
-  if (IS_ARM(board))
-    i = eeFsArm->freeList;
-  else
-    i = eeFs->freeList;
+  i = eeFsArm->freeList;
 
   while (i) {
     ret += eeFsBlockSize-eeFsLinkSize;
@@ -266,14 +201,8 @@ void RleFile::EeFsFree(unsigned int blk)
 
   unsigned int i = blk;
   while (EeFsGetLink(i)) i = EeFsGetLink(i);
-  if (IS_ARM(board)) {
-    EeFsSetLink(i, eeFsArm->freeList);
-    eeFsArm->freeList = blk; //chain in front
-  }
-  else {
-    EeFsSetLink(i, eeFs->freeList);
-    eeFs->freeList = blk; //chain in front
-  }
+  EeFsSetLink(i, eeFsArm->freeList);
+  eeFsArm->freeList = blk; //chain in front
 }
 
 /*
@@ -283,12 +212,9 @@ unsigned int RleFile::EeFsAlloc()
 {
   if (IS_FAMILY_HORUS_OR_T16(board))
     return 0;
-  unsigned int ret = (IS_ARM(board) ? eeFsArm->freeList : eeFs->freeList);
+  unsigned int ret = eeFsArm->freeList;
   if (ret) {
-    if (IS_ARM(board))
-      eeFsArm->freeList = EeFsGetLink(ret);
-    else
-      eeFs->freeList = EeFsGetLink(ret);
+    eeFsArm->freeList = EeFsGetLink(ret);
     EeFsSetLink(ret, 0);
   }
   return ret;
@@ -299,7 +225,7 @@ unsigned int RleFile::size(unsigned int id)
   if (IS_FAMILY_HORUS_OR_T16(board))
     return 0;
   else
-    return IS_ARM(board) ? eeFsArm->files[id].size : eeFs->files[id].size;
+    return eeFsArm->files[id].size;
 }
 
 unsigned int RleFile::openRd(unsigned int i_fileId)
@@ -327,15 +253,12 @@ unsigned int RleFile::openRd(unsigned int i_fileId)
   else {
     m_fileId   = i_fileId;
     m_pos      = 0;
-    m_currBlk  = (IS_ARM(board) ? eeFsArm->files[m_fileId].startBlk : eeFs->files[m_fileId].startBlk);
+    m_currBlk  = eeFsArm->files[m_fileId].startBlk;
     m_ofs      = 0;
     m_zeroes   = 0;
     m_bRlc     = 0;
     m_err      = ERR_NONE;       //error reasons
-    if (IS_ARM(board))
-      return eeFsArm->files[m_fileId].typ;
-    else
-      return eeFs->files[m_fileId].typ;
+    return eeFsArm->files[m_fileId].typ;
   }
 }
 
@@ -344,14 +267,14 @@ unsigned int RleFile::read(uint8_t *buf, unsigned int i_len)
   if (IS_FAMILY_HORUS_OR_T16(board))
     return 0;
 
-  unsigned int len = IS_ARM(board) ? eeFsArm->files[m_fileId].size : eeFs->files[m_fileId].size;
+  unsigned int len = eeFsArm->files[m_fileId].size;
   len -= m_pos;
   if (i_len > len) i_len = len;
   len = i_len;
   while(len) {
     if (!m_currBlk) break;
     *buf++ = EeFsGetDat(m_currBlk, m_ofs++);
-    if (m_ofs >= (eeFsBlockSize-(IS_ARM(board)? 2 : 1))) {
+    if (m_ofs >= (eeFsBlockSize - 2)) {
       m_ofs = 0;
       m_currBlk = EeFsGetLink(m_currBlk);
     }
@@ -492,10 +415,7 @@ unsigned int RleFile::write(const uint8_t *buf, unsigned int i_len)
   unsigned int len = i_len;
   if (!m_currBlk && m_pos==0)
   {
-    if (IS_ARM(board))
-      eeFsArm->files[m_fileId].startBlk = m_currBlk = EeFsAlloc();
-    else
-      eeFs->files[m_fileId].startBlk = m_currBlk = EeFsAlloc();
+    eeFsArm->files[m_fileId].startBlk = m_currBlk = EeFsAlloc();
   }
   while (len)
   {
@@ -527,23 +447,15 @@ unsigned int RleFile::write(const uint8_t *buf, unsigned int i_len)
 void RleFile::create(unsigned int i_fileId, unsigned int typ)
 {
   openRd(i_fileId); //internal use
-  if (IS_ARM(board)) {
-    eeFsArm->files[i_fileId].typ   = typ;
-    eeFsArm->files[i_fileId].size  = 0;
-  }
-  else {
-    eeFs->files[i_fileId].typ   = typ;
-    eeFs->files[i_fileId].size  = 0;
-  }
+  eeFsArm->files[i_fileId].typ   = typ;
+  eeFsArm->files[i_fileId].size  = 0;
+
 }
 
 void RleFile::closeTrunc()
 {
   unsigned int fri=0;
-  if (IS_ARM(board))
-    eeFsArm->files[m_fileId].size = m_pos;
-  else
-    eeFs->files[m_fileId].size = m_pos;
+  eeFsArm->files[m_fileId].size = m_pos;
   if (m_currBlk && ( fri = EeFsGetLink(m_currBlk))) EeFsSetLink(m_currBlk, 0);
   if(fri) EeFsFree( fri );  //chain in
 }

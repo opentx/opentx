@@ -22,6 +22,8 @@
 
 uint8_t currentSpeakerVolume = 255;
 uint8_t requiredSpeakerVolume = 255;
+uint8_t currentBacklightBright = 0;
+uint8_t requiredBacklightBright = 0;
 uint8_t mainRequestFlags = 0;
 
 #if defined(STM32)
@@ -50,6 +52,7 @@ void handleUsbConnection()
 #if defined(DEBUG)
         POPUP_MENU_ADD_ITEM(STR_USB_SERIAL);
 #endif
+        POPUP_MENU_TITLE(STR_SELECT_MODE);
         POPUP_MENU_START(onUSBConnectMenu);
       }
       else {

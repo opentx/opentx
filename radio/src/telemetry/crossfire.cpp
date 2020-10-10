@@ -106,6 +106,10 @@ void processCrossfireTelemetryFrame()
     return;
   }
 
+  if (telemetryState == TELEMETRY_INIT && moduleState[EXTERNAL_MODULE].counter != CRSF_FRAME_MODELID_SENT) {
+    moduleState[EXTERNAL_MODULE].counter = CRSF_FRAME_MODELID;
+  }
+
   uint8_t id = telemetryRxBuffer[2];
   int32_t value;
   switch(id) {

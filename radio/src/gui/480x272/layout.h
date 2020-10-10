@@ -18,8 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _LAYOUT_H_
-#define _LAYOUT_H_
+#pragma once
 
 #include <list>
 #include "widgets_container.h"
@@ -122,5 +121,3 @@ Layout * loadLayout(const char * name, Layout::PersistentData * persistentData);
 void loadCustomScreens();
 
 std::list<const LayoutFactory *> & getRegisteredLayouts();
-
-#endif // _LAYOUT_H_

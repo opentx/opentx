@@ -171,14 +171,18 @@ void menuModelCurveOne(event_t event)
       killEvents(event);
       break;
 #elif defined(NAVIGATION_XLITE)
-    case EVT_KEY_LONG(KEY_SHIFT):
-      pushMenu(menuChannelsView);
-      killEvents(event);
+    case EVT_KEY_FIRST(KEY_ENTER):
+      if (IS_SHIFT_PRESSED()) {
+        pushMenu(menuChannelsView);
+        killEvents(event);
+      }
       break;
 #endif
   }
 
-  drawCurve(0);
+  drawCurve();
+  if (s_currSrcRaw != MIXSRC_NONE)
+    drawCursor(applyCurrentCurve);
 
   attr = (s_editMode > 0 ? INVERS|BLINK : INVERS);
   for (uint8_t i=0; i<5+crv.points; i++) {

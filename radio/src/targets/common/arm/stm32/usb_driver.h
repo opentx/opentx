@@ -21,6 +21,8 @@
 #ifndef OPENTX_USB_DRIVER_H
 #define OPENTX_USB_DRIVER_H
 
+#include <stdbool.h>
+
 // USB driver
 enum usbMode {
   USB_UNSELECTED_MODE,

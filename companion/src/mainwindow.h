@@ -111,7 +111,6 @@ class MainWindow : public QMainWindow
     void readBackup();
     void burnConfig();
     void burnList();
-    void burnFuses();
     void contributors();
     void sdsync();
     void changelog();
@@ -210,7 +209,6 @@ class MainWindow : public QMainWindow
     QAction *readEepromAct;
     QAction *burnConfigAct;
     QAction *burnListAct;
-    QAction *burnFusesAct;
     QAction *writeFlashAct;
     QAction *readFlashAct;
     QAction *writeBUToRadioAct;
