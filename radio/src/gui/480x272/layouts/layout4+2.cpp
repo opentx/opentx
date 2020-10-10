@@ -90,11 +90,8 @@ void Layout4P2::refresh()
 
   if (HAS_FM()) {
     // Flight mode
-    lcdDrawSizedText(LCD_W / 2 - getTextWidth(g_model.flightModeData[mixerCurrentFlightMode].name,
-                                              sizeof(g_model.flightModeData[mixerCurrentFlightMode].name),
-                                              ZCHAR | SMLSIZE) / 2,
-                     232,
-                     g_model.flightModeData[mixerCurrentFlightMode].name,
+    lcdDrawSizedText(LCD_W / 2 - getTextWidth(g_model.flightModeData[mixerCurrentFlightMode].name, sizeof(g_model.flightModeData[mixerCurrentFlightMode].name),
+                     ZCHAR | SMLSIZE) / 2, 232, g_model.flightModeData[mixerCurrentFlightMode].name,
                      sizeof(g_model.flightModeData[mixerCurrentFlightMode].name), ZCHAR | SMLSIZE);
   }
 
