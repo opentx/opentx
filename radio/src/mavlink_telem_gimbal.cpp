@@ -120,11 +120,11 @@ void MavlinkTelem::generateCmdDoMountConfigure(uint8_t tsystem, uint8_t tcompone
 }
 
 //ArduPilot: if a mount has no pan control, then this will also yaw the copter in guided mode overwriting _fixed_yaw !!
-void MavlinkTelem::generateCmdDoMountControl(uint8_t tsystem, uint8_t tcomponent, float pitch_deg, float yaw_deg)
+void MavlinkTelem::generateCmdDoMountControl(uint8_t tsystem, uint8_t tcomponent, float pitch_deg, float yaw_deg, uint8_t mode)
 {
   _generateCmdLong(tsystem, tcomponent,
       MAV_CMD_DO_MOUNT_CONTROL,
-      pitch_deg, 0.0, yaw_deg, 0,0,0, MAV_MOUNT_MODE_MAVLINK_TARGETING);
+      pitch_deg, 0.0, yaw_deg, 0,0,0, mode);
 }
 
 void MavlinkTelem::generateCmdRequestGimbalDeviceInformation(uint8_t tsystem, uint8_t tcomponent)
@@ -191,11 +191,11 @@ float q[4];
 }
 
 //STorM32 specific
-void MavlinkTelem::generateStorm32GimbalManagerControlTiltPan(uint8_t tsystem, uint8_t tcomponent,
+void MavlinkTelem::generateStorm32GimbalManagerControlPitchYaw(uint8_t tsystem, uint8_t tcomponent,
     uint8_t gimbal_device_id, float pitch_deg, float yaw_deg, uint16_t device_flags, uint16_t manager_flags)
 {
   setOutVersionV2();
-  mavlink_msg_storm32_gimbal_manager_control_tiltpan_pack(
+  mavlink_msg_storm32_gimbal_manager_control_pitchyaw_pack(
       _my_sysid, _my_compid, &_msg_out,
       tsystem, tcomponent,
       gimbal_device_id,
@@ -207,13 +207,13 @@ void MavlinkTelem::generateStorm32GimbalManagerControlTiltPan(uint8_t tsystem, u
 }
 
 //STorM32 specific
-void MavlinkTelem::generateCmdStorm32DoGimbalManagerControlTiltPan(uint8_t tsystem, uint8_t tcomponent,
+void MavlinkTelem::generateCmdStorm32DoGimbalManagerControlPitchYaw(uint8_t tsystem, uint8_t tcomponent,
     uint8_t gimbal_device_id, float pitch_deg, float yaw_deg, uint16_t device_flags, uint16_t manager_flags)
 {
   _generateCmdLong(tsystem, tcomponent,
-      MAV_CMD_STORM32_DO_GIMBAL_MANAGER_CONTROL_TILTPAN,
+      MAV_CMD_STORM32_DO_GIMBAL_MANAGER_CONTROL_PITCHYAW,
       pitch_deg, yaw_deg, NAN, NAN, device_flags, manager_flags,
-      (uint16_t)gimbal_device_id + ((uint16_t)MAV_STORM32_GIMBAL_MANAGER_CLIENT_GCS < 8) );
+      (uint16_t)gimbal_device_id + ((uint16_t)MAV_STORM32_GIMBAL_MANAGER_CLIENT_GCS < 8));
 }
 
 // -- Mavsdk Convenience Task Wrapper --
@@ -234,6 +234,7 @@ void MavlinkTelem::sendGimbalPitchYawDeg(float pitch, float yaw)
   }
   _t_gimbal_pitch_deg = pitch;
   _t_gimbal_yaw_deg = yaw;
+  _t_gimbal_mode = gimbalmanagerOut.mount_mode;
   SETTASK(TASK_GIMBAL, TASK_SENDCMD_DO_MOUNT_CONTROL);
 }
 
@@ -322,7 +323,7 @@ void MavlinkTelem::sendStorm32GimbalManagerPitchYawDeg(float pitch, float yaw)
   }
   _t_storm32GM_pitch_deg = pitch;
   _t_storm32GM_yaw_deg = yaw;
-  SETTASK(TASK_GIMBAL, TASK_SENDMSG_GIMBAL_MANAGER_CONTROL_TILTPAN);
+  SETTASK(TASK_GIMBAL, TASK_SENDMSG_GIMBAL_MANAGER_CONTROL_PITCHYAW);
 }
 
 void MavlinkTelem::sendStorm32GimbalManagerControlPitchYawDeg(float pitch, float yaw)
@@ -352,7 +353,7 @@ void MavlinkTelem::sendStorm32GimbalManagerCmdPitchYawDeg(float pitch, float yaw
   }
   _t_storm32GM_cmd_pitch_deg = pitch;
   _t_storm32GM_cmd_yaw_deg = yaw;
-  SETTASK(TASK_GIMBAL, TASK_SENDCMD_DO_GIMBAL_MANAGER_CONTROL_TILTPAN);
+  SETTASK(TASK_GIMBAL, TASK_SENDCMD_DO_GIMBAL_MANAGER_CONTROL_PITCHYAW);
 }
 
 // -- Task handlers --
@@ -376,7 +377,7 @@ bool MavlinkTelem::doTaskGimbalAndGimbalClient(void)
   }
   if (_task[TASK_GIMBAL] & TASK_SENDCMD_DO_MOUNT_CONTROL) {
     RESETTASK(TASK_GIMBAL, TASK_SENDCMD_DO_MOUNT_CONTROL);
-    generateCmdDoMountControl(_sysid, autopilot.compid, _t_gimbal_pitch_deg, _t_gimbal_yaw_deg);
+    generateCmdDoMountControl(_sysid, autopilot.compid, _t_gimbal_pitch_deg, _t_gimbal_yaw_deg, _t_gimbal_mode);
     return true; //do only one per loop
   }
 
@@ -393,29 +394,26 @@ bool MavlinkTelem::doTaskGimbalAndGimbalClient(void)
   }
 
   if (!gimbalmanager.compid) { // no gimbal manager
-    RESETTASK(TASK_GIMBAL, TASK_SENDMSG_GIMBAL_MANAGER_CONTROL_TILTPAN | TASK_SENDMSG_GIMBAL_MANAGER_CONTROL |
-                           TASK_SENDCMD_DO_GIMBAL_MANAGER_CONTROL_TILTPAN | TASK_SENDREQUEST_GIMBAL_MANAGER_INFORMATION);
+    RESETTASK(TASK_GIMBAL, TASK_SENDMSG_GIMBAL_MANAGER_CONTROL_PITCHYAW | TASK_SENDMSG_GIMBAL_MANAGER_CONTROL |
+                           TASK_SENDCMD_DO_GIMBAL_MANAGER_CONTROL_PITCHYAW | TASK_SENDREQUEST_GIMBAL_MANAGER_INFORMATION);
 	  return false;
   }
 
-  if (_task[TASK_GIMBAL] & TASK_SENDMSG_GIMBAL_MANAGER_CONTROL_TILTPAN) {
-    RESETTASK(TASK_GIMBAL, TASK_SENDMSG_GIMBAL_MANAGER_CONTROL_TILTPAN);
-    generateStorm32GimbalManagerControlTiltPan(_sysid, gimbalmanager.compid,
-        gimbal.compid,
+  if (_task[TASK_GIMBAL] & TASK_SENDMSG_GIMBAL_MANAGER_CONTROL_PITCHYAW) {
+    RESETTASK(TASK_GIMBAL, TASK_SENDMSG_GIMBAL_MANAGER_CONTROL_PITCHYAW);
+    generateStorm32GimbalManagerControlPitchYaw(_sysid, gimbalmanager.compid, gimbal.compid,
         _t_storm32GM_pitch_deg, _t_storm32GM_yaw_deg, _t_storm32GM_gdflags, _t_storm32GM_gmflags);
     return true; //do only one per loop
   }
   if (_task[TASK_GIMBAL] & TASK_SENDMSG_GIMBAL_MANAGER_CONTROL) {
     RESETTASK(TASK_GIMBAL, TASK_SENDMSG_GIMBAL_MANAGER_CONTROL);
-    generateStorm32GimbalManagerControl(_sysid, gimbalmanager.compid,
-        gimbal.compid,
+    generateStorm32GimbalManagerControl(_sysid, gimbalmanager.compid, gimbal.compid,
         _t_storm32GM_control_pitch_deg, _t_storm32GM_control_yaw_deg, _t_storm32GM_control_gdflags, _t_storm32GM_control_gmflags);
     return true; //do only one per loop
   }
-  if (_task[TASK_GIMBAL] & TASK_SENDCMD_DO_GIMBAL_MANAGER_CONTROL_TILTPAN) {
-    RESETTASK(TASK_GIMBAL, TASK_SENDCMD_DO_GIMBAL_MANAGER_CONTROL_TILTPAN);
-    generateCmdStorm32DoGimbalManagerControlTiltPan(_sysid, gimbalmanager.compid,
-        gimbal.compid,
+  if (_task[TASK_GIMBAL] & TASK_SENDCMD_DO_GIMBAL_MANAGER_CONTROL_PITCHYAW) {
+    RESETTASK(TASK_GIMBAL, TASK_SENDCMD_DO_GIMBAL_MANAGER_CONTROL_PITCHYAW);
+    generateCmdStorm32DoGimbalManagerControlPitchYaw(_sysid, gimbalmanager.compid, gimbal.compid,
         _t_storm32GM_cmd_pitch_deg, _t_storm32GM_cmd_yaw_deg, _t_storm32GM_cmd_gdflags, _t_storm32GM_cmd_gmflags);
     return true; //do only one per loop
   }

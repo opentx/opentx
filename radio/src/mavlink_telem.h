@@ -31,7 +31,7 @@
 
 
 #define MAVLINK_TELEM_MY_SYSID        254 //MissionPlanner is 255, QGroundControl is 255
-#define MAVLINK_TELEM_MY_COMPID       (MAV_COMP_ID_MISSIONPLANNER + 4) //191 I use for companion
+#define MAVLINK_TELEM_MY_COMPID       (MAV_COMP_ID_MISSIONPLANNER + 4) //191 is companion, 194 is free
 
 // wakeup() is currently called every 10 ms
 // if one is changing this, timing needs to be adapted
@@ -90,13 +90,13 @@ class MavlinkTelem
     void generateCmdVideoStopCapture(uint8_t tsystem, uint8_t tcomponent);
     // gimbal & gimbalmanager
     void generateCmdDoMountConfigure(uint8_t tsystem, uint8_t tcomponent, uint8_t mode);
-    void generateCmdDoMountControl(uint8_t tsystem, uint8_t tcomponent, float pitch_deg, float yaw_deg);
+    void generateCmdDoMountControl(uint8_t tsystem, uint8_t tcomponent, float pitch_deg, float yaw_deg, uint8_t mode);
     void generateCmdRequestGimbalDeviceInformation(uint8_t tsystem, uint8_t tcomponent);
     void generateStorm32GimbalDeviceControl(uint8_t tsystem, uint8_t tcomponent, float pitch_deg, float yaw_deg, uint16_t flags);
     void generateCmdRequestStorm32GimbalManagerInformation(uint8_t tsystem, uint8_t tcomponent);
     void generateStorm32GimbalManagerControl(uint8_t tsystem, uint8_t tcomponent, uint8_t gimbal_device_id, float pitch_deg, float yaw_deg, uint16_t device_flags, uint16_t manager_flags);
-    void generateStorm32GimbalManagerControlTiltPan(uint8_t tsystem, uint8_t tcomponent, uint8_t gimbal_device_id, float pitch_deg, float yaw_deg, uint16_t device_flags, uint16_t manager_flags);
-    void generateCmdStorm32DoGimbalManagerControlTiltPan(uint8_t tsystem, uint8_t tcomponent, uint8_t gimbal_device_id, float pitch_deg, float yaw_deg, uint16_t device_flags, uint16_t manager_flags);
+    void generateStorm32GimbalManagerControlPitchYaw(uint8_t tsystem, uint8_t tcomponent, uint8_t gimbal_device_id, float pitch_deg, float yaw_deg, uint16_t device_flags, uint16_t manager_flags);
+    void generateCmdStorm32DoGimbalManagerControlPitchYaw(uint8_t tsystem, uint8_t tcomponent, uint8_t gimbal_device_id, float pitch_deg, float yaw_deg, uint16_t device_flags, uint16_t manager_flags);
 
     // TASK AND MESSAGE HANDLERS
 
@@ -599,8 +599,8 @@ class MavlinkTelem
       TASK_SENDMSG_GIMBAL_DEVICE_CONTROL              = 0x00000010, //this goes to the storm32 gimbal device
       TASK_SENDREQUEST_GIMBAL_MANAGER_INFORMATION     = 0x00000020, //this goes to the storm32 gimbal manager
       TASK_SENDMSG_GIMBAL_MANAGER_CONTROL             = 0x00000040, //this goes to the storm32 gimbal manager
-      TASK_SENDMSG_GIMBAL_MANAGER_CONTROL_TILTPAN     = 0x00000080, //this goes to the storm32 gimbal manager
-      TASK_SENDCMD_DO_GIMBAL_MANAGER_CONTROL_TILTPAN  = 0x00000100, //this goes to the storm32 gimbal manager
+      TASK_SENDMSG_GIMBAL_MANAGER_CONTROL_PITCHYAW    = 0x00000080, //this goes to the storm32 gimbal manager
+      TASK_SENDCMD_DO_GIMBAL_MANAGER_CONTROL_PITCHYAW = 0x00000100, //this goes to the storm32 gimbal manager
     };
 
     uint32_t _task[TASKIDX_MAX];
