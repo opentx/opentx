@@ -695,13 +695,15 @@ void checkBacklight()
       }
     }
 
-    bool backlightOn = (g_eeGeneral.backlightMode == e_backlight_mode_on || (g_eeGeneral.backlightMode != e_backlight_mode_off && lightOffCounter));
+    bool backlightOn = (g_eeGeneral.backlightMode == e_backlight_mode_on ||
+      (g_eeGeneral.backlightMode != e_backlight_mode_off && lightOffCounter) ||
+      g_eeGeneral.backlightMode == e_backlight_mode_off && isFunctionActive(FUNCTION_BACKLIGHT));
 
     if (flashCounter) {
       backlightOn = !backlightOn;
     }
 
-    if (requiredBacklightBright == BACKLIGHT_OLD_MODE) {
+    if (requiredBacklightBright == BACKLIGHT_LEGACY_MODE) {
       currentBacklightBright = g_eeGeneral.backlightBright;
       BACKLIGHT_ENABLE();
     }
