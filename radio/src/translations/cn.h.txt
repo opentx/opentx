@@ -44,41 +44,37 @@
 
 // NON ZERO TERMINATED STRINGS
 #define LEN_OFFON                      "\002"
-#define TR_OFFON                       "关""开"
+#define TR_OFFON                       "关" "开"
 
 #define LEN_MMMINV                     "\003"
-#define TR_MMMINV                      "---""反\0"
+#define TR_MMMINV                      "---" "反\0"
 
-#define LEN_VBEEPMODE                  "\008"
-#define TR_VBEEPMODE                   "安静\0 ""警告\0 ""忽略按键""全部\0 "
+#define LEN_VBEEPMODE                  "\010"
+#define TR_VBEEPMODE                   "安静\0   " "警告\0   " "忽略按键" "全部\0   "
 
-#define LEN_VBLMODE                    TR("\004", "\010")
-#define TR_VBLMODE                     TR("关闭""按键""操控""全部""开启", "关闭\0   ""按键\0   ""操控\0   ""全部\0   ""开启\0   ")
+#define LEN_VBLMODE                    "\004"
+#define TR_VBLMODE                     "关闭" "按键" "操控" "全部" "开启"
 
 #define LEN_TRNMODE                    "\003"
-#define TR_TRNMODE                     "关 ""+=\0"":=\0"
+#define TR_TRNMODE                     "关\0" "+=\0" ":=\0"
 
 #define LEN_TRNCHN                     "\003"
 #define TR_TRNCHN                      "CH1CH2CH3CH4"
 
-#define LEN_AUX_SERIAL_MODES           "\015"
-#if defined(CLI) || defined(DEBUG)
-#define TR_AUX_SERIAL_MODES            "调试\0      ""回传镜像\0    ""回传输入\0    ""SBUS教练\0    ""LUA脚本\0     "
-#else
-#define TR_AUX_SERIAL_MODES            "调试\0      ""回传镜像\0    ""回传输入\0    ""SBUS教练\0    ""LUA脚本\0     "
-#endif
+#define LEN_AUX_SERIAL_MODES           "\010"
+#define TR_AUX_SERIAL_MODES            "调试\0   " "回传镜像" "回传输入" "SBUS教练" "LUA脚本\0"
 
-#define LEN_SWTYPES                    "\006"
-#define TR_SWTYPES                     "无\0   ""回弹\0 ""2段\0  ""3段\0  "
+#define LEN_SWTYPES                    "\004"
+#define TR_SWTYPES                     "无\0 " "回弹" "2段\0""3段\0"
 
-#define LEN_POTTYPES                    TR("\013", "\017")
-#define TR_POTTYPES                     TR("无\0        ""有中点\0    ""多段\0      ""无中点\0    ",  "无\0            ""有中点旋钮\0    ""多段旋钮\0      ""无中点旋钮\0    ")
+#define LEN_POTTYPES                   "\012"
+#define TR_POTTYPES                    "无\0       " "有中点旋钮" "多段旋钮\0 " "无中点旋钮"
 
 #define LEN_SLIDERTYPES                "\006"
-#define TR_SLIDERTYPES                 "无\0  ""侧滑块"
+#define TR_SLIDERTYPES                 "无\0   " "侧滑块"
 
 #define LEN_VLCD                       "\006"
-#define TR_VLCD                        "NormalOptrex"
+#define TR_VLCD                        "Normal" "Optrex"
 
 #define LEN_VPERSISTENT                "\014"
 #define TR_VPERSISTENT                 "OFF\0        ""Flight\0     ""Manual Reset"
@@ -178,8 +174,6 @@
 
 #if defined(AUDIO)
   #define TR_SOUND                     "播放声音\0 "
-#else
-  #define TR_SOUND                     "哔哔音\0     "
 #endif
 
 #if defined(HAPTIC)

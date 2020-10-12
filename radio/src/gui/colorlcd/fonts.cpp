@@ -28,7 +28,7 @@ const unsigned char font_xxs[] = {
 #include "font_9.lbm"
 };
 
-#if defined(HARDWARE_TOUCH)
+#if LCD_H > 272
 const uint16_t font_std_en_specs[] = {
 #include "font_17en.specs"
 };
