@@ -32,7 +32,7 @@ const ZoneOption OPTIONS_LAYOUT_2P1[] = {
   { nullptr, ZoneOption::Bool }
 };
 
-const Zone ZONES_LAYOUT_2P1[3] = {
+const rect_t ZONES_LAYOUT_2P1[3] = {
   { 240, 60, 192, 152 },
   { 48, 60, 180, 70 },
   { 48, 142, 180, 70 }
@@ -60,7 +60,7 @@ class Layout2P1: public Layout
       return DIM(ZONES_LAYOUT_2P1);
     }
 
-    Zone getZone(unsigned int index) const override
+    rect_t getZone(unsigned int index) const override
     {
       return ZONES_LAYOUT_2P1[index];
     }

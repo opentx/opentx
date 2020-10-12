@@ -26,14 +26,14 @@ unsigned int Topbar::getZonesCount() const
   return MAX_TOPBAR_ZONES;
 }
 
-Zone Topbar::getZone(unsigned int index) const
+rect_t Topbar::getZone(unsigned int index) const
 {
-  Zone zone;
-  zone.x = 49 + (TOPBAR_ZONE_WIDTH + 2*TOPBAR_ZONE_MARGIN) * index;
-  zone.y = TOPBAR_ZONE_MARGIN;
-  zone.w = TOPBAR_ZONE_WIDTH;
-  zone.h = MENU_HEADER_HEIGHT - 2*TOPBAR_ZONE_MARGIN;
-  return zone;
+  rect_t rect;
+  rect.x = 49 + (TOPBAR_ZONE_WIDTH + 2*TOPBAR_ZONE_MARGIN) * index;
+  rect.y = TOPBAR_ZONE_MARGIN;
+  rect.w = TOPBAR_ZONE_WIDTH;
+  rect.h = TOPBAR_HEIGHT;
+  return rect;
 }
 
 const char * const STR_MONTHS[] = TR_MONTHS;

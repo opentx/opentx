@@ -22,6 +22,7 @@
 #define _WIDGETS_CONTAINER_H_
 
 #include <stdlib.h>
+#include <window.h>
 #include "widget.h"
 
 class WidgetsContainerInterface
@@ -29,7 +30,7 @@ class WidgetsContainerInterface
   public:
     virtual unsigned int getZonesCount() const = 0;
 
-    virtual Zone getZone(unsigned int index) const = 0;
+    virtual rect_t getZone(unsigned int index) const = 0;
 
     inline Widget * getWidget(unsigned int index)
     {
@@ -50,7 +51,7 @@ class WidgetsContainerInterface
 #define WIDGET_NAME_LEN   10
 
 template<int N, int O>
-class WidgetsContainer: public WidgetsContainerInterface
+class WidgetsContainer: public Window, public WidgetsContainerInterface
 {
   public:
     struct ZonePersistentData {
@@ -64,16 +65,17 @@ class WidgetsContainer: public WidgetsContainerInterface
     };
 
   public:
-    WidgetsContainer(PersistentData * persistentData):
+    WidgetsContainer(const rect_t & rect, PersistentData * persistentData):
+      Window(nullptr, rect),
       persistentData(persistentData)
     {
       widgets = (Widget **)calloc(N, sizeof(Widget *));
     }
 
-    virtual ~WidgetsContainer()
+    ~WidgetsContainer() override
     {
       if (widgets) {
-        for (uint8_t i=0; i<N; i++) {
+        for (uint8_t i = 0; i < N; i++) {
           delete widgets[i];
         }
         free(widgets);
@@ -86,7 +88,7 @@ class WidgetsContainer: public WidgetsContainerInterface
         memset(persistentData->zones[index].widgetName, 0, sizeof(persistentData->zones[index].widgetName));
         if (factory) {
           strncpy(persistentData->zones[index].widgetName, factory->getName(), sizeof(persistentData->zones[index].widgetName));
-          widgets[index] = factory->create(getZone(index), &persistentData->zones[index].widgetData);
+          widgets[index] = factory->create(this, getZone(index), &persistentData->zones[index].widgetData);
         }
         else {
           widgets[index] = nullptr;
@@ -103,13 +105,17 @@ class WidgetsContainer: public WidgetsContainerInterface
     {
       if (widgets) {
         unsigned int count = getZonesCount();
-        for (unsigned int i=0; i<count; i++) {
+        for (unsigned int i = 0; i < count; i++) {
           delete widgets[i];
-          if (persistentData->zones[i].widgetName[0]) {
+          if (i == 0) {
+            char name[WIDGET_NAME_LEN + 1] = "Text";
+            widgets[i] = loadWidget(name, this, getZone(i), &persistentData->zones[i].widgetData);
+          }
+          else if (persistentData->zones[i].widgetName[0]) {
             char name[WIDGET_NAME_LEN + 1];
             memset(name, 0, sizeof(name));
             strncpy(name, persistentData->zones[i].widgetName, WIDGET_NAME_LEN);
-            // widgets[i] = loadWidget(name, getZone(i), &persistentData->zones[i].widgetData);
+            // TODO widgets[i] = loadWidget(name, getZone(i), &persistentData->zones[i].widgetData);
           }
           else {
             widgets[i] = nullptr;
@@ -125,23 +131,12 @@ class WidgetsContainer: public WidgetsContainerInterface
 
     unsigned int getZonesCount() const override = 0;
 
-    Zone getZone(unsigned int index) const override = 0;
-
-    virtual void refresh()
-    {
-      if (widgets) {
-        for (int i=0; i<N; i++) {
-          if (widgets[i]) {
-            widgets[i]->refresh();
-          }
-        }
-      }
-    }
+    rect_t getZone(unsigned int index) const override = 0;
 
     virtual void background()
     {
       if (widgets) {
-        for (int i=0; i<N; i++) {
+        for (int i = 0; i < N; i++) {
           if (widgets[i]) {
             widgets[i]->background();
           }

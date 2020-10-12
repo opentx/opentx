@@ -48,9 +48,9 @@ class Layout2x1: public Layout
       return 2;
     }
 
-    Zone getZone(unsigned int index) const override
+    rect_t getZone(unsigned int index) const override
     {
-      Zone zone;
+      rect_t zone;
       zone.w = (LCD_W-3*10) / 2;
       zone.x = (index & 1) ? 20 + zone.w : 10;
       if (persistentData->options[0].value.boolValue) {

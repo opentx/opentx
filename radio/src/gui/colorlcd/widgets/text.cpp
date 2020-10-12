@@ -25,12 +25,15 @@
 class TextWidget: public Widget
 {
   public:
-    TextWidget(const WidgetFactory * factory, const Zone & zone, Widget::PersistentData * persistentData):
-      Widget(factory, zone, persistentData)
+    TextWidget(const WidgetFactory * factory, Window * parent, const rect_t & rect, Widget::PersistentData * persistentData):
+      Widget(factory, parent, rect, persistentData)
     {
     }
 
-    void refresh() override;
+    void paint(BitmapBuffer * dc) override
+    {
+      dc->clear(HIGHLIGHT_COLOR);
+    }
 
     static const ZoneOption options[];
 };
@@ -43,20 +46,21 @@ const ZoneOption TextWidget::options[] = {
   { nullptr, ZoneOption::Bool }
 };
 
-void TextWidget::refresh()
-{
-  lcdSetColor(persistentData->options[1].value.unsignedValue);
-  LcdFlags fontsize = FONTSIZE(persistentData->options[2].value.unsignedValue << 8);
-  if(persistentData->options[3].value.boolValue) {
-    lcdDrawSizedText(zone.x+1, zone.y+1,
-                     persistentData->options[0].value.stringValue,
-                     sizeof(persistentData->options[0].value.stringValue),
-                     ZCHAR|fontsize|BLACK);
-  }
-  lcdDrawSizedText(zone.x, zone.y,
-                   persistentData->options[0].value.stringValue,
-                   sizeof(persistentData->options[0].value.stringValue),
-                   ZCHAR|fontsize|CUSTOM_COLOR);
-}
+//
+//void TextWidget::refresh()
+//{
+//  lcdSetColor(persistentData->options[1].value.unsignedValue);
+//  LcdFlags fontsize = FONTSIZE(persistentData->options[2].value.unsignedValue << 8);
+//  if(persistentData->options[3].value.boolValue) {
+//    lcdDrawSizedText(zone.x+1, zone.y+1,
+//                     persistentData->options[0].value.stringValue,
+//                     sizeof(persistentData->options[0].value.stringValue),
+//                     ZCHAR|fontsize|BLACK);
+//  }
+//  lcdDrawSizedText(zone.x, zone.y,
+//                   persistentData->options[0].value.stringValue,
+//                   sizeof(persistentData->options[0].value.stringValue),
+//                   ZCHAR|fontsize|CUSTOM_COLOR);
+//}
 
 BaseWidgetFactory<TextWidget> textWidget("Text", TextWidget::options);
