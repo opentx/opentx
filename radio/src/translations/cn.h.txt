@@ -43,39 +43,39 @@
 
 
 // NON ZERO TERMINATED STRINGS
-#define LEN_OFFON                      "\003"
-#define TR_OFFON                       "OFF""ON\0"
+#define LEN_OFFON                      "\002"
+#define TR_OFFON                       "关""开"
 
 #define LEN_MMMINV                     "\003"
-#define TR_MMMINV                      "---""INV"
+#define TR_MMMINV                      "---""反\0"
 
-#define LEN_VBEEPMODE                  "\005"
-#define TR_VBEEPMODE                   "Quiet""Alarm""NoKey""All\0 "
+#define LEN_VBEEPMODE                  "\008"
+#define TR_VBEEPMODE                   "安静\0 ""警告\0 ""忽略按键""全部\0 "
 
 #define LEN_VBLMODE                    TR("\004", "\010")
-#define TR_VBLMODE                     TR("OFF\0""Keys""Ctrl""Both""ON\0 ", "OFF\0    ""Keys\0   ""Controls""Both\0   ""ON\0     ")
+#define TR_VBLMODE                     TR("关闭""按键""操控""全部""开启", "关闭\0   ""按键\0   ""操控\0   ""全部\0   ""开启\0   ")
 
 #define LEN_TRNMODE                    "\003"
-#define TR_TRNMODE                     "OFF""+=\0"":=\0"
+#define TR_TRNMODE                     "关 ""+=\0"":=\0"
 
 #define LEN_TRNCHN                     "\003"
 #define TR_TRNCHN                      "CH1CH2CH3CH4"
 
 #define LEN_AUX_SERIAL_MODES           "\015"
 #if defined(CLI) || defined(DEBUG)
-#define TR_AUX_SERIAL_MODES            "Debug\0       ""Telem Mirror\0""Telemetry In\0""SBUS Trainer\0""LUA\0         "
+#define TR_AUX_SERIAL_MODES            "调试\0      ""回传镜像\0    ""回传输入\0    ""SBUS教练\0    ""LUA脚本\0     "
 #else
-#define TR_AUX_SERIAL_MODES            "OFF\0         ""Telem Mirror\0""Telemetry In\0""SBUS Trainer\0""LUA\0         "
+#define TR_AUX_SERIAL_MODES            "调试\0      ""回传镜像\0    ""回传输入\0    ""SBUS教练\0    ""LUA脚本\0     "
 #endif
 
 #define LEN_SWTYPES                    "\006"
-#define TR_SWTYPES                     "None\0 ""Toggle""2POS\0 ""3POS\0"
+#define TR_SWTYPES                     "无\0   ""回弹\0 ""2段\0  ""3段\0  "
 
 #define LEN_POTTYPES                    TR("\013", "\017")
-#define TR_POTTYPES                     TR("None\0      ""Pot w. det\0""Multipos\0  ""Pot\0       ",  "None\0          ""Pot with detent""Multipos Switch""Pot\0")
+#define TR_POTTYPES                     TR("无\0        ""有中点\0    ""多段\0      ""无中点\0    ",  "无\0            ""有中点旋钮\0    ""多段旋钮\0      ""无中点旋钮\0    ")
 
 #define LEN_SLIDERTYPES                "\006"
-#define TR_SLIDERTYPES                 "None\0 ""Slider"
+#define TR_SLIDERTYPES                 "无\0  ""侧滑块"
 
 #define LEN_VLCD                       "\006"
 #define TR_VLCD                        "NormalOptrex"
@@ -179,7 +179,7 @@
 #if defined(AUDIO)
   #define TR_SOUND                     "播放声音\0 "
 #else
-  #define TR_SOUND                     "Beep\0     "
+  #define TR_SOUND                     "哔哔音\0     "
 #endif
 
 #if defined(HAPTIC)
