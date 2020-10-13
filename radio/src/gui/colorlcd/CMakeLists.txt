@@ -27,6 +27,7 @@ set(GUI_SRC
   ${LAYOUTS_SRC}
 #  ${WIDGETS_SRC}
   widgets/text.cpp
+  widgets/value.cpp
   #  popups.cpp
   draw_functions.cpp
   #  menus.cpp

@@ -35,7 +35,7 @@ class TextWidget: public Widget
       // TODO DELETE THOSE TEST INIT VALUE !!
       strcpy(persistentData->options[0].value.stringValue, "This is a test string");
       persistentData->options[3].value.boolValue = true;
-      // TODO END DELETE AREA
+      // TODO END TEST INIT VALUE
 
       dc->clear(DEFAULT_BGCOLOR);
       lcdSetColor(persistentData->options[1].value.unsignedValue);

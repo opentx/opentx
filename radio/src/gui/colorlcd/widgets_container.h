@@ -110,6 +110,9 @@ class WidgetsContainer: public Window, public WidgetsContainerInterface
           if (i == 0) {
             char name[WIDGET_NAME_LEN + 1] = "Text";
             widgets[i] = loadWidget(name, this, getZone(i), &persistentData->zones[i].widgetData);
+          } else if (i == 1) {
+            char name[WIDGET_NAME_LEN + 1] = "Value";
+            widgets[i] = loadWidget(name, this, getZone(i), &persistentData->zones[i].widgetData);
           }
           else if (persistentData->zones[i].widgetName[0]) {
             char name[WIDGET_NAME_LEN + 1];
