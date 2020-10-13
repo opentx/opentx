@@ -649,7 +649,7 @@ class ModuleWindow : public FormGroup {
         // Multimodule status
         new StaticText(this, grid.getLabelSlot(true), STR_MODULE_STATUS);
         new DynamicText(this, grid.getFieldSlot(), [=] {
-            char msg[64]="";
+            char msg[64] = "";
             getModuleStatusString(moduleIdx, msg);
             return std::string(msg);
         });
@@ -712,7 +712,7 @@ class ModuleWindow : public FormGroup {
         grid.nextLine();
         new StaticText(this, grid.getLabelSlot(true), STR_MODULE_STATUS);
         new DynamicText(this, grid.getFieldSlot(), [=] {
-            char msg[64]="";
+            char msg[64] = "";
             getModuleStatusString(moduleIdx, msg);
             return std::string(msg);
         });
@@ -722,7 +722,7 @@ class ModuleWindow : public FormGroup {
         grid.nextLine();
         new StaticText(this, grid.getLabelSlot(true), STR_AFHDS3_POWER_SOURCE);
         new DynamicText(this, grid.getFieldSlot(), [=] {
-            char msg[64]="";
+            char msg[64] = "";
             getModuleSyncStatusString(moduleIdx, msg);
             return std::string(msg);
         });
@@ -740,7 +740,7 @@ class ModuleWindow : public FormGroup {
         grid.nextLine();
         new StaticText(this, grid.getLabelSlot(true), STR_AFHDS3_ACTUAL_POWER);
         new DynamicText(this, grid.getFieldSlot(), [=] {
-            char msg[64]="";
+            char msg[64] = "";
             getStringAtIndex(msg, STR_AFHDS3_POWERS, actualAfhdsRunPower(moduleIdx));
             return std::string(msg);
         });
