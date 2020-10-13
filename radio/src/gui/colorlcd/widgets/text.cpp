@@ -32,7 +32,19 @@ class TextWidget: public Widget
 
     void paint(BitmapBuffer * dc) override
     {
-      dc->clear(HIGHLIGHT_COLOR);
+      // TODO DELETE THOSE TEST INIT VALUE !!
+      strcpy(persistentData->options[0].value.stringValue, "This is a test string");
+      persistentData->options[3].value.boolValue = true;
+      // TODO END DELETE AREA
+
+      dc->clear(DEFAULT_BGCOLOR);
+      lcdSetColor(persistentData->options[1].value.unsignedValue);
+      LcdFlags fontsize = FONT_INDEX(persistentData->options[2].value.unsignedValue << 8u);
+
+      if(persistentData->options[3].value.boolValue) {
+        dc->drawText(1, 1, persistentData->options[0].value.stringValue, fontsize | BLACK);
+      }
+      dc->drawText(0, 0, persistentData->options[0].value.stringValue, fontsize | CUSTOM_COLOR);
     }
 
     static const ZoneOption options[];
