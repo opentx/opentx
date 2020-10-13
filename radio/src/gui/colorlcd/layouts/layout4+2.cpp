@@ -40,12 +40,18 @@ const ZoneOption OPTIONS_LAYOUT_4P2[] = {
   { NULL, ZoneOption::Bool }
 };
 
+constexpr coord_t HTRIM_W = 120;
+constexpr coord_t HTRIM_H = 40;
+constexpr coord_t HSLIDER_W = 120;
+constexpr coord_t HSLIDER_H = 40;
+
 class Layout4P2: public Layout
 {
   public:
     Layout4P2(const LayoutFactory * factory, Layout::PersistentData * persistentData):
       Layout(factory, persistentData)
     {
+      decorate();
     }
 
     void create() override
@@ -57,6 +63,8 @@ class Layout4P2: public Layout
       persistentData->options[3].value.boolValue = true;
       persistentData->options[4].value.boolValue = false;
       persistentData->options[5].value.boolValue = false;
+
+      decorate();
     }
 
     unsigned int getZonesCount() const override
@@ -66,16 +74,16 @@ class Layout4P2: public Layout
 
     void decorate()
     {
-      if (HAS_SLIDERS()) {
-        new MainViewHorizontalSlider(this, {0, 0, 100, 50}, [=] { return calibratedAnalogs[CALIBRATED_POT1]; }, 0);
-        new MainViewHorizontalSlider(this, {0, 100, 100, 50}, [=] { return calibratedAnalogs[CALIBRATED_POT2]; }, 0);
+      if (1 /*HAS_SLIDERS()*/) {
+        new MainViewHorizontalSlider(this, {0, LCD_H - HTRIM_H - 1, HTRIM_W, HSLIDER_H}, [=] { return calibratedAnalogs[CALIBRATED_POT1]; }, OPTION_SLIDER_TICKS | OPTION_SLIDER_BIG_TICKS | OPTION_SLIDER_SQUARE_BUTTON);
+        new MainViewHorizontalSlider(this, {LCD_W - HTRIM_W, LCD_H - HTRIM_H, HTRIM_W, HSLIDER_H}, [=] { return calibratedAnalogs[CALIBRATED_POT3]; }, OPTION_SLIDER_TICKS | OPTION_SLIDER_BIG_TICKS | OPTION_SLIDER_SQUARE_BUTTON);
       }
     }
 
     rect_t getZone(unsigned int index) const override
     {
       coord_t areaw = LCD_W - (HAS_SLIDERS() ? 55 : 8) - (HAS_TRIMS() ? 55 : 8);
-      coord_t areah = LCD_H - 4 - (HAS_TOPBAR() ? 55 : 8) - (HAS_SLIDERS() ? 26 : 4) - (HAS_TRIMS() ? 26 : 4);
+      coord_t areah = LCD_H - 4 - (HAS_TOPBAR() ? 55 : 8) - (HAS_SLIDERS() ? HSLIDER_H + 4 : 4) - (HAS_TRIMS() ? HTRIM_H + 4 : 4);
 
       rect_t zone;
       zone.x = IS_MIRRORED() ? ((index >= 4) ? (LCD_W - areaw) / 2 - 4 : 245) : ((index >= 4) ? 245 : (LCD_W - areaw) / 2 - 4);
