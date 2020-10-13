@@ -239,6 +239,15 @@ void ViewMain::openMenu()
 void ViewMain::checkEvents()
 {
   Window::checkEvents();
+
+  // TODO attach elsewhere
+  for (uint8_t i=0; i<MAX_CUSTOM_SCREENS; i++) {
+    if (customScreens[i]) {
+      if (i == g_model.view && !customScreens[i]->getParent()) {
+        customScreens[i]->attach(this);
+      }
+    }
+  }
 }
 
 void ViewMain::paint(BitmapBuffer * dc)
@@ -250,15 +259,15 @@ void ViewMain::paint(BitmapBuffer * dc)
   if (g_model.view >= getMainViewsCount()) {
     g_model.view = 0;
   }
-
-  for (uint8_t i=0; i<MAX_CUSTOM_SCREENS; i++) {
-    if (customScreens[i]) {
-      if (i == g_model.view) {
-        customScreens[i]->refresh(); }
-      else
-        customScreens[i]->background();
-    }
-  }
+//
+//  for (uint8_t i=0; i<MAX_CUSTOM_SCREENS; i++) {
+//    if (customScreens[i]) {
+//      if (i == g_model.view) {
+//        customScreens[i]->refresh(); }
+//      else
+//        customScreens[i]->background();
+//    }
+//  }
 }
 
 #if 0

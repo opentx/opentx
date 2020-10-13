@@ -19,11 +19,6 @@
   #define OPTION_VALUE_STRING(...) { .stringValue = { __VA_ARGS__ } }
 #endif
 
-struct Zone
-{
-  uint16_t x, y, w, h;
-};
-
 union ZoneOptionValue
 {
   uint32_t unsignedValue;

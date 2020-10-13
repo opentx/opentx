@@ -183,7 +183,7 @@ void postModelLoad(bool alarms)
   referenceModelAudioFiles();
 #endif
 
-#if defined(PCBHORUS)
+#if defined(COLORLCD)
   loadCustomScreens();
 #endif
 

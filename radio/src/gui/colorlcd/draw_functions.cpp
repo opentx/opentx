@@ -474,6 +474,19 @@ void drawSensorCustomValue(BitmapBuffer * dc, coord_t x, coord_t y, uint8_t sens
   }
 }
 
+void drawTimer(BitmapBuffer * dc, coord_t x, coord_t y, int32_t tme, LcdFlags flags)
+{
+  char str[LEN_TIMER_STRING];
+  getTimerString(str, tme, (flags & TIMEHOUR) != 0);
+  dc->drawText(x, y, str, flags);
+}
+
+void drawSourceValue(BitmapBuffer * dc, coord_t x, coord_t y, source_t source, LcdFlags flags)
+{
+  getvalue_t value = getValue(source);
+  drawSourceCustomValue(dc, x, y, source, value, flags);
+}
+
 void drawSourceCustomValue(BitmapBuffer * dc, coord_t x, coord_t y, source_t source, int32_t value, LcdFlags flags)
 {
   if (source >= MIXSRC_FIRST_TELEM) {

@@ -50,9 +50,9 @@ class Layout1x1: public Layout
       return 1;
     }
 
-    Zone getZone(unsigned int index) const override
+    rect_t getZone(unsigned int index) const override
     {
-      Zone zone = { 10, 10, LCD_W - 2*10, LCD_H - 2*10 };
+      rect_t zone = { 10, 10, LCD_W - 2*10, LCD_H - 2*10 };
       if (persistentData->options[0].value.boolValue) {
         zone.y += MENU_HEADER_HEIGHT;
         zone.h -= MENU_HEADER_HEIGHT;

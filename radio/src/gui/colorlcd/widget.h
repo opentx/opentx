@@ -34,23 +34,21 @@
 #endif
 
 class WidgetFactory;
-class Widget
+class Widget : public Window
 {
   public:
     struct PersistentData {
       ZoneOptionValueTyped options[MAX_WIDGET_OPTIONS] USE_IDX;
     };
 
-    Widget(const WidgetFactory * factory, const Zone & zone, PersistentData * persistentData):
+    Widget(const WidgetFactory * factory, Window * parent, const rect_t & rect, PersistentData * persistentData):
+      Window(parent, rect),
       factory(factory),
-      zone(zone),
       persistentData(persistentData)
     {
     }
 
-    virtual ~Widget()
-    {
-    }
+    ~Widget() override = default;
 
     virtual void update()
     {
@@ -73,15 +71,12 @@ class Widget
       return &persistentData->options[index].value;
     }
 
-    virtual void refresh() = 0;
-
     virtual void background()
     {
     }
 
   protected:
     const WidgetFactory * factory;
-    Zone zone;
     PersistentData * persistentData;
 };
 
@@ -90,7 +85,7 @@ void registerWidget(const WidgetFactory * factory);
 class WidgetFactory
 {
   public:
-    WidgetFactory(const char * name, const ZoneOption * options=nullptr):
+    explicit WidgetFactory(const char * name, const ZoneOption * options = nullptr):
       name(name),
       options(options)
     {
@@ -121,7 +116,7 @@ class WidgetFactory
       }
     }
 
-    virtual Widget * create(const Zone & zone, Widget::PersistentData * persistentData, bool init=true) const = 0;
+    virtual Widget * create(Window * parent, const rect_t & rect, Widget::PersistentData * persistentData, bool init = true) const = 0;
 
   protected:
     const char * name;
@@ -137,13 +132,13 @@ class BaseWidgetFactory: public WidgetFactory
     {
     }
 
-    virtual Widget * create(const Zone & zone, Widget::PersistentData * persistentData, bool init=true) const
+    Widget * create(Window * parent, const rect_t & rect, Widget::PersistentData * persistentData, bool init = true) const override
     {
       if (init) {
         initPersistentData(persistentData);
       }
 
-      return new T(this, zone, persistentData);
+      return new T(this, parent, rect, persistentData);
     }
 };
 
@@ -152,7 +147,7 @@ inline const ZoneOption * Widget::getOptions() const
   return getFactory()->getOptions();
 }
 
-Widget * loadWidget(const char * name, const Zone & zone, Widget::PersistentData * persistentData);
+Widget * loadWidget(const char * name, Window * parent, const rect_t & rect, Widget::PersistentData * persistentData);
 
 std::list<const WidgetFactory *> & getRegisteredWidgets();
 
