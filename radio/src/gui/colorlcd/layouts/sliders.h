@@ -55,6 +55,6 @@ class MainViewHorizontalSlider : public MainViewSlider
 
     void paint(BitmapBuffer * dc) override
     {
-      drawHorizontalSlider(dc, rect.x, rect.y, rect.w, getValue(), -RESX, RESX, 40, options);
+      drawHorizontalSlider(dc, 0, 0, width(), getValue(), -RESX, RESX, 40, options);
     }
 };
