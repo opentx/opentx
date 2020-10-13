@@ -37,72 +37,6 @@ std::string switchWarninglabel(swsrc_t index)
   return TEXT_AT_INDEX(STR_VSRCRAW, (index + MIXSRC_FIRST_SWITCH - MIXSRC_Rud + 1)) + std::string(&switchPositions[g_model.switchWarningState >> (3*index) & 0x07], 1);
 }
 
-class ModuleStatus: public StaticText
-{
-  public:
-    ModuleStatus(Window * parent, const rect_t & rect, uint8_t moduleIdx):
-      StaticText(parent, rect),
-      moduleIdx(moduleIdx)
-    {
-    }
-
-    void checkEvents() override
-    {
-      getModuleStatusString(moduleIdx, reusableBuffer.moduleSetup.msg);
-      if (text != reusableBuffer.moduleSetup.msg) {
-        setText(reusableBuffer.moduleSetup.msg);
-        invalidate();
-      }
-    }
-
-  protected:
-    uint8_t moduleIdx;
-};
-
-class ModuleCurrentPower: public StaticText
-{
-  public:
-    ModuleCurrentPower(Window * parent, const rect_t & rect, uint8_t moduleIdx):
-      StaticText(parent, rect),
-      moduleIdx(moduleIdx)
-    {
-    }
-
-    void checkEvents() override
-    {
-      getStringAtIndex(reusableBuffer.moduleSetup.msg, STR_AFHDS3_POWERS, actualAfhdsRunPower(moduleIdx));
-      if (text != reusableBuffer.moduleSetup.msg) {
-        setText(reusableBuffer.moduleSetup.msg);
-        invalidate();
-      }
-    }
-
-  protected:
-    uint8_t moduleIdx;
-};
-
-class ModuleSyncStatus: public StaticText
-{
-  public:
-    ModuleSyncStatus(Window * parent, const rect_t & rect, uint8_t moduleIdx):
-      StaticText(parent, rect),
-      moduleIdx(moduleIdx)
-    {
-    }
-
-    void checkEvents() override
-    {
-      getModuleSyncStatusString(moduleIdx, reusableBuffer.moduleSetup.msg);
-      if (text != reusableBuffer.moduleSetup.msg) {
-        setText(reusableBuffer.moduleSetup.msg);
-        invalidate();
-      }
-    }
-
-  protected:
-    uint8_t moduleIdx;
-};
-
 class ChannelFailsafeBargraph: public Window {
   public:
     ChannelFailsafeBargraph(Window * parent, const rect_t & rect, uint8_t moduleIdx, uint8_t channel):
@@ -714,7 +648,11 @@ class ModuleWindow : public FormGroup {
 
         // Multimodule status
         new StaticText(this, grid.getLabelSlot(true), STR_MODULE_STATUS);
-        new ModuleStatus(this, grid.getFieldSlot(), moduleIdx);
+        new DynamicText(this, grid.getFieldSlot(), [=] {
+            char msg[64] = "";
+            getModuleStatusString(moduleIdx, msg);
+            return std::string(msg);
+        });
 
         // Multimodule sync
         /*if (multiSyncStatus.isValid()) {
@@ -752,6 +690,11 @@ class ModuleWindow : public FormGroup {
         grid.nextLine();
         new StaticText(this, grid.getLabelSlot(true), STR_MULTI_LOWPOWER);
         new CheckBox(this, grid.getFieldSlot(), GET_SET_DEFAULT(g_model.moduleData[moduleIdx].multi.lowPowerMode));
+
+        // Disable telemetry
+        grid.nextLine();
+        new StaticText(this, grid.getLabelSlot(true), STR_DISABLE_TELEM);
+        new CheckBox(this, grid.getFieldSlot(), GET_SET_DEFAULT(g_model.moduleData[moduleIdx].multi.disableMapping));
       }
 #endif
 #if defined(AFHDS3)
@@ -768,12 +711,21 @@ class ModuleWindow : public FormGroup {
         // Status
         grid.nextLine();
         new StaticText(this, grid.getLabelSlot(true), STR_MODULE_STATUS);
-        new ModuleStatus(this, grid.getFieldSlot(), moduleIdx);
+        new DynamicText(this, grid.getFieldSlot(), [=] {
+            char msg[64] = "";
+            getModuleStatusString(moduleIdx, msg);
+            return std::string(msg);
+        });
+
 
         // Power source
         grid.nextLine();
         new StaticText(this, grid.getLabelSlot(true), STR_AFHDS3_POWER_SOURCE);
-        new ModuleSyncStatus(this, grid.getFieldSlot(), moduleIdx);
+        new DynamicText(this, grid.getFieldSlot(), [=] {
+            char msg[64] = "";
+            getModuleSyncStatusString(moduleIdx, msg);
+            return std::string(msg);
+        });
 
         // RX Freq
         grid.nextLine();
@@ -787,7 +739,11 @@ class ModuleWindow : public FormGroup {
         // Module actual power
         grid.nextLine();
         new StaticText(this, grid.getLabelSlot(true), STR_AFHDS3_ACTUAL_POWER);
-        new ModuleCurrentPower(this, grid.getFieldSlot(), moduleIdx);
+        new DynamicText(this, grid.getFieldSlot(), [=] {
+            char msg[64] = "";
+            getStringAtIndex(msg, STR_AFHDS3_POWERS, actualAfhdsRunPower(moduleIdx));
+            return std::string(msg);
+        });
 
         // Module power
         grid.nextLine();
@@ -893,6 +849,7 @@ class ModuleWindow : public FormGroup {
 
       // Failsafe
       if (isModuleFailsafeAvailable(moduleIdx)) {
+        hasFailsafe = true;
         new StaticText(this, grid.getLabelSlot(true), STR_FAILSAFE);
         failSafeChoice = new Choice(this, grid.getFieldSlot(2, 0), STR_VFAILSAFE, 0, FAILSAFE_LAST,
                                     GET_DEFAULT(g_model.moduleData[moduleIdx].failsafeMode),
@@ -980,7 +937,18 @@ class ModuleWindow : public FormGroup {
       getParent()->moveWindowsTop(top() + 1, adjustHeight());
     }
 
+    void checkEvents() override
+    {
+      if (isModuleFailsafeAvailable(moduleIdx) != hasFailsafe) {
+        hasFailsafe = isModuleFailsafeAvailable(moduleIdx);
+        update();
+      }
 
+      FormGroup::checkEvents();
+    }
+
+  protected:
+    bool hasFailsafe = false;
 };
 
 ModelSetupPage::ModelSetupPage() :
