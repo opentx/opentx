@@ -82,6 +82,20 @@ class LayoutChoice: public FormField {
     }
 #endif
 
+#if defined(HARDWARE_TOUCH)
+    bool onTouchEnd(coord_t, coord_t) override
+    {
+      if (enabled) {
+        if (!hasFocus()) {
+          setFocus(SET_FOCUS_DEFAULT);
+        }
+        onKeyPress();
+        openMenu();
+      }
+      return true;
+    }
+#endif
+
     void openMenu()
     {
       auto menu = new Menu(parent);
