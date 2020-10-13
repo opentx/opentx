@@ -64,22 +64,10 @@ class WidgetsContainer: public Window, public WidgetsContainerInterface
       ZoneOptionValueTyped options[O];
     };
 
-  public:
     WidgetsContainer(const rect_t & rect, PersistentData * persistentData):
       Window(nullptr, rect),
       persistentData(persistentData)
     {
-      widgets = (Widget **)calloc(N, sizeof(Widget *));
-    }
-
-    ~WidgetsContainer() override
-    {
-      if (widgets) {
-        for (uint8_t i = 0; i < N; i++) {
-          delete widgets[i];
-        }
-        free(widgets);
-      }
     }
 
     void createWidget(unsigned int index, const WidgetFactory * factory) override
@@ -149,6 +137,7 @@ class WidgetsContainer: public Window, public WidgetsContainerInterface
 
   protected:
     PersistentData * persistentData;
+    Widget * widgets[N] = {};
 };
 
 #endif // _WIDGETS_CONTAINER_H_
