@@ -690,6 +690,11 @@ class ModuleWindow : public FormGroup {
         grid.nextLine();
         new StaticText(this, grid.getLabelSlot(true), STR_MULTI_LOWPOWER);
         new CheckBox(this, grid.getFieldSlot(), GET_SET_DEFAULT(g_model.moduleData[moduleIdx].multi.lowPowerMode));
+
+        // Disable telemetry
+        grid.nextLine();
+        new StaticText(this, grid.getLabelSlot(true), STR_DISABLE_TELEM);
+        new CheckBox(this, grid.getFieldSlot(), GET_SET_DEFAULT(g_model.moduleData[moduleIdx].multi.disableMapping));
       }
 #endif
 #if defined(AFHDS3)
@@ -844,6 +849,7 @@ class ModuleWindow : public FormGroup {
 
       // Failsafe
       if (isModuleFailsafeAvailable(moduleIdx)) {
+        hasFailsafe = true;
         new StaticText(this, grid.getLabelSlot(true), STR_FAILSAFE);
         failSafeChoice = new Choice(this, grid.getFieldSlot(2, 0), STR_VFAILSAFE, 0, FAILSAFE_LAST,
                                     GET_DEFAULT(g_model.moduleData[moduleIdx].failsafeMode),
@@ -931,7 +937,18 @@ class ModuleWindow : public FormGroup {
       getParent()->moveWindowsTop(top() + 1, adjustHeight());
     }
 
+    void checkEvents() override
+    {
+      if (isModuleFailsafeAvailable(moduleIdx) != hasFailsafe) {
+        hasFailsafe = isModuleFailsafeAvailable(moduleIdx);
+        update();
+      }
 
+      FormGroup::checkEvents();
+    }
+
+  protected:
+    bool hasFailsafe = false;
 };
 
 ModelSetupPage::ModelSetupPage() :
