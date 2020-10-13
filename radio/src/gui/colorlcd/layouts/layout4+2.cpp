@@ -19,7 +19,7 @@
  */
 
 #include "opentx.h"
-#include "mainview.h"
+#include "sliders.h"
 
 #define HAS_TOPBAR()      (persistentData->options[0].value.boolValue == true)
 #define HAS_FM()          (persistentData->options[1].value.boolValue == true)

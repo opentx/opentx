@@ -18,8 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _MAINVIEW_H_
-#define _MAINVIEW_H_
+#pragma once
 
 #include "libopenui.h"
 
@@ -56,9 +55,6 @@ class MainViewHorizontalSlider : public MainViewSlider
 
     void paint(BitmapBuffer * dc) override
     {
-      clear();
       drawHorizontalSlider(dc, rect.x, rect.y, rect.w, getValue(), -RESX, RESX, 40, options);
     }
 };
-
-#endif //_MAINVIEW_H_
