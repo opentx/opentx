@@ -91,6 +91,7 @@ bool TimeEdit::onTouchEnd(coord_t x, coord_t y)
 
 void TimeEdit::onFocusLost()
 {
+  BaseNumberEdit::onFocusLost();
 //  NumberKeyboard::instance()->disable(true);
 }
 #endif

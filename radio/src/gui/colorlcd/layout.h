@@ -35,7 +35,7 @@ class Layout: public WidgetsContainer<MAX_LAYOUT_ZONES, MAX_LAYOUT_OPTIONS>
 
   public:
     Layout(const LayoutFactory * factory, PersistentData * persistentData):
-      WidgetsContainer<MAX_LAYOUT_ZONES, MAX_LAYOUT_OPTIONS>(persistentData),
+      WidgetsContainer<MAX_LAYOUT_ZONES, MAX_LAYOUT_OPTIONS>({0, 0, LCD_W, LCD_H}, persistentData),
       factory(factory)
     {
     }

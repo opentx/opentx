@@ -22,10 +22,12 @@ set(GUI_SRC
   fab_button.cpp
   #  topbar.cpp
   layout.cpp
-  #  widget.cpp
+  widget.cpp
   ${THEMES_SRC}
   ${LAYOUTS_SRC}
-  #  ${WIDGETS_SRC}
+#  ${WIDGETS_SRC}
+  widgets/text.cpp
+  widgets/value.cpp
   #  popups.cpp
   draw_functions.cpp
   #  menus.cpp

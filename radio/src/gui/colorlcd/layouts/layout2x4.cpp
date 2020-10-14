@@ -62,9 +62,9 @@ class Layout2x4: public Layout
       return 8;
     }
 
-    Zone getZone(unsigned int index) const override
+    rect_t getZone(unsigned int index) const override
     {
-      Zone zone;
+      rect_t zone;
       zone.x = (index >= 4) ? 260 : 60;
       zone.y = 56 + (index % 4) * 42;
       zone.w = 160;
