@@ -20,19 +20,19 @@
 
 #include "opentx.h"
 
-const uint8_t LBM_LAYOUT_1x2[] = {
-#include "mask_layout1x2.lbm"
+const uint8_t LBM_LAYOUT_1x4[] = {
+#include "mask_layout1x4.lbm"
 };
 
-const ZoneOption OPTIONS_LAYOUT_1x2[] = {
+const ZoneOption OPTIONS_LAYOUT_1x4[] = {
   { STR_TOP_BAR, ZoneOption::Bool },
   { NULL, ZoneOption::Bool }
 };
 
-class Layout1x2: public Layout
+class Layout1x4: public Layout
 {
   public:
-    Layout1x2(const LayoutFactory * factory, Layout::PersistentData * persistentData):
+    Layout1x4(const LayoutFactory * factory, Layout::PersistentData * persistentData):
       Layout(factory, persistentData)
     {
     }
@@ -45,26 +45,27 @@ class Layout1x2: public Layout
 
     virtual unsigned int getZonesCount() const
     {
-      return 2;
+      return 4;
     }
 
     virtual Zone getZone(unsigned int index) const
     {
       Zone zone;
       zone.w = (LCD_W-2*10);
-      
       zone.x = 10;
        
       if (persistentData->options[0].boolValue) {
-        zone.h = (LCD_H-MENU_HEADER_HEIGHT-3*10) / 2;
+        zone.h = (LCD_H - MENU_HEADER_HEIGHT - 5*10) / 4;
         zone.y = MENU_HEADER_HEIGHT + 10;
       }
       else {
-        zone.h = (LCD_H-3*10) /2;
+        zone.h = (LCD_H - 5*10) / 4;
         zone.y = 10;
       }
+      
+      
       if (index >= 1) {
-        zone.y += 10 + zone.h;
+        zone.y += (zone.h + 10) * index ;
       }      
       return zone;
     }
@@ -72,7 +73,7 @@ class Layout1x2: public Layout
     virtual void refresh();
 };
 
-void Layout1x2::refresh()
+void Layout1x4::refresh()
 {
   theme->drawBackground();
 
@@ -83,4 +84,4 @@ void Layout1x2::refresh()
   Layout::refresh();
 }
 
-BaseLayoutFactory<Layout1x2> Layout1x2("Layout1x2", LBM_LAYOUT_1x2, OPTIONS_LAYOUT_1x2);
+BaseLayoutFactory<Layout1x4> Layout1x4("Layout1x4", LBM_LAYOUT_1x4, OPTIONS_LAYOUT_1x4);
