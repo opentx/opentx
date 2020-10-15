@@ -29,11 +29,11 @@
 #include "opentx_helpers.h"
 
 //OW
-#define OWVERSIONSTR  "olliw-v17rc1"
+#define OWVERSIONSTR  "olliw-v17"
 //OWEND
 
 /*
-v16 2020-10-11:
+v17 2020-10-15:
 mavlink submodule changed to main git repo, file generator added
 one needs to run mavgenerate_dialect.py to generate the mavlink c code files
 modified files in radio/src/
