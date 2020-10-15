@@ -79,10 +79,10 @@
 #define LEN_VPERSISTENT                "\014"
 #define TR_VPERSISTENT                 "OFF\0        " "Flight\0     " "Manual Reset"
 
-#define LEN_COUNTRY_CODES              "\004"
-#define TR_COUNTRY_CODES               "美国 " "日本 " "欧洲"
+#define LEN_COUNTRY_CODES              "\006"
+#define TR_COUNTRY_CODES               "美国\0 " "日本\0 " "欧洲\0 "
 
-#define LEN_USBMODES                   "\006"
+#define LEN_USBMODES                   "\008"
 #define TR_USBMODES                    "询问\0  " "游戏柄\0 " "U盘\0   " "串行\0  "
 
 #define LEN_JACK_MODES                 "\006"
@@ -164,7 +164,7 @@
 #define LEN_VCSWFUNC                   "\005"
 #define TR_VCSWFUNC                    "---\0 " TR_CSWEQUAL "a~x\0 ""a>x\0 ""a<x\0 " TR_CSWRANGE "|a|>x""|a|<x""AND\0 ""OR\0  ""XOR\0 " TR_CSWSTAY "a=b\0 ""a>b\0 ""a<b\0 ""Δ}x\0 ""|Δ|}x" TR_CSWTIMER TR_CSWSTICKY
 
-#define LEN_VFSWFUNC                   "\012"
+#define LEN_VFSWFUNC                   "\014"
 
 #if defined(VARIO)
   #define TR_VVARIO                    "Vario传感器\0"
@@ -459,7 +459,7 @@
 #define TR_ELEDIRECTION                "俯仰方向"
 #define TR_AILDIRECTION                "横滚方向"
 #define TR_COLDIRECTION                "螺距方向"
-#define TR_MODE                        "模式"
+#define TR_MODE                        "摇杆模式"
 #define TR_SUBTYPE                     INDENT "子类型"
 #define TR_NOFREEEXPO                  "指数曲线已满!"
 #define TR_NOFREEMIXER                 "混控数量已满!"
@@ -501,7 +501,7 @@
 #define TR_SOUND_LABEL                 "声音"
 #define TR_LENGTH                      "音长"
 #define TR_BEEP_LENGTH                 "报警声长度"
-#define TR_BEEP_PITCH                  "报警声音高"
+#define TR_BEEP_PITCH                  "报警声音调"
 #define TR_HAPTIC_LABEL                "振动"
 #define TR_STRENGTH                    "强度"
 #define TR_GYRO_LABEL                  "陀螺仪"
@@ -549,7 +549,7 @@
 #define TR_SWITCHES_DELAY              TR("Play delay", "延时播放 (开关经过)")
 #define TR_SLAVE                       CENTER "从机"
 #define TR_MODESRC                     "Mode\006% Source"
-#define TR_MULTIPLIER                  "乘数"
+#define TR_MULTIPLIER                  "倍率"
 #define TR_CAL                         "Cal"
 #define TR_CALIBRATION                 "校准"
 #define TR_VTRIM                       "微调- +"
@@ -557,16 +557,16 @@
 #define TR_CALIB_DONE                  "校准完成"
 #if defined(PCBHORUS)
   #define TR_MENUTOSTART               "按 [Enter] 键开始"
-  #define TR_SETMIDPOINT               "将摇杆、旋钮和滑块居中后按[Enter]开始"
-  #define TR_MOVESTICKSPOTS            "转动摇杆、旋钮和滑块到最大边界后[Enter]结束"
+  #define TR_SETMIDPOINT               "将摇杆/旋钮/滑块居中后按[Enter]开始"
+  #define TR_MOVESTICKSPOTS            "转动摇杆/旋钮/滑块到最大边界后按[Enter]结束"
 #elif defined(COLORLCD)
   #define TR_MENUTOSTART               TR_ENTER " 开始"
   #define TR_SETMIDPOINT               "将摇杆、旋钮和滑块居中"
   #define TR_MOVESTICKSPOTS            "转动摇杆、旋钮和滑块到最大边界"
 #else
   #define TR_MENUTOSTART               CENTER "\010" TR_ENTER " 开始"
-  #define TR_SETMIDPOINT               TR(CENTER "\004SET STICKS MIDPOINT", CENTER "\004将摇杆、旋钮和滑块居中")
-  #define TR_MOVESTICKSPOTS            CENTER "\006转动摇杆、旋钮和滑块到最大边界"
+  #define TR_SETMIDPOINT               TR(CENTER "\004SET STICKS MIDPOINT", CENTER "\004将摇杆/旋钮/滑块居中")
+  #define TR_MOVESTICKSPOTS            CENTER "\006转动摇杆/旋钮/滑块到最大边界"
   #define TR_MENUWHENDONE              CENTER "\006" TR_ENTER " 结束"
 #endif
 #define TR_RXBATT                      "Rx Batt:"
@@ -635,7 +635,7 @@
 #define TR_MONITOR_OUTPUT_DESC         "输出查看"
 #define TR_MONITOR_MIXER_DESC          "混控查看"
   #define TR_RECEIVER_NUM              TR("RxNum", "接收机ID.")
-  #define TR_RECEIVER                  "Receiver"
+  #define TR_RECEIVER                  "接收机ID"
 #define TR_MULTI_RFTUNE                TR("Freq tune", "频率微调")
 #define TR_MULTI_RFPOWER               "发射功率"
 #define TR_MULTI_TELEMETRY             "回传"
@@ -838,12 +838,12 @@
 #define TR_YEAR                        "年"
 #define TR_MONTH                       "月"
 #define TR_DAY                         "日"
-#define TR_ROTARY_ENCODER              "旋转编码器"
+#define TR_ROTARY_ENCODER              "滚轮"
 #define TR_CHANNELS_MONITOR            "通道查看器"
 #define TR_MIXERS_MONITOR              "混控查看器"
 #define TR_PATH_TOO_LONG               "路径太长"
 #define TR_VIEW_TEXT                   "查看文本"
-#define TR_FLASH_BOOTLOADER            "刷新引导程序"
+#define TR_FLASH_BOOTLOADER            "更新引导程序"
 #define TR_FLASH_EXTERNAL_DEVICE       TR("Flash S.Port", "从 S.Port 端口刷新外设")
 #define TR_FLASH_RECEIVER_OTA          "Flash receiver OTA"
 #define TR_FLASH_RECEIVER_BY_EXTERNAL_MODULE_OTA "Flash RX by ext. OTA"
@@ -1008,7 +1008,7 @@
 #define TR_MIXSOURCE                   "混控源"
 #define TR_CONSTANT                    "不变化"
 #define TR_PERSISTENT_MAH              TR(INDENT "Str mAh", INDENT "关机保持 mAh")
-#define TR_PREFLIGHT                   "起飞前检查"
+#define TR_PREFLIGHT                   "初始位置检查"
 #define TR_CHECKLIST                   TR(INDENT "Checklist", INDENT "显示列表")
 #define TR_FAS_OFFSET                  TR(INDENT "FAS Ofs", INDENT "FAS 偏移量")
 #define TR_AUX_SERIAL_MODE             "串口"
