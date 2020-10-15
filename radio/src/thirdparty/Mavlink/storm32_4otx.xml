@@ -357,12 +357,12 @@
       <field type="uint8_t" name="gimbal_device_id" instance="true">Gimbal device ID (component ID or 1-6 for non-MAVLink gimbal) that this gimbal manager is responsible for.</field>
       <field type="uint32_t" name="device_cap_flags" enum="MAV_STORM32_GIMBAL_DEVICE_CAP_FLAGS" display="bitmask">Gimbal device capability flags.</field>
       <field type="uint32_t" name="manager_cap_flags" enum="MAV_STORM32_GIMBAL_MANAGER_CAP_FLAGS" display="bitmask">Gimbal manager capability flags.</field>
-      <field type="float" name="roll_max" units="rad">Hardware maximum roll angle (positive: roll to the right, NaN if unknown).</field>
       <field type="float" name="roll_min" units="rad">Hardware minimum roll angle (positive: roll to the right, NaN if unknown).</field>
-      <field type="float" name="pitch_max" units="rad">Hardware maximum pitch/tilt angle (positive: tilt up, NaN if unknown).</field>
+      <field type="float" name="roll_max" units="rad">Hardware maximum roll angle (positive: roll to the right, NaN if unknown).</field>
       <field type="float" name="pitch_min" units="rad">Hardware minimum pitch/tilt angle (positive: tilt up, NaN if unknown).</field>
-      <field type="float" name="yaw_max" units="rad">Hardware maximum yaw/pan angle (positive: pan to the right, relative to the vehicle/gimbal base, NaN if unknown).</field>
+      <field type="float" name="pitch_max" units="rad">Hardware maximum pitch/tilt angle (positive: tilt up, NaN if unknown).</field>
       <field type="float" name="yaw_min" units="rad">Hardware minimum yaw/pan angle (positive: pan to the right, relative to the vehicle/gimbal base, NaN if unknown).</field>
+      <field type="float" name="yaw_max" units="rad">Hardware maximum yaw/pan angle (positive: pan to the right, relative to the vehicle/gimbal base, NaN if unknown).</field>
     </message>
     <message id="62011" name="STORM32_GIMBAL_MANAGER_STATUS">
       <description>Message reporting the current status of a gimbal manager. This message should be broadcast at a low regular rate (e.g. 1 Hz, may be increase momentarily to e.g. 5 Hz for a period of 1 sec after a change).</description>
