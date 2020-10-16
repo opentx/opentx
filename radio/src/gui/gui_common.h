@@ -296,7 +296,7 @@ inline uint8_t MULTIMODULE_HASOPTIONS(uint8_t moduleIdx)
 #endif
 
 #if defined(AFHDS3)
-#define AFHDS3_PROTOCOL_ROW(moduleIdx)          isModuleAFHDS3(moduleIdx) ? TITLE_ROW : HIDDEN_ROW,
+#define AFHDS3_PROTOCOL_ROW(moduleIdx)          isModuleAFHDS3(moduleIdx) ? 0 : HIDDEN_ROW,
 #define AFHDS3_MODE_ROWS(moduleIdx)             isModuleAFHDS3(moduleIdx) ? TITLE_ROW : HIDDEN_ROW, isModuleAFHDS3(moduleIdx) ? TITLE_ROW : HIDDEN_ROW, isModuleAFHDS3(moduleIdx) ? TITLE_ROW : HIDDEN_ROW,
 #define AFHDS3_MODULE_ROWS(moduleIdx)           isModuleAFHDS3(moduleIdx) ? (uint8_t) 0 : HIDDEN_ROW, isModuleAFHDS3(moduleIdx) ? (uint8_t) TITLE_ROW : HIDDEN_ROW,
 #else
