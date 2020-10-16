@@ -92,6 +92,17 @@ bool menuRadioModulesVersion(event_t event)
           y += FH;
           continue;
         }
+#if defined(HARDWARE_EXTERNAL_ACCESS_MOD)
+        if (isModuleMultimodule(INTERNAL_MODULE)) {
+          char statusText[64];
+          lcdDrawText(COLUMN2_X, y, "Multimodule");
+          y += FH;
+          getMultiModuleStatus(INTERNAL_MODULE).getStatusString(statusText);
+          lcdDrawText(COLUMN2_X, y, statusText);
+          y += FH;
+          continue;
+        }
+#endif
         if (!isModulePXX2(INTERNAL_MODULE)) {
           lcdDrawText(COLUMN2_X, y, STR_NO_INFORMATION);
           y += FH;

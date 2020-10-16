@@ -229,6 +229,7 @@ options_jumper_t16 = {
     "flexr9m": ("MODULE_PROTOCOL_FLEX", "YES", None),
     "internalmulti": ("INTERNAL_MODULE_MULTI", "YES", "NO"),
     "bluetooth": ("BLUETOOTH", "YES", "NO"),
+    "externalaccessmod": ("HARDWARE_EXTERNAL_ACCESS_MOD", "YES", "NO"),
 }
 
 options_jumper_t18 = {
@@ -254,4 +255,5 @@ options_radiomaster_tx16s = {
     "flexr9m": ("MODULE_PROTOCOL_FLEX", "YES", None),
     "bluetooth": ("BLUETOOTH", "YES", "NO"),
     "internalgps": ("INTERNAL_GPS", "YES", "NO"),
+    "externalaccessmod": ("HARDWARE_EXTERNAL_ACCESS_MOD", "YES", "NO"),
 }
