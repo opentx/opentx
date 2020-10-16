@@ -1544,7 +1544,7 @@ class ArmCustomFunctionField: public TransformedField {
             value = fn.param;
           *((uint16_t *)_param) = value;
         }
-        else if (fn.func == FuncPlayValue || fn.func == FuncVolume) {
+        else if (fn.func == FuncPlayValue || fn.func == FuncVolume || fn.func == FuncBacklight) {
           unsigned int value;
           sourcesConversionTable->exportValue(fn.param, (int &)value);
           *((uint16_t *)_param) = value;
@@ -1587,7 +1587,7 @@ class ArmCustomFunctionField: public TransformedField {
       else if (fn.func == FuncPlayPrompt || fn.func == FuncBackgroundMusic || fn.func == FuncPlayScript) {
         memcpy(fn.paramarm, _param, sizeof(fn.paramarm));
       }
-      else if (fn.func == FuncVolume) {
+      else if (fn.func == FuncVolume || fn.func == FuncBacklight) {
         sourcesConversionTable->importValue(value, (int &)fn.param);
       }
       else if (fn.func >= FuncAdjustGV1 && fn.func <= FuncAdjustGVLast) {
