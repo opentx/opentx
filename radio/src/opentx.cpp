@@ -695,7 +695,7 @@ void checkBacklight()
       }
     }
 
-    if (requiredBacklightBright == BACKLIGHT_LEGACY_MODE) {
+    if (requiredBacklightBright == BACKLIGHT_FORCED_ON) {
       currentBacklightBright = g_eeGeneral.backlightBright;
       BACKLIGHT_ENABLE();
     }
