@@ -660,6 +660,7 @@ void pwrResetHandler();
 void backlightInit();
 void backlightDisable();
 #define BACKLIGHT_DISABLE()             backlightDisable()
+#define BACKLIGHT_FORCED_ON             101
 uint8_t isBacklightEnabled();
 #if !defined(__cplusplus)
   #define backlightEnable(...)

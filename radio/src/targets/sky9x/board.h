@@ -274,6 +274,7 @@ extern "C" {
 #define isBacklightEnabled()           (PWM->PWM_CH_NUM[0].PWM_CDTY != 100)
 #define BACKLIGHT_ENABLE()             backlightEnable()
 #define BACKLIGHT_DISABLE()            backlightDisable()
+#define BACKLIGHT_FORCED_ON            101
 
 // ADC driver
 #define NUM_POTS                       3
