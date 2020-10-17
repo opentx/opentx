@@ -89,7 +89,9 @@ void checkTrainerSettings()
 
 #if defined(TRAINER_BATTERY_COMPARTMENT)
       case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:
+#if defined(AUX_SERIAL)
         auxSerialStop();
+#endif
         break;
 #endif
     }
