@@ -177,6 +177,7 @@ options_horus_x12s = {
     "pcbdev": ("PCBREV", "10", None),
     "flexr9m": ("MODULE_PROTOCOL_FLEX", "YES", None),
     "internalaccess": [("INTERNAL_MODULE_PXX1", "NO", None), ("INTERNAL_MODULE_PXX2", "YES", None)],
+    "externalaccessmod": ("HARDWARE_EXTERNAL_ACCESS_MOD", "YES", "NO"),
 }
 
 options_horus_x10 = {
@@ -190,6 +191,7 @@ options_horus_x10 = {
     "eu": ("MODULE_PROTOCOL_D8", "NO", "YES"),
     "flexr9m": ("MODULE_PROTOCOL_FLEX", "YES", None),
     "internalaccess": [("INTERNAL_MODULE_PXX1", "NO", None), ("INTERNAL_MODULE_PXX2", "YES", None)],
+    "externalaccessmod": ("HARDWARE_EXTERNAL_ACCESS_MOD", "YES", "NO"),
 }
 
 options_horus_x10express = {
