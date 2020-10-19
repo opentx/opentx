@@ -318,6 +318,7 @@ TelemetrySensorPanel::TelemetrySensorPanel(QWidget *parent, SensorData & sensor,
   QFontMetrics *f = new QFontMetrics(QFont());
   QSize sz;
   sz = f->size(Qt::TextSingleLine, "TELE00");
+  delete f;
   ui->numLabel->setMinimumWidth(sz.width());
   ui->numLabel->setContextMenuPolicy(Qt::CustomContextMenu);
   ui->numLabel->setToolTip(tr("Popup menu available"));

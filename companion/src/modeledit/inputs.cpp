@@ -190,8 +190,8 @@ void InputsPanel::gm_openExpo(int index)
   if (firmware->getCapability(VirtualInputs))
     inputName = model->inputNames[ed.chn];
 
-  ExpoDialog *g = new ExpoDialog(this, *model, &ed, generalSettings, firmware, inputName, rawSourceFilteredModel, rawSwitchFilteredModel);
-  if (g->exec())  {
+  ExpoDialog *dlg = new ExpoDialog(this, *model, &ed, generalSettings, firmware, inputName, rawSourceFilteredModel, rawSwitchFilteredModel);
+  if (dlg->exec())  {
     model->expoData[index] = ed;
     if (firmware->getCapability(VirtualInputs))
       strncpy(model->inputNames[ed.chn], inputName.toLatin1().data(), INPUT_NAME_LEN);
@@ -206,6 +206,7 @@ void InputsPanel::gm_openExpo(int index)
     expoInserted=false;
     update();
   }
+  delete dlg;
 }
 
 int InputsPanel::getExpoIndex(unsigned int dch)

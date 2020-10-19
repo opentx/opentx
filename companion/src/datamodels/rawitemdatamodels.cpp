@@ -225,7 +225,8 @@ void CurveItemModel::update()
 //  CommonItemModels
 //
 
-CommonItemModels::CommonItemModels(const GeneralSettings * const generalSettings, const ModelData * const modelData, QObject * parent)
+CommonItemModels::CommonItemModels(const GeneralSettings * const generalSettings, const ModelData * const modelData, QObject * parent) :
+  QObject(parent)
 {
   m_rawSourceItemModel = new RawSourceItemModel(generalSettings, modelData, parent);
   m_rawSwitchItemModel = new RawSwitchItemModel(generalSettings, modelData, parent);

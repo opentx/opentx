@@ -185,8 +185,8 @@ void MixesPanel::gm_openMix(int index)
 
   MixData mixd(model->mixData[index]);
 
-  MixerDialog *g = new MixerDialog(this, *model, &mixd, generalSettings, firmware, rawSourceFilteredModel, rawSwitchFilteredModel);
-  if(g->exec()) {
+  MixerDialog *dlg = new MixerDialog(this, *model, &mixd, generalSettings, firmware, rawSourceFilteredModel, rawSwitchFilteredModel);
+  if(dlg->exec()) {
     model->mixData[index] = mixd;
     emit modified();
     update();
@@ -198,6 +198,7 @@ void MixesPanel::gm_openMix(int index)
     mixInserted = false;
     update();
   }
+  delete dlg;
 }
 
 int MixesPanel::getMixerIndex(unsigned int dch)
