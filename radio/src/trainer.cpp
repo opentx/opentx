@@ -89,7 +89,14 @@ void checkTrainerSettings()
 
 #if defined(TRAINER_BATTERY_COMPARTMENT)
       case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:
-        auxSerialStop();
+#if defined(AUX_SERIAL)
+        if (g_eeGeneral.auxSerialMode == UART_MODE_SBUS_TRAINER)
+          auxSerialStop();
+#endif
+#if defined(AUX2_SERIAL)
+        if (g_eeGeneral.aux2SerialMode == UART_MODE_SBUS_TRAINER)
+          aux2SerialStop();
+#endif
         break;
 #endif
     }

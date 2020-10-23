@@ -791,7 +791,7 @@ bool isTrainerModeAvailable(int mode)
   }
 #endif
 
-#if defined(RADIO_TX16S)
+#if defined(RADIO_TX16S) && defined(TRAINER_BATTERY_COMPARTMENT)
   if (mode == TRAINER_MODE_MASTER_BATTERY_COMPARTMENT)
     return (g_eeGeneral.auxSerialMode == UART_MODE_SBUS_TRAINER || g_eeGeneral.aux2SerialMode == UART_MODE_SBUS_TRAINER);
 #elif defined(PCBTARANIS) && !defined(TRAINER_BATTERY_COMPARTMENT)
