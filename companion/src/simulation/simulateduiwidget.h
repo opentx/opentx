@@ -115,6 +115,7 @@ namespace Ui {
   class SimulatedUIWidgetJumperT16;
   class SimulatedUIWidgetJumperT18;
   class SimulatedUIWidgetTX16S;
+  class SimulatedUIWidgetTX12;
 }
 
 class SimulatedUIWidget9X: public SimulatedUIWidget
@@ -264,6 +265,19 @@ class SimulatedUIWidgetJumperT18: public SimulatedUIWidget
   private:
     Ui::SimulatedUIWidgetJumperT18 * ui;
 };
+
+class SimulatedUIWidgetTX12: public SimulatedUIWidget
+{
+  Q_OBJECT
+
+  public:
+    explicit SimulatedUIWidgetTX12(SimulatorInterface * simulator, QWidget * parent = nullptr);
+    virtual ~SimulatedUIWidgetTX12();
+
+  private:
+    Ui::SimulatedUIWidgetTX12 * ui;
+};
+
 
 class SimulatedUIWidgetTX16S: public SimulatedUIWidget
 {
