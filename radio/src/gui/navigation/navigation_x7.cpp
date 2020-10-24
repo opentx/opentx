@@ -217,7 +217,11 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t
   if (menuTab) {
     int cc = curr;
     switch (event) {
+#if defined(NAVIGATION_X7_TX12)
+      case EVT_KEY_FIRST(KEY_PAGEUP):
+#else
       case EVT_KEY_LONG(KEY_PAGE):
+#endif
         if (s_editMode>0)
           break;
 
@@ -228,7 +232,11 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t
         killEvents(event);
         break;
 
+#if defined(NAVIGATION_X7_TX12)
+      case EVT_KEY_FIRST(KEY_PAGEDN):
+#else
       case EVT_KEY_BREAK(KEY_PAGE):
+#endif
         if (s_editMode>0)
           break;
 

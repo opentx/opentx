@@ -290,7 +290,7 @@ char * getSwitchName(char * dest, swsrc_t idx)
   }
   else {
     *dest++ = 'S';
-#if defined(PCBX7)
+#if defined(PCBX7) && !defined(RADIO_TX12)
     if (swinfo.quot >= 5)
         *dest++ = 'H' + swinfo.quot - 5;
       else if (swinfo.quot == 4)

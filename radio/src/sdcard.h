@@ -143,6 +143,8 @@ const char * getBasename(const char * path);
   #define OTX_FOURCC 0x3978746F // otx for Taranis X-Lite
 #elif defined(RADIO_T12)
   #define OTX_FOURCC 0x3D78746F // otx for Jumper T12
+#elif defined(RADIO_TX12)
+  #define OTX_FOURCC 0x4178746F // otx for Radiomaster TX12
 #elif defined(PCBX7)
   #define OTX_FOURCC 0x3678746F // otx for Taranis X7 / X7S / X7 Express / X7S Express
 #elif defined(PCBX9LITES)

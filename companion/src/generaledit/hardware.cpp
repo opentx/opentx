@@ -47,7 +47,15 @@ void HardwarePanel::setupSwitchType(int index, QLabel * label, AutoLineEdit * na
         label->setText("SJ");
       }
     }
-    if (IS_JUMPER_T12(board)) {
+    else if (IS_RADIOMASTER_TX12(board)) {
+      if (index == 6) {
+        label->setText("SI");
+      }
+      else if (index == 7) {
+        label->setText("SJ");
+      }
+    }
+    else if (IS_FAMILY_T12(board)) {
       if (index == 4) {
         label->setText("SG");
       }
@@ -144,7 +152,7 @@ HardwarePanel::HardwarePanel(QWidget * parent, GeneralSettings & generalSettings
   setupSwitchType(2, ui->scLabel, ui->scName, ui->scType);
   setupSwitchType(3, ui->sdLabel, ui->sdName, ui->sdType);
   setupSwitchType(4, ui->seLabel, ui->seName, ui->seType);
-  setupSwitchType(5, ui->sfLabel, ui->sfName, ui->sfType, false);   //switch does not support 3POS
+  setupSwitchType(5, ui->sfLabel, ui->sfName, ui->sfType);
   setupSwitchType(6, ui->sgLabel, ui->sgName, ui->sgType);
   setupSwitchType(7, ui->shLabel, ui->shName, ui->shType, false);   //switch does not support 3POS
   setupSwitchType(8, ui->siLabel, ui->siName, ui->siType);

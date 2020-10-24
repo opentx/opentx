@@ -179,6 +179,17 @@
     <file>images/simulator/JumperT12/JumperT12-x.png</file>
     <file>images/simulator/JumperT12/JumperT12-center.png</file>
     <file>images/simulator/JumperT12/JumperT12-top.png</file>
+    <file>images/simulator/TX12/left.png</file>
+    <file>images/simulator/TX12/left-pageup.png</file>
+    <file>images/simulator/TX12/left-pagedn.png</file>
+    <file>images/simulator/TX12/left-rtn.png</file>
+    <file>images/simulator/TX12/left-sys.png</file>
+    <file>images/simulator/TX12/left-tele.png</file>
+    <file>images/simulator/TX12/right.png</file>
+    <file>images/simulator/TX12/right-ent.png</file>
+    <file>images/simulator/TX12/right-mdl.png</file>
+    <file>images/simulator/TX12/bottom.png</file>
+    <file>images/simulator/TX12/top.png</file>
     <file>images/simulator/JumperT16/left.png</file>
     <file>images/simulator/JumperT16/right.png</file>
     <file>images/simulator/JumperT16/top.png</file>
