@@ -716,8 +716,8 @@ void ModulePanel::on_channelsCount_editingFinished()
 {
   if (!lock && module.channelsCount != ui->channelsCount->value()) {
     module.channelsCount = ui->channelsCount->value();
-    update();
     emit channelsRangeChanged();
+    update();
     emit modified();
   }
 }
@@ -726,8 +726,8 @@ void ModulePanel::on_channelsStart_editingFinished()
 {
   if (!lock && module.channelsStart != (unsigned)ui->channelsStart->value() - 1) {
     module.channelsStart = (unsigned)ui->channelsStart->value() - 1;
-    update();
     emit channelsRangeChanged();
+    update();
     emit modified();
   }
 }
