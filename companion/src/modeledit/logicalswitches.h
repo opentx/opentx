@@ -88,7 +88,6 @@ class LogicalSwitchesPanel : public ModelPanel
     bool moveDownAllowed() const;
     bool moveUpAllowed() const;
     int modelsUpdateCnt;
-    void updateCBLists();
     void updateItemModels();
 };
 

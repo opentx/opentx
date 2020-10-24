@@ -172,6 +172,7 @@ void LogicalSwitchesPanel::onFunctionChanged()
     if (model->logicalSw[i].func == newFunc)
       return;
 
+    unsigned oldFunc = model->logicalSw[i].func;
     CSFunctionFamily oldFuncFamily = model->logicalSw[i].getFunctionFamily();
     model->logicalSw[i].func = newFunc;
     CSFunctionFamily newFuncFamily = model->logicalSw[i].getFunctionFamily();
@@ -189,6 +190,10 @@ void LogicalSwitchesPanel::onFunctionChanged()
     }
 
     updateLine(i);
+
+    if (oldFunc == LS_FN_OFF || newFunc == LS_FN_OFF)
+      updateItemModels();
+
     emit modified();
   }
 }
@@ -487,7 +492,7 @@ void LogicalSwitchesPanel::cmPaste()
   if (hasClipboardData(&data)) {
     memcpy(&model->logicalSw[selectedIndex], data.constData(), sizeof(LogicalSwitchData));
     updateLine(selectedIndex);
-    updateCBLists();
+    updateItemModels();
     emit modified();
   }
 }
@@ -502,7 +507,7 @@ void LogicalSwitchesPanel::cmDelete()
 
   model->updateAllReferences(ModelData::REF_UPD_TYPE_LOGICAL_SWITCH, ModelData::REF_UPD_ACT_SHIFT, selectedIndex, 0, -1);
   update();
-  updateCBLists();
+  updateItemModels();
   emit modified();
 }
 
@@ -592,7 +597,7 @@ void LogicalSwitchesPanel::cmClear(bool prompt)
   model->logicalSw[selectedIndex].clear();
   model->updateAllReferences(ModelData::REF_UPD_TYPE_LOGICAL_SWITCH, ModelData::REF_UPD_ACT_CLEAR, selectedIndex);
   updateLine(selectedIndex);
-  updateCBLists();
+  updateItemModels();
   emit modified();
 }
 
@@ -606,7 +611,7 @@ void LogicalSwitchesPanel::cmClearAll()
     model->updateAllReferences(ModelData::REF_UPD_TYPE_LOGICAL_SWITCH, ModelData::REF_UPD_ACT_CLEAR, i);
   }
   update();
-  updateCBLists();
+  updateItemModels();
   emit modified();
 }
 
@@ -616,7 +621,7 @@ void LogicalSwitchesPanel::cmInsert()
   model->logicalSw[selectedIndex].clear();
   model->updateAllReferences(ModelData::REF_UPD_TYPE_LOGICAL_SWITCH, ModelData::REF_UPD_ACT_SHIFT, selectedIndex, 0, 1);
   update();
-  updateCBLists();
+  updateItemModels();
   emit modified();
 }
 
@@ -631,20 +636,9 @@ void LogicalSwitchesPanel::swapData(int idx1, int idx2)
     model->updateAllReferences(ModelData::REF_UPD_TYPE_LOGICAL_SWITCH, ModelData::REF_UPD_ACT_SWAP, idx1, idx2);
     updateLine(idx1);
     updateLine(idx2);
-    updateCBLists();
+    updateItemModels();
     emit modified();
   }
-}
-
-void LogicalSwitchesPanel::updateCBLists()
-{
-  //  We need to update the data models as (de)activating the current LS needs to be reflected in all LS source and switch lists
-  //  However triggering after the input or mix edit dialogs displayed causes the application to crash
-  //  So this workaround gives time for other events to be processed before refreshing
-  //  Not sure if this an OS related issue or a QT bug in QT 5.7 (and higher?)
-  //  The delay is abitary
-  //QTimer::singleShot(1000, this, &LogicalSwitchesPanel::updateItemModels);
-  updateItemModels();
 }
 
 void LogicalSwitchesPanel::updateItemModels()
