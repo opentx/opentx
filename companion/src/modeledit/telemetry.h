@@ -151,6 +151,7 @@ class TelemetryPanel : public ModelPanel
     void on_deleteSensor(int index);
     void on_moveUpSensor(int index);
     void on_moveDownSensor(int index);
+    void on_dataModifiedSensor();
 
   private:
     Ui::Telemetry *ui;

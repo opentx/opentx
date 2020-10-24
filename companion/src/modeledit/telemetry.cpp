@@ -519,7 +519,6 @@ void TelemetrySensorPanel::on_name_editingFinished()
   if (!lock) {
     strcpy(sensor.label, ui->name->text().toLatin1());
     emit dataModified();
-    emit modified();
   }
 }
 
@@ -549,7 +548,6 @@ void TelemetrySensorPanel::on_formula_currentIndexChanged(int index)
       sensor.unit = SensorData::UNIT_METERS;
     }
     emit dataModified();
-    emit modified();
   }
 }
 
@@ -645,7 +643,6 @@ void TelemetrySensorPanel::cmPaste()
   if (hasClipboardData(&data)) {
     memcpy(&sensor, data.constData(), sizeof(SensorData));
     emit dataModified();
-    emit modified();
   }
 }
 
@@ -659,7 +656,6 @@ void TelemetrySensorPanel::cmClear(bool prompt)
   sensor.clear();
   model->updateAllReferences(ModelData::REF_UPD_TYPE_SENSOR, ModelData::REF_UPD_ACT_CLEAR, selectedIndex);
   emit dataModified();
-  emit modified();
 }
 
 void TelemetrySensorPanel::cmClearAll()
@@ -717,7 +713,7 @@ TelemetryPanel::TelemetryPanel(QWidget *parent, ModelData & model, GeneralSettin
     TelemetrySensorPanel * panel = new TelemetrySensorPanel(this, model.sensorData[i], i, sensorCapability, model, generalSettings, firmware);
     ui->sensorsLayout->addWidget(panel);
     sensorPanels[i] = panel;
-    connect(panel, SIGNAL(dataModified()), this, SLOT(update()));
+    connect(panel, SIGNAL(dataModified()), this, SLOT(on_dataModifiedSensor()));
     connect(panel, SIGNAL(modified()), this, SLOT(onModified()));
     connect(panel, SIGNAL(clearAllSensors()), this, SLOT(on_clearAllSensors()));
     connect(panel, SIGNAL(insertSensor(int)), this, SLOT(on_insertSensor(int)));
@@ -984,8 +980,8 @@ void TelemetryPanel::on_clearAllSensors()
     model->updateAllReferences(ModelData::REF_UPD_TYPE_SENSOR, ModelData::REF_UPD_ACT_CLEAR, i);
   }
 
-  update();
   updateItemModels();
+  update();
   emit modified();
 }
 
@@ -995,8 +991,8 @@ void TelemetryPanel::on_insertSensor(int selectedIndex)
   model->sensorData[selectedIndex].clear();
   model->updateAllReferences(ModelData::REF_UPD_TYPE_SENSOR, ModelData::REF_UPD_ACT_SHIFT, selectedIndex, 0, 1);
 
-  update();
   updateItemModels();
+  update();
   emit modified();
 }
 
@@ -1009,8 +1005,8 @@ void TelemetryPanel::on_deleteSensor(int selectedIndex)
   model->sensorData[CPN_MAX_SENSORS - 1].clear();
   model->updateAllReferences(ModelData::REF_UPD_TYPE_SENSOR, ModelData::REF_UPD_ACT_SHIFT, selectedIndex, 0, -1);
 
-  update();
   updateItemModels();
+  update();
   emit modified();
 }
 
@@ -1033,10 +1029,17 @@ void TelemetryPanel::swapData(int idx1, int idx2)
     memcpy(sd2, sd1, sizeof(SensorData));
     memcpy(sd1, &sdtmp, sizeof(SensorData));
     model->updateAllReferences(ModelData::REF_UPD_TYPE_SENSOR, ModelData::REF_UPD_ACT_SWAP, idx1, idx2);
-    update();
     updateItemModels();
+    update();
     emit modified();
   }
+}
+
+void TelemetryPanel::on_dataModifiedSensor()
+{
+  updateItemModels();
+  update();
+  emit modified();
 }
 
 void TelemetryPanel::updateItemModels()
