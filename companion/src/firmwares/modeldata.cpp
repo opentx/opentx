@@ -723,7 +723,8 @@ int ModelData::updateReference()
       updateAssignFunc(cfd);
       if (!cfd->isEmpty()) {
         updateSwitchRef(cfd->swtch);
-        if (cfd->func == FuncVolume || cfd->func == FuncBacklight || cfd->func == FuncPlayValue || (cfd->func >= FuncAdjustGV1 && cfd->func <= FuncAdjustGVLast && (cfd->adjustMode == FUNC_ADJUST_GVAR_GVAR || cfd->adjustMode == FUNC_ADJUST_GVAR_SOURCE))) {
+        if (cfd->func == FuncVolume || cfd->func == FuncBacklight || cfd->func == FuncPlayValue ||
+            (cfd->func >= FuncAdjustGV1 && cfd->func <= FuncAdjustGVLast && (cfd->adjustMode == FUNC_ADJUST_GVAR_GVAR || cfd->adjustMode == FUNC_ADJUST_GVAR_SOURCE))) {
           updateSourceIntRef(cfd->param);
           if (cfd->param == 0)
             cfd->clear();
@@ -1387,12 +1388,13 @@ void ModelData::updateResetParam(CustomFunctionData * cfd)
   const int invalidateRef = -1;
   int newRef = cfd->param;
   int idxAdj = 0;
+  Firmware *firmware = getCurrentFirmware();
 
   switch (updRefInfo.type)
   {
     case REF_UPD_TYPE_SENSOR:
-      idxAdj = 5/*3 Timers + Flight + Telemetery*/ + getCurrentFirmware()->getCapability(RotaryEncoders);
-      if (cfd->param < idxAdj)
+      idxAdj = 5/*3 Timers + Flight + Telemetery*/ + firmware->getCapability(RotaryEncoders);
+      if (cfd->param < idxAdj || cfd->param > (idxAdj + firmware->getCapability(Sensors)))
         return;
       break;
     default:

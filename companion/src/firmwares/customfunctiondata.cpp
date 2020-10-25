@@ -126,20 +126,15 @@ void CustomFunctionData::populateResetParams(const ModelData * model, QComboBox 
     b->addItem(tr("REa"), val++);
     b->addItem(tr("REb"), val++);
   }
-  if ((int)value < b->count()) {
-    b->setCurrentIndex(value);
-  }
   if (model) {
-    for (unsigned i=0; i<CPN_MAX_SENSORS; ++i) {
+    for (int i = 0; i < firmware->getCapability(Sensors); ++i) {
       if (model->sensorData[i].isAvailable()) {
-        RawSource item = RawSource(SOURCE_TYPE_TELEMETRY, 3*i);
-        b->addItem(item.toString(model), val+i);
-        if (value == val+i) {
-          b->setCurrentIndex(b->count()-1);
-        }
+        RawSource item = RawSource(SOURCE_TYPE_TELEMETRY, 3 * i);
+        b->addItem(item.toString(model), val + i);
       }
     }
   }
+  b->setCurrentIndex(b->findData(value));
 }
 
 void CustomFunctionData::populatePlaySoundParams(QStringList & qs)
