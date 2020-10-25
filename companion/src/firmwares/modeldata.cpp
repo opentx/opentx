@@ -728,6 +728,9 @@ int ModelData::updateReference()
           if (cfd->param == 0)
             cfd->clear();
         }
+        else if (cfd->func == FuncReset) {
+          updateResetParam(cfd);
+        }
       }
     }
   }
@@ -972,7 +975,7 @@ void ModelData::updateAssignFunc(CustomFunctionData * cfd)
 {
   const int invalidateRef = -1;
   int newRef = (int)cfd->func;
-  int idxAdj;
+  int idxAdj = 0;
 
   switch (updRefInfo.type)
   {
@@ -1373,4 +1376,64 @@ void ModelData::sortMixes()
   }
 
   memcpy(&mixData[0], &sortedMixData[0], CPN_MAX_MIXERS * sizeof(MixData));
+}
+
+void ModelData::updateResetParam(CustomFunctionData * cfd)
+{
+
+  if (cfd->func != FuncReset)
+    return;
+
+  const int invalidateRef = -1;
+  int newRef = cfd->param;
+  int idxAdj = 0;
+
+  switch (updRefInfo.type)
+  {
+    case REF_UPD_TYPE_SENSOR:
+      idxAdj = 5/*3 Timers + Flight + Telemetery*/ + getCurrentFirmware()->getCapability(RotaryEncoders);
+      if (cfd->param < idxAdj)
+        return;
+      break;
+    default:
+      return;
+  }
+
+  switch (updRefInfo.action)
+  {
+    case REF_UPD_ACT_CLEAR:
+      if (newRef != (updRefInfo.index1 + idxAdj))
+        return;
+      newRef = invalidateRef;
+      break;
+    case REF_UPD_ACT_SHIFT:
+      if (newRef < (updRefInfo.index1 + idxAdj))
+        return;
+
+      newRef += updRefInfo.shift;
+
+      if (newRef < (updRefInfo.index1 + idxAdj) || newRef > (updRefInfo.maxindex + idxAdj))
+        newRef = invalidateRef;
+      break;
+    case REF_UPD_ACT_SWAP:
+      if (newRef == updRefInfo.index1 + idxAdj)
+        newRef = updRefInfo.index2 + idxAdj;
+      else if (newRef == updRefInfo.index2 + idxAdj)
+        newRef = updRefInfo.index1 + idxAdj;
+      break;
+    default:
+      qDebug() << "Error - unhandled action:" << updRefInfo.action;
+      return;
+  }
+
+  if (newRef == invalidateRef) {
+    cfd->clear();
+    //qDebug() << "Function cleared";
+    updRefInfo.updcnt++;
+  }
+  else if (cfd->param != newRef) {
+    //qDebug() << "Updated reference:" << cfd->param << " -> " << newRef;
+    cfd->param = newRef;
+    updRefInfo.updcnt++;
+  }
 }
