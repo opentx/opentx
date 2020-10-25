@@ -378,6 +378,10 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
     cfn.func = func;
     cfn.enabled = fswtchEnable[i]->isChecked();
   }
+  else {
+    fswtchSwtch[i]->setCurrentIndex(fswtchSwtch[i]->findData(cfn.swtch.toValue()));
+    fswtchFunc[i]->setCurrentIndex(fswtchFunc[i]->findData(cfn.func));
+  }
 
   if (!cfn.isEmpty()) {
     widgetsMask |= CUSTOM_FUNCTION_SHOW_FUNC;
