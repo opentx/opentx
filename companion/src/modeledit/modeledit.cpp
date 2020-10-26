@@ -61,47 +61,38 @@ ModelEdit::ModelEdit(QWidget * parent, RadioData & radioData, int modelId, Firmw
   s1.report("Setup");
 
   if (firmware->getCapability(Heli)) {
-    HeliPanel * heliPanel = new HeliPanel(this, model, generalSettings, firmware, commonItemModels);
-    addTab(heliPanel, tr("Heli"));
+    addTab(new HeliPanel(this, model, generalSettings, firmware, commonItemModels), tr("Heli"));
     s1.report("Heli");
   }
 
-  FlightModesPanel * flightModesPanel = new FlightModesPanel(this, model, generalSettings, firmware, commonItemModels);
-  addTab(flightModesPanel, tr("Flight Modes"));
+  addTab(new FlightModesPanel(this, model, generalSettings, firmware, commonItemModels), tr("Flight Modes"));
   s1.report("Flight Modes");
 
-  InputsPanel * inputsPanel = new InputsPanel(this, model, generalSettings, firmware, commonItemModels);
-  addTab(inputsPanel, tr("Inputs"));
+  addTab(new InputsPanel(this, model, generalSettings, firmware, commonItemModels), tr("Inputs"));
   s1.report("Inputs");
 
-  MixesPanel * mixesPanel = new MixesPanel(this, model, generalSettings, firmware, commonItemModels);
-  addTab(mixesPanel, tr("Mixes"));
+  addTab(new MixesPanel(this, model, generalSettings, firmware, commonItemModels), tr("Mixes"));
   s1.report("Mixes");
 
   ChannelsPanel * channelsPanel = new ChannelsPanel(this, model, generalSettings, firmware, commonItemModels);
   addTab(channelsPanel, tr("Outputs"));
   s1.report("Outputs");
 
-  CurvesPanel * curvesPanel = new CurvesPanel(this, model, generalSettings, firmware, commonItemModels);
-  addTab(curvesPanel, tr("Curves"));
+  addTab(new CurvesPanel(this, model, generalSettings, firmware, commonItemModels), tr("Curves"));
   s1.report("Curves");
 
-  LogicalSwitchesPanel * logicalSwitchesPanel = new LogicalSwitchesPanel(this, model, generalSettings, firmware, commonItemModels);
-  addTab(logicalSwitchesPanel, tr("Logical Switches"));
+  addTab(new LogicalSwitchesPanel(this, model, generalSettings, firmware, commonItemModels), tr("Logical Switches"));
   s1.report("Logical Switches");
 
-  CustomFunctionsPanel * customFunctionsPanel = new CustomFunctionsPanel(this, &model, generalSettings, firmware, commonItemModels);
-  addTab(customFunctionsPanel, tr("Special Functions"));
+  addTab(new CustomFunctionsPanel(this, &model, generalSettings, firmware, commonItemModels), tr("Special Functions"));
   s1.report("Special Functions");
 
   if (firmware->getCapability(Telemetry)) {
-    TelemetryPanel * telemetryPanel = new TelemetryPanel(this, model, generalSettings, firmware, commonItemModels);
-    addTab(telemetryPanel, tr("Telemetry"));
+    addTab(new TelemetryPanel(this, model, generalSettings, firmware, commonItemModels), tr("Telemetry"));
     s1.report("Telemetry");
   }
 
   connect(setupPanel, &SetupPanel::extendedLimitsToggled, channelsPanel, &ChannelsPanel::refreshExtendedLimits);
-
   connect(ui->tabWidget, &QTabWidget::currentChanged, this, &ModelEdit::onTabIndexChanged);
   connect(ui->pushButton, &QPushButton::clicked, this, &ModelEdit::launchSimulation);
 
