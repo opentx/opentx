@@ -22,13 +22,16 @@
 #define _OPENTX_HELPERS_H_
 
 #include <string.h>
-#include "thirdparty/libopenui/src/libopenui_helpers.h"
 
+#if defined(COLORLCD)
+#include "thirdparty/libopenui/src/libopenui_helpers.h"
+#else
 template<class T>
 inline T sgn(T a)
 {
   return a > 0 ? 1 : (a < 0 ? -1 : 0);
 }
+#endif
 
 template<class T>
 inline void SWAP(T & a, T & b)

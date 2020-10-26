@@ -557,22 +557,18 @@ extern const char STR_WAITING_FOR_RX[];
 extern const char STR_WAITING_FOR_TX[];
 extern const char STR_WARN_5VOLTS[];
 
-#if defined(SDCARD)
-  extern const char STR_BACKUP_MODEL[];
-  extern const char STR_RESTORE_MODEL[];
-  extern const char STR_DELETE_ERROR[];
-  extern const char STR_SDCARD_ERROR[];
-extern const char STR_SDCARD[];
-extern const char STR_NO_FILES_ON_SD[];
-  extern const char STR_NO_SDCARD[];
-  extern const char STR_SDCARD_FULL[];
-  extern const char STR_INCOMPATIBLE[];
-  extern const char STR_LOGS_PATH[];
-  extern const char STR_LOGS_EXT[];
-  extern const char STR_MODELS_PATH[];
-  extern const char STR_MODELS_EXT[];
-  #define STR_UPDATE_LIST STR_DELAYDOWN
-#endif
+extern const char STR_BACKUP_MODEL[];
+extern const char STR_RESTORE_MODEL[];
+extern const char STR_DELETE_ERROR[];
+extern const char STR_SDCARD_ERROR[];
+extern const char STR_NO_SDCARD[];
+extern const char STR_SDCARD_FULL[];
+extern const char STR_INCOMPATIBLE[];
+extern const char STR_LOGS_PATH[];
+extern const char STR_LOGS_EXT[];
+extern const char STR_MODELS_PATH[];
+extern const char STR_MODELS_EXT[];
+#define STR_UPDATE_LIST STR_DELAYDOWN
 
 extern const char STR_NEEDS_FILE[];
 extern const char STR_EXT_MULTI_SPEC[];
