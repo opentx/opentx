@@ -831,7 +831,7 @@ Set a color for specific area
  * `RED`
  * `DARKRED`
 
-@notice Only available on Horus
+@notice Only available on  Colorlcd radios
 
 @status current Introduced in 2.2.0
 */
@@ -841,6 +841,25 @@ static int luaLcdSetColor(lua_State *L)
   unsigned int index = luaL_checkunsigned(L, 1) >> 16;
   unsigned int color = luaL_checkunsigned(L, 2);
   lcdColorTable[index] = color;
+  return 0;
+}
+
+/*luadoc
+@function lcd.getColor(area)
+
+Get the color for specific area : see lcd.setColor for area list
+
+@notice Only available on Colorlcd radios
+
+@status current Introduced in 2.3.11
+*/
+
+static int luaLcdGetColor(lua_State *L)
+{
+  if (!luaLcdAllowed) return 0;
+
+  unsigned int index = luaL_checkunsigned(L, 1) >> 16;
+  lua_pushinteger(L, lcdColorTable[index]);
   return 0;
 }
 
@@ -857,7 +876,7 @@ Returns a 5/6/5 rgb color code, that can be used with lcd.setColor
 
 @retval number (integer) rgb color expressed in 5/6/5 format
 
-@notice Only available on Horus
+@notice Only available on  Colorlcd radios
 
 @status current Introduced in 2.2.0
 */
@@ -890,6 +909,7 @@ const luaL_Reg lcdLib[] = {
 #if defined(COLORLCD)
   { "drawBitmap", luaLcdDrawBitmap },
   { "setColor", luaLcdSetColor },
+  { "getColor", luaLcdGetColor },
   { "RGB", luaRGB },
 #else
   { "getLastPos", luaLcdGetLastPos },
