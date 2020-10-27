@@ -793,7 +793,6 @@ static int luaLcdDrawCombobox(lua_State *L)
 Set a color for specific area
 
 @param area (unsigned number) specific screen area in the list bellow
- * `CUSTOM_COLOR`
  * `TEXT_COLOR`
  * `TEXT_BGCOLOR`
  * `TEXT_INVERTED_COLOR`
@@ -807,18 +806,22 @@ Set a color for specific area
  * `ALARM_COLOR`
  * `WARNING_COLOR`
  * `TEXT_DISABLE_COLOR`
- * `HEADER_COLOR`
  * `CURVE_AXIS_COLOR`
+ * `CURVE_COLOR`
  * `CURVE_CURSOR_COLOR`
  * `TITLE_BGCOLOR`
  * `TRIM_BGCOLOR`
  * `TRIM_SHADOW_COLOR`
- * `MAINVIEW_PANES_COLOR`
- * `MAINVIEW_GRAPHICS_COLOR`
  * `HEADER_BGCOLOR`
  * `HEADER_ICON_BGCOLOR`
  * `HEADER_CURRENT_BGCOLOR`
+ * `MAINVIEW_PANES_COLOR`
+ * `MAINVIEW_GRAPHICS_COLOR`
  * `OVERLAY_COLOR`
+ * `BARGRAPH1_COLOR`
+ * `BARGRAPH2_COLOR`
+ * `BARGRAPH_BGCOLOR`
+ * `CUSTOM_COLOR`
 
 @param color (number) color in 5/6/5 rgb format. The following prefined colors are available
  * `WHITE`
@@ -859,8 +862,8 @@ static int luaLcdGetColor(lua_State *L)
   if (!luaLcdAllowed) return 0;
 
   unsigned int index = luaL_checkunsigned(L, 1) >> 16;
-  lua_pushinteger(L, lcdColorTable[index]);
-  return 0;
+  lua_pushunsigned(L, lcdColorTable[index]);
+  return 1;
 }
 
 /*luadoc
