@@ -514,9 +514,9 @@ Return input data for given input and line number
  * `curveType` (number) curve type (function, expo, custom curve)
  * `curveValue` (number) curve index
  * `carryTrim` (boolean) input trims applied
- * 'flightModes' (table) table of enabled flightModes {0,2,7} means that the input is enabled for FM0, FM2 and FM7
+ * 'flightModes' (number) bit-mask of active flight modes
 
-@status current Introduced in 2.0.0, curveType/curveValue/carryTrim added in 2.3, flightModes, inputName added 2.3.10
+@status current Introduced in 2.0.0, curveType/curveValue/carryTrim added in 2.3, inputName added 2.3.10, flighmode reworked in 2.3.11
 */
 static int luaModelGetInput(lua_State *L)
 {
@@ -536,16 +536,7 @@ static int luaModelGetInput(lua_State *L)
     lua_pushtableinteger(L, "curveType", expo->curve.type);
     lua_pushtableinteger(L, "curveValue", expo->curve.value);
     lua_pushtableinteger(L, "carryTrim", expo->carryTrim);
-    lua_pushstring(L, "flightModes");
-    lua_newtable(L);
-    for (int i = 0, cnt = 0; i < MAX_FLIGHT_MODES; i++) {
-      if (!(expo->flightModes & (1 << i))) {
-        lua_pushinteger(L, cnt++);
-        lua_pushinteger(L, i);
-        lua_settable(L, -3);
-      }
-    }
-    lua_settable(L, -3);
+    lua_pushtableinteger(L, "flightModes", expo->flightModes);
   }
   else {
     lua_pushnil(L);
@@ -613,14 +604,7 @@ static int luaModelInsertInput(lua_State *L)
         expo->carryTrim = lua_toboolean(L, -1);
       }
       else if (!strcmp(key, "flightModes")) {
-        luaL_checktype(L, -1, LUA_TTABLE);
-        int flighModes = 0x1FF;
-        for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1)) {
-          uint16_t val = luaL_checkinteger(L, -1);
-          if (val < MAX_FLIGHT_MODES)
-            flighModes &= ~(1 << val);
-        }
-        expo->flightModes = flighModes;
+        expo->flightModes = luaL_checkinteger(L, -1);
       }
     }
   }
@@ -753,9 +737,8 @@ Get configuration for specified Mix
  * `delayDown` (number) delay down
  * `speedUp` (number) speed up
  * `speedDown` (number) speed down
- * 'flightModes' (table) table of enabled flightModes {0,2,7} means that the input is enabled for FM0, FM2 and FM7
 
-@status current Introduced in 2.0.0, parameters below `multiplex` added in 2.0.13, flightModes added 2.3.10
+@status current Introduced in 2.0.0, parameters below `multiplex` added in 2.0.13
 */
 static int luaModelGetMix(lua_State *L)
 {
@@ -781,16 +764,6 @@ static int luaModelGetMix(lua_State *L)
     lua_pushtableinteger(L, "delayDown", mix->delayDown);
     lua_pushtableinteger(L, "speedUp", mix->speedUp);
     lua_pushtableinteger(L, "speedDown", mix->speedDown);
-    lua_pushstring(L, "flightModes");
-    lua_newtable(L);
-    for (int i = 0, cnt = 0; i < MAX_FLIGHT_MODES; i++) {
-      if (!(mix->flightModes & (1 << i))) {
-        lua_pushinteger(L, cnt++);
-        lua_pushinteger(L, i);
-        lua_settable(L, -3);
-      }
-    }
-    lua_settable(L, -3);
   }
   else {
     lua_pushnil(L);
@@ -809,7 +782,7 @@ Insert a mixer line into Channel
 
 @param value (table) see model.getMix() for table format
 
-@status current Introduced in 2.0.0, parameters below `multiplex` added in 2.0.13, flightModes added 2.3.10
+@status current Introduced in 2.0.0, parameters below `multiplex` added in 2.0.13
 */
 static int luaModelInsertMix(lua_State *L)
 {
@@ -873,16 +846,6 @@ static int luaModelInsertMix(lua_State *L)
       }
       else if (!strcmp(key, "speedDown")) {
         mix->speedDown = luaL_checkinteger(L, -1);
-      }
-      else if (!strcmp(key, "flightModes")) {
-        luaL_checktype(L, -1, LUA_TTABLE);
-        int flighModes = 0x1FF;
-        for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1)) {
-          uint16_t val = luaL_checkinteger(L, -1);
-          if (val < MAX_FLIGHT_MODES)
-            flighModes &= ~(1 << val);
-        }
-        mix->flightModes = flighModes;
       }
     }
   }
