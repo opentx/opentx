@@ -24,7 +24,7 @@
 #if defined(MULTIMODULE)
 void lcdDrawMultiProtocolString(coord_t x, coord_t y, uint8_t moduleIdx, uint8_t protocol, LcdFlags flags)
 {
-  MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
+  MultiModuleStatus & status = getMultiModuleStatus(moduleIdx);
   if (status.protocolName[0] && status.isValid()) {
     lcdDrawText(x, y, status.protocolName, flags);
   }
@@ -38,8 +38,8 @@ void lcdDrawMultiProtocolString(coord_t x, coord_t y, uint8_t moduleIdx, uint8_t
 
 void lcdDrawMultiSubProtocolString(coord_t x, coord_t y, uint8_t moduleIdx, uint8_t subType, LcdFlags flags)
 {
-  MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
-  const mm_protocol_definition *pdef = getMultiProtocolDefinition(g_model.moduleData[moduleIdx].getMultiProtocol());
+  MultiModuleStatus & status = getMultiModuleStatus(moduleIdx);
+  const mm_protocol_definition * pdef = getMultiProtocolDefinition(g_model.moduleData[moduleIdx].getMultiProtocol());
 
   if (status.protocolName[0] && status.isValid()) {
     lcdDrawText(x, y, status.protocolSubName, flags);
