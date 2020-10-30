@@ -128,7 +128,7 @@ HardwarePanel::HardwarePanel(QWidget * parent, GeneralSettings & generalSettings
     ui->potsTypeSeparator_2->hide();
   }
   
-  if(firmware->getCapability(HasSportConnector)) {
+  if (firmware->getCapability(HasSportConnector)) {
     ui->sportPower->setChecked(generalSettings.sportPower);
   }
   else {
