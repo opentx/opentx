@@ -452,30 +452,31 @@ void lcdDrawBlackOverlay()
 #if defined(MULTIMODULE)
 void lcdDrawMultiProtocolString(coord_t x, coord_t y, uint8_t moduleIdx, uint8_t protocol, LcdFlags flags)
 {
-  if (protocol <= MODULE_SUBTYPE_MULTI_LAST) {
+  MultiModuleStatus & status = getMultiModuleStatus(moduleIdx);
+  if (status.protocolName[0] && status.isValid()) {
+    lcdDrawText(x, y, status.protocolName, flags);
+  }
+  else if (protocol <= MODULE_SUBTYPE_MULTI_LAST) {
     lcdDrawTextAtIndex(x, y, STR_MULTI_PROTOCOLS, protocol, flags);
   }
   else {
-    MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
-    if (status.protocolName[0] && status.isValid())
-      lcdDrawText(x, y, status.protocolName, flags);
-    else
-      lcdDrawNumber(x, y, protocol + 3, flags); // Convert because of OpenTX FrSky fidling (OpenTX protocol tables and Multiprotocol tables don't match)
+    lcdDrawNumber(x, y, protocol + 3, flags); // Convert because of OpenTX FrSky fidling (OpenTX protocol tables and Multiprotocol tables don't match)
   }
 }
 
 void lcdDrawMultiSubProtocolString(coord_t x, coord_t y, uint8_t moduleIdx, uint8_t subType, LcdFlags flags)
 {
-  const mm_protocol_definition *pdef = getMultiProtocolDefinition(g_model.moduleData[moduleIdx].getMultiProtocol());
-  if (subType <= pdef->maxSubtype && pdef->subTypeString != nullptr) {
+  MultiModuleStatus & status = getMultiModuleStatus(moduleIdx);
+  const mm_protocol_definition * pdef = getMultiProtocolDefinition(g_model.moduleData[moduleIdx].getMultiProtocol());
+
+  if (status.protocolName[0] && status.isValid()) {
+    lcdDrawText(x, y, status.protocolSubName, flags);
+  }
+  else if (subType <= pdef->maxSubtype && pdef->subTypeString != nullptr) {
     lcdDrawTextAtIndex(x, y, pdef->subTypeString, subType, flags);
   }
   else {
-    MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
-    if (status.protocolName[0] && status.isValid())
-      lcdDrawText(x, y, status.protocolSubName, flags);
-    else
-      lcdDrawNumber(x, y, subType, flags);
+    lcdDrawNumber(x, y, subType, flags);
   }
 }
 #endif
