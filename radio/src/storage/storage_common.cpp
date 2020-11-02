@@ -51,8 +51,14 @@ void preModelLoad()
   if (pulsesStarted()) {
     pausePulses();
   }
-
   pauseMixerCalculations();
+
+#if defined(PCBTARANIS)
+  if (currentTrainerMode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE) {
+    currentTrainerMode = TRAINER_MODE_MASTER_TRAINER_JACK;
+    stop_trainer_module_sbus();
+  }
+#endif
 }
 
 void postRadioSettingsLoad()
