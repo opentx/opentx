@@ -61,44 +61,53 @@ void checkTrainerSettings()
   }
 }
 #else
+void stopTrainer()
+{
+  switch (currentTrainerMode) {
+    case TRAINER_MODE_MASTER_TRAINER_JACK:
+      stop_trainer_capture();
+      break;
+
+    case TRAINER_MODE_SLAVE:
+      stop_trainer_ppm();
+      break;
+
+#if defined(TRAINER_MODULE_CPPM)
+    case TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE:
+      stop_trainer_module_cppm();
+      break;
+#endif
+
+#if defined(TRAINER_MODULE_SBUS)
+    case TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE:
+      stop_trainer_module_sbus();
+      break;
+#endif
+
+#if defined(TRAINER_BATTERY_COMPARTMENT)
+    case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:
+#if defined(AUX_SERIAL)
+      if (g_eeGeneral.auxSerialMode == UART_MODE_SBUS_TRAINER)
+        auxSerialStop();
+#endif
+#if defined(AUX2_SERIAL)
+      if (g_eeGeneral.aux2SerialMode == UART_MODE_SBUS_TRAINER)
+        aux2SerialStop();
+#endif
+      break;
+#endif
+  }
+
+  currentTrainerMode = 0xFF;
+}
+
 void checkTrainerSettings()
 {
   uint8_t requiredTrainerMode = g_model.trainerData.mode;
 
   if (requiredTrainerMode != currentTrainerMode) {
-    switch (currentTrainerMode) {
-      case TRAINER_MODE_MASTER_TRAINER_JACK:
-        stop_trainer_capture();
-        break;
-
-      case TRAINER_MODE_SLAVE:
-        stop_trainer_ppm();
-        break;
-
-#if defined(TRAINER_MODULE_CPPM)
-      case TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE:
-        stop_trainer_module_cppm();
-        break;
-#endif
-
-#if defined(TRAINER_MODULE_SBUS)
-      case TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE:
-        stop_trainer_module_sbus();
-        break;
-#endif
-
-#if defined(TRAINER_BATTERY_COMPARTMENT)
-      case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:
-#if defined(AUX_SERIAL)
-        if (g_eeGeneral.auxSerialMode == UART_MODE_SBUS_TRAINER)
-          auxSerialStop();
-#endif
-#if defined(AUX2_SERIAL)
-        if (g_eeGeneral.aux2SerialMode == UART_MODE_SBUS_TRAINER)
-          aux2SerialStop();
-#endif
-        break;
-#endif
+    if (currentTrainerMode != 0xFF) {
+      stopTrainer();
     }
 
     currentTrainerMode = requiredTrainerMode;
