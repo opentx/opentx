@@ -399,6 +399,9 @@ inline bool isModuleRxNumAvailable(uint8_t moduleIdx)
   if (isModuleMultimodule(moduleIdx))
     return true;
 
+  if(isModuleGhost(moduleIdx))
+    return true;
+
   return false;
 }
 
@@ -442,6 +445,9 @@ inline uint8_t getMaxRxNum(uint8_t idx)
 {
   if (isModuleDSM2(idx))
     return 20;
+
+  if (isModuleGhost(idx))
+    return 32; //TODO check with Tony
 
 #if defined(MULTIMODULE)
   if (isModuleMultimodule(idx)) {

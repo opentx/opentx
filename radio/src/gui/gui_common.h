@@ -139,6 +139,9 @@ void runFatalErrorScreen(const char * message);
 
 inline uint8_t MODULE_BIND_ROWS(int moduleIdx)
 {
+  if (isModuleGhost(moduleIdx))
+    return 0;
+
   if (isModuleXJTD8(moduleIdx) || isModuleSBUS(moduleIdx))
     return 1;
 
