@@ -48,6 +48,11 @@ void checkTrainerSignalWarning()
 }
 
 #if defined(PCBSKY9X)
+void stopTrainer()
+{
+  stop_trainer_capture();
+}
+
 void checkTrainerSettings()
 {
   uint8_t requiredTrainerMode = SLAVE_MODE();
@@ -55,7 +60,7 @@ void checkTrainerSettings()
   if (requiredTrainerMode != currentTrainerMode) {
     currentTrainerMode = requiredTrainerMode;
     if (requiredTrainerMode)
-      stop_trainer_capture();
+      stopTrainer();
     else
       init_trainer_capture();
   }
