@@ -47,7 +47,7 @@ uint8_t createGhostChannelsFrame(uint8_t * frame, int16_t * pulses)
   uint32_t bits = 0;
   uint8_t bitsavailable = 0;
   for (int i=0; i<4; i++) {
-    uint32_t value = limit(0, GHST_RC_CTR_VAL_12BIT + (((pulses[i]) << 3) / 5), 2*GHST_RC_CTR_VAL_12BIT);
+    uint32_t value = limit(0, GHST_RC_CTR_VAL_12BIT + (((pulses[i] + 2*PPM_CH_CENTER(i) - 2*PPM_CENTER) << 3) / 5), 2*GHST_RC_CTR_VAL_12BIT);
     bits |= value << bitsavailable;
     bitsavailable += GHST_CH_BITS_12;
     while (bitsavailable >= 8) {
@@ -59,7 +59,7 @@ uint8_t createGhostChannelsFrame(uint8_t * frame, int16_t * pulses)
 
   // second 4 lower speed, 8 bit channels
   for (int i = 4; i < 8; ++i) {
-      *buf++ = limit(0, GHST_RC_CTR_VAL_8BIT + (((pulses[i + ghostUpper4Offset]) >> 1) / 5), 2*GHST_RC_CTR_VAL_8BIT);
+      *buf++ = limit(0, GHST_RC_CTR_VAL_8BIT + (((pulses[i + ghostUpper4Offset] + 2*PPM_CH_CENTER(i + ghostUpper4Offset) - 2*PPM_CENTER) >> 1) / 5), 2*GHST_RC_CTR_VAL_8BIT);
   }
 
   *buf++ = crc8(crc_start, GHST_UL_RC_CHANS_SIZE - 1);
