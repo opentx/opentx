@@ -479,6 +479,13 @@ void menuModelMixAll(event_t event)
         s_currCh = ch;
         if (!s_copyMode) {
           attr = INVERS;
+          displayHeaderChannelName(ch - 1);
+#if LCD_W >= 212
+          if (g_model.limitData[ch - 1].name[0] != '\0') {
+            coord_t xPos = MIX_HDR_GAUGE_POS_X - FWNUM * 5 - 50;
+            lcdDrawFilledRect(lcdNextPos, 0, lcdNextPos - xPos, MENU_HEADER_HEIGHT, SOLID, FILL_WHITE | GREY_DEFAULT);
+          }
+#endif
         }
       }
       if (cur-menuVerticalOffset >= 0 && cur-menuVerticalOffset < NUM_BODY_LINES) {
