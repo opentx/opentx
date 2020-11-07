@@ -123,7 +123,7 @@ void telemetryPortInvertedInit(uint32_t baudrate)
       break;
     case 57600:
       bitLength = 35; //34 was used before - I prefer to use use 35 because of lower error
-      probeTimeFromStartBit = 52; //round down - 48 used in original implementation
+      probeTimeFromStartBit = 48; //48 used in original implementation
       break;
     default:
       bitLength = 2000000/baudrate; //because of 0,5 us  tick
