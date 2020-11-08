@@ -702,6 +702,8 @@ int OpenTxFirmware::getCapability(::Capability capability)
       return IS_FAMILY_HORUS_OR_T16(board);
     case HasSwitchableJack:
       return IS_TARANIS_XLITES(board);
+    case HasSportConnector:
+      return IS_ACCESS_RADIO(board, id) || IS_TARANIS_X7(board) || IS_HORUS_X10(board) || IS_TARANIS_XLITE(board);
     case PwrButtonPress:
       return IS_HORUS_OR_TARANIS(board) && (board!=Board::BOARD_TARANIS_X9D) && (board!=Board::BOARD_TARANIS_X9DP);
     case Sensors:

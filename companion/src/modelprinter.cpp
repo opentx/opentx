@@ -23,7 +23,6 @@
 #include "multiprotocols.h"
 #include "boards.h"
 #include "helpers_html.h"
-#include "multiprotocols.h"
 #include "appdata.h"
 
 #include <QApplication>
@@ -1214,108 +1213,6 @@ QString ModelPrinter::printSensorTypeCond(unsigned int idx)
     return printSensorType(model.sensorData[idx].type);
 }
 
-QString ModelPrinter::printSensorDetails(unsigned int idx)
-{
-  QString str = "";
-  SensorData sensor = model.sensorData[idx];
-
-  if (!sensor.isAvailable())
-    return str;
-
-  bool isConfigurable = false;
-  bool gpsFieldsPrinted = false;
-  bool cellsFieldsPrinted = false;
-  bool consFieldsPrinted = false;
-  bool ratioFieldsPrinted = false;
-  bool totalizeFieldsPrinted = false;
-  bool sources12FieldsPrinted = false;
-  bool sources34FieldsPrinted = false;
-
-  str.append(doTableCell(printSensorTypeCond(idx)));
-
-  QString tc = "";
-  if (sensor.type == SensorData::TELEM_TYPE_CALCULATED) {
-    isConfigurable = (sensor.formula < SensorData::TELEM_FORMULA_CELL);
-    gpsFieldsPrinted = (sensor.formula == SensorData::TELEM_FORMULA_DIST);
-    cellsFieldsPrinted = (sensor.formula == SensorData::TELEM_FORMULA_CELL);
-    consFieldsPrinted = (sensor.formula == SensorData::TELEM_FORMULA_CONSUMPTION);
-    sources12FieldsPrinted = (sensor.formula <= SensorData::TELEM_FORMULA_MULTIPLY);
-    sources34FieldsPrinted = (sensor.formula < SensorData::TELEM_FORMULA_MULTIPLY);
-    totalizeFieldsPrinted = (sensor.formula == SensorData::TELEM_FORMULA_TOTALIZE);
-
-    tc.append(printLabelValue(tr("Formula"), printSensorFormula(sensor.formula)));
-  }
-  else {
-    isConfigurable = sensor.unit < SensorData::UNIT_FIRST_VIRTUAL;
-    ratioFieldsPrinted = (sensor.unit < SensorData::UNIT_FIRST_VIRTUAL);
-
-    tc.append(printLabelValue(tr("Id"), QString::number(sensor.id,16).toUpper()));
-    tc.append(printLabelValue(tr("Instance"), QString::number(sensor.instance)));
-  }
-  if (cellsFieldsPrinted) {
-    tc.append(printLabelValue(tr("Sensor"), QString("%1 > %2").arg(printTelemetrySource(sensor.source), false).arg(printSensorCells(sensor.index))));
-  }
-  if (sources12FieldsPrinted) {
-    QStringList srcs;
-    for (int i=0;i<4;i++) {
-      if (i < 2 || sources34FieldsPrinted) {
-        srcs << printTelemetrySource(sensor.sources[i]);
-      }
-    }
-    tc.append(printLabelValues(tr("Sources"), srcs));
-  }
-  if (consFieldsPrinted || totalizeFieldsPrinted)
-    tc.append(printLabelValue(tr("Sensor"), printTelemetrySource(sensor.amps)));
-  if (gpsFieldsPrinted) {
-    tc.append(printLabelValue(tr("GPS"), printTelemetrySource(sensor.gps)));
-    tc.append(printLabelValue(tr("Alt."), printTelemetrySource(sensor.alt)));
-  }
-  if (ratioFieldsPrinted && sensor.unit == SensorData::UNIT_RPMS) {
-      tc.append(printLabelValue(tr("Blades"), QString::number(sensor.ratio)));
-      tc.append(printLabelValue(tr("Multi."), QString::number(sensor.offset)));
-  }
-  str.append(doTableCell(tc));
-
-  tc = sensor.unitString();
-  tc = tc.trimmed() == "" ? "-" : tc;
-  str.append(doTableCell(tc));
-
-  if (isConfigurable && sensor.unit != SensorData::UNIT_FAHRENHEIT)
-    tc = QString::number(sensor.prec);
-  else
-    tc = "";
-  str.append(doTableCell(tc));
-
-  if (!ratioFieldsPrinted) {
-    str.append(doTableCell(""));
-    str.append(doTableCell(""));
-  }
-  else if (sensor.unit != SensorData::UNIT_RPMS) {
-      int prec = sensor.prec == 0 ? 1 : pow(10, sensor.prec);
-      str.append(doTableCell(QString::number((float)sensor.ratio / prec)));
-      str.append(doTableCell(QString::number((float)sensor.offset / prec)));
-  }
-
-  if (sensor.unit != SensorData::UNIT_RPMS && isConfigurable)
-    str.append(doTableCell(printBoolean(sensor.autoOffset, BOOLEAN_YN)));
-  else
-    str.append(doTableCell(""));
-
-  if (isConfigurable)
-    str.append(doTableCell(printBoolean(sensor.filter, BOOLEAN_YN)));
-  else
-    str.append(doTableCell(""));
-
-  if (sensor.type == SensorData::TELEM_TYPE_CALCULATED)
-    str.append(doTableCell(printBoolean(sensor.persistent, BOOLEAN_YN)));
-  else
-    str.append(doTableCell(""));
-
-  str.append(doTableCell(printBoolean(sensor.onlyPositive, BOOLEAN_YN)));
-  str.append(doTableCell(printBoolean(sensor.logs, BOOLEAN_YN), false));
-  return str;
-}
-
 QString ModelPrinter::printSensorParams(unsigned int idx)
 {
   QString str = "";
@@ -1373,12 +1270,12 @@ QString ModelPrinter::printSensorParams(unsigned int idx)
   u = u.trimmed() == "" ? "-" : u;
   str.append(printLabelValue(tr("Unit"), u));
   if (isConfigurable && sensor.unit != SensorData::UNIT_FAHRENHEIT)
-    str.append(printLabelValue(tr("Prec"), QString::number(sensor.prec)));
+    str.append(printLabelValue(tr("Prec"), printTelemetryPrecision(sensor.prec)));
   if (ratioFieldsPrinted) {
     if (sensor.unit != SensorData::UNIT_RPMS) {
       int prec = sensor.prec == 0 ? 1 : pow(10, sensor.prec);
-      str.append(printLabelValue(tr("Ratio"), QString::number((float)sensor.ratio / prec)));
-      str.append(printLabelValue(tr("Offset"), QString::number((float)sensor.offset / prec)));
+      str.append(printLabelValue(tr("Ratio"), QString::number((float)sensor.ratio / 10)));
+      str.append(printLabelValue(tr("Offset"), QString::number((float)sensor.offset / prec, 'f', sensor.prec)));
     }
     else if (sensor.unit == SensorData::UNIT_RPMS) {
       str.append(printLabelValue(tr("Blades"), QString::number(sensor.ratio)));
@@ -1386,7 +1283,7 @@ QString ModelPrinter::printSensorParams(unsigned int idx)
     }
   }
   if (sensor.unit != SensorData::UNIT_RPMS && isConfigurable)
-    str.append(printLabelValue(tr("A/Offset"), printBoolean(sensor.autoOffset, BOOLEAN_YN)));
+    str.append(printLabelValue(tr("Auto Offset"), printBoolean(sensor.autoOffset, BOOLEAN_YN)));
   if (isConfigurable)
     str.append(printLabelValue(tr("Filter"), printBoolean(sensor.filter, BOOLEAN_YN)));
   if (sensor.type == SensorData::TELEM_TYPE_CALCULATED)
@@ -1475,4 +1372,18 @@ QString ModelPrinter::printChecklist()
     file.close();
   }
   return str;
+}
+
+QString ModelPrinter::printTelemetryPrecision(unsigned int val)
+{
+  switch (val) {
+    case 0:
+      return tr("0.");
+    case 1:
+      return tr("0.0");
+    case 2:
+      return tr("0.00");
+    default:
+      return CPN_STR_UNKNOWN_ITEM;
+  }
 }
