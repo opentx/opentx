@@ -289,8 +289,6 @@ int Boards::getCapability(Board::Type board, Board::Capability capability)
         return 5;
       else if (IS_HORUS_X12S(board))
         return 3;
-      else if (IS_FAMILY_T12(board))
-        return 2;
       else
         return 3;
 

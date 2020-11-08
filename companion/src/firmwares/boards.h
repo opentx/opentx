@@ -286,7 +286,7 @@ inline bool IS_TARANIS_X9E(Board::Type board)
 
 inline bool IS_TARANIS(Board::Type board)
 {
-  return IS_TARANIS_X9(board) || IS_TARANIS_X7(board) || IS_TARANIS_X9LITE(board) || IS_TARANIS_XLITE(board) || IS_FAMILY_T12(board);
+  return IS_TARANIS_X9(board) || IS_TARANIS_SMALL(board);
 }
 
 inline bool IS_TARANIS_SMALL(Board::Type board)

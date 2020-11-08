@@ -619,7 +619,7 @@ int OpenTxFirmware::getCapability(::Capability capability)
     case LcdWidth:
       if (IS_FAMILY_HORUS_OR_T16(board))
         return 480;
-      else if (IS_TARANIS_SMALL(board) || IS_FAMILY_T12(board))
+      else if (IS_TARANIS_SMALL(board))
         return 128;
       else if (IS_TARANIS(board))
         return 212;
@@ -633,7 +633,7 @@ int OpenTxFirmware::getCapability(::Capability capability)
     case LcdDepth:
       if (IS_FAMILY_HORUS_OR_T16(board))
         return 16;
-      else if (IS_TARANIS_SMALL(board) || IS_FAMILY_T12(board))
+      else if (IS_TARANIS_SMALL(board))
         return 1;
       else if (IS_TARANIS(board))
         return 4;
