@@ -524,7 +524,7 @@ int OpenTxFirmware::getCapability(::Capability capability)
     case MaxVolume:
       return 23;
     case MaxContrast:
-      if (IS_TARANIS_SMALL(board) || IS_FAMILY_T12(board))
+      if (IS_TARANIS_SMALL(board))
         return 30;
       else
         return 45;
