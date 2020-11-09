@@ -63,6 +63,7 @@ class HardwarePanel : public GeneralPanel
     Ui::Hardware *ui;
 
     void setValues();
+    bool isSwitch3Pos(int idx);
 };
 
 #endif // _HARDWARE_H_
