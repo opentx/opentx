@@ -613,4 +613,20 @@ inline void getMultiOptionValues(int8_t multi_proto, int8_t & min, int8_t & max)
 }
 #endif
 
+inline bool isRssiAlarmUsingLqy()
+{
+#if defined(MULTIMODULE)
+  if (telemetryProtocol == PROTOCOL_TELEMETRY_MULTIMODULE && (g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol() == MODULE_SUBTYPE_MULTI_FS_AFHDS2A
+                                                           || g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol() == MODULE_SUBTYPE_MULTI_HOTT)) {
+    return true;
+  }
+#endif
+#if defined(GHOST)
+  if (telemetryProtocol == PROTOCOL_TELEMETRY_GHOST) {
+    return true;
+  }
+#endif
+  return false;
+}
+
 #endif // _MODULES_HELPERS_H_
