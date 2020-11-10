@@ -217,14 +217,10 @@ bool menuModelTelemetry(event_t event)
         break;
 
       case ITEM_TELEMETRY_RSSI_LABEL:
-#if defined(MULTIMODULE)
-        if (!IS_INTERNAL_MODULE_ON() &&
-          g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_MULTIMODULE  &&
-          (g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol() == MODULE_SUBTYPE_MULTI_FS_AFHDS2A || g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol() == MODULE_SUBTYPE_MULTI_HOTT ))
+        if (isRssiAlarmUsingLqy())
           lcdDrawText(MENUS_MARGIN_LEFT, y, "RQly");
         else
-#endif
-        lcdDrawText(MENUS_MARGIN_LEFT, y, "RSSI");
+          lcdDrawText(MENUS_MARGIN_LEFT, y, "RSSI");
         break;
 
       case ITEM_TELEMETRY_RSSI_SOURCE: {
