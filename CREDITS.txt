@@ -1999,3 +1999,6 @@ Alan Micklethwaite
 Susan Siegel
 Stephen Evans
 William Hallman
+Franck Michel
+László Gajcsi (monthly)
+Danny Koch
