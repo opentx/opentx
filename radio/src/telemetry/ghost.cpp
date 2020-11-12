@@ -202,7 +202,7 @@ void processGhostTelemetryFrame()
       packet = (ghst_menu_frame * ) telemetryRxBuffer;
       lineData = (ghst_menu_data *) &reusableBuffer.ghostMenu.line[packet->lineIndex];
       lineData->splitLine = 0;
-      lineData->menuFlags = packet->menuFlags;
+      reusableBuffer.ghostMenu.menuAction = packet->menuFlags;
       lineData->lineFlags = packet->lineFlags;
       for (uint8_t i = 0; i < GHST_MENU_CHARS; i++) {
         if (packet->menuText[i] == 0x7C) {

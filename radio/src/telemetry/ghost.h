@@ -174,7 +174,7 @@ typedef struct
   uint8_t address;
   uint8_t length ;
   uint8_t packetId;
-  uint8_t  menuFlags;    // Update Line, Clear Menu, etc.
+  uint8_t menuFlags;     // GHST_MENU_CTRL
   uint8_t lineFlags;     // Carat states, Inverse, Bold for each of Menu Label, and Value
   uint8_t lineIndex;     // 0 = first line
   unsigned char menuText[GHST_MENU_CHARS];
