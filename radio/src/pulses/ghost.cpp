@@ -30,13 +30,11 @@ uint8_t createGhostMenuControlFrame(uint8_t * frame, int16_t * pulses)
 #else
   *buf++ = GHST_ADDR_MODULE_SYM;
 #endif
+
   *buf++ = GHST_UL_RC_CHANS_SIZE;
   uint8_t * crc_start = buf;
-
   *buf++ = GHST_UL_MENU_CTRL;
-
   *buf++ = reusableBuffer.ghostMenu.buttonAction; // Joystick states, Up, Down, Left, Right, Press
-
   *buf++ = reusableBuffer.ghostMenu.menuAction;   // menu control, open, close, etc.
 
   for (uint8_t i = 0; i < 8; i++)

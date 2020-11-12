@@ -76,6 +76,7 @@ bool menuRadioGhostMenu(event_t event)
   LcdFlags flags = 0;
 
   for (uint8_t line = 0; line < GHST_MENU_LINES; line++) {
+    flags = 0;
     if (reusableBuffer.ghostMenu.line[line].splitLine) {
       if (reusableBuffer.ghostMenu.line[line].lineFlags & GHST_LINE_FLAGS_LabelSelect)
         flags = INVERS;

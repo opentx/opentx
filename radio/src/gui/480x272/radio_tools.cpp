@@ -133,6 +133,7 @@ bool menuRadioTools(event_t event)
 #endif
 
 #if defined(GHOST)
+  if (isModuleGhost(EXTERNAL_MODULE))
     addRadioModuleTool(index++, "Ghost Menu", menuRadioGhostMenu, EXTERNAL_MODULE);
 #endif
 
