@@ -624,7 +624,6 @@ void sportUpdatePowerOff();
   #define DEBUG_BAUDRATE                  115200
 #endif
 #if defined(AUX_SERIAL_GPIO)
-#define DEBUG_BAUDRATE                  115200
 extern uint8_t auxSerialMode;
 void auxSerialInit(unsigned int mode, unsigned int protocol);
 void auxSerialPutc(char c);
