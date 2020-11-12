@@ -20,7 +20,7 @@
 
 #include "opentx.h"
 
-bool menuRadioGhostMenu(event_t event)
+bool menuGhostModuleConfig(event_t event)
 {
   switch (event) {
     case EVT_ENTRY:
@@ -71,9 +71,10 @@ bool menuRadioGhostMenu(event_t event)
 
   drawMenuTemplate("GHOST MENU", ICON_OPENTX, nullptr, OPTION_MENU_NO_SCROLLBAR);
 
-  constexpr coord_t xOffset = 100;
+  constexpr coord_t xOffset = 140;
   constexpr coord_t xOffset2 = 260;
-  constexpr coord_t yOffset = 50;
+  constexpr coord_t yOffset = 55;
+  constexpr coord_t lineSpacing = 25;
   LcdFlags flags = 0;
 
   for (uint8_t line = 0; line < GHST_MENU_LINES; line++) {
@@ -81,19 +82,19 @@ bool menuRadioGhostMenu(event_t event)
     if (reusableBuffer.ghostMenu.line[line].splitLine) {
       if (reusableBuffer.ghostMenu.line[line].lineFlags & GHST_LINE_FLAGS_LabelSelect)
         flags = INVERS;
-      lcdDrawText(xOffset, yOffset + line * 30, reusableBuffer.ghostMenu.line[line].menuText, flags | DBLSIZE);
+      lcdDrawText(xOffset, yOffset + line * lineSpacing, reusableBuffer.ghostMenu.line[line].menuText, flags);
 
       flags = 0;
       if (reusableBuffer.ghostMenu.line[line].lineFlags & GHST_LINE_FLAGS_ValueSelect)
         flags |= INVERS;
       if (reusableBuffer.ghostMenu.line[line].lineFlags & GHST_LINE_FLAGS_ValueEdit)
         flags |= BLINK;
-      lcdDrawText(xOffset2, yOffset + line * 30, &reusableBuffer.ghostMenu.line[line].menuText[reusableBuffer.ghostMenu.line[line].splitLine], flags | DBLSIZE);
+      lcdDrawText(xOffset2, yOffset + line * lineSpacing, &reusableBuffer.ghostMenu.line[line].menuText[reusableBuffer.ghostMenu.line[line].splitLine], flags);
     }
     else {
       if (reusableBuffer.ghostMenu.line[line].lineFlags & GHST_LINE_FLAGS_LabelSelect)
         flags = INVERS;
-      lcdDrawText(xOffset, yOffset + line * 30, reusableBuffer.ghostMenu.line[line].menuText, flags | DBLSIZE);
+      lcdDrawText(xOffset, yOffset + line * lineSpacing, reusableBuffer.ghostMenu.line[line].menuText, flags);
     }
   }
 

@@ -131,7 +131,7 @@ void menuRadioTools(event_t event)
 
 #if defined(GHOST)
   if (isModuleGhost(EXTERNAL_MODULE))
-    addRadioModuleTool(index++, "Ghost Menu", menuRadioGhostMenu, EXTERNAL_MODULE);
+    addRadioModuleTool(index++, "Ghost Menu", menuGhostModuleConfig, EXTERNAL_MODULE);
 #endif
 
   if (index == 0) {

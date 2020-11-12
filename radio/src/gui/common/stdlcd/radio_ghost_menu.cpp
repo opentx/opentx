@@ -20,7 +20,7 @@
 
 #include "opentx.h"
 
-void menuRadioGhostMenu(event_t event)
+void menuGhostModuleConfig(event_t event)
 {
   switch (event) {
     case EVT_ENTRY:
@@ -82,11 +82,9 @@ void menuRadioGhostMenu(event_t event)
     popMenu();
   }
 
-  lcdDrawText(0, 0, "GHOST MENU", INVERS);
-
   constexpr coord_t xOffset = LCD_W / 3 - 15;
   constexpr coord_t xOffset2 = LCD_W / 3 + LCD_W / 4;
-  constexpr coord_t yOffset = 12;
+  constexpr coord_t yOffset = 6;
   LcdFlags flags = 0;
 
   for (uint8_t line = 0; line < GHST_MENU_LINES; line++) {
