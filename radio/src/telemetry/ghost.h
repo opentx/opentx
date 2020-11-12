@@ -38,10 +38,12 @@
 #define GHST_UL_RC_CHANS_HS4_9TO12		0x11	// High Speed 4 channel (12 bits), plus CH9-12 (8 bits)
 #define GHST_UL_RC_CHANS_HS4_13TO16		0x12	// High Speed 4 channel (12 bits), plus CH13-16 (8 bits)
 #define GHST_UL_RC_CHANS_SIZE           12      // 1 (type) + 10 (data) + 1 (crc)
+#define GHST_UL_MENU_CTRL               0x13
 
 #define GHST_DL_OPENTX_SYNC				0x20
 #define GHST_DL_LINK_STAT               0x21
 #define GHST_DL_VTX_STAT                0x22
+#define GHST_DL_MENU_DESC               0x24
 
 #define GHST_RC_CTR_VAL_12BIT			0x7C0   // 0x3e0 << 1
 #define GHST_RC_CTR_VAL_8BIT			0x7C
@@ -129,5 +131,62 @@ const uint8_t GHOST_PERIODS[] = {
 #define GHOST_BAUDRATE       400000
 #define GHOST_PERIOD         4500        /* us; 222.22 Hz */
 #endif
+
+typedef enum
+{
+  GHST_LINE_FLAGS_None = 0x00,
+  GHST_LINE_FLAGS_LabelSelect = 0x01,
+  GHST_LINE_FLAGS_ValueSelect = 0x02,
+  GHST_LINE_FLAGS_ValueEdit = 0x04,
+} GHST_LINE_FLAGS;
+
+typedef enum
+{
+  GHST_BTN_None = 0x00,
+  GHST_BTN_JoyPress = 0x01,
+  GHST_BTN_JoyUp = 0x02,
+  GHST_BTN_JoyDown = 0x04,
+  GHST_BTN_JoyLeft = 0x08,
+  GHST_BTN_JoyRight = 0x10,
+  GHST_BTN_Bind = 0x20			// future, for no-UI Ghost
+} GHST_BTN;
+
+typedef enum
+{
+  GHST_MENU_CTRL_None = 0x00,
+  GHST_MENU_CTRL_Open = 0x01,
+  GHST_MENU_CTRL_Close = 0x02,
+  GHST_MENU_CTRL_Redraw = 0x04,
+} GHST_MENU_CTRL;
+
+
+enum GhostFrames{
+  GHST_FRAME_CHANNEL,
+  GHST_MENU_CONTROL
+};
+
+constexpr uint8_t GHST_MENU_LINES = 6;
+constexpr uint8_t GHST_MENU_CHARS = 20;
+
+// GHST_DL_MENU_DESC (27 bytes)
+typedef struct
+{
+  uint8_t address;
+  uint8_t length ;
+  uint8_t packetId;
+  uint8_t  menuFlags;    // Update Line, Clear Menu, etc.
+  uint8_t lineFlags;     // Carat states, Inverse, Bold for each of Menu Label, and Value
+  uint8_t lineIndex;     // 0 = first line
+  unsigned char menuText[GHST_MENU_CHARS];
+  uint8_t crc;
+}  ghst_menu_frame;
+
+typedef struct
+{
+  uint8_t menuFlags;     // Update Line, Clear Menu, etc.
+  uint8_t lineFlags;     // Carat states, Inverse, Bold for each of Menu Label, and Value
+  uint8_t splitLine;     // Store beginning of Value substring
+  char menuText[GHST_MENU_CHARS + 1];
+}  ghst_menu_data;
 
 #endif // _GHOST_H_

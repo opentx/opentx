@@ -89,6 +89,8 @@ enum {
 #elif defined(PCBX10)
   #if defined(PCBREV_EXPRESS)
     #define IS_FIRMWARE_COMPATIBLE_WITH_BOARD() (hardwareOptions.pcbrev == PCBREV_X10_EXPRESS)
+  #elif defined(RADIO_FAMILY_T16)
+    #define IS_FIRMWARE_COMPATIBLE_WITH_BOARD() (true)
   #else
     #define IS_FIRMWARE_COMPATIBLE_WITH_BOARD() (hardwareOptions.pcbrev == PCBREV_X10_STD)
   #endif
@@ -615,6 +617,12 @@ void sportUpdatePowerOff();
 #endif
 
 // Second serial port driver
+// Aux serial port driver
+#if defined(RADIO_TX16S)
+  #define DEBUG_BAUDRATE                  250000
+#else
+  #define DEBUG_BAUDRATE                  115200
+#endif
 #if defined(AUX_SERIAL_GPIO)
 #define DEBUG_BAUDRATE                  115200
 extern uint8_t auxSerialMode;

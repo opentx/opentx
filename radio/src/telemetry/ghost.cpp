@@ -193,6 +193,29 @@ void processGhostTelemetryFrame()
       processGhostTelemetryValueString(sensor, vtxBandString);
       break;
     }
+
+    case GHST_DL_MENU_DESC:
+    {
+      ghst_menu_frame * packet;
+      ghst_menu_data * lineData;
+      
+      packet = (ghst_menu_frame * ) telemetryRxBuffer;
+      lineData = (ghst_menu_data *) &reusableBuffer.ghostMenu.line[packet->lineIndex];
+      lineData->splitLine = 0;
+      lineData->menuFlags = packet->menuFlags;
+      lineData->lineFlags = packet->lineFlags;
+      for (uint8_t i = 0; i < GHST_MENU_CHARS; i++) {
+        if (packet->menuText[i] == 0x7C) {
+          lineData->menuText[i] = '\0';
+          lineData->splitLine = i + 1;
+        }
+        else {
+          lineData->menuText[i] = packet->menuText[i];
+        }
+      }
+      lineData->menuText[GHST_MENU_CHARS] = '\0';
+      break;
+    }
   }
 }
 
