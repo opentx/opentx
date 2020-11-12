@@ -65,8 +65,9 @@ bool menuRadioGhostMenu(event_t event)
       break;
   }
 
-  if (reusableBuffer.ghostMenu.menuAction ==  GHST_MENU_CTRL_Close)
+  if (reusableBuffer.ghostMenu.menuAction ==  GHST_MENU_CTRL_Close) {
     popMenu();
+  }
 
   drawMenuTemplate("GHOST MENU", ICON_OPENTX, nullptr, OPTION_MENU_NO_SCROLLBAR);
 

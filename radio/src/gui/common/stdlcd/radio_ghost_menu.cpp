@@ -74,8 +74,9 @@ void menuRadioGhostMenu(event_t event)
       break;
   }
 
-  if (reusableBuffer.ghostMenu.menuAction ==  GHST_MENU_CTRL_Close)
+  if (reusableBuffer.ghostMenu.menuAction ==  GHST_MENU_CTRL_Close) {
     popMenu();
+  }
 
   lcdDrawText(0, 0, "GHOST MENU", INVERS);
 
