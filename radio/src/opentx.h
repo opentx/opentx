@@ -1127,6 +1127,12 @@ union ReusableBuffer
   } spectrumAnalyser;
 
   struct {
+    ghst_menu_data line[GHST_MENU_LINES + 1];
+    uint8_t menuAction;
+    uint8_t buttonAction;
+  } ghostMenu;
+
+  struct {
     uint32_t freq;
     int16_t power;
     int16_t peak;

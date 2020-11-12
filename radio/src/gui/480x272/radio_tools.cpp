@@ -132,6 +132,10 @@ bool menuRadioTools(event_t event)
     addRadioModuleTool(index++, STR_POWER_METER_EXT, menuRadioPowerMeter, EXTERNAL_MODULE);
 #endif
 
+#if defined(GHOST)
+    addRadioModuleTool(index++, "Ghost Menu", menuRadioGhostMenu, EXTERNAL_MODULE);
+#endif
+
   if (index == 0) {
     lcdDrawCenteredText(LCD_H/2, STR_NO_TOOLS);
   }
