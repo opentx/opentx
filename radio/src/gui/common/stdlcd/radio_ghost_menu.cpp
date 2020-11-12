@@ -34,8 +34,8 @@ void menuGhostModuleConfig(event_t event)
     case EVT_ROTARY_LEFT:
 #elif defined(KEYS_GPIO_REG_UP)
     case EVT_KEY_BREAK(KEY_UP):
-#elif defined(KEYS_GPIO_REG_MINUS)
-      case EVT_KEY_BREAK(KEY_MINUS):
+#elif defined(KEYS_GPIO_REG_PLUS)
+      case EVT_KEY_BREAK(KEY_PLUS):
 #endif
       reusableBuffer.ghostMenu.buttonAction = GHST_BTN_JoyUp;
       reusableBuffer.ghostMenu.menuAction = GHST_MENU_CTRL_None;
@@ -46,8 +46,8 @@ void menuGhostModuleConfig(event_t event)
     case EVT_ROTARY_RIGHT:
 #elif defined(KEYS_GPIO_REG_DOWN)
       case EVT_KEY_BREAK(KEY_DOWN):
-#elif defined(KEYS_GPIO_REG_PLUS)
-    case EVT_KEY_BREAK(KEY_PLUS):
+#elif defined(KEYS_GPIO_REG_MINUS)
+    case EVT_KEY_BREAK(KEY_MINUS):
 #endif
       reusableBuffer.ghostMenu.buttonAction = GHST_BTN_JoyDown;
       reusableBuffer.ghostMenu.menuAction = GHST_MENU_CTRL_None;
