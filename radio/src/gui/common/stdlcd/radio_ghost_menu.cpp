@@ -32,8 +32,10 @@ void menuRadioGhostMenu(event_t event)
 
 #if defined(ROTARY_ENCODER_NAVIGATION)
     case EVT_ROTARY_LEFT:
-#elif defined(KEY_UP)
+#elif defined(KEYS_GPIO_REG_UP)
     case EVT_KEY_BREAK(KEY_UP):
+#elif defined(KEYS_GPIO_REG_MINUS)
+      case EVT_KEY_BREAK(KEY_MINUS):
 #endif
       reusableBuffer.ghostMenu.buttonAction = GHST_BTN_JoyUp;
       reusableBuffer.ghostMenu.menuAction = GHST_MENU_CTRL_None;
@@ -42,8 +44,10 @@ void menuRadioGhostMenu(event_t event)
 
 #if defined(ROTARY_ENCODER_NAVIGATION)
     case EVT_ROTARY_RIGHT:
-#elif defined(KEY_DOWN)
+#elif defined(KEYS_GPIO_REG_DOWN)
       case EVT_KEY_BREAK(KEY_DOWN):
+#elif defined(KEYS_GPIO_REG_PLUS)
+    case EVT_KEY_BREAK(KEY_PLUS):
 #endif
       reusableBuffer.ghostMenu.buttonAction = GHST_BTN_JoyDown;
       reusableBuffer.ghostMenu.menuAction = GHST_MENU_CTRL_None;
@@ -80,8 +84,8 @@ void menuRadioGhostMenu(event_t event)
 
   lcdDrawText(0, 0, "GHOST MENU", INVERS);
 
-  constexpr coord_t xOffset = LCD_W / 3 - 5;
-  constexpr coord_t xOffset2 = xOffset + LCD_W / 4;
+  constexpr coord_t xOffset = LCD_W / 3 - 15;
+  constexpr coord_t xOffset2 = LCD_W / 3 + LCD_W / 4;
   constexpr coord_t yOffset = 12;
   LcdFlags flags = 0;
 
