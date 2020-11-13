@@ -204,6 +204,10 @@ void TelemetryItem::setValue(const TelemetrySensor & sensor, int32_t val, uint32
     }
   }
   else if (unit == UNIT_TEXT) {
+    if (prec < TELEMETRY_SENSOR_TEXT_LENGTH - sizeof(newVal)) {
+      *((uint32_t *) &text[prec]) = newVal;
+      setFresh();
+    }
     return;
   }
   else {
