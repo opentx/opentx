@@ -89,7 +89,14 @@ void checkTrainerSettings()
 
 #if defined(HARDWARE_TRAINER_AUX_SERIAL)
       case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:
-        auxSerialStop();
+#if defined(AUX_SERIAL)
+        if (g_eeGeneral.auxSerialMode == UART_MODE_SBUS_TRAINER)
+          auxSerialStop();
+#endif
+#if defined(AUX2_SERIAL)
+        if (g_eeGeneral.aux2SerialMode == UART_MODE_SBUS_TRAINER)
+          aux2SerialStop();
+#endif
         break;
 #endif
     }
@@ -139,8 +146,13 @@ void checkTrainerSettings()
       stop_intmodule_heartbeat();
     else
       init_intmodule_heartbeat();
+#else
+#if defined(HARDWARE_EXTERNAL_ACCESS_MOD)
+    if (g_model.moduleData[EXTERNAL_MODULE].type != MODULE_TYPE_R9M_PXX2) // externalaccessmod 'bridges' HB and Ext module RX pins
+      init_intmodule_heartbeat();
 #elif defined(INTMODULE_HEARTBEAT_GPIO)
     init_intmodule_heartbeat();
+#endif
 #endif
   }
 }

@@ -42,7 +42,11 @@ add_definitions(-DBATTERY_CHARGE)  # -DSOFTWARE_VOLUME
 set(TARGET_SRC
   ${TARGET_SRC}
   audio_spi_driver.cpp
-  adc_driver.cpp
+  )
+
+set(FIRMWARE_TARGET_SRC
+  ${FIRMWARE_TARGET_SRC}
+  x12s_adc_driver.cpp
   )
 
 set(FIRMWARE_TARGET_SRC

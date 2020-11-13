@@ -28,7 +28,9 @@
 #define MANUAL_SCRIPTS_MAX_INSTRUCTIONS    (20000/100)
 #define LUA_WARNING_INFO_LEN               64
 
-lua_State *lsWidgets = NULL;
+lua_State * lsWidgets = NULL;
+
+#if 0
 extern int custom_lua_atpanic(lua_State *L);
 
 #define LUA_WIDGET_FILENAME                "/main.lua"
@@ -559,3 +561,4 @@ void luaInitThemesAndWidgets()
     luaDoGc(lsWidgets, true);
   }
 }
+#endif

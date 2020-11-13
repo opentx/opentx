@@ -28,14 +28,20 @@
 class OutputsWidget: public Widget
 {
   public:
-    OutputsWidget(const WidgetFactory * factory, const Zone & zone, Widget::PersistentData * persistentData):
-      Widget(factory, zone, persistentData)
+    OutputsWidget(const WidgetFactory * factory, Window * parent, const rect_t & rect, Widget::PersistentData * persistentData):
+      Widget(factory, parent, rect, persistentData)
     {
     }
 
-    void refresh() override;
+    void paint(BitmapBuffer * dc) override
+    {
+      if (width() > 300 && height() > 20)
+        twoColumns(dc);
+      else if (width() > 150 && height() > 20)
+        oneColumn(dc);
+    }
 
-    uint8_t drawChannels(const uint16_t & x, const uint16_t & y, const uint16_t & w, const uint16_t & h, const uint8_t & firstChan, const bool & bg_shown, const uint16_t & bg_color)
+    uint8_t drawChannels(BitmapBuffer * dc, const uint16_t & x, const uint16_t & y, const uint16_t & w, const uint16_t & h, const uint8_t & firstChan, const bool & bg_shown, const uint16_t & bg_color)
     {
       const uint8_t numChan = h / ROW_HEIGHT;
       const uint8_t lastChan = firstChan + numChan;
@@ -53,43 +59,49 @@ class OutputsWidget: public Widget
 
         if (bg_shown) {
           lcdSetColor(bg_color);
-          lcdDrawSolidFilledRect(barLft, barTop, barW , barH, CUSTOM_COLOR);
+          dc->drawSolidFilledRect(barLft, barTop, barW , barH, CUSTOM_COLOR);
         }
         if (fillW)
-          lcdDrawSolidFilledRect((chanVal > 0 ? barMid : barMid - fillW), barTop, fillW, barH, MAINVIEW_GRAPHICS_COLOR);
+          dc->drawSolidFilledRect((chanVal > 0 ? barMid : barMid - fillW), barTop, fillW, barH, BARGRAPH1_COLOR);
         lcd->drawSolidVerticalLine(barMid, barTop, barH, MAINVIEW_GRAPHICS_COLOR);
-        lcdDrawRect(x, rowTop, w, rowH + 1);
-        lcdDrawNumber(x + barW - 10, barTop, chanVal, FONT(XS) | DEFAULT_COLOR | RIGHT, 0, nullptr, "%");
+        dc->drawRect(x, rowTop, w, rowH + 1);
+        dc->drawNumber(x + barW - 10, barTop, chanVal, FONT(XS) | DEFAULT_COLOR | RIGHT, 0, nullptr, "%");
         if (g_model.limitData[curChan - 1].name[0] != 0) {
-          lcdDrawNumber(barLft + 1, barTop, curChan, FONT(XS) | DEFAULT_COLOR | LEFT | LEADING0, 2);
-          lcdDrawSizedText(barLft + 23, barTop, g_model.limitData[curChan - 1].name, sizeof(g_model.limitData[curChan - 1].name), FONT(XS) | DEFAULT_COLOR | LEFT | ZCHAR);
+          dc->drawNumber(barLft + 1, barTop, curChan, FONT(XS) | DEFAULT_COLOR | LEFT | LEADING0, 2);
+          dc->drawSizedText(barLft + 23, barTop, g_model.limitData[curChan - 1].name, sizeof(g_model.limitData[curChan - 1].name), FONT(XS) | DEFAULT_COLOR | LEFT);
         }
         else {
-          putsChn(barLft + 1, barTop, curChan, FONT(XS) | DEFAULT_COLOR | LEFT);
+          drawSource(dc, barLft + 1, barTop, curChan, FONT(XS) | DEFAULT_COLOR | LEFT);
         }
       }
       return lastChan - 1;
     }
 
-    void twoColumns()
+    void twoColumns(BitmapBuffer * dc)
     {
-      uint8_t endColumn = drawChannels(zone.x, zone.y, zone.w / 2, zone.h,
+      uint8_t endColumn = drawChannels(dc, 0, 0, width() / 2, height(),
                                        persistentData->options[0].value.unsignedValue,
                                        persistentData->options[1].value.boolValue,
                                        persistentData->options[2].value.unsignedValue);
 
-      drawChannels(zone.x + zone.w / 2 + 2, zone.y, zone.w / 2, zone.h, endColumn + 1,
+      drawChannels(dc, width() / 2 + 2, 0, width() / 2, height(), endColumn + 1,
                    persistentData->options[1].value.boolValue,
                    persistentData->options[2].value.unsignedValue);
     }
 
-    void oneColumn()
+    void oneColumn(BitmapBuffer * dc)
     {
-      drawChannels(zone.x, zone.y, zone.w, zone.h,
+      drawChannels(dc, 0, 0, width(), height(),
                    persistentData->options[0].value.unsignedValue,
                    persistentData->options[1].value.boolValue,
                    persistentData->options[2].value.unsignedValue);
     }
+
+    void checkEvents() override
+    {
+      invalidate();
+    }
+
 
     static const ZoneOption options[];
 };
@@ -99,15 +111,6 @@ const ZoneOption OutputsWidget::options[] = {
   { STR_FILL_BACKGROUND, ZoneOption::Bool, OPTION_VALUE_BOOL(false) },
   { STR_BG_COLOR, ZoneOption::Color, OPTION_VALUE_UNSIGNED(LIGHTGREY) },
   { nullptr, ZoneOption::Bool }
-};
-
-
-void OutputsWidget::refresh()
-{
-  if (zone.w > 300 && zone.h > 20)
-    twoColumns();
-  else if (zone.w > 150 && zone.h > 20)
-    oneColumn();
 };
 
 BaseWidgetFactory<OutputsWidget> outputsWidget("Outputs", OutputsWidget::options);

@@ -55,8 +55,8 @@
 #define LEN_VBLMODE                    "\004"
 #define TR_VBLMODE                     "关闭" "按键" "操控" "全部" "开启"
 
-#define LEN_TRNMODE                    "\003"
-#define TR_TRNMODE                     "关\0" "+=\0" ":=\0"
+#define LEN_TRNMODE                    "\004"
+#define TR_TRNMODE                     "关\0" "相加" "替换"
 
 #define LEN_TRNCHN                     "\003"
 #define TR_TRNCHN                      "CH1CH2CH3CH4"
@@ -79,11 +79,11 @@
 #define LEN_VPERSISTENT                "\014"
 #define TR_VPERSISTENT                 "OFF\0        " "Flight\0     " "Manual Reset"
 
-#define LEN_COUNTRY_CODES              "\006"
-#define TR_COUNTRY_CODES               "美国\0 " "日本\0 " "欧洲\0 "
+#define LEN_COUNTRY_CODES              "\004"
+#define TR_COUNTRY_CODES               "美国" "日本" "欧洲"
 
 #define LEN_USBMODES                   "\008"
-#define TR_USBMODES                    "询问\0  " "游戏柄\0 " "U盘\0   " "串行\0  "
+#define TR_USBMODES                    "询问\0  " "游戏柄　\0 " "U盘 \0   " "串行\0  "
 
 #define LEN_JACK_MODES                 "\006"
 #define TR_JACK_MODES                  "询问\0" "音频\0" "教练\0"
@@ -142,9 +142,9 @@
 #define LEN_VMIXTRIMS                  "\004"
 
 #if defined(PCBHORUS)
-  #define TR_VMIXTRIMS                 "禁用""使用""Rud""Ele""Thr""Ail""T5\0""T6\0"
+  #define TR_VMIXTRIMS                 "禁用""启用""Rud""Ele""Thr""Ail""T5\0""T6\0"
 #else
-  #define TR_VMIXTRIMS                 "禁用""使用""Rud""Ele""Thr""Ail"
+  #define TR_VMIXTRIMS                 "禁用""启用""Rud""Ele""Thr""Ail"
 #endif
 
 #if LCD_W >= 212
@@ -164,7 +164,7 @@
 #define LEN_VCSWFUNC                   "\005"
 #define TR_VCSWFUNC                    "---\0 " TR_CSWEQUAL "a~x\0 ""a>x\0 ""a<x\0 " TR_CSWRANGE "|a|>x""|a|<x""AND\0 ""OR\0  ""XOR\0 " TR_CSWSTAY "a=b\0 ""a>b\0 ""a<b\0 ""Δ}x\0 ""|Δ|}x" TR_CSWTIMER TR_CSWSTICKY
 
-#define LEN_VFSWFUNC                   "\014"
+#define LEN_VFSWFUNC                   "\016"
 
 #if defined(VARIO)
   #define TR_VVARIO                    "Vario传感器\0"
@@ -173,11 +173,11 @@
 #endif
 
 #if defined(AUDIO)
-  #define TR_SOUND                     "播放声音\0 "
+  #define TR_SOUND                     "播放声音　　　　"
 #endif
 
 #if defined(HAPTIC)
-  #define TR_HAPTIC                    "振动\0     "
+  #define TR_HAPTIC                    "振动　　　　　　"
 #else
   #define TR_HAPTIC                    "[振动]\0   "
 #endif
@@ -186,54 +186,54 @@
   #if defined(PCBSKY9X)
     #define TR_PLAY_TRACK              "Play\0     "
   #else
-    #define TR_PLAY_TRACK              "播放音频文件"
+    #define TR_PLAY_TRACK              "播放音频文件　　"
   #endif
-  #define TR_PLAY_BOTH                 "同时播放\0  "
-  #define TR_PLAY_VALUE                "播放数值\0  "
+  #define TR_PLAY_BOTH                 "同时播放　　　　"
+  #define TR_PLAY_VALUE                "播放数值　　　　"
 #else
   #define TR_PLAY_TRACK                "[Play Trk]"
   #define TR_PLAY_BOTH                 "[Play Bth]"
   #define TR_PLAY_VALUE                "[Play Val]"
 #endif
 
-#define TR_SF_BG_MUSIC                 "播放背景音乐" "暂停背景音乐"
+#define TR_SF_BG_MUSIC                 "播放背景音乐　　" "暂停背景音乐　　"
 
 #if defined(SDCARD)
-  #define TR_SDCLOGS                   "记录到SD卡\0  "
+  #define TR_SDCLOGS                   "记录到SD卡　　　"
 #else
   #define TR_SDCLOGS                   "[记录到SD卡]\0"
 #endif
 
 #if defined(GVARS)
-  #define TR_ADJUST_GVAR               "修改\0      "
+  #define TR_ADJUST_GVAR               "修改全局变量GV值"
 #else
   #define TR_ADJUST_GVAR               "[修改GV值]\0 "
 #endif
 
 #if defined(LUA)
-  #define TR_SF_PLAY_SCRIPT            "Lua 脚本\0 "
+  #define TR_SF_PLAY_SCRIPT            "Lua脚本 　　　　"
 #else
   #define TR_SF_PLAY_SCRIPT            "[Lua]\0    "
 #endif
 
 #if defined(DEBUG)
-  #define TR_SF_TEST                   "测试\0     "
+  #define TR_SF_TEST                   "测试　　　　　　"
 #else
   #define TR_SF_TEST
 #endif
 
 #if defined(OVERRIDE_CHANNEL_FUNCTION) && LCD_W >= 212
-  #define TR_SF_SAFETY                 "锁定通道值\0 "
+  #define TR_SF_SAFETY                 "锁定通道值　　　"
 #elif defined(OVERRIDE_CHANNEL_FUNCTION)
   #define TR_SF_SAFETY                 "Overr.\0   "
 #else
   #define TR_SF_SAFETY                 "---\0      "
 #endif
 
-#define TR_SF_SCREENSHOT               "截屏\0     "
+#define TR_SF_SCREENSHOT               "截屏　　　　　　"
 #define TR_SF_RESERVE                  "[保留]\0   "
 
-#define TR_VFSWFUNC                    TR_SF_SAFETY "Trainer\0  ""Inst. Trim""Reset\0    ""Set \0     " TR_ADJUST_GVAR "Volume\0   " "SetFailsfe" "RangeCheck" "ModuleBind" TR_SOUND TR_PLAY_TRACK TR_PLAY_VALUE TR_SF_RESERVE TR_SF_PLAY_SCRIPT TR_SF_RESERVE TR_SF_BG_MUSIC TR_VVARIO TR_HAPTIC TR_SDCLOGS "Backlight\0" TR_SF_SCREENSHOT TR_SF_TEST
+#define TR_VFSWFUNC                    TR_SF_SAFETY "教练　　　　　" "摇杆值存储到微调" "复位　　　　　　" "设置　　　　　　" TR_ADJUST_GVAR "音量　　　　" "设置失控保护　　 " "测距模式　　　　" "模块对频　　　　"  TR_SOUND TR_PLAY_TRACK TR_PLAY_VALUE TR_SF_RESERVE TR_SF_PLAY_SCRIPT TR_SF_RESERVE TR_SF_BG_MUSIC TR_VVARIO TR_HAPTIC TR_SDCLOGS "背光　　　　　　" TR_SF_SCREENSHOT TR_SF_TEST
 
 #define LEN_VFSWRESET                  TR("\004", "\008")
 
@@ -378,6 +378,9 @@
 #define LEN_TEXT_SIZE                  "\004"
 #define TR_TEXT_SIZE                   "标准" "小\0 " "较小" "中等" "双倍"
 
+#define LEN_SUBTRIMMODES               "\017"
+#define TR_SUBTRIMMODES                STR_CHAR_DELTA" (center only)""= (symetrical) "
+
 // ZERO TERMINATED STRINGS
 #if defined(COLORLCD)
   #define INDENT
@@ -393,6 +396,8 @@
 
 #if defined(PCBFRSKY)
   #define TR_ENTER                     "[ENTER]"
+#elif !defined(HARDWARE_KEYS)
+  #define TR_ENTER                     "[NEXT]"
 #else
   #define TR_ENTER                     "[MENU]"
 #endif
@@ -488,7 +493,7 @@
 #if defined(PCBNV14)
 #define TR_GV                          "GV"
 #else
-#define TR_GV                          TR("G", "变量")
+#define TR_GV                          TR("G", "GV")
 #endif
 #define TR_ACHANNEL                    "A\004通道"
 #define TR_RANGE                       INDENT "范围"
@@ -500,8 +505,8 @@
 #define TR_SCREEN                      "屏幕\001"
 #define TR_SOUND_LABEL                 "声音"
 #define TR_LENGTH                      "音长"
-#define TR_BEEP_LENGTH                 "报警声长度"
-#define TR_BEEP_PITCH                  "报警声音调"
+#define TR_BEEP_LENGTH                 "提示音长度"
+#define TR_BEEP_PITCH                  "提示音音调"
 #define TR_HAPTIC_LABEL                "振动"
 #define TR_STRENGTH                    "强度"
 #define TR_GYRO_LABEL                  "陀螺仪"
@@ -578,6 +583,14 @@
 #define TR_HZ                          "Hz"
 #define TR_TMIXMAXMS                   "Tmix max"
 #define TR_FREE_STACK                  "Free stack"
+#define TR_INT_GPS_LABEL               "Internal GPS"
+#define TR_HEARTBEAT_LABEL             "Heartbeat"
+#define TR_LUA_SCRIPTS_LABEL           "Lua scripts"
+#define TR_FREE_MEM_LABEL              "Free mem"
+#define TR_TIMER_LABEL                 "Timer"
+#define TR_THROTTLE_PERCENT_LABEL      "Throttle %"
+#define TR_BATT_LABEL                  "Battery"
+#define TR_SESSION                     "Session"
 #define TR_MENUTORESET                 TR_ENTER " to reset"
 #define TR_PPM_TRAINER                 "TR"
 #define TR_CH                          "CH"
@@ -587,7 +600,7 @@
 #define TR_EEPROMLOWMEM                "EEPROM low mem"
 #define TR_PRESS_ANY_KEY_TO_SKIP       "按任意键跳过"
 #define TR_THROTTLE_NOT_IDLE           "请将油门拉至最低!"
-#define TR_ALARMSDISABLED              "Alarms disabled"
+#define TR_ALARMSDISABLED              "已禁用报警"
 #define TR_PRESSANYKEY                 TR("\010Press any Key", "按任意键")
 #define TR_BADEEPROMDATA               "存储数据错误"
 #define TR_BAD_RADIO_DATA              "系统数据错误"
@@ -744,7 +757,7 @@
 #define TR_SPECTRUM_ANALYSER_EXT       "频谱仪 (外置)"
 #define TR_SPECTRUM_ANALYSER_INT       "频谱仪 (内置)"
 #define TR_SDCARD_FULL                 "存储卡已满"
-#define TR_NEEDS_FILE                  "NEEDS FILE"
+#define TR_NEEDS_FILE                  "需要文件名包含"
 #define TR_EXT_MULTI_SPEC              "opentx-inv"
 #define TR_INT_MULTI_SPEC              "stm-opentx-noinv"
 #define TR_INCOMPATIBLE                "不兼容"
@@ -754,7 +767,7 @@
 #define TR_EEPROM_CONVERTING           "转换数据"
 #define TR_THROTTLE_UPPERCASE          "油门"
 #define TR_ALARMSWARN                  "警告"
-#define TR_SWITCHWARN                  TR("开关", "操控")
+#define TR_SWITCHWARN                  TR("开关", "开关位置")
 #define TR_FAILSAFEWARN                "失控保护"
 #define TR_TEST_WARNING                TR("TESTING", "测试版本")
 #define TR_TEST_NOTSAFE                "只用于测试"
@@ -763,7 +776,7 @@
 #define TR_WARN_MULTI_LOWPOWER         "低功率模式"
 #define TR_BATTERY                     "电池"
 #define TR_WRONG_PCBREV                "错误的硬件类型"
-#define TR_EMERGENCY_MODE              "紧 急 模 式"
+#define TR_EMERGENCY_MODE              "紧急模式"
 #define TR_PCBREV_ERROR                "错误的主板类型"
 #define TR_NO_FAILSAFE                 "失控保护未设置"
 #define TR_KEYSTUCK                    "检测到有按键卡住"
@@ -778,6 +791,7 @@
 #define TR_COPROC_TEMP                 "主板温度"
 #define TR_CAPAWARNING                 INDENT "电流过低"
 #define TR_TEMPWARNING                 INDENT "过热"
+#define TR_TTL_WARNING                 "Warning: use only TLL or 5v"
 #define TR_FUNC                        "功能"
 #define TR_V1                          "V1"
 #define TR_V2                          "V2"
@@ -835,6 +849,7 @@
 #define TR_MENU_GLOBAL_VARS              "全局变量功能"
 #define TR_OWN                         "Own"
 #define TR_DATE                        "日期"
+#define TR_MONTHS                      { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" }
 #define TR_YEAR                        "年"
 #define TR_MONTH                       "月"
 #define TR_DAY                         "日"
@@ -852,7 +867,7 @@
 #define TR_FLASH_FLIGHT_CONTROLLER_BY_INTERNAL_MODULE_OTA "Flash FC by int. OTA"
 #define TR_FLASH_BLUETOOTH_MODULE      TR("Flash BT module", "刷新蓝牙模块")
 #define TR_FLASH_POWER_MANAGEMENT_UNIT "Flash pwr mngt unit"
-#define TR_CURRENT_VERSION             TR("Curr Vers: ", "Current version: ")
+#define TR_CURRENT_VERSION             "Current version: "
 #define TR_FLASH_INTERNAL_MODULE       TR("Flash int. module", "更新内置模块固件")
 #define TR_FLASH_INTERNAL_MULTI        TR("Flash Int. Multi", "更新内置多协议模块固件")
 #define TR_FLASH_EXTERNAL_MODULE       TR("Flash ext. module", "更新外置模块固件")
@@ -1046,6 +1061,7 @@
 #define TR_LIMITS_HEADERS_CURVE        "曲线"
 #define TR_LIMITS_HEADERS_PPMCENTER    "PPM中点"
 #define TR_LIMITS_HEADERS_SUBTRIMMODE  "微调模式"
+#define TR_INVERTED     "Inverted"
 
 #define TR_LSW_HEADERS_FUNCTION        "功能"
 #define TR_LSW_HEADERS_V1              "V1"
@@ -1143,7 +1159,7 @@
 #define TR_CHR_HOUR                    'h'
 #define TR_CHR_INPUT                   'I'   // Values between A-I will work
 
-#define TR_BEEP_VOLUME                 "报警声音量"
+#define TR_BEEP_VOLUME                 "提示音音量"
 #define TR_WAV_VOLUME                  "语音音量"
 #define TR_BG_VOLUME                   TR("Bg volume", "背景声音量")
 

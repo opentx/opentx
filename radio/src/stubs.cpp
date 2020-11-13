@@ -14,10 +14,6 @@ uint8_t     popupMenuOffsetType = 0;
 void        (*popupMenuHandler)(const char * result);
 uint8_t noHighlightCounter;
 
-void checkLuaMemoryUsage()
-{
-}
-
 void runPopupWarning(uint16_t event)
 {
 }

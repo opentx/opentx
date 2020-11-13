@@ -78,7 +78,7 @@ class Page: public Window {
     }
 #endif
 
-    void deleteLater();
+    void deleteLater(bool detach=true) override;
 
     void paint(BitmapBuffer * dc) override;
 

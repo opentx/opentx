@@ -31,27 +31,32 @@ class PageTab;
 
 #define MAX_THEME_OPTIONS              5
 
-class ThemeBase;
-void registerTheme(ThemeBase * theme);
+class OpenTxTheme;
+void registerTheme(OpenTxTheme * theme);
 
 // YAML_GENERATOR defs
 #if !defined(USE_IDX)
 #define USE_IDX
 #endif
 
-class ThemeBase: public Theme
+class OpenTxTheme: public Theme
 {
   public:
     struct PersistentData {
       ZoneOptionValueTyped options[MAX_THEME_OPTIONS] USE_IDX;
     };
 
-    ThemeBase(const char * name, const ZoneOption * options = nullptr):
+    explicit OpenTxTheme(const char * name, const ZoneOption * options = nullptr):
       name(name),
       options(options),
       thumb(nullptr)
     {
       registerTheme(this);
+    }
+
+    static OpenTxTheme * instance()
+    {
+      return static_cast<OpenTxTheme *>(theme);
     }
 
     inline const char * getName() const
@@ -93,6 +98,8 @@ class ThemeBase: public Theme
 
     void drawSlider(BitmapBuffer * dc, int vmin, int vmax, int value, const rect_t & rect, bool edit, bool focus) const override;
 
+    virtual void drawTopLeftBitmap(BitmapBuffer * dc) const = 0;
+
   protected:
     const char * name;
     const ZoneOption * options;
@@ -104,10 +111,10 @@ class ThemeBase: public Theme
     static const BitmapBuffer * busy;
 };
 
-ThemeBase * getTheme(const char * name);
-void loadTheme(ThemeBase * theme);
+OpenTxTheme * getTheme(const char * name);
+void loadTheme(OpenTxTheme * theme);
 void loadTheme();
 
-std::list<ThemeBase *> & getRegisteredThemes();
+std::list<OpenTxTheme *> & getRegisteredThemes();
 
 #endif // _COLORLCD_THEME_H_

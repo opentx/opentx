@@ -237,7 +237,7 @@ class MixLineButton : public CommonInputOrMixButton {
       }
     }
 
-    bool isActive() override
+    bool isActive() const override
     {
       return isMixActive(index);
     }
@@ -306,6 +306,7 @@ void ModelMixesPage::rebuild(FormWindow * window, int8_t focusMixIndex)
 
 void ModelMixesPage::editMix(FormWindow * window, uint8_t channel, uint8_t mixIndex)
 {
+  Window::clearFocus();
   Window * editWindow = new MixEditWindow(channel, mixIndex);
   editWindow->setCloseHandler([=]() {
     rebuild(window, mixIndex);
@@ -317,8 +318,6 @@ void ModelMixesPage::build(FormWindow * window, int8_t focusMixIndex)
   FormGridLayout grid;
   grid.spacer(PAGE_PADDING);
   grid.setLabelWidth(66);
-
-  Window::clearFocus();
 
   const BitmapBuffer * const mixerMultiplexBitmap[] = {
     mixerSetupAddBitmap,

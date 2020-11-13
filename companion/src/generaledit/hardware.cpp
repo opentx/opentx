@@ -127,6 +127,14 @@ HardwarePanel::HardwarePanel(QWidget * parent, GeneralSettings & generalSettings
     ui->potsTypeSeparator_1->hide();
     ui->potsTypeSeparator_2->hide();
   }
+  
+  if (firmware->getCapability(HasSportConnector)) {
+    ui->sportPower->setChecked(generalSettings.sportPower);
+  }
+  else {
+    ui->sportPower->hide();
+    ui->sportPowerLabel->hide();
+  }
 
   setupPotType(0, ui->pot1Label, ui->pot1Name, ui->pot1Type);
   setupPotType(1, ui->pot2Label, ui->pot2Name, ui->pot2Type);
@@ -230,6 +238,11 @@ HardwarePanel::~HardwarePanel()
 void HardwarePanel::on_filterEnable_stateChanged()
 {
   generalSettings.jitterFilter = !ui->filterEnable->isChecked();
+}
+
+void HardwarePanel::on_sportPower_stateChanged()
+{
+  generalSettings.sportPower = ui->sportPower->isChecked();
 }
 
 void HardwarePanel::on_rtcCheckDisable_stateChanged()

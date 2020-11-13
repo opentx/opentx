@@ -71,7 +71,7 @@ TEST(Timers, timerSet)
 
 TEST(Timers, timerGreaterThan9hours)
 {
-  initModelTimer(0, TMRMODE_ABS, 0);
+  initModelTimer(0, TMRMODE_ON, 0);
   timerSet(0, 0);
   // test with 24 hours
   EXPECT_TRUE(evalTimersForNSecondsAndTest(24*3600, THR_100, 0, TMR_RUNNING, 24*3600));
@@ -98,7 +98,7 @@ TEST(Timers, saveRestoreTimers)
 
 TEST(Timers, timerOff)
 {
-  initModelTimer(0, TMRMODE_NONE, 0);
+  initModelTimer(0, TMRMODE_OFF, 0);
   timerReset(0);
 
   EXPECT_TRUE(evalTimersForNSecondsAndTest(0,  THR_100, 0, TMR_OFF,  0));
@@ -107,7 +107,7 @@ TEST(Timers, timerOff)
 
 TEST(Timers, timerAbsolute)
 {
-  initModelTimer(0, TMRMODE_ABS, 0);
+  initModelTimer(0, TMRMODE_ON, 0);
   timerReset(0);
 
   EXPECT_TRUE(evalTimersForNSecondsAndTest(1,   THR_100, 0, TMR_RUNNING,    1));
@@ -173,7 +173,7 @@ TEST(Timers, timerThrottleRelative)
 
 TEST(Timers, timerThrottleTriggered)
 {
-  initModelTimer(0, TMRMODE_THR_TRG, 0);
+  initModelTimer(0, TMRMODE_THR_START, 0);
 
   timerReset(0);
   EXPECT_TRUE(evalTimersForNSecondsAndTest(1,          0, 0, TMR_OFF,       0));
@@ -183,7 +183,7 @@ TEST(Timers, timerThrottleTriggered)
   EXPECT_TRUE(evalTimersForNSecondsAndTest(100,        0, 0, TMR_RUNNING, 300));
 
   // test down-running
-  initModelTimer(0, TMRMODE_THR_TRG, 200);
+  initModelTimer(0, TMRMODE_THR_START, 200);
   timerReset(0);
   EXPECT_TRUE(evalTimersForNSecondsAndTest(1,          0, 0, TMR_OFF,     200));
   EXPECT_TRUE(evalTimersForNSecondsAndTest(100, THR_10-1, 0, TMR_OFF,     200));  // below threshold

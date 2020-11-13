@@ -23,14 +23,51 @@
 class GaugeWidget: public Widget
 {
   public:
-    GaugeWidget(const WidgetFactory * factory, const Zone & zone, Widget::PersistentData * persistentData):
-      Widget(factory, zone, persistentData)
+    GaugeWidget(const WidgetFactory * factory, Window * parent, const rect_t & rect, Widget::PersistentData * persistentData):
+      Widget(factory, parent, rect, persistentData)
     {
     }
 
-    virtual void refresh();
+    void paint(BitmapBuffer * dc) override
+    {
+      mixsrc_t index = persistentData->options[0].value.unsignedValue;
+      int32_t min = persistentData->options[1].value.signedValue;
+      int32_t max = persistentData->options[2].value.signedValue;
+      uint16_t color = persistentData->options[3].value.unsignedValue;
+
+      int32_t value = getValue(index);
+
+      if (min > max) {
+        SWAP(min, max);
+        value = value - min - max;
+      }
+
+      value = limit(min, value, max);
+
+      int w = divRoundClosest(width() * (value - min), (max - min));
+      int percent = divRoundClosest(100 * (value - min), (max - min));
+
+      // Gauge label
+      drawSource(dc, 0, 0, index, FONT(XS) | FOCUS_COLOR);
+
+      // Gauge
+      lcdSetColor(color);
+      dc->drawSolidFilledRect(0, 16, width(), 16, FOCUS_COLOR);
+      dc->drawNumber(0+width()/2, 17, percent, FONT(XS) | CUSTOM_COLOR | CENTERED, 0, nullptr, "%");
+      dc->invertRect(w, 16, width() - w, 16, CUSTOM_COLOR);
+    }
+
+    void checkEvents() override
+    {
+      auto newValue = getValue(persistentData->options[0].value.unsignedValue);
+      if (lastValue != newValue) {
+        lastValue = newValue;
+        invalidate();
+      }
+    }
 
     static const ZoneOption options[];
+    int32_t lastValue = 0;
 };
 
 const ZoneOption GaugeWidget::options[] = {
@@ -40,34 +77,5 @@ const ZoneOption GaugeWidget::options[] = {
   { STR_COLOR, ZoneOption::Color, OPTION_VALUE_UNSIGNED(RED) },
   { nullptr, ZoneOption::Bool }
 };
-
-void GaugeWidget::refresh()
-{
-  mixsrc_t index = persistentData->options[0].value.unsignedValue;
-  int32_t min = persistentData->options[1].value.signedValue;
-  int32_t max = persistentData->options[2].value.signedValue;
-  uint16_t color = persistentData->options[3].value.unsignedValue;
-
-  int32_t value = getValue(index);
-
-  if (min > max) {
-    SWAP(min, max);
-    value = value - min - max;
-  }
-
-  value = limit(min, value, max);
-
-  int w = divRoundClosest(zone.w * (value - min), (max - min));
-  int percent = divRoundClosest(100 * (value - min), (max - min));
-
-  // Gauge label
-  drawSource(zone.x, zone.y, index, FONT(XS) | FOCUS_COLOR);
-
-  // Gauge
-  lcdSetColor(color);
-  lcdDrawSolidFilledRect(zone.x, zone.y + 16, zone.w, 16, FOCUS_COLOR);
-  lcdDrawNumber(zone.x+zone.w/2, zone.y + 17, percent, FONT(XS) | CUSTOM_COLOR | CENTERED, 0, nullptr, "%");
-  lcd->invertRect(zone.x + w, zone.y + 16, zone.w - w, 16, CUSTOM_COLOR);
-}
 
 BaseWidgetFactory<GaugeWidget> gaugeWidget("Gauge", GaugeWidget::options);

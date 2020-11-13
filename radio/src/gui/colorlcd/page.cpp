@@ -44,14 +44,14 @@ PageHeader::~PageHeader()
 
 void PageHeader::paint(BitmapBuffer * dc)
 {
-  static_cast<ThemeBase *>(theme)->drawMenuBackground(dc, getIcon(), "");
+  OpenTxTheme::instance()->drawMenuBackground(dc, getIcon(), "");
   dc->drawSolidFilledRect(MENU_HEADER_HEIGHT, 0, LCD_W - MENU_HEADER_HEIGHT, MENU_HEADER_HEIGHT, MENU_BGCOLOR);
 }
 
 Page::Page(unsigned icon):
   Window(&mainWindow, {0, 0, LCD_W, LCD_H}, OPAQUE),
   header(this, icon),
-  body(this, { 0, MENU_HEADER_HEIGHT, LCD_W, LCD_H - MENU_HEADER_HEIGHT }),
+  body(this, { 0, MENU_HEADER_HEIGHT, LCD_W, LCD_H - MENU_HEADER_HEIGHT }, FORM_FORWARD_FOCUS),
   previousFocus(focusWindow)
 {
   clearFocus();
@@ -67,13 +67,13 @@ Page::~Page()
 #endif
 }
 
-void Page::deleteLater()
+void Page::deleteLater(bool detach)
 {
   if (previousFocus) {
     previousFocus->setFocus(SET_FOCUS_DEFAULT);
   }
 
-  Window::deleteLater();
+  Window::deleteLater(detach);
 }
 
 void Page::paint(BitmapBuffer * dc)

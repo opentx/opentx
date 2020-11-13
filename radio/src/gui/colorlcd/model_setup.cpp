@@ -404,6 +404,7 @@ class ReceiverButton: public TextButton {
       memclear(&reusableBuffer.moduleSetup.bindInformation, sizeof(BindInformation));
       reusableBuffer.moduleSetup.bindInformation.rxUid = receiverIdx;
       if (isModuleR9MAccess(moduleIdx)) {
+        reusableBuffer.moduleSetup.bindInformation.step = BIND_MODULE_TX_INFORMATION_REQUEST;
 #if defined(SIMU)
         reusableBuffer.moduleSetup.pxx2.moduleInformation.information.modelID = 1;
         reusableBuffer.moduleSetup.pxx2.moduleInformation.information.variant = 2;
@@ -462,7 +463,7 @@ class TrainerModuleWindow  : public FormGroup {
       trainerChoice->setAvailableHandler(isTrainerModeAvailable);
       grid.nextLine();
 
-      if (g_model.trainerData.mode >= TRAINER_MODE_MASTER_TRAINER_JACK) {
+      if (g_model.isTrainerTraineeEnable()) {
         new StaticText(this, grid.getLabelSlot(true), STR_CHANNELRANGE);
         channelStart = new NumberEdit(this, grid.getFieldSlot(2, 0), 1,
                                       MAX_OUTPUT_CHANNELS - 8 + g_model.trainerData.channelsCount + 1,
@@ -808,11 +809,13 @@ class ModuleWindow : public FormGroup {
                 moduleState[moduleIdx].mode = MODULE_MODE_NORMAL;
                 return 0;
               }
+#if defined(MULTIMODULE)
               else {
                 setMultiBindStatus(moduleIdx, MULTI_BIND_INITIATED);
                 moduleState[moduleIdx].mode = MODULE_MODE_BIND;
                 return 1;
               }
+#endif
           });
           bindButton->setCheckHandler([=]() {
               if (moduleState[moduleIdx].mode != MODULE_MODE_BIND) {

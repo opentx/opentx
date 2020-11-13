@@ -332,7 +332,7 @@ class InputLineButton : public CommonInputOrMixButton {
       }
     }
 
-    bool isActive() override
+    bool isActive() const override
     {
       return isExpoActive(index);
     }
@@ -382,6 +382,7 @@ void ModelInputsPage::rebuild(FormWindow * window, int8_t focusIndex)
 
 void ModelInputsPage::editInput(FormWindow * window, uint8_t input, uint8_t index)
 {
+  Window::clearFocus();
   Window * editWindow = new InputEditWindow(input, index);
   editWindow->setCloseHandler([=]() {
     rebuild(window, index);
@@ -393,8 +394,6 @@ void ModelInputsPage::build(FormWindow * window, int8_t focusIndex)
   FormGridLayout grid;
   grid.spacer(PAGE_PADDING);
   grid.setLabelWidth(66);
-
-  Window::clearFocus();
 
   int inputIndex = 0;
   ExpoData * line = g_model.expoData;

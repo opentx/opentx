@@ -18,8 +18,9 @@
  * GNU General Public License for more details.
  */
 
-#include "radio_calibration.h"
 #include "opentx.h"
+#include "radio_calibration.h"
+#include "sliders.h"
 
 #define XPOT_DELTA                     10
 #define XPOT_DELAY                     5 /* cycles */
@@ -48,56 +49,6 @@ class StickCalibrationWindow: public Window {
     uint8_t stickX, stickY;
 };
 
-class MultiPosCalibrationWindow: public Window {
-  public:
-    MultiPosCalibrationWindow(Window * parent, const rect_t & rect, uint8_t potIndex):
-      Window(parent, rect),
-      potIndex(potIndex)
-    {
-    }
-
-    void checkEvents() override
-    {
-      // will always force a full monitor window refresh
-      invalidate();
-    }
-
-    void paint(BitmapBuffer * dc) override
-    {
-      drawHorizontalSlider(dc, 5, 8, rect.w - 18, 1 + (potsPos[potIndex] & 0x0f), 1, XPOTS_MULTIPOS_COUNT+1, XPOTS_MULTIPOS_COUNT, OPTION_SLIDER_TICKS | OPTION_SLIDER_BIG_TICKS | OPTION_SLIDER_NUMBER_BUTTON);
-    }
-
-  protected:
-    static constexpr coord_t bitmapSize = 68;
-    uint8_t potIndex;
-};
-
-class PotCalibrationWindow: public Window {
-  public:
-    PotCalibrationWindow(Window * parent, const rect_t & rect, uint8_t potIndex):
-      Window(parent, rect),
-      potIndex(potIndex)
-    {
-    }
-
-    void checkEvents() override
-    {
-      // will always force a full monitor window refresh
-      invalidate();
-    }
-
-    void paint(BitmapBuffer * dc) override
-    {
-      if (rect.h > rect.w)
-        drawVerticalSlider(dc, 5, 8, rect.h - 18, calibratedAnalogs[potIndex], -RESX, RESX, 40, OPTION_SLIDER_TICKS | OPTION_SLIDER_BIG_TICKS | OPTION_SLIDER_SQUARE_BUTTON);
-      else
-        drawHorizontalSlider(dc, 5, 8, rect.w - 18, calibratedAnalogs[potIndex], -RESX, RESX, 40, OPTION_SLIDER_TICKS | OPTION_SLIDER_BIG_TICKS | OPTION_SLIDER_SQUARE_BUTTON);
-    }
-
-  protected:
-    uint8_t potIndex;
-};
-
 RadioCalibrationPage::RadioCalibrationPage(bool initial):
   Page(ICON_RADIO_CALIBRATION),
   initial(initial)
@@ -110,7 +61,7 @@ RadioCalibrationPage::RadioCalibrationPage(bool initial):
 void RadioCalibrationPage::buildHeader(Window * window)
 {
   new StaticText(window, {PAGE_TITLE_LEFT, PAGE_TITLE_TOP, LCD_W - PAGE_TITLE_LEFT, PAGE_LINE_HEIGHT}, STR_MENUCALIBRATION, 0, MENU_COLOR);
-  text = new StaticText(window, {PAGE_TITLE_LEFT, PAGE_TITLE_TOP + PAGE_LINE_HEIGHT, LCD_W - PAGE_TITLE_LEFT, PAGE_LINE_HEIGHT}, STR_MENUTOSTART, 0, MENU_COLOR);
+  text = new StaticText(window, {PAGE_TITLE_LEFT, PAGE_TITLE_TOP + PAGE_LINE_HEIGHT, LCD_W - PAGE_TITLE_LEFT, PAGE_LINE_HEIGHT}, STR_MENUTOSTART, 0,MENU_COLOR);
 }
 
 void RadioCalibrationPage::buildBody(FormWindow * window)
@@ -131,17 +82,59 @@ void RadioCalibrationPage::buildBody(FormWindow * window)
   new StickCalibrationWindow(window, {LCD_W - 130, 20, 90, 90}, STICK4, STICK3);
 
 #if defined(PCBHORUS)
-  // The 2 main sliders
-  new PotCalibrationWindow(window, {0, 2, 20, 150}, SLIDER1);
-  new PotCalibrationWindow(window, {LCD_W-20, 2, 20, 150}, SLIDER2);
 
-  // The 3 pots
-  new PotCalibrationWindow(window, {0, window->height()-25, 150, 20}, POT1);
-  new MultiPosCalibrationWindow(window, {LCD_W/2-25,window->height()-25, 50, 20}, POT2);
-  new PotCalibrationWindow(window, {LCD_W-150, window->height()-25, 150, 20}, POT3);
+  new MainViewHorizontalSlider(this, {HMARGIN, LCD_H - TRIM_SQUARE_SIZE, HORIZONTAL_SLIDERS_WIDTH, TRIM_SQUARE_SIZE},
+                               [=] { return calibratedAnalogs[CALIBRATED_POT1]; });
+
+  if (IS_POT_MULTIPOS(POT2)) {
+    new MainView6POS(this, {LCD_W / 2 - MULTIPOS_W / 2, LCD_H - TRIM_SQUARE_SIZE, MULTIPOS_W + 1, MULTIPOS_H},
+                     [=] { return (1 + (potsPos[1] & 0x0f)); });
+  }
+
+  new MainViewHorizontalSlider(this, {LCD_W - HORIZONTAL_SLIDERS_WIDTH - HMARGIN, LCD_H - TRIM_SQUARE_SIZE, HORIZONTAL_SLIDERS_WIDTH, TRIM_SQUARE_SIZE},
+                               [=] { return calibratedAnalogs[CALIBRATED_POT3]; });
+#if defined(HARDWARE_EXT1)
+  coord_t yOffset = TOPBAR_HEIGHT / 2;
+
+  if (IS_POT_SLIDER_AVAILABLE(EXT1)) {
+    new MainViewVerticalSlider(this, {HMARGIN, LCD_H / 2 - VERTICAL_SLIDERS_HEIGHT(true) / 2 + yOffset, TRIM_SQUARE_SIZE, VERTICAL_SLIDERS_HEIGHT(true) / 2},
+                               [=] { return calibratedAnalogs[CALIBRATED_SLIDER_REAR_LEFT]; });
+    new MainViewVerticalSlider(this, {HMARGIN, LCD_H / 2 + yOffset, TRIM_SQUARE_SIZE, VERTICAL_SLIDERS_HEIGHT(true) / 2},
+                               [=] { return calibratedAnalogs[CALIBRATED_POT_EXT1]; });
+  }
+  else {
+    new MainViewVerticalSlider(this, {HMARGIN, LCD_H / 2 - VERTICAL_SLIDERS_HEIGHT(true) / 2 + yOffset, TRIM_SQUARE_SIZE, VERTICAL_SLIDERS_HEIGHT(true)},
+                               [=] { return calibratedAnalogs[CALIBRATED_SLIDER_REAR_LEFT]; });
+  }
+#endif
+
+#if defined(HARDWARE_EXT2)
+  if (IS_POT_SLIDER_AVAILABLE(EXT2)) {
+    new MainViewVerticalSlider(this, {LCD_W - HMARGIN - TRIM_SQUARE_SIZE, LCD_H / 2 - VERTICAL_SLIDERS_HEIGHT(true) / 2 + yOffset, TRIM_SQUARE_SIZE,
+                                      VERTICAL_SLIDERS_HEIGHT(true) / 2},
+                               [=] { return calibratedAnalogs[CALIBRATED_SLIDER_REAR_RIGHT]; });
+    new MainViewVerticalSlider(this, {LCD_W - HMARGIN - TRIM_SQUARE_SIZE, LCD_H / 2 + yOffset, TRIM_SQUARE_SIZE,
+                                      VERTICAL_SLIDERS_HEIGHT(true) / 2},
+                               [=] { return calibratedAnalogs[CALIBRATED_POT_EXT2]; });
+  }
+  else {
+    new MainViewVerticalSlider(this, {LCD_W - HMARGIN - TRIM_SQUARE_SIZE, LCD_H / 2 - VERTICAL_SLIDERS_HEIGHT(true) / 2 + yOffset, TRIM_SQUARE_SIZE,
+                                      VERTICAL_SLIDERS_HEIGHT(true)},
+                               [=] { return calibratedAnalogs[CALIBRATED_SLIDER_REAR_RIGHT]; });
+  }
+#endif
 #elif defined(PCBNV14)
-  new PotCalibrationWindow(window, {0, window->height()-25, 150, 20}, POT1);
-  new PotCalibrationWindow(window, {LCD_W-150, window->height()-25, 150, 20}, POT2);
+  new MainViewHorizontalSlider(this, {HMARGIN, LCD_H - TRIM_SQUARE_SIZE, HORIZONTAL_SLIDERS_WIDTH, TRIM_SQUARE_SIZE},
+                               [=] { return calibratedAnalogs[CALIBRATED_POT1]; });
+
+  new MainViewHorizontalSlider(this, {LCD_W - HORIZONTAL_SLIDERS_WIDTH - HMARGIN, LCD_H - TRIM_SQUARE_SIZE, HORIZONTAL_SLIDERS_WIDTH, TRIM_SQUARE_SIZE},
+                               [=] { return calibratedAnalogs[CALIBRATED_POT2]; });
+
+  new TextButton(window, {LCD_W - 120, LCD_H - 140, 90, 40}, "Next",
+                    [=]() -> uint8_t {
+                        nextStep();
+                        return 0;
+                    }, BUTTON_BACKGROUND | NO_FOCUS);
 #endif
 }
 
@@ -149,8 +142,8 @@ void RadioCalibrationPage::checkEvents()
 {
   Page::checkEvents();
 
-  for (uint8_t i=0; i<NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS; i++) { // get low and high vals for sticks and trims
-    int16_t vt = i<TX_VOLTAGE ? anaIn(i) : anaIn(i+1);
+  for (uint8_t i = 0; i < NUM_STICKS + NUM_POTS + NUM_SLIDERS + NUM_MOUSE_ANALOGS; i++) { // get low and high vals for sticks and trims
+    int16_t vt = i < TX_VOLTAGE ? anaIn(i) : anaIn(i + 1);
     reusableBuffer.calib.loVals[i] = min(vt, reusableBuffer.calib.loVals[i]);
     reusableBuffer.calib.hiVals[i] = max(vt, reusableBuffer.calib.hiVals[i]);
     if (i >= POT1 && i <= POT_LAST) {
@@ -163,7 +156,8 @@ void RadioCalibrationPage::checkEvents()
       if (IS_POT_MULTIPOS(i) && count <= XPOTS_MULTIPOS_COUNT) {
         // use raw analog value for multipos calibraton, anaIn() already has multipos decoded value
         vt = getAnalogValue(i) >> 1;
-        if (reusableBuffer.calib.xpotsCalib[idx].lastCount == 0 || vt < reusableBuffer.calib.xpotsCalib[idx].lastPosition - XPOT_DELTA || vt > reusableBuffer.calib.xpotsCalib[idx].lastPosition + XPOT_DELTA) {
+        if (reusableBuffer.calib.xpotsCalib[idx].lastCount == 0 || vt < reusableBuffer.calib.xpotsCalib[idx].lastPosition - XPOT_DELTA ||
+            vt > reusableBuffer.calib.xpotsCalib[idx].lastPosition + XPOT_DELTA) {
           reusableBuffer.calib.xpotsCalib[idx].lastPosition = vt;
           reusableBuffer.calib.xpotsCalib[idx].lastCount = 1;
         }
@@ -175,9 +169,9 @@ void RadioCalibrationPage::checkEvents()
         if (reusableBuffer.calib.xpotsCalib[idx].lastCount == XPOT_DELAY) {
           int16_t position = reusableBuffer.calib.xpotsCalib[idx].lastPosition;
           bool found = false;
-          for (int j=0; j<count; j++) {
+          for (int j = 0; j < count; j++) {
             int16_t step = reusableBuffer.calib.xpotsCalib[idx].steps[j];
-            if (position >= step-XPOT_DELTA && position <= step+XPOT_DELTA) {
+            if (position >= step - XPOT_DELTA && position <= step + XPOT_DELTA) {
               found = true;
               break;
             }
@@ -218,13 +212,13 @@ void RadioCalibrationPage::checkEvents()
       }
     }
 #if NUM_XPOTS > 0
-    for (int i=POT1; i<=POT_LAST; i++) {
+    for (int i = POT1; i <= POT_LAST; i++) {
       int idx = i - POT1;
       int count = reusableBuffer.calib.xpotsCalib[idx].stepsCount;
       if (IS_POT_MULTIPOS(i)) {
         if (count > 1 && count <= XPOTS_MULTIPOS_COUNT) {
-          for (int j=0; j<count; j++) {
-            for (int k=j+1; k<count; k++) {
+          for (int j = 0; j < count; j++) {
+            for (int k = j + 1; k < count; k++) {
               if (reusableBuffer.calib.xpotsCalib[idx].steps[k] < reusableBuffer.calib.xpotsCalib[idx].steps[j]) {
                 SWAP(reusableBuffer.calib.xpotsCalib[idx].steps[j], reusableBuffer.calib.xpotsCalib[idx].steps[k]);
               }
@@ -232,8 +226,8 @@ void RadioCalibrationPage::checkEvents()
           }
           StepsCalibData * calib = (StepsCalibData *) &g_eeGeneral.calib[i];
           calib->count = count - 1;
-          for (int j=0; j<calib->count; j++) {
-            calib->steps[j] = (reusableBuffer.calib.xpotsCalib[idx].steps[j+1] + reusableBuffer.calib.xpotsCalib[idx].steps[j]) >> 5;
+          for (int j = 0; j < calib->count; j++) {
+            calib->steps[j] = (reusableBuffer.calib.xpotsCalib[idx].steps[j + 1] + reusableBuffer.calib.xpotsCalib[idx].steps[j]) >> 5;
           }
         }
         else {
@@ -253,8 +247,7 @@ void RadioCalibrationPage::onEvent(event_t event)
   if (event == EVT_KEY_BREAK(KEY_ENTER)) {
     nextStep();
   }
-  else if (event == EVT_KEY_BREAK(KEY_EXIT) && menuCalibrationState != CALIB_START)
-  {
+  else if (event == EVT_KEY_BREAK(KEY_EXIT) && menuCalibrationState != CALIB_START) {
     menuCalibrationState = CALIB_START;
     text->setText(STR_MENUTOSTART);
 

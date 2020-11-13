@@ -543,7 +543,9 @@ typedef uint8_t swarnenable_t;
     swarnenable_t switchWarningEnable; // TODO remove it in 2.4
 #endif
 
-#if defined(COLORLCD)
+#if defined(COLORLCD) && defined(BACKUP)
+#define CUSTOM_SCREENS_DATA
+#elif defined(COLORLCD)
 #include "gui/colorlcd/layout.h"
 #include "gui/colorlcd/topbar.h"
 #define LAYOUT_NAME_LEN 10
@@ -553,7 +555,7 @@ PACK(struct CustomScreenData {
 });
 #define CUSTOM_SCREENS_DATA \
   NOBACKUP(CustomScreenData screenData[MAX_CUSTOM_SCREENS]); \
-  NOBACKUP(Topbar::PersistentData topbarData); \
+  NOBACKUP(TopBar::PersistentData topbarData); \
   NOBACKUP(uint8_t view);
 #else
 #define CUSTOM_SCREENS_DATA \
@@ -639,6 +641,14 @@ PACK(struct ModelData {
 
   char modelRegistrationID[PXX2_LEN_REGISTRATION_ID];
 
+  bool isTrainerTraineeEnable() const
+  {
+#if defined(PCBNV14)
+    return trainerData.mode >= TRAINER_MODE_MASTER_TRAINER_JACK;
+#else
+    return true;
+#endif
+  }
 
   uint8_t getThrottleStickTrimSource() const
   {
@@ -748,7 +758,7 @@ PACK(struct TrainerData {
   #define THEME_NAME_LEN 8
   #define THEME_DATA \
     NOBACKUP(char themeName[THEME_NAME_LEN]); \
-    NOBACKUP(ThemeBase::PersistentData themeData);
+    NOBACKUP(OpenTxTheme::PersistentData themeData);
 #else
   #define THEME_DATA
 #endif
@@ -909,7 +919,7 @@ static inline void check_struct()
   CHKSIZE(ModelHeader, 31);
   CHKSIZE(CurveHeader, 4);
   CHKSIZE(CustomScreenData, 850);
-  CHKSIZE(Topbar::PersistentData, 300);
+  CHKSIZE(TopBar::PersistentData, 300);
 #elif defined(PCBNV14)
   // TODO
 #elif defined(PCBSKY9X)

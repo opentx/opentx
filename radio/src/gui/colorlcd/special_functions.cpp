@@ -37,11 +37,11 @@ class SpecialFunctionEditPage : public Page {
   protected:
     CustomFunctionData * functions;
     uint8_t index;
-    FormWindow * specialFunctionOneWindow = nullptr;
+    FormGroup * specialFunctionOneWindow = nullptr;
     StaticText * headerSF = nullptr;
     bool active = false;
 
-    bool isActive()
+    bool isActive() const
     {
       return ((functions == g_model.customFn ? modelFunctionsContext.activeSwitches : globalFunctionsContext.activeSwitches) & ((MASK_CFN_TYPE)1 << index) ? 1 : 0);
     }
@@ -62,7 +62,7 @@ class SpecialFunctionEditPage : public Page {
       headerSF = new StaticText(window, { PAGE_TITLE_LEFT, PAGE_TITLE_TOP + PAGE_LINE_HEIGHT, LCD_W - PAGE_TITLE_LEFT, 20 }, (functions == g_model.customFn ? "SF" : "GF" ) + std::to_string(index), 0, MENU_COLOR);
     }
 
-    void updateSpecialFunctionOneWindow(FormField * previousField, FormField * nextField)
+    void updateSpecialFunctionOneWindow()
     {
       FormGridLayout grid;
       specialFunctionOneWindow->clear();
@@ -107,6 +107,12 @@ class SpecialFunctionEditPage : public Page {
 
         case FUNC_VOLUME:
           new StaticText(specialFunctionOneWindow, grid.getLabelSlot(), STR_VOLUME);
+          new SourceChoice(specialFunctionOneWindow, grid.getFieldSlot(), 0, MIXSRC_LAST_CH, GET_SET_DEFAULT(CFN_PARAM(cfn)));
+          grid.nextLine();
+          break;
+
+        case FUNC_BACKLIGHT:
+          new StaticText(specialFunctionOneWindow, grid.getLabelSlot(), STR_VALUE);
           new SourceChoice(specialFunctionOneWindow, grid.getFieldSlot(), 0, MIXSRC_LAST_CH, GET_SET_DEFAULT(CFN_PARAM(cfn)));
           grid.nextLine();
           break;
@@ -195,7 +201,10 @@ class SpecialFunctionEditPage : public Page {
           else
             dc->drawNumber(3, 0, value * CFN_PLAY_REPEAT_MUL, flags, 0, nullptr, "s");
         });
+        grid.nextLine();
       }
+
+      specialFunctionOneWindow->adjustHeight();
     }
 
     void buildBody(FormWindow * window)
@@ -223,15 +232,15 @@ class SpecialFunctionEditPage : public Page {
           CFN_FUNC(cfn) = newValue;
           CFN_RESET(cfn);
           SET_DIRTY();
-          updateSpecialFunctionOneWindow(functionChoice, switchChoice);
+          updateSpecialFunctionOneWindow();
       });
       functionChoice->setAvailableHandler([=](int value) {
         return isAssignableFunctionAvailable(value, functions);
       });
       grid.nextLine();
 
-      specialFunctionOneWindow = new FormWindow(window, {0, grid.getWindowHeight(), LCD_W, 0});
-      updateSpecialFunctionOneWindow(functionChoice, switchChoice);
+      specialFunctionOneWindow = new FormGroup(window, {0, grid.getWindowHeight(), LCD_W, 0}, FORM_FORWARD_FOCUS);
+      updateSpecialFunctionOneWindow();
       grid.addWindow(specialFunctionOneWindow);
     }
 };
@@ -264,7 +273,7 @@ class SpecialFunctionButton : public Button {
     }
 #endif
 
-    bool isActive()
+    bool isActive() const
     {
       return ((functions == g_model.customFn ? modelFunctionsContext.activeSwitches : globalFunctionsContext.activeSwitches) & ((MASK_CFN_TYPE)1 << index) ? 1 : 0);
     }
@@ -316,6 +325,10 @@ class SpecialFunctionButton : public Button {
           break;
 
         case FUNC_VOLUME:
+          drawSource(dc, col1, line2, CFN_PARAM(cfn), 0);
+          break;
+
+        case FUNC_BACKLIGHT:
           drawSource(dc, col1, line2, CFN_PARAM(cfn), 0);
           break;
 

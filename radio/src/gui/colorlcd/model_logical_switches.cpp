@@ -24,21 +24,23 @@
 
 #define SET_DIRTY()     storageDirty(EE_MODEL)
 
-//void putsEdgeDelayParam(coord_t x, coord_t y, LogicalSwitchData * ls)
-//{
-//  lcdDrawChar(x, y, '[');
-//  lcdDrawNumber(lcdNextPos+2, y, lswTimerValue(ls->v2), LEFT|PREC1);
-//  lcdDrawChar(lcdNextPos, y, ':');
-//  if (ls->v3 < 0)
-//    lcdDrawText(lcdNextPos+3, y, "<<");
-//  else if (ls->v3 == 0)
-//    lcdDrawText(lcdNextPos+3, y, "--");
-//  else
-//    lcdDrawNumber(lcdNextPos+3, y, lswTimerValue(ls->v2+ls->v3), LEFT|PREC1);
-//  lcdDrawChar(lcdNextPos, y, ']');
-//}
+void putsEdgeDelayParam(BitmapBuffer * dc, coord_t x, coord_t y, LogicalSwitchData * ls, LcdFlags flags = 0)
+{
+  coord_t lcdNextPos = 0;
+  lcdNextPos = dc->drawText(x, y, "[", flags);
+  lcdNextPos = dc->drawNumber(lcdNextPos+2, y, lswTimerValue(ls->v2), LEFT | PREC1 | flags);
+  lcdNextPos = dc->drawText(lcdNextPos, y, ":", flags);
+  if (ls->v3 < 0)
+    lcdNextPos = dc->drawText(lcdNextPos+3, y, "<<", flags);
+  else if (ls->v3 == 0)
+    lcdNextPos = dc->drawText(lcdNextPos+3, y, "--", flags);
+  else
+    lcdNextPos = dc->drawNumber(lcdNextPos+3, y, lswTimerValue(ls->v2+ls->v3), LEFT | PREC1 | flags);
+  dc->drawText(lcdNextPos, y, "]", flags);
+}
 
-class LogicalSwitchEditPage: public Page {
+class LogicalSwitchEditPage: public Page
+{
   public:
     explicit LogicalSwitchEditPage(uint8_t index):
       Page(ICON_MODEL_LOGICAL_SWITCHES),
@@ -51,11 +53,11 @@ class LogicalSwitchEditPage: public Page {
   protected:
     uint8_t index;
     bool active = false;
-    Window * logicalSwitchOneWindow = nullptr;
+    FormGroup * logicalSwitchOneWindow = nullptr;
     StaticText * headerSwitchName = nullptr;
     NumberEdit * v2Edit = nullptr;
 
-    bool isActive()
+    bool isActive() const
     {
       return getSwitch(SWSRC_FIRST_LOGICAL_SWITCH + index);
     }
@@ -75,7 +77,7 @@ class LogicalSwitchEditPage: public Page {
       headerSwitchName = new StaticText(window, { PAGE_TITLE_LEFT, PAGE_TITLE_TOP + PAGE_LINE_HEIGHT, LCD_W - PAGE_TITLE_LEFT, PAGE_LINE_HEIGHT }, getSwitchPositionName(SWSRC_SW1 + index), 0, MENU_COLOR);
     }
 
-    void updateLogicalSwitchOneWindow(FormField * functionChoice)
+    void updateLogicalSwitchOneWindow()
     {
       FormGridLayout grid;
       logicalSwitchOneWindow->clear();
@@ -112,7 +114,7 @@ class LogicalSwitchEditPage: public Page {
         edit1->setDisplayHandler([](BitmapBuffer * dc, LcdFlags flags, int32_t value) {
           dc->drawNumber(FIELD_PADDING_LEFT, FIELD_PADDING_TOP, lswTimerValue(value), flags | PREC1);
         });
-        edit2->setDisplayHandler([=](BitmapBuffer * dc, LcdFlags flags, int32_t value) {
+        edit2->setDisplayHandler([cs](BitmapBuffer * dc, LcdFlags flags, int32_t value) {
           if (value < 0)
             dc->drawText(FIELD_PADDING_LEFT, FIELD_PADDING_TOP, "<<", flags);
           else if (value == 0)
@@ -214,13 +216,13 @@ class LogicalSwitchEditPage: public Page {
             cs->v1 = cs->v2 = 0;
           }
           SET_DIRTY();
-          updateLogicalSwitchOneWindow(functionChoice);
+          updateLogicalSwitchOneWindow();
       });
       functionChoice->setAvailableHandler(isLogicalSwitchFunctionAvailable);
       grid.nextLine();
 
-      logicalSwitchOneWindow = new Window(window, { 0, grid.getWindowHeight(), LCD_W, 0 });
-      updateLogicalSwitchOneWindow(functionChoice);
+      logicalSwitchOneWindow = new FormGroup(window, { 0, grid.getWindowHeight(), LCD_W, 0 }, FORM_FORWARD_FOCUS);
+      updateLogicalSwitchOneWindow();
       grid.addWindow(logicalSwitchOneWindow);
     }
 };
@@ -246,7 +248,7 @@ class LogicalSwitchButton : public Button {
         setHeight(height() + 20);
     }
 
-    bool isActive()
+    bool isActive() const
     {
       return getSwitch(SWSRC_FIRST_LOGICAL_SWITCH + lsIndex);
     }
@@ -276,7 +278,7 @@ class LogicalSwitchButton : public Button {
       }
       else if (lsFamily == LS_FAMILY_EDGE) {
         drawSwitch(dc, col1, line2, ls->v1);
-        // TODO putsEdgeDelayParam(col2, line2, ls);
+        putsEdgeDelayParam(dc, col2, line2, ls);
       }
       else if (lsFamily == LS_FAMILY_COMP) {
         drawSource(dc, col2, line1, ls->v1, 0);

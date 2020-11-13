@@ -5,6 +5,7 @@ option(PXX2 "PXX2 protocol support" OFF)
 option(AFHDS3 "AFHDS3 TX Module" ON)
 option(MULTIMODULE "DIY Multiprotocol TX Module (https://github.com/pascallanger/DIY-Multiprotocol-TX-Module)" ON)
 option(GHOST "Ghost TX Module" ON)
+option(HARDWARE_EXTERNAL_ACCESS_MOD "Support for R9M 2019 hardware mod" OFF)
 
 set(PWR_BUTTON "PRESS" CACHE STRING "Pwr button type (PRESS/SWITCH)")
 set(CPU_TYPE STM32F4)
@@ -50,8 +51,11 @@ if (PCB STREQUAL X10)
   set(TARGET_SRC
     ${TARGET_SRC}
     ../common/arm/stm32/audio_dac_driver.cpp
-    ../common/arm/stm32/adc_driver.cpp
     ../common/arm/stm32/sticks_pwm_driver.cpp
+    )
+  set(FIRMWARE_TARGET_SRC
+    ${FIRMWARE_TARGET_SRC}
+    ../common/arm/stm32/adc_driver.cpp
     )
   set(BITMAPS_TARGET x10_bitmaps)
   set(FONTS_TARGET x10_fonts)
@@ -86,7 +90,7 @@ if (PCB STREQUAL X10)
     set(SBUS_TRAINER ON)
     set(AUX_SERIAL ON)
     if (NOT BLUETOOTH AND NOT INTERNAL_GPS)
-      set(AUX2_SERIAL OFF) # todo ON
+      set(AUX2_SERIAL ON)
     endif()
     set(INTERNAL_GPS_BAUDRATE "9600" CACHE STRING "Baud rate for internal GPS")
   elseif (PCBREV STREQUAL T18)
@@ -121,6 +125,9 @@ elseif (PCB STREQUAL X12S)
   set(TARGET_SRC
     ${TARGET_SRC}
     audio_spi_driver.cpp
+    )
+  set(FIRMWARE_TARGET_SRC
+    ${FIRMWARE_TARGET_SRC}
     x12s_adc_driver.cpp
     )
   set(BITMAPS_TARGET x12s_bitmaps)
@@ -154,6 +161,12 @@ endif()
 
 if(NOT UNEXPECTED_SHUTDOWN)
   add_definitions(-DNO_UNEXPECTED_SHUTDOWN)
+endif()
+
+if(HARDWARE_EXTERNAL_ACCESS_MOD)
+  set(PXX2 ON)
+  set(AUX_SERIAL OFF)
+  add_definitions(-DHARDWARE_EXTERNAL_ACCESS_MOD)
 endif()
 
 if(INTERNAL_MODULE_PXX1)
@@ -312,6 +325,7 @@ if(PYTHONINTERP_FOUND)
     COMMAND ${PYTHON_EXECUTABLE} ${RADIO_DIRECTORY}/util/generate_datacopy.py datastructs.h -DPCBHORUS -DPCBX10 -DCPUARM -DSTM32F4 -DSTM32F429_439xx -DCOLORLCD -DBACKUP -DSIMU -I. -Igui/colorlcd -Itargets/horus -Itargets/common/arm/stm32 -I${THIRDPARTY_DIR} -I${THIRDPARTY_DIR}/libopenui/src -I${THIRDPARTY_DIR}/STM32F4xx_DSP_StdPeriph_Lib_V1.8.0/Libraries/STM32F4xx_StdPeriph_Driver/inc -I${THIRDPARTY_DIR}/STM32F4xx_DSP_StdPeriph_Lib_V1.8.0/Libraries/CMSIS/Device/ST/STM32F4xx/Include -I${THIRDPARTY_DIR}/STM32F4xx_DSP_StdPeriph_Lib_V1.8.0/Libraries/CMSIS/Include ${arm_gcc_include_path} > ${PROJECT_BINARY_DIR}/radio/src/datacopy.cpp
     DEPENDS ${RADIO_DIRECTORY}/src/datastructs.h ${RADIO_DIRECTORY}/util/generate_datacopy.py
     )
+
   add_custom_target(datacopy
     DEPENDS ${PROJECT_BINARY_DIR}/radio/src/datacopy.cpp
     )

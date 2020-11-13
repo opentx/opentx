@@ -32,10 +32,6 @@ class ValueWidget: public Widget
 
     void paint(BitmapBuffer * dc) override
     {
-      // TODO DELETE THOSE TEST INIT VALUE !!
-      persistentData->options[0].value.unsignedValue = 1;
-      // TODO END TEST INIT VALUE
-
       // draw the background and border
       dc->clear(DEFAULT_BGCOLOR);
       dc->drawFilledRect(0,0, width(), height(), SOLID, MAINVIEW_PANES_COLOR | OPACITY(5));

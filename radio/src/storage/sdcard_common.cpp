@@ -40,7 +40,7 @@ void storageEraseAll(bool warn)
 
 #if defined(LIBOPENUI)
   // the theme has not been loaded before
-  static_cast<ThemeBase*>(theme)->load();
+  static_cast<OpenTxTheme*>(theme)->load();
 #endif
 
   generalDefault();

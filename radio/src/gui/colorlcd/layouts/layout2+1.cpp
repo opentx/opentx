@@ -19,16 +19,25 @@
  */
 
 #include "opentx.h"
+#include "sliders.h"
+#include "trims.h"
+
+#define HAS_TOPBAR()      (persistentData->options[0].value.boolValue == true)
+#define HAS_FM()          (persistentData->options[1].value.boolValue == true)
+#define HAS_SLIDERS()     (persistentData->options[2].value.boolValue == true)
+#define HAS_TRIMS()       (persistentData->options[3].value.boolValue == true)
+#define IS_MIRRORED()     (persistentData->options[4].value.boolValue == true)
 
 const uint8_t LBM_LAYOUT_2P1[] = {
 #include "mask_layout2+1.lbm"
 };
 
 const ZoneOption OPTIONS_LAYOUT_2P1[] = {
-  { "Top bar", ZoneOption::Bool },
-  { "Flight mode", ZoneOption::Bool },
-  { "Sliders", ZoneOption::Bool },
-  { "Trims", ZoneOption::Bool },
+  { STR_TOP_BAR, ZoneOption::Bool },
+  { STR_FLIGHT_MODE, ZoneOption::Bool },
+  { STR_SLIDERS, ZoneOption::Bool },
+  { STR_TRIMS, ZoneOption::Bool },
+  { STR_MIRROR, ZoneOption::Bool },
   { nullptr, ZoneOption::Bool }
 };
 
@@ -44,16 +53,26 @@ class Layout2P1: public Layout
     Layout2P1(const LayoutFactory * factory, Layout::PersistentData * persistentData):
       Layout(factory, persistentData)
     {
+      decorate();
     }
 
     void create() override
     {
       Layout::create();
-      persistentData->options[0] = ZoneOptionValueTyped { ZOV_Bool, OPTION_VALUE_BOOL(true) };
-      persistentData->options[1] = ZoneOptionValueTyped { ZOV_Bool, OPTION_VALUE_BOOL(true) };
-      persistentData->options[2] = ZoneOptionValueTyped { ZOV_Bool, OPTION_VALUE_BOOL(true) };
-      persistentData->options[3] = ZoneOptionValueTyped { ZOV_Bool, OPTION_VALUE_BOOL(true) };
+      persistentData->options[0].value.boolValue = true;
+      persistentData->options[1].value.boolValue = true;
+      persistentData->options[2].value.boolValue = true;
+      persistentData->options[3].value.boolValue = true;
+      persistentData->options[4].value.boolValue = false;
+      persistentData->options[5].value.boolValue = false;
+      decorate();
     }
+
+    void decorate()
+    {
+      Layout::decorate(HAS_TOPBAR(), HAS_SLIDERS(), HAS_TRIMS(), HAS_FM());
+    }
+
 
     unsigned int getZonesCount() const override
     {
@@ -65,39 +84,21 @@ class Layout2P1: public Layout
       return ZONES_LAYOUT_2P1[index];
     }
 
-//    virtual void refresh();
+    void checkEvents() override
+    {
+      Layout::checkEvents();
+      uint8_t newValue = persistentData->options[4].value.boolValue << 4 | persistentData->options[3].value.boolValue << 3 | persistentData->options[2].value.boolValue << 2
+                         | persistentData->options[1].value.boolValue << 1 | persistentData->options[0].value.boolValue;
+      if (value != newValue) {
+        value = newValue;
+        // TODO call this from the Layout config window
+        this->clear();
+        decorate();
+      }
+    }
+  protected:
+    uint8_t value = 0;
 };
-
-//void Layout2P1::refresh()
-//{
-//  theme->drawBackground();
-//
-//  if (persistentData->options[0].value.boolValue) {
-//    drawTopBar();
-//  }
-//
-//  if (persistentData->options[1].value.boolValue) {
-//    // Flight mode
-//    lcdDrawSizedText(LCD_W / 2 - getTextWidth(g_model.flightModeData[mixerCurrentFlightMode].name,
-//                                              sizeof(g_model.flightModeData[mixerCurrentFlightMode].name),
-//                                              ZCHAR | FONT(XS)) / 2,
-//                     232,
-//                     g_model.flightModeData[mixerCurrentFlightMode].name,
-//                     sizeof(g_model.flightModeData[mixerCurrentFlightMode].name), ZCHAR | FONT(XS));
-//  }
-//
-//  if (persistentData->options[2].value.boolValue) {
-//    // Pots and rear sliders positions
-//    drawMainPots();
-//  }
-//
-//  if (persistentData->options[3].value.boolValue) {
-//    // Trims
-//    drawTrims(mixerCurrentFlightMode);
-//  }
-//
-//  Layout::refresh();
-//}
 
 BaseLayoutFactory<Layout2P1> layout2P1("Layout2P1", "2 + 1", LBM_LAYOUT_2P1, OPTIONS_LAYOUT_2P1);
 const LayoutFactory * defaultLayout = &layout2P1;

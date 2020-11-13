@@ -26,6 +26,6 @@ add_truetype_font_target(17en   17 en        none)
 add_truetype_font_target(bold17 17 ${subset} bold)
 add_truetype_font_target(24     24 ${subset} none)
 add_truetype_font_target(32     32 ${subset} bold)
-add_truetype_font_target(64     64 ${subset} bold)
+add_truetype_font_target(64     64 en        bold)
 
 add_custom_target(truetype_fonts DEPENDS ${truetype_fonts_targets})

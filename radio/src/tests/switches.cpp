@@ -105,11 +105,11 @@ TEST(evalLogicalSwitches, playFile)
   extern BitField<(MAX_LOGICAL_SWITCHES * 2/*on, off*/)> sdAvailableLogicalSwitchAudioFiles;
   char filename[AUDIO_FILENAME_MAXLEN+1];
 
-#if defined(EEPROM)
+//#if defined(EEPROM)
 #define MODELNAME "MODEL01"
-#else
+/*#else
 #define MODELNAME "Model00"
-#endif
+#endif*/
 
   sdAvailableLogicalSwitchAudioFiles.setBit(INDEX_LOGICAL_SWITCH_AUDIO_FILE(0,AUDIO_EVENT_OFF));
   sdAvailableLogicalSwitchAudioFiles.setBit(INDEX_LOGICAL_SWITCH_AUDIO_FILE(0,AUDIO_EVENT_ON));

@@ -48,127 +48,10 @@ void drawVerticalScrollbar(BitmapBuffer * dc, coord_t x, coord_t y, coord_t h, u
   }
 }
 
-void drawTrimSquare(BitmapBuffer * dc, coord_t x, coord_t y)
+void drawTrimSquare(BitmapBuffer * dc, coord_t x, coord_t y, LcdFlags color)
 {
-  dc->drawSolidFilledRect(x-2, y, 15, 15, TRIM_BGCOLOR);
-  dc->drawBitmapPattern(x-2, y, LBM_TRIM_SHADOW, TRIM_SHADOW_COLOR);
-}
-
-void drawHorizontalTrimPosition(BitmapBuffer * dc, coord_t x, coord_t y, int16_t dir)
-{
-  drawTrimSquare(dc, x, y);
-  if (dir >= 0) {
-    dc->drawSolidVerticalLine(x+8, y+3, 9, FOCUS_COLOR);
-  }
-  if (dir <= 0) {
-    dc->drawSolidVerticalLine(x+2, y+3, 9, FOCUS_COLOR);
-  }
-  // if (exttrim) {
-  //  lcdDrawSolidVerticalLine(xm, ym, 9, FOCUS_COLOR);
-  // }
-}
-
-void drawVerticalTrimPosition(BitmapBuffer * dc, coord_t x, coord_t y, int16_t dir)
-{
-  drawTrimSquare(dc, x, y);
-  if (dir >= 0) {
-    dc->drawSolidHorizontalLine(x+1, y+4, 9, FOCUS_COLOR);
-  }
-  if (dir <= 0) {
-    dc->drawSolidHorizontalLine(x+1, y+10, 9, FOCUS_COLOR);
-  }
-  // if (exttrim) {
-  //   lcdDrawSolidHorizontalLine(xm-1, ym,  3, FOCUS_COLOR);
-  // }
-}
-
-void drawVerticalSlider(BitmapBuffer * dc, coord_t x, coord_t y, int len, int val, int min, int max, uint8_t steps, uint32_t options)
-{
-  val = limit(min, val, max);
-  if (steps) {
-    int delta = len / steps;
-    for (int i = 0; i <= len; i += delta) {
-      if ((options & OPTION_SLIDER_BIG_TICKS) && (i == 0 || i == len / 2 || i == len))
-        dc->drawSolidHorizontalLine(x, y + i, 13, DEFAULT_COLOR);
-      else
-        dc->drawSolidHorizontalLine(x + 2, y + i, 9, DEFAULT_COLOR);
-    }
-  }
-  else {
-    dc->drawBitmapPattern(x + 1, y, LBM_VTRIM_FRAME, DEFAULT_COLOR);
-    /* if (g_model.displayTrims != DISPLAY_TRIMS_NEVER && trim != 0) {
-      if (g_model.displayTrims == DISPLAY_TRIMS_ALWAYS || (trimsDisplayTimer > 0 && (trimsDisplayMask & (1<<i)))) {
-        lcdDrawNumber((stickIndex==0 ? TRIM_LH_X : TRIM_RH_X)+(trim>0 ? -20 : 50), ym+1, trim, TINSIZE);
-      }
-    } */
-  }
-  y += len - divRoundClosest(len * (val - min), max - min) - 5;
-  if (options & OPTION_SLIDER_TRIM_BUTTON) {
-    drawVerticalTrimPosition(dc, x, y - 2, val);
-  }
-  else if (options & OPTION_SLIDER_NUMBER_BUTTON) {
-    drawTrimSquare(dc, x, y - 2);
-    // TODO lcdDrawChar(x + 2, y - 1, '0' + val, FONT(XS) | FOCUS_COLOR);
-  }
-  else {
-    drawTrimSquare(dc, x, y - 2);
-  }
-}
-
-void drawHorizontalSlider(BitmapBuffer * dc, coord_t x, coord_t y, int len, int val, int min, int max, uint8_t steps, uint32_t options)
-{
-  val = limit(min, val, max);
-  int w = divRoundClosest(len * (val - min), max - min);
-  if (options & OPTION_SLIDER_TICKS) {
-    if (steps) {
-      int delta = len / steps;
-      for (int i = 0; i <= len; i += delta) {
-        if ((options & OPTION_SLIDER_BIG_TICKS) && (i == 0 || i == len / 2 || i == len))
-          dc->drawSolidVerticalLine(x + i, y, 13, DEFAULT_COLOR);
-        else
-          dc->drawSolidVerticalLine(x + i, y + 2, 9, DEFAULT_COLOR);
-      }
-    }
-  }
-  else if (options & OPTION_SLIDER_EMPTY_BAR) {
-    dc->drawBitmapPattern(x, y + 1, LBM_HTRIM_FRAME, DEFAULT_COLOR);
-  }
-  else if (options & OPTION_SLIDER_DBL_COLOR) {
-    dc->drawBitmapPattern(x, y + 8, LBM_SLIDER_BAR_LEFT, w <= 0 ? LINE_COLOR : FOCUS_BGCOLOR);
-    if (w > 4)
-      dc->drawSolidFilledRect(x + 4, y + 8, w - 4, 4, FOCUS_BGCOLOR);
-    if (w < len - 4)
-      dc->drawSolidFilledRect(x + w, y + 8, len - w - 4, 4, LINE_COLOR);
-    dc->drawBitmapPattern(x + len - 4, y + 8, LBM_SLIDER_BAR_RIGHT, w >= len ? FOCUS_BGCOLOR : LINE_COLOR);
-  }
-  else {
-    dc->drawBitmapPattern(x, y + 8, LBM_SLIDER_BAR_LEFT, LINE_COLOR);
-    dc->drawSolidFilledRect(x + 4, y + 8, len - 8, 4, LINE_COLOR);
-    dc->drawBitmapPattern(x + len - 4, y + 8, LBM_SLIDER_BAR_RIGHT, LINE_COLOR);
-    //
-    /* if (g_model.displayTrims != DISPLAY_TRIMS_NEVER && trim != 0) {
-      if (g_model.displayTrims == DISPLAY_TRIMS_ALWAYS || (trimsDisplayTimer > 0 && (trimsDisplayMask & (1<<i)))) {
-        lcdDrawNumber((stickIndex==0 ? TRIM_LH_X : TRIM_RH_X)+(trim>0 ? -20 : 50), ym+1, trim, TINSIZE);
-      }
-    } */
-  }
-  x += w - 5;
-  if (options & OPTION_SLIDER_TRIM_BUTTON) {
-    drawHorizontalTrimPosition(dc, x, y - 1, val);
-  }
-  else if (options & OPTION_SLIDER_NUMBER_BUTTON) {
-    drawTrimSquare(dc, x+2, y - 1);
-    char text[] = { (char)('0' + val), '\0' };
-    dc->drawText(x + 7, y - 1, text, FONT(XS) | CENTERED | FOCUS_COLOR);
-  }
-  else if (options & OPTION_SLIDER_SQUARE_BUTTON) {
-    drawTrimSquare(dc, x, y - 1);
-  }
-  else {
-    dc->drawBitmapPattern(x, y + 2, LBM_SLIDER_POINT_OUT, DEFAULT_COLOR);
-    dc->drawBitmapPattern(x, y + 2, LBM_SLIDER_POINT_MID, DEFAULT_BGCOLOR);
-    dc->drawBitmapPattern(x, y + 2, LBM_SLIDER_POINT_IN, FOCUS_BGCOLOR);
-  }
+  dc->drawSolidFilledRect(x, y, 15, 15, color);
+  dc->drawBitmapPattern(x, y, LBM_TRIM_SHADOW, TRIM_SHADOW_COLOR);
 }
 
 void drawGVarValue(BitmapBuffer * dc, coord_t x, coord_t y, uint8_t gvar, gvar_t value, LcdFlags flags)
@@ -197,7 +80,7 @@ void drawSleepBitmap()
   lcd->reset();
   lcd->clear();
 
-  const BitmapBuffer * bitmap = BitmapBuffer::loadBitmap(static_cast<ThemeBase *>(theme)->getFilePath("sleep.bmp"));
+  const BitmapBuffer * bitmap = BitmapBuffer::loadBitmap(OpenTxTheme::instance()->getFilePath("sleep.bmp"));
   if (bitmap) {
     lcd->drawBitmap((LCD_W-bitmap->width())/2, (LCD_H-bitmap->height())/2, bitmap);
     delete bitmap;
@@ -212,13 +95,13 @@ void drawShutdownAnimation(uint32_t duration, uint32_t totalDuration, const char
   if (totalDuration == 0)
     return;
 
-  static const BitmapBuffer * shutdown = BitmapBuffer::loadBitmap(static_cast<ThemeBase *>(theme)->getFilePath("shutdown.bmp"));
+  static const BitmapBuffer * shutdown = BitmapBuffer::loadBitmap(OpenTxTheme::instance()->getFilePath("shutdown.bmp"));
 
   lcdNextLayer();
   lcd->reset();
 
   if (shutdown) {
-    static_cast<ThemeBase *>(theme)->drawBackground(lcd);
+    OpenTxTheme::instance()->drawBackground(lcd);
     lcd->drawBitmap((LCD_W - shutdown->width()) / 2, (LCD_H - shutdown->height()) / 2, shutdown);
     int quarter = duration / (totalDuration / 5);
     if (quarter >= 1) lcd->drawBitmapPattern(LCD_W/2,                            (LCD_H-SHUTDOWN_CIRCLE_DIAMETER)/2, LBM_SHUTDOWN_CIRCLE, DEFAULT_COLOR, 0, SHUTDOWN_CIRCLE_DIAMETER/2);

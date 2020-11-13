@@ -278,6 +278,7 @@ extern "C" {
 #define isBacklightEnabled()           (PWM->PWM_CH_NUM[0].PWM_CDTY != 100)
 #define BACKLIGHT_ENABLE()             backlightEnable()
 #define BACKLIGHT_DISABLE()            backlightDisable()
+#define BACKLIGHT_FORCED_ON            101
 
 // ADC driver
 #define NUM_POTS                       3
@@ -350,12 +351,12 @@ void coprocReadData(bool onlytemp=false);
 extern int8_t volumeRequired;
 
 #if defined(COPROCESSOR)
-struct CoprocData {
+typedef struct  {
   uint8_t read;
   int8_t valid;
   int8_t temp;
   int8_t maxtemp;
-};
+} CoprocData;
 
 extern CoprocData coprocData;
 #endif

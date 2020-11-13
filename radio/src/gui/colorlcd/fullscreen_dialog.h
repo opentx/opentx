@@ -31,9 +31,10 @@ enum DialogType {
   WARNING_TYPE_INFO
 };
 
-class FullScreenDialog : public FormGroup {
+class FullScreenDialog : public FormGroup
+{
   public:
-    FullScreenDialog(uint8_t type, std::string title, std::string message = "", std::string action = "", std::function<void(void)> confirmHandler = nullptr);
+    FullScreenDialog(uint8_t type, std::string title, std::string message = "", std::string action = "", const std::function<void(void)> & confirmHandler = nullptr);
 
 #if defined(DEBUG_WINDOWS)
     std::string getName() const override
@@ -58,7 +59,7 @@ class FullScreenDialog : public FormGroup {
     bool onTouchEnd(coord_t x, coord_t y) override;
 #endif
 
-    void deleteLater();
+    void deleteLater(bool detach=true) override;
 
     void checkEvents() override;
 
@@ -77,7 +78,7 @@ class FullScreenDialog : public FormGroup {
     bool running = false;
     std::function<bool(void)> closeCondition;
     std::function<void(void)> confirmHandler;
-#if !defined(HARDWARE_TOUCH)
+#if defined(HARDWARE_KEYS)
     Window * previousFocus = nullptr;
 #endif
 };

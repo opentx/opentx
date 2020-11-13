@@ -26,7 +26,7 @@ extern Fifo<uint8_t, 32> trainerSbusFifo;
 #endif
 
 #if defined(AUX_SERIAL)
-uint8_t auxSerialMode = 0;
+uint8_t auxSerialMode = UART_MODE_COUNT;  // Prevent debug output before port is setup
 Fifo<uint8_t, 512> auxSerialTxFifo;
 
 #if defined(AUX_SERIAL_DMA_Stream_RX)
@@ -250,7 +250,7 @@ extern "C" void AUX_SERIAL_USART_IRQHandler(void)
 #endif // AUX_SERIAL
 
 #if defined(AUX2_SERIAL)
-uint8_t aux2SerialMode = 0;
+uint8_t aux2SerialMode = UART_MODE_COUNT;  // Prevent debug output before port is setup
 Fifo<uint8_t, 512> aux2SerialTxFifo;
 AuxSerialRxFifo aux2SerialRxFifo __DMA (AUX2_SERIAL_DMA_Stream_RX);
 

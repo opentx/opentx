@@ -22,10 +22,10 @@
 //#include "checkbox.h"
 //#include "modal_window.h"
 
-extern ThemeBase * defaultTheme;
-const BitmapBuffer * ThemeBase::asterisk = nullptr;
-const BitmapBuffer * ThemeBase::question = nullptr;
-const BitmapBuffer * ThemeBase::busy = nullptr;
+extern OpenTxTheme * defaultTheme;
+const BitmapBuffer * OpenTxTheme::asterisk = nullptr;
+const BitmapBuffer * OpenTxTheme::question = nullptr;
+const BitmapBuffer * OpenTxTheme::busy = nullptr;
 
 const uint8_t LBM_FOLDER[] = {
 #include "mask_folder.lbm"
@@ -35,21 +35,21 @@ const uint8_t LBM_DROPDOWN[] = {
 #include "mask_dropdown.lbm"
 };
 
-std::list<ThemeBase *> & getRegisteredThemes()
+std::list<OpenTxTheme *> & getRegisteredThemes()
 {
-  static std::list<ThemeBase *> themes;
+  static std::list<OpenTxTheme *> themes;
   return themes;
 }
 
-void registerTheme(ThemeBase * theme)
+void registerTheme(OpenTxTheme * theme)
 {
   TRACE("register theme %s", theme->getName());
   getRegisteredThemes().push_back(theme);
 }
 
-void ThemeBase::init() const
+void OpenTxTheme::init() const
 {
-  memset(&g_eeGeneral.themeData, 0, sizeof(ThemeBase::PersistentData));
+  memset(&g_eeGeneral.themeData, 0, sizeof(OpenTxTheme::PersistentData));
   if (options) {
     int i = 0;
     for (const ZoneOption * option = options; option->name; option++, i++) {
@@ -60,7 +60,7 @@ void ThemeBase::init() const
   }
 }
 
-void ThemeBase::load() const
+void OpenTxTheme::load() const
 {
   if (!asterisk)
     asterisk = BitmapBuffer::loadBitmap(getFilePath("asterisk.bmp"));
@@ -70,12 +70,12 @@ void ThemeBase::load() const
     busy = BitmapBuffer::loadBitmap(getFilePath("busy.bmp"));
 }
 
-ZoneOptionValue * ThemeBase::getOptionValue(unsigned int index) const
+ZoneOptionValue * OpenTxTheme::getOptionValue(unsigned int index) const
 {
   return &g_eeGeneral.themeData.options[index].value;
 }
 
-const char * ThemeBase::getFilePath(const char * filename) const
+const char * OpenTxTheme::getFilePath(const char * filename) const
 {
   static char path[FF_MAX_LFN+1] = THEMES_PATH "/";
   strcpy(path + sizeof(THEMES_PATH), getName());
@@ -85,7 +85,7 @@ const char * ThemeBase::getFilePath(const char * filename) const
   return path;
 }
 
-void ThemeBase::drawThumb(BitmapBuffer * dc, coord_t x, coord_t y, uint32_t flags)
+void OpenTxTheme::drawThumb(BitmapBuffer * dc, coord_t x, coord_t y, uint32_t flags)
 {
   #define THUMB_WIDTH   51
   #define THUMB_HEIGHT  31
@@ -98,12 +98,12 @@ void ThemeBase::drawThumb(BitmapBuffer * dc, coord_t x, coord_t y, uint32_t flag
   }
 }
 
-void ThemeBase::drawBackground(BitmapBuffer * dc) const
+void OpenTxTheme::drawBackground(BitmapBuffer * dc) const
 {
   dc->drawSolidFilledRect(0, 0, LCD_W, LCD_H, DEFAULT_BGCOLOR);
 }
 
-void ThemeBase::drawMessageBox(const char * title, const char * text, const char * action, uint32_t type) const
+void OpenTxTheme::drawMessageBox(const char * title, const char * text, const char * action, uint32_t type) const
 {
 
 }
@@ -142,7 +142,7 @@ void ThemeBase::drawMessageBox(const char * title, const char * text, const char
 //  }
 //}
 
-void ThemeBase::drawCheckBox(BitmapBuffer * dc, bool checked, coord_t x, coord_t y, bool focus) const
+void OpenTxTheme::drawCheckBox(BitmapBuffer * dc, bool checked, coord_t x, coord_t y, bool focus) const
 {
   if (focus) {
     dc->drawSolidFilledRect(x + 0, y + 2, 16, 16, FOCUS_BGCOLOR);
@@ -162,7 +162,7 @@ void ThemeBase::drawCheckBox(BitmapBuffer * dc, bool checked, coord_t x, coord_t
   }
 }
 
-void ThemeBase::drawChoice(BitmapBuffer * dc, ChoiceBase * choice, const char * str) const
+void OpenTxTheme::drawChoice(BitmapBuffer * dc, ChoiceBase * choice, const char * str) const
 {
   LcdFlags textColor;
   if (choice->isEditMode())
@@ -178,7 +178,7 @@ void ThemeBase::drawChoice(BitmapBuffer * dc, ChoiceBase * choice, const char * 
   dc->drawBitmapPattern(choice->getRect().w - 20, (choice->getRect().h - 11) / 2, choice->getType() == CHOICE_TYPE_FOLDER ? LBM_FOLDER : LBM_DROPDOWN, textColor);
 }
 
-void ThemeBase::drawSlider(BitmapBuffer * dc, int vmin, int vmax, int value, const rect_t & rect, bool edit, bool focus) const
+void OpenTxTheme::drawSlider(BitmapBuffer * dc, int vmin, int vmax, int value, const rect_t & rect, bool edit, bool focus) const
 {
   int val = limit(vmin, value, vmax);
   int w = divRoundClosest((rect.w - 16) * (val - vmin), vmax - vmin);
@@ -202,9 +202,9 @@ void ThemeBase::drawSlider(BitmapBuffer * dc, int vmin, int vmax, int value, con
   }
 }
 
-ThemeBase * getTheme(const char * name)
+OpenTxTheme * getTheme(const char * name)
 {
-  std::list<ThemeBase *>::const_iterator it = getRegisteredThemes().cbegin();
+  std::list<OpenTxTheme *>::const_iterator it = getRegisteredThemes().cbegin();
   for (; it != getRegisteredThemes().cend(); ++it) {
     if (!strcmp(name, (*it)->getName())) {
       return (*it);
@@ -213,7 +213,7 @@ ThemeBase * getTheme(const char * name)
   return nullptr;
 }
 
-void loadTheme(ThemeBase * newTheme)
+void loadTheme(OpenTxTheme * newTheme)
 {
   TRACE("load theme %s", newTheme->getName());
   theme = newTheme;
@@ -225,7 +225,7 @@ void loadTheme()
   char name[THEME_NAME_LEN + 1];
   memset(name, 0, sizeof(name));
   strncpy(name, g_eeGeneral.themeName, THEME_NAME_LEN);
-  ThemeBase * newTheme = getTheme(name);
+  OpenTxTheme * newTheme = getTheme(name);
   if (newTheme)
     loadTheme(newTheme);
   else

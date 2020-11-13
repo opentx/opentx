@@ -398,6 +398,12 @@ enum Analogs {
 #define DEFAULT_SLIDERS_CONFIG (SLIDER_WITH_DETENT << 1) + (SLIDER_WITH_DETENT << 0)
 #endif
 
+#define HARDWARE_POT3
+#if !defined(PCBX12S) // ext are used by mouse on X12S
+#define HARDWARE_EXT1
+#define HARDWARE_EXT2
+#endif
+
 enum CalibratedAnalogs {
   CALIBRATED_STICK1,
   CALIBRATED_STICK2,
@@ -541,7 +547,8 @@ void backlightInit();
 #else
 void backlightEnable(uint8_t dutyCycle = 0);
 #endif
-#define BACKLIGHT_LEVEL_MAX   100
+#define BACKLIGHT_LEVEL_MAX     100
+#define BACKLIGHT_FORCED_ON     BACKLIGHT_LEVEL_MAX + 1
 #if defined(PCBX12S)
 #define BACKLIGHT_LEVEL_MIN   5
 #elif defined(RADIO_FAMILY_T16)
@@ -631,8 +638,8 @@ void sportUpdatePowerInit();
 #endif
 
 // Aux serial port driver
-#if defined(AUX_SERIAL_GPIO)
 #define DEBUG_BAUDRATE                  115200
+#if defined(AUX_SERIAL_GPIO)
 extern uint8_t auxSerialMode;
 void auxSerialInit(unsigned int mode, unsigned int protocol);
 void auxSerialPutc(char c);

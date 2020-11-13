@@ -413,6 +413,7 @@ bool isBacklightEnabled();
 #endif
 
 #define BACKLIGHT_LEVEL_MAX             100
+#define BACKLIGHT_FORCED_ON             BACKLIGHT_LEVEL_MAX + 1
 #define BACKLIGHT_LEVEL_MIN             15
 
 #define BACKLIGHT_ENABLE()              backlightEnable(globalData.unexpectedShutdown ? BACKLIGHT_LEVEL_MAX : BACKLIGHT_LEVEL_MAX-g_eeGeneral.backlightBright)

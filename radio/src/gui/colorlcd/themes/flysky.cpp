@@ -27,11 +27,11 @@ const ZoneOption OPTIONS_THEME_DEFAULT[] = {
   { nullptr, ZoneOption::Bool }
 };
 
-class FlyskyTheme: public ThemeBase
+class FlyskyTheme: public OpenTxTheme
 {
   public:
     FlyskyTheme():
-      ThemeBase("FlySky", OPTIONS_THEME_DEFAULT)
+      OpenTxTheme("FlySky", OPTIONS_THEME_DEFAULT)
     {
       loadColors();
     }
@@ -296,7 +296,7 @@ class FlyskyTheme: public ThemeBase
     void load() const override
     {
       loadColors();
-      ThemeBase::load();
+      OpenTxTheme::load();
       if (!backgroundBitmap) {
         backgroundBitmap = BitmapBuffer::loadBitmap(getFilePath("background.png"));
       }
@@ -339,6 +339,15 @@ class FlyskyTheme: public ThemeBase
       else {
         lcdSetColor(g_eeGeneral.themeData.options[0].value.unsignedValue);
         dc->drawSolidFilledRect(0, 0, LCD_W, LCD_H, CUSTOM_COLOR);
+      }
+    }
+
+    void drawTopLeftBitmap(BitmapBuffer * dc) const override
+    {
+      if (topleftBitmap) {
+        dc->drawBitmap(0, 0, topleftBitmap);
+        uint16_t width = topleftBitmap->width();
+        dc->drawSolidFilledRect(width, 0, LCD_W - width, MENU_HEADER_HEIGHT, MENU_BGCOLOR);
       }
     }
 
@@ -439,6 +448,6 @@ BitmapBuffer * FlyskyTheme::currentMenuBackground = nullptr;
 FlyskyTheme flyskyTheme;
 
 #if defined(PCBFLYSKY)
-ThemeBase * defaultTheme = &flyskyTheme;
+OpenTxTheme * defaultTheme = &flyskyTheme;
 Theme * theme = &flyskyTheme;
 #endif
