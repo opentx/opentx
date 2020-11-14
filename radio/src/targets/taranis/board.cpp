@@ -265,10 +265,16 @@ void boardOff()
   // this function must not return!
 }
 
+#if defined (RADIO_TX12)
+  #define BATTERY_DIVIDER 22830
+#else
+  #define BATTERY_DIVIDER 26214
+#endif 
+
 uint16_t getBatteryVoltage()
 {
   int32_t instant_vbat = anaIn(TX_VOLTAGE); // using filtered ADC value on purpose
-  instant_vbat = (instant_vbat * BATT_SCALE * (128 + g_eeGeneral.txVoltageCalibration) ) / 26214;
+  instant_vbat = (instant_vbat * BATT_SCALE * (128 + g_eeGeneral.txVoltageCalibration) ) / BATTERY_DIVIDER;
   instant_vbat += 20; // add 0.2V because of the diode TODO check if this is needed, but removal will break existing calibrations!
   return (uint16_t)instant_vbat;
 }

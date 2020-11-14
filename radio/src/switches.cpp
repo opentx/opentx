@@ -126,9 +126,15 @@ uint64_t check3PosSwitchPosition(uint8_t idx, uint8_t sw, bool startup)
 void getSwitchesPosition(bool startup)
 {
   uint64_t newPos = 0;
+#if defined(RADIO_TX12)
+  CHECK_2POS(SW_SA);
+  CHECK_3POS(0, SW_SB);
+  CHECK_3POS(1, SW_SC);
+#else
   CHECK_3POS(0, SW_SA);
   CHECK_3POS(1, SW_SB);
   CHECK_3POS(2, SW_SC);
+#endif
 
 #if defined(PCBX9LITES)
   CHECK_2POS(SW_SD);
@@ -146,6 +152,10 @@ void getSwitchesPosition(bool startup)
 #elif defined(PCBXLITE)
   CHECK_3POS(3, SW_SD);
   // no SWE, SWF, SWG and SWH on XLITE
+#elif defined(RADIO_TX12)
+  CHECK_2POS(SW_SD);
+  CHECK_3POS(2, SW_SE);
+  CHECK_3POS(3, SW_SF);
 #elif defined(PCBX7)
   CHECK_3POS(3, SW_SD);
   CHECK_2POS(SW_SF);

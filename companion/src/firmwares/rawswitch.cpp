@@ -200,7 +200,7 @@ RawSwitch RawSwitch::convert(RadioDataConversionState & cstate)
         if (newIdx >= 0)
           evt = RadioDataConversionState::EVT_CVRT;
       }
-      else if (IS_JUMPER_T12(cstate.toType) && (IS_TARANIS_X9(cstate.fromType) || IS_FAMILY_HORUS_OR_T16(cstate.fromType))) {
+      else if (IS_FAMILY_T12(cstate.toType) && (IS_TARANIS_X9(cstate.fromType) || IS_FAMILY_HORUS_OR_T16(cstate.fromType))) {
         // No SE and SG on T12 board
         newIdx = toSwitchList.indexOf("SD");
         if (newIdx >= 0)

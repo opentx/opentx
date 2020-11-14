@@ -40,6 +40,8 @@
   #include "lua/lua_exports_x7.inc"
 #elif defined(RADIO_T12)
   #include "lua/lua_exports_t12.inc"
+#elif defined(RADIO_TX12)
+  #include "lua/lua_exports_tx12.inc"
 #elif defined(PCBX9LITES)
   #include "lua/lua_exports_x9lites.inc"
 #elif defined(PCBX9LITE)
@@ -1779,7 +1781,9 @@ const luaR_value_entry opentxConstants[] = {
 #endif
 #if !defined(PCBXLITE) && !defined(PCBX9LITE)
   { "MIXSRC_SF", MIXSRC_SF },
+#if !defined(RADIO_TX12)
   { "MIXSRC_SH", MIXSRC_SH },
+#endif
 #endif
   { "MIXSRC_CH1", MIXSRC_CH1 },
   { "SWSRC_LAST", SWSRC_LAST_LOGICAL_SWITCH },
@@ -1878,10 +1882,17 @@ const luaR_value_entry opentxConstants[] = {
   { "EVT_VIRTUAL_ENTER_LONG", EVT_KEY_LONG(KEY_ENTER) },
   { "EVT_VIRTUAL_EXIT", EVT_KEY_BREAK(KEY_EXIT) },
 #elif defined(NAVIGATION_X7) || defined(NAVIGATION_X9D)
+#if defined(RADIO_TX12)
+  { "EVT_VIRTUAL_PREV_PAGE", EVT_KEY_BREAK(KEY_PAGEUP) },
+  { "EVT_VIRTUAL_NEXT_PAGE", EVT_KEY_BREAK(KEY_PAGEDN) },
+  { "EVT_VIRTUAL_MENU", EVT_KEY_BREAK(KEY_MODEL) },
+  { "EVT_VIRTUAL_MENU_LONG", EVT_KEY_LONG(KEY_MODEL) },
+#else
   { "EVT_VIRTUAL_PREV_PAGE", EVT_KEY_LONG(KEY_PAGE) },
   { "EVT_VIRTUAL_NEXT_PAGE", EVT_KEY_BREAK(KEY_PAGE) },
   { "EVT_VIRTUAL_MENU", EVT_KEY_BREAK(KEY_MENU) },
   { "EVT_VIRTUAL_MENU_LONG", EVT_KEY_LONG(KEY_MENU) },
+#endif
   { "EVT_VIRTUAL_ENTER", EVT_KEY_BREAK(KEY_ENTER) },
   { "EVT_VIRTUAL_ENTER_LONG", EVT_KEY_LONG(KEY_ENTER) },
   { "EVT_VIRTUAL_EXIT", EVT_KEY_BREAK(KEY_EXIT) },

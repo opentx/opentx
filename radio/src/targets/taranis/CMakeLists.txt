@@ -124,6 +124,18 @@ elseif(PCB STREQUAL X7)
     set(LUA_EXPORT lua_export_t12)
     add_definitions(-DRADIO_T12)
     add_definitions(-DEEPROM_VARIANT=0x4001)
+  elseif(PCBREV STREQUAL TX12)
+    option(INTERNAL_MODULE_MULTI "Support for MULTI internal module" ON)
+    set(FLAVOUR tx12)
+    set(NAVIGATION_TYPE x7)
+    set(CPU_TYPE STM32F2)
+    set(CPU_TYPE_FULL STM32F205xE)  # for size report
+    set(LINKER_SCRIPT targets/taranis/stm32f2_flash.ld)
+    set(ROTARY_ENCODER YES)
+    set(LUA_EXPORT lua_export_tx12)
+    set(BLUETOOTH NO)
+    add_definitions(-DRADIO_TX12)
+    add_definitions(-DEEPROM_VARIANT=0x4002)
   elseif(PCBREV STREQUAL ACCESS)
     option(INTERNAL_MODULE_PXX1 "Support for PXX1 internal module" OFF)
     option(INTERNAL_MODULE_PXX2 "Support for PXX2 internal module" ON)
@@ -294,7 +306,7 @@ if(INTERNAL_MODULE_SERIAL)
     ${TARGET_SRC}
     ../common/arm/stm32/intmodule_serial_driver.cpp
     )
-elseif(NOT (PCB STREQUAL X7 AND PCBREV STREQUAL T12))
+elseif(INTERNAL_MODULE_PXX1 OR INTERNAL_MODULE_PXX2)
   set(TARGET_SRC
     ${TARGET_SRC}
     intmodule_pulses_driver.cpp

@@ -262,6 +262,8 @@ void onHardwareAntennaSwitchConfirm(const char * result)
   #define SWITCH_TYPE_MAX(sw)            (SWITCH_3POS)
 #elif defined(PCBX9E)
   #define SWITCH_TYPE_MAX(sw)            ((MIXSRC_SF - MIXSRC_FIRST_SWITCH == sw || MIXSRC_SH - MIXSRC_FIRST_SWITCH == sw) ? SWITCH_2POS : SWITCH_3POS)
+#elif defined(RADIO_TX12)
+  #define SWITCH_TYPE_MAX(sw)            ((MIXSRC_SA - MIXSRC_FIRST_SWITCH == sw || MIXSRC_SD - MIXSRC_FIRST_SWITCH == sw) ? SWITCH_2POS : SWITCH_3POS)
 #else
   #define SWITCH_TYPE_MAX(sw)            ((MIXSRC_SF - MIXSRC_FIRST_SWITCH == sw || MIXSRC_SH - MIXSRC_FIRST_SWITCH <= sw) ? SWITCH_2POS : SWITCH_3POS)
 #endif
