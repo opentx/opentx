@@ -217,10 +217,7 @@ bool menuModelTelemetry(event_t event)
         break;
 
       case ITEM_TELEMETRY_RSSI_LABEL:
-        if (isRssiAlarmUsingLqy())
-          lcdDrawText(MENUS_MARGIN_LEFT, y, "RQly");
-        else
-          lcdDrawText(MENUS_MARGIN_LEFT, y, "RSSI");
+        lcdDrawText(MENUS_MARGIN_LEFT, y, getRssiLabel(), 0);
         break;
 
       case ITEM_TELEMETRY_RSSI_SOURCE: {
