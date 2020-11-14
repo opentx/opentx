@@ -635,7 +635,11 @@ void sportUpdatePowerInit();
 #endif
 
 // Aux serial port driver
-#define DEBUG_BAUDRATE                  115200
+#if defined(RADIO_TX16S)
+  #define DEBUG_BAUDRATE                  250000
+#else
+  #define DEBUG_BAUDRATE                  115200
+#endif
 #if defined(AUX_SERIAL_GPIO)
 extern uint8_t auxSerialMode;
 void auxSerialInit(unsigned int mode, unsigned int protocol);
