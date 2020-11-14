@@ -203,7 +203,16 @@ void menuModelSelect(event_t event)
       }
       break;
 
-#if defined(NAVIGATION_X7)
+#if defined(NAVIGATION_X7_TX12)
+    case EVT_KEY_FIRST(KEY_PAGEUP):
+      chainMenu(menuTabModel[DIM(menuTabModel)-1]);
+      killEvents(event);
+      break;
+
+    case EVT_KEY_FIRST(KEY_PAGEDN):
+      chainMenu(menuModelSetup);
+      break;
+#elif defined(NAVIGATION_X7)
     case EVT_KEY_LONG(KEY_PAGE):
       chainMenu(menuTabModel[DIM(menuTabModel)-1]);
       killEvents(event);

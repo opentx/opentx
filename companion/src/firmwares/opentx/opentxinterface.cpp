@@ -66,6 +66,8 @@ const char * OpenTxEepromInterface::getName()
       return "OpenTX for Jumper T18";
     case BOARD_RADIOMASTER_TX16S:
       return "OpenTX for Radiomaster TX16S";
+    case BOARD_RADIOMASTER_TX12:
+      return "OpenTX for Radiomaster TX12";
     case BOARD_TARANIS_X9D:
       return "OpenTX for FrSky Taranis X9D";
     case BOARD_TARANIS_X9DP:
@@ -334,7 +336,9 @@ int OpenTxEepromInterface::save(uint8_t * eeprom, const RadioData & radioData, u
   else if (IS_JUMPER_T12(board)) {
     variant |= JUMPER_T12_VARIANT;
   }
-
+  else if (IS_RADIOMASTER_TX12(board)) {
+    variant |= RADIOMASTER_TX12_VARIANT;
+  }
   OpenTxGeneralData generator((GeneralSettings &)radioData.generalSettings, board, version, variant);
   // generator.dump();
   QByteArray data;
@@ -520,7 +524,7 @@ int OpenTxFirmware::getCapability(::Capability capability)
     case MaxVolume:
       return 23;
     case MaxContrast:
-      if (IS_TARANIS_SMALL(board) || IS_JUMPER_T12(board))
+      if (IS_TARANIS_SMALL(board))
         return 30;
       else
         return 45;
@@ -615,7 +619,7 @@ int OpenTxFirmware::getCapability(::Capability capability)
     case LcdWidth:
       if (IS_FAMILY_HORUS_OR_T16(board))
         return 480;
-      else if (IS_TARANIS_SMALL(board) || IS_JUMPER_T12(board))
+      else if (IS_TARANIS_SMALL(board))
         return 128;
       else if (IS_TARANIS(board))
         return 212;
@@ -629,7 +633,7 @@ int OpenTxFirmware::getCapability(::Capability capability)
     case LcdDepth:
       if (IS_FAMILY_HORUS_OR_T16(board))
         return 16;
-      else if (IS_TARANIS_SMALL(board) || IS_JUMPER_T12(board))
+      else if (IS_TARANIS_SMALL(board))
         return 1;
       else if (IS_TARANIS(board))
         return 4;
@@ -679,6 +683,8 @@ int OpenTxFirmware::getCapability(::Capability capability)
         return TARANIS_XLITE_VARIANT;
       else if (IS_JUMPER_T12(board))
         return JUMPER_T12_VARIANT;
+      else if (IS_RADIOMASTER_TX12(board))
+        return RADIOMASTER_TX12_VARIANT;
       else
         return 0;
     case MavlinkTelemetry:
@@ -733,9 +739,9 @@ bool OpenTxFirmware::isAvailable(PulsesProtocol proto, int port)
             return true;
           case PULSES_PXX_XJT_X16:
           case PULSES_PXX_XJT_LR12:
-            return !IS_ACCESS_RADIO(board, id) && !IS_FAMILY_T16(board) && !IS_JUMPER_T12(board);
+            return !IS_ACCESS_RADIO(board, id) && !IS_FAMILY_T16(board) && !IS_FAMILY_T12(board);
           case PULSES_PXX_XJT_D8:
-            return !(IS_ACCESS_RADIO(board, id)  || id.contains("eu")) && !IS_FAMILY_T16(board) && !IS_JUMPER_T12(board);
+            return !(IS_ACCESS_RADIO(board, id)  || id.contains("eu")) && !IS_FAMILY_T16(board) && !IS_FAMILY_T12(board);
           case PULSES_ACCESS_ISRM:
           case PULSES_ACCST_ISRM_D16:
             return IS_ACCESS_RADIO(board, id);
@@ -940,6 +946,11 @@ bool OpenTxEepromInterface::checkVariant(unsigned int version, unsigned int vari
   }
   else if (IS_JUMPER_T12(board)) {
     if (variant != JUMPER_T12_VARIANT) {
+      variantError = true;
+    }
+  }
+  else if (IS_RADIOMASTER_TX12(board)) {
+    if (variant != RADIOMASTER_TX12_VARIANT) {
       variantError = true;
     }
   }
@@ -1272,6 +1283,16 @@ void registerOpenTxFirmwares()
   firmware->addOption("externalaccessmod", Firmware::tr("Support hardware mod: R9M ACCESS"));
   addOpenTxRfOptions(firmware, FLEX);
   registerOpenTxFirmware(firmware);
+
+  /* Radiomaster TX12 board */
+  firmware = new OpenTxFirmware("opentx-tx12", QCoreApplication::translate("Firmware", "Radiomaster TX12"), BOARD_RADIOMASTER_TX12);
+  addOpenTxCommonOptions(firmware);
+  firmware->addOption("noheli", Firmware::tr("Disable HELI menu and cyclic mix support"));
+  firmware->addOption("nogvars", Firmware::tr("Disable Global variables"));
+  firmware->addOption("lua", Firmware::tr("Enable Lua custom scripts screen"));
+  addOpenTxFontOptions(firmware);
+  registerOpenTxFirmware(firmware);
+  addOpenTxRfOptions(firmware, FLEX + AFHDS3);
 
   /* Radiomaster TX16S board */
   firmware = new OpenTxFirmware("opentx-tx16s", Firmware::tr("Radiomaster TX16S / SE / Hall / Masterfire"), BOARD_RADIOMASTER_TX16S);
