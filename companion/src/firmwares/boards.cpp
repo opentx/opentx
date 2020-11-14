@@ -213,7 +213,7 @@ SwitchInfo Boards::getSwitchInfo(Board::Type board, int index)
     if (index < DIM(switches))
       return switches[index];
   }
-  else if(IS_FAMILY_HORUS_OR_T16(board)) {
+  else if (IS_FAMILY_HORUS_OR_T16(board)) {
     const Board::SwitchInfo switches[] = {
       {SWITCH_3POS,   "SA"},
       {SWITCH_3POS,   "SB"},
