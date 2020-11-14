@@ -205,7 +205,6 @@ void TelemetryItem::setValue(const TelemetrySensor & sensor, int32_t val, uint32
   }
   else if (unit == UNIT_TEXT) {
     // Should be handled at telemetry protocol level
-    }
     return;
   }
   else {
