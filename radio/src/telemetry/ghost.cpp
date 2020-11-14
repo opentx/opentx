@@ -178,11 +178,11 @@ void processGhostTelemetryFrame()
 
     case GHST_DL_MENU_DESC:
     {
-      ghst_menu_frame * packet;
-      ghst_menu_data * lineData;
+      GhostMenuFrame * packet;
+      GhostMenuData * lineData;
       
-      packet = (ghst_menu_frame * ) telemetryRxBuffer;
-      lineData = (ghst_menu_data *) &reusableBuffer.ghostMenu.line[packet->lineIndex];
+      packet = (GhostMenuFrame * ) telemetryRxBuffer;
+      lineData = (GhostMenuData *) &reusableBuffer.ghostMenu.line[packet->lineIndex];
       lineData->splitLine = 0;
       reusableBuffer.ghostMenu.menuAction = packet->menuFlags;
       lineData->lineFlags = packet->lineFlags;

@@ -115,35 +115,36 @@ enum GhostTelemetryBaudrates
 #define GHOST_BAUDRATE       400000
 #define GHOST_PERIOD         4
 
-typedef enum
+enum GhostLineFlags
 {
-  GHST_LINE_FLAGS_None = 0x00,
-  GHST_LINE_FLAGS_LabelSelect = 0x01,
-  GHST_LINE_FLAGS_ValueSelect = 0x02,
-  GHST_LINE_FLAGS_ValueEdit = 0x04,
-} GHST_LINE_FLAGS;
+  GHST_LINE_FLAGS_NONE = 0x00,
+  GHST_LINE_FLAGS_LABEL_SELECT = 0x01,
+  GHST_LINE_FLAGS_VALUE_SELECT = 0x02,
+  GHST_LINE_FLAGS_VALUE_EDIT = 0x04,
+};
 
-typedef enum
+enum GhostButtons
 {
-  GHST_BTN_None = 0x00,
-  GHST_BTN_JoyPress = 0x01,
-  GHST_BTN_JoyUp = 0x02,
-  GHST_BTN_JoyDown = 0x04,
-  GHST_BTN_JoyLeft = 0x08,
-  GHST_BTN_JoyRight = 0x10,
-  GHST_BTN_Bind = 0x20			// future, for no-UI Ghost
-} GHST_BTN;
+  GHST_BTN_NONE = 0x00,
+  GHST_BTN_JOYPRESS = 0X01,
+  GHST_BTN_JOYUP = 0X02,
+  GHST_BTN_JOYDOWN = 0X04,
+  GHST_BTN_JOYLEFT = 0X08,
+  GHST_BTN_JOYRIGHT = 0X10,
+  GHST_BTN_BIND = 0X20			// future, for no-UI Ghost
+};
 
-typedef enum
+enum GhostMenuControl
 {
-  GHST_MENU_CTRL_None = 0x00,
-  GHST_MENU_CTRL_Open = 0x01,
-  GHST_MENU_CTRL_Close = 0x02,
-  GHST_MENU_CTRL_Redraw = 0x04,
-} GHST_MENU_CTRL;
+  GHST_MENU_CTRL_NONE = 0X00,
+  GHST_MENU_CTRL_OPEN = 0X01,
+  GHST_MENU_CTRL_CLOSE = 0X02,
+  GHST_MENU_CTRL_REDRAW = 0X04,
+};
 
 
-enum GhostFrames{
+enum GhostFrames
+{
   GHST_FRAME_CHANNEL,
   GHST_MENU_CONTROL
 };
@@ -152,7 +153,7 @@ constexpr uint8_t GHST_MENU_LINES = 6;
 constexpr uint8_t GHST_MENU_CHARS = 20;
 
 // GHST_DL_MENU_DESC (27 bytes)
-typedef struct
+struct GhostMenuFrame
 {
   uint8_t address;
   uint8_t length ;
@@ -162,14 +163,14 @@ typedef struct
   uint8_t lineIndex;     // 0 = first line
   unsigned char menuText[GHST_MENU_CHARS];
   uint8_t crc;
-}  ghst_menu_frame;
+};
 
-typedef struct
+struct GhostMenuData
 {
   uint8_t menuFlags;     // Update Line, Clear Menu, etc.
   uint8_t lineFlags;     // Carat states, Inverse, Bold for each of Menu Label, and Value
   uint8_t splitLine;     // Store beginning of Value substring
   char menuText[GHST_MENU_CHARS + 1];
-}  ghst_menu_data;
+};
 
 #endif // _GHOST_H_

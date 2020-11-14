@@ -25,8 +25,8 @@ void menuGhostModuleConfig(event_t event)
   switch (event) {
     case EVT_ENTRY:
       memclear(&reusableBuffer.ghostMenu, sizeof(reusableBuffer.ghostMenu));
-      reusableBuffer.ghostMenu.buttonAction = GHST_BTN_None;
-      reusableBuffer.ghostMenu.menuAction = GHST_MENU_CTRL_Open;
+      reusableBuffer.ghostMenu.buttonAction = GHST_BTN_NONE;
+      reusableBuffer.ghostMenu.menuAction = GHST_MENU_CTRL_OPEN;
       moduleState[EXTERNAL_MODULE].counter = GHST_MENU_CONTROL;
       break;
 
@@ -37,8 +37,8 @@ void menuGhostModuleConfig(event_t event)
 #elif defined(KEYS_GPIO_REG_PLUS)
       case EVT_KEY_BREAK(KEY_PLUS):
 #endif
-      reusableBuffer.ghostMenu.buttonAction = GHST_BTN_JoyUp;
-      reusableBuffer.ghostMenu.menuAction = GHST_MENU_CTRL_None;
+      reusableBuffer.ghostMenu.buttonAction = GHST_BTN_JOYUP;
+      reusableBuffer.ghostMenu.menuAction = GHST_MENU_CTRL_NONE;
       moduleState[EXTERNAL_MODULE].counter = GHST_MENU_CONTROL;
       break;
 
@@ -49,36 +49,36 @@ void menuGhostModuleConfig(event_t event)
 #elif defined(KEYS_GPIO_REG_MINUS)
     case EVT_KEY_BREAK(KEY_MINUS):
 #endif
-      reusableBuffer.ghostMenu.buttonAction = GHST_BTN_JoyDown;
-      reusableBuffer.ghostMenu.menuAction = GHST_MENU_CTRL_None;
+      reusableBuffer.ghostMenu.buttonAction = GHST_BTN_JOYDOWN;
+      reusableBuffer.ghostMenu.menuAction = GHST_MENU_CTRL_NONE;
       moduleState[EXTERNAL_MODULE].counter = GHST_MENU_CONTROL;
       break;
 
 
     case EVT_KEY_FIRST(KEY_ENTER):
-      reusableBuffer.ghostMenu.buttonAction = GHST_BTN_JoyPress;
-      reusableBuffer.ghostMenu.menuAction = GHST_MENU_CTRL_None;
+      reusableBuffer.ghostMenu.buttonAction = GHST_BTN_JOYPRESS;
+      reusableBuffer.ghostMenu.menuAction = GHST_MENU_CTRL_NONE;
       moduleState[EXTERNAL_MODULE].counter = GHST_MENU_CONTROL;
       break;
 
     case EVT_KEY_BREAK(KEY_EXIT):
-      reusableBuffer.ghostMenu.buttonAction = GHST_BTN_JoyLeft;
-      reusableBuffer.ghostMenu.menuAction = GHST_MENU_CTRL_None;
+      reusableBuffer.ghostMenu.buttonAction = GHST_BTN_JOYLEFT;
+      reusableBuffer.ghostMenu.menuAction = GHST_MENU_CTRL_NONE;
       moduleState[EXTERNAL_MODULE].counter = GHST_MENU_CONTROL;
       break;
 
     case EVT_KEY_LONG(KEY_EXIT):
       menuVerticalOffset = 0;
       memclear(&reusableBuffer.ghostMenu, sizeof(reusableBuffer.ghostMenu));
-      reusableBuffer.ghostMenu.buttonAction = GHST_BTN_None;
-      reusableBuffer.ghostMenu.menuAction = GHST_MENU_CTRL_Close;
+      reusableBuffer.ghostMenu.buttonAction = GHST_BTN_NONE;
+      reusableBuffer.ghostMenu.menuAction = GHST_MENU_CTRL_CLOSE;
       moduleState[EXTERNAL_MODULE].counter = GHST_MENU_CONTROL;
       RTOS_WAIT_MS(10);
       popMenu();
       break;
   }
 
-  if (reusableBuffer.ghostMenu.menuAction ==  GHST_MENU_CTRL_Close) {
+  if (reusableBuffer.ghostMenu.menuAction ==  GHST_MENU_CTRL_CLOSE) {
     popMenu();
   }
 
@@ -90,19 +90,19 @@ void menuGhostModuleConfig(event_t event)
   for (uint8_t line = 0; line < GHST_MENU_LINES; line++) {
     flags = 0;
     if (reusableBuffer.ghostMenu.line[line].splitLine) {
-      if (reusableBuffer.ghostMenu.line[line].lineFlags & GHST_LINE_FLAGS_LabelSelect)
+      if (reusableBuffer.ghostMenu.line[line].lineFlags & GHST_LINE_FLAGS_LABELSELECT)
         flags = INVERS;
       lcdDrawText(xOffset, yOffset + line * FH, reusableBuffer.ghostMenu.line[line].menuText, flags);
 
       flags = 0;
-      if (reusableBuffer.ghostMenu.line[line].lineFlags & GHST_LINE_FLAGS_ValueSelect)
+      if (reusableBuffer.ghostMenu.line[line].lineFlags & GHST_LINE_FLAGS_VALUE_SELECT)
         flags |= INVERS;
-      if (reusableBuffer.ghostMenu.line[line].lineFlags & GHST_LINE_FLAGS_ValueEdit)
+      if (reusableBuffer.ghostMenu.line[line].lineFlags & GHST_LINE_FLAGS_VALUE_EDIT)
         flags |= BLINK;
       lcdDrawText(xOffset2, yOffset + line * FH, &reusableBuffer.ghostMenu.line[line].menuText[reusableBuffer.ghostMenu.line[line].splitLine], flags);
     }
     else {
-      if (reusableBuffer.ghostMenu.line[line].lineFlags & GHST_LINE_FLAGS_LabelSelect)
+      if (reusableBuffer.ghostMenu.line[line].lineFlags & GHST_LINE_FLAGS_LABELSELECT)
         flags = INVERS;
       lcdDrawText(xOffset, yOffset + line * FH, reusableBuffer.ghostMenu.line[line].menuText, flags);
     }
