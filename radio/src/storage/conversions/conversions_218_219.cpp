@@ -336,7 +336,7 @@ void convertModelData_218_to_219(ModelData &model)
   }
 
   for (int zone=0; zone<MAX_LAYOUT_ZONES; zone++) {
-    Topbar::ZonePersistentData * zoneData = &g_model.topbarData.zones[zone];
+    TopBar::ZonePersistentData * zoneData = &g_model.topbarData.zones[zone];
     if (strcmp("Value", zoneData->widgetName))
       continue;
 

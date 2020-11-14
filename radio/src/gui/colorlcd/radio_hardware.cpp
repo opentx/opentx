@@ -184,7 +184,34 @@ void RadioHardwarePage::build(FormWindow * window)
   for (int i = 0; i < NUM_POTS; i++) {
     new StaticText(window, grid.getLabelSlot(true), TEXT_AT_INDEX(STR_VSRCRAW, (i + NUM_STICKS + 1)));
     new TextEdit(window, grid.getFieldSlot(2,0), g_eeGeneral.anaNames[i + NUM_STICKS], LEN_ANA_NAME);
-    new Choice(window, grid.getFieldSlot(2,1), STR_POTTYPES, POT_NONE, POT_WITHOUT_DETENT, GET_SET_BF(g_eeGeneral.potsConfig, 2 * i, 2));
+    new Choice(window, grid.getFieldSlot(2,1), STR_POTTYPES, POT_NONE, POT_WITHOUT_DETENT,
+               [=]() -> int {
+                   return bfGet<uint32_t>(g_eeGeneral.potsConfig, 2*i, 2);
+               },
+               [=](int newValue) {
+                   g_eeGeneral.potsConfig = bfSet<uint32_t>(g_eeGeneral.potsConfig, newValue, 2*i, 2);
+                   SET_DIRTY();
+               });
+    grid.nextLine();
+  }
+
+  // Sliders
+  new Subtitle(window, grid.getLineSlot(), STR_SLIDERS);
+  grid.nextLine();
+  for (int i = 0; i < NUM_SLIDERS; i++) {
+    new StaticText(window, grid.getLabelSlot(true), TEXT_AT_INDEX(STR_VSRCRAW, (i + NUM_STICKS + NUM_POTS + 1)));
+    new TextEdit(window, grid.getFieldSlot(2,0), g_eeGeneral.anaNames[i + NUM_STICKS], LEN_ANA_NAME);
+    new Choice(window, grid.getFieldSlot(2,1), STR_SLIDERTYPES, SLIDER_NONE, SLIDER_WITH_DETENT,
+               [=]() -> int {
+                   uint8_t mask = (0x01 << i);
+                   return (g_eeGeneral.slidersConfig & mask) >> i;
+               },
+               [=](int newValue) {
+                   uint8_t mask = (0x01 << i);
+                   g_eeGeneral.slidersConfig &= ~mask;
+                   g_eeGeneral.slidersConfig |= (newValue << i);
+                   SET_DIRTY();
+               });
     grid.nextLine();
   }
 
@@ -246,6 +273,29 @@ void RadioHardwarePage::build(FormWindow * window)
     grid.nextLine();
     grid.addWindow(new BluetoothConfigWindow(window, {0, grid.getWindowHeight(), LCD_W, 0}));
   }
+#endif
+
+#if defined(AUX_SERIAL)
+  new StaticText(window, grid.getLabelSlot(), STR_AUX_SERIAL_MODE);
+  auto aux = new Choice(window, grid.getFieldSlot(1,0), STR_AUX_SERIAL_MODES, 0, UART_MODE_MAX, GET_SET_DEFAULT(g_eeGeneral.auxSerialMode));
+  aux->setAvailableHandler([=](int value) {
+      return isAuxModeAvailable;
+  });
+  grid.nextLine();
+#endif
+
+#if defined(AUX2_SERIAL)
+  new StaticText(window, grid.getLabelSlot(), STR_AUX2_SERIAL_MODE);
+  auto aux2 = new Choice(window, grid.getFieldSlot(1,0), STR_AUX_SERIAL_MODES, 0, UART_MODE_MAX, GET_SET_DEFAULT(g_eeGeneral.aux2SerialMode));
+  aux2->setAvailableHandler([=](int value) {
+      return isAux2ModeAvailable;
+  });
+  grid.nextLine();
+#endif
+
+#if defined(AUX_SERIAL) || defined(AUX2_SERIAL)
+  new StaticText(window, grid.getFieldSlot(1,0), STR_TTL_WARNING, 0, ALARM_COLOR);
+  grid.nextLine();
 #endif
 
   // ADC filter

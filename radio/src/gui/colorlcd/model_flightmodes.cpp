@@ -74,8 +74,12 @@ void ModelFlightModesPage::build(FormWindow * window)
 
     FormGridLayout grid;
     grid.setMarginRight(15);
-    grid.spacer();
+#if LCD_W > LCD_H
     grid.setLabelWidth(140);
+#else
+    grid.setLabelWidth(110);
+#endif
+    grid.spacer();
 
     char label[16];
     getFlightModeString(label, i+1);

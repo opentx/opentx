@@ -24,6 +24,24 @@
 #include "form.h"
 #include "curve.h"
 
+class CurveDataEdit : public FormGroup
+{
+    friend class CurveEdit;
+
+  public:
+    CurveDataEdit(Window * parent, const rect_t & rect, uint8_t index);
+
+    void paint(BitmapBuffer * dc) override;
+
+    void checkEvents() override;
+
+    void update();
+
+  protected:
+    uint8_t index;
+    uint8_t previousCurvePointsCount;
+};
+
 class CurveEdit: public FormField {
   public:
     CurveEdit(Window * parent, const rect_t & rect, uint8_t index);

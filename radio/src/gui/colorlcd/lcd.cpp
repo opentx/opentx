@@ -19,6 +19,7 @@
  */
 
 #include "lcd.h"
+#include "opentx.h"
 
 #if defined(SIMU)
 pixel_t displayBuf[DISPLAY_BUFFER_SIZE];
@@ -73,7 +74,7 @@ int getTextWidth(const char * s, int len, LcdFlags flags)
       result += getFontPatternWidth(specs, c) + 1;
     }
     else if (c >= 0x20) {
-      result += getCharWidth(c, specs) + 1;
+      result += getCharWidth(c, specs);
     }
 
     ++s;

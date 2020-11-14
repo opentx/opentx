@@ -52,7 +52,7 @@ class CommonInputOrMixButton : public Button {
       });
     }
 
-    virtual bool isActive() = 0;
+    virtual bool isActive() const = 0;
 
     void checkEvents() override;
 

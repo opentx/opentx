@@ -19,99 +19,62 @@
  */
 
 #include "opentx.h"
+#include "view_logical_switches.h"
 
-#define X_OFF                          45
-#define Y_OFF                          70
-#define HLINE_Y_OFF                    215
-#define LS_COL_WIDTH                   50
-#define LS_LINE_HEIGHT                 17
-#define X_FUNC                         50
-#define Y_FUNC                         225
+#include <utility>
 
-#define CSW_1ST_COLUMN                 50
-#define CSW_2ND_COLUMN                 120
-#define CSW_3RD_COLUMN                 200
-#define CSW_4TH_COLUMN                 280
-#define CSW_5TH_COLUMN                 340
-#define CSW_6TH_COLUMN                 390
-#define MAX_LOGICAL_SWITCHES             64
-
-extern void putsEdgeDelayParam(coord_t, coord_t, LogicalSwitchData *, uint8_t, uint8_t);
-
-void displayLogicalSwitchedDetails(coord_t x, coord_t y, uint8_t idx)
+class LogicalSwitchDisplayButton : public TextButton
 {
-  LogicalSwitchData * cs = lswAddress(idx);
-  lcdDrawTextAtIndex(x, y, STR_VCSWFUNC, cs->func, 0);
-  // CSW params
-  unsigned int cstate = lswFamily(cs->func);
+  public:
+    LogicalSwitchDisplayButton(FormGroup * parent, const rect_t & rect, std::string text, unsigned index):
+      TextButton(parent, rect, std::move(text)),
+      index(index)
+    {
+    }
 
-  if (cstate == LS_FAMILY_BOOL || cstate == LS_FAMILY_STICKY) {
-    drawSwitch(CSW_2ND_COLUMN, y, cs->v1, 0);
-    drawSwitch(CSW_3RD_COLUMN, y, cs->v2, 0);
-  }
-  else if (cstate == LS_FAMILY_EDGE) {
-    drawSwitch(CSW_2ND_COLUMN, y, cs->v1, 0);
-    putsEdgeDelayParam(CSW_3RD_COLUMN, y, cs, 0, 0);
-  }
-  else if (cstate == LS_FAMILY_COMP) {
-    drawSource(CSW_2ND_COLUMN, y, cs->v1, 0);
-    drawSource(CSW_3RD_COLUMN, y, cs->v2, 0);
-  }
-  else if (cstate == LS_FAMILY_TIMER) {
-    lcdDrawNumber(CSW_2ND_COLUMN, y, lswTimerValue(cs->v1), LEFT | PREC1);
-    lcdDrawNumber(CSW_3RD_COLUMN, y, lswTimerValue(cs->v2), LEFT | PREC1);
-  }
-  else {
-    drawSource(CSW_2ND_COLUMN, y, cs->v1, 0);
-    drawSourceCustomValue(CSW_3RD_COLUMN, y, cs->v1, cs->v1 <= MIXSRC_LAST_CH ? calc100toRESX(cs->v2) : cs->v2, LEFT);
-  }
+    void checkEvents() override
+    {
+      bool newvalue = getSwitch(SWSRC_SW1 + index);
+      if (value != newvalue) {
+        if (newvalue) {
+          setTextFlags(FONT(BOLD) | HIGHLIGHT_COLOR);
+        }
+        else {
+          setTextFlags(FONT(STD) | DEFAULT_COLOR);
+        }
+        value = newvalue;
+        invalidate();
+      }
+      Button::checkEvents();
+    }
 
-  // CSW AND switch
-  drawSwitch(CSW_4TH_COLUMN, y, cs->andsw, 0);
+  protected:
+    unsigned index = 0;
+    bool value = false;
+};
 
-  // CSW duration
-  if (cs->duration > 0)
-    lcdDrawNumber(CSW_5TH_COLUMN, y, cs->duration, PREC1 | LEFT);
-  else
-    lcdDrawMMM(CSW_5TH_COLUMN, y, 0);
-
-  // CSW delay
-  if (cstate == LS_FAMILY_EDGE) {
-    lcdDrawText(CSW_6TH_COLUMN, y, STR_NA);
-  }
-  else if (cs->delay > 0) {
-    lcdDrawNumber(CSW_6TH_COLUMN, y, cs->delay, PREC1 | LEFT);
-  }
-  else {
-    lcdDrawMMM(CSW_6TH_COLUMN, y, 0);
-  }
-}
-
-bool menuLogicalSwitchesMonitor(event_t event)
+void LogicalSwitchesViewPage::build(FormWindow * window)
 {
-  char lsString[] = "L64";
+  constexpr coord_t LSW_VIEW_FOOTER_HEIGHT = 20;
+  FormGridLayout grid;
+  grid.spacer(PAGE_PADDING);
+  grid.setLabelWidth(8);
+
+  // LSW table
+  std::string lsString ("LS64");
   lcdColorTable[CUSTOM_COLOR_INDEX] = RGB(160, 160, 160);
   for (uint8_t i = 0; i < MAX_LOGICAL_SWITCHES; i++) {
-    LcdFlags attr = (menuHorizontalPosition == i ? INVERS : 0) | LEFT;
-    LogicalSwitchData * cs = lswAddress(i);
     strAppendSigned(&lsString[1], i + 1, 2);
-    if (cs->func == LS_FUNC_NONE)
-      attr += CUSTOM_COLOR;
-    else if (getSwitch(SWSRC_SW1 + i))
-      attr += BOLD;
-    lcdDrawText(X_OFF + (i & 0x07) * LS_COL_WIDTH, Y_OFF + (i >> 3) * LS_LINE_HEIGHT, lsString, attr);
+    auto button = new LogicalSwitchDisplayButton(window, grid.getFieldSlot(8, i % 8), lsString, i);
+    button->setPressHandler([=]() {
+      footer->setIndex(i);
+      footer->invalidate();
+      return 0;
+    });
+    if ((i + 1) % 8 == 0)
+      grid.nextLine();
   }
-  lcdDrawHorizontalLine(0, HLINE_Y_OFF, LCD_W, SOLID);
-  if (lswAddress(menuHorizontalPosition)->func != LS_FUNC_NONE) {
-    displayLogicalSwitchedDetails(X_FUNC, Y_FUNC, menuHorizontalPosition);
-  }
-  s_editMode = 0;
-  return true;
-}
 
-bool menuLogicalSwitches(event_t event)
-{
-  MENU(STR_MONITOR_SWITCHES, MONITOR_ICONS, menuTabMonitors, e_MonLogicalSwitches, 1, { MAX_LOGICAL_SWITCHES - 1 });
-  lastMonitorPage = e_MonLogicalSwitches;
-  return menuLogicalSwitchesMonitor(event);
+  // Footer
+  footer = new LogicalSwitchDisplayFooter(window, {0,window->height() - LSW_VIEW_FOOTER_HEIGHT, window->width(), LSW_VIEW_FOOTER_HEIGHT});
 }

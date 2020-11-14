@@ -734,6 +734,11 @@ uint16_t getBatteryVoltage()
   return (g_eeGeneral.vBatWarn * 10) + 50; // 0.5 volt above alerm (value is PREC1)
 }
 
+uint16_t getRTCBatteryVoltage()
+{
+  return 300;
+}
+
 void boardOff()
 {
 }

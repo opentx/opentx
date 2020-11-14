@@ -25,15 +25,17 @@
 #include "draw_functions.h"
 #include "strhelpers.h"
 #include "dataconstants.h"
+#include "opentx.h"
 
-class SwitchChoiceMenuToolbar : public MenuToolbar<SwitchChoice> {
+class SwitchChoiceMenuToolbar : public MenuToolbar<SwitchChoice>
+{
   public:
     SwitchChoiceMenuToolbar(SwitchChoice * choice, Menu * menu):
       MenuToolbar<SwitchChoice>(choice, menu)
     {
-      addButton(char('\312'), SWSRC_FIRST_SWITCH, SWSRC_LAST_SWITCH);
-      addButton(char('\313'), SWSRC_FIRST_TRIM, SWSRC_LAST_TRIM);
-      addButton(char('\312'), SWSRC_FIRST_LOGICAL_SWITCH, SWSRC_LAST_LOGICAL_SWITCH);
+      addButton(CHAR_SWITCH, SWSRC_FIRST_SWITCH, SWSRC_LAST_SWITCH);
+      addButton(CHAR_TRIM, SWSRC_FIRST_TRIM, SWSRC_LAST_TRIM);
+      addButton(CHAR_SWITCH, SWSRC_FIRST_LOGICAL_SWITCH, SWSRC_LAST_LOGICAL_SWITCH);
     }
 };
 

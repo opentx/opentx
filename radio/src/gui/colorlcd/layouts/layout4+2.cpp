@@ -20,6 +20,7 @@
 
 #include "opentx.h"
 #include "sliders.h"
+#include "trims.h"
 
 #define HAS_TOPBAR()      (persistentData->options[0].value.boolValue == true)
 #define HAS_FM()          (persistentData->options[1].value.boolValue == true)
@@ -37,13 +38,8 @@ const ZoneOption OPTIONS_LAYOUT_4P2[] = {
   { STR_SLIDERS, ZoneOption::Bool },
   { STR_TRIMS, ZoneOption::Bool },
   { STR_MIRROR, ZoneOption::Bool },
-  { NULL, ZoneOption::Bool }
+  { nullptr, ZoneOption::Bool }
 };
-
-constexpr coord_t HTRIM_W = 120;
-constexpr coord_t HTRIM_H = 40;
-constexpr coord_t HSLIDER_W = 120;
-constexpr coord_t HSLIDER_H = 40;
 
 class Layout4P2: public Layout
 {
@@ -63,8 +59,12 @@ class Layout4P2: public Layout
       persistentData->options[3].value.boolValue = true;
       persistentData->options[4].value.boolValue = false;
       persistentData->options[5].value.boolValue = false;
-
       decorate();
+    }
+
+    void decorate()
+    {
+      Layout::decorate(HAS_TOPBAR(), HAS_SLIDERS(), HAS_TRIMS(), HAS_FM());
     }
 
     unsigned int getZonesCount() const override
@@ -72,57 +72,34 @@ class Layout4P2: public Layout
       return 6;
     }
 
-    void decorate()
-    {
-      if (1 /*HAS_SLIDERS()*/) {
-        new MainViewHorizontalSlider(this, {0, LCD_H - HTRIM_H - 1, HTRIM_W, HSLIDER_H}, [=] { return calibratedAnalogs[CALIBRATED_POT1]; }, OPTION_SLIDER_TICKS | OPTION_SLIDER_BIG_TICKS | OPTION_SLIDER_SQUARE_BUTTON);
-        new MainViewHorizontalSlider(this, {LCD_W - HTRIM_W, LCD_H - HTRIM_H, HTRIM_W, HSLIDER_H}, [=] { return calibratedAnalogs[CALIBRATED_POT3]; }, OPTION_SLIDER_TICKS | OPTION_SLIDER_BIG_TICKS | OPTION_SLIDER_SQUARE_BUTTON);
-      }
-    }
-
     rect_t getZone(unsigned int index) const override
     {
-      coord_t areaw = LCD_W - (HAS_SLIDERS() ? 55 : 8) - (HAS_TRIMS() ? 55 : 8);
-      coord_t areah = LCD_H - 4 - (HAS_TOPBAR() ? 55 : 8) - (HAS_SLIDERS() ? HSLIDER_H + 4 : 4) - (HAS_TRIMS() ? HTRIM_H + 4 : 4);
+      coord_t areaw = LCD_W - (HAS_SLIDERS() ? 2 * TRIM_SQUARE_SIZE : 0) - (HAS_TRIMS() ? 2 * TRIM_SQUARE_SIZE : 0) - 10;
+      coord_t areah = LCD_H - (HAS_TOPBAR() ? TOPBAR_HEIGHT : 0) - (HAS_SLIDERS() ? TRIM_SQUARE_SIZE : 0) - (HAS_TRIMS() ? TRIM_SQUARE_SIZE : 0) - 10;
+      areah = 4 * (areah % 4);
 
-      rect_t zone;
-      zone.x = IS_MIRRORED() ? ((index >= 4) ? (LCD_W - areaw) / 2 - 4 : 245) : ((index >= 4) ? 245 : (LCD_W - areaw) / 2 - 4);
-      zone.h = (index >= 4) ?  (areah / 2) :  (areah / 4) - 2;
-      zone.y = (index >= 4) ? (HAS_TOPBAR() ? 52 : 6) + (index == 5 ? zone.h + ((HAS_TRIMS() + HAS_SLIDERS() == 1) ? 8 : 10): 0): (HAS_TOPBAR() ? 52 : 6) + (index % 4) * (zone.h + 6);
-      zone.w = areaw / 2;
-
-      return zone;
+      return {
+        IS_MIRRORED() ? ((index >= 4) ? (LCD_W - areaw) / 2 : 240) : ((index >= 4) ? 240 : (LCD_W - areaw) / 2),
+        static_cast<coord_t>((index >= 4) ? (HAS_TOPBAR() ? TOPBAR_HEIGHT + 1 : 1) + (index == 5 ? areah / 4 : 0) : (HAS_TOPBAR() ? TOPBAR_HEIGHT + 1 : 1) + (index % 4) * (areah / 4)),
+        areaw / 2,
+        (index >= 4) ?  (areah / 2) :  (areah / 4)
+      };
     }
 
-    //virtual void refresh();
+    void checkEvents() override
+    {
+      Layout::checkEvents();
+      uint8_t newValue = persistentData->options[4].value.boolValue << 4 | persistentData->options[3].value.boolValue << 3 | persistentData->options[2].value.boolValue << 2
+                                                        | persistentData->options[1].value.boolValue << 1 | persistentData->options[0].value.boolValue;
+      if (value != newValue) {
+        value = newValue;
+        // TODO call this from the Layout config window
+        this->clear();
+        decorate();
+      }
+    }
+  protected:
+    uint8_t value = 0;
 };
-
-//void Layout4P2::refresh()
-//{
-  //theme->drawBackground();
-
-  //if (HAS_TOPBAR()) {
-  //  drawTopBar();
-  //}
-  //
-  //if (HAS_FM()) {
-  //  // Flight mode
-  //  lcdDrawSizedText(LCD_W / 2 - getTextWidth(g_model.flightModeData[mixerCurrentFlightMode].name, sizeof(g_model.flightModeData[mixerCurrentFlightMode].name),
-  //                                            ZCHAR | SMLSIZE) / 2, 232, g_model.flightModeData[mixerCurrentFlightMode].name,
-  //                   sizeof(g_model.flightModeData[mixerCurrentFlightMode].name), ZCHAR | SMLSIZE);
-  //}
-  //
-  //if (HAS_SLIDERS()) {
-  //  // Pots and rear sliders positions
-  //  drawMainPots();
-  //}
-  //
-  //if (HAS_TRIMS()) {
-  //  // Trims
-  //  drawTrims(mixerCurrentFlightMode, HAS_SLIDERS());
-  //}
-
-  //Layout::refresh();
-//}
 
 BaseLayoutFactory<Layout4P2> layout4P2("Layout4P2", "4 + 2", LBM_LAYOUT_4P2, OPTIONS_LAYOUT_4P2);

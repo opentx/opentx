@@ -193,7 +193,12 @@ if(NOT LUA STREQUAL NO)
   if(LUA STREQUAL YES)
     add_definitions(-DLUA_MODEL_SCRIPTS)
   endif()
-  set(SRC ${SRC} lua/interface.cpp lua/api_general.cpp lua/api_lcd.cpp lua/api_model.cpp)
+  set(SRC ${SRC} lua/interface.cpp lua/api_general.cpp lua/api_model.cpp lua/widgets.cpp)
+  if(GUI_DIR STREQUAL colorlcd)
+    set(SRC ${SRC} lua/api_colorlcd.cpp)
+  else()
+    set(SRC ${SRC} lua/api_stdlcd.cpp)
+  endif()
   set(LUA_SRC lapi.c lcode.c lctype.c ldebug.c ldo.c ldump.c lfunc.c lgc.c llex.c lmem.c lobject.c lopcodes.c lparser.c
     lstate.c lstring.c ltable.c lrotable.c ltm.c lundump.c lvm.c lzio.c linit.c
     lbaselib.c lmathlib.c lbitlib.c loadlib.c lauxlib.c ltablib.c lcorolib.c liolib.c lstrlib.c

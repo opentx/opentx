@@ -177,34 +177,34 @@ void getCharPattern(PatternData * pattern, unsigned char c, LcdFlags flags)
   if (fontsize == DBLSIZE) {
     pattern->width = 10;
     pattern->height = 16;
-    if (c >= 0xC0) {
-      pattern->data = &font_10x14_extra[((uint16_t)(c-0xC0))*20];
+    if (c >= 0x80) {
+      pattern->data = &font_10x14_extra[((uint16_t) (c - 0x80)) * 20];
     }
     else {
-      if (c >= 128)
+      if (c >= 0x80)
         c_remapped = c - 60;
-      pattern->data = &font_10x14[((uint16_t)c_remapped)*20];
+      pattern->data = &font_10x14[((uint16_t) c_remapped) * 20];
     }
   }
   else if (fontsize == XXLSIZE) {
     pattern->width = 22;
     pattern->height = 38;
-    pattern->data = &font_22x38_num[((uint16_t)c-'0'+5)*110];
+    pattern->data = &font_22x38_num[((uint16_t) c - '0' + 5) * 110];
   }
   else if (fontsize == MIDSIZE) {
     pattern->width = 8;
     pattern->height = 12;
-    pattern->data = &font_8x10[((uint16_t)c-0x20)*16];
+    pattern->data = &font_8x10[((uint16_t) c - 0x20) * 16];
   }
   else if (fontsize == SMLSIZE) {
     pattern->width = 5;
     pattern->height = 6;
-    pattern->data = (c < 0xc0 ? &font_4x6[(c-0x20)*5] : &font_4x6_extra[(c-0xc0)*5]);
+    pattern->data = (c < 0x80 ? &font_4x6[(c - 0x20) * 5] : &font_4x6_extra[(c - 0x80) * 5]);
   }
   else if (fontsize == TINSIZE) {
     pattern->width = 3;
     pattern->height = 5;
-    pattern->data = &font_3x5[((uint16_t)c-0x20)*3];
+    pattern->data = &font_3x5[((uint16_t) c - 0x20) * 3];
   }
   else if (flags & BOLD) {
     pattern->width = 5;
@@ -214,7 +214,7 @@ void getCharPattern(PatternData * pattern, unsigned char c, LcdFlags flags)
   else {
     pattern->width = 5;
     pattern->height = 7;
-    pattern->data = (c < 0x80) ? &font_5x7[(c-0x20)*5] : &font_5x7_extra[(c-0x80)*5];
+    pattern->data = (c < 0x80) ? &font_5x7[(c - 0x20) * 5] : &font_5x7_extra[(c - 0x80) * 5];
   }
 #else
   pattern->width = 5;
@@ -232,7 +232,7 @@ uint8_t getCharWidth(char c, LcdFlags flags)
 
 void lcdDrawChar(coord_t x, coord_t y, char c, LcdFlags flags)
 {
-  lcdNextPos = x-1;
+  lcdNextPos = x - 1;
 #if defined(BOOT)
   const uint8_t * data = &font_5x7[(c-0x20)*5];
   lcdPutPattern(x, y, data, 5, 7, flags);
@@ -852,7 +852,8 @@ void lcdMaskPoint(uint8_t *p, uint8_t mask, LcdFlags att)
 
 void lcdDrawPoint(coord_t x, coord_t y, LcdFlags att)
 {
-  if (lcdIsPointOutside(x, y)) return;
+  if (lcdIsPointOutside(x, y))
+    return;
   uint8_t *p = &displayBuf[ y / 2 * LCD_W + x ];
   uint8_t mask = PIXEL_GREY_MASK(y, att);
   lcdMaskPoint(p, mask, att);

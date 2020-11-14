@@ -18,32 +18,26 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _TOPBAR_H_
-#define _TOPBAR_H_
+#pragma once
 
-#include "widgets_container.h"
+#include "opentx.h"
+#include "tabsgroup.h"
 
-#define MAX_TOPBAR_ZONES               4
-#define MAX_TOPBAR_OPTIONS             1 // just because of VC++ which doesn't like 0-size arrays :(
-#define TOPBAR_ZONE_WIDTH              70
-constexpr coord_t TOPBAR_ZONE_MARGIN = 3;
-constexpr coord_t TOPBAR_HEIGHT = MENU_HEADER_HEIGHT - 2 * TOPBAR_ZONE_MARGIN;
-
-class TopBar: public WidgetsContainer<MAX_TOPBAR_ZONES, MAX_TOPBAR_OPTIONS>
+class ChannelsViewPage: public PageTab
 {
   public:
-    explicit TopBar(Window * parent);
-
-    unsigned int getZonesCount() const override;
-
-    rect_t getZone(unsigned int index) const override;
-
-    void paint(BitmapBuffer * dc) override;
-
-    void checkEvents() override
+    explicit ChannelsViewPage(uint8_t pageIndex = 0):
+      PageTab(STR_MONITOR_CHANNELS[pageIndex], ICON_MONITOR_CHANNELS1 + pageIndex),
+      pageIndex(pageIndex)
     {
-      invalidate();
     }
+
+  protected:
+    void build(FormWindow * window) override;
+    uint8_t pageIndex = 0;
 };
 
-#endif // _TOPBAR_H_
+class ChannelsViewMenu: public TabsGroup {
+  public:
+    ChannelsViewMenu();
+};

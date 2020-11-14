@@ -68,7 +68,7 @@ class SourceChoice : public FormField {
     std::function<int16_t()> getValue;
     std::function<void(int16_t)> setValue;
     std::function<bool(int)> isValueAvailable = isSourceAvailable;
-    void fillMenu(Menu * menu, std::function<bool(int16_t)> condition=nullptr);
+    void fillMenu(Menu * menu, const std::function<bool(int16_t)> & condition=nullptr);
     void openMenu();
 };
 

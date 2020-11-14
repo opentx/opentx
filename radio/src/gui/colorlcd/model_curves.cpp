@@ -37,6 +37,7 @@ class CurveEditWindow : public Page {
   protected:
     uint8_t index;
     CurveEdit * curveEdit = nullptr;
+    CurveDataEdit * curveDataEdit = nullptr;
 
     void buildHeader(Window * window)
     {
@@ -108,21 +109,23 @@ class CurveEditWindow : public Page {
                                        curve.points = newValue;
                                        SET_DIRTY();
                                        curveEdit->update();
+                                       curveDataEdit->invalidate();
                                      }
                                  });
       edit->setSuffix(STR_PTS);
       grid.nextLine();
 
       // Smooth
-      new StaticText(window, grid.getFieldSlot(), STR_SMOOTH);
-      grid.nextLine();
-      new CheckBox(window, grid.getFieldSlot(), GET_DEFAULT(g_model.curves[index].smooth),
+      new StaticText(window, grid.getFieldSlot(2, 0), STR_SMOOTH);
+      new CheckBox(window, grid.getFieldSlot(2, 1), GET_DEFAULT(g_model.curves[index].smooth),
                    [=](int32_t newValue) {
                        g_model.curves[index].smooth = newValue;
                        SET_DIRTY();
                        curveEdit->update();
                    });
       grid.nextLine();
+
+      curveDataEdit = new CurveDataEdit(window, {0, grid.getWindowHeight(), coord_t(LCD_W - curveWidth - PAGE_PADDING - 1), window->height() -  grid.getWindowHeight() - PAGE_PADDING}, index);
     }
 #else
     void buildBody(FormWindow * window)

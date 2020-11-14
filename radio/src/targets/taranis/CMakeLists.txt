@@ -393,6 +393,10 @@ set(TARGET_SRC
   trainer_driver.cpp
   ../common/arm/stm32/timers_driver.cpp
   ../common/arm/stm32/audio_dac_driver.cpp
+  )
+
+set(FIRMWARE_TARGET_SRC
+  ${FIRMWARE_TARGET_SRC}
   ../common/arm/stm32/adc_driver.cpp
   )
 

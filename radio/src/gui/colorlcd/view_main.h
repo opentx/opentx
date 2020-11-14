@@ -30,7 +30,7 @@ class ViewMain: public FormWindow {
     ~ViewMain() override;
 
 #if defined(DEBUG_WINDOWS)
-    virtual std::string getName()
+    std::string getName() const override
     {
       return "ViewMain";
     }
@@ -43,9 +43,7 @@ class ViewMain: public FormWindow {
     void onEvent(event_t event) override;
 #endif
     void paint(BitmapBuffer * dc) override;
-    void checkEvents() override;
     void openMenu();
 };
 
 #endif // _VIEW_MAIN_H_
-

@@ -23,55 +23,11 @@
 #include "radio_spectrum_analyser.h"
 #include "opentx.h"
 #include "libopenui.h"
+#include "lua/lua_api.h"
 
 extern uint8_t g_moduleIdx;
 
 #define TOOL_NAME_MAXLEN  16
-
-#if defined(LUA) || defined(DEBUG)
-bool readToolName(const char * filename, char * name)
-{
-  FIL file;
-  char buffer[1024];
-  UINT count;
-
-  if (f_open(&file, filename, FA_READ) != FR_OK) {
-    return "Error opening file";
-  }
-
-  if (f_read(&file, &buffer, sizeof(buffer), &count) != FR_OK) {
-    f_close(&file);
-    return false;
-  }
-
-  const char * tns = "TNS|";
-  auto * start = std::search(buffer, buffer + sizeof(buffer), tns, tns + 4);
-  if (start >= buffer + sizeof(buffer))
-    return false;
-
-  start += 4;
-
-  const char * tne = "|TNE";
-  auto * end = std::search(buffer, buffer + sizeof(buffer), tne, tne + 4);
-  if (end >= buffer + sizeof(buffer) || end <= start)
-    return false;
-
-  uint8_t len = end - start;
-  if (len > TOOL_NAME_MAXLEN)
-    return false;
-
-  strncpy(name, start, len);
-  memclear(name + len, TOOL_NAME_MAXLEN + 1 - len);
-
-  return true;
-}
-
-bool isRadioScriptTool(const char * filename)
-{
-  const char * ext = getFileExtension(filename);
-  return ext && !strcasecmp(ext, SCRIPT_EXT);
-}
-#endif
 
 RadioToolsPage::RadioToolsPage():
   PageTab(STR_MENUTOOLS, ICON_RADIO_TOOLS)
@@ -168,7 +124,7 @@ void RadioToolsPage::rebuild(FormWindow * window)
   }
 #endif
 
-#if defined(PXX2)
+#if defined(INTERNAL_MODULE_PXX2)
   // PXX2 modules tools
   if (isPXX2ModuleOptionAvailable(reusableBuffer.hardwareAndSettings.modules[INTERNAL_MODULE].information.modelID, MODULE_OPTION_SPECTRUM_ANALYSER)) {
     new StaticText(window, grid.getLabelSlot(), "access", BUTTON_BACKGROUND, CENTERED);
@@ -187,7 +143,8 @@ void RadioToolsPage::rebuild(FormWindow * window)
     }, 0);
     grid.nextLine();
   }
-#elif defined(INTERNAL_MODULE_MULTI)
+#endif
+#if defined(INTERNAL_MODULE_MULTI)
   new StaticText(window, grid.getLabelSlot(), "multi", BUTTON_BACKGROUND, CENTERED);
   new TextButton(window, grid.getFieldSlot(1), STR_SPECTRUM_ANALYSER_INT, [=]() -> uint8_t {
       new RadioSpectrumAnalyser(INTERNAL_MODULE);

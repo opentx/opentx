@@ -336,8 +336,8 @@ void generalDefault()
 #endif
 
 #if defined(COLORLCD)
-  strcpy(g_eeGeneral.themeName, static_cast<ThemeBase *>(theme)->getName());
-  static_cast<ThemeBase *>(theme)->init();
+  strcpy(g_eeGeneral.themeName, static_cast<OpenTxTheme *>(theme)->getName());
+  static_cast<OpenTxTheme *>(theme)->init();
 #endif
 
 #if defined(PXX2)
@@ -700,18 +700,26 @@ void checkBacklight()
       }
     }
 
-    bool backlightOn = (g_eeGeneral.backlightMode == e_backlight_mode_on || (g_eeGeneral.backlightMode != e_backlight_mode_off && lightOffCounter));
-
-    if (flashCounter) {
-      backlightOn = !backlightOn;
-    }
-
-    if (backlightOn) {
-      currentBacklightBright = requiredBacklightBright;
+    if (requiredBacklightBright == BACKLIGHT_FORCED_ON) {
+      currentBacklightBright = g_eeGeneral.backlightBright;
       BACKLIGHT_ENABLE();
     }
     else {
-      BACKLIGHT_DISABLE();
+      bool backlightOn = ((g_eeGeneral.backlightMode == e_backlight_mode_on) ||
+                          (g_eeGeneral.backlightMode != e_backlight_mode_off && lightOffCounter) ||
+                          (g_eeGeneral.backlightMode == e_backlight_mode_off && isFunctionActive(FUNCTION_BACKLIGHT)));
+
+      if (flashCounter) {
+        backlightOn = !backlightOn;
+      }
+
+      if (backlightOn) {
+        currentBacklightBright = requiredBacklightBright;
+        BACKLIGHT_ENABLE();
+      }
+      else {
+        BACKLIGHT_DISABLE();
+      }
     }
   }
 }
@@ -2004,7 +2012,7 @@ void opentxInit()
   if (globalData.unexpectedShutdown) {
     // SDCARD not available, try to restore last model from RAM
     TRACE("rambackupRestore");
-    rambackupRestore();
+//    rambackupRestore();
   }
   else {
     storageReadAll();

@@ -19,262 +19,220 @@
  */
 
 #include "opentx.h"
-#include "stamp.h"
+#include "libopenui.h"
+#include "view_statistics.h"
 
-#define MENU_STATS_COLUMN1    (MENUS_MARGIN_LEFT + 120)
-#define MENU_STATS_COLUMN2    (LCD_W/2)
-#define MENU_STATS_COLUMN3    (LCD_W/2 + 120)
-
-bool menuStatsGraph(event_t event)
+StatisticsViewPageGroup::StatisticsViewPageGroup():
+  TabsGroup(ICON_STATS)
 {
-  switch (event) {
-    case EVT_KEY_LONG(KEY_ENTER):
-      g_eeGeneral.globalTimer = 0;
-      storageDirty(EE_GENERAL);
-      sessionTimer = 0;
-      killEvents(event);
-      break;
-  }
-
-  SIMPLE_MENU(STR_STATISTICS, STATS_ICONS, menuTabStats, e_StatsGraph, 1);
-
-  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP, "Session");
-  drawTimer(MENU_STATS_COLUMN1, MENU_CONTENT_TOP, sessionTimer, TIMEHOUR);
-  lcdDrawText(MENU_STATS_COLUMN2, MENU_CONTENT_TOP, "Battery");
-  drawTimer(MENU_STATS_COLUMN3, MENU_CONTENT_TOP, g_eeGeneral.globalTimer+sessionTimer, TIMEHOUR);
-
-  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+FH, "Throttle");
-  drawTimer(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+FH, s_timeCumThr, TIMEHOUR);
-  lcdDrawText(MENU_STATS_COLUMN2, MENU_CONTENT_TOP+FH, "Throttle %", TIMEHOUR);
-  drawTimer(MENU_STATS_COLUMN3, MENU_CONTENT_TOP+FH, s_timeCum16ThrP/16, TIMEHOUR);
-
-  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+2*FH, "Timers");
-  lcdDrawText(MENU_STATS_COLUMN1, MENU_CONTENT_TOP+2*FH, "[1]", HEADER_COLOR);
-  drawTimer(lcdNextPos+5, MENU_CONTENT_TOP+2*FH, timersStates[0].val, TIMEHOUR);
-  lcdDrawText(MENU_STATS_COLUMN2, MENU_CONTENT_TOP+2*FH, "[2]", HEADER_COLOR);
-  drawTimer(lcdNextPos+5, MENU_CONTENT_TOP+2*FH, timersStates[1].val, TIMEHOUR);
-#if TIMERS > 2
-  lcdDrawText(MENU_STATS_COLUMN3, MENU_CONTENT_TOP+2*FH, "[3]", HEADER_COLOR);
-  drawTimer(lcdNextPos+5, MENU_CONTENT_TOP+2*FH, timersStates[2].val, TIMEHOUR);
-#endif
-
-  const coord_t x = 10;
-  const coord_t y = 240;
-  lcdDrawHorizontalLine(x-3, y, MAXTRACE+3+3, SOLID, DEFAULT_COLOR);
-  lcdDrawVerticalLine(x, y-96, 96+3, SOLID, DEFAULT_COLOR);
-  for (coord_t i=0; i<MAXTRACE; i+=6) {
-    lcdDrawVerticalLine(x+i, y-1, 3, SOLID, DEFAULT_COLOR);
-  }
-
-  uint16_t traceRd = s_traceWr > MAXTRACE ? s_traceWr - MAXTRACE : 0;
-  coord_t prev_yv = (coord_t)-1;
-  for (coord_t i=1; i<=MAXTRACE && traceRd<s_traceWr; i++, traceRd++) {
-    uint8_t h = s_traceBuf[traceRd % MAXTRACE];
-    coord_t yv = y - 2 - 3*h;
-    if (prev_yv != (coord_t)-1) {
-      if (prev_yv < yv) {
-        for (int y=prev_yv; y<=yv; y++) {
-          lcdDrawBitmapPattern(x + i - 3, y, LBM_POINT, DEFAULT_COLOR);
-        }
-      }
-      else {
-        for (int y=yv; y<=prev_yv; y++) {
-          lcdDrawBitmapPattern(x + i - 3, y, LBM_POINT, DEFAULT_COLOR);
-        }
-      }
-    }
-    else {
-      lcdDrawBitmapPattern(x + i - 3, yv, LBM_POINT, DEFAULT_COLOR);
-    }
-    prev_yv = yv;
-  }
-
-  lcdDrawText(LCD_W/2, MENU_FOOTER_TOP, STR_MENUTORESET, MENU_COLOR | CENTERED);
-  return true;
+  addTab(new StatisticsViewPage());
+  addTab(new DebugViewPage());
 }
 
-bool menuStatsDebug(event_t event)
+class ThrottleCurveWindow : public Window
 {
-  switch(event) {
-    case EVT_ENTRY:
-    case EVT_ENTRY_UP:
-      break;
+  public:
+    ThrottleCurveWindow(Window * parent, const rect_t &rect) :
+      Window(parent, rect)
+    {
+    }
 
-    case EVT_KEY_FIRST(KEY_ENTER):
-      maxMixerDuration  = 0;
+    void checkEvents() override
+    {
+      Window::checkEvents();
+      if (previousTraceWr != s_traceWr) {
+        previousTraceWr = s_traceWr;
+        invalidate();
+      }
+    }
+    
+    void paint(BitmapBuffer * dc) override
+    {
+      // Axis
+      dc->drawHorizontalLine(0, height() - 2, width(), SOLID | DEFAULT_COLOR);
+      dc->drawVerticalLine(0, 0, height(), SOLID, DEFAULT_COLOR);
+      for (coord_t i=0; i < width(); i+=6) {
+        dc->drawVerticalLine(i,height() - 4, 3, SOLID | DEFAULT_COLOR);
+      }
+
+      // Curve
+      uint16_t traceRd = s_traceWr > width() ? s_traceWr - width() : 0;
+      coord_t prev_yv = (coord_t)-1;
+      for (coord_t i=1; i<=width() && traceRd<s_traceWr; i++, traceRd++) {
+        uint8_t h = s_traceBuf[traceRd % width()];
+        coord_t yv = height() - 2 - 3*h;
+        if (prev_yv != (coord_t)-1) {
+          if (prev_yv < yv) {
+            for (int y=prev_yv; y<=yv; y++) {
+              dc->drawBitmapPattern(i, y, LBM_POINT, DEFAULT_COLOR);
+            }
+          }
+          else {
+            for (int y=yv; y<=prev_yv; y++) {
+              dc->drawBitmapPattern(i, y, LBM_POINT, DEFAULT_COLOR);
+            }
+          }
+        }
+        else {
+          dc->drawBitmapPattern(i, yv, LBM_POINT, DEFAULT_COLOR);
+        }
+        prev_yv = yv;
+      }
+    };
+
+  protected:
+    unsigned previousTraceWr = 0;
+};
+
+void StatisticsViewPage::build(FormWindow * window)
+{
+  FormGridLayout grid;
+  grid.spacer(PAGE_PADDING);
+  grid.setLabelWidth(LCD_W / 4);
+
+  // Session data
+  new StaticText(window, grid.getLabelSlot(), STR_SESSION);
+  new DynamicText(window, grid.getFieldSlot(3, 0), [] {
+      return getTimerString(sessionTimer, TIMEHOUR);
+  });
+
+  // Battery data
+  new StaticText(window, grid.getFieldSlot(3, 1), STR_BATT_LABEL);
+  new DynamicText(window, grid.getFieldSlot(3, 2), [] {
+      return getTimerString(g_eeGeneral.globalTimer + sessionTimer, TIMEHOUR);
+  });
+  grid.nextLine();
+
+  // Throttle
+  new StaticText(window, grid.getLabelSlot(), STR_THROTTLE_LABEL);
+  new DynamicText(window, grid.getFieldSlot(3, 0), [] {
+      return getTimerString(s_timeCumThr, TIMEHOUR);
+  });
+
+  // Throttle %  data
+  new StaticText(window, grid.getFieldSlot(3, 1), STR_THROTTLE_PERCENT_LABEL);
+  new DynamicText(window, grid.getFieldSlot(3, 2), [] {
+      return getTimerString(s_timeCum16ThrP/16, TIMEHOUR);
+  });
+  grid.nextLine();
+
+  // Timers
+  new StaticText(window, grid.getLabelSlot(), STR_TIMER_LABEL);
+  new DynamicText(window, grid.getFieldSlot(3, 0), [] {
+      return getTimerString(timersStates[0].val, TIMEHOUR);
+  }, 0);
+  new DynamicText(window, grid.getFieldSlot(3, 1), [] {
+      return getTimerString(timersStates[1].val, TIMEHOUR);
+  }, 0);
+  new DynamicText(window, grid.getFieldSlot(3, 2), [] {
+      return getTimerString(timersStates[2].val, TIMEHOUR);
+  }, 0);
+  grid.nextLine();
+
+  // Throttle curve
+  auto curve = new ThrottleCurveWindow(window, {5, grid.getWindowHeight(), window->width() - 10, window->height() / 2});
+  grid.spacer(curve->height() + 3);
+
+  // Reset
+  new TextButton (window, grid.getLineSlot(), STR_MENUTORESET,
+                  [=]() -> uint8_t {
+                      g_eeGeneral.globalTimer = 0;
+                      storageDirty(EE_GENERAL);
+                      sessionTimer = 0;
+                      return 0;
+                  }, BUTTON_BACKGROUND | NO_FOCUS);
+}
+
+void DebugViewPage::build(FormWindow * window)
+{
+  FormGridLayout grid;
+  grid.spacer(PAGE_PADDING);
+  grid.setLabelWidth(LCD_W / 4);
+
+  // Mixer data
+  new StaticText(window, grid.getLabelSlot(), STR_TMIXMAXMS);
+  new DynamicNumber<uint16_t>(window, grid.getFieldSlot(), [] {
+      return DURATION_MS_PREC2(maxMixerDuration);
+  }, PREC2, nullptr, "ms");
+  grid.nextLine();
+
+  // Free mem
+  new StaticText(window, grid.getLabelSlot(), STR_FREE_MEM_LABEL);
+  new DynamicNumber<int>(window, grid.getFieldSlot(), [] {
+      return availableMemory();
+  }, 0, nullptr, "b");
+  grid.nextLine();
+
 #if defined(LUA)
-      maxLuaInterval = 0;
-      maxLuaDuration = 0;
-#endif
-      break;
-  }
+  // LUA timing data
+  new StaticText(window, grid.getLabelSlot(), STR_LUA_SCRIPTS_LABEL);
+  new DebugInfoNumber<uint16_t>(window, grid.getFieldSlot(3, 0), [] {
+      return 10 * maxLuaDuration;
+  }, 0, "[Dur] ", "ms");
+  new DebugInfoNumber<uint16_t>(window, grid.getFieldSlot(3, 1), [] {
+      return 10 * maxLuaInterval;
+  }, 0, "[Int] ", "ms");
+  grid.nextLine();
 
-  if (!check_simple(event, e_StatsDebug, menuTabStats, DIM(menuTabStats), 1)) {
-    disableVBatBridge();
-    return false;
-  }
-
-  drawMenuTemplate("Debug", 0, STATS_ICONS, OPTION_MENU_TITLE_BAR);
-
-  coord_t y = MENU_CONTENT_TOP;
-
-  lcdDrawText(MENUS_MARGIN_LEFT, y, "Free Mem");
-  lcdDrawNumber(MENU_STATS_COLUMN1, y, availableMemory(), LEFT, 0, nullptr, "b");
-  y += FH;
-
-#if defined(LUA)
-  lcdDrawText(MENUS_MARGIN_LEFT, y, "Lua scripts");
-  lcdDrawText(MENU_STATS_COLUMN1, y+1, "[Duration]", HEADER_COLOR|FONT(XS));
-  lcdDrawNumber(lcdNextPos+5, y, 10*maxLuaDuration, LEFT, 0, nullptr, "ms");
-  lcdDrawText(lcdNextPos+20, y+1, "[Interval]", HEADER_COLOR|FONT(XS));
-  lcdDrawNumber(lcdNextPos+5, y, 10*maxLuaDuration, LEFT, 0, nullptr, "ms");
-  y += FH;
-
-  // lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+line*FH, "Lua memory");
-  lcdDrawText(MENU_STATS_COLUMN1, y+1, "[S]", HEADER_COLOR|FONT(XS));
-  lcdDrawNumber(lcdNextPos+5, y, luaGetMemUsed(lsScripts), LEFT);
-  lcdDrawText(lcdNextPos+20, y+1, "[W]", HEADER_COLOR|FONT(XS));
-  lcdDrawNumber(lcdNextPos+5, y, luaGetMemUsed(lsWidgets), LEFT);
-  lcdDrawText(lcdNextPos+20, y+1, "[B]", HEADER_COLOR|FONT(XS));
-  lcdDrawNumber(lcdNextPos+5, y, luaExtraMemoryUsage, LEFT);
-  y += FH;
+  // lUA memory data
+  new DebugInfoNumber<uint32_t>(window, grid.getFieldSlot(3, 0), [] {
+      return 10 * luaGetMemUsed(lsScripts);
+  }, 0, "[S] ", nullptr);
+  new DebugInfoNumber<uint32_t>(window, grid.getFieldSlot(3, 1), [] {
+      return 10 * luaGetMemUsed(lsWidgets);
+  }, 0, "[W] ", nullptr);
+  new DebugInfoNumber<uint32_t>(window, grid.getFieldSlot(3, 2), [] {
+      return luaExtraMemoryUsage;
+  }, 0, "[B] ", nullptr);
+  grid.nextLine();
 #endif
 
-  lcdDrawText(MENUS_MARGIN_LEFT, y, STR_TMIXMAXMS);
-  lcdDrawNumber(MENU_STATS_COLUMN1, y, DURATION_MS_PREC2(maxMixerDuration), PREC2|LEFT, 0, nullptr, "ms");
-  y += FH;
-
-  lcdDrawText(MENUS_MARGIN_LEFT, y, STR_FREE_STACK);
-  lcdDrawText(MENU_STATS_COLUMN1, y+1, "[Menus]", HEADER_COLOR|FONT(XS));
-  lcdDrawNumber(lcdNextPos+5, y, menusStack.available(), LEFT);
-  lcdDrawText(lcdNextPos+20, y+1, "[Mix]", HEADER_COLOR|FONT(XS));
-  lcdDrawNumber(lcdNextPos+5, y, mixerStack.available(), LEFT);
-  lcdDrawText(lcdNextPos+20, y+1, "[Audio]", HEADER_COLOR|FONT(XS));
-  lcdDrawNumber(lcdNextPos+5, y, audioStack.available(), LEFT);
-  y += FH;
-
-#if defined(DISK_CACHE) && defined(DEBUG)
-  lcdDrawText(MENUS_MARGIN_LEFT, y, "SD cache hits");
-  lcdDrawNumber(MENU_STATS_COLUMN1, y, diskCache.getHitRate(), PREC1|LEFT, 0, nullptr, "%");
-  y += FH;
-#endif
+  // Stacks data
+  new StaticText(window, grid.getLabelSlot(), STR_FREE_STACK);
+  new DebugInfoNumber<uint32_t>(window, grid.getFieldSlot(3, 0), [] {
+      return menusStack.available();
+  }, 0, "[Menu] ", nullptr);
+  new DebugInfoNumber<uint32_t>(window, grid.getFieldSlot(3, 1), [] {
+      return  mixerStack.available();
+  }, 0, "[Mix] ", nullptr);
+  new DebugInfoNumber<uint32_t>(window, grid.getFieldSlot(3, 2), [] {
+      return audioStack.available();
+  }, 0, "[Audio] ", nullptr);
+  grid.nextLine();
 
 #if defined(DEBUG_LATENCY)
-  lcdDrawText(MENUS_MARGIN_LEFT, y, "Heartbeat");
+  new StaticText(window, grid.getLabelSlot(), STR_HEARTBEAT_LABEL);
   if (heartbeatCapture.valid)
-    lcdDrawNumber(MENU_STATS_COLUMN1, y, heartbeatCapture.count, LEFT);
+    new DebugInfoNumber<uint16_t>(window, grid.getFieldSlot(3, 0), [] {
+      return heartbeatCapture.count;
+  });
   else
-    lcdDrawText(MENU_STATS_COLUMN1, y, "---");
-  y += FH;
-#endif
-
-#if defined(DEBUG)
-  lcdDrawText(MENUS_MARGIN_LEFT, y, "Telem RX Errs");
-  lcdDrawNumber(MENU_STATS_COLUMN1, y, telemetryErrors, LEFT);
-  y += FH;
+    new StaticText(window, grid.getFieldSlot(),"---");
 #endif
 
 #if defined(INTERNAL_GPS)
-  lcdDrawText(MENUS_MARGIN_LEFT, y, "Internal GPS");
-  lcdDrawText(MENU_STATS_COLUMN1, y+1, "[Fix]", HEADER_COLOR|FONT(XS));
-  lcdDrawText(lcdNextPos+2, y, (gpsData.fix ? "Yes" : "No"), LEFT);
-  lcdDrawText(lcdNextPos+20, y+1, "[Sats]", HEADER_COLOR|FONT(XS));
-  lcdDrawNumber(lcdNextPos+5, y, gpsData.numSat, LEFT);
-  lcdDrawText(lcdNextPos+20, y+1, "[Hdop]", HEADER_COLOR|FONT(XS));
-  lcdDrawNumber(lcdNextPos+5, y, gpsData.hdop, PREC2|LEFT);
+  new StaticText(window, grid.getLabelSlot(), STR_INT_GPS_LABEL);
+  new DynamicText(window, grid.getFieldSlot(3, 0), [] {
+      return std::string(gpsData.fix ? "[Fix] Yes" : "[Fix] No");
+  });
+  new DebugInfoNumber<uint8_t>(window, grid.getFieldSlot(3, 1), [] {
+      return  gpsData.numSat;
+  }, 0, "[Sats] ", nullptr);
+  new DebugInfoNumber<uint16_t>(window, grid.getFieldSlot(3, 2), [] {
+      return gpsData.hdop;
+  }, 0, "[Hdop] ", nullptr);
+  grid.nextLine();
 #endif
 
-  lcdDrawText(LCD_W/2, MENU_FOOTER_TOP, STR_MENUTORESET, MENU_COLOR | CENTERED);
-  return true;
+  // Reset
+  grid.nextLine();
+  new TextButton (window, grid.getLineSlot(), STR_MENUTORESET,
+     [=]() -> uint8_t {
+         maxMixerDuration  = 0;
+#if defined(LUA)
+         maxLuaInterval = 0;
+         maxLuaDuration = 0;
+#endif
+         return 0;
+     }, BUTTON_BACKGROUND | NO_FOCUS);
 }
-
-bool menuStatsAnalogs(event_t event)
-{
-  SIMPLE_MENU("Analogs", STATS_ICONS, menuTabStats, e_StatsAnalogs, 1);
-
-  for (uint8_t i=0; i<NUM_ANALOGS; i++) {
-    coord_t y = MENU_CONTENT_TOP + (i/2)*FH;
-    coord_t x = MENUS_MARGIN_LEFT + (i & 1 ? LCD_W/2 : 0);
-    lcdDrawNumber(x, y, i+1, LEADING0|LEFT, 2, nullptr, ":");
-    lcdDrawHexNumber(x+40, y, anaIn(i));
-#if defined(JITTER_MEASURE)
-    lcdDrawNumber(x+100, y, rawJitter[i].get());
-    lcdDrawNumber(x+140, y, avgJitter[i].get());
-    lcdDrawNumber(x+180, y, (int16_t)calibratedAnalogs[CONVERT_MODE(i)]*250/256, PREC1);
-#else
-    if (i < NUM_STICKS+NUM_POTS+NUM_SLIDERS)
-      lcdDrawNumber(x+100, y, (int16_t)calibratedAnalogs[CONVERT_MODE(i)]*25/256);
-#if NUM_MOUSE_ANALOGS > 0
-    else if (i >= MOUSE1)
-      lcdDrawNumber(x+100, y, (int16_t)calibratedAnalogs[CALIBRATED_MOUSE1+i-MOUSE1]*25/256);
-#endif
-#endif
-  }
-
-  // RAS
-  if ((isModuleXJT(INTERNAL_MODULE) && IS_INTERNAL_MODULE_ON()) || (isModulePXX1(EXTERNAL_MODULE) && !IS_INTERNAL_MODULE_ON())) {
-    lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+7*FH, "RAS");
-    lcdDrawNumber(MENUS_MARGIN_LEFT+100, MENU_CONTENT_TOP+7*FH, telemetryData.swrInternal.value());
-    lcdDrawText(MENUS_MARGIN_LEFT + LCD_W/2, MENU_CONTENT_TOP+7*FH, "XJTVER");
-    lcdDrawNumber(LCD_W/2 + MENUS_MARGIN_LEFT+100, MENU_CONTENT_TOP+7*FH, telemetryData.xjtVersion);
-  }
-
-#if (NUM_PWMSTICKS > 0) && !defined(SIMU)
-  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP+8*FH, STICKS_PWM_ENABLED() ? "Sticks: PWM" : "Sticks: ANA");
-#endif
-
-  return true;
-}
-
-
-#if defined(DEBUG_TRACE_BUFFER)
-#define STATS_TRACES_INDEX_POS         MENUS_MARGIN_LEFT
-#define STATS_TRACES_TIME_POS          MENUS_MARGIN_LEFT + 4*10
-#define STATS_TRACES_EVENT_POS         MENUS_MARGIN_LEFT + 14*10
-#define STATS_TRACES_DATA_POS          MENUS_MARGIN_LEFT + 20*10
-
-bool menuStatsTraces(event_t event)
-{
-  switch(event)
-  {
-    case EVT_KEY_LONG(KEY_ENTER):
-      dumpTraceBuffer();
-      killEvents(event);
-      break;
-  }
-
-  SIMPLE_MENU("", STATS_ICONS, menuTabStats, e_StatsTraces, TRACE_BUFFER_LEN);
-
-  uint8_t k = 0;
-  int8_t sub = menuVerticalPosition;
-
-  lcdDrawChar(STATS_TRACES_INDEX_POS, MENU_TITLE_TOP+2, '#', MENU_COLOR);
-  lcdDrawText(STATS_TRACES_TIME_POS, MENU_TITLE_TOP+2, "Time", MENU_COLOR);
-  lcdDrawText(STATS_TRACES_EVENT_POS, MENU_TITLE_TOP+2, "Event", MENU_COLOR);
-  lcdDrawText(STATS_TRACES_DATA_POS, MENU_TITLE_TOP+2, "Data", MENU_COLOR);
-
-  for (uint8_t i=0; i<NUM_BODY_LINES; i++) {
-    coord_t y = MENU_CONTENT_TOP + i * FH;
-    k = i+menuVerticalOffset;
-
-    // item
-    lcdDrawNumber(STATS_TRACES_INDEX_POS, y, k, LEFT | (sub==k ? INVERS : 0));
-
-    const struct TraceElement * te = getTraceElement(k);
-    if (te) {
-      // time
-      int32_t tme = te->time % SECS_PER_DAY;
-      drawTimer(STATS_TRACES_TIME_POS, y, tme, TIMEHOUR|LEFT);
-      // event
-      lcdDrawNumber(STATS_TRACES_EVENT_POS, y, te->event, LEADING0|LEFT, 3);
-      // data
-      lcdDrawSizedText(STATS_TRACES_DATA_POS, y, "0x", 2);
-      lcdDrawHexNumber(lcdNextPos, y, (uint16_t)(te->data >> 16));
-      lcdDrawHexNumber(lcdNextPos, y, (uint16_t)(te->data & 0xFFFF));
-    }
-
-  }
-
-  return true;
-}
-#endif // defined(DEBUG_TRACE_BUFFER)

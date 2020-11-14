@@ -37,7 +37,7 @@ class SourceChoiceMenuToolbar : public MenuToolbar<SourceChoice> {
 #if defined(LUA_MODEL_SCRIPTS)
       addButton(CHAR_LUA, MIXSRC_LAST_LUA, MIXSRC_FIRST_LUA);
 #endif
-      addButton(char(CHAR_STICK), MIXSRC_FIRST_STICK, MIXSRC_LAST_STICK);
+      addButton(CHAR_STICK, MIXSRC_FIRST_STICK, MIXSRC_LAST_STICK);
       addButton(CHAR_POT, MIXSRC_FIRST_POT, MIXSRC_LAST_POT);
       addButton(CHAR_FUNCTION, MIXSRC_MAX, MIXSRC_MAX);
 #if defined(HELI)
@@ -48,7 +48,7 @@ class SourceChoiceMenuToolbar : public MenuToolbar<SourceChoice> {
       addButton(CHAR_TRAINER, MIXSRC_FIRST_TRAINER, MIXSRC_LAST_TRAINER);
       addButton(CHAR_CHANNEL, MIXSRC_FIRST_CH, MIXSRC_LAST_CH);
 #if defined(GVARS)
-      addButton(CHAR_GVAR, MIXSRC_LAST_GVAR, MIXSRC_FIRST_GVAR);
+      addButton(CHAR_SLIDER, MIXSRC_LAST_GVAR, MIXSRC_FIRST_GVAR);
 #endif
       addButton(CHAR_TELEMETRY, MIXSRC_FIRST_TELEM, MIXSRC_LAST_TELEM);
     }
@@ -71,7 +71,7 @@ void SourceChoice::paint(BitmapBuffer * dc)
   drawSource(dc, FIELD_PADDING_LEFT, FIELD_PADDING_TOP, value, textColor);
 }
 
-void SourceChoice::fillMenu(Menu * menu, std::function<bool(int16_t)> filter)
+void SourceChoice::fillMenu(Menu * menu, const std::function<bool(int16_t)> & filter)
 {
   auto value = getValue();
   int count = 0;

@@ -32,11 +32,6 @@ class TextWidget: public Widget
 
     void paint(BitmapBuffer * dc) override
     {
-      // TODO DELETE THOSE TEST INIT VALUE !!
-      strcpy(persistentData->options[0].value.stringValue, "This is a test string");
-      persistentData->options[3].value.boolValue = true; // shadow
-      // TODO END TEST INIT VALUE
-
       // clear the background
       dc->clear(DEFAULT_BGCOLOR);
 

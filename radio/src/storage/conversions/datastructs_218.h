@@ -402,7 +402,7 @@ PACK(struct TelemetrySensor_218 {
   });
   #define VIEW_DATA \
     CustomScreenData screenData[MAX_CUSTOM_SCREENS]; \
-    Topbar::PersistentData topbarData; \
+    TopBar::PersistentData topbarData; \
     uint8_t view;
 #elif defined(PCBTARANIS)
   #define VIEW_DATA   uint8_t view;
@@ -527,7 +527,7 @@ PACK(struct ModelData_v218 {
   #define THEME_NAME_LEN 8
   #define THEME_DATA \
     char themeName[THEME_NAME_LEN]; \
-    ThemeBase::PersistentData themeData;
+    OpenTxTheme::PersistentData themeData;
 #else
   #define THEME_DATA
 #endif

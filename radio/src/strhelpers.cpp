@@ -359,7 +359,7 @@ char * getSwitchPositionName(char * dest, swsrc_t idx)
   if (idx <= SWSRC_LAST_SWITCH) {
     div_t swinfo = switchInfo(idx);
     s = getSwitchName(s, idx);
-    *s++ = "\200-\201"[swinfo.rem];
+    *s++ = (STR_CHAR_UP "-" STR_CHAR_DOWN)[swinfo.rem];
     *s = '\0';
   }
 #endif // PCBSKY9X

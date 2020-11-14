@@ -407,6 +407,9 @@
 #define LEN_GYROS                      "\004"
 #define TR_GYROS                       "GyrX""GyrY"
 
+#define LEN_SUBTRIMMODES               "\017"
+#define TR_SUBTRIMMODES                STR_CHAR_DELTA" (center only)""= (symetrical) "
+
 // ZERO TERMINATED STRINGS
 #if defined(COLORLCD)
   #define INDENT               "\007"
@@ -422,6 +425,8 @@
 
 #if defined(PCBTARANIS) || defined(PCBHORUS)
   #define TR_ENTER                     "[ENTER]"
+#elif !defined(HARDWARE_KEYS)
+  #define TR_ENTER                     "[NEXT]"
 #else
   #define TR_ENTER                     "[MENU]"
 #endif
@@ -605,9 +610,17 @@
 #define TR_ACCEL               "Acc:"
 #define TR_NODATA              CENTER"DATI ASSENTI"
 #define TR_US                         "us"
-#define TR_HZ                          "Hz"
-#define TR_TMIXMAXMS         "Tmix max"
-#define TR_FREE_STACK     "Free stack"
+#define TR_HZ                         "Hz"
+#define TR_TMIXMAXMS                  "Tmix max"
+#define TR_FREE_STACK                 "Free stack"
+#define TR_INT_GPS_LABEL               "Internal GPS"
+#define TR_HEARTBEAT_LABEL             "Heartbeat"
+#define TR_LUA_SCRIPTS_LABEL          "Lua scripts"
+#define TR_FREE_MEM_LABEL             "Free mem"
+#define TR_TIMER_LABEL                "Timer"
+#define TR_THROTTLE_PERCENT_LABEL     "Throttle %"
+#define TR_BATT_LABEL                 "Battery"
+#define TR_SESSION                    "Session"
 #define TR_MENUTORESET         TR_ENTER" per azzerare"
 #define TR_PPM_TRAINER         "TR"
 #define TR_CH                  "CH"
@@ -804,6 +817,7 @@
 #define TR_COPROC_TEMP         "Temp. MB \016>"
 #define TR_CAPAWARNING         INDENT "Capacità Bassa"
 #define TR_TEMPWARNING         INDENT "Temp. Alta"
+#define TR_TTL_WARNING                 "Warning: use only TLL or 5v"
 #define TR_FUNC                "Funz"
 #define TR_V1                  "V1"
 #define TR_V2                  "V2"
@@ -1072,6 +1086,7 @@
 #define TR_LIMITS_HEADERS_CURVE        "Curve"
 #define TR_LIMITS_HEADERS_PPMCENTER    "Centro PPM"
 #define TR_LIMITS_HEADERS_SUBTRIMMODE  "Simmetria"
+#define TR_INVERTED     "Inverted"
 
 #define TR_LSW_HEADERS_FUNCTION        "Funzione"
 #define TR_LSW_HEADERS_V1              "V1"

@@ -27,18 +27,18 @@ const ZoneOption OPTIONS_THEME_DEFAULT[] = {
   { nullptr, ZoneOption::Bool }
 };
 
-class FrskyTheme: public ThemeBase
+class Theme480: public OpenTxTheme
 {
   public:
-    FrskyTheme():
-      ThemeBase("FrSky", OPTIONS_THEME_DEFAULT)
+    Theme480():
+      OpenTxTheme("480_default", OPTIONS_THEME_DEFAULT)
     {
       loadColors();
     }
 
     void loadColors() const
     {
-      TRACE("Load FrSky theme colors");
+      TRACE("Load Theme480 theme colors");
       lcdColorTable[DEFAULT_COLOR_INDEX] = BLACK;
       lcdColorTable[DEFAULT_BGCOLOR_INDEX] = WHITE;
       lcdColorTable[FOCUS_COLOR_INDEX] = WHITE;
@@ -230,10 +230,10 @@ class FrskyTheme: public ThemeBase
 
       // Channels monitor screen
       delete chanMonLockedBitmap;
-      chanMonLockedBitmap = BitmapBuffer::loadMaskOnBackground("mask_monitor_lockch.png", DEFAULT_COLOR, DEFAULT_BGCOLOR);
+      chanMonLockedBitmap = BitmapBuffer::loadMaskOnBackground(getFilePath("mask_monitor_lockch.png"), DEFAULT_COLOR, DEFAULT_BGCOLOR);
 
       delete chanMonInvertedBitmap;
-      chanMonInvertedBitmap = BitmapBuffer::loadMaskOnBackground("mask_monitor_inver.png", DEFAULT_COLOR, DEFAULT_BGCOLOR);
+      chanMonInvertedBitmap = BitmapBuffer::loadMaskOnBackground(getFilePath("mask_monitor_inver.png"), DEFAULT_COLOR, DEFAULT_BGCOLOR);
 
       // Mixer setup screen
       delete mixerSetupMixerBitmap;
@@ -279,7 +279,7 @@ class FrskyTheme: public ThemeBase
     void load() const override
     {
       loadColors();
-      ThemeBase::load();
+      OpenTxTheme::load();
       if (!backgroundBitmap) {
         backgroundBitmap = BitmapBuffer::loadBitmap(getFilePath("background.png"));
       }
@@ -321,6 +321,14 @@ class FrskyTheme: public ThemeBase
       else {
         lcdSetColor(g_eeGeneral.themeData.options[0].value.unsignedValue);
         dc->drawSolidFilledRect(0, 0, LCD_W, LCD_H, CUSTOM_COLOR);
+      }
+    }
+
+    void drawTopLeftBitmap(BitmapBuffer * dc) const override
+    {
+      if (topleftBitmap) {
+        dc->drawBitmap(0, 0, topleftBitmap);
+        dc->drawBitmap(4, 10, menuIconSelected[ICON_OPENTX]);
       }
     }
 
@@ -406,16 +414,16 @@ class FrskyTheme: public ThemeBase
     static BitmapBuffer * currentMenuBackground;
 };
 
-const BitmapBuffer * FrskyTheme::backgroundBitmap = nullptr;
-BitmapBuffer * FrskyTheme::topleftBitmap = nullptr;
-BitmapBuffer * FrskyTheme::iconMask[MENUS_ICONS_COUNT] = { nullptr };
-BitmapBuffer * FrskyTheme::menuIconNormal[MENUS_ICONS_COUNT] = { nullptr };
-BitmapBuffer * FrskyTheme::menuIconSelected[MENUS_ICONS_COUNT] = { nullptr };
-BitmapBuffer * FrskyTheme::currentMenuBackground = nullptr;
+const BitmapBuffer * Theme480::backgroundBitmap = nullptr;
+BitmapBuffer * Theme480::topleftBitmap = nullptr;
+BitmapBuffer * Theme480::iconMask[MENUS_ICONS_COUNT] = { nullptr };
+BitmapBuffer * Theme480::menuIconNormal[MENUS_ICONS_COUNT] = { nullptr };
+BitmapBuffer * Theme480::menuIconSelected[MENUS_ICONS_COUNT] = { nullptr };
+BitmapBuffer * Theme480::currentMenuBackground = nullptr;
 
-FrskyTheme frskyTheme;
+Theme480 Theme480;
 
-#if defined(PCBFRSKY)
-ThemeBase * defaultTheme = &frskyTheme;
-Theme * theme = &frskyTheme;
+#if LCD_W == 480
+OpenTxTheme * defaultTheme = &Theme480;
+Theme * theme = &Theme480;
 #endif

@@ -18,33 +18,50 @@
  * GNU General Public License for more details.
  */
 
-#include <stdio.h>
 #include "opentx.h"
 
-unsigned int Topbar::getZonesCount() const
+TopBar::TopBar(Window * parent) :
+  WidgetsContainer<MAX_TOPBAR_ZONES, MAX_TOPBAR_OPTIONS>({0, 0, LCD_W, MENU_HEADER_HEIGHT}, &g_model.topbarData)
+{
+  attach(parent);
+}
+
+unsigned int TopBar::getZonesCount() const
 {
   return MAX_TOPBAR_ZONES;
 }
 
-rect_t Topbar::getZone(unsigned int index) const
+rect_t TopBar::getZone(unsigned int index) const
 {
-  rect_t rect;
-  rect.x = 49 + (TOPBAR_ZONE_WIDTH + 2*TOPBAR_ZONE_MARGIN) * index;
-  rect.y = TOPBAR_ZONE_MARGIN;
-  rect.w = TOPBAR_ZONE_WIDTH;
-  rect.h = TOPBAR_HEIGHT;
-  return rect;
+  return {
+    coord_t(49 + (TOPBAR_ZONE_WIDTH + 2 * TOPBAR_ZONE_MARGIN) * index),
+    TOPBAR_ZONE_MARGIN,
+    TOPBAR_ZONE_WIDTH,
+    TOPBAR_HEIGHT
+  };
 }
 
 const char * const STR_MONTHS[] = TR_MONTHS;
 
-void drawTopBar()
+void TopBar::paint(BitmapBuffer * dc)
 {
-  theme->drawTopbarBackground(0);
+  dc->drawSolidFilledRect(0, 0, width(), height(), MENU_BGCOLOR);
+  OpenTxTheme::instance()->drawTopLeftBitmap(dc);
+
+  struct gtm t;
+  gettime(&t);
+  char str[10];
+
+  sprintf(str, "%d %s", t.tm_mday, STR_MONTHS[t.tm_mon]);
+  dc->drawSolidVerticalLine(DATETIME_SEPARATOR_X, 7, 31, MENU_COLOR);
+  dc->drawText(DATETIME_MIDDLE, DATETIME_LINE1, str, FONT(XS) | CENTERED| MENU_COLOR);
+
+  getTimerString(str, getValue(MIXSRC_TX_TIME));
+  dc->drawText(DATETIME_MIDDLE, DATETIME_LINE2, str, FONT(XS) | CENTERED | MENU_COLOR);
 
   // USB icon
   if (usbPlugged()) {
-    lcdDrawBitmapPattern(LCD_W-98, 8, LBM_TOPMENU_USB, MENU_COLOR);
+    dc->drawBitmapPattern(LCD_W - 98, 8, LBM_TOPMENU_USB, MENU_COLOR);
   }
 
   // RSSI
@@ -52,44 +69,43 @@ void drawTopBar()
   const uint8_t rssiBarsHeight[] = {5, 10, 15, 21, 31};
   for (unsigned int i = 0; i < DIM(rssiBarsHeight); i++) {
     uint8_t height = rssiBarsHeight[i];
-    lcdDrawSolidFilledRect(LCD_W-90 + i * 6, 38 - height, 4, height, TELEMETRY_RSSI() >= rssiBarsValue[i] ? MENU_COLOR : MENU_TITLE_DISABLE_COLOR);
+    dc->drawSolidFilledRect(LCD_W - 90 + i * 6, 38 - height, 4, height, TELEMETRY_RSSI() >= rssiBarsValue[i] ? MENU_COLOR : MENU_TITLE_DISABLE_COLOR);
   }
 
 #if defined(INTERNAL_MODULE_PXX1) && defined(EXTERNAL_ANTENNA)
   if (isModuleXJT(INTERNAL_MODULE) && isExternalAntennaEnabled()) {
-    lcdDrawBitmapPattern(LCD_W-94, 4, LBM_TOPMENU_ANTENNA, MENU_COLOR);
+    dc->drawBitmapPattern(LCD_W-94, 4, LBM_TOPMENU_ANTENNA, MENU_COLOR);
   }
 #endif
 
   /* Audio volume */
-  lcdDrawBitmapPattern(LCD_W-130, 4, LBM_TOPMENU_VOLUME_SCALE, MENU_TITLE_DISABLE_COLOR);
+  dc->drawBitmapPattern(LCD_W - 130, 4, LBM_TOPMENU_VOLUME_SCALE, MENU_TITLE_DISABLE_COLOR);
   if (requiredSpeakerVolume == 0 || g_eeGeneral.beepMode == e_mode_quiet)
-    lcdDrawBitmapPattern(LCD_W-130, 4, LBM_TOPMENU_VOLUME_0, MENU_COLOR);
+    dc->drawBitmapPattern(LCD_W - 130, 4, LBM_TOPMENU_VOLUME_0, MENU_COLOR);
   else if (requiredSpeakerVolume < 7)
-    lcdDrawBitmapPattern(LCD_W-130, 4, LBM_TOPMENU_VOLUME_1, MENU_COLOR);
+    dc->drawBitmapPattern(LCD_W - 130, 4, LBM_TOPMENU_VOLUME_1, MENU_COLOR);
   else if (requiredSpeakerVolume < 13)
-    lcdDrawBitmapPattern(LCD_W-130, 4, LBM_TOPMENU_VOLUME_2, MENU_COLOR);
+    dc->drawBitmapPattern(LCD_W - 130, 4, LBM_TOPMENU_VOLUME_2, MENU_COLOR);
   else if (requiredSpeakerVolume < 19)
-    lcdDrawBitmapPattern(LCD_W-130, 4, LBM_TOPMENU_VOLUME_3, MENU_COLOR);
+    dc->drawBitmapPattern(LCD_W - 130, 4, LBM_TOPMENU_VOLUME_3, MENU_COLOR);
   else
-    lcdDrawBitmapPattern(LCD_W-130, 4, LBM_TOPMENU_VOLUME_4, MENU_COLOR);
+    dc->drawBitmapPattern(LCD_W - 130, 4, LBM_TOPMENU_VOLUME_4, MENU_COLOR);
 
   /* Tx battery */
   uint8_t bars = GET_TXBATT_BARS(5);
 #if defined(USB_CHARGER)
   if (usbChargerLed()) {
-    lcdDrawBitmapPattern(LCD_W - 130, 25, LBM_TOPMENU_TXBATT_CHARGING, MENU_TITLE_COLOR);
+    dc->drawBitmapPattern(LCD_W - 130, 25, LBM_TOPMENU_TXBATT_CHARGING, MENU_COLOR);
   }
   else {
-    lcdDrawBitmapPattern(LCD_W - 130, 25, LBM_TOPMENU_TXBATT, MENU_TITLE_COLOR);
+    dc->drawBitmapPattern(LCD_W - 130, 25, LBM_TOPMENU_TXBATT, MENU_COLOR);
   }
 #else
-  lcdDrawBitmapPattern(LCD_W - 130, 25, LBM_TOPMENU_TXBATT, MENU_TITLE_COLOR);
+  dc->drawBitmapPattern(LCD_W - 130, 25, LBM_TOPMENU_TXBATT, MENU_COLOR);
 #endif
   for (unsigned int i = 0; i < 5; i++) {
-    lcdDrawSolidFilledRect(LCD_W - 128 + 4 * i, 30, 2, 8, i >= bars ? MENU_TITLE_DISABLE_COLOR : MENU_COLOR);
+    dc->drawSolidFilledRect(LCD_W - 128 + 4 * i, 30, 2, 8, i >= bars ? MENU_TITLE_DISABLE_COLOR : MENU_COLOR);
   }
-  topbar->refresh();
 
 #if 0
   // Radio battery - TODO
@@ -133,5 +149,4 @@ void drawTopBar()
     }
   }
 #endif
-
 }

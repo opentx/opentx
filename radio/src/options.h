@@ -26,6 +26,9 @@ static const char * const options[] = {
 #if defined(AUTOUPDATE)
   "autoupdate",
 #endif
+#if defined(BLUETOOTH)
+  "bluetooth",
+#endif
 #if defined(CROSSFIRE)
   "crossfire",
 #endif
@@ -91,6 +94,9 @@ static const char * const options[] = {
 #endif
 #if defined(SHUTDOWN_CONFIRMATION)
   "shutdownconfirm",
+#endif
+#if defined(HARDWARE_EXTERNAL_ACCESS_MOD)
+  "externalaccessmod",
 #endif
   nullptr //sentinel
 };

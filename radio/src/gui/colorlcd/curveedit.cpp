@@ -22,8 +22,70 @@
 #include "keyboard_curve.h"
 #include "opentx.h" // TODO for applyCustomCurve
 
+#define SET_DIRTY()     storageDirty(EE_MODEL)
+
+CurveDataEdit::CurveDataEdit(Window * parent, const rect_t & rect, uint8_t index) :
+  FormGroup(parent, rect, FORM_FORWARD_FOCUS),
+  index(index)
+{
+  update();
+}
+
+void CurveDataEdit::update()
+{
+  clear();
+
+  FormGridLayout grid;
+  grid.setLabelWidth(0);
+  grid.setMarginRight(parent->width() - rect.w + 5);
+
+  coord_t boxWidth = rect.w / 5;
+  coord_t boxHeight = (rect.h - 6) / 3;
+
+  CurveHeader & curve = g_model.curves[index];
+  uint8_t curvePointsCount = 5 + curve.points;
+
+  // Point number
+  for (uint8_t i = 0; i < curvePointsCount; i++) {
+    new StaticText(this, {i * boxWidth, 10, boxWidth, boxHeight}, std::to_string(i + 1), 0, RIGHT | TEXT_DISABLE_COLOR);
+  }
+  grid.spacer(rect.h / 3);
+
+  // x value
+  for (uint8_t i = 0; i < curvePointsCount; i++) {
+    new StaticText(this, {i * boxWidth, 10 + boxHeight, boxWidth, boxHeight}, std::to_string(-100 + 200 * i / (5 + curve.points - 1)), 0, RIGHT | TEXT_DISABLE_COLOR);
+  }
+
+  // y value
+  for (uint8_t i = 0; i < curvePointsCount; i++) {
+    int8_t * points = curveAddress(index);
+    new NumberEdit(this, {coord_t(PAGE_LINE_SPACING + 1 + i * boxWidth), 10 + 2 * boxHeight, coord_t(boxWidth - PAGE_LINE_SPACING), boxHeight - 12}, -100, 100, GET_SET_DEFAULT(points[i]), 0, RIGHT);
+  }
+
+  setInnerWidth(curvePointsCount * boxWidth);
+}
+
+void CurveDataEdit::checkEvents()
+{
+  Window::checkEvents();
+  CurveHeader & curve = g_model.curves[index];
+  uint8_t newValue = 5 + curve.points;
+  if (previousCurvePointsCount != newValue) {
+    previousCurvePointsCount = newValue;
+    update();
+  }
+}
+
+void CurveDataEdit::paint(BitmapBuffer * dc)
+{
+  dc->clear(DEFAULT_BGCOLOR);
+  dc->drawSolidHorizontalLine(0, rect.h / 3, getInnerWidth(), 0);
+  dc->drawSolidHorizontalLine(0, 2 * rect.h / 3, getInnerWidth(), 0);
+  drawHorizontalScrollbar(dc);
+}
+
 CurveEdit::CurveEdit(Window * parent, const rect_t & rect, uint8_t index) :
-  FormField(parent, rect),
+  FormField(parent, rect, NO_FOCUS),
   preview(this, {0, 0, width(), height()}, [=](int x) -> int {
     return applyCustomCurve(x, index);
   }),

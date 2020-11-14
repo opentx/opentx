@@ -18,15 +18,15 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _MODEL_GVARS_H
-#define _MODEL_GVARS_H
+#pragma once
 
 #include "tabsgroup.h"
 #include "page.h"
 #include "window.h"
 #include "numberedit.h"
 
-class GVarButton: public Button {
+class GVarButton: public Button
+{
   public:
     GVarButton(FormGroup * parent, const rect_t & rect, uint8_t gvar);
 
@@ -38,11 +38,12 @@ class GVarButton: public Button {
     void drawFlightMode(BitmapBuffer * dc, coord_t x, coord_t y, int fm, LcdFlags attr);
     uint8_t gvarIdx;
     int lines;
-    int32_t gvarSum; //used for invalidation
-    uint8_t currentFlightMode; //used for invalidation
+    int32_t gvarSum = 0; // used for invalidation
+    uint8_t currentFlightMode = 0; // used for invalidation
 };
 
-class ModelGVarsPage: public PageTab {
+class ModelGVarsPage: public PageTab
+{
   public:
     ModelGVarsPage():
       PageTab(STR_MENU_GLOBAL_VARS, ICON_MODEL_GVARS)
@@ -54,7 +55,8 @@ class ModelGVarsPage: public PageTab {
     void rebuild(FormWindow * window);
 };
 
-class GVarRenderer: public Window {
+class GVarRenderer: public Window
+{
   friend class GVarEditWindow;
 
   public:
@@ -77,7 +79,8 @@ class GVarRenderer: public Window {
 };
 
 
-class GVarEditWindow: public Page {
+class GVarEditWindow: public Page
+{
   public:
     explicit GVarEditWindow(uint8_t gvarIndex) :
       Page(ICON_MODEL_GVARS),
@@ -98,4 +101,3 @@ class GVarEditWindow: public Page {
     void setProperties(int onlyForFlightMode = -1);
     void checkEvents() override;
 };
-#endif
