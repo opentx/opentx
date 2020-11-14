@@ -90,7 +90,7 @@ void menuGhostModuleConfig(event_t event)
   for (uint8_t line = 0; line < GHST_MENU_LINES; line++) {
     flags = 0;
     if (reusableBuffer.ghostMenu.line[line].splitLine) {
-      if (reusableBuffer.ghostMenu.line[line].lineFlags & GHST_LINE_FLAGS_LABELSELECT)
+      if (reusableBuffer.ghostMenu.line[line].lineFlags & GHST_LINE_FLAGS_LABEL_SELECT)
         flags = INVERS;
       lcdDrawText(xOffset, yOffset + line * FH, reusableBuffer.ghostMenu.line[line].menuText, flags);
 
@@ -102,7 +102,7 @@ void menuGhostModuleConfig(event_t event)
       lcdDrawText(xOffset2, yOffset + line * FH, &reusableBuffer.ghostMenu.line[line].menuText[reusableBuffer.ghostMenu.line[line].splitLine], flags);
     }
     else {
-      if (reusableBuffer.ghostMenu.line[line].lineFlags & GHST_LINE_FLAGS_LABELSELECT)
+      if (reusableBuffer.ghostMenu.line[line].lineFlags & GHST_LINE_FLAGS_LABEL_SELECT)
         flags = INVERS;
       lcdDrawText(xOffset, yOffset + line * FH, reusableBuffer.ghostMenu.line[line].menuText, flags);
     }
