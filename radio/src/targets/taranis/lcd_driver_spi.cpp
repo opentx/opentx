@@ -20,7 +20,7 @@
 
 #include "opentx.h"
 
-#if defined(RADIO_T12)
+#if defined(RADIO_T12) || defined(RADIO_TX12)
   #define LCD_CONTRAST_OFFSET            -10
 #else
   #define LCD_CONTRAST_OFFSET            160
@@ -107,8 +107,8 @@ void lcdHardwareInit()
 #if LCD_W == 128
 void lcdStart()
 {
-#if defined(RADIO_T12)
-  // Jumper has the screen inverted.
+#if defined(LCD_VERTICAL_INVERT)
+  // T12 and TX12 have the screen inverted.
   lcdWriteCommand(0xe2); // (14) Soft reset
   lcdWriteCommand(0xa0); // Set seg
   lcdWriteCommand(0xc8); // Set com
@@ -201,7 +201,7 @@ void lcdRefresh(bool wait)
   for (uint8_t y=0; y < 8; y++, p+=LCD_W) {
     lcdWriteCommand(0x10); // Column addr 0
     lcdWriteCommand(0xB0 | y); // Page addr y
-#if !defined(RADIO_T12)
+#if !defined(LCD_VERTICAL_INVERT)
     lcdWriteCommand(0x04);
 #endif
 

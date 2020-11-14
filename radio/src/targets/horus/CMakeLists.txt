@@ -211,6 +211,10 @@ if(PXX2)
   set(GUI_SRC ${GUI_SRC} radio_power_meter.cpp)
 endif()
 
+if(GHOST)
+  set(GUI_SRC ${GUI_SRC} radio_ghost_menu.cpp)
+endif()
+
 if(DISK_CACHE)
   set(SRC ${SRC} disk_cache.cpp)
   add_definitions(-DDISK_CACHE)

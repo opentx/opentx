@@ -47,7 +47,15 @@ void HardwarePanel::setupSwitchType(int index, QLabel * label, AutoLineEdit * na
         label->setText("SJ");
       }
     }
-    if (IS_JUMPER_T12(board)) {
+    else if (IS_RADIOMASTER_TX12(board)) {
+      if (index == 6) {
+        label->setText("SI");
+      }
+      else if (index == 7) {
+        label->setText("SJ");
+      }
+    }
+    else if (IS_FAMILY_T12(board)) {
       if (index == 4) {
         label->setText("SG");
       }

@@ -1998,3 +1998,13 @@ David Bradley
 Alan Micklethwaite
 Susan Siegel
 Stephen Evans
+William Hallman
+Franck Michel
+László Gajcsi (monthly)
+Danny Koch
+Robert Martin
+Gavin Meerwald
+Frédéric Maix
+Frank Steinberg
+Kevin Berkefeld
+Marccos Colon
