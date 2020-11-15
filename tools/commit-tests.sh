@@ -112,10 +112,28 @@ if [[ " X7 ALL " =~ \ ${FLAVOR}\  ]] ; then
   make -j"${CORES}" tests-radio
 fi
 
+if [[ " X7ACCESS X7 ALL " =~ \ ${FLAVOR}\  ]] ; then
+  # OpenTX on X7 ACCESS
+  rm -rf ./*
+  cmake "${COMMON_OPTIONS}" -DPCB=X7 -DPCBREV=ACCESS -DHELI=YES -DGVARS=YES "${SRCDIR}"
+  make -j"${CORES}" ${FIRMARE_TARGET}
+  make -j"${CORES}" libsimulator
+  make -j"${CORES}" tests-radio
+fi
+
 if [[ " T12 X7 ALL " =~ \ ${FLAVOR}\  ]] ; then
   # OpenTX on T12
   rm -rf ./*
   cmake "${COMMON_OPTIONS}" -DPCB=X7 -DPCBREV=T12 -DHELI=YES -DGVARS=YES "${SRCDIR}"
+  make -j"${CORES}" ${FIRMARE_TARGET}
+  make -j"${CORES}" libsimulator
+  make -j"${CORES}" tests-radio
+fi
+
+if [[ " TX12 X7 ALL " =~ \ ${FLAVOR}\  ]] ; then
+  # OpenTX on TX12
+  rm -rf ./*
+  cmake "${COMMON_OPTIONS}" -DPCB=X7 -DPCBREV=TX12 -DHELI=YES -DGVARS=YES "${SRCDIR}"
   make -j"${CORES}" ${FIRMARE_TARGET}
   make -j"${CORES}" libsimulator
   make -j"${CORES}" tests-radio
