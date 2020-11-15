@@ -412,7 +412,7 @@ void Curves::onPointEdited()
     model->curves[currentCurve].points[index].x = spnx[index]->value();
     model->curves[currentCurve].points[index].y = spny[index]->value();
     updateCurve();
-	updateCurvePoints();
+    updateCurvePoints();
     emit modified();
   }
 }
