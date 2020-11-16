@@ -596,7 +596,6 @@ void audioConsumeCurrentBuffer();
 #define audioEnableIrq()              // interrupts must stay enabled on Horus
 #if defined(PCBX12S)
 #define setSampleRate(freq)
-void audioWaitReady();
 #else
 void setSampleRate(uint32_t frequency);
 #define audioWaitReady()

@@ -518,8 +518,6 @@ AudioQueue::AudioQueue()
 #if !defined(SIMU)
 void audioTask(void * pdata)
 {
-  audioWaitReady();
-
   while (!audioQueue.started()) {
     RTOS_WAIT_TICKS(1);
   }
