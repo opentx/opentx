@@ -178,7 +178,7 @@ void processCrossfireTelemetryFrame()
     case FLIGHT_MODE_ID:
     {
       const CrossfireSensor & sensor = crossfireSensors[FLIGHT_MODE_INDEX];
-      auto textLength = min<int>(16, telemetryRxBuffer[1] - 1);
+      auto textLength = min<int>(16, telemetryRxBuffer[1]);
       telemetryRxBuffer[textLength] = '\0';
       setTelemetryText(PROTOCOL_TELEMETRY_CROSSFIRE, sensor.id, 0, sensor.subId, (const char *)telemetryRxBuffer + 3);
       break;
