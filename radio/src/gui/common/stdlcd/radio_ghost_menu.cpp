@@ -104,6 +104,8 @@ void menuGhostModuleConfig(event_t event)
     else {
       if (reusableBuffer.ghostMenu.line[line].lineFlags & GHST_LINE_FLAGS_LABEL_SELECT)
         flags = INVERS;
+      if (reusableBuffer.ghostMenu.line[line].lineFlags & GHST_LINE_FLAGS_VALUE_EDIT)
+        flags |= BLINK;
       lcdDrawText(xOffset, yOffset + line * FH, reusableBuffer.ghostMenu.line[line].menuText, flags);
     }
   }
