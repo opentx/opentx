@@ -9,7 +9,7 @@ set(CJK_FONT_BOLD "Noto/NotoSansCJKsc-Bold")
 #set(FONT "Ubuntu/Ubuntu-Regular")
 #set(FONT_BOLD "Ubuntu/Ubuntu-Bold")
 
-if(TRANSLATIONS STREQUAL CN)
+if(TRANSLATIONS STREQUAL CN OR TRANSLATIONS STREQUAL TW)
   set(subset all)
 else()
   string(TOLOWER ${TRANSLATIONS} subset)
