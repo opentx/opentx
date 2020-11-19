@@ -57,6 +57,7 @@ class CurveEditWindow : public Page {
 
       // Curve editor
       curveEdit = new CurveEdit(window, { coord_t(LCD_W - curveWidth - PAGE_PADDING), PAGE_PADDING, curveWidth, curveWidth}, index);
+      curveEdit->setWindowFlags(REFRESH_ALWAYS);
 
       FormGridLayout grid;
       grid.setLabelWidth(PAGE_PADDING);
@@ -87,6 +88,8 @@ class CurveEditWindow : public Page {
                        }
                        SET_DIRTY();
                        curveEdit->update();
+                       curveDataEdit->clear();
+                       curveDataEdit->update();
                      }
                  });
 
@@ -109,7 +112,8 @@ class CurveEditWindow : public Page {
                                        curve.points = newValue;
                                        SET_DIRTY();
                                        curveEdit->update();
-                                       curveDataEdit->invalidate();
+                                       curveDataEdit->clear();
+                                       curveDataEdit->update();
                                      }
                                  });
       edit->setSuffix(STR_PTS);
