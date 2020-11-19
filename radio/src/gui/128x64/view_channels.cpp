@@ -26,7 +26,12 @@ constexpr coord_t CHANNEL_GAUGE_OFFSET = CHANNEL_VALUE_OFFSET;
 constexpr coord_t CHANNEL_BAR_WIDTH = 70;
 constexpr coord_t CHANNEL_PROPERTIES_OFFSET = CHANNEL_GAUGE_OFFSET + CHANNEL_BAR_WIDTH + 2;
 
-#if defined(NAVIGATION_X7)
+#if defined(NAVIGATION_X7_TX12)
+#define EVT_KEY_PREVIOUS_VIEW          EVT_KEY_BREAK(KEY_PAGEUP)
+#define EVT_KEY_NEXT_VIEW              EVT_KEY_BREAK(KEY_PAGEDN)
+#define EVT_KEY_NEXT_PAGE              EVT_ROTARY_RIGHT
+#define EVT_KEY_PREVIOUS_PAGE          EVT_ROTARY_LEFT
+#elif defined(NAVIGATION_X7)
 #define EVT_KEY_PREVIOUS_VIEW          EVT_KEY_LONG(KEY_PAGE)
 #define EVT_KEY_NEXT_VIEW              EVT_KEY_BREAK(KEY_PAGE)
 #define EVT_KEY_NEXT_PAGE              EVT_ROTARY_RIGHT
@@ -54,7 +59,7 @@ void menuChannelsViewCommon(event_t event)
       memclear(&reusableBuffer.viewChannels, sizeof(reusableBuffer.viewChannels));
       break;
 
-    case EVT_KEY_FIRST(KEY_ENTER):
+    case EVT_KEY_BREAK(KEY_ENTER):
       reusableBuffer.viewChannels.mixersView = !reusableBuffer.viewChannels.mixersView;
       break;
   }

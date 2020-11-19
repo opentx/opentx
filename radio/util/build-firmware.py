@@ -146,6 +146,11 @@ def main():
         cmake_options["PCBREV"] = "T12"
         firmware_options = options_jumper_t12
         maxsize = 65536 * 8
+    elif board_name == "tx12":
+        cmake_options["PCB"] = "X7"
+        cmake_options["PCBREV"] = "TX12"
+        firmware_options = options_radiomaster_tx12
+        maxsize = 65536 * 8
     elif board_name == "t16":
         cmake_options["PCB"] = "X10"
         cmake_options["PCBREV"] = "T16"

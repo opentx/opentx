@@ -443,7 +443,6 @@ void audioOn();
 void audioOff();
 bool isAudioReady();
 bool audioChipReset();
-void audioWaitReady();
 
 #define SPI_SPEED_2                    0
 #define SPI_SPEED_4                    1

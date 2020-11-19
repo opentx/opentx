@@ -715,4 +715,20 @@ inline void getMultiOptionValues(int8_t multi_proto, int8_t & min, int8_t & max)
 }
 #endif
 
+inline const char * getRssiLabel()
+{
+#if defined(MULTIMODULE)
+  if (telemetryProtocol == PROTOCOL_TELEMETRY_MULTIMODULE && (g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol() == MODULE_SUBTYPE_MULTI_FS_AFHDS2A
+                                                           || g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol() == MODULE_SUBTYPE_MULTI_HOTT)) {
+    return "RQly";
+  }
+#endif
+#if defined(GHOST)
+  if (telemetryProtocol == PROTOCOL_TELEMETRY_GHOST) {
+    return "RQly";
+  }
+#endif
+  return "RSSI";
+}
+
 #endif // _MODULES_HELPERS_H_

@@ -85,6 +85,8 @@ uint32_t Boards::getFourCC(Type board)
       return 0x4078746F;
     case BOARD_RADIOMASTER_TX16S:
       return 0x3878746F;
+    case BOARD_RADIOMASTER_TX12:
+      return 0x4178746F;
     case BOARD_UNKNOWN:
       break;
   }
@@ -111,6 +113,7 @@ int Boards::getEEpromSize(Board::Type board)
     case BOARD_TARANIS_X9DP_2019:
     case BOARD_TARANIS_X9E:
     case BOARD_JUMPER_T12:
+    case BOARD_RADIOMASTER_TX12:
       return EESIZE_TARANIS;
     case BOARD_UNKNOWN:
       return EESIZE_MAX;
@@ -145,6 +148,7 @@ int Boards::getFlashSize(Type board)
     case BOARD_TARANIS_X9DP_2019:
     case BOARD_TARANIS_X9E:
     case BOARD_JUMPER_T12:
+    case BOARD_RADIOMASTER_TX12:
       return FSIZE_TARANIS;
     case BOARD_HORUS_X12S:
     case BOARD_X10:
@@ -201,6 +205,20 @@ SwitchInfo Boards::getSwitchInfo(Board::Type board, int index)
     if (index < DIM(switches))
       return switches[index];
   }
+  else if (IS_RADIOMASTER_TX12(board)) {
+    const Board::SwitchInfo switches[] = {
+      {SWITCH_TOGGLE,   "SA"},
+      {SWITCH_3POS,     "SB"},
+      {SWITCH_3POS,     "SC"},
+      {SWITCH_TOGGLE,   "SD"},
+      {SWITCH_3POS,     "SE"},
+      {SWITCH_3POS,     "SF"},
+      {SWITCH_2POS,     "SI"},
+      {SWITCH_2POS,     "SJ"}
+    };
+    if (index < DIM(switches))
+      return switches[index];
+  }
   else if (IS_JUMPER_T12(board)) {
     const Board::SwitchInfo switches[] = {
       {SWITCH_3POS, "SA"},
@@ -213,7 +231,23 @@ SwitchInfo Boards::getSwitchInfo(Board::Type board, int index)
     if (index < DIM(switches))
       return switches[index];
   }
-  else if (IS_HORUS_OR_TARANIS(board)) {
+  else if (IS_FAMILY_HORUS_OR_T16(board)) {
+    const Board::SwitchInfo switches[] = {
+      {SWITCH_3POS,   "SA"},
+      {SWITCH_3POS,   "SB"},
+      {SWITCH_3POS,   "SC"},
+      {SWITCH_3POS,   "SD"},
+      {SWITCH_3POS,   "SE"},
+      {SWITCH_2POS,   "SF"},
+      {SWITCH_3POS,   "SG"},
+      {SWITCH_TOGGLE, "SH"},
+      {SWITCH_2POS,   "SI"},
+      {SWITCH_2POS,   "SJ"}
+  };
+  if (index < DIM(switches))
+    return switches[index];
+  }
+  else if (IS_TARANIS(board)) {
     const Board::SwitchInfo switches[] = {
       {SWITCH_3POS,   "SA"},
       {SWITCH_3POS,   "SB"},
@@ -263,7 +297,7 @@ int Boards::getCapability(Board::Type board, Board::Capability capability)
     case Pots:
       if (IS_TARANIS_X9LITE(board))
         return 1;
-      else if (IS_TARANIS_SMALL(board) || IS_JUMPER_T12(board))
+      else if (IS_TARANIS_SMALL(board))
         return 2;
       else if (IS_TARANIS_X9E(board))
         return 4;
@@ -318,8 +352,8 @@ int Boards::getCapability(Board::Type board, Board::Capability capability)
         return 7;
       else if (IS_TARANIS_X7(board))
         return 8;
-      else if (IS_JUMPER_T12(board))
-        return 6;
+      else if (IS_FAMILY_T12(board))
+        return 8;
       else if (IS_TARANIS_XLITE(board))
         return 6;
       else if (board == Board::BOARD_TARANIS_X9DP_2019)
@@ -334,6 +368,8 @@ int Boards::getCapability(Board::Type board, Board::Capability capability)
     case FactoryInstalledSwitches:
       if (IS_TARANIS_X9E(board))
         return 8;
+      if (IS_FAMILY_T12(board))
+        return 6;
       if (IS_HORUS_X12S(board))
         return 8;
       else
@@ -515,6 +551,8 @@ QString Boards::getBoardName(Board::Type board)
       return "Jumper T18";
     case BOARD_RADIOMASTER_TX16S:
       return "Radiomaster TX16S";
+    case BOARD_RADIOMASTER_TX12:
+      return "Radiomaster TX12";
     default:
       return tr("Unknown");
   }

@@ -49,8 +49,13 @@ enum ExposFields {
 
 void menuModelExpoOne(event_t event)
 {
-#if defined(NAVIGATION_X7)
-  if (event == EVT_KEY_LONG(KEY_MENU)) {
+#if defined(NAVIGATION_X7_TX12)
+  if (event == EVT_KEY_FIRST(KEY_MODEL)) {
+    pushMenu(menuChannelsView);
+    killEvents(event);
+  }
+#elif defined(NAVIGATION_X7)
+  if (event == EVT_KEY_FIRST(KEY_MENU)) {
     pushMenu(menuChannelsView);
     killEvents(event);
   }
