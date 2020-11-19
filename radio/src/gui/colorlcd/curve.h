@@ -29,7 +29,8 @@ struct CurvePoint {
   LcdFlags flags;
 };
 
-class Curve: public Window {
+class Curve: public Window
+{
   friend class CurveEdit;
 
   public:

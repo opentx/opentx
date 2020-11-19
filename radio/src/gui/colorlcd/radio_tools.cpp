@@ -81,7 +81,7 @@ void RadioToolsPage::rebuild(FormWindow * window)
   Window::clearFocus();
 
 // LUA scripts in TOOLS
-#if defined(LUA) || defined(DEBUG)
+#if defined(LUA)
   FILINFO fno;
   DIR dir;
 
