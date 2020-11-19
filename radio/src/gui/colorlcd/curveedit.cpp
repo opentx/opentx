@@ -53,18 +53,8 @@ void CurveDataEdit::update()
 
   // x value
   if (curve.type==CURVE_TYPE_CUSTOM) {
-    // First point is fixed at -100
-    uint8_t i = 0;
-    new StaticText(this, {i * boxWidth, 10 + boxHeight, boxWidth, boxHeight}, std::to_string(-100 + 200 * i / (5 + curve.points - 1)), 0,
-                   RIGHT | TEXT_DISABLE_COLOR);
-
-    // last point at 100
-    i = curvePointsCount - 1;
-    new StaticText(this, {i * boxWidth, 10 + boxHeight, boxWidth, boxHeight}, std::to_string(-100 + 200 * i / (5 + curve.points - 1)), 0,
-                   RIGHT | TEXT_DISABLE_COLOR);
-
     // Adjustable points for custom curves
-    for (uint8_t i = 1; i < curvePointsCount - 1; i++) {
+    for (uint8_t i = 0; i < curvePointsCount; i++) {
       int8_t * points = curveAddress(index);
       new NumberEdit(this, {i * boxWidth, 10 + boxHeight, boxWidth, boxHeight - 12}, i==1 ? -100 : points[5+curve.points+i-2], i==5+curve.points-2 ? 100 : points[5+curve.points+i], GET_SET_DEFAULT(points[5+curve.points+i-1]), 0, RIGHT);
     }
@@ -80,8 +70,8 @@ void CurveDataEdit::update()
   // y value
   for (uint8_t i = 0; i < curvePointsCount; i++) {
     int8_t * points = curveAddress(index);
-    new NumberEdit(this, {coord_t(PAGE_LINE_SPACING + 1 + i * boxWidth), 10 + 2 * boxHeight, coord_t(boxWidth - PAGE_LINE_SPACING), boxHeight - 12},
-                  -100, 100, GET_SET_DEFAULT(points[i]), 0, RIGHT);
+    new NumberEdit(this, {coord_t(PAGE_LINE_SPACING + 1 + i * boxWidth), 10 + 2 * boxHeight, coord_t(boxWidth - PAGE_LINE_SPACING), boxHeight - 12},-100, 100,
+                   GET_VALUE(points[i]), [=](int32_t newValue) { points[i] = newValue; SET_DIRTY(); curveEdit->updatePreview(); }, 0, RIGHT);
   }
 
   setInnerWidth(curvePointsCount * boxWidth);
