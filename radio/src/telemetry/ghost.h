@@ -18,8 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _GHOST_H_
-#define _GHOST_H_
+#pragma once
 
 #include <inttypes.h>
 #include "dataconstants.h"
@@ -34,19 +33,20 @@
 #define GHST_ADDR_5G_TWRSCAN            0x85
 #define GHST_ADDR_5G_RLY                0x86
 
-#define GHST_UL_RC_CHANS_HS4_5TO8		0x10	// High Speed 4 channel (12 bits), plus CH5-8 (8 bits)
-#define GHST_UL_RC_CHANS_HS4_9TO12		0x11	// High Speed 4 channel (12 bits), plus CH9-12 (8 bits)
-#define GHST_UL_RC_CHANS_HS4_13TO16		0x12	// High Speed 4 channel (12 bits), plus CH13-16 (8 bits)
+#define GHST_UL_RC_CHANS_HS4_5TO8	0x10	// High Speed 4 channel (12 bits), plus CH5-8 (8 bits)
+#define GHST_UL_RC_CHANS_HS4_9TO12	0x11	// High Speed 4 channel (12 bits), plus CH9-12 (8 bits)
+#define GHST_UL_RC_CHANS_HS4_13TO16	0x12	// High Speed 4 channel (12 bits), plus CH13-16 (8 bits)
 #define GHST_UL_RC_CHANS_SIZE           12      // 1 (type) + 10 (data) + 1 (crc)
 #define GHST_UL_MENU_CTRL               0x13
 
-#define GHST_DL_OPENTX_SYNC				0x20
+#define GHST_DL_OPENTX_SYNC		0x20
 #define GHST_DL_LINK_STAT               0x21
 #define GHST_DL_VTX_STAT                0x22
+#define GHST_DL_PACK_STAT               0x23
 #define GHST_DL_MENU_DESC               0x24
 
-#define GHST_RC_CTR_VAL_12BIT			0x7C0   // 0x3e0 << 1
-#define GHST_RC_CTR_VAL_8BIT			0x7C
+#define GHST_RC_CTR_VAL_12BIT		0x7C0   // 0x3e0 << 1
+#define GHST_RC_CTR_VAL_8BIT		0x7C
 
 #define GHST_CH_BITS_12                 12
 #define GHST_CH_BITS_8                  8
@@ -72,27 +72,27 @@ enum GhstPowerMode
 
 enum GhstRFProfile
 {
-  GHST_RF_PROFILE_Auto        = 0,
-  GHST_RF_PROFILE_Normal      = 1,
-  GHST_RF_PROFILE_Race        = 2,
-  GHST_RF_PROFILE_PureRace    = 3,
-  GHST_RF_PROFILE_LongRange   = 4,
-  GHST_RF_PROFILE_Reserved    = 5,
-  GHST_RF_PROFILE_Race2       = 6,
-  GHST_RF_PROFILE_PureRace2   = 7,
-  GHST_RF_PROFILE_MAX = GHST_RF_PROFILE_PureRace2,
+  GHST_RF_PROFILE_AUTO        = 0,
+  GHST_RF_PROFILE_NORMAL      = 1,
+  GHST_RF_PROFILE_RACE        = 2,
+  GHST_RF_PROFILE_PURERACE    = 3,
+  GHST_RF_PROFILE_LONGRANGE   = 4,
+  GHST_RF_PROFILE_RESERVED    = 5,
+  GHST_RF_PROFILE_RACE2       = 6,
+  GHST_RF_PROFILE_PURERACE2   = 7,
+  GHST_RF_PROFILE_MAX = GHST_RF_PROFILE_PURERACE2,
   GHST_RF_PROFILE_COUNT
 };
 
 enum GhstVtxBand
 {
-  GHST_VTX_BAND_Unknown     = 0,
-  GHST_VTX_BAND_Irc         = 1,
-  GHST_VTX_BAND_Race        = 2,
-  GHST_VTX_BAND_BandE       = 3,
-  GHST_VTX_BAND_BandB       = 4,
-  GHST_VTX_BAND_BandA       = 5,
-  GHST_VTX_BAND_MAX = GHST_VTX_BAND_BandA,
+  GHST_VTX_BAND_UNKNOWN     = 0,
+  GHST_VTX_BAND_IRC         = 1,
+  GHST_VTX_BAND_RACE        = 2,
+  GHST_VTX_BAND_BANDE       = 3,
+  GHST_VTX_BAND_BANDB       = 4,
+  GHST_VTX_BAND_BANDA       = 5,
+  GHST_VTX_BAND_MAX = GHST_VTX_BAND_BANDA,
   GHST_VTX_BAND_COUNT
 };
 
@@ -103,34 +103,17 @@ void ghostSetDefault(int index, uint8_t id, uint8_t subId);
 // For radios which can't support telemetry at high rates, offer baud rate choices
 // (modified vs. unmodified radios)
 
-#if defined(PCBHORUS)
-  constexpr uint16_t BRR_400K = 105;
-  constexpr uint16_t BRR_115K = 364;
-#else
-  constexpr uint16_t BRR_400K = 75;
-  constexpr uint16_t BRR_115K = 260;
-#endif
+constexpr uint16_t BRR_400K = PERI1_FREQUENCY / 400000;
+constexpr uint16_t BRR_115K = PERI1_FREQUENCY / 115200;
 
 enum GhostTelemetryBaudrates
 {
   GHST_TELEMETRY_RATE_400K,
   GHST_TELEMETRY_RATE_115K
 };
-
-const uint32_t GHOST_BAUDRATES[] = {
-  400000,
-  115200,
-};
-const uint8_t GHOST_PERIODS[] = {
-  4,
-  16,
-};
-#define GHOST_BAUDRATE    GHOST_BAUDRATES[g_eeGeneral.telemetryBaudrate]
-#define GHOST_PERIOD      (GHOST_PERIODS[g_eeGeneral.telemetryBaudrate]*1000)
-#else
+#endif
 #define GHOST_BAUDRATE       400000
 #define GHOST_PERIOD         4500        /* us; 222.22 Hz */
-#endif
 
 typedef enum
 {
@@ -189,4 +172,3 @@ typedef struct
   char menuText[GHST_MENU_CHARS + 1];
 }  ghst_menu_data;
 
-#endif // _GHOST_H_
