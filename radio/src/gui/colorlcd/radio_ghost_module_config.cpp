@@ -25,7 +25,7 @@ class GhostModuleConfigWindow: public Window
 {
   public:
     GhostModuleConfigWindow(Window * parent, const rect_t & rect) :
-    Window(parent, rect, REFRESH_ALWAYS)
+    Window(parent, rect, FORWARD_SCROLL | FORM_FORWARD_FOCUS | REFRESH_ALWAYS)
     {
       setFocus(SET_FOCUS_DEFAULT);
     }
@@ -81,6 +81,7 @@ RadioGhostModuleConfig::RadioGhostModuleConfig(uint8_t moduleIdx) :
   init();
   buildHeader(&header);
   buildBody(&body);
+  setFocus(SET_FOCUS_DEFAULT);
 }
 
 void RadioGhostModuleConfig::buildHeader(Window * window)
@@ -96,8 +97,7 @@ void RadioGhostModuleConfig::buildBody(FormWindow * window)
 #if defined(HARDWARE_KEYS)
 void RadioGhostModuleConfig::onEvent(event_t event)
 {
-  TRACE("EVENT : %d", event);
- switch (event) {
+  switch (event) {
 #if defined(ROTARY_ENCODER_NAVIGATION)
     case EVT_ROTARY_LEFT:
 #endif
@@ -136,10 +136,8 @@ void RadioGhostModuleConfig::onEvent(event_t event)
       RTOS_WAIT_MS(10);
       deleteLater();
       break;
-
-   default:
-     Page::onEvent(event);
   }
+  Page::onEvent(event);
 }
 #endif
 
