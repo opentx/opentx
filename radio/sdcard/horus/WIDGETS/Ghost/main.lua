@@ -76,11 +76,10 @@ function refresh(wgt)
       if orangeLed ~= nil then
         lcd.drawBitmap(orangeLed, wgt.zone.x + offsetX + 143, wgt.zone.y + offsetY)
       end
-    else if greenLed ~= nil then
+    elseif greenLed ~= nil then
       lcd.drawBitmap(greenLed, wgt.zone.x + offsetX + 143, wgt.zone.y + offsetY)
     end
 
-    end
     getValues(wgt)
 
     -- RF Mode/Band
