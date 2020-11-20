@@ -165,41 +165,37 @@
 #define LEN_VFSWFUNC "\016"
 
 #if defined(VARIO)
-  #define TR_VVARIO "Vario傳感器\0"
+  #define TR_VVARIO "Vario傳感器\0  "
 #else
-  #define TR_VVARIO "[Vario]\0 "
+  #define TR_VVARIO "[Vario]\0      "
 #endif
 
 #if defined(AUDIO)
-  #define TR_SOUND "播放聲音　　　　"
+  #define TR_SOUND "播放聲音　　　　  "
 #endif
 
 #if defined(HAPTIC)
-  #define TR_HAPTIC "振動　　　　　　"
+  #define TR_HAPTIC "振動　　　　　　    "
 #else
-  #define TR_HAPTIC "[振動]\0 "
+  #define TR_HAPTIC "[振動]\0       "
 #endif
 
 #if defined(VOICE)
-  #if defined(PCBSKY9X)
-    #define TR_PLAY_TRACK "Play\0 "
-  #else
     #define TR_PLAY_TRACK "播放音頻文件　　"
-  #endif
-  #define TR_PLAY_BOTH "同時播放　　　　"
-  #define TR_PLAY_VALUE "播放數值　　　　"
+  #define TR_PLAY_BOTH "同時播放　　　　  "
+  #define TR_PLAY_VALUE "播放數值　　　　  "
 #else
-  #define TR_PLAY_TRACK "[Play Trk]"
-  #define TR_PLAY_BOTH "[Play Bth]"
-  #define TR_PLAY_VALUE "[Play Val]"
+  #define TR_PLAY_TRACK "[Play Trk]    "
+  #define TR_PLAY_BOTH "[Play Bth]    "
+  #define TR_PLAY_VALUE "[Play Val]    "
 #endif
 
 #define TR_SF_BG_MUSIC "播放背景音樂　　" "暫停背景音樂　　"
 
 #if defined(SDCARD)
-  #define TR_SDCLOGS "記錄到SD卡　　　"
+  #define TR_SDCLOGS "記錄到SD卡　　　 "
 #else
-  #define TR_SDCLOGS "[記錄到SD卡]\0"
+  #define TR_SDCLOGS "[記錄到SD卡]\0 "
 #endif
 
 #if defined(GVARS)
