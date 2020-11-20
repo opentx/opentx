@@ -67,7 +67,7 @@ const GhostSensor ghostSensors[] = {
 
   {GHOST_ID_PACK_VOLTS,      ZSTR_BATT,             UNIT_VOLTS,             2},
   {GHOST_ID_PACK_AMPS,       ZSTR_CURR,             UNIT_AMPS,              2},
-  {GHOST_ID_PACK_MAH,        ZSTR_CAPACITY,         UNIT_MAH,               2},
+  {GHOST_ID_PACK_MAH,        ZSTR_CAPACITY,         UNIT_MAH,               0},
 
   {0x00,                     NULL,                  UNIT_RAW,               0},
 };
@@ -231,7 +231,7 @@ void processGhostTelemetryFrame()
 #endif
         processGhostTelemetryValue(GHOST_ID_PACK_VOLTS, getTelemetryValue_u16_loFirst(3));
         processGhostTelemetryValue(GHOST_ID_PACK_AMPS, getTelemetryValue_u16_loFirst(5));
-        processGhostTelemetryValue(GHOST_ID_PACK_MAH, getTelemetryValue_u16_loFirst(7));
+        processGhostTelemetryValue(GHOST_ID_PACK_MAH, getTelemetryValue_u16_loFirst(7) * 10);
 
         break;
       }
