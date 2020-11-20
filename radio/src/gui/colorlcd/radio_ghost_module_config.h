@@ -27,7 +27,9 @@ class RadioGhostModuleConfig: public Page
   public:
     explicit RadioGhostModuleConfig(uint8_t moduleIdx);
 
-    void checkEvents() override;
+#if defined(HARDWARE_KEYS)
+    void onEvent(event_t event) override;
+#endif
 
   protected:
     uint8_t moduleIdx;
