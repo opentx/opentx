@@ -111,22 +111,7 @@
 
 #define LEN_RETA123                    "\001"
 
-#if defined(PCBHORUS)
-  #define TR_RETA123                   "RETA13245LR"
-#elif defined(PCBX9E)
-  #define TR_RETA123                   "RETA1234LRLR"
-#elif defined(PCBTARANIS) || defined(REVX)
-  #define TR_RETA123                   "RETA123LR"
-#elif defined(PCBSKY9X)
-  #define TR_RETA123                   "RETA123a"
-#else
-  #define TR_RETA123                   "RETA123"
-#endif
-
-#if defined(PCBSKY9X) && defined(REVX)
-  #define LEN_VOUTPUT_TYPE             "\011"
-  #define TR_VOUTPUT_TYPE              "OpenDrain""PushPull\0"
-#endif
+#define TR_RETA123                   "RETA13245LR"
 
 #define LEN_VCURVEFUNC                 "\003"
 #define TR_VCURVEFUNC                  "---""x>0""x<0""|x|""f>0""f<0""|f|"
@@ -145,19 +130,12 @@
   #define TR_VMIXTRIMS                 "禁用""启用""Rud""Ele""Thr""Ail"
 #endif
 
-#if LCD_W >= 212
-  #define TR_CSWTIMER                  "定时\0"
-  #define TR_CSWSTICKY                 "粘滞\0"
-  #define TR_CSWRANGE                  "范围\0"
-  #define TR_CSWSTAY                   "边沿\0"
-#else
-  #define TR_CSWTIMER                  "Tim\0 "
-  #define TR_CSWSTICKY                 "Stky\0"
-    #define TR_CSWRANGE                "Rnge\0"
-    #define TR_CSWSTAY                 "Edge\0"
-#endif
+#define TR_CSWTIMER                  "定时\0"
+#define TR_CSWSTICKY                 "粘滞\0"
+#define TR_CSWRANGE                  "范围\0"
+#define TR_CSWSTAY                   "边沿\0"
 
-  #define TR_CSWEQUAL                  "a=x\0 "
+#define TR_CSWEQUAL                  "a=x\0 "
 
 #define LEN_VCSWFUNC                   "\006"
 #define TR_VCSWFUNC                    "---\0 " TR_CSWEQUAL "a~x\0 ""a>x\0 ""a<x\0 " TR_CSWRANGE "|a|>x\0""|a|<x\0""AND\0 ""OR\0  ""XOR\0 " TR_CSWSTAY "a=b\0 ""a>b\0 ""a<b\0 ""Δ}x\0 ""|Δ|}x" TR_CSWTIMER TR_CSWSTICKY
@@ -181,11 +159,7 @@
 #endif
 
 #if defined(VOICE)
-  #if defined(PCBSKY9X)
-    #define TR_PLAY_TRACK              "Play\0    "
-  #else
-    #define TR_PLAY_TRACK              "播放音频文件\0  "
-  #endif
+  #define TR_PLAY_TRACK                "播放音频文件\0  "
   #define TR_PLAY_BOTH                 "同时播放\0      "
   #define TR_PLAY_VALUE                "播放数值\0      "
 #else
@@ -220,10 +194,8 @@
   #define TR_SF_TEST
 #endif
 
-#if defined(OVERRIDE_CHANNEL_FUNCTION) && LCD_W >= 212
+#if defined(OVERRIDE_CHANNEL_FUNCTION)
   #define TR_SF_SAFETY                 "锁定通道值\0    "
-#elif defined(OVERRIDE_CHANNEL_FUNCTION)
-  #define TR_SF_SAFETY                 "Overr.\0   "
 #else
   #define TR_SF_SAFETY                 "---\0      "
 #endif
@@ -237,11 +209,7 @@
 
 #define TR_FSW_RESET_TELEM             TR("Telm", "回传参数")
 
-#if LCD_W >= 212
-  #define TR_FSW_RESET_TIMERS          "计时器1\0   ""计时器2\0   ""计时器3\0   "
-#else
-  #define TR_FSW_RESET_TIMERS          "Tmr1""Tmr2""Tmr3"
-#endif
+#define TR_FSW_RESET_TIMERS          "计时器1\0   ""计时器2\0   ""计时器3\0   "
 
 #define TR_VFSWRESET                   TR(TR_FSW_RESET_TIMERS "All\0" TR_FSW_RESET_TELEM, TR_FSW_RESET_TIMERS "Flight\0  " TR_FSW_RESET_TELEM)
 
@@ -283,22 +251,8 @@
 #define LEN_VSWASHTYPE                 "\004"
 #define TR_VSWASHTYPE                  "---\0""120\0""120X""140\0""90\0"
 
-#if defined(PCBHORUS)
-  #define LEN_VKEYS                    "\004"
-  #define TR_VKEYS                     "菜单" "退出" "确认" "向上" "向下" "向右" "向左"
-#elif defined(PCBXLITE)
-  #define LEN_VKEYS                    "\005"
-  #define TR_VKEYS                     "Shift""Exit\0""Enter""Down\0""Up\0  ""Right""Left\0"
-#elif defined(RADIO_T12)
-  #define LEN_VKEYS                    "\005"
-  #define TR_VKEYS                     "Exit\0""Enter""Down\0""Up\0  ""Right""Left\0"
-#elif defined(PCBTARANIS)
-  #define LEN_VKEYS                    "\005"
-  #define TR_VKEYS                     "Menu\0""Exit\0""Enter""Page\0""Plus\0""Minus"
-#else
-  #define LEN_VKEYS                    "\005"
-  #define TR_VKEYS                     "Menu\0""Exit\0""Down\0""Up\0  ""Right""Left\0"
-#endif
+#define LEN_VKEYS                    "\004"
+#define TR_VKEYS                     "菜单" "退出" "确认" "向上" "向下" "向右" "向左"
 
 #define LEN_VSWITCHES                  "\003"
 #define LEN_VSRCRAW                    "\004"
@@ -317,13 +271,8 @@
   #define TR_TRIMS_SWITCHES            TR("tRl""tRr""tEd""tEu""tTd""tTu""tAl""tAr", "\213Rl""\213Rr""\213Ed""\213Eu""\213Td""\213Tu""\213Al""\213Ar")
 #endif
 
-#if defined(PCBSKY9X)
-  #define TR_ROTARY_ENCODERS           "REa\0"
-  #define TR_ROTENC_SWITCHES           "REa"
-#else
-  #define TR_ROTARY_ENCODERS
-  #define TR_ROTENC_SWITCHES
-#endif
+#define TR_ROTARY_ENCODERS
+#define TR_ROTENC_SWITCHES
 
 #define TR_ON_ONE_SWITCHES             "ON\0""One"
 
@@ -380,17 +329,11 @@
 #define TR_SUBTRIMMODES                STR_CHAR_DELTA"(中点)\0""= (整体)"
 
 // ZERO TERMINATED STRINGS
-#if defined(COLORLCD)
-  #define INDENT
-  #define LEN_INDENT                   3
-  #define INDENT_WIDTH                 12
-  #define BREAKSPACE                   "\036"
-#else
-  #define INDENT                       "\001"
-  #define LEN_INDENT                   1
-  #define INDENT_WIDTH                 (FW/2)
-  #define BREAKSPACE                   " "
-#endif
+
+#define INDENT
+#define LEN_INDENT                   3
+#define INDENT_WIDTH                 12
+#define BREAKSPACE                   "\036"
 
 #if defined(PCBFRSKY)
   #define TR_ENTER                     "[ENTER]"
@@ -400,19 +343,10 @@
   #define TR_ENTER                     "[MENU]"
 #endif
 
-#if defined(COLORLCD)
-  #define TR_EXIT                      "RTN"
-  #define TR_OK                        TR_ENTER
-#else
-  #define TR_EXIT                      "EXIT"
-  #define TR_OK                        TR("\010" "\010" "\010" "[OK]", "\010" "\010" "\010" "\010" "\010" "[OK]")
-#endif
+#define TR_EXIT                      "RTN"
+#define TR_OK                        TR_ENTER
 
-#if defined(PCBTARANIS)
-  #define TR_POPUPS_ENTER_EXIT         TR(TR_EXIT "\010" TR_ENTER, TR_EXIT "\010" "\010" "\010" "\010" TR_ENTER)
-#else
-  #define TR_POPUPS_ENTER_EXIT         TR_ENTER "\010" TR_EXIT
-#endif
+#define TR_POPUPS_ENTER_EXIT         TR_ENTER "\010" TR_EXIT
 
 #define TR_FREE                        "空闲"
 #define TR_DELETEMODEL                 "删除" BREAKSPACE "模型"
@@ -437,13 +371,10 @@
 #define TR_TTRIM_SW                    TR("T-Trim-Sw", INDENT "微调选择")
 #define TR_BEEPCTR                     TR("Ctr Beep", "中点蜂鸣")
 #define TR_USE_GLOBAL_FUNCS            TR("Glob.Funcs", "全局功能可介入")
-#if defined(PCBSKY9X) && defined(REVX)
-  #define TR_OUTPUT_TYPE               INDENT "Output"
-#endif
 #define TR_PROTO                       TR(INDENT "Proto", INDENT "协议")
-  #define TR_PPMFRAME                  INDENT "PPM帧"
-  #define TR_REFRESHRATE               TR(INDENT "Refresh", INDENT "刷新速率")
-  #define STR_WARN_BATTVOLTAGE         TR(INDENT "Output is VBAT: ", INDENT "注意: 输出电平为电池电压: ")
+#define TR_PPMFRAME                    INDENT "PPM帧"
+#define TR_REFRESHRATE                 TR(INDENT "Refresh", INDENT "刷新速率")
+#define STR_WARN_BATTVOLTAGE           TR(INDENT "Output is VBAT: ", INDENT "注意: 输出电平为电池电压: ")
 #define TR_WARN_5VOLTS                 "注意: 输出电平是5V"
 #define TR_MS                          "ms"
 #define TR_FREQUENCY                   INDENT "频率"
@@ -488,11 +419,7 @@
 #define TR_SLOWUP                      "上行慢动作"
 #define TR_MIXES                       "混控"
 #define TR_CV                          "曲线"
-#if defined(PCBNV14)
 #define TR_GV                          "GV"
-#else
-#define TR_GV                          TR("G", "GV")
-#endif
 #define TR_ACHANNEL                    "A\004通道"
 #define TR_RANGE                       INDENT "范围"
 #define TR_CENTER                      INDENT "中点"
@@ -562,15 +489,10 @@
   #define TR_MENUTOSTART               "按 [Enter] 键开始"
   #define TR_SETMIDPOINT               "将摇杆/旋钮/滑块居中后按[Enter]开始"
   #define TR_MOVESTICKSPOTS            "转动摇杆/旋钮/滑块到最大边界后按[Enter]结束"
-#elif defined(COLORLCD)
+#else
   #define TR_MENUTOSTART               TR_ENTER " 开始"
   #define TR_SETMIDPOINT               "将摇杆、旋钮和滑块居中"
   #define TR_MOVESTICKSPOTS            "转动摇杆、旋钮和滑块到最大边界"
-#else
-  #define TR_MENUTOSTART               CENTER "\010" TR_ENTER " 开始"
-  #define TR_SETMIDPOINT               TR(CENTER "\004SET STICKS MIDPOINT", CENTER "\004将摇杆/旋钮/滑块居中")
-  #define TR_MOVESTICKSPOTS            CENTER "\006转动摇杆/旋钮/滑块到最大边界"
-  #define TR_MENUWHENDONE              CENTER "\006" TR_ENTER " 结束"
 #endif
 #define TR_RXBATT                      "Rx Batt:"
 #define TR_TXnRX                       "Tx:\0Rx:"
@@ -613,11 +535,7 @@
 #define TR_MENU_RADIO_SWITCHES         TR("SWITCHES", "开关及按键测试")
 #define TR_MENU_RADIO_ANALOGS          TR("ANALOGS", "类比输入测试")
 #define TR_MENUCALIBRATION             "校准"
-#if defined(COLORLCD)
-  #define TR_TRIMS2OFFSETS             "将当前微调量保存至中点"
-#else
-  #define TR_TRIMS2OFFSETS             "\006Trims => Subtrims"
-#endif
+#define TR_TRIMS2OFFSETS               "将当前微调量保存至中点"
 #define TR_CHANNELS2FAILSAFE           "将当前所有通道值保存至接收机失控保护"
 #define TR_CHANNEL2FAILSAFE            "将当前通道值保存至接收机失控保护"
 #define TR_MENUMODELSEL                TR("MODELSEL", "模型选择")
@@ -830,11 +748,7 @@
 #define TR_BLUETOOTH_PIN_CODE          "PIN码"
 #define TR_BAUDRATE                    "蓝牙带宽"
 #define LEN_BLUETOOTH_MODES            "\011"
-#if defined(PCBX9E)
-#define TR_BLUETOOTH_MODES             "---\0     ""启用\0 "
-#else
 #define TR_BLUETOOTH_MODES             "---\0     ""回传""教练\0"
-#endif
 
 #define TR_SD_INFO_TITLE               "存储卡详情"
 #define TR_SD_TYPE                     "类型:"
@@ -962,11 +876,7 @@
 #define TR_TRAINER                     "教练"
 #define TR_CHANS                       "通道"
 #define TR_ANTENNAPROBLEM              CENTER "发射机天线故障!"
-#if defined(COLORLCD)
-  #define TR_MODELIDUSED               "ID已使用:"
-#else
-  #define TR_MODELIDUSED               TR("ID used in:","接收机编号已使用:")
-#endif
+#define TR_MODELIDUSED                 "ID已使用:"
 #define TR_MODULE                      "模块"
 #define TR_RX_NAME                     "接收机名称"
 #define TR_TELEMETRY_TYPE              TR("Type", "回传类型")
