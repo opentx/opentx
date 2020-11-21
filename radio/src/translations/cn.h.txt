@@ -177,7 +177,7 @@
 #if defined(GVARS)
   #define TR_ADJUST_GVAR               "修改全局变量GV值"
 #else
-  #define TR_ADJUST_GVAR               "[修改GV值]\0     ""
+  #define TR_ADJUST_GVAR               "[修改GV值]\0     "
 #endif
 
 #if defined(LUA)
