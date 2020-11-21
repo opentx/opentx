@@ -37,7 +37,5 @@ class RadioGhostModuleConfig: public Page
     void buildHeader(Window * window);
     void buildBody(FormWindow * window);
     void init();
-    void start();
-    void stop();
 };
 

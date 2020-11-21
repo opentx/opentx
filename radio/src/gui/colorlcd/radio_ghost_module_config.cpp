@@ -100,20 +100,19 @@ void RadioGhostModuleConfig::onEvent(event_t event)
   switch (event) {
 #if defined(ROTARY_ENCODER_NAVIGATION)
     case EVT_ROTARY_LEFT:
-#endif
       reusableBuffer.ghostMenu.buttonAction = GHST_BTN_JOYUP;
       reusableBuffer.ghostMenu.menuAction = GHST_MENU_CTRL_NONE;
       moduleState[EXTERNAL_MODULE].counter = GHST_MENU_CONTROL;
       break;
+#endif
 
 #if defined(ROTARY_ENCODER_NAVIGATION)
     case EVT_ROTARY_RIGHT:
-#endif
       reusableBuffer.ghostMenu.buttonAction = GHST_BTN_JOYDOWN;
       reusableBuffer.ghostMenu.menuAction = GHST_MENU_CTRL_NONE;
       moduleState[EXTERNAL_MODULE].counter = GHST_MENU_CONTROL;
       break;
-
+#endif
 
     case EVT_KEY_FIRST(KEY_ENTER):
       reusableBuffer.ghostMenu.buttonAction = GHST_BTN_JOYPRESS;
@@ -149,12 +148,3 @@ void RadioGhostModuleConfig::init()
   moduleState[EXTERNAL_MODULE].counter = GHST_MENU_CONTROL;
 }
 
-void RadioGhostModuleConfig::start()
-{
-
-}
-
-void RadioGhostModuleConfig::stop()
-{
-
-}

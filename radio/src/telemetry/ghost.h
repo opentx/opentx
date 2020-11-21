@@ -18,8 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _GHOST_H_
-#define _GHOST_H_
+#pragma once
 
 #include <inttypes.h>
 #include "dataconstants.h"
@@ -142,7 +141,6 @@ enum GhostMenuControl
   GHST_MENU_CTRL_REDRAW = 0X04,
 };
 
-
 enum GhostFrames
 {
   GHST_FRAME_CHANNEL,
@@ -173,5 +171,3 @@ struct GhostMenuData
   char menuText[GHST_MENU_CHARS + 1];
   uint8_t menuUpdateNeeded;
 };
-
-#endif // _GHOST_H_
