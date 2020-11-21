@@ -143,49 +143,47 @@
 #define LEN_VFSWFUNC                   "\020"
 
 #if defined(VARIO)
-  #define TR_VVARIO                    "Vario传感器\0   "
+  #define TR_VVARIO                    "Vario传感器\0    "
 #else
-  #define TR_VVARIO                    "[Vario]\0  "
+  #define TR_VVARIO                    "[Vario]\0        "
 #endif
-
 #if defined(AUDIO)
-  #define TR_SOUND                     "播放声音\0      "
+  #define TR_SOUND                     "播放声音\0       "
 #endif
-
 #if defined(HAPTIC)
-  #define TR_HAPTIC                    "振动\0          "
+  #define TR_HAPTIC                    "振动\0           "
 #else
-  #define TR_HAPTIC                    "[振动]\0        "
+  #define TR_HAPTIC                    "[振动]\0         "
 #endif
 
 #if defined(VOICE)
-  #define TR_PLAY_TRACK                "播放音频文件\0  "
-  #define TR_PLAY_BOTH                 "同时播放\0      "
-  #define TR_PLAY_VALUE                "播放数值\0      "
+  #define TR_PLAY_TRACK                "播放音频文件\0   "
+  #define TR_PLAY_BOTH                 "同时播放\0       "
+  #define TR_PLAY_VALUE                "播放数值\0       "
 #else
   #define TR_PLAY_TRACK                "[Play Trk]"
   #define TR_PLAY_BOTH                 "[Play Bth]"
   #define TR_PLAY_VALUE                "[Play Val]"
 #endif
 
-#define TR_SF_BG_MUSIC                 "播放背景音乐\0  " "暂停背景音乐\0  "
+#define TR_SF_BG_MUSIC                 "播放背景音乐\0   " "暂停背景音乐\0   "
 
 #if defined(SDCARD)
-  #define TR_SDCLOGS                   "记录到SD卡\0    "
+  #define TR_SDCLOGS                   "记录到SD卡\0     "
 #else
-  #define TR_SDCLOGS                   "[记录到SD卡]\0  "
+  #define TR_SDCLOGS                   "[记录到SD卡]\0   "
 #endif
 
 #if defined(GVARS)
   #define TR_ADJUST_GVAR               "修改全局变量GV值"
 #else
-  #define TR_ADJUST_GVAR               "[修改GV值]\0    "
+  #define TR_ADJUST_GVAR               "[修改GV值]\0     ""
 #endif
 
 #if defined(LUA)
-  #define TR_SF_PLAY_SCRIPT            "Lua脚本\0       "
+  #define TR_SF_PLAY_SCRIPT            "Lua脚本\0        "
 #else
-  #define TR_SF_PLAY_SCRIPT            "[Lua]\0    "
+  #define TR_SF_PLAY_SCRIPT            "[Lua]\0          "
 #endif
 
 #if defined(DEBUG)
@@ -195,26 +193,26 @@
 #endif
 
 #if defined(OVERRIDE_CHANNEL_FUNCTION)
-  #define TR_SF_SAFETY                 "锁定通道值\0    "
+	  #define TR_SF_SAFETY             "锁定通道值\0     "
 #else
-  #define TR_SF_SAFETY                 "---\0      "
+  #define TR_SF_SAFETY                 "---\0            "
 #endif
 
-#define TR_SF_SCREENSHOT               "截屏\0         "
-#define TR_SF_RESERVE                  "[保留]\0       "
+#define TR_SF_SCREENSHOT               "截屏\0          "
+#define TR_SF_RESERVE                  "[保留]\0        "
 
-#define TR_VFSWFUNC                    TR_SF_SAFETY "教练\0         " "摇杆值存储到微调" "复位\0         " "设置\0         " TR_ADJUST_GVAR "音量\0         " "设置失控保护\0  " "测距模式\0      " "模块对频\0    "  TR_SOUND TR_PLAY_TRACK TR_PLAY_VALUE TR_SF_RESERVE TR_SF_PLAY_SCRIPT TR_SF_RESERVE TR_SF_BG_MUSIC TR_VVARIO TR_HAPTIC TR_SDCLOGS "背光\0          " TR_SF_SCREENSHOT TR_SF_TEST
+#define TR_VFSWFUNC                    TR_SF_SAFETY "教练\0           " "摇杆值存储到微调" "复位\0           " "设置\0           " TR_ADJUST_GVAR "音量\0           " "设置失控保护\0   " "测距模式\0       " "模块对频\0       "  TR_SOUND TR_PLAY_TRACK TR_PLAY_VALUE TR_SF_RESERVE TR_SF_PLAY_SCRIPT TR_SF_RESERVE TR_SF_BG_MUSIC TR_VVARIO TR_HAPTIC TR_SDCLOGS "背光\0           " TR_SF_SCREENSHOT TR_SF_TEST
 
 #define LEN_VFSWRESET                  TR("\004", "\010")
 
 #define TR_FSW_RESET_TELEM             TR("Telm", "回传参数")
 
-#define TR_FSW_RESET_TIMERS          "计时器1\0   ""计时器2\0   ""计时器3\0   "
+#define TR_FSW_RESET_TIMERS            "计时器1\0 " "计时器2\0 " "计时器3\0 "
 
-#define TR_VFSWRESET                   TR(TR_FSW_RESET_TIMERS "All\0" TR_FSW_RESET_TELEM, TR_FSW_RESET_TIMERS "Flight\0  " TR_FSW_RESET_TELEM)
+#define TR_VFSWRESET                   TR_FSW_RESET_TIMERS "Flight\0 " TR_FSW_RESET_TELEM
 
-#define LEN_FUNCSOUNDS                 TR("\004", "\006")
-#define TR_FUNCSOUNDS                  TR("Bp1\0""Bp2\0""Bp3\0""Wrn1""Wrn2""Chee""Rata""Tick""Sirn""Ring""SciF""Robt""Chrp""Tada""Crck""Alrm", "Beep1 ""Beep2 ""Beep3 ""Warn1 ""Warn2 ""Cheep ""Ratata""Tick  ""Siren ""Ring  ""SciFi ""Robot ""Chirp ""Tada  ""Crickt""AlmClk")
+#define LEN_FUNCSOUNDS                 "\006"
+#define TR_FUNCSOUNDS                  "Beep1 ""Beep2 ""Beep3 ""Warn1 ""Warn2 ""Cheep ""Ratata""Tick  ""Siren ""Ring  ""SciFi ""Robot ""Chirp ""Tada  ""Crickt""AlmClk"
 
 #define LEN_VTELEMCHNS                 "\004"
 
@@ -223,8 +221,9 @@
 #define LENGTH_UNIT_METR               "m\0 "
 #define SPEED_UNIT_METR                "kmh"
 
-#define LEN_VUNITSSYSTEM               TR("\006", "\004")
-#define TR_VUNITSSYSTEM                TR("Metric""Imper.", "公制""英制")
+#define LEN_VUNITSSYSTEM               "\004"
+#define TR_VUNITSSYSTEM                "公制""英制"
+
 #define LEN_VTELEMUNIT                 "\003"
 #define TR_VTELEMUNIT                  "-\0 ""V\0 ""A\0 ""mA\0""kts""m/s""f/s""kmh""mph""m\0 ""ft\0""@C\0""@F\0""%\0 ""mAh""W\0 ""mW\0""dB\0""rpm""g\0 ""@\0 ""rad""ml\0""fOz""mlm""Hz\0""mS\0""uS\0"
 
@@ -295,14 +294,14 @@
 #define TR_VTMRMODES                   "OFF\0""ON\0 ""Strt""THs\0""TH%\0""THt"
 
 #define LEN_VTRAINERMODES              "\022"
-#define TR_VTRAINER_MASTER_OFF         "禁用\0              "
-#define TR_VTRAINER_MASTER_JACK        "教练主机/音频插孔\0 "
-#define TR_VTRAINER_SLAVE_JACK         "学生从机/音频插孔\0 "
-#define TR_VTRAINER_MASTER_SBUS_MODULE "教练主机/SBUS模块\0 "
-#define TR_VTRAINER_MASTER_CPPM_MODULE "教练从机/CPPM模块\0 "
-#define TR_VTRAINER_MASTER_BATTERY     "教练主机/串口\0     "
-#define TR_VTRAINER_BLUETOOTH          TR("Master/BT\0        ""Slave/BT\0         ", "教练主机/蓝牙\0     " "教练从机/蓝牙\0     ")
-#define TR_VTRAINER_MULTI              "教练主机/多协议\0"
+#define TR_VTRAINER_MASTER_OFF         "禁用\0             "
+#define TR_VTRAINER_MASTER_JACK        "教练主机/音频插孔\0"
+#define TR_VTRAINER_SLAVE_JACK         "学生从机/音频插孔\0"
+#define TR_VTRAINER_MASTER_SBUS_MODULE "教练主机/SBUS模块\0"
+#define TR_VTRAINER_MASTER_CPPM_MODULE "教练从机/CPPM模块\0"
+#define TR_VTRAINER_MASTER_BATTERY     "教练主机/串口\0    "
+#define TR_VTRAINER_BLUETOOTH          TR("Master/BT\0        ""Slave/BT\0         ", "教练主机/蓝牙\0    " "教练从机/蓝牙\0    ")
+#define TR_VTRAINER_MULTI              "教练主机/多协议\0  "
 
 #define LEN_VFAILSAFE                  "\010"
 #define TR_VFAILSAFE                   "未设置\0 " "失控保持" "自定义\0 " "无脉冲\0 " "接收机\0 "
@@ -311,7 +310,7 @@
 #define TR_VSENSORTYPES                "自定义" "运算\0 "
 
 #define LEN_VFORMULAS                  "\010"
-#define TR_VFORMULAS                   "加\0    " "平均值\0  " "最小值\0  " "最大值\0  " "乘\0      " "总计值\0  " "单节电池" "消耗量\0 " "距离\0    "
+#define TR_VFORMULAS                   "加\0     " "平均值\0 " "最小值\0 " "最大值\0 " "乘\0     " "总计值\0 " "单节电池" "消耗量\0 " "距离\0   "
 
 #define LEN_VPREC                      "\004"
 #define TR_VPREC                       "0.--""0.0 ""0.00"
@@ -326,7 +325,7 @@
 #define TR_TEXT_SIZE                   "标准" "小\0 " "较小" "中等" "双倍"
 
 #define LEN_SUBTRIMMODES               "\010"
-#define TR_SUBTRIMMODES                STR_CHAR_DELTA"(中点)\0""= (整体)"
+#define TR_SUBTRIMMODES                STR_CHAR_DELTA"(中点)\0 ""= (整体)"
 
 // ZERO TERMINATED STRINGS
 
