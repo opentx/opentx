@@ -81,7 +81,7 @@ void CurveDataEdit::update()
   // y value
   for (uint8_t i = 0; i < curvePointsCount; i++) {
     int8_t * points = curveAddress(index);
-    new NumberEdit(this, {coord_t(PAGE_LINE_SPACING + 1 + i * boxWidth), 10 + 2 * boxHeight, coord_t(boxWidth - PAGE_LINE_SPACING), boxHeight - 12},-100, 100,
+    new NumberEdit(this, {coord_t(PAGE_LINE_SPACING + 1 + i * boxWidth), 10 + 2 * boxHeight, coord_t(boxWidth - PAGE_LINE_SPACING), boxHeight - 12}, -100,  100,
                    GET_VALUE(points[i]), [=](int32_t newValue) { points[i] = newValue; SET_DIRTY(); curveEdit->updatePreview(); }, 0, RIGHT);
   }
 
@@ -114,7 +114,6 @@ CurveEdit::~CurveEdit()
 
 void CurveEdit::updatePreview()
 {
-  TRACE("CurveEdit::updatePreview()");
   preview.clearPoints();
   CurveHeader & curve = g_model.curves[index];
   for (uint8_t i = 0; i < 5 + curve.points; i++) {
