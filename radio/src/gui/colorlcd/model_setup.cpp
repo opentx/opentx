@@ -1024,7 +1024,7 @@ void ModelSetupPage::build(FormWindow * window)
     TimerData * timer = &g_model.timers[i];
 
     // Timer label
-    char timerLabel[8];
+    char timerLabel[sizeof(TR_TIMER) + 2];
     strAppendStringWithIndex(timerLabel, STR_TIMER, i + 1);
     new Subtitle(window, grid.getLineSlot(), timerLabel);
     grid.nextLine();
