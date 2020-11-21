@@ -19,8 +19,7 @@
  */
 
 
-#ifndef _CURVE_H_
-#define _CURVE_H_
+#pragma once
 
 #include "window.h"
 
@@ -76,4 +75,3 @@ class Curve: public Window
     coord_t getPointY(int y) const;
 };
 
-#endif // _CURVE_H_
