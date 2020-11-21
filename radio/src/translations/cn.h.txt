@@ -77,7 +77,7 @@
 #define TR_VLCD                        "Normal" "Optrex"
 
 #define LEN_VPERSISTENT                "\016"
-#define TR_VPERSISTENT                 "禁用\0" "随飞行记录复位" "随手动复位\0"
+#define TR_VPERSISTENT                 "禁用\0         " "随飞行记录复位" "随手动复位\0   "
 
 #define LEN_COUNTRY_CODES              "\004"
 #define TR_COUNTRY_CODES               "美国" "日本" "欧洲"
@@ -90,8 +90,6 @@
 
 #define LEN_TELEMETRY_PROTOCOLS        "\017"
 #define TR_TELEMETRY_PROTOCOLS         "FrSky S.PORT\0  ""FrSky D\0       ""FrSky D (cable)""TBS Crossfire\0 ""Spektrum\0      ""AFHDS2A IBUS\0  ""Multi Telemetry"
-
-#define TR_MULTI_CUSTOM                "自定义"
 
 #define LEN_VTRIMINC                   "\004"
 #define TR_VTRIMINC                    "指数" "很小" "较小" "中等" "较大"
@@ -628,8 +626,8 @@
 #define TR_MENUFLIGHTMODE              "飞行模式"
 #define TR_MENUHELISETUP               "直升机设置"
 
-  #define TR_MENUINPUTS                "输入设置"
-  #define TR_MENULIMITS                "输出设置"
+#define TR_MENUINPUTS                  "输入设置"
+#define TR_MENULIMITS                  "输出设置"
 #define TR_MENUCURVES                  "曲线设置"
 #define TR_MENUCURVE                   "曲线"
 #define TR_MENULOGICALSWITCH           "逻辑开关"
@@ -647,8 +645,9 @@
 #define TR_MONITOR_SWITCHES            "逻辑开关查看"
 #define TR_MONITOR_OUTPUT_DESC         "输出查看"
 #define TR_MONITOR_MIXER_DESC          "混控查看"
-  #define TR_RECEIVER_NUM              TR("RxNum", "接收机编号")
-  #define TR_RECEIVER                  "接收机ID"
+#define TR_RECEIVER_NUM                TR("RxNum", "接收机编号")
+#define TR_RECEIVER                    "接收机ID"
+#define TR_MULTI_CUSTOM                "自定义"
 #define TR_MULTI_RFTUNE                TR("Freq tune", "频率微调")
 #define TR_MULTI_RFPOWER               "发射功率"
 #define TR_MULTI_TELEMETRY             "回传"
