@@ -53,17 +53,19 @@ void CurveDataEdit::update()
   grid.spacer(rect.h / 3);
 
   // x value
-  if (curve.type==CURVE_TYPE_CUSTOM) {
+  if (curve.type == CURVE_TYPE_CUSTOM) {
     // Adjustable points for custom curves
     for (uint8_t i = 0; i < curvePointsCount; i++) {
       int8_t * points = curveAddress(index);
-      auto  pointEdit = new NumberEdit(this, {i * boxWidth, 10 + boxHeight, boxWidth, boxHeight - 12}, i==1 ? -100 : points[5+curve.points+i-2], i==5+curve.points-2 ? 100 : points[5+curve.points+i],
-                                       GET_VALUE(i == 0 ? -100 : i == curvePointsCount - 1 ? 100 : points[5 + curve.points + i - 1]),
-                                       [=](int32_t newValue) {
-                                          points[5 + curve.points + i - 1] = newValue;
-                                          SET_DIRTY();
-                                          curveEdit->updatePreview();
-                                       }, 0, RIGHT);
+      auto pointEdit = new NumberEdit(this, {coord_t(PAGE_LINE_SPACING + 1 + i * boxWidth), 10 + boxHeight, coord_t(boxWidth - PAGE_LINE_SPACING), boxHeight - 12},
+                                      i <= 1 ? -100 : points[curvePointsCount + i - 2],
+                                      i >= curvePointsCount - 2 ? 100 : points[curvePointsCount + i],
+                                      GET_VALUE(i == 0 ? -100 : i == curvePointsCount - 1 ? 100 : points[curvePointsCount + i - 1]),
+                                      [=](int32_t newValue) {
+                                         points[curvePointsCount + i - 1] = newValue;
+                                         SET_DIRTY();
+                                         curveEdit->updatePreview();
+                                      }, 0, RIGHT);
 
       if (i == 0 || i == curvePointsCount - 1) {
         pointEdit->disable();
@@ -72,8 +74,7 @@ void CurveDataEdit::update()
   }
   else {
     for (uint8_t i = 0; i < curvePointsCount; i++) {
-      new StaticText(this, {i * boxWidth, 10 + boxHeight, boxWidth, boxHeight}, std::to_string(-100 + 200 * i / (5 + curve.points - 1)), 0,
-                     RIGHT | TEXT_DISABLE_COLOR);
+      new StaticText(this, {i * boxWidth, 10 + boxHeight, boxWidth, boxHeight}, std::to_string(-100 + 200 * i / (5 + curve.points - 1)), 0, RIGHT | TEXT_DISABLE_COLOR);
     }
   }
 
