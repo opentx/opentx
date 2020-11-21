@@ -110,7 +110,7 @@ uint16_t getTelemetryValue_u16(uint8_t index)
   return (telemetryRxBuffer[index] << 8) | telemetryRxBuffer[index + 1];
 }
 
-uint16_t getTelemetryValue_u16_loFirst(uint8_t index)
+uint16_t getTelemetryValue_u16le(uint8_t index)
 {
   return (telemetryRxBuffer[index + 1] << 8) | telemetryRxBuffer[index];
 }
@@ -217,9 +217,9 @@ void processGhostTelemetryFrame()
           bluetooth.write(telemetryRxBuffer, telemetryRxBufferCount);
         }
 #endif
-      processGhostTelemetryValue(GHOST_ID_PACK_VOLTS, getTelemetryValue_u16_loFirst(3));
-      processGhostTelemetryValue(GHOST_ID_PACK_AMPS, getTelemetryValue_u16_loFirst(5));
-      processGhostTelemetryValue(GHOST_ID_PACK_MAH, getTelemetryValue_u16_loFirst(7) * 10);
+      processGhostTelemetryValue(GHOST_ID_PACK_VOLTS, getTelemetryValue_u16le(3));
+      processGhostTelemetryValue(GHOST_ID_PACK_AMPS, getTelemetryValue_u16le(5));
+      processGhostTelemetryValue(GHOST_ID_PACK_MAH, getTelemetryValue_u16le(7) * 10);
 
       break;
     }
