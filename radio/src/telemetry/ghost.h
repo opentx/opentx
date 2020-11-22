@@ -170,5 +170,5 @@ typedef struct
   uint8_t lineFlags;     // Carat states, Inverse, Bold for each of Menu Label, and Value
   uint8_t splitLine;     // Store beginning of Value substring
   char menuText[GHST_MENU_CHARS + 1];
-}  ghst_menu_data;
+}  GhostMenuData;
 
