@@ -1207,7 +1207,8 @@ union ReusableBuffer
 
 #if defined(GHOST)
   struct {
-    ghst_menu_data line[GHST_MENU_LINES + 1];
+    GhostMenuData line[GHST_MENU_LINES + 1];
+    uint8_t menuFlags;
     uint8_t menuAction;
     uint8_t buttonAction;
   } ghostMenu;

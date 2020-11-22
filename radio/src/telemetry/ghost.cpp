@@ -45,6 +45,7 @@ enum
   GHOST_ID_VTX_POWER = 0x0009,          // Vtx Power (in mW)
   GHOST_ID_VTX_CHAN = 0x000a,           // Vtx Channel
   GHOST_ID_VTX_BAND = 0x000b,           // Vtx Band
+
   GHOST_ID_PACK_VOLTS = 0x000c,         // Battery Pack Voltage
   GHOST_ID_PACK_AMPS = 0x000d,          // Battery Pack Current
   GHOST_ID_PACK_MAH = 0x000e,           // Battery Pack mAh consumed
@@ -191,7 +192,7 @@ void processGhostTelemetryFrame()
       packet = (ghst_menu_frame *) telemetryRxBuffer;
       lineData = (ghst_menu_data *) &reusableBuffer.ghostMenu.line[packet->lineIndex];
       lineData->splitLine = 0;
-      reusableBuffer.ghostMenu.menuAction = packet->menuFlags;
+      reusableBuffer.ghostMenu.menuFlags = packet->menuFlags;
       lineData->lineFlags = packet->lineFlags;
       for (uint8_t i = 0; i < GHST_MENU_CHARS; i++) {
         if (packet->menuText[i] == 0x7C) {
