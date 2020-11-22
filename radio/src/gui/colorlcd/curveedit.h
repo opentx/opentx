@@ -18,37 +18,39 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _CURVEEDIT_H_
-#define _CURVEEDIT_H_
+#pragma once
 
 #include "form.h"
 #include "curve.h"
 
+class CurveEdit;
+
 class CurveDataEdit : public FormGroup
 {
-    friend class CurveEdit;
+  friend class CurveEdit;
 
   public:
-    CurveDataEdit(Window * parent, const rect_t & rect, uint8_t index);
+    CurveDataEdit(Window * parent, const rect_t & rect, uint8_t index, CurveEdit * curveEdit);
 
     void paint(BitmapBuffer * dc) override;
-
-    void checkEvents() override;
 
     void update();
 
   protected:
     uint8_t index;
-    uint8_t previousCurvePointsCount;
+    CurveEdit * curveEdit;
 };
 
-class CurveEdit: public FormField {
+class CurveEdit: public FormField
+{
+  friend class CurveDataEdit;
+
   public:
     CurveEdit(Window * parent, const rect_t & rect, uint8_t index);
 
     ~CurveEdit() override;
 
-    void update();
+    void updatePreview();
 
     void onEvent(event_t event) override;
 
@@ -68,7 +70,5 @@ class CurveEdit: public FormField {
     void down();
     void right();
     void left();
-    bool isCustomCurve();
+    bool isCustomCurve() const;
 };
-
-#endif // _CURVEEDIT_H_

@@ -24,9 +24,10 @@
 
 #define SET_DIRTY()     storageDirty(EE_MODEL)
 
-CurveDataEdit::CurveDataEdit(Window * parent, const rect_t & rect, uint8_t index) :
+CurveDataEdit::CurveDataEdit(Window * parent, const rect_t & rect, uint8_t index, CurveEdit * curveEdit) :
   FormGroup(parent, rect, FORM_FORWARD_FOCUS),
-  index(index)
+  index(index),
+  curveEdit(curveEdit)
 {
   update();
 }
@@ -52,28 +53,39 @@ void CurveDataEdit::update()
   grid.spacer(rect.h / 3);
 
   // x value
-  for (uint8_t i = 0; i < curvePointsCount; i++) {
-    new StaticText(this, {i * boxWidth, 10 + boxHeight, boxWidth, boxHeight}, std::to_string(-100 + 200 * i / (5 + curve.points - 1)), 0, RIGHT | TEXT_DISABLE_COLOR);
+  if (curve.type == CURVE_TYPE_CUSTOM) {
+    // Adjustable points for custom curves
+    for (uint8_t i = 0; i < curvePointsCount; i++) {
+      int8_t * points = curveAddress(index);
+      auto pointEdit = new NumberEdit(this, {coord_t(PAGE_LINE_SPACING + 1 + i * boxWidth), 10 + boxHeight, coord_t(boxWidth - PAGE_LINE_SPACING), boxHeight - 12},
+                                      i <= 1 ? -100 : points[curvePointsCount + i - 2],
+                                      i >= curvePointsCount - 2 ? 100 : points[curvePointsCount + i],
+                                      GET_VALUE(i == 0 ? -100 : i == curvePointsCount - 1 ? 100 : points[curvePointsCount + i - 1]),
+                                      [=](int32_t newValue) {
+                                         points[curvePointsCount + i - 1] = newValue;
+                                         SET_DIRTY();
+                                         curveEdit->updatePreview();
+                                      }, 0, RIGHT);
+
+      if (i == 0 || i == curvePointsCount - 1) {
+        pointEdit->disable();
+      }
+    }
+  }
+  else {
+    for (uint8_t i = 0; i < curvePointsCount; i++) {
+      new StaticText(this, {i * boxWidth, 10 + boxHeight, boxWidth, boxHeight}, std::to_string(-100 + 200 * i / (5 + curve.points - 1)), 0, RIGHT | TEXT_DISABLE_COLOR);
+    }
   }
 
   // y value
   for (uint8_t i = 0; i < curvePointsCount; i++) {
     int8_t * points = curveAddress(index);
-    new NumberEdit(this, {coord_t(PAGE_LINE_SPACING + 1 + i * boxWidth), 10 + 2 * boxHeight, coord_t(boxWidth - PAGE_LINE_SPACING), boxHeight - 12}, -100, 100, GET_SET_DEFAULT(points[i]), 0, RIGHT);
+    new NumberEdit(this, {coord_t(PAGE_LINE_SPACING + 1 + i * boxWidth), 10 + 2 * boxHeight, coord_t(boxWidth - PAGE_LINE_SPACING), boxHeight - 12}, -100,  100,
+                   GET_VALUE(points[i]), [=](int32_t newValue) { points[i] = newValue; SET_DIRTY(); curveEdit->updatePreview(); }, 0, RIGHT);
   }
 
   setInnerWidth(curvePointsCount * boxWidth);
-}
-
-void CurveDataEdit::checkEvents()
-{
-  Window::checkEvents();
-  CurveHeader & curve = g_model.curves[index];
-  uint8_t newValue = 5 + curve.points;
-  if (previousCurvePointsCount != newValue) {
-    previousCurvePointsCount = newValue;
-    update();
-  }
 }
 
 void CurveDataEdit::paint(BitmapBuffer * dc)
@@ -92,7 +104,7 @@ CurveEdit::CurveEdit(Window * parent, const rect_t & rect, uint8_t index) :
   index(index),
   current(0)
 {
-  update();
+  updatePreview();
 }
 
 CurveEdit::~CurveEdit()
@@ -100,7 +112,7 @@ CurveEdit::~CurveEdit()
   preview.detach();
 }
 
-void CurveEdit::update()
+void CurveEdit::updatePreview()
 {
   preview.clearPoints();
   CurveHeader & curve = g_model.curves[index];
@@ -132,7 +144,7 @@ bool CurveEdit::onTouchEnd(coord_t x, coord_t y)
       point_t point = getPoint(index, i);
       if (abs(preview.getPointX(point.x) - x) <= 10 && abs(preview.getPointY(point.y) - y) <= 10) {
         current = i;
-        update();
+        updatePreview();
         break;
       }
     }
@@ -152,7 +164,7 @@ void CurveEdit::next()
   if (current++ == preview.points.size()) {
     current = 0;
   }
-  update();
+  updatePreview();
 }
 
 void CurveEdit::previous()
@@ -160,7 +172,7 @@ void CurveEdit::previous()
   if (current-- == 0) {
     current = preview.points.size();
   }
-  update();
+  updatePreview();
 }
 
 void CurveEdit::up()
@@ -205,7 +217,7 @@ void CurveEdit::left()
   }
 }
 
-bool CurveEdit::isCustomCurve()
+bool CurveEdit::isCustomCurve() const
 {
   return g_model.curves[index].type == CURVE_TYPE_CUSTOM;
 }
