@@ -79,6 +79,10 @@ if(PXX2 OR MULTIMODULE)
   add_gui_src(radio_spectrum_analyser.cpp)
 endif()
 
+if(GHOST)
+  add_gui_src(radio_ghost_module_config.cpp)
+endif()
+
 if(LUA STREQUAL YES)
   set(SRC ${SRC} lua/widgets.cpp)
   # TODO set(GUI_SRC ${GUI_SRC} model_custom_scripts.cpp)
