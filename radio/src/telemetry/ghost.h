@@ -43,6 +43,7 @@
 #define GHST_DL_OPENTX_SYNC		0x20
 #define GHST_DL_LINK_STAT               0x21
 #define GHST_DL_VTX_STAT                0x22
+#define GHST_DL_PACK_STAT               0x23
 #define GHST_DL_MENU_DESC               0x24
 
 #define GHST_RC_CTR_VAL_12BIT		0x7C0   // 0x3e0 << 1
