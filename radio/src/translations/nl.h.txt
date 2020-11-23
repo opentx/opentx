@@ -595,6 +595,7 @@
 #define TR_MENU_RADIO_SWITCHES            TR("Schak.", "Schakelaar-Test")
 #define TR_MENU_RADIO_ANALOGS             "Analoog-Test"
 #define TR_MENUCALIBRATION     TR("CALIB. ANALOOG", "CALIBRERING Sticks+Pots")
+#define TR_GHOST_MENU_LABEL            "GHOST MENU"
 
 #if defined(COLORLCD)
   #define TR_TRIMS2OFFSETS     "Trims => Subtrims"
@@ -698,6 +699,7 @@
 #define TR_NO_SDCARD           "Geen SD-Kaart"
 #define TR_WAITING_FOR_RX              "Waiting for RX..."
 #define TR_WAITING_FOR_TX              "Waiting for TX..."
+#define TR_WAITING_FOR_MODULE          "Waiting for module..."
 #define TR_NO_TOOLS                    "No tools available"
 #define TR_NORMAL                      "Normal"
 #define TR_NOT_INVERTED                "Not inv"

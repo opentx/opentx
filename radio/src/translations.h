@@ -356,6 +356,7 @@ extern const char STR_MENUVERSION[];
 extern const char STR_MENU_RADIO_SWITCHES[];
 extern const char STR_MENU_RADIO_ANALOGS[];
 extern const char STR_MENUCALIBRATION[];
+extern const char STR_GHOST_MENU_LABEL[];
 extern const char STR_MENUMODELSEL[];
 extern const char STR_MENUSETUP[];
 extern const char STR_MENUFLIGHTMODE[];
@@ -525,6 +526,7 @@ extern const char STR_SPECTRUM_ANALYSER_EXT[];
 extern const char STR_SPECTRUM_ANALYSER_INT[];
 extern const char STR_WAITING_FOR_RX[];
 extern const char STR_WAITING_FOR_TX[];
+extern const char STR_WAITING_FOR_MODULE[];
 
 #if defined(SDCARD)
   extern const char STR_BACKUP_MODEL[];

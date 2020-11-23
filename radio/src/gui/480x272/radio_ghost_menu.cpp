@@ -65,7 +65,7 @@ bool menuGhostModuleConfig(event_t event)
       break;
   }
 
-  if (reusableBuffer.ghostMenu.menuAction ==  GHST_MENU_CTRL_Close) {
+  if (reusableBuffer.ghostMenu.menuFlags ==  GHST_MENU_CTRL_Close) {
     popMenu();
   }
 

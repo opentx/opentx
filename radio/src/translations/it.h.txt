@@ -610,6 +610,7 @@
 #define TR_MENU_RADIO_SWITCHES            "DIAG"
 #define TR_MENU_RADIO_ANALOGS             "ANAS"
 #define TR_MENUCALIBRATION     "CALIBRAZIONE"
+#define TR_GHOST_MENU_LABEL            "GHOST MENU"
 #if defined(COLORLCD)
   #define TR_TRIMS2OFFSETS     "Trims => Subtrims"
 #else
@@ -712,6 +713,7 @@
 #define TR_NO_SDCARD           "No SDCard"
 #define TR_WAITING_FOR_RX              "Attendo la RX..."
 #define TR_WAITING_FOR_TX              "Attendo la TX..."
+#define TR_WAITING_FOR_MODULE          "Waiting for module..."
 #define TR_NO_TOOLS                    "Tools non disp."
 #define TR_NORMAL                      "Normale"
 #define TR_NOT_INVERTED                "No inv."
