@@ -707,6 +707,7 @@
 #define TR_NO_SDCARD                   "No SDCARD"
 #define TR_WAITING_FOR_RX              "Esperando a RX..."
 #define TR_WAITING_FOR_TX              "Esperando a TX..."
+#define TR_WAITING_FOR_MODULE          TR("Waiting module", "Waiting for module...")
 #define TR_NO_TOOLS                    "No hay utils"
 #define TR_NORMAL                      "Normal"
 #define TR_NOT_INVERTED                "No inv"

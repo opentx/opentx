@@ -25,6 +25,8 @@ bool menuGhostModuleConfig(event_t event)
   switch (event) {
     case EVT_ENTRY:
       memclear(&reusableBuffer.ghostMenu, sizeof(reusableBuffer.ghostMenu));
+      strAppend((char *) &reusableBuffer.ghostMenu.line[1].menuText, STR_WAITING_FOR_MODULE, 0);
+      reusableBuffer.ghostMenu.line[1].lineFlags = GHST_LINE_FLAGS_VALUE_EDIT;
       reusableBuffer.ghostMenu.buttonAction = GHST_BTN_NONE;
       reusableBuffer.ghostMenu.menuAction = GHST_MENU_CTRL_OPEN;
       moduleState[EXTERNAL_MODULE].counter = GHST_MENU_CONTROL;
@@ -65,7 +67,12 @@ bool menuGhostModuleConfig(event_t event)
       break;
   }
 
-  if (reusableBuffer.ghostMenu.menuAction ==  GHST_MENU_CTRL_CLOSE) {
+  if (reusableBuffer.ghostMenu.menuStatus == GHST_MENU_STATUS_UNOPENED) { // Handles situation where module is plugged after tools start
+    reusableBuffer.ghostMenu.buttonAction = GHST_BTN_NONE;
+    reusableBuffer.ghostMenu.menuAction = GHST_MENU_CTRL_OPEN;
+    moduleState[EXTERNAL_MODULE].counter = GHST_MENU_CONTROL;
+  }
+  else if (reusableBuffer.ghostMenu.menuStatus == GHST_MENU_STATUS_CLOSING) {
     popMenu();
   }
 
