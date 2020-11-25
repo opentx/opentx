@@ -25,6 +25,8 @@ bool menuGhostModuleConfig(event_t event)
   switch (event) {
     case EVT_ENTRY:
       memclear(&reusableBuffer.ghostMenu, sizeof(reusableBuffer.ghostMenu));
+      strAppend((char *) &reusableBuffer.ghostMenu.line[1].menuText, STR_WAITING_FOR_MODULE, 0);
+      reusableBuffer.ghostMenu.line[1].lineFlags = GHST_LINE_FLAGS_ValueEdit;
       reusableBuffer.ghostMenu.buttonAction = GHST_BTN_None;
       reusableBuffer.ghostMenu.menuAction = GHST_MENU_CTRL_Open;
       moduleState[EXTERNAL_MODULE].counter = GHST_MENU_CONTROL;
@@ -34,24 +36,28 @@ bool menuGhostModuleConfig(event_t event)
       reusableBuffer.ghostMenu.buttonAction = GHST_BTN_JoyUp;
       reusableBuffer.ghostMenu.menuAction = GHST_MENU_CTRL_None;
       moduleState[EXTERNAL_MODULE].counter = GHST_MENU_CONTROL;
+      audioKeyPress();
       break;
 
     case EVT_ROTARY_RIGHT:
       reusableBuffer.ghostMenu.buttonAction = GHST_BTN_JoyDown;
       reusableBuffer.ghostMenu.menuAction = GHST_MENU_CTRL_None;
       moduleState[EXTERNAL_MODULE].counter = GHST_MENU_CONTROL;
+      audioKeyPress();
       break;
 
     case EVT_KEY_FIRST(KEY_ENTER):
       reusableBuffer.ghostMenu.buttonAction = GHST_BTN_JoyPress;
       reusableBuffer.ghostMenu.menuAction = GHST_MENU_CTRL_None;
       moduleState[EXTERNAL_MODULE].counter = GHST_MENU_CONTROL;
+      audioKeyPress();
       break;
 
     case EVT_KEY_BREAK(KEY_EXIT):
       reusableBuffer.ghostMenu.buttonAction = GHST_BTN_JoyLeft;
       reusableBuffer.ghostMenu.menuAction = GHST_MENU_CTRL_None;
       moduleState[EXTERNAL_MODULE].counter = GHST_MENU_CONTROL;
+      audioKeyPress();
       break;
 
     case EVT_KEY_LONG(KEY_EXIT):
@@ -65,9 +71,15 @@ bool menuGhostModuleConfig(event_t event)
       break;
   }
 
-  if (reusableBuffer.ghostMenu.menuFlags ==  GHST_MENU_CTRL_Close) {
+  if (reusableBuffer.ghostMenu.menuStatus == GHST_MENU_STATUS_UNOPENED) { // Handles situation where module is plugged after tools start
+    reusableBuffer.ghostMenu.buttonAction = GHST_MENU_CTRL_None;
+    reusableBuffer.ghostMenu.menuAction = GHST_MENU_CTRL_Open;
+    moduleState[EXTERNAL_MODULE].counter = GHST_MENU_CONTROL;
+  }
+  else if (reusableBuffer.ghostMenu.menuStatus == GHST_MENU_STATUS_CLOSING) {
     popMenu();
   }
+
 
   drawMenuTemplate("GHOST MENU", ICON_OPENTX, nullptr, OPTION_MENU_NO_SCROLLBAR);
 

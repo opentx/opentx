@@ -142,6 +142,12 @@ typedef enum
   GHST_MENU_CTRL_Redraw = 0x04,
 } GHST_MENU_CTRL;
 
+enum GhostMenuStatus
+{
+  GHST_MENU_STATUS_UNOPENED = 0x00,
+  GHST_MENU_STATUS_OPENED = 0x01,
+  GHST_MENU_STATUS_CLOSING = 0x02,
+};
 
 enum GhostFrames{
   GHST_FRAME_CHANNEL,
@@ -157,7 +163,7 @@ typedef struct
   uint8_t address;
   uint8_t length ;
   uint8_t packetId;
-  uint8_t menuFlags;     // GHST_MENU_CTRL
+  uint8_t menuStatus;     // GHST_MENU_CTRL
   uint8_t lineFlags;     // Carat states, Inverse, Bold for each of Menu Label, and Value
   uint8_t lineIndex;     // 0 = first line
   unsigned char menuText[GHST_MENU_CHARS];
