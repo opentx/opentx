@@ -42,6 +42,7 @@ void menuGhostModuleConfig(event_t event)
       reusableBuffer.ghostMenu.buttonAction = GHST_BTN_JOYUP;
       reusableBuffer.ghostMenu.menuAction = GHST_MENU_CTRL_NONE;
       moduleState[EXTERNAL_MODULE].counter = GHST_MENU_CONTROL;
+      audioKeyPress();
       break;
 
 #if defined(ROTARY_ENCODER_NAVIGATION)
@@ -54,6 +55,7 @@ void menuGhostModuleConfig(event_t event)
       reusableBuffer.ghostMenu.buttonAction = GHST_BTN_JOYDOWN;
       reusableBuffer.ghostMenu.menuAction = GHST_MENU_CTRL_NONE;
       moduleState[EXTERNAL_MODULE].counter = GHST_MENU_CONTROL;
+      audioKeyPress();
       break;
 
 
@@ -61,12 +63,14 @@ void menuGhostModuleConfig(event_t event)
       reusableBuffer.ghostMenu.buttonAction = GHST_BTN_JOYPRESS;
       reusableBuffer.ghostMenu.menuAction = GHST_MENU_CTRL_NONE;
       moduleState[EXTERNAL_MODULE].counter = GHST_MENU_CONTROL;
+      audioKeyPress();
       break;
 
     case EVT_KEY_BREAK(KEY_EXIT):
       reusableBuffer.ghostMenu.buttonAction = GHST_BTN_JOYLEFT;
       reusableBuffer.ghostMenu.menuAction = GHST_MENU_CTRL_NONE;
       moduleState[EXTERNAL_MODULE].counter = GHST_MENU_CONTROL;
+      audioKeyPress();
       break;
 
     case EVT_KEY_LONG(KEY_EXIT):
