@@ -1837,6 +1837,7 @@ void moveTrimsToOffsets() // copy state of 3 primary to subtrim
     if (g_model.limitData[i].revert)
       diff = -diff;
     v += (diff * 125) / 128;
+
     g_model.limitData[i].offset = limit((int16_t)-1000, (int16_t)v, (int16_t)1000); // make sure the offset doesn't go haywire
   }
 
