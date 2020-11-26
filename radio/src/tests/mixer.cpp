@@ -339,7 +339,7 @@ TEST_F(TrimsTest, CopySticksToOffset)
   EXPECT_EQ(g_model.limitData[1].offset, -97);
 }
 
-TEST_F(TrimsTest, TrimsToSubtrims)
+TEST_F(TrimsTest, MoveTrimsToOffsets)
 {
   // No trim idle only
   g_model.thrTrim = 0;
@@ -355,7 +355,10 @@ TEST_F(TrimsTest, TrimsToSubtrims)
   EXPECT_EQ(g_model.limitData[1].offset, -195); // value transferred
   evalMixes(1);
   EXPECT_EQ(channelOutputs[2], 200); // THR output value is still reflecting 100 trim
+}
 
+TEST_F(TrimsTest, MoveTrimsToOffsetsWithTrimIdle)
+{
   // Trim idle only
   g_model.thrTrim = 1;
   anaInValues[THR_STICK] = -1024;  // Min stick
@@ -376,7 +379,10 @@ TEST_F(TrimsTest, TrimsToSubtrims)
   EXPECT_EQ(g_model.limitData[1].offset, -195); // value transferred
   evalMixes(1);
   EXPECT_EQ(channelOutputs[2], -574);  // THR output value is still reflecting 100 trim idle
+}
 
+TEST_F(TrimsTest, MoveTrimsToOffsetsWithCrossTrims)
+{
   // No trim idle only
   // Cross trims
   g_model.thrTrim = 0;
@@ -400,15 +406,17 @@ TEST_F(TrimsTest, TrimsToSubtrims)
   EXPECT_EQ(g_model.limitData[2].offset, 195); // value transferred
   EXPECT_EQ(getTrimValue(0, MIXSRC_TrimEle - MIXSRC_FIRST_TRIM), 0);  // back to neutral
   EXPECT_EQ(g_model.limitData[1].offset, -195); // value transferred
+}
 
-
+TEST_F(TrimsTest, MoveTrimsToOffsetsWithCrosstrimsAndTrimIdle)
+{
   // Trim idle only
   // Cross trims
   g_model.limitData[2].offset = 0;
   g_model.limitData[1].offset = 0;
   g_model.thrTrim = 1;
   g_model.thrTrimSw = MIXSRC_TrimEle - MIXSRC_FIRST_TRIM;
-  expo = expoAddress(THR_STICK);
+  ExpoData *expo = expoAddress(THR_STICK);
   expo->carryTrim = TRIM_ELE;
   expo = expoAddress(ELE_STICK);
   expo->carryTrim = TRIM_THR;
