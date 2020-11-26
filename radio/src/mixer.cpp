@@ -749,7 +749,6 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
         bool applyTrims = !(mode & e_perout_mode_notrims);
         if (!applyTrims && g_model.thrTrim) {
           auto origin = getSourceTrimOrigin(md->srcRaw);
-          TRACE("thrTrim=%d srcRaw=%d origin=%d stick=%d", g_model.thrTrim, md->srcRaw, origin, g_model.getThrottleStickTrimSource() - MIXSRC_FIRST_TRIM);
           if (origin == g_model.getThrottleStickTrimSource() - MIXSRC_FIRST_TRIM) {
             applyTrims = true;
           }

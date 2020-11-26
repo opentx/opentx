@@ -1861,24 +1861,26 @@ void moveTrimsToOffsets() // copy state of 3 primary to subtrim
   pauseMixerCalculations();
 
   evalFlightModeMixes(e_perout_mode_noinput, 0); // do output loop - zero input sticks and trims
-  for (uint8_t i=0; i<MAX_OUTPUT_CHANNELS; i++) {
+
+  for (uint8_t i=0; i<4; i++) {
     zeros[i] = applyLimits(i, chans[i]);
   }
 
   evalFlightModeMixes(e_perout_mode_noinput-e_perout_mode_notrims, 0); // do output loop - only trims
 
-  for (uint8_t i=0; i<MAX_OUTPUT_CHANNELS; i++) {
-    int16_t output = applyLimits(i, chans[i]) - zeros[i];
+  for (uint8_t i=0; i<4; i++) {
+    int16_t diff = applyLimits(i, chans[i]) - zeros[i];
     int16_t v = g_model.limitData[i].offset;
     if (g_model.limitData[i].revert)
-      output = -output;
-    v += (output * 125) / 128;
+      diff = -diff;
+    v += (diff * 125) / 128;
     g_model.limitData[i].offset = limit((int16_t)-1000, (int16_t)v, (int16_t)1000); // make sure the offset doesn't go haywire
   }
 
   // reset all trims, except throttle (if throttle trim)
   for (uint8_t i=0; i<NUM_TRIMS; i++) {
-    if (i != THR_STICK || !g_model.thrTrim) {
+    auto thrStick = g_model.getThrottleStickTrimSource() - MIXSRC_FIRST_TRIM;
+    if (i != thrStick || !g_model.thrTrim) {
       int16_t original_trim = getTrimValue(mixerCurrentFlightMode, i);
       for (uint8_t fm=0; fm<MAX_FLIGHT_MODES; fm++) {
         trim_t trim = getRawTrimValue(fm, i);
