@@ -107,11 +107,6 @@ CurveEdit::CurveEdit(Window * parent, const rect_t & rect, uint8_t index) :
   updatePreview();
 }
 
-CurveEdit::~CurveEdit()
-{
-  preview.detach();
-}
-
 void CurveEdit::updatePreview()
 {
   preview.clearPoints();

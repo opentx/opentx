@@ -38,7 +38,7 @@ PageHeader::PageHeader(Page * parent, uint8_t icon):
 PageHeader::~PageHeader()
 {
 #if defined(HARDWARE_TOUCH)
-  back.detach();
+  back.deleteLater(true, false);
 #endif
 }
 
@@ -51,28 +51,22 @@ void PageHeader::paint(BitmapBuffer * dc)
 Page::Page(unsigned icon):
   Window(&mainWindow, {0, 0, LCD_W, LCD_H}, OPAQUE),
   header(this, icon),
-  body(this, { 0, MENU_HEADER_HEIGHT, LCD_W, LCD_H - MENU_HEADER_HEIGHT }, FORM_FORWARD_FOCUS),
-  previousFocus(focusWindow)
+  body(this, { 0, MENU_HEADER_HEIGHT, LCD_W, LCD_H - MENU_HEADER_HEIGHT }, FORM_FORWARD_FOCUS)
 {
+  Layer::push(this);
   clearFocus();
-}
-
-Page::~Page()
-{
-  header.detach();
-  body.detach();
-
-#if defined(HARDWARE_TOUCH)
-  Keyboard::hide();
-#endif
 }
 
 void Page::deleteLater(bool detach, bool trash)
 {
-  #warning "TODO remove previousFocus and use layers"
-  if (previousFocus) {
-    previousFocus->setFocus(SET_FOCUS_DEFAULT);
-  }
+  Layer::pop(this);
+
+  header.deleteLater(true, false);
+  body.deleteLater(true, false);
+
+#if defined(HARDWARE_TOUCH)
+  Keyboard::hide();
+#endif
 
   Window::deleteLater(detach, trash);
 }

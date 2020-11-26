@@ -29,10 +29,9 @@ FullScreenDialog::FullScreenDialog(uint8_t type, std::string title, std::string 
   message(std::move(message)),
   action(std::move(action)),
   confirmHandler(confirmHandler)
-#if defined(HARDWARE_KEYS)
-  , previousFocus(focusWindow)
-#endif
 {
+  Layer::push(this);
+
 #if defined(HARDWARE_TOUCH)
   new FabButton(this, LCD_W - 50, LCD_H - 50, ICON_NEXT,
                     [=]() -> uint8_t {
@@ -41,6 +40,7 @@ FullScreenDialog::FullScreenDialog(uint8_t type, std::string title, std::string 
                       return 0;
                     });
 #endif
+
   bringToTop();
   setFocus(SET_FOCUS_DEFAULT);
 }
@@ -115,17 +115,11 @@ void FullScreenDialog::checkEvents()
 
 void FullScreenDialog::deleteLater(bool detach, bool trash)
 {
-#if defined(HARDWARE_KEYS)
-  #warning "TODO remove previousFocus from here, and use layers"
-  if (previousFocus) {
-    previousFocus->setFocus(SET_FOCUS_DEFAULT);
-  }
-#endif
-
   if (running) {
     running = false;
   }
   else {
+    Layer::pop(this);
     Window::deleteLater(detach, trash);
   }
 }

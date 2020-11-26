@@ -98,11 +98,16 @@ class FlashDialog: public FullScreenDialog
     {
     }
 
-    ~FlashDialog() override
+    void deleteLater(bool detach = true, bool trash = true) override
     {
-      progress.detach();
+      if (_deleted)
+        return;
+
+      progress.deleteLater(true, false);
+
+      FullScreenDialog::deleteLater(detach, trash);
     }
-    
+
     void flash(const char * filename)
     {
       device.flashFirmware(filename, [=](const char * title, const char * message, int count, int total) -> void {

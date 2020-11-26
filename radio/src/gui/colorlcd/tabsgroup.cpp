@@ -42,14 +42,6 @@ TabsGroupHeader::TabsGroupHeader(TabsGroup * parent, uint8_t icon):
 {
 }
 
-TabsGroupHeader::~TabsGroupHeader()
-{
-#if defined(HARDWARE_TOUCH)
-  back.detach();
-#endif
-  carousel.detach();
-}
-
 void TabsGroupHeader::paint(BitmapBuffer * dc)
 {
   OpenTxTheme::instance()->drawMenuBackground(dc, icon, title);
@@ -90,16 +82,9 @@ TabsGroup::TabsGroup(uint8_t icon):
 
 TabsGroup::~TabsGroup()
 {
-#if defined(HARDWARE_TOUCH)
-  Keyboard::hide();
-#endif
-
   for (auto tab: tabs) {
     delete tab;
   }
-
-  header.detach();
-  body.detach();
 }
 
 void TabsGroup::addTab(PageTab * page)

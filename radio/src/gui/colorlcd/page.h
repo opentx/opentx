@@ -25,7 +25,8 @@
 
 class Page;
 
-class PageHeader: public FormGroup {
+class PageHeader: public FormGroup
+{
   public:
     PageHeader(Page * parent, uint8_t icon);
 
@@ -45,11 +46,12 @@ class PageHeader: public FormGroup {
 #endif
 };
 
-class Page: public Window {
+class Page: public Window
+{
   public:
     explicit Page(unsigned icon);
 
-    ~Page() override;
+    void deleteLater(bool detach = true, bool trash = true) override;
 
 #if defined(DEBUG_WINDOWS)
     std::string getName() const override
@@ -78,14 +80,11 @@ class Page: public Window {
     }
 #endif
 
-    void deleteLater(bool detach = true, bool trash = true) override;
-
     void paint(BitmapBuffer * dc) override;
 
   protected:
     PageHeader header;
     FormWindow body;
-    Window * previousFocus;
 };
 
 #endif // _PAGE_H_

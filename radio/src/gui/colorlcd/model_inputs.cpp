@@ -90,7 +90,8 @@ void deleteExpo(uint8_t idx)
   storageDirty(EE_MODEL);
 }
 
-class InputEditWindow: public Page {
+class InputEditWindow: public Page
+{
   public:
     InputEditWindow(int8_t input, uint8_t index):
       Page(ICON_MODEL_INPUTS),
@@ -116,9 +117,14 @@ class InputEditWindow: public Page {
       buildHeader(&header);
     }
 
-    ~InputEditWindow() override
+    void deleteLater(bool detach = true, bool trash = true) override
     {
-      preview.detach();
+      if (_deleted)
+        return;
+
+      preview.deleteLater(true, false);
+
+      Page::deleteLater(detach, trash);
     }
 
   protected:

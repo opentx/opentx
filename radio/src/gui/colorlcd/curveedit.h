@@ -48,7 +48,15 @@ class CurveEdit: public FormField
   public:
     CurveEdit(Window * parent, const rect_t & rect, uint8_t index);
 
-    ~CurveEdit() override;
+    void deleteLater(bool detach = true, bool trash = true) override
+    {
+      if (_deleted)
+        return;
+
+      preview.deleteLater(true, false);
+
+      FormField::deleteLater(detach, trash);
+    }
 
     void updatePreview();
 
