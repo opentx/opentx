@@ -23,6 +23,7 @@
 #include <vector>
 #include "button.h"
 #include "form.h"
+#include "keyboard_base.h"
 
 class TabsGroup;
 
