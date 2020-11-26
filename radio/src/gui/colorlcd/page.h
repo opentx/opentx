@@ -30,7 +30,16 @@ class PageHeader: public FormGroup
   public:
     PageHeader(Page * parent, uint8_t icon);
 
-    ~PageHeader() override;
+#if defined(HARDWARE_TOUCH)
+    void deleteLater(bool detach = true, bool trash = true)
+    {
+      if (_deleted)
+        return;
+
+      back.deleteLater(true, false);
+      FormGroup::deleteLater(detach, trash);
+    }
+#endif
 
     void paint(BitmapBuffer * dc) override;
 

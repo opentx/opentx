@@ -35,13 +35,6 @@ PageHeader::PageHeader(Page * parent, uint8_t icon):
 {
 }
 
-PageHeader::~PageHeader()
-{
-#if defined(HARDWARE_TOUCH)
-  back.deleteLater(true, false);
-#endif
-}
-
 void PageHeader::paint(BitmapBuffer * dc)
 {
   OpenTxTheme::instance()->drawMenuBackground(dc, getIcon(), "");
