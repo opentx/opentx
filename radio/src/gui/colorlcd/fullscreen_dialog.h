@@ -59,7 +59,7 @@ class FullScreenDialog : public FormGroup
     bool onTouchEnd(coord_t x, coord_t y) override;
 #endif
 
-    void deleteLater(bool detach=true) override;
+    void deleteLater(bool detach = true, bool trash = true) override;
 
     void checkEvents() override;
 

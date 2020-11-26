@@ -113,9 +113,10 @@ void FullScreenDialog::checkEvents()
   }
 }
 
-void FullScreenDialog::deleteLater(bool detach)
+void FullScreenDialog::deleteLater(bool detach, bool trash)
 {
 #if defined(HARDWARE_KEYS)
+  #warning "TODO remove previousFocus from here, and use layers"
   if (previousFocus) {
     previousFocus->setFocus(SET_FOCUS_DEFAULT);
   }
@@ -125,7 +126,7 @@ void FullScreenDialog::deleteLater(bool detach)
     running = false;
   }
   else {
-    Window::deleteLater(detach);
+    Window::deleteLater(detach, trash);
   }
 }
 

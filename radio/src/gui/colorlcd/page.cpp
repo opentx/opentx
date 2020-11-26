@@ -67,13 +67,14 @@ Page::~Page()
 #endif
 }
 
-void Page::deleteLater(bool detach)
+void Page::deleteLater(bool detach, bool trash)
 {
+  #warning "TODO remove previousFocus and use layers"
   if (previousFocus) {
     previousFocus->setFocus(SET_FOCUS_DEFAULT);
   }
 
-  Window::deleteLater(detach);
+  Window::deleteLater(detach, trash);
 }
 
 void Page::paint(BitmapBuffer * dc)
