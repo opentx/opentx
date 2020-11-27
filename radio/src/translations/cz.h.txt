@@ -308,18 +308,18 @@
 #define LEN_INPUTNAMES                 "\004"
 #define TR_INPUTNAMES                  "Sme\0""Vys\0""Pln\0""Kri\0"
 
-#define TR_STICKS_VSRCRAW              "\307Smě""\307Výš""\307Pln""\307Kři"
+#define TR_STICKS_VSRCRAW              STR_CHAR_STICK "Smě"  STR_CHAR_STICK "Výš"  STR_CHAR_STICK "Pln"  STR_CHAR_STICK "Kři"
 
 #if defined(PCBHORUS)
-  #define TR_TRIMS_VSRCRAW             "\313Smě""\313Výš""\313Pln""\313Kři""\313T5\0""\313T6\0"
+  #define TR_TRIMS_VSRCRAW             STR_CHAR_TRIM "Smě"  STR_CHAR_TRIM "Výš"  STR_CHAR_TRIM "Pln"  STR_CHAR_TRIM "Kři"  STR_CHAR_TRIM "T5\0"  STR_CHAR_TRIM "T6\0"
 #else
-  #define TR_TRIMS_VSRCRAW             "\313Smě""\313Výš""\313Pln""\313Kři"
+  #define TR_TRIMS_VSRCRAW             STR_CHAR_TRIM "Smě"  STR_CHAR_TRIM "Výš"  STR_CHAR_TRIM "Pln"  STR_CHAR_TRIM "Kři"
 #endif
 
 #if defined(PCBHORUS)
-  #define TR_TRIMS_SWITCHES            "\313Sl""\313Sp""\313Vd""\313Vn""\313Pd""\313Pn""\313Kl""\313Kp""\3135d""\3135n""\3136d""\3136n"
+  #define TR_TRIMS_SWITCHES            STR_CHAR_TRIM "Sl"  STR_CHAR_TRIM "Sp"  STR_CHAR_TRIM "Vd"  STR_CHAR_TRIM "Vn"  STR_CHAR_TRIM "Pd"  STR_CHAR_TRIM "Pn"  STR_CHAR_TRIM "Kl"  STR_CHAR_TRIM "Kp"  STR_CHAR_TRIM "5d"  STR_CHAR_TRIM "5n"  STR_CHAR_TRIM "6d"  STR_CHAR_TRIM "6n"
 #else
-  #define TR_TRIMS_SWITCHES            TR("tSl""tSp""tVd""tVn""tPd""tPn""tKl""tKp", "\313Sl""\313Sp""\313Vd""\313Vn""\313Pd""\313Pn""\313Kl""\313Kp")
+  #define TR_TRIMS_SWITCHES            TR("tSl""tSp""tVd""tVn""tPd""tPn""tKl""tKp",   STR_CHAR_TRIM "Sl"  STR_CHAR_TRIM "Sp"  STR_CHAR_TRIM "Vd"  STR_CHAR_TRIM "Vn"  STR_CHAR_TRIM "Pd"  STR_CHAR_TRIM "Pn"  STR_CHAR_TRIM "Kl"  STR_CHAR_TRIM "Kp")
 #endif
 
 #if defined(PCBSKY9X)
@@ -1217,19 +1217,19 @@
 #define TR_TEXT_COLOR                  "Text color"
 #define TR_TEXT_VIEWER                 "Prohlížeč textu"
 
-#define TR_MENU_INPUTS                 "\314Vstupy"
-#define TR_MENU_LUA                    "\322Lua skripty"
-#define TR_MENU_STICKS                 "\307Páky"
-#define TR_MENU_POTS                   "\310Potenciometry"
-#define TR_MENU_MAX                    "\315MAX"
-#define TR_MENU_HELI                   "\316Cyklika"
-#define TR_MENU_TRIMS                  "\313Trimy"
-#define TR_MENU_SWITCHES               "\312Spínače"
-#define TR_MENU_LOGICAL_SWITCHES       "\312Logické spínače"
-#define TR_MENU_TRAINER                "\317Trenér"
-#define TR_MENU_CHANNELS               "\320Kanály"
-#define TR_MENU_GVARS                  "\311Glob.proměnné"
-#define TR_MENU_TELEMETRY              "\321Telemetrie"
+#define TR_MENU_INPUTS                 STR_CHAR_INPUT "Vstupy"
+#define TR_MENU_LUA                    STR_CHAR_LUA "Lua skripty"
+#define TR_MENU_STICKS                 STR_CHAR_STICK "Páky"
+#define TR_MENU_POTS                   STR_CHAR_POTS "Potenciometry"
+#define TR_MENU_MAX                    STR_CHAR_FUNCTION "MAX"
+#define TR_MENU_HELI                   STR_CHAR_CYC "Cyklika"
+#define TR_MENU_TRIMS                  STR_CHAR_TRIM "Trimy"
+#define TR_MENU_SWITCHES               STR_CHAR_SWITCH "Spínače"
+#define TR_MENU_LOGICAL_SWITCHES       STR_CHAR_SWITCH "Logické spínače"
+#define TR_MENU_TRAINER                STR_CHAR_TRAINER "Trenér"
+#define TR_MENU_CHANNELS               STR_CHAR_CHANNEL "Kanály"
+#define TR_MENU_GVARS                  STR_CHAR_SLIDER "Glob.proměnné"
+#define TR_MENU_TELEMETRY              STR_CHAR_TELEMETRY "Telemetrie"
 #define TR_MENU_DISPLAY                "DISPLAY"
 #define TR_MENU_OTHER                  "Ostatní"
 #define TR_MENU_INVERT                 "Invertovat"

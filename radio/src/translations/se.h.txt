@@ -330,18 +330,18 @@
 #define LEN_VSRCRAW            "\004"
 
 
-#define TR_STICKS_VSRCRAW      "\307Rod""\307Hjd""\307Gas""\307Ske"
+#define TR_STICKS_VSRCRAW        STR_CHAR_STICK "Rod"  STR_CHAR_STICK "Hjd"  STR_CHAR_STICK "Gas"  STR_CHAR_STICK "Ske"
 
 #if defined(PCBHORUS)
-  #define TR_TRIMS_VSRCRAW     "\313Rod""\313Hjd""\313Gas""\313Ske""\313T5\0""\313T6\0"
+  #define TR_TRIMS_VSRCRAW       STR_CHAR_TRIM "Rod"  STR_CHAR_TRIM "Hjd"  STR_CHAR_TRIM "Gas"  STR_CHAR_TRIM "Ske"  STR_CHAR_TRIM "T5\0"  STR_CHAR_TRIM "T6\0"
 #else
-  #define TR_TRIMS_VSRCRAW     TR("TrmR""TrmH""TrmG""TrmS", "\313Rod""\313Hjd""\313Gas""\313Ske")
+  #define TR_TRIMS_VSRCRAW     TR("TrmR""TrmH""TrmG""TrmS",   STR_CHAR_TRIM "Rod"  STR_CHAR_TRIM "Hjd"  STR_CHAR_TRIM "Gas"  STR_CHAR_TRIM "Ske")
 #endif
 
 #if defined(PCBHORUS)
-  #define TR_TRIMS_SWITCHES    "\313Rv""\313Rh""\313Hn""\313Hu""\313Gn""\313Gu""\313Sv""\313Sh""\3135d""\3135u""\3136d""\3136u"
+  #define TR_TRIMS_SWITCHES      STR_CHAR_TRIM "Rv"  STR_CHAR_TRIM "Rh"  STR_CHAR_TRIM "Hn"  STR_CHAR_TRIM "Hu"  STR_CHAR_TRIM "Gn"  STR_CHAR_TRIM "Gu"  STR_CHAR_TRIM "Sv"  STR_CHAR_TRIM "Sh"  STR_CHAR_TRIM "5d"  STR_CHAR_TRIM "5u"  STR_CHAR_TRIM "6d"  STR_CHAR_TRIM "6u"
 #else
-  #define TR_TRIMS_SWITCHES    TR("tRv""tRh""tHn""tHu""tGn""tGu""tSv""tSh", "\313Rv""\313Rh""\313Hn""\313Hu""\313Gn""\313Gu""\313Sv""\313Sh")
+  #define TR_TRIMS_SWITCHES    TR("tRv""tRh""tHn""tHu""tGn""tGu""tSv""tSh",   STR_CHAR_TRIM "Rv"  STR_CHAR_TRIM "Rh"  STR_CHAR_TRIM "Hn"  STR_CHAR_TRIM "Hu"  STR_CHAR_TRIM "Gn"  STR_CHAR_TRIM "Gu"  STR_CHAR_TRIM "Sv"  STR_CHAR_TRIM "Sh")
 #endif
 
 #if defined(PCBSKY9X)
@@ -1250,19 +1250,19 @@
 #define TR_TEXT_COLOR                  "Text color"
 #define TR_TEXT_VIEWER                 "Text Viewer"
 
-#define TR_MENU_INPUTS         "\314Inputs"
-#define TR_MENU_LUA            "\322Lua scripts"
-#define TR_MENU_STICKS         "\307Spakars"
-#define TR_MENU_POTS           "\310Rattar"
-#define TR_MENU_MAX            "\315MAX"
-#define TR_MENU_HELI           "\316Cyclic"
-#define TR_MENU_TRIMS          "\313Trimm"
-#define TR_MENU_SWITCHES       "\312Brytare"
-#define TR_MENU_LOGICAL_SWITCHES "\312Logiska Brytare"
-#define TR_MENU_TRAINER        "\317Trainer"
-#define TR_MENU_CHANNELS       "\320Servon"
-#define TR_MENU_GVARS          "\311GVars"
-#define TR_MENU_TELEMETRY      "\321Telemetri"
+#define TR_MENU_INPUTS          STR_CHAR_INPUT "Inputs"
+#define TR_MENU_LUA             STR_CHAR_LUA "Lua scripts"
+#define TR_MENU_STICKS           STR_CHAR_STICK "Spakars"
+#define TR_MENU_POTS            STR_CHAR_POTS "Rattar"
+#define TR_MENU_MAX             STR_CHAR_FUNCTION "MAX"
+#define TR_MENU_HELI            STR_CHAR_CYC "Cyclic"
+#define TR_MENU_TRIMS            STR_CHAR_TRIM "Trimm"
+#define TR_MENU_SWITCHES        STR_CHAR_SWITCH "Brytare"
+#define TR_MENU_LOGICAL_SWITCHES  STR_CHAR_SWITCH "Logiska Brytare"
+#define TR_MENU_TRAINER         STR_CHAR_TRAINER "Trainer"
+#define TR_MENU_CHANNELS        STR_CHAR_CHANNEL "Servon"
+#define TR_MENU_GVARS           STR_CHAR_SLIDER "GVars"
+#define TR_MENU_TELEMETRY       STR_CHAR_TELEMETRY "Telemetri"
 #define TR_MENU_DISPLAY        "DISPLAY"
 #define TR_MENU_OTHER          "Annat"
 #define TR_MENU_INVERT         "Invertera"

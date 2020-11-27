@@ -332,18 +332,18 @@
 #define LEN_VSWITCHES          "\003"
 #define LEN_VSRCRAW            "\004"
 
-#define TR_STICKS_VSRCRAW      "\307SK\0""\307SW\0""\307Gaz""\307Lot"
+#define TR_STICKS_VSRCRAW        STR_CHAR_STICK "SK\0"  STR_CHAR_STICK "SW\0"  STR_CHAR_STICK "Gaz"  STR_CHAR_STICK "Lot"
 
 #if defined(PCBHORUS)
-  #define TR_TRIMS_VSRCRAW     "\313SK\0""\313SW\0""\313Gaz""\313Lot""\313T5\0""\313T6\0"
+  #define TR_TRIMS_VSRCRAW       STR_CHAR_TRIM "SK\0"  STR_CHAR_TRIM "SW\0"  STR_CHAR_TRIM "Gaz"  STR_CHAR_TRIM "Lot"  STR_CHAR_TRIM "T5\0"  STR_CHAR_TRIM "T6\0"
 #else
-  #define TR_TRIMS_VSRCRAW     TR("TrSK""TrSW""TrGA""TrLO", "\313SK ""\313SW ""\313Gaz""\313Lot")
+  #define TR_TRIMS_VSRCRAW     TR("TrSK""TrSW""TrGA""TrLO",   STR_CHAR_TRIM "SK "  STR_CHAR_TRIM "SW "  STR_CHAR_TRIM "Gaz"  STR_CHAR_TRIM "Lot")
 #endif
 
 #if defined(PCBHORUS)
-  #define TR_TRIMS_SWITCHES    "\313Rl""\313Rr""\313Ed""\313Eu""\313Td""\313Tu""\313Al""\313Ar""\3135d""\3135u""\3136d""\3136u"
+  #define TR_TRIMS_SWITCHES      STR_CHAR_TRIM "Rl"  STR_CHAR_TRIM "Rr"  STR_CHAR_TRIM "Ed"  STR_CHAR_TRIM "Eu"  STR_CHAR_TRIM "Td"  STR_CHAR_TRIM "Tu"  STR_CHAR_TRIM "Al"  STR_CHAR_TRIM "Ar"  STR_CHAR_TRIM "5d"  STR_CHAR_TRIM "5u"  STR_CHAR_TRIM "6d"  STR_CHAR_TRIM "6u"
 #else
-  #define TR_TRIMS_SWITCHES    TR("tRl""tRr""tEd""tEu""tTd""tTu""tAl""tAr", "\313Rl""\313Rr""\313Ed""\313Eu""\313Td""\313Tu""\313Al""\313Ar")
+  #define TR_TRIMS_SWITCHES    TR("tRl""tRr""tEd""tEu""tTd""tTu""tAl""tAr",   STR_CHAR_TRIM "Rl"  STR_CHAR_TRIM "Rr"  STR_CHAR_TRIM "Ed"  STR_CHAR_TRIM "Eu"  STR_CHAR_TRIM "Td"  STR_CHAR_TRIM "Tu"  STR_CHAR_TRIM "Al"  STR_CHAR_TRIM "Ar")
 #endif
 
 #if defined(PCBSKY9X)
@@ -1247,19 +1247,19 @@
 #define TR_TEXT_COLOR                  "Text color"
 #define TR_TEXT_VIEWER                 "Text Viewer"
 
-#define TR_MENU_INPUTS         "\314Wejści"
-#define TR_MENU_LUA            "\322SkryptyLUA"
-#define TR_MENU_STICKS         "\307Drążki"
-#define TR_MENU_POTS           "\310Pots"
-#define TR_MENU_MAX            "\315MAX"
-#define TR_MENU_HELI           "\316Cyclic"
-#define TR_MENU_TRIMS          "\313Trymy"
-#define TR_MENU_SWITCHES       "\312Przełczn"
-#define TR_MENU_LOGICAL_SWITCHES "\312Przełączn.Logicz"
-#define TR_MENU_TRAINER        "\317Trener "
-#define TR_MENU_CHANNELS       "\320Kanały  "
-#define TR_MENU_GVARS          "\311ZmGlo"
-#define TR_MENU_TELEMETRY      "\321Telemetry"
+#define TR_MENU_INPUTS          STR_CHAR_INPUT "Wejści"
+#define TR_MENU_LUA             STR_CHAR_LUA "SkryptyLUA"
+#define TR_MENU_STICKS           STR_CHAR_STICK "Drążki"
+#define TR_MENU_POTS            STR_CHAR_POTS "Pots"
+#define TR_MENU_MAX             STR_CHAR_FUNCTION "MAX"
+#define TR_MENU_HELI            STR_CHAR_CYC "Cyclic"
+#define TR_MENU_TRIMS            STR_CHAR_TRIM "Trymy"
+#define TR_MENU_SWITCHES        STR_CHAR_SWITCH "Przełczn"
+#define TR_MENU_LOGICAL_SWITCHES  STR_CHAR_SWITCH "Przełączn.Logicz"
+#define TR_MENU_TRAINER         STR_CHAR_TRAINER "Trener "
+#define TR_MENU_CHANNELS        STR_CHAR_CHANNEL "Kanały  "
+#define TR_MENU_GVARS           STR_CHAR_SLIDER "ZmGlo"
+#define TR_MENU_TELEMETRY       STR_CHAR_TELEMETRY "Telemetry"
 #define TR_MENU_DISPLAY        "DISPLAY"
 #define TR_MENU_OTHER          "Inny "
 #define TR_MENU_INVERT         "Odwróć"
