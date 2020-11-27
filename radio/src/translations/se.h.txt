@@ -1128,8 +1128,16 @@
 #define TR_ABOUT_MARTIN_1      "Martin Hotar"
 #define TR_ABOUT_MARTIN_2      "Grafikdesigner"
 
-#if defined(PCBTARANIS) || defined(PCBHORUS)
+#if defined(MANUFACTURER_FRSKY)
   #define TR_ABOUT_HARDWARE_1  "FrSky"
+  #define TR_ABOUT_HARDWARE_2  "Hårdvarudesign/producent"
+  #define TR_ABOUT_HARDWARE_3  ""
+#elif defined(MANUFACTURER_RADIOMASTER)
+  #define TR_ABOUT_HARDWARE_1  "Radiomaster"
+  #define TR_ABOUT_HARDWARE_2  "Hårdvarudesign/producent"
+  #define TR_ABOUT_HARDWARE_3  ""
+#elif defined(MANUFACTURER_JUMPER)
+  #define TR_ABOUT_HARDWARE_1  "JumperRC"
   #define TR_ABOUT_HARDWARE_2  "Hårdvarudesign/producent"
   #define TR_ABOUT_HARDWARE_3  ""
 #else
