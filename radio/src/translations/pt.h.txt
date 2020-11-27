@@ -1163,10 +1163,18 @@
 #define TR_ABOUT_MARTIN_1      "Martin Hotar"
 #define TR_ABOUT_MARTIN_2      "Graphics designer"
 
-#if defined(PCBTARANIS)
-  #define TR_ABOUT_HARDWARE_1  "FrSky"
-  #define TR_ABOUT_HARDWARE_2  "Hardware designer/producer"
-  #define TR_ABOUT_HARDWARE_3  "Firmware contributor"
+#if defined(MANUFACTURER_FRSKY)
+  #define TR_ABOUT_HARDWARE_1          "FrSky"
+  #define TR_ABOUT_HARDWARE_2          TR("Hardware design/producer", "Hardware designer/producer")
+  #define TR_ABOUT_HARDWARE_3          "Firmware contributor"
+#elif defined(MANUFACTURER_RADIOMASTER)
+  #define TR_ABOUT_HARDWARE_1          "Radiomaster"
+  #define TR_ABOUT_HARDWARE_2          TR("Hardware design/producer", "Hardware designer/producer")
+  #define TR_ABOUT_HARDWARE_3          "Firmware contributor"
+#elif defined(MANUFACTURER_JUMPER)
+  #define TR_ABOUT_HARDWARE_1          "JumperRC"
+  #define TR_ABOUT_HARDWARE_2          TR("Hardware design/producer", "Hardware designer/producer")
+  #define TR_ABOUT_HARDWARE_3          "Firmware contributor"
 #else
   #define TR_ABOUT_HARDWARE_1  "Brent Nelson"
   #define TR_ABOUT_HARDWARE_2  "Sky9x designer/producer"

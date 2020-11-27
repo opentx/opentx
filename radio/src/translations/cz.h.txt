@@ -1132,8 +1132,16 @@
 #define TR_ABOUT_MARTIN_1              "Martin Hotař"
 #define TR_ABOUT_MARTIN_2              "Design, Čeština"
 
-#if defined(PCBTARANIS)
+#if defined(MANUFACTURER_FRSKY)
   #define TR_ABOUT_HARDWARE_1          "FrSky"
+  #define TR_ABOUT_HARDWARE_2          "Vývoj a výroba Hardware"
+  #define TR_ABOUT_HARDWARE_3          "Přispěvatel firmware"
+#elif defined(MANUFACTURER_RADIOMASTER)
+  #define TR_ABOUT_HARDWARE_1          "Radiomaster"
+  #define TR_ABOUT_HARDWARE_2          "Vývoj a výroba Hardware"
+  #define TR_ABOUT_HARDWARE_3          "Přispěvatel firmware"
+#elif defined(MANUFACTURER_JUMPER)
+  #define TR_ABOUT_HARDWARE_1          "JumperRC"
   #define TR_ABOUT_HARDWARE_2          "Vývoj a výroba Hardware"
   #define TR_ABOUT_HARDWARE_3          "Přispěvatel firmware"
 #else
