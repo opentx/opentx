@@ -1202,19 +1202,19 @@ void registerOpenTxFirmwares()
   firmware->addOption("horussticks", Firmware::tr("Horus gimbals installed (Hall sensors)"));
   addOpenTxTaranisOptions(firmware);
   registerOpenTxFirmware(firmware);
-  addOpenTxRfOptions(firmware, EU + FLEX + AFHDS3);
+  addOpenTxRfOptions(firmware, EU + FLEX);
 
   /* FrSky X9-Lite board */
   firmware = new OpenTxFirmware("opentx-x9lite", Firmware::tr("FrSky Taranis X9-Lite"), BOARD_TARANIS_X9LITE);
   addOpenTxTaranisOptions(firmware);
   registerOpenTxFirmware(firmware);
-  addOpenTxRfOptions(firmware, FLEX + AFHDS3);
+  addOpenTxRfOptions(firmware, FLEX);
 
   /* FrSky X9-LiteS board */
   firmware = new OpenTxFirmware("opentx-x9lites", Firmware::tr("FrSky Taranis X9-Lite S"), BOARD_TARANIS_X9LITES);
   addOpenTxTaranisOptions(firmware);
   registerOpenTxFirmware(firmware);
-  addOpenTxRfOptions(firmware, FLEX + AFHDS3);
+  addOpenTxRfOptions(firmware, FLEX);
 
   /* FrSky X7 board */
   firmware = new OpenTxFirmware("opentx-x7", Firmware::tr("FrSky Taranis X7 / X7S"), BOARD_TARANIS_X7);
@@ -1232,7 +1232,7 @@ void registerOpenTxFirmwares()
   firmware = new OpenTxFirmware("opentx-xlites", Firmware::tr("FrSky Taranis X-Lite S/PRO"), BOARD_TARANIS_XLITES);
   addOpenTxTaranisOptions(firmware);
   registerOpenTxFirmware(firmware);
-  addOpenTxRfOptions(firmware, FLEX + AFHDS3);
+  addOpenTxRfOptions(firmware, FLEX);
 
   /* FrSky X-Lite board */
   firmware = new OpenTxFirmware("opentx-xlite", Firmware::tr("FrSky Taranis X-Lite"), BOARD_TARANIS_XLITE);
@@ -1273,7 +1273,7 @@ void registerOpenTxFirmwares()
   firmware->addOption("internalmulti", Firmware::tr("Support for MULTI internal module"));
   addOpenTxFontOptions(firmware);
   registerOpenTxFirmware(firmware);
-  addOpenTxRfOptions(firmware, FLEX + AFHDS3);
+  addOpenTxRfOptions(firmware, FLEX);
 
   /* Jumper T16 board */
   firmware = new OpenTxFirmware("opentx-t16", Firmware::tr("Jumper T16 / T16+ / T16 Pro"), BOARD_JUMPER_T16);
@@ -1292,7 +1292,7 @@ void registerOpenTxFirmwares()
   firmware->addOption("lua", Firmware::tr("Enable Lua custom scripts screen"));
   addOpenTxFontOptions(firmware);
   registerOpenTxFirmware(firmware);
-  addOpenTxRfOptions(firmware, FLEX + AFHDS3);
+  addOpenTxRfOptions(firmware, FLEX);
 
   /* Radiomaster TX16S board */
   firmware = new OpenTxFirmware("opentx-tx16s", Firmware::tr("Radiomaster TX16S / SE / Hall / Masterfire"), BOARD_RADIOMASTER_TX16S);

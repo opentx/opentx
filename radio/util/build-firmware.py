@@ -93,13 +93,11 @@ def main():
         maxsize = 65536 * 8
     elif options[optcount] == "x7":
         cmake_options["PCB"] = "X7"
-        cmake_options["AFHDS3"] = "YES"
         firmware_options = options_taranis_x7
         maxsize = 65536 * 8
     elif options[optcount] == "x7access":
         cmake_options["PCB"] = "X7"
         cmake_options["PCBREV"] = "ACCESS"
-        cmake_options["AFHDS3"] = "YES"
         firmware_options = options_taranis_x7
         maxsize = 65536 * 8
     elif board_name == "xlite":
@@ -121,7 +119,6 @@ def main():
     elif board_name == "x9d+2019":
         cmake_options["PCB"] = "X9D+"
         cmake_options["PCBREV"] = "2019"
-        cmake_options["AFHDS3"] = "YES"
         firmware_options = options_taranis_x9dp
         maxsize = 65536 * 8
     elif board_name == "x9e":
