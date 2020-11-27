@@ -1143,7 +1143,7 @@ void checkTrims()
     else {
       phase = getTrimFlightMode(mixerCurrentFlightMode, idx);
       before = getTrimValue(phase, idx);
-      thro = (idx==THR_STICK && g_model.thrTrim);
+      thro = (idx == (g_model.getThrottleStickTrimSource() - MIXSRC_FIRST_TRIM) && g_model.thrTrim);
     }
 #else
     phase = getTrimFlightMode(mixerCurrentFlightMode, idx);
