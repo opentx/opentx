@@ -33,7 +33,7 @@
 #elif defined(JUMPER_RELEASE)
 #define DISPLAY_VERSION "-jumper"
 #elif defined(RADIOMASTER_RELEASE)
-#define DISPLAY_VERSION "-radiomaster"
+#define DISPLAY_VERSION "-RM"
 #elif defined(TBS_RELEASE)
 #define DISPLAY_VERSION "-tbs"
 #elif defined(IMRC_RELEASE)
