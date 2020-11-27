@@ -5,7 +5,7 @@ import argparse
 import os
 import sys
 from PIL import Image, ImageDraw, ImageFont
-from charset import get_chars, special_chars, extra_chars
+from charset import get_chars, special_chars, extra_chars, standard_chars
 
 
 class FontBitmap:
@@ -99,14 +99,17 @@ class FontBitmap:
                 w = self.draw_char(image, width, c, self.cjk_font, -3)
             elif c in extra_chars:
                 if self.extra_bitmap:
+                    for i in range(128 - 32 - len(standard_chars) - 1):
+                        coords.append(width)
                     image.paste(self.extra_bitmap.copy(), (width, 0))
                     for coord in [14, 14, 12, 12, 13, 13, 13, 13, 13] + [15] * 12:
-                        width += coord
                         coords.append(width)
+                        width += coord
                     self.extra_bitmap = None
                 continue
             else:
                 w = self.draw_char(image, width, c, self.font)
+
             coords.append(width)
             width += w
 
