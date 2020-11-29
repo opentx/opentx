@@ -50,9 +50,7 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, G
 
   gvWeightGroup = new GVarGroup(ui->weightGV, ui->weightSB, ui->weightCB, ed->weight, model, 100, -100, 100);
   gvOffsetGroup = new GVarGroup(ui->offsetGV, ui->offsetSB, ui->offsetCB, ed->offset, model, 0, -100, 100);
-
-  curveGroup = new CurveGroup(ui->curveTypeCB, ui->curveGVarCB, ui->curveValueCB, ui->curveValueSB, ed->curve, model,
-                              firmware->getCapability(HasInputDiff) ? 0 : (HIDE_DIFF | HIDE_NEGATIVE_CURVES));
+  curveGroup = new CurveReferenceUIManager(ui->curveTypeCB, ui->curveGVarCB, ui->curveValueSB, ui->curveValueCB, ed->curve, model, this);
 
   ui->switchesCB->setModel(rawSwitchModel);
   ui->switchesCB->setCurrentIndex(ui->switchesCB->findData(ed->swtch.toValue()));
@@ -139,7 +137,6 @@ ExpoDialog::~ExpoDialog()
 {
   delete gvWeightGroup;
   delete gvOffsetGroup;
-  delete curveGroup;
   delete ui;
 }
 
