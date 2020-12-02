@@ -9,13 +9,13 @@ sounds = []
 
 for i in range(100):
     systemSounds.append((str(i), filename(i)))
-    systemSounds.append(("ein", filename(100)))
-    systemSounds.append(("eine", filename(101)))
-    systemSounds.append(("hundert", filename(102)))
-    systemSounds.append(("tausend", filename(103)))
+systemSounds.append(("ein", filename(100)))
+systemSounds.append(("eine", filename(101)))
+systemSounds.append(("hundert", filename(102)))
+systemSounds.append(("tausend", filename(103)))
     
 for i, s in enumerate(["komma", "und", "minus", "uhr", "minute", "minuten", "sekunde", "sekunden", "stunde", "stunden"]):
-    systemSounds.append((s, filename(104 + i)))
+	systemSounds.append((s, filename(104 + i)))
     
 for i, (s, f) in enumerate([("Wolt", "volt0"),
                             ("Ampär", "amp0"),
