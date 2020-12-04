@@ -742,7 +742,8 @@ GpsCoord extractGpsCoordinates(const QString & position)
   return result;
 }
 
-TableLayout::TableLayout(QWidget * parent, int rowCount, const QStringList & headerLabels)
+TableLayout::TableLayout(QWidget * parent, int rowCount, const QStringList & headerLabels) :
+  QObject(parent)
 {
 #if defined(TABLE_LAYOUT)
   tableWidget = new QTableWidget(parent);

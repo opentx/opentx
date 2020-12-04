@@ -28,6 +28,7 @@
 #include "hardware.h"
 #include "../modeledit/customfunctions.h"
 #include "verticalscrollarea.h"
+#include "rawitemdatamodels.h"
 
 GeneralEdit::GeneralEdit(QWidget * parent, RadioData & radioData, Firmware * firmware) :
   QDialog(parent),
@@ -55,8 +56,10 @@ GeneralEdit::GeneralEdit(QWidget * parent, RadioData & radioData, Firmware * fir
     }
   }
 
+  commonItemModels = new CommonItemModels(&generalSettings, nullptr, this);
+
   addTab(new GeneralSetupPanel(this, generalSettings, firmware), tr("Setup"));
-  addTab(new CustomFunctionsPanel(this, NULL, generalSettings, firmware), tr("Global Functions"));
+  addTab(new CustomFunctionsPanel(this, nullptr, generalSettings, firmware, commonItemModels), tr("Global Functions"));
   addTab(new TrainerPanel(this, generalSettings, firmware), tr("Trainer"));
   addTab(new HardwarePanel(this, generalSettings, firmware), tr("Hardware"));
   addTab(new CalibrationPanel(this, generalSettings, firmware), tr("Calibration"));

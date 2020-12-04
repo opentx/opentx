@@ -26,6 +26,8 @@
 #include <QGraphicsScene>
 #include <QGraphicsView>
 
+class CommonItemModels;
+
 constexpr char MIMETYPE_CURVE[] = "application/x-companion-curve";
 
 namespace Ui {
@@ -54,13 +56,13 @@ class CustomScene : public QGraphicsScene
     virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent * event) override;
 };
 
-class Curves : public ModelPanel
+class CurvesPanel : public ModelPanel
 {
     Q_OBJECT
 
   public:
-    Curves(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware);
-    virtual ~Curves();
+    CurvesPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, CommonItemModels * commonItemModels);
+    virtual ~CurvesPanel();
 
     virtual void update();
 
@@ -119,6 +121,8 @@ class Curves : public ModelPanel
     bool moveDownAllowed() const;
     bool moveUpAllowed() const;
     void swapData(int idx1, int idx2);
+    CommonItemModels * commonItemModels;
+    void updateItemModels();
 };
 
 #endif // _CURVES_H_

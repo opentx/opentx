@@ -33,6 +33,7 @@
 #include "customfunctions.h"
 #include "telemetry.h"
 #include "appdata.h"
+#include "rawitemdatamodels.h"
 
 ModelEdit::ModelEdit(QWidget * parent, RadioData & radioData, int modelId, Firmware * firmware) :
   QDialog(parent),
@@ -48,33 +49,55 @@ ModelEdit::ModelEdit(QWidget * parent, RadioData & radioData, int modelId, Firmw
   setWindowIcon(CompanionIcon("edit.png"));
   restoreGeometry(g.modelEditGeo());
   ui->pushButton->setIcon(CompanionIcon("simulate.png"));
-  SetupPanel * setupPanel = new SetupPanel(this, radioData.models[modelId], radioData.generalSettings, firmware);
+
+  GeneralSettings &generalSettings = radioData.generalSettings;
+  ModelData &model = radioData.models[modelId];
+
+  commonItemModels = new CommonItemModels(&generalSettings, &model, this);
+  s1.report("Init");
+
+  SetupPanel * setupPanel = new SetupPanel(this, model, generalSettings, firmware, commonItemModels);
   addTab(setupPanel, tr("Setup"));
-  if (firmware->getCapability(Heli))
-    addTab(new HeliPanel(this, radioData.models[modelId], radioData.generalSettings, firmware), tr("Heli"));
-  addTab(new FlightModesPanel(this, radioData.models[modelId], radioData.generalSettings, firmware), tr("Flight Modes"));
-  addTab(new InputsPanel(this, radioData.models[modelId], radioData.generalSettings, firmware), tr("Inputs"));
-  s1.report("inputs");
-  addTab(new MixesPanel(this, radioData.models[modelId], radioData.generalSettings, firmware), tr("Mixes"));
+  s1.report("Setup");
+
+  if (firmware->getCapability(Heli)) {
+    addTab(new HeliPanel(this, model, generalSettings, firmware, commonItemModels), tr("Heli"));
+    s1.report("Heli");
+  }
+
+  addTab(new FlightModesPanel(this, model, generalSettings, firmware, commonItemModels), tr("Flight Modes"));
+  s1.report("Flight Modes");
+
+  addTab(new InputsPanel(this, model, generalSettings, firmware, commonItemModels), tr("Inputs"));
+  s1.report("Inputs");
+
+  addTab(new MixesPanel(this, model, generalSettings, firmware, commonItemModels), tr("Mixes"));
   s1.report("Mixes");
-  Channels * chnPanel = new Channels(this, radioData.models[modelId], radioData.generalSettings, firmware);
-  addTab(chnPanel, tr("Outputs"));
+
+  ChannelsPanel * channelsPanel = new ChannelsPanel(this, model, generalSettings, firmware, commonItemModels);
+  addTab(channelsPanel, tr("Outputs"));
   s1.report("Outputs");
-  addTab(new Curves(this, radioData.models[modelId], radioData.generalSettings, firmware), tr("Curves"));
-  addTab(new LogicalSwitchesPanel(this, radioData.models[modelId], radioData.generalSettings, firmware), tr("Logical Switches"));
-  s1.report("LS");
-  addTab(new CustomFunctionsPanel(this, &radioData.models[modelId], radioData.generalSettings, firmware), tr("Special Functions"));
-  s1.report("CF");
-  if (firmware->getCapability(Telemetry))
-    addTab(new TelemetryPanel(this, radioData.models[modelId], radioData.generalSettings, firmware), tr("Telemetry"));
 
-  onTabIndexChanged(ui->tabWidget->currentIndex());  // make sure to trigger update on default tab panel
+  addTab(new CurvesPanel(this, model, generalSettings, firmware, commonItemModels), tr("Curves"));
+  s1.report("Curves");
 
-  connect(setupPanel, &SetupPanel::extendedLimitsToggled, chnPanel, &Channels::refreshExtendedLimits);
+  addTab(new LogicalSwitchesPanel(this, model, generalSettings, firmware, commonItemModels), tr("Logical Switches"));
+  s1.report("Logical Switches");
+
+  addTab(new CustomFunctionsPanel(this, &model, generalSettings, firmware, commonItemModels), tr("Special Functions"));
+  s1.report("Special Functions");
+
+  if (firmware->getCapability(Telemetry)) {
+    addTab(new TelemetryPanel(this, model, generalSettings, firmware, commonItemModels), tr("Telemetry"));
+    s1.report("Telemetry");
+  }
+
+  connect(setupPanel, &SetupPanel::extendedLimitsToggled, channelsPanel, &ChannelsPanel::refreshExtendedLimits);
   connect(ui->tabWidget, &QTabWidget::currentChanged, this, &ModelEdit::onTabIndexChanged);
   connect(ui->pushButton, &QPushButton::clicked, this, &ModelEdit::launchSimulation);
 
-  s1.report("end");
+  onTabIndexChanged(ui->tabWidget->currentIndex());  // make sure to trigger update on default tab panel
+
   gStopwatch.report("ModelEdit end constructor");
 }
 
