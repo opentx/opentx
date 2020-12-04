@@ -113,7 +113,7 @@ class FlashDialog: public FullScreenDialog
       device.flashFirmware(filename, [=](const char * title, const char * message, int count, int total) -> void {
           setMessage(message);
           progress.setValue(total > 0 ? count * 100 / total : 0);
-          mainWindow.run(false);
+          MainWindow::instance()->run(false);
       });
       deleteLater();
     }

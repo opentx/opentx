@@ -36,7 +36,7 @@ void openUsbMenu()
   static Menu * menu = nullptr;
   if (menu)
     return;
-  menu = new Menu(&mainWindow);
+  menu = new Menu(MainWindow::instance());
   menu->setCloseHandler([]() {
     menu = nullptr;
   });
@@ -329,7 +329,7 @@ void guiMain(event_t evt)
   bool screenshotRequested = (mainRequestFlags & (1u << REQUEST_SCREENSHOT));
 
 #if defined(LIBOPENUI)
-  mainWindow.run();
+  MainWindow::instance()->run();
 #else
   if (!refreshNeeded) {
     DEBUG_TIMER_START(debugTimerMenus);
