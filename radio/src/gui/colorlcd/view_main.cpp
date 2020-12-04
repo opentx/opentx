@@ -59,7 +59,7 @@ int getMainViewsCount()
 ViewMain * ViewMain::instance = nullptr;
 
 ViewMain::ViewMain(bool icons):
-  FormWindow(&mainWindow, { 0, 0, LCD_W, LCD_H })
+  FormWindow(MainWindow::instance(), { 0, 0, LCD_W, LCD_H })
 {
   instance = this;
 
