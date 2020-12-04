@@ -993,7 +993,7 @@ void ModelData::updateAssignFunc(CustomFunctionData * cfd)
     case REF_UPD_TYPE_TIMER:
       if (cfd->func < FuncSetTimer1 || cfd->func > FuncSetTimer3) //  TODO refactor to FuncSetTimerLast
         return;
-      idxAdj = FuncSetTimer1 - 2;   //  reverse earlier offset requiured for rawsource
+      idxAdj = FuncSetTimer1 - 2;   //  reverse earlier offset required for rawsource
       break;
     default:
       return;
