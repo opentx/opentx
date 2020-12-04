@@ -18,8 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _GHOST_H_
-#define _GHOST_H_
+#pragma once
 
 #include <inttypes.h>
 #include "dataconstants.h"
@@ -143,6 +142,12 @@ enum GhostMenuControl
   GHST_MENU_CTRL_REDRAW = 0X04,
 };
 
+enum GhostMenuStatus
+{
+  GHST_MENU_STATUS_UNOPENED = 0x00,
+  GHST_MENU_STATUS_OPENED = 0x01,
+  GHST_MENU_STATUS_CLOSING = 0x02,
+};
 
 enum GhostFrames
 {
@@ -159,8 +164,8 @@ struct GhostMenuFrame
   uint8_t address;
   uint8_t length ;
   uint8_t packetId;
-  uint8_t menuFlags;     // GHST_MENU_CTRL
-  uint8_t lineFlags;     // Carat states, Inverse, Bold for each of Menu Label, and Value
+  uint8_t menuStatus;    // GhostMenuStatus
+  uint8_t lineFlags;     // GhostLineFlags
   uint8_t lineIndex;     // 0 = first line
   unsigned char menuText[GHST_MENU_CHARS];
   uint8_t crc;
@@ -168,10 +173,9 @@ struct GhostMenuFrame
 
 struct GhostMenuData
 {
-  uint8_t menuFlags;     // Update Line, Clear Menu, etc.
+  uint8_t menuStatus;    // Update Line, Clear Menu, etc.
   uint8_t lineFlags;     // Carat states, Inverse, Bold for each of Menu Label, and Value
   uint8_t splitLine;     // Store beginning of Value substring
   char menuText[GHST_MENU_CHARS + 1];
 };
 
-#endif // _GHOST_H_

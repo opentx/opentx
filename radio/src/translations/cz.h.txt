@@ -704,6 +704,7 @@
 #define TR_NO_SDCARD                   "Není SD karta"
 #define TR_WAITING_FOR_RX              "Čekám na RX..."
 #define TR_WAITING_FOR_TX              "Čekám na TX..."
+#define TR_WAITING_FOR_MODULE          TR("Waiting module", "Waiting for module...")
 #define TR_NO_TOOLS                    TR("Nejsou k dispozici", "Žádné nástroje k dispozici")
 #define TR_NORMAL                      "Normální"
 #define TR_NOT_INVERTED                "Neinvert"

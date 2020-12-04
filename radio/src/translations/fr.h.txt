@@ -726,6 +726,7 @@
 #define TR_NO_SDCARD                   "Carte SD indisponible"
 #define TR_WAITING_FOR_RX              "Attente du RX..."
 #define TR_WAITING_FOR_TX              "Attente du TX..."
+#define TR_WAITING_FOR_MODULE          TR("Waiting module", "Waiting for module...")
 #define TR_NO_TOOLS                    "Pas d'outils dispo"
 #define TR_NORMAL                      "Normal"
 #define TR_NOT_INVERTED                "Non inv"
