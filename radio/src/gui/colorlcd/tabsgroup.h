@@ -23,6 +23,7 @@
 #include <vector>
 #include "button.h"
 #include "form.h"
+#include "keyboard_base.h"
 
 class TabsGroup;
 
@@ -115,7 +116,19 @@ class TabsGroupHeader: public FormGroup {
   public:
     TabsGroupHeader(TabsGroup * menu, uint8_t icon);
 
-    ~TabsGroupHeader() override;
+    void deleteLater(bool detach = true, bool trash = true) override
+    {
+      if (_deleted)
+        return;
+
+#if defined(HARDWARE_TOUCH)
+      back.deleteLater(true, false);
+#endif
+
+      carousel.deleteLater(true, false);
+
+      FormField::deleteLater(detach, trash);
+    }
 
 #if defined(DEBUG_WINDOWS)
     std::string getName() const override
@@ -140,13 +153,29 @@ class TabsGroupHeader: public FormGroup {
     const char * title = nullptr;
 };
 
-class TabsGroup: public Window {
+class TabsGroup: public Window
+{
     friend class TabsCarousel;
 
   public:
     explicit TabsGroup(uint8_t icon);
 
     ~TabsGroup() override;
+
+    void deleteLater(bool detach = true, bool trash = true) override
+    {
+      if (_deleted)
+        return;
+
+#if defined(HARDWARE_TOUCH)
+      Keyboard::hide();
+#endif
+
+      header.deleteLater(true, false);
+      body.deleteLater(true, false);
+
+      Window::deleteLater(detach, trash);
+    }
 
 #if defined(DEBUG_WINDOWS)
     std::string getName() const override

@@ -21,6 +21,7 @@
 #include <algorithm>
 #include "radio_tools.h"
 #include "radio_spectrum_analyser.h"
+#include "radio_ghost_module_config.h"
 #include "opentx.h"
 #include "libopenui.h"
 #include "lua/lua_api.h"
@@ -81,7 +82,7 @@ void RadioToolsPage::rebuild(FormWindow * window)
   Window::clearFocus();
 
 // LUA scripts in TOOLS
-#if defined(LUA) || defined(DEBUG)
+#if defined(LUA)
   FILINFO fno;
   DIR dir;
 
@@ -170,6 +171,17 @@ void RadioToolsPage::rebuild(FormWindow * window)
       return 0;
     }, 0);
 
+    grid.nextLine();
+  }
+#endif
+
+#if defined(GHOST)
+  if (isModuleGhost(EXTERNAL_MODULE)) {
+    new StaticText(window, grid.getLabelSlot(), "ghost", BUTTON_BACKGROUND, CENTERED);
+    new TextButton(window, grid.getFieldSlot(1), "Ghost module config", [=]() -> uint8_t {
+        new RadioGhostModuleConfig(EXTERNAL_MODULE);
+        return 0;
+    }, 0);
     grid.nextLine();
   }
 #endif

@@ -24,7 +24,8 @@
 
 #define SET_DIRTY() storageDirty(EE_MODEL)
 
-class CurveEditWindow : public Page {
+class CurveEditWindow : public Page
+{
   public:
     explicit CurveEditWindow(uint8_t index):
       Page(ICON_MODEL_CURVES),
@@ -86,7 +87,9 @@ class CurveEditWindow : public Page {
                          curve.type = newValue;
                        }
                        SET_DIRTY();
-                       curveEdit->update();
+                       curveEdit->updatePreview();
+                       curveDataEdit->clear();
+                       curveDataEdit->update();
                      }
                  });
 
@@ -108,8 +111,9 @@ class CurveEditWindow : public Page {
                                        }
                                        curve.points = newValue;
                                        SET_DIRTY();
-                                       curveEdit->update();
-                                       curveDataEdit->invalidate();
+                                       curveEdit->updatePreview();
+                                       curveDataEdit->clear();
+                                       curveDataEdit->update();
                                      }
                                  });
       edit->setSuffix(STR_PTS);
@@ -121,11 +125,11 @@ class CurveEditWindow : public Page {
                    [=](int32_t newValue) {
                        g_model.curves[index].smooth = newValue;
                        SET_DIRTY();
-                       curveEdit->update();
+                       curveEdit->updatePreview();
                    });
       grid.nextLine();
 
-      curveDataEdit = new CurveDataEdit(window, {0, grid.getWindowHeight(), coord_t(LCD_W - curveWidth - PAGE_PADDING - 1), window->height() -  grid.getWindowHeight() - PAGE_PADDING}, index);
+      curveDataEdit = new CurveDataEdit(window, {0, grid.getWindowHeight(), coord_t(LCD_W - curveWidth - PAGE_PADDING - 1), window->height() -  grid.getWindowHeight() - PAGE_PADDING}, index, curveEdit);
     }
 #else
     void buildBody(FormWindow * window)

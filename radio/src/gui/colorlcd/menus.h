@@ -251,7 +251,7 @@ bool menuAboutView(event_t event);
 bool menuMainViewChannelsMonitor(event_t event);
 bool menuTextView(event_t event);
 bool menuScreensTheme(event_t event);
-bool menuRadioSpectrumAnalyser(event_t event);
+bool menuRadioGhostModuleConfig(event_t event);
 bool menuRadioPowerMeter(event_t event);
 
 extern int8_t checkIncDec_Ret;  // global helper vars

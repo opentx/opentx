@@ -59,7 +59,7 @@ class FullScreenDialog : public FormGroup
     bool onTouchEnd(coord_t x, coord_t y) override;
 #endif
 
-    void deleteLater(bool detach=true) override;
+    void deleteLater(bool detach = true, bool trash = true) override;
 
     void checkEvents() override;
 
@@ -78,9 +78,6 @@ class FullScreenDialog : public FormGroup
     bool running = false;
     std::function<bool(void)> closeCondition;
     std::function<void(void)> confirmHandler;
-#if defined(HARDWARE_KEYS)
-    Window * previousFocus = nullptr;
-#endif
 };
 
 #endif // _FULLSCREEN_DIALOG_H_

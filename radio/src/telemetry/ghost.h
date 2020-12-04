@@ -18,8 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _GHOST_H_
-#define _GHOST_H_
+#pragma once
 
 #include <inttypes.h>
 #include "dataconstants.h"
@@ -38,10 +37,13 @@
 #define GHST_UL_RC_CHANS_HS4_9TO12	0x11	// High Speed 4 channel (12 bits), plus CH9-12 (8 bits)
 #define GHST_UL_RC_CHANS_HS4_13TO16	0x12	// High Speed 4 channel (12 bits), plus CH13-16 (8 bits)
 #define GHST_UL_RC_CHANS_SIZE           12      // 1 (type) + 10 (data) + 1 (crc)
+#define GHST_UL_MENU_CTRL               0x13
 
 #define GHST_DL_OPENTX_SYNC		0x20
 #define GHST_DL_LINK_STAT               0x21
 #define GHST_DL_VTX_STAT                0x22
+#define GHST_DL_PACK_STAT               0x23
+#define GHST_DL_MENU_DESC               0x24
 
 #define GHST_RC_CTR_VAL_12BIT		0x7C0   // 0x3e0 << 1
 #define GHST_RC_CTR_VAL_8BIT		0x7C
@@ -113,4 +115,60 @@ enum GhostTelemetryBaudrates
 #define GHOST_BAUDRATE       400000
 #define GHOST_PERIOD         4
 
-#endif // _GHOST_H_
+enum GhostLineFlags
+{
+  GHST_LINE_FLAGS_NONE = 0x00,
+  GHST_LINE_FLAGS_LABEL_SELECT = 0x01,
+  GHST_LINE_FLAGS_VALUE_SELECT = 0x02,
+  GHST_LINE_FLAGS_VALUE_EDIT = 0x04,
+};
+
+enum GhostButtons
+{
+  GHST_BTN_NONE = 0x00,
+  GHST_BTN_JOYPRESS = 0X01,
+  GHST_BTN_JOYUP = 0X02,
+  GHST_BTN_JOYDOWN = 0X04,
+  GHST_BTN_JOYLEFT = 0X08,
+  GHST_BTN_JOYRIGHT = 0X10,
+  GHST_BTN_BIND = 0X20			// future, for no-UI Ghost
+};
+
+enum GhostMenuControl
+{
+  GHST_MENU_CTRL_NONE = 0X00,
+  GHST_MENU_CTRL_OPEN = 0X01,
+  GHST_MENU_CTRL_CLOSE = 0X02,
+  GHST_MENU_CTRL_REDRAW = 0X04,
+};
+
+enum GhostFrames
+{
+  GHST_FRAME_CHANNEL,
+  GHST_MENU_CONTROL
+};
+
+constexpr uint8_t GHST_MENU_LINES = 6;
+constexpr uint8_t GHST_MENU_CHARS = 20;
+
+// GHST_DL_MENU_DESC (27 bytes)
+struct GhostMenuFrame
+{
+  uint8_t address;
+  uint8_t length ;
+  uint8_t packetId;
+  uint8_t menuFlags;     // GHST_MENU_CTRL
+  uint8_t lineFlags;     // Carat states, Inverse, Bold for each of Menu Label, and Value
+  uint8_t lineIndex;     // 0 = first line
+  unsigned char menuText[GHST_MENU_CHARS];
+  uint8_t crc;
+};
+
+struct GhostMenuData
+{
+  uint8_t menuFlags;     // Update Line, Clear Menu, etc.
+  uint8_t lineFlags;     // Carat states, Inverse, Bold for each of Menu Label, and Value
+  uint8_t splitLine;     // Store beginning of Value substring
+  char menuText[GHST_MENU_CHARS + 1];
+  uint8_t menuUpdateNeeded;
+};

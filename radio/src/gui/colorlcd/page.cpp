@@ -35,13 +35,6 @@ PageHeader::PageHeader(Page * parent, uint8_t icon):
 {
 }
 
-PageHeader::~PageHeader()
-{
-#if defined(HARDWARE_TOUCH)
-  back.detach();
-#endif
-}
-
 void PageHeader::paint(BitmapBuffer * dc)
 {
   OpenTxTheme::instance()->drawMenuBackground(dc, getIcon(), "");
@@ -51,29 +44,24 @@ void PageHeader::paint(BitmapBuffer * dc)
 Page::Page(unsigned icon):
   Window(&mainWindow, {0, 0, LCD_W, LCD_H}, OPAQUE),
   header(this, icon),
-  body(this, { 0, MENU_HEADER_HEIGHT, LCD_W, LCD_H - MENU_HEADER_HEIGHT }, FORM_FORWARD_FOCUS),
-  previousFocus(focusWindow)
+  body(this, { 0, MENU_HEADER_HEIGHT, LCD_W, LCD_H - MENU_HEADER_HEIGHT }, FORM_FORWARD_FOCUS)
 {
+  Layer::push(this);
   clearFocus();
 }
 
-Page::~Page()
+void Page::deleteLater(bool detach, bool trash)
 {
-  header.detach();
-  body.detach();
+  Layer::pop(this);
+
+  header.deleteLater(true, false);
+  body.deleteLater(true, false);
 
 #if defined(HARDWARE_TOUCH)
   Keyboard::hide();
 #endif
-}
 
-void Page::deleteLater(bool detach)
-{
-  if (previousFocus) {
-    previousFocus->setFocus(SET_FOCUS_DEFAULT);
-  }
-
-  Window::deleteLater(detach);
+  Window::deleteLater(detach, trash);
 }
 
 void Page::paint(BitmapBuffer * dc)

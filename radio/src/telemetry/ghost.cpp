@@ -46,6 +46,9 @@ enum
   GHOST_ID_VTX_CHAN = 0x000a,           // Vtx Channel
   GHOST_ID_VTX_BAND = 0x000b,           // Vtx Band
 
+  GHOST_ID_PACK_VOLTS = 0x000c,         // Battery Pack Voltage
+  GHOST_ID_PACK_AMPS = 0x000d,          // Battery Pack Current
+  GHOST_ID_PACK_MAH = 0x000e,           // Battery Pack mAh consumed
 };
 
 const GhostSensor ghostSensors[] = {
@@ -62,6 +65,10 @@ const GhostSensor ghostSensors[] = {
   {GHOST_ID_VTX_POWER,       ZSTR_VTX_PWR,          UNIT_RAW,               0},
   {GHOST_ID_VTX_CHAN,        ZSTR_VTX_CHAN,         UNIT_RAW,               0},
   {GHOST_ID_VTX_BAND,        ZSTR_VTX_BAND,         UNIT_TEXT,              0},
+
+  {GHOST_ID_PACK_VOLTS,      ZSTR_BATT,             UNIT_VOLTS,             2},
+  {GHOST_ID_PACK_AMPS,       ZSTR_CURR,             UNIT_AMPS,              2},
+  {GHOST_ID_PACK_MAH,        ZSTR_CAPACITY,         UNIT_MAH,               0},
 
   {0x00,                     NULL,                  UNIT_RAW,               0},
 };
@@ -101,6 +108,11 @@ bool checkGhostTelemetryFrameCRC()
 uint16_t getTelemetryValue_u16(uint8_t index)
 {
   return (telemetryRxBuffer[index] << 8) | telemetryRxBuffer[index + 1];
+}
+
+uint16_t getTelemetryValue_u16le(uint8_t index)
+{
+  return (telemetryRxBuffer[index + 1] << 8) | telemetryRxBuffer[index];
 }
 
 uint32_t getTelemetryValue_s32(uint8_t index)
@@ -173,6 +185,44 @@ void processGhostTelemetryFrame()
       processGhostTelemetryValue(GHOST_ID_VTX_POWER, getTelemetryValue_u16(6));
       processGhostTelemetryValue(GHOST_ID_VTX_CHAN, min<uint8_t>(telemetryRxBuffer[9], 8));
       processGhostTelemetryValueString(sensor, vtxBandString);
+      break;
+    }
+
+    case GHST_DL_MENU_DESC:
+    {
+      GhostMenuFrame * packet;
+      GhostMenuData * lineData;
+
+      packet = (GhostMenuFrame * ) telemetryRxBuffer;
+      lineData = (GhostMenuData *) &reusableBuffer.ghostMenu.line[packet->lineIndex];
+      lineData->splitLine = 0;
+      reusableBuffer.ghostMenu.menuAction = packet->menuFlags;
+      lineData->lineFlags = packet->lineFlags;
+      for (uint8_t i = 0; i < GHST_MENU_CHARS; i++) {
+        if (packet->menuText[i] == 0x7C) {
+          lineData->menuText[i] = '\0';
+          lineData->splitLine = i + 1;
+        }
+        else {
+          lineData->menuText[i] = packet->menuText[i];
+        }
+      }
+      lineData->menuText[GHST_MENU_CHARS] = '\0';
+      if (packet->lineIndex == GHST_MENU_LINES - 1)
+        lineData->menuUpdateNeeded = true;
+      break;
+    }
+
+    case GHST_DL_PACK_STAT: {
+#if defined(BLUETOOTH)
+      if (g_eeGeneral.bluetoothMode == BLUETOOTH_TELEMETRY && bluetooth.state == BLUETOOTH_STATE_CONNECTED) {
+          bluetooth.write(telemetryRxBuffer, telemetryRxBufferCount);
+        }
+#endif
+      processGhostTelemetryValue(GHOST_ID_PACK_VOLTS, getTelemetryValue_u16le(3));
+      processGhostTelemetryValue(GHOST_ID_PACK_AMPS, getTelemetryValue_u16le(5));
+      processGhostTelemetryValue(GHOST_ID_PACK_MAH, getTelemetryValue_u16le(7) * 10);
+
       break;
     }
   }
