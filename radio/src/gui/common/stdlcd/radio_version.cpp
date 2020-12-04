@@ -237,7 +237,7 @@ void menuRadioVersion(event_t event)
 
   coord_t y = MENU_HEADER_HEIGHT + 2;
   lcdDrawText(FW, y, vers_stamp, SMLSIZE);
-  y += 4 * (FH - 1);
+  y += 5 * (FH - 1);
 
 #if defined(COPROCESSOR)
   lcdDrawText(FW, y, "COPR\037\033: ", SMLSIZE);
