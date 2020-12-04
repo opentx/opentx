@@ -1555,6 +1555,28 @@ static int luaModelGetSensor(lua_State *L)
   return 1;
 }
 
+/*luadoc
+@function model.resetSensor(sensor)
+
+Reset Telemetry Sensor parameters
+
+@param sensor (unsigned number) sensor number (use 0 for sensor 1)
+
+@retval nil
+
+@status current Introduced in 2.3.0
+*/
+static int luaModelResetSensor(lua_State *L)
+{
+  unsigned int idx = luaL_checkunsigned(L, 1);
+  if (idx < MAX_TELEMETRY_SENSORS) {
+    telemetryItems[idx].clear();
+  }
+  
+  lua_pushnil(L);
+  return 1;
+}
+
 const luaL_Reg modelLib[] = {
   { "getInfo", luaModelGetInfo },
   { "setInfo", luaModelSetInfo },
@@ -1588,5 +1610,6 @@ const luaL_Reg modelLib[] = {
   { "getGlobalVariable", luaModelGetGlobalVariable },
   { "setGlobalVariable", luaModelSetGlobalVariable },
   { "getSensor", luaModelGetSensor },
+  { "resetSensor", luaModelResetSensor },
   { NULL, NULL }  /* sentinel */
 };
