@@ -23,7 +23,7 @@
 #include "opentx.h"
 
 FullScreenDialog::FullScreenDialog(uint8_t type, std::string title, std::string message, std::string action, const std::function<void(void)> & confirmHandler):
-  FormGroup(&mainWindow, {0, 0, LCD_W, LCD_H}, OPAQUE),
+  FormGroup(MainWindow::instance(), {0, 0, LCD_W, LCD_H}, OPAQUE),
   type(type),
   title(std::move(title)),
   message(std::move(message)),
@@ -145,7 +145,7 @@ void FullScreenDialog::runForever()
     WDG_RESET();
 
     RTOS_WAIT_MS(20);
-    mainWindow.run(false);
+    MainWindow::instance()->run(false);
   }
 
   Window::deleteLater();

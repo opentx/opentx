@@ -58,19 +58,19 @@
 
 inline MessageDialog * createPopupInformation(const char * message)
 {
-  return new MessageDialog(&mainWindow, "Message", message);
+  return new MessageDialog(MainWindow::instance(), "Message", message);
 }
 
 inline MessageDialog * createPopupWarning(const char * message)
 {
-  return new MessageDialog(&mainWindow, "Warning", message);
+  return new MessageDialog(MainWindow::instance(), "Warning", message);
 }
 
 inline void POPUP_INFORMATION(const char * message)
 {
   auto popup = createPopupInformation(message);
   while (popup->getParent()) {
-    mainWindow.run(false);
+    MainWindow::instance()->run(false);
   }
 }
 
@@ -81,7 +81,7 @@ inline void POPUP_WARNING(const char * message, const char * info = nullptr)
     popup->setInfoText(std::string(info));
   }
   while (popup->getParent()) {
-    mainWindow.run(false);
+    MainWindow::instance()->run(false);
   }
 }
 
