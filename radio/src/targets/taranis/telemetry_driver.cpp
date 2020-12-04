@@ -94,17 +94,17 @@ static uint16_t probeTimeFromStartBit;
 uint32_t oldPriority = 0xFFFF;
 void telemetryPortInvertedInit(uint32_t baudrate)
 {
-  //TODO:
+  // TODO
   // - handle conflict with HEARTBEAT disabled for trainer input...
   // - probably need to stop trainer input/output and restore after this is closed
   // - There is no need to stop trainer - we need to just enable EXT IRQ if not enabled by HEARTBEAT handling
-  //   see code below, but it is always nescesary to configure EXTI_Line for software uart.
+  //   see code below, but it is always necessary to configure EXTI_Line for software uart.
 
   if (baudrate == 0) {
     if (oldPriority != 0xFFFF) {
       NVIC_SetPriority(TELEMETRY_EXTI_IRQn, oldPriority);
     }
-    //Never disable EXTI_IRQ just remove TELEMETRY_EXTI_LINE from configuration as EXTI can be reused
+
     NVIC_DisableIRQ(TELEMETRY_TIMER_IRQn);
 
     EXTI_InitTypeDef EXTI_InitStructure;
@@ -122,7 +122,7 @@ void telemetryPortInvertedInit(uint32_t baudrate)
   switch(baudrate) {
     case 115200:
       bitLength = 17;
-      probeTimeFromStartBit = 23; //because pin is not probed immediately 
+      probeTimeFromStartBit = 23; // because pin is not probed immediately
       break;
     case 57600:
       bitLength = 35; //34 was used before - I prefer to use use 35 because of lower error
@@ -165,12 +165,13 @@ void telemetryPortInvertedInit(uint32_t baudrate)
   EXTI_InitStructure.EXTI_Trigger = TELEMETRY_EXTI_TRIGGER;
   EXTI_InitStructure.EXTI_LineCmd = ENABLE;
   EXTI_Init(&EXTI_InitStructure);
+
+  // Overwrite priority
   oldPriority = NVIC_GetPriority(TELEMETRY_EXTI_IRQn);
-  //Overwrite priority
   NVIC_SetPriority(TELEMETRY_EXTI_IRQn, 0);
-  //In case shared IRQ is not enabled 
+
+  // In case shared IRQ is not enabled
   if ((NVIC->ISER[(uint32_t)((int32_t)TELEMETRY_EXTI_IRQn) >> 5] & (uint32_t)(1 << ((uint32_t)((int32_t)TELEMETRY_EXTI_IRQn) & (uint32_t)0x1F))) == 0) {
-    
     NVIC_EnableIRQ(TELEMETRY_EXTI_IRQn);
   }
 }

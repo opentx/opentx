@@ -118,10 +118,11 @@ void rotaryEncoderStartDelay()
 
 extern "C" void ROTARY_ENCODER_EXTI_IRQHandler1(void)
 {
-  //Check as first because it is most critcal one
+  // Check as first because it is the most critical one
 #if !defined(BOOT) && defined(TELEMETRY_EXTI_REUSE_INTERRUPT_ROTARY_ENCODER)
   check_telemetry_exti();
 #endif
+
   if (EXTI_GetITStatus(ROTARY_ENCODER_EXTI_LINE1) != RESET) {
     rotaryEncoderStartDelay();
     EXTI_ClearITPendingBit(ROTARY_ENCODER_EXTI_LINE1);
