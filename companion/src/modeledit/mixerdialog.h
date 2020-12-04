@@ -26,6 +26,7 @@
 
 class GVarGroup;
 class CurveGroup;
+class RawItemFilteredModel;
 
 namespace Ui {
   class MixerDialog;
@@ -34,7 +35,8 @@ namespace Ui {
 class MixerDialog : public QDialog {
     Q_OBJECT
   public:
-    MixerDialog(QWidget *parent, ModelData & model, MixData *mixdata, GeneralSettings & generalSettings, Firmware * firmware);
+    MixerDialog(QWidget *parent, ModelData & model, MixData *mixdata, GeneralSettings & generalSettings, Firmware * firmware,
+                  RawItemFilteredModel * rawSourceModel, RawItemFilteredModel * rawSwitchModel);
     ~MixerDialog();
 
   protected:

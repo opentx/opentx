@@ -27,6 +27,7 @@
 
 class GVarGroup;
 class CurveGroup;
+class RawItemFilteredModel;
 
 namespace Ui {
   class ExpoDialog;
@@ -36,7 +37,8 @@ class ExpoDialog : public QDialog {
     Q_OBJECT
   public:
     ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expodata, GeneralSettings & generalSettings,
-                Firmware * firmware, QString & inputName);
+                Firmware * firmware, QString & inputName, RawItemFilteredModel * rawSourceItemModel,
+                RawItemFilteredModel * rawSwitchItemModel);
     ~ExpoDialog();
 
   protected:

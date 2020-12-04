@@ -36,6 +36,15 @@ class CurveReference {
       CURVE_REF_CUSTOM
     };
 
+    enum CurveRefGroups {
+      NoneGroup      = 0x001,
+      NegativeGroup  = 0x002,
+      PositiveGroup  = 0x004,
+
+      AllCurveRefGroups   = NoneGroup | NegativeGroup | PositiveGroup,
+      PositiveCurveRefGroups = AllCurveRefGroups &~ NegativeGroup
+    };
+
     CurveReference() { clear(); }
 
     CurveReference(CurveRefType type, int value):
@@ -51,6 +60,14 @@ class CurveReference {
 
     QString toString(const ModelData * model = NULL, bool verbose = true) const;
     bool isSet() const { return type != CURVE_REF_DIFF || value != 0; }
+
+    bool operator == ( const CurveReference & other) const {
+      return (this->type == other.type) && (this->value == other.value);
+    }
+
+    bool operator != ( const CurveReference & other) const {
+      return (this->type != other.type) || (this->value != other.value);
+    }
 };
 
 #endif // CURVEREFERENCE_H

@@ -208,8 +208,9 @@ private:
 
 GpsCoord extractGpsCoordinates(const QString & position);
 
-class TableLayout
+class TableLayout: public QObject
 {
+    Q_OBJECT
 public:
   TableLayout(QWidget * parent, int rowCount, const QStringList & headerLabels);
   // ~TableLayout() ;
