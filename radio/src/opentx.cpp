@@ -1831,14 +1831,14 @@ void moveTrimsToOffsets() // copy state of 3 primary to subtrim
 
   evalFlightModeMixes(e_perout_mode_noinput-e_perout_mode_notrims, 0); // do output loop - only trims
 
-  for (uint8_t i=0; i<4; i++) {
+  for (uint8_t i = 0; i < MAX_OUTPUT_CHANNELS; i++) {
     int16_t diff = applyLimits(i, chans[i]) - zeros[i];
     int16_t v = g_model.limitData[i].offset;
     if (g_model.limitData[i].revert)
       diff = -diff;
     v += (diff * 125) / 128;
 
-    g_model.limitData[i].offset = limit((int16_t)-1000, (int16_t)v, (int16_t)1000); // make sure the offset doesn't go haywire
+    g_model.limitData[i].offset = limit((int16_t) -1000, (int16_t) v, (int16_t) 1000); // make sure the offset doesn't go haywire
   }
 
   // reset all trims, except throttle (if throttle trim)
