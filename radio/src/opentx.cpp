@@ -1862,7 +1862,7 @@ void moveTrimsToOffsets() // copy state of 3 primary to subtrim
 
   evalFlightModeMixes(e_perout_mode_noinput, 0); // do output loop - zero input sticks and trims
 
-  for (uint8_t i=0; i<4; i++) {
+  for (uint8_t i = 0; i < MAX_OUTPUT_CHANNELS; i++) {
     zeros[i] = applyLimits(i, chans[i]);
   }
 
