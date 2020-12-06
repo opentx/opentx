@@ -208,6 +208,9 @@ void MavlinkTelem::generateCmdSetMessageInterval(uint8_t tsystem, uint8_t tcompo
 
 // -- Handle incoming MAVLink messages, which are for the Autopilot --
 
+// -- Handle incoming MAVLink messages, which are for X shots --
+
+
 // -- Main handler for incoming MAVLink messages --
 
 void MavlinkTelem::handleMessage(void)
@@ -262,7 +265,7 @@ void MavlinkTelem::handleMessage(void)
   if ((gimbalmanager.compid == 0) && (gimbal.compid > 0) && (_msg.msgid == MAVLINK_MSG_ID_STORM32_GIMBAL_MANAGER_STATUS)) {
     mavlink_storm32_gimbal_manager_status_t payload;
     mavlink_msg_storm32_gimbal_manager_status_decode(&_msg, &payload);
-    if (payload.gimbal_device_id == gimbal.compid) { //this is the gimbal's gimbal manager
+    if (payload.gimbal_id == gimbal.compid) { //this is the gimbal's gimbal manager
       _resetGimbalClient();
       gimbalmanager.compid = _msg.compid;
       gimbalmanagerOut.device_flags = payload.device_flags;
@@ -302,6 +305,9 @@ void MavlinkTelem::handleMessage(void)
     }
     return;
   }
+
+  //we handle all qshot wherever they come from
+  handleMessageQShot();
 
   if (_msg.sysid != _sysid) return; //this is not from our system
 
@@ -436,6 +442,7 @@ void MavlinkTelem::doTask(void)
     if (doTaskCamera()) return;
     if (doTaskAutopilotLowPriority()) return;
     if (doTaskCameraLowPriority()) return;
+    if (doTaskQShot()) return;
   }
 }
 
@@ -573,6 +580,8 @@ void MavlinkTelem::_reset(void)
   _resetAutopilot();
   _resetGimbalAndGimbalClient();
   _resetCamera();
+
+  _resetQShot();
 
   // MAVLINK
   //msgRxFifo.clear();

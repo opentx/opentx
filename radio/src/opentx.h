@@ -29,7 +29,7 @@
 #include "opentx_helpers.h"
 
 //OW
-#define OWVERSIONSTR  "olliw-v17"
+#define OWVERSIONSTR  "olliw-v18rc04"
 //OWEND
 
 /*

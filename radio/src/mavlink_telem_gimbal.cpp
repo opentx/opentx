@@ -167,7 +167,7 @@ void MavlinkTelem::generateCmdRequestStorm32GimbalManagerInformation(uint8_t tsy
 
 //STorM32 specific
 void MavlinkTelem::generateStorm32GimbalManagerControl(uint8_t tsystem, uint8_t tcomponent,
-    uint8_t gimbal_device_id, float pitch_deg, float yaw_deg, uint16_t device_flags, uint16_t manager_flags)
+    uint8_t gimbal_id, float pitch_deg, float yaw_deg, uint16_t device_flags, uint16_t manager_flags)
 {
 float q[4];
 
@@ -182,7 +182,7 @@ float q[4];
   mavlink_msg_storm32_gimbal_manager_control_pack(
       _my_sysid, _my_compid, &_msg_out,
       tsystem, tcomponent,
-      gimbal_device_id,
+      gimbal_id,
       MAV_STORM32_GIMBAL_MANAGER_CLIENT_GCS, //client
       device_flags, manager_flags,
       q,
@@ -192,13 +192,13 @@ float q[4];
 
 //STorM32 specific
 void MavlinkTelem::generateStorm32GimbalManagerControlPitchYaw(uint8_t tsystem, uint8_t tcomponent,
-    uint8_t gimbal_device_id, float pitch_deg, float yaw_deg, uint16_t device_flags, uint16_t manager_flags)
+    uint8_t gimbal_id, float pitch_deg, float yaw_deg, uint16_t device_flags, uint16_t manager_flags)
 {
   setOutVersionV2();
   mavlink_msg_storm32_gimbal_manager_control_pitchyaw_pack(
       _my_sysid, _my_compid, &_msg_out,
       tsystem, tcomponent,
-      gimbal_device_id,
+      gimbal_id,
       MAV_STORM32_GIMBAL_MANAGER_CLIENT_GCS, //client
       device_flags, manager_flags,
       pitch_deg*FDEGTORAD, yaw_deg*FDEGTORAD,
@@ -208,12 +208,12 @@ void MavlinkTelem::generateStorm32GimbalManagerControlPitchYaw(uint8_t tsystem, 
 
 //STorM32 specific
 void MavlinkTelem::generateCmdStorm32DoGimbalManagerControlPitchYaw(uint8_t tsystem, uint8_t tcomponent,
-    uint8_t gimbal_device_id, float pitch_deg, float yaw_deg, uint16_t device_flags, uint16_t manager_flags)
+    uint8_t gimbal_id, float pitch_deg, float yaw_deg, uint16_t device_flags, uint16_t manager_flags)
 {
   _generateCmdLong(tsystem, tcomponent,
       MAV_CMD_STORM32_DO_GIMBAL_MANAGER_CONTROL_PITCHYAW,
       pitch_deg, yaw_deg, NAN, NAN, device_flags, manager_flags,
-      (uint16_t)gimbal_device_id + ((uint16_t)MAV_STORM32_GIMBAL_MANAGER_CLIENT_GCS < 8));
+      (uint16_t)gimbal_id + ((uint16_t)MAV_STORM32_GIMBAL_MANAGER_CLIENT_GCS < 8));
 }
 
 // -- Mavsdk Convenience Task Wrapper --
@@ -519,7 +519,7 @@ void MavlinkTelem::handleMessageGimbalClient(void)
     case MAVLINK_MSG_ID_STORM32_GIMBAL_MANAGER_INFORMATION: {
       mavlink_storm32_gimbal_manager_information_t payload;
       mavlink_msg_storm32_gimbal_manager_information_decode(&_msg, &payload);
-      if (payload.gimbal_device_id != gimbal.compid) break; //not for us
+      if (payload.gimbal_id != gimbal.compid) break; //not for us
       gimbalmanagerInfo.device_cap_flags = payload.device_cap_flags;
       gimbalmanagerInfo.manager_cap_flags = payload.manager_cap_flags;
       INCU8(gimbalmanagerInfo.updated);
@@ -531,7 +531,7 @@ void MavlinkTelem::handleMessageGimbalClient(void)
     case MAVLINK_MSG_ID_STORM32_GIMBAL_MANAGER_STATUS: {
       mavlink_storm32_gimbal_manager_status_t payload;
       mavlink_msg_storm32_gimbal_manager_status_decode(&_msg, &payload);
-      if (payload.gimbal_device_id != gimbal.compid) break; //not for us
+      if (payload.gimbal_id != gimbal.compid) break; //not for us
       gimbalmanagerStatus.supervisor = payload.supervisor;
       gimbalmanagerStatus.device_flags = payload.device_flags;
       gimbalmanagerStatus.manager_flags = payload.manager_flags;

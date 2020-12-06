@@ -194,7 +194,7 @@ static int luaMavsdkGimbalClientGetInfo(lua_State *L)
 {
   lua_newtable(L);
   lua_pushtableinteger(L, "gimbal_manager_id", mavlinkTelem.gimbalmanager.compid);
-  lua_pushtableinteger(L, "gimbal_device_id", mavlinkTelem.gimbal.compid);
+  lua_pushtableinteger(L, "gimbal_id", mavlinkTelem.gimbal.compid);
   lua_pushtableinteger(L, "device_capability_flags", mavlinkTelem.gimbalmanagerInfo.device_cap_flags);
   lua_pushtableinteger(L, "manager_capability_flags", mavlinkTelem.gimbalmanagerInfo.manager_cap_flags);
   return 1;
@@ -269,6 +269,39 @@ static int luaMavsdkGimbalDeviceSendPitchYawDeg(lua_State *L)
   float pitch = luaL_checknumber(L, 1);
   float yaw = luaL_checknumber(L, 2);
   mavlinkTelem.sendStorm32GimbalDevicePitchYawDeg(pitch, yaw);
+  return 0;
+}
+
+// -- XSHOT --
+
+static int luaMavsdkQShotSendCmdConfigure(lua_State *L)
+{
+  uint8_t mode = luaL_checkinteger(L, 1);
+  uint8_t shot_state = luaL_checkinteger(L, 2);
+  mavlinkTelem.sendQShotCmdConfigure(mode, shot_state);
+  return 0;
+}
+
+static int luaMavsdkQShotSendStatus(lua_State *L)
+{
+  uint8_t mode = luaL_checkinteger(L, 1);
+  uint8_t shot_state = luaL_checkinteger(L, 2);
+  mavlinkTelem.sendQShotStatus(mode, shot_state);
+  return 0;
+}
+
+static int luaMavsdkQShotGetStatus(lua_State *L)
+{
+  lua_newtable(L);
+  lua_pushtableinteger(L, "mode", mavlinkTelem.qshot.mode);
+  lua_pushtableinteger(L, "shot_state", mavlinkTelem.qshot.shot_state);
+  return 1;
+}
+
+static int luaMavsdkQShotButtonState(lua_State *L)
+{
+  uint8_t button_state = luaL_checkinteger(L, 1);
+  mavlinkTelem.sendQShotButtonState(button_state);
   return 0;
 }
 
@@ -1162,6 +1195,11 @@ const luaL_Reg mavsdkLib[] = {
   { "gimbalClientSendCmdPitchYawDeg", luaMavsdkGimbalClientSendCmdPitchYawDeg },
   { "gimbalDeviceSendPitchYawDeg", luaMavsdkGimbalDeviceSendPitchYawDeg },
 
+  { "qshotSendCmdConfigure", luaMavsdkQShotSendCmdConfigure },
+  { "qshotSendStatus", luaMavsdkQShotSendStatus },
+  { "qshotGetStatus", luaMavsdkQShotGetStatus },
+  { "qshotButtonState", luaMavsdkQShotButtonState },
+
   { "cameraIsReceiving", luaMavsdkCameraIsReceiving },
   { "cameraIsInitialized", luaMavsdkCameraIsInitialized },
   { "cameraGetInfo", luaMavsdkCameraGetInfo },
@@ -1290,7 +1328,8 @@ const luaR_value_entry mavsdkConstants[] = {
   { "GMFLAGS_GCS_ACTIVE", MAV_STORM32_GIMBAL_MANAGER_FLAGS_CLIENT_GCS_ACTIVE },
   { "GMFLAGS_CAMERA_ACTIVE", MAV_STORM32_GIMBAL_MANAGER_FLAGS_CLIENT_CAMERA_ACTIVE },
   { "GMFLAGS_GCS2_ACTIVE", MAV_STORM32_GIMBAL_MANAGER_FLAGS_CLIENT_GCS2_ACTIVE },
-  { "GMFLAGS_CLIENT1_ACTIVE", MAV_STORM32_GIMBAL_MANAGER_FLAGS_CLIENT_CUSTOM1_ACTIVE },
+  { "GMFLAGS_CAMERA2_ACTIVE", MAV_STORM32_GIMBAL_MANAGER_FLAGS_CLIENT_CAMERA2_ACTIVE },
+  { "GMFLAGS_CLIENT_ACTIVE", MAV_STORM32_GIMBAL_MANAGER_FLAGS_CLIENT_CUSTOM_ACTIVE },
   { "GMFLAGS_CLIENT2_ACTIVE", MAV_STORM32_GIMBAL_MANAGER_FLAGS_CLIENT_CUSTOM2_ACTIVE },
   { "GMFLAGS_SET_SUPERVISON", MAV_STORM32_GIMBAL_MANAGER_FLAGS_SET_SUPERVISON },
   { "GMFLAGS_SET_RELEASE", MAV_STORM32_GIMBAL_MANAGER_FLAGS_SET_RELEASE },
@@ -1300,8 +1339,18 @@ const luaR_value_entry mavsdkConstants[] = {
   { "GMCLIENT_GCS", MAV_STORM32_GIMBAL_MANAGER_CLIENT_GCS },
   { "GMCLIENT_CAMERA", MAV_STORM32_GIMBAL_MANAGER_CLIENT_CAMERA },
   { "GMCLIENT_GCS2", MAV_STORM32_GIMBAL_MANAGER_CLIENT_GCS2 },
-  { "GMCLIENT_CUSTOM1", MAV_STORM32_GIMBAL_MANAGER_CLIENT_CUSTOM1 },
+  { "GMCLIENT_CAMERA2", MAV_STORM32_GIMBAL_MANAGER_CLIENT_CAMERA2 },
+  { "GMCLIENT_CUSTOM", MAV_STORM32_GIMBAL_MANAGER_CLIENT_CUSTOM },
   { "GMCLIENT_CUSTOM2", MAV_STORM32_GIMBAL_MANAGER_CLIENT_CUSTOM2 },
+
+  { "QSHOT_MODE_UNDEFINED", MAV_QSHOT_MODE_UNDEFINED },
+  { "QSHOT_MODE_DEFAULT", MAV_QSHOT_MODE_DEFAULT },
+  { "QSHOT_MODE_RETRACT", MAV_QSHOT_MODE_GIMBAL_RETRACT },
+  { "QSHOT_MODE_NEUTRAL", MAV_QSHOT_MODE_GIMBAL_NEUTRAL },
+  { "QSHOT_MODE_RC_CONTROL", MAV_QSHOT_MODE_GIMBAL_RC_CONTROL },
+  { "QSHOT_MODE_POI", MAV_QSHOT_MODE_POI_TARGETING },
+  { "QSHOT_MODE_SYSID", MAV_QSHOT_MODE_SYSID_TARGETING },
+  { "QSHOT_MODE_CABLECAM", MAV_QSHOT_MODE_CABLECAM_2POINT },
 
   { nullptr, 0 }  /* sentinel */
 };
