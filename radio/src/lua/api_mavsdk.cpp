@@ -272,7 +272,7 @@ static int luaMavsdkGimbalDeviceSendPitchYawDeg(lua_State *L)
   return 0;
 }
 
-// -- XSHOT --
+// -- QSHOT --
 
 static int luaMavsdkQShotSendCmdConfigure(lua_State *L)
 {

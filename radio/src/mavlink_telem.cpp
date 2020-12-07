@@ -208,7 +208,7 @@ void MavlinkTelem::generateCmdSetMessageInterval(uint8_t tsystem, uint8_t tcompo
 
 // -- Handle incoming MAVLink messages, which are for the Autopilot --
 
-// -- Handle incoming MAVLink messages, which are for X shots --
+// -- Handle incoming MAVLink messages, which are for QShots --
 
 
 // -- Main handler for incoming MAVLink messages --
