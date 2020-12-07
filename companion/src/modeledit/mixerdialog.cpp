@@ -52,8 +52,7 @@ MixerDialog::MixerDialog(QWidget *parent, ModelData & model, MixData * mixdata, 
 
   gvWeightGroup = new GVarGroup(ui->weightGV, ui->weightSB, ui->weightCB, md->weight, model, 100, -limit, limit);
   gvOffsetGroup = new GVarGroup(ui->offsetGV, ui->offsetSB, ui->offsetCB, md->sOffset, model, 0, -limit, limit);
-  curveGroup = new CurveGroup(ui->curveTypeCB, ui->curveGVarCB, ui->curveValueCB, ui->curveValueSB,
-                              md->curve, model, firmware->getCapability(HasMixerExpo) ? 0 : HIDE_EXPO);
+  curveGroup = new CurveReferenceUIManager(ui->curveTypeCB, ui->curveGVarCB, ui->curveValueSB, ui->curveValueCB, md->curve, model, this);
 
   ui->MixDR_CB->setChecked(md->noExpo == 0);
 
@@ -151,7 +150,6 @@ MixerDialog::~MixerDialog()
   delete ui;
   delete gvWeightGroup;
   delete gvOffsetGroup;
-  delete curveGroup;
 }
 
 void MixerDialog::changeEvent(QEvent *e)
