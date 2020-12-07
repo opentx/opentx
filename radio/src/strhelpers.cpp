@@ -351,16 +351,9 @@ char * getSwitchPositionName(char * dest, swsrc_t idx)
   }
 #endif
 
-#if defined(PCBSKY9X)
-  else if (idx <= SWSRC_REa) {
-    getStringAtIndex(s, STR_VSWITCHES, IDX_TRIMS_IN_STR_VSWITCHES+idx-SWSRC_FIRST_TRIM);
-  }
-#else
   else if (idx <= SWSRC_LAST_TRIM) {
     getStringAtIndex(s, STR_VSWITCHES, IDX_TRIMS_IN_STR_VSWITCHES+idx-SWSRC_FIRST_TRIM);
   }
-#endif
-
   else if (idx <= SWSRC_LAST_LOGICAL_SWITCH) {
     *s++ = 'L';
     strAppendUnsigned(s, idx-SWSRC_FIRST_LOGICAL_SWITCH+1, 2);
