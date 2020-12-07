@@ -1375,9 +1375,15 @@ void SetupPanel::populateThrottleTrimSwitchCB()
   lock = true;
   ui->throttleTrimSwitch->clear();
   int idx=0;
+  QString trim;
   for (int i=0; i<getBoardCapability(board, Board::NumTrims); i++, idx++) {
-    QString trim = RawSource(SOURCE_TYPE_TRIM, i).toString(model, &generalSettings);
-    trim = (trim == "TrmR") ? "TrmT" : (trim == "TrmT") ? "TrmR" : trim;
+    // here order is TERA instead of RETA
+    if (i == 0)
+      trim = RawSource(SOURCE_TYPE_TRIM, 2).toString(model, &generalSettings);
+    else if (i == 2)
+      trim = RawSource(SOURCE_TYPE_TRIM, 0).toString(model, &generalSettings);
+    else
+      trim = RawSource(SOURCE_TYPE_TRIM, i).toString(model, &generalSettings);
     ui->throttleTrimSwitch->addItem(trim, idx);
   }
 
