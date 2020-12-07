@@ -1,9 +1,11 @@
 <?xml version="1.0"?>
 <!-- 
   STORM32 and OLLIW additions
-  25. Nov. 2020
+  2. Dez. 2020
   All messages are technically WIP, but some are quite stable now. See comment to each. 
   The classification is "quite stable", "wip", "very wip".
+  A more detailed description of the concept underlying the STORM32 and QSHOT messages can be found here: 
+  http://www.olliw.eu/2020/mavlink-gimbal-protocol-v2/
 -->
 <mavlink>
   <!-- For ArduPilot, comment this, and include storm32.xml in ardupilotmega.xml (common.xml doesn't yet work)

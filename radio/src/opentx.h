@@ -33,6 +33,8 @@
 //OWEND
 
 /*
+v18 2020-12-07:
+mavlink storm32.xml, qshots
 v17 2020-10-15:
 mavlink submodule changed to main git repo, file generator added
 one needs to run mavgenerate_dialect.py to generate the mavlink c code files
@@ -48,7 +50,7 @@ modified files in radio/src/
     tasks.cpp:      1x
     gui/480x272/lcd.cpp:            1x
     gui/480x272/lcd.h:              1x
-    gui/480x272/model_setup.cpp:    4x
+    gui/480x272/model_setup.cpp:    3x
     lua/api_general.cpp:    3x
     lua/api_lcd.cpp:        2x
     targets/horus/board.cpp:        4x
@@ -60,6 +62,10 @@ modified files in radio/src/
     thirdparty/Lua/src/lrotable.h:  1x
 
 added files in radio/src/
+    mavlink_telem_autopilot.cpp
+    mavlink_telem_camera.cpp
+    mavlink_telem_gimbal.cpp
+    mavlink_telem_qshot.cpp
     mavlink_telem.cpp
     mavlink_telem.h
     lua/api_mavlink.cpp
