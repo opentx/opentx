@@ -35,7 +35,6 @@
 #define PHASE_FLAGS   0
 #define VBATT_X       (6*FW-1)
 #define VBATT_Y       (2*FH)
-#define VBATTUNIT_X   (VBATT_X-1)
 #define VBATTUNIT_Y   (3*FH)
 #define REBOOT_X      (20*FW-3)
 #define BAR_HEIGHT    (BOX_WIDTH-1l) // don't remove the l here to force 16bits maths on 9X
