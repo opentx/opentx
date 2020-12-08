@@ -284,9 +284,14 @@ inline bool isModulePXX1(uint8_t idx)
   return isModuleTypePXX1(g_model.moduleData[idx].type);
 }
 
+inline bool isModuleXJTLite(uint8_t idx)
+{
+  return g_model.moduleData[idx].type == MODULE_TYPE_XJT_LITE_PXX2;
+}
+
 inline bool isModulePXX2(uint8_t idx)
 {
-  return isModuleISRM(idx) || isModuleR9MAccess(idx);
+  return isModuleISRM(idx) || isModuleR9MAccess(idx) || isModuleXJTLite(idx);
 }
 
 inline bool isModuleRFAccess(uint8_t idx)
