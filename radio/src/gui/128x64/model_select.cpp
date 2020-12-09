@@ -83,7 +83,7 @@ void onModelSelectMenu(const char * result)
 void menuModelSelect(event_t event)
 {
   event_t _event_ = event;
-  if ((s_copyMode && EVT_KEY_MASK(event) == KEY_EXIT) || event == EVT_KEY_BREAK(KEY_EXIT) || IS_ROTARY_BREAK(event) || IS_ROTARY_LONG(event)) {
+  if ((s_copyMode && IS_KEY_EVT(event, KEY_EXIT)) || event == EVT_KEY_BREAK(KEY_EXIT) || IS_ROTARY_BREAK(event) || IS_ROTARY_LONG(event)) {
     _event_ = 0;
   }
 
