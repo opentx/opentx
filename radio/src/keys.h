@@ -46,8 +46,8 @@
 
 // normal order of events is: FIRST, LONG, REPEAT, REPEAT, ..., BREAK
 #define EVT_KEY_FIRST(key)             ((key)|_MSK_KEY_FIRST)  // fired when key is pressed
-#define EVT_KEY_LONG(key)              ((key)|_MSK_KEY_LONG)   // fired when key is held pressed for a while
 #define EVT_KEY_REPT(key)              ((key)|_MSK_KEY_REPT)   // fired when key is held pressed long enough, fires multiple times with increasing speed
+#define EVT_KEY_LONG(key)              ((key)|_MSK_KEY_LONG)   // fired when key is held pressed for a while
 #define EVT_KEY_BREAK(key)             ((key)|_MSK_KEY_BREAK)  // fired when key is released (short or long), but only if the event was not killed
 
 inline bool IS_KEY_FIRST(event_t evt)
