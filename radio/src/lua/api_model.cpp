@@ -1560,7 +1560,7 @@ Reset Telemetry Sensor parameters
 
 @retval nil
 
-@status current Introduced in 2.3.0
+@status current Introduced in 2.3.11
 */
 static int luaModelResetSensor(lua_State *L)
 {
