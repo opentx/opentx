@@ -91,10 +91,8 @@ QString CustomFunctionData::funcToString(const ModelData * model) const
     return tr("Background Music Pause");
   else if (func >= FuncAdjustGV1 && func <= FuncAdjustGVLast)
     return tr("Adjust %1").arg(RawSource(SOURCE_TYPE_GVAR, func-FuncAdjustGV1).toString(model));
-  else if (func == FuncSetFailsafeInternalModule)
-    return tr("SetFailsafe Int. Module");
-  else if (func == FuncSetFailsafeExternalModule)
-    return tr("SetFailsafe Ext. Module");
+  else if (func == FuncSetFailsafe)
+    return tr("Set Failsafe");
   else if (func == FuncRangeCheckInternalModule)
     return tr("RangeCheck Int. Module");
   else if (func == FuncRangeCheckExternalModule)

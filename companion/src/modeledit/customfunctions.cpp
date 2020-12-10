@@ -456,7 +456,7 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
       fswtchParamTime[i]->setTime(cfn.param);
       widgetsMask |= CUSTOM_FUNCTION_TIME_PARAM | CUSTOM_FUNCTION_ENABLE;
     }
-    else if (func >= FuncSetFailsafeInternalModule && func <= FuncBindExternalModule) {
+    else if (func >= FuncSetFailsafe && func <= FuncBindExternalModule) {
       widgetsMask |= CUSTOM_FUNCTION_ENABLE;
     }
     else if (func == FuncVolume || func == FuncBacklight) {
