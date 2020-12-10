@@ -335,6 +335,7 @@ if(ROTARY_ENCODER)
 endif()
 
 if(USB_CHARGER)
+  set(TARGET_SRC ${TARGET_SRC} usb_charger_driver.cpp)
   add_definitions(-DUSB_CHARGER)
 endif()
 
