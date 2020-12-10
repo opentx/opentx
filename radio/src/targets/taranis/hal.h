@@ -1424,6 +1424,16 @@
   #define PCBREV_RCC_AHB1Periph         0
 #endif
 
+
+// USB Charger
+#if defined(USB_CHARGER)
+  #define USB_CHARGER_RCC_AHB1Periph      RCC_AHB1Periph_GPIOB
+  #define USB_CHARGER_GPIO                GPIOB
+  #define USB_CHARGER_GPIO_PIN            GPIO_Pin_5  // PB.05
+#else
+  #define USB_CHARGER_RCC_AHB1Periph      0
+#endif
+
 // S.Port update connector
 #if defined(PCBXLITE)
   #define SPORT_MAX_BAUDRATE            250000 // not tested
@@ -1439,7 +1449,7 @@
   #define SPORT_UPDATE_PWR_GPIO_PIN     GPIO_Pin_3  // PB.03
   #define GPIO_SPORT_UPDATE_PWR_GPIO_ON  GPIO_SetBits
   #define GPIO_SPORT_UPDATE_PWR_GPIO_OFF GPIO_ResetBits
-#elif defined(PCBX7)
+#elif defined(RADIO_X7)
   #define SPORT_MAX_BAUDRATE            250000 // < 400000
   #define SPORT_UPDATE_RCC_AHB1Periph   RCC_AHB1Periph_GPIOB
   #define SPORT_UPDATE_PWR_GPIO         GPIOB

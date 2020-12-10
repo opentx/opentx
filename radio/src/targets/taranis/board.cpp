@@ -41,6 +41,24 @@ void watchdogInit(unsigned int duration)
   IWDG->KR = 0xCCCC;      // start
 }
 
+#if defined(USB_CHARGER)
+void usbChargerInit()
+{
+  GPIO_InitTypeDef GPIO_InitStructure;
+  GPIO_InitStructure.GPIO_Pin = USB_CHARGER_GPIO_PIN;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+  GPIO_Init(USB_CHARGER_GPIO, &GPIO_InitStructure);
+}
+
+bool usbChargerLed()
+{
+  return (GPIO_ReadInputDataBit(USB_CHARGER_GPIO, USB_CHARGER_GPIO_PIN) == Bit_RESET && usbPlugged());
+}
+#endif
+
 #if defined(SPORT_UPDATE_PWR_GPIO)
 void sportUpdateInit()
 {
@@ -92,7 +110,8 @@ void boardInit()
                          TRAINER_RCC_AHB1Periph |
                          TRAINER_MODULE_RCC_AHB1Periph |
                          BT_RCC_AHB1Periph |
-                         GYRO_RCC_AHB1Periph,
+                         GYRO_RCC_AHB1Periph |
+                         USB_CHARGER_RCC_AHB1Periph,
                          ENABLE);
 
   RCC_APB1PeriphClockCmd(ROTARY_ENCODER_RCC_APB1Periph |
@@ -191,6 +210,10 @@ void boardInit()
 
 #if defined(TOPLCD_GPIO)
   toplcdInit();
+#endif
+
+#if defined(USB_CHARGER)
+  usbChargerInit();
 #endif
 
   if (HAS_SPORT_UPDATE_CONNECTOR()) {

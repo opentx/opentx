@@ -863,6 +863,12 @@ void bluetoothDisable();
   #define IS_BLUETOOTH_CHIP_PRESENT()     (true)
 #endif
 
+// USB Charger
+#if defined(USB_CHARGER)
+void usbChargerInit();
+bool usbChargerLed();
+#endif
+
 // LED driver
 void ledInit();
 void ledOff();

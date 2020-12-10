@@ -429,6 +429,15 @@ void telemetryPortInit()
 {
 }
 
+void usbChargerInit()
+{
+}
+
+bool usbChargerLed()
+{
+  return false;
+}
+
 void sportUpdatePowerOn()
 {
 }
