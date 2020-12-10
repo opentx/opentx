@@ -26,8 +26,7 @@
 
 constexpr char MIMETYPE_TIMER[] = "application/x-companion-timer";
 
-class CommonItemModels;
-class RawItemFilteredModel;
+class RawSwitchFilterItemModel;
 
 namespace Ui {
   class Setup;
@@ -40,7 +39,7 @@ class TimerPanel : public ModelPanel
     Q_OBJECT
 
   public:
-    TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, GeneralSettings & generalSettings, Firmware * firmware, QWidget *prevFocus, RawItemFilteredModel * switchModel);
+    TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, GeneralSettings & generalSettings, Firmware * firmware, QWidget *prevFocus, RawSwitchFilterItemModel * switchModel);
     virtual ~TimerPanel();
 
     virtual void update();
@@ -51,11 +50,6 @@ class TimerPanel : public ModelPanel
     void on_value_editingFinished();
     void on_minuteBeep_toggled(bool checked);
     void on_name_editingFinished();
-    void onModelDataAboutToBeUpdated();
-    void onModelDataUpdateComplete();
-
-  signals:
-    void nameChanged();
 
   private:
     TimerData & timer;
@@ -131,7 +125,7 @@ class SetupPanel : public ModelPanel
     Q_OBJECT
 
   public:
-    SetupPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, CommonItemModels * commonItemModels);
+    SetupPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware);
     virtual ~SetupPanel();
 
     virtual void update();
@@ -139,6 +133,7 @@ class SetupPanel : public ModelPanel
   signals:
     void extendedLimitsToggled();
     void updated();
+    void timerUpdated();
 
   private slots:
     void on_name_editingFinished();
@@ -169,7 +164,6 @@ class SetupPanel : public ModelPanel
     void cmTimerPaste();
     void cmTimerMoveDown();
     void cmTimerMoveUp();
-    void onTimerNameChanged();
 
   private:
     Ui::Setup *ui;
@@ -191,9 +185,6 @@ class SetupPanel : public ModelPanel
     bool moveTimerDownAllowed() const;
     bool moveTimerUpAllowed() const;
     void swapTimerData(int idx1, int idx2);
-    CommonItemModels * commonItemModels;
-    RawItemFilteredModel * rawSwitchFilteredModel;
-    void updateItemModels();
-  };
+};
 
 #endif // _SETUP_H_

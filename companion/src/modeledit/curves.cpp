@@ -23,7 +23,6 @@
 #include "node.h"
 #include "edge.h"
 #include "helpers.h"
-#include "rawitemfilteredmodel.h"
 
 #define GFX_MARGIN 16
 
@@ -109,11 +108,10 @@ float curveSymmetricalX(float x, float coeff, float yMin, float yMid, float yMax
   return y;
 }
 
-CurvesPanel::CurvesPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, CommonItemModels * commonItemModels):
+Curves::Curves(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware):
   ModelPanel(parent, model, generalSettings, firmware),
   ui(new Ui::Curves),
-  currentCurve(0),
-  commonItemModels(commonItemModels)
+  currentCurve(0)
 {
   ui->setupUi(this);
 
@@ -232,12 +230,12 @@ CurvesPanel::CurvesPanel(QWidget * parent, ModelData & model, GeneralSettings & 
   lock = false;
 }
 
-CurvesPanel::~CurvesPanel()
+Curves::~Curves()
 {
   delete ui;
 }
 
-void CurvesPanel::editCurve()
+void Curves::editCurve()
 {
   QPushButton *button = (QPushButton *)sender();
   int index = button->property("index").toInt();
@@ -245,7 +243,7 @@ void CurvesPanel::editCurve()
   update();
 }
 
-void CurvesPanel::plotCurve(bool checked)
+void Curves::plotCurve(bool checked)
 {
   QCheckBox *chk = (QCheckBox *)sender();
   int index = chk->property("index").toInt();
@@ -253,7 +251,7 @@ void CurvesPanel::plotCurve(bool checked)
   updateCurve();
 }
 
-void CurvesPanel::update()
+void Curves::update()
 {
   lock = true;
 
@@ -268,12 +266,12 @@ void CurvesPanel::update()
   lock = false;
 }
 
-void CurvesPanel::setCurrentCurve(int index)
+void Curves::setCurrentCurve(int index)
 {
   currentCurve = index;
 }
 
-void CurvesPanel::updateCurveType()
+void Curves::updateCurveType()
 {
   lock = true;
 
@@ -299,7 +297,7 @@ void CurvesPanel::updateCurveType()
   lock = false;
 }
 
-void CurvesPanel::updateCurve()
+void Curves::updateCurve()
 {
   lock = true;
 
@@ -373,7 +371,7 @@ void CurvesPanel::updateCurve()
   lock = false;
 }
 
-void CurvesPanel::updateCurvePoints()
+void Curves::updateCurvePoints()
 {
   lock = true;
 
@@ -407,7 +405,7 @@ void CurvesPanel::updateCurvePoints()
   lock = false;
 }
 
-void CurvesPanel::onPointEdited()
+void Curves::onPointEdited()
 {
   if (!lock) {
     int index = sender()->property("index").toInt();
@@ -419,7 +417,7 @@ void CurvesPanel::onPointEdited()
   }
 }
 
-void CurvesPanel::onNodeMoved(int x, int y)
+void Curves::onNodeMoved(int x, int y)
 {
   if (!lock) {
     lock = true;
@@ -437,20 +435,20 @@ void CurvesPanel::onNodeMoved(int x, int y)
   }
 }
 
-void CurvesPanel::onNodeFocus()
+void Curves::onNodeFocus()
 {
   int index = sender()->property("index").toInt();
   spny[index]->setFocus();
 }
 
-void CurvesPanel::onNodeUnfocus()
+void Curves::onNodeUnfocus()
 {
   int index = sender()->property("index").toInt();
   spny[index]->clearFocus();
   updateCurve();
 }
 
-bool CurvesPanel::allowCurveType(int points, CurveData::CurveType type)
+bool Curves::allowCurveType(int points, CurveData::CurveType type)
 {
   int totalpoints = 0;
   for (int i = 0; i < maxCurves; i++) {
@@ -468,7 +466,7 @@ bool CurvesPanel::allowCurveType(int points, CurveData::CurveType type)
   }
 }
 
-void CurvesPanel::on_curvePoints_currentIndexChanged(int index)
+void Curves::on_curvePoints_currentIndexChanged(int index)
 {
   if (!lock) {
     int numpoints = ((QComboBox *)sender())->itemData(index).toInt();
@@ -491,7 +489,7 @@ void CurvesPanel::on_curvePoints_currentIndexChanged(int index)
   }
 }
 
-void CurvesPanel::on_curveCustom_currentIndexChanged(int index)
+void Curves::on_curveCustom_currentIndexChanged(int index)
 {
   if (!lock) {
     CurveData::CurveType type = (CurveData::CurveType)index;
@@ -515,23 +513,20 @@ void CurvesPanel::on_curveCustom_currentIndexChanged(int index)
   }
 }
 
-void CurvesPanel::on_curveSmooth_currentIndexChanged(int index)
+void Curves::on_curveSmooth_currentIndexChanged(int index)
 {
   model->curves[currentCurve].smooth = index;
   update();
 }
 
-void CurvesPanel::on_curveName_editingFinished()
+void Curves::on_curveName_editingFinished()
 {
-  if (ui->curveName->text() != model->curves[currentCurve].name) {
-    memset(model->curves[currentCurve].name, 0, sizeof(model->curves[currentCurve].name));
-    strcpy(model->curves[currentCurve].name, ui->curveName->text().toLatin1());
-    updateItemModels();
-    emit modified();
-  }
+  memset(model->curves[currentCurve].name, 0, sizeof(model->curves[currentCurve].name));
+  strcpy(model->curves[currentCurve].name, ui->curveName->text().toLatin1());
+  emit modified();
 }
 
-void CurvesPanel::resizeEvent(QResizeEvent *event)
+void Curves::resizeEvent(QResizeEvent *event)
 {
   QRect qr = ui->curvePreview->contentsRect();
   ui->curvePreview->scene()->setSceneRect(GFX_MARGIN, GFX_MARGIN, qr.width() - GFX_MARGIN * 2, qr.height() - GFX_MARGIN * 2);
@@ -539,7 +534,7 @@ void CurvesPanel::resizeEvent(QResizeEvent *event)
   ModelPanel::resizeEvent(event);
 }
 
-void CurvesPanel::on_curveType_currentIndexChanged(int index)
+void Curves::on_curveType_currentIndexChanged(int index)
 {
   unsigned int flags = templates[index].flags;
   ui->curveCoeffLabel->setVisible(flags & CURVE_COEFF_ENABLE);
@@ -553,7 +548,7 @@ void CurvesPanel::on_curveType_currentIndexChanged(int index)
   ui->yMin->setValue(-100);
 }
 
-void CurvesPanel::addTemplate(QString name, unsigned int flags, curveFunction function)
+void Curves::addTemplate(QString name, unsigned int flags, curveFunction function)
 {
   CurveCreatorTemplate tmpl;
   tmpl.name = name;
@@ -563,7 +558,7 @@ void CurvesPanel::addTemplate(QString name, unsigned int flags, curveFunction fu
   ui->curveType->addItem(name);
 }
 
-void CurvesPanel::on_curveApply_clicked()
+void Curves::on_curveApply_clicked()
 {
   int index = ui->curveType->currentIndex();
   int numpoints = model->curves[currentCurve].count;
@@ -600,14 +595,14 @@ void CurvesPanel::on_curveApply_clicked()
   emit modified();
 }
 
-void CurvesPanel::onPointSizeEdited()
+void Curves::onPointSizeEdited()
 {
   if (!lock) {
     update();
   }
 }
 
-void CurvesPanel::onNodeDelete()
+void Curves::onNodeDelete()
 {
   int index = sender()->property("index").toInt();
   int numpoints = model->curves[currentCurve].count;
@@ -625,7 +620,7 @@ void CurvesPanel::onNodeDelete()
   }
 }
 
-void CurvesPanel::onSceneNewPoint(int x, int y)
+void Curves::onSceneNewPoint(int x, int y)
 {
   if ((model->curves[currentCurve].type == CurveData::CURVE_TYPE_CUSTOM) && (model->curves[currentCurve].count < CPN_MAX_POINTS)) {
     int newidx = 0;
@@ -656,7 +651,7 @@ void CurvesPanel::onSceneNewPoint(int x, int y)
   }
 }
 
-void CurvesPanel::onCustomContextMenuRequested(QPoint pos)
+void Curves::onCustomContextMenuRequested(QPoint pos)
 {
   QPushButton *button = (QPushButton *)sender();
   selectedIndex = button->property("index").toInt();
@@ -678,7 +673,7 @@ void CurvesPanel::onCustomContextMenuRequested(QPoint pos)
   contextMenu.exec(globalPos);
 }
 
-bool CurvesPanel::hasClipboardData(QByteArray * data) const
+bool Curves::hasClipboardData(QByteArray * data) const
 {
   const QClipboard * clipboard = QApplication::clipboard();
   const QMimeData * mimeData = clipboard->mimeData();
@@ -690,22 +685,22 @@ bool CurvesPanel::hasClipboardData(QByteArray * data) const
   return false;
 }
 
-bool CurvesPanel::insertAllowed() const
+bool Curves::insertAllowed() const
 {
   return ((selectedIndex < maxCurves - 1) && (model->curves[maxCurves - 1].isEmpty()));
 }
 
-bool CurvesPanel::moveDownAllowed() const
+bool Curves::moveDownAllowed() const
 {
   return selectedIndex < maxCurves - 1;
 }
 
-bool CurvesPanel::moveUpAllowed() const
+bool Curves::moveUpAllowed() const
 {
   return selectedIndex > 0;
 }
 
-void CurvesPanel::cmClear(bool prompt)
+void Curves::cmClear(bool prompt)
 {
   if (prompt) {
     if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Clear Curve. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
@@ -715,11 +710,10 @@ void CurvesPanel::cmClear(bool prompt)
   model->curves[selectedIndex].clear();
   model->updateAllReferences(ModelData::REF_UPD_TYPE_CURVE, ModelData::REF_UPD_ACT_CLEAR, selectedIndex);
   update();
-  updateItemModels();
   emit modified();
 }
 
-void CurvesPanel::cmClearAll()
+void Curves::cmClearAll()
 {
   if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Clear all Curves. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
     return;
@@ -729,11 +723,10 @@ void CurvesPanel::cmClearAll()
     model->updateAllReferences(ModelData::REF_UPD_TYPE_CURVE, ModelData::REF_UPD_ACT_CLEAR, i);
   }
   update();
-  updateItemModels();
   emit modified();
 }
 
-void CurvesPanel::cmCopy()
+void Curves::cmCopy()
 {
   QByteArray data;
   data.append((char*)&model->curves[selectedIndex], sizeof(CurveData));
@@ -742,7 +735,7 @@ void CurvesPanel::cmCopy()
   QApplication::clipboard()->setMimeData(mimeData,QClipboard::Clipboard);
 }
 
-void CurvesPanel::cmCut()
+void Curves::cmCut()
 {
   if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Cut Curve. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
     return;
@@ -750,7 +743,7 @@ void CurvesPanel::cmCut()
   cmClear(false);
 }
 
-void CurvesPanel::cmDelete()
+void Curves::cmDelete()
 {
   if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Delete Curve. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
     return;
@@ -759,43 +752,40 @@ void CurvesPanel::cmDelete()
   model->curves[maxCurves - 1].clear();
   model->updateAllReferences(ModelData::REF_UPD_TYPE_CURVE, ModelData::REF_UPD_ACT_SHIFT, selectedIndex, 0, -1);
   update();
-  updateItemModels();
   emit modified();
 }
 
-void CurvesPanel::cmInsert()
+void Curves::cmInsert()
 {
   memmove(&model->curves[selectedIndex + 1], &model->curves[selectedIndex], (CPN_MAX_CURVES - (selectedIndex + 1)) * sizeof(CurveData));
   model->curves[selectedIndex].clear();
   model->updateAllReferences(ModelData::REF_UPD_TYPE_CURVE, ModelData::REF_UPD_ACT_SHIFT, selectedIndex, 0, 1);
   update();
-  updateItemModels();
   emit modified();
 }
 
-void CurvesPanel::cmMoveDown()
+void Curves::cmMoveDown()
 {
   swapData(selectedIndex, selectedIndex + 1);
 }
 
-void CurvesPanel::cmMoveUp()
+void Curves::cmMoveUp()
 {
   swapData(selectedIndex, selectedIndex - 1);
 }
 
-void CurvesPanel::cmPaste()
+void Curves::cmPaste()
 {
   QByteArray data;
   if (hasClipboardData(&data)) {
     CurveData *cd = &model->curves[selectedIndex];
     memcpy(cd, data.constData(), sizeof(CurveData));
     update();
-    updateItemModels();
     emit modified();
   }
 }
 
-void CurvesPanel::swapData(int idx1, int idx2)
+void Curves::swapData(int idx1, int idx2)
 {
   if ((idx1 != idx2) && (!model->curves[idx1].isEmpty() || !model->curves[idx2].isEmpty())) {
     CurveData cdtmp = model->curves[idx2];
@@ -805,14 +795,8 @@ void CurvesPanel::swapData(int idx1, int idx2)
     memcpy(cd1, &cdtmp, sizeof(CurveData));
     model->updateAllReferences(ModelData::REF_UPD_TYPE_CURVE, ModelData::REF_UPD_ACT_SWAP, idx1, idx2);
     update();
-    updateItemModels();
     emit modified();
   }
-}
-
-void CurvesPanel::updateItemModels()
-{
-  commonItemModels->update(CommonItemModels::RMO_CURVES);
 }
 
 CustomScene::CustomScene(QGraphicsView * view) :

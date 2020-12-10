@@ -59,7 +59,7 @@ QString RawSwitch::toString(Board::Type board, const GeneralSettings * const gen
     tr("THs"), tr("TH%"), tr("THt")
   };
 
-  static const QStringList directionIndicators = QStringList()
+  const QStringList directionIndicators = QStringList()
       << CPN_STR_SW_INDICATOR_UP
       << CPN_STR_SW_INDICATOR_NEUT
       << CPN_STR_SW_INDICATOR_DN;
