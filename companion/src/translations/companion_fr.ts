@@ -845,127 +845,127 @@ Manche Droit:  Profondeur, Direction
     <message>
         <location filename="../modeledit/channels.cpp" line="113"/>
         <source>Name</source>
-        <translation type="unfinished">Nom</translation>
+        <translation>Nom</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="115"/>
         <source>Subtrim</source>
-        <translation type="unfinished">Subtrim</translation>
+        <translation>Subtrim</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="115"/>
         <source>Min</source>
-        <translation type="unfinished">Min</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="115"/>
         <source>Max</source>
-        <translation type="unfinished">Max</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="115"/>
         <source>Direction</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="117"/>
         <source>Curve</source>
-        <translation type="unfinished">Courbe</translation>
+        <translation>Courbe</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="119"/>
         <source>PPM Center</source>
-        <translation type="unfinished">Neutre PPM</translation>
+        <translation>Neutre PPM</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="121"/>
         <source>Linear Subtrim</source>
-        <translation type="unfinished">Subtrim linéaire</translation>
+        <translation>Subtrim linéaire</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="129"/>
         <source>CH%1</source>
-        <translation type="unfinished">VOIE%1</translation>
+        <translation>VOIE%1</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="133"/>
         <source>Popup menu available</source>
-        <translation type="unfinished">Menu contextuel disponible</translation>
+        <translation>Menu contextuel disponible</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="160"/>
         <source>---</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="160"/>
         <source>INV</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="331"/>
         <source>Delete Channel. Are you sure?</source>
-        <translation type="unfinished">Supprimer la Voie. Êtes-vous sûr?</translation>
+        <translation>Supprimer la Voie. Êtes-vous sûr?</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="357"/>
         <source>Cut Channel. Are you sure?</source>
-        <translation type="unfinished">Couper la Voie. Êtes-vous sûr?</translation>
+        <translation>Couper la Voie. Êtes-vous sûr?</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="371"/>
         <source>Copy</source>
-        <translation type="unfinished">Copier</translation>
+        <translation>Copier</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="372"/>
         <source>Cut</source>
-        <translation type="unfinished">Couper</translation>
+        <translation>Couper</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="373"/>
         <source>Paste</source>
-        <translation type="unfinished">Coller</translation>
+        <translation>Coller</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="374"/>
         <source>Clear</source>
-        <translation type="unfinished">Effacer</translation>
+        <translation>Effacer</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="376"/>
         <source>Insert</source>
-        <translation type="unfinished">Insérer</translation>
+        <translation>Insérer</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="377"/>
         <source>Delete</source>
-        <translation type="unfinished">Supprimer</translation>
+        <translation>Supprimer</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="378"/>
         <source>Move Up</source>
-        <translation type="unfinished">Monter</translation>
+        <translation>Monter</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="379"/>
         <source>Move Down</source>
-        <translation type="unfinished">Descendre</translation>
+        <translation>Descendre</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="381"/>
         <source>Clear All</source>
-        <translation type="unfinished">Effacer Tout</translation>
+        <translation>Effacer Tout</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="426"/>
         <source>Clear Channel. Are you sure?</source>
-        <translation type="unfinished">Effacer la Voie. Êtes-vous sûr?</translation>
+        <translation>Effacer la Voie. Êtes-vous sûr?</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="439"/>
         <source>Clear all Channels. Are you sure?</source>
-        <translation type="unfinished">Effacer toutes les Voies. Êtes-vous sûr?</translation>
+        <translation>Effacer toutes les Voies. Êtes-vous sûr?</translation>
     </message>
 </context>
 <context>
@@ -1480,112 +1480,112 @@ Si vous avez un fichier de sauvegarde des paramètres, vous pouvez l&apos;import
     <message>
         <location filename="../modeledit/curves.cpp" line="161"/>
         <source>Curve %1</source>
-        <translation type="unfinished">Courbe %1</translation>
+        <translation>Courbe %1</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="163"/>
         <source>Popup menu available</source>
-        <translation type="unfinished">Menu contextuel disponible</translation>
+        <translation>Menu contextuel disponible</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="216"/>
         <source>%1 points</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="220"/>
         <source>Linear</source>
-        <translation type="unfinished">Linéaire</translation>
+        <translation>Linéaire</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="221"/>
         <source>Single Expo</source>
-        <translation type="unfinished">Expo simple</translation>
+        <translation>Expo simple</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="222"/>
         <source>Symmetrical f(x)=-f(-x)</source>
-        <translation type="unfinished">Symétrique f(x)=-f(-x)</translation>
+        <translation>Symétrique f(x)=-f(-x)</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="223"/>
         <source>Symmetrical f(x)=f(-x)</source>
-        <translation type="unfinished">Symétrique f(x)=f(-x)</translation>
+        <translation>Symétrique f(x)=f(-x)</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="318"/>
         <source>Editing curve %1</source>
-        <translation type="unfinished">Édition de la courbe %1</translation>
+        <translation>Édition de la courbe %1</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="463"/>
         <source>Not enough free points in EEPROM to store the curve.</source>
-        <translation type="unfinished">Pas assez de points disponibles en mémoire pour enregistrer la courbe.</translation>
+        <translation>Pas assez de points disponibles en mémoire pour enregistrer la courbe.</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="666"/>
         <source>Copy</source>
-        <translation type="unfinished">Copier</translation>
+        <translation>Copier</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="667"/>
         <source>Cut</source>
-        <translation type="unfinished">Couper</translation>
+        <translation>Couper</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="668"/>
         <source>Paste</source>
-        <translation type="unfinished">Coller</translation>
+        <translation>Coller</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="669"/>
         <source>Clear</source>
-        <translation type="unfinished">Effacer</translation>
+        <translation>Effacer</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="671"/>
         <source>Insert</source>
-        <translation type="unfinished">Insérer</translation>
+        <translation>Insérer</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="672"/>
         <source>Delete</source>
-        <translation type="unfinished">Supprimer</translation>
+        <translation>Supprimer</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="673"/>
         <source>Move Up</source>
-        <translation type="unfinished">Monter</translation>
+        <translation>Monter</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="674"/>
         <source>Move Down</source>
-        <translation type="unfinished">Descendre</translation>
+        <translation>Descendre</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="676"/>
         <source>Clear All</source>
-        <translation type="unfinished">Effacer Tout</translation>
+        <translation>Effacer Tout</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="711"/>
         <source>Clear Curve. Are you sure?</source>
-        <translation type="unfinished">Effacer la Courbe. Êtes-vous sûr?</translation>
+        <translation>Effacer la Courbe. Êtes-vous sûr?</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="724"/>
         <source>Clear all Curves. Are you sure?</source>
-        <translation type="unfinished">Effacer toutes les Courbes. Êtes-vous sûr?</translation>
+        <translation>Effacer toutes les Courbes. Êtes-vous sûr?</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="747"/>
         <source>Cut Curve. Are you sure?</source>
-        <translation type="unfinished">Couper la Courbe. Êtes-vous sûr?</translation>
+        <translation>Couper la Courbe. Êtes-vous sûr?</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="755"/>
         <source>Delete Curve. Are you sure?</source>
-        <translation type="unfinished">Supprimer la Courbe. Êtes-vous sûr?</translation>
+        <translation>Supprimer la Courbe. Êtes-vous sûr?</translation>
     </message>
 </context>
 <context>
@@ -3043,7 +3043,7 @@ Blanc signifie &quot;inclure tous&quot;.Les métacaractères ?, * et [...] sont 
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1304"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1311"/>
         <source>Support hardware mod: R9M ACCESS</source>
-        <translation type="unfinished"></translation>
+        <translation>Prise en charge du mod hardware: R9M ACCESS</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1253"/>
@@ -3136,12 +3136,12 @@ Blanc signifie &quot;inclure tous&quot;.Les métacaractères ?, * et [...] sont 
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1288"/>
         <source>Radiomaster TX12</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1298"/>
         <source>Radiomaster TX16S / SE / Hall / Masterfire</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1321"/>
