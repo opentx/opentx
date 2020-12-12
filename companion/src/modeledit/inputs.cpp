@@ -37,6 +37,8 @@ InputsPanel::InputsPanel(QWidget *parent, ModelData & model, GeneralSettings & g
   connect(rawSwitchFilteredModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &InputsPanel::onModelDataAboutToBeUpdated);
   connect(rawSwitchFilteredModel, &RawItemFilteredModel::dataUpdateComplete, this, &InputsPanel::onModelDataUpdateComplete);
 
+  curveFilteredModel = new RawItemFilteredModel(commonItemModels->curveItemModel(), RawItemFilteredModel::AllFilter, this);
+
   inputsCount = firmware->getCapability(VirtualInputs);
   if (inputsCount == 0)
     inputsCount = CPN_MAX_STICKS;
@@ -190,7 +192,7 @@ void InputsPanel::gm_openExpo(int index)
   if (firmware->getCapability(VirtualInputs))
     inputName = model->inputNames[ed.chn];
 
-  ExpoDialog *dlg = new ExpoDialog(this, *model, &ed, generalSettings, firmware, inputName, rawSourceFilteredModel, rawSwitchFilteredModel);
+  ExpoDialog *dlg = new ExpoDialog(this, *model, &ed, generalSettings, firmware, inputName, rawSourceFilteredModel, rawSwitchFilteredModel, curveFilteredModel);
   if (dlg->exec())  {
     model->expoData[index] = ed;
     if (firmware->getCapability(VirtualInputs))

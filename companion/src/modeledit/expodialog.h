@@ -38,7 +38,7 @@ class ExpoDialog : public QDialog {
   public:
     ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expodata, GeneralSettings & generalSettings,
                 Firmware * firmware, QString & inputName, RawItemFilteredModel * rawSourceItemModel,
-                RawItemFilteredModel * rawSwitchItemModel);
+                RawItemFilteredModel * rawSwitchItemModel, RawItemFilteredModel * curveItemModel);
     ~ExpoDialog();
 
   protected:
