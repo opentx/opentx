@@ -241,10 +241,12 @@ inline bool MULTIMODULE_HAS_SUBTYPE(uint8_t moduleIdx)
   }
   else
   {
-    if (g_model.moduleData[moduleIdx].getMultiProtocol() > MODULE_SUBTYPE_MULTI_LAST)
+    if (g_model.moduleData[moduleIdx].getMultiProtocol() > MODULE_SUBTYPE_MULTI_LAST) {
       return true;
-    else
-      return getMultiProtocolDefinition(g_model.moduleData[moduleIdx].getMultiProtocol())->maxSubtype > 0;
+    }
+    else {
+      return getMultiProtocolDefinition(g_model.moduleData[moduleIdx].getMultiProtocol())->subTypeString != nullptr;
+    }
   }
 }
 
