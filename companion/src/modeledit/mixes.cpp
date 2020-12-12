@@ -38,6 +38,8 @@ MixesPanel::MixesPanel(QWidget *parent, ModelData & model, GeneralSettings & gen
   connect(rawSwitchFilteredModel, &RawItemFilteredModel::dataUpdateComplete, this, &MixesPanel::onModelDataUpdateComplete);
 
   curveFilteredModel = new RawItemFilteredModel(commonItemModels->curveItemModel(), RawItemFilteredModel::AllFilter, this);
+  connect(curveFilteredModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &MixesPanel::onModelDataAboutToBeUpdated);
+  connect(curveFilteredModel, &RawItemFilteredModel::dataUpdateComplete, this, &MixesPanel::onModelDataUpdateComplete);
 
   QGridLayout * mixesLayout = new QGridLayout(this);
 

@@ -38,6 +38,8 @@ InputsPanel::InputsPanel(QWidget *parent, ModelData & model, GeneralSettings & g
   connect(rawSwitchFilteredModel, &RawItemFilteredModel::dataUpdateComplete, this, &InputsPanel::onModelDataUpdateComplete);
 
   curveFilteredModel = new RawItemFilteredModel(commonItemModels->curveItemModel(), RawItemFilteredModel::AllFilter, this);
+  connect(curveFilteredModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &InputsPanel::onModelDataAboutToBeUpdated);
+  connect(curveFilteredModel, &RawItemFilteredModel::dataUpdateComplete, this, &InputsPanel::onModelDataUpdateComplete);
 
   inputsCount = firmware->getCapability(VirtualInputs);
   if (inputsCount == 0)
