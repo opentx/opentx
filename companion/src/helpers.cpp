@@ -235,26 +235,6 @@ void Helpers::populateGVCB(QComboBox & b, int value, const ModelData & model)
     b.setCurrentIndex(count);
 }
 
-// Returns Diff/Expo/Weight/Offset adjustment value as either a percentage or a global variable name.
-QString Helpers::getAdjustmentString(int16_t val, const ModelData * model, bool sign)
-{
-  QString ret;
-  if (val >= -10000 && val <= 10000) {
-    ret = "%1%";
-    if (sign && val > 0)
-      ret.prepend("+");
-    ret = ret.arg(val);
-  }
-  else {
-    ret = RawSource(SOURCE_TYPE_GVAR, abs(val) - 10001).toString(model);
-    if (val < 0)
-      ret.prepend("-");
-    else if (sign)
-      ret.prepend("+");
-  }
-  return ret;
-}
-
 // TODO: Move lookup to GVarData class (w/out combobox)
 void Helpers::populateGvarUseCB(QComboBox * b, unsigned int phase)
 {
