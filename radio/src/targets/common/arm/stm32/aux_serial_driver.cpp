@@ -128,7 +128,7 @@ void auxSerialInit(unsigned int mode, unsigned int protocol)
       break;
 
     case UART_MODE_SBUS_TRAINER:
-      auxSerialSetup(SBUS_BAUDRATE, false, USART_WordLength_9b, USART_Parity_Even, USART_StopBits_2); // 2 stop bits requires USART_WordLength_9b
+      auxSerialSetup(SBUS_BAUDRATE, true, USART_WordLength_9b, USART_Parity_Even, USART_StopBits_2); // 2 stop bits requires USART_WordLength_9b
       AUX_SERIAL_POWER_ON();
       break;
 
