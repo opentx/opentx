@@ -10,10 +10,10 @@ standard_chars = """ !"#$%&'()*+,-./0123456789:;<=>?°ABCDEFGHIJKLMNOPQRSTUVWXYZ
 extra_chars = "".join([chr(0x10000+i) for i in range(21)])
 
 
-def chinese_chars():
+def cjk_chars(lang):
     charset = set()
     tools_path = os.path.dirname(os.path.realpath(__file__))
-    with open(os.path.join(tools_path, "../radio/src/translations/cn.h.txt"), encoding='utf-8') as f:
+    with open(os.path.join(tools_path, "../radio/src/translations/%s.h.txt" % lang), encoding='utf-8') as f:
         data = f.read()
         for c in data:
             if 0x4E00 <= ord(c) <= 0x9FFF:
@@ -36,7 +36,8 @@ special_chars = {
     "pl": "ąćęłńóśżźĄĆĘŁŃÓŚŻŹ",
     "pt": "ÁáÂâÃãÀàÇçÉéÊêÍíÓóÔôÕõÚú",
     "se": "åäöÅÄÖ",
-    "cn": "".join(chinese_chars())
+    "cn": "".join(cjk_chars("cn")),
+    "tw": "".join(cjk_chars("tw")),
 }
 
 subset_lowercase = {

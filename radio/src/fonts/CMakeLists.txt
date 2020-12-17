@@ -11,6 +11,8 @@ set(CJK_FONT_BOLD "Noto/NotoSansCJKsc-Bold")
 
 if(TRANSLATIONS STREQUAL CN)
   set(subset all)
+elseif(TRANSLATIONS STREQUAL TW)
+  set(subset all)
 else()
   string(TOLOWER ${TRANSLATIONS} subset)
 endif()
