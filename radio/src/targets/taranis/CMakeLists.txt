@@ -140,6 +140,7 @@ elseif(PCB STREQUAL X7)
     set(ROTARY_ENCODER YES)
     set(LUA_EXPORT lua_export_tx12)
     set(BLUETOOTH NO)
+    set(USB_CHARGER YES)
     add_definitions(-DRADIO_TX12)
     add_definitions(-DEEPROM_VARIANT=0x4002)
     add_definitions(-DMANUFACTURER_RADIOMASTER)
@@ -331,6 +332,11 @@ if(ROTARY_ENCODER)
     ${TARGET_SRC}
     ../common/arm/stm32/rotary_encoder_driver.cpp
     )
+endif()
+
+if(USB_CHARGER)
+  set(TARGET_SRC ${TARGET_SRC} usb_charger_driver.cpp)
+  add_definitions(-DUSB_CHARGER)
 endif()
 
 if(BLUETOOTH)

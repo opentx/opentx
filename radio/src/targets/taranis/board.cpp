@@ -92,7 +92,8 @@ void boardInit()
                          TRAINER_RCC_AHB1Periph |
                          TRAINER_MODULE_RCC_AHB1Periph |
                          BT_RCC_AHB1Periph |
-                         GYRO_RCC_AHB1Periph,
+                         GYRO_RCC_AHB1Periph |
+                         USB_CHARGER_RCC_AHB1Periph,
                          ENABLE);
 
   RCC_APB1PeriphClockCmd(ROTARY_ENCODER_RCC_APB1Periph |
@@ -191,6 +192,10 @@ void boardInit()
 
 #if defined(TOPLCD_GPIO)
   toplcdInit();
+#endif
+
+#if defined(USB_CHARGER)
+  usbChargerInit();
 #endif
 
   if (HAS_SPORT_UPDATE_CONNECTOR()) {
