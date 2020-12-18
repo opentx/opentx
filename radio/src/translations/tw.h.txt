@@ -256,18 +256,18 @@
 #define LEN_VSWITCHES                   "\003"
 #define LEN_VSRCRAW                     "\004"
 
-#define TR_STICKS_VSRCRAW               "\207Rud" "\207Ele" "\207Thr" "\207Ail"
+#define TR_STICKS_VSRCRAW                STR_CHAR_STICK "Rud"  STR_CHAR_STICK "Ele"  STR_CHAR_STICK "Thr"  STR_CHAR_STICK "Ail"
 
 #if defined(PCBHORUS)
-  #define TR_TRIMS_VSRCRAW              "\213Rud" "\213Ele" "\213Thr" "\213Ail" "\213T5\0" "\213T6\0"
+  #define TR_TRIMS_VSRCRAW               STR_CHAR_TRIM "Rud"  STR_CHAR_TRIM "Ele"  STR_CHAR_TRIM "Thr"  STR_CHAR_TRIM "Ail"  STR_CHAR_TRIM "T5\0"  STR_CHAR_TRIM "T6\0"
 #else
-  #define TR_TRIMS_VSRCRAW              "\213Rud" "\213Ele" "\213Thr" "\213Ail"
+  #define TR_TRIMS_VSRCRAW               STR_CHAR_TRIM "Rud"  STR_CHAR_TRIM "Ele"  STR_CHAR_TRIM "Thr"  STR_CHAR_TRIM "Ail"
 #endif
 
 #if defined(PCBHORUS)
-  #define TR_TRIMS_SWITCHES             "\213Rl" "\213Rr" "\213Ed" "\213Eu" "\213Td" "\213Tu" "\213Al" "\213Ar" "\2135d" "\2135u" "\2136d" "\2136u"
+  #define TR_TRIMS_SWITCHES              STR_CHAR_TRIM "Rl"  STR_CHAR_TRIM "Rr"  STR_CHAR_TRIM "Ed"  STR_CHAR_TRIM "Eu"  STR_CHAR_TRIM "Td"  STR_CHAR_TRIM "Tu"  STR_CHAR_TRIM "Al"  STR_CHAR_TRIM "Ar"  STR_CHAR_TRIM "5d"  STR_CHAR_TRIM "5u"  STR_CHAR_TRIM "6d"  STR_CHAR_TRIM "6u"
 #else
-  #define TR_TRIMS_SWITCHES             TR("tRl" "tRr" "tEd" "tEu" "tTd" "tTu" "tAl" "tAr", "\213Rl" "\213Rr" "\213Ed" "\213Eu" "\213Td" "\213Tu" "\213Al" "\213Ar")
+  #define TR_TRIMS_SWITCHES             TR("tRl" "tRr" "tEd" "tEu" "tTd" "tTu" "tAl" "tAr",  STR_CHAR_TRIM "Rl"  STR_CHAR_TRIM "Rr"  STR_CHAR_TRIM "Ed"  STR_CHAR_TRIM "Eu"  STR_CHAR_TRIM "Td"  STR_CHAR_TRIM "Tu"  STR_CHAR_TRIM "Al"  STR_CHAR_TRIM "Ar")
 #endif
 
 #define TR_ROTARY_ENCODERS
@@ -1129,19 +1129,19 @@
 #define TR_BAR1_COLOR                  "主條形圖顏色"
 #define TR_TEXT_COLOR                  "文本顏色"
 #define TR_TEXT_VIEWER                 "文本視圖"
-#define TR_MENU_INPUTS                 "\214輸入"
-#define TR_MENU_LUA                    "\222LUA腳本"
-#define TR_MENU_STICKS                 "\207搖桿"
-#define TR_MENU_POTS                   "\210旋鈕"
-#define TR_MENU_MAX                    "\215固定值MAX"
-#define TR_MENU_HELI                   "\216斜盤混控CYC"
-#define TR_MENU_TRIMS                  "\213微調"
-#define TR_MENU_SWITCHES               "\212開關"
-#define TR_MENU_LOGICAL_SWITCHES       "\212邏輯開關"
-#define TR_MENU_TRAINER                "\217教練"
-#define TR_MENU_CHANNELS               "\220通道"
-#define TR_MENU_GVARS                  "\211全局變量"
-#define TR_MENU_TELEMETRY              "\221回傳"
+#define TR_MENU_INPUTS                  STR_CHAR_INPUT "輸入"
+#define TR_MENU_LUA                     STR_CHAR_LUA "LUA腳本"
+#define TR_MENU_STICKS                  STR_CHAR_STICK "搖桿"
+#define TR_MENU_POTS                    STR_CHAR_POT "旋鈕"
+#define TR_MENU_MAX                     STR_CHAR_FUNCTION "固定值MAX"
+#define TR_MENU_HELI                    STR_CHAR_CYC "斜盤混控CYC"
+#define TR_MENU_TRIMS                   STR_CHAR_TRIM "微調"
+#define TR_MENU_SWITCHES                STR_CHAR_SWITCH "開關"
+#define TR_MENU_LOGICAL_SWITCHES        STR_CHAR_SWITCH "邏輯開關"
+#define TR_MENU_TRAINER                 STR_CHAR_TRAINER "教練"
+#define TR_MENU_CHANNELS                STR_CHAR_CHANNEL "通道"
+#define TR_MENU_GVARS                   STR_CHAR_SLIDER "全局變量"
+#define TR_MENU_TELEMETRY               STR_CHAR_TELEMETRY "回傳"
 #define TR_MENU_DISPLAY                "顯示"
 #define TR_MENU_OTHER                  "其它"
 #define TR_MENU_INVERT                 "反向"
