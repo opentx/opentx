@@ -15,7 +15,7 @@ def main():
     parser.add_argument("--reverse", help="Reversed char conversion (from number to char)", action="store_true")
     args = parser.parse_args()
 
-    if args.language != "all" and args.language not in special_chars:
+    if args.language not in special_chars:
         parser.error(args.language + ' is not a supported language. Try one of the supported ones: %s' % list(special_chars.keys()))
         sys.exit()
 

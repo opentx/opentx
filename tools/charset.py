@@ -54,7 +54,7 @@ subset_lowercase = {
 
 def get_chars(subset):
     result = standard_chars + extra_chars
-    if subset == "all":
+    if False: # subset == "all":
         for key, chars in special_chars.items():
             result += "".join([char for char in chars if char not in result])
     else:
@@ -65,11 +65,11 @@ def get_chars(subset):
 
 def get_chars_encoding(subset):
     result = {}
-    if subset == "all":
+    if subset in ("cn", "tw"):
         chars = get_chars(subset)
         for char in chars:
-            if char in special_chars["cn"]:
-                index = special_chars["cn"].index(char) + 1
+            if char in special_chars[subset]:
+                index = special_chars[subset].index(char) + 1
                 if index >= 0x100:
                     index += 1
                 result[char] = "\\%03o\\%03o" % (0xFE + ((index >> 8) & 0x01), index & 0xFF)
