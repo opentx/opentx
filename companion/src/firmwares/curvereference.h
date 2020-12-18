@@ -25,9 +25,11 @@
 #include <QComboBox>
 #include <QCheckBox>
 #include <QSpinBox>
+#include <QStandardItemModel>
 
 
 class ModelData;
+class RawItemFilteredModel;
 
 class CurveReference {
 
@@ -83,11 +85,12 @@ class CurveReferenceUIManager : public QObject {
   Q_OBJECT
 
   public:
-    CurveReferenceUIManager(QComboBox *curveValueCB, CurveReference & curve, const ModelData & model, QObject * parent = nullptr);
+    CurveReferenceUIManager(QComboBox *curveValueCB, CurveReference & curve, const ModelData & model,
+                            RawItemFilteredModel * curveItemModel, QObject * parent = nullptr);
     CurveReferenceUIManager(QComboBox *curveTypeCB, QCheckBox *curveGVarCB, QSpinBox *curveValueSB, QComboBox *curveValueCB,
-                            CurveReference & curve, const ModelData & model, QObject * parent = nullptr);
+                            CurveReference & curve, const ModelData & model, RawItemFilteredModel * curveItemModel, QObject * parent = nullptr);
     virtual ~CurveReferenceUIManager();
-    void init();
+    void init(RawItemFilteredModel * curveModel);
     void update();
 
   protected slots:
@@ -109,6 +112,8 @@ class CurveReferenceUIManager : public QObject {
     static int flags;
     static bool hasCapabilityGvars;
     static int numCurves;
+    static RawItemFilteredModel * curveItemModel;
+    static QStandardItemModel * tempModel;
 
     static void populateTypeCB(QComboBox * cb, const CurveReference & curveRef);
     static void populateValueCB(QComboBox * cb, const CurveReference & curveRef, const ModelData * model = nullptr);

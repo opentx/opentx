@@ -71,6 +71,7 @@ class MixesPanel : public ModelPanel
     CommonItemModels * commonItemModels;
     RawItemFilteredModel *rawSourceFilteredModel;
     RawItemFilteredModel *rawSwitchFilteredModel;
+    RawItemFilteredModel *curveFilteredModel;
 
     int getMixerIndex(unsigned int dch);
     bool gm_insertMix(int idx);

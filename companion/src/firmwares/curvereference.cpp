@@ -22,6 +22,7 @@
 #include "adjustmentreference.h"
 #include "helpers.h"
 #include "modeldata.h"
+#include "rawitemfilteredmodel.h"
 
 const QString CurveReference::toString(const ModelData * model, bool verbose) const
 {
@@ -109,11 +110,14 @@ constexpr int CURVE_REF_UI_HIDE_NEGATIVE_CURVES  { 0x04 };
 
 //  static
 bool CurveReferenceUIManager::firsttime { true };
-int CurveReferenceUIManager::flags{ 0 };
-bool CurveReferenceUIManager::hasCapabilityGvars{ false };
-int CurveReferenceUIManager::numCurves{ 0 };
+int CurveReferenceUIManager::flags { 0 };
+bool CurveReferenceUIManager::hasCapabilityGvars { false };
+int CurveReferenceUIManager::numCurves { 0 };
+RawItemFilteredModel * CurveReferenceUIManager::curveItemModel { nullptr };
+QStandardItemModel * CurveReferenceUIManager::tempModel { nullptr };
 
-CurveReferenceUIManager::CurveReferenceUIManager(QComboBox * curveValueCB, CurveReference & curve, const ModelData & model, QObject * parent) :
+CurveReferenceUIManager::CurveReferenceUIManager(QComboBox * curveValueCB, CurveReference & curve, const ModelData & model,
+                                                 RawItemFilteredModel * curveItemModel, QObject * parent) :
   QObject(parent),
   curveTypeCB(nullptr),
   curveGVarCB(nullptr),
@@ -123,11 +127,12 @@ CurveReferenceUIManager::CurveReferenceUIManager(QComboBox * curveValueCB, Curve
   model(model),
   lock(false)
 {
-  init();
+  init(curveItemModel);
 }
 
-CurveReferenceUIManager::CurveReferenceUIManager(QComboBox * curveTypeCB, QCheckBox * curveGVarCB, QSpinBox * curveValueSB, QComboBox * curveValueCB,
-                                                  CurveReference & curve, const ModelData & model, QObject * parent) :
+CurveReferenceUIManager::CurveReferenceUIManager(QComboBox * curveTypeCB, QCheckBox * curveGVarCB, QSpinBox * curveValueSB,
+                                                 QComboBox * curveValueCB, CurveReference & curve, const ModelData & model,
+                                                 RawItemFilteredModel * curveItemModel, QObject * parent) :
   QObject(parent),
   curveTypeCB(curveTypeCB),
   curveGVarCB(curveGVarCB),
@@ -137,20 +142,24 @@ CurveReferenceUIManager::CurveReferenceUIManager(QComboBox * curveTypeCB, QCheck
   model(model),
   lock(false)
 {
-  init();
+  init(curveItemModel);
 }
 
 CurveReferenceUIManager::~CurveReferenceUIManager()
 {
+  delete tempModel;
 }
 
-void CurveReferenceUIManager::init()
+void CurveReferenceUIManager::init(RawItemFilteredModel * curveModel)
 {
+  tempModel = new QStandardItemModel();
+
   if (firsttime) {
     firsttime = false;
     Firmware * fw = getCurrentFirmware();
     hasCapabilityGvars = fw->getCapability(Gvars);
     numCurves = fw->getCapability(NumCurves);
+    curveItemModel = curveModel;
 
     if (!fw->getCapability(HasInputDiff))
       flags |= (CURVE_REF_UI_HIDE_DIFF | CURVE_REF_UI_HIDE_NEGATIVE_CURVES);
@@ -276,23 +285,22 @@ void CurveReferenceUIManager::populateTypeCB(QComboBox * cb, const CurveReferenc
 void CurveReferenceUIManager::populateValueCB(QComboBox * cb, const CurveReference & curveRef, const ModelData * model)
 {
   if (cb) {
-    cb->clear();
+    cb->setModel(tempModel);  //  do not want to clear/alter the shared curves model and set to nullptr is invalid
 
     switch (curveRef.type) {
       case CurveReference::CURVE_REF_DIFF:
       case CurveReference::CURVE_REF_EXPO:
+        cb->clear();
         Helpers::populateGVCB(*cb, curveRef.value, *model);
         break;
       case CurveReference::CURVE_REF_FUNC:
+        cb->clear();
         for (int i = 1; i <= MAX_CURVE_REF_FUNC; i++) {
           cb->addItem(CurveReference::functionToString(i), i);
         }
         break;
       case CurveReference::CURVE_REF_CUSTOM:
-        //  TODO replace with ui datamodel
-        for (int i = ((flags & CURVE_REF_UI_HIDE_NEGATIVE_CURVES) ? 0 : -numCurves); i <= numCurves; i++) {
-          cb->addItem(CurveReference(CurveReference::CURVE_REF_CUSTOM, i).toString(model, false), i);
-        }
+        cb->setModel(curveItemModel);
         break;
       default:
         break;
