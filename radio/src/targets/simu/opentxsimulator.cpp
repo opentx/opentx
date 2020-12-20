@@ -222,7 +222,7 @@ void OpenTxSimulator::setTrim(unsigned int idx, int value)
       emit outputValueChange(OUTPUT_SRC_TRIM_VALUE, idx, 0);
       timer->deleteLater();
     });
-    timer->start(350);
+    timer->start(50);
   }
 }
 
