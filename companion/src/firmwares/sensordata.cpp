@@ -22,6 +22,7 @@
 
 #include "radiodata.h"
 #include "modeldata.h"
+#include "eeprominterface.h"
 
 void SensorData::updateUnit()
 {
@@ -117,4 +118,41 @@ QString SensorData::getOrigin(const ModelData * model) const
 bool SensorData::isEmpty() const
 {
   return (!isAvailable() && type == 0 && id == 0 && subid == 0 && instance == 0 && rxIdx == 0 && moduleIdx == 0 && unit == 0 && ratio == 0 && prec == 0 && offset == 0 && autoOffset == 0 && filter == 0 && onlyPositive == 0 && logs == 0);
+}
+
+//  static
+QString SensorData::sourceToString(const ModelData * model, const int index, const bool sign)
+{
+  if (model) {
+    const QString prfx = sign ? index < 0 ? "-" : "" : "";
+
+    if (abs(index) > 0) {
+      const SensorData &sd = model->sensorData[abs(index) - 1];
+      if (sd.type == SensorData::TELEM_TYPE_CUSTOM)
+        return QString("%1%2 (%3)").arg(prfx).arg(sd.label).arg(sd.getOrigin(model));
+      else
+        return QString("%1%2").arg(prfx).arg(sd.label);
+    }
+    else
+      return CPN_STR_NONE_ITEM;
+  }
+  else
+    return "";
+}
+
+//  static
+bool SensorData::isSourceAvailable(const ModelData * model, const int index)
+{
+  if (model) {
+    Firmware * firmware = getCurrentFirmware();
+    const int i = abs(index);
+    if (i <= firmware->getCapability(Sensors)) {
+      if (i > 0)
+        return model->sensorData[i - 1].isAvailable();
+      else
+        return true;
+    }
+  }
+
+  return false;
 }

@@ -168,6 +168,9 @@ class SensorData {
     QString getOrigin(const ModelData* model) const;
     void clear() { memset(this, 0, sizeof(SensorData)); }
     bool isEmpty() const;
+
+    static QString sourceToString(const ModelData * model, const int index, const bool sign = true);
+    static bool isSourceAvailable(const ModelData * model, const int index);
 };
 
 #endif // SENSORDATA_H
