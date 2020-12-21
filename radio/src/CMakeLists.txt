@@ -378,6 +378,7 @@ set(SRC
   strhelpers.cpp
   switches.cpp
   mixer.cpp
+  mixer_scheduler.cpp
   stamp.cpp
   timers.cpp
   trainer.cpp
