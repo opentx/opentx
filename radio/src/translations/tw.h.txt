@@ -138,7 +138,7 @@
   #define TR_CSWEQUAL                   "a=x\0  "
 
 #define LEN_VCSWFUNC                    "\006"
-#define TR_VCSWFUNC                     "---\0  " TR_CSWEQUAL "a~x\0  " "a>x\0  " "a<x\0  " TR_CSWRANGE "|a|>x\0" "|a|<x\0" "AND\0  " "OR\0   " "XOR\0  " TR_CSWSTAY "a=b\0  " "a>b\0  " "a<b\0  " "Δ}x\0  " "|Δ|}x\0" TR_CSWTIMER TR_CSWSTICKY
+#define TR_VCSWFUNC                     "---\0  " TR_CSWEQUAL "a~x\0  " "a>x\0  " "a<x\0  " TR_CSWRANGE "|a|>x\0" "|a|<x\0" "AND\0  " "OR\0   " "XOR\0  " TR_CSWSTAY "a=b\0  " "a>b\0  " "a<b\0  " STR_CHAR_DELTA "}x\0  " "|" STR_CHAR_DELTA "|}x\0" TR_CSWTIMER TR_CSWSTICKY
 
 #define LEN_VFSWFUNC                    "\020"
 
@@ -544,7 +544,7 @@
 #define TR_MENUHELISETUP                "直升機設置"
 
 #define TR_MENUINPUTS                   "輸入設置"
-#define TR_MENULIMITS                   "輸出這種"
+#define TR_MENULIMITS                   "輸出設置"
 #define TR_MENUCURVES                   "曲線設置"
 #define TR_MENUCURVE                    "曲線"
 #define TR_MENULOGICALSWITCH            "邏輯開關"
@@ -865,7 +865,7 @@
 #define TR_MODULE_RANGE                 BUTTON(TR("Rng", "測距"))
 #define TR_RECEIVER_OPTIONS             TR("REC. OPTIONS", "接收機選項")
 #define TR_DEL_BUTTON                   BUTTON(TR("Del", "刪除"))
-#define TR_RESET_BTN                    BUTTON("重啟")
+#define TR_RESET_BTN                   BUTTON("重啟")
 #define TR_DEBUG                       "調試"
 #define TR_KEYS_BTN                    BUTTON("按鍵")
 #define TR_ANALOGS_BTN                 BUTTON(TR("Anas", "類比"))
