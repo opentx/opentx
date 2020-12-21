@@ -37,9 +37,14 @@ MixesPanel::MixesPanel(QWidget *parent, ModelData & model, GeneralSettings & gen
   connect(rawSwitchFilteredModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &MixesPanel::onModelDataAboutToBeUpdated);
   connect(rawSwitchFilteredModel, &RawItemFilteredModel::dataUpdateComplete, this, &MixesPanel::onModelDataUpdateComplete);
 
-  curveFilteredModel = new RawItemFilteredModel(commonItemModels->curveItemModel(), RawItemFilteredModel::AllFilter, this);
+  const int filter = firmware->getCapability(HasMixerExpo) ? RawItemFilteredModel::AllFilter : RawItemFilteredModel::PositiveFilter;
+  curveFilteredModel = new RawItemFilteredModel(commonItemModels->curveItemModel(), filter, this);
   connect(curveFilteredModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &MixesPanel::onModelDataAboutToBeUpdated);
   connect(curveFilteredModel, &RawItemFilteredModel::dataUpdateComplete, this, &MixesPanel::onModelDataUpdateComplete);
+
+  gvarFilteredModel = new RawItemFilteredModel(commonItemModels->gvarItemModel(), RawItemFilteredModel::AllFilter, this);
+  connect(gvarFilteredModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &MixesPanel::onModelDataAboutToBeUpdated);
+  connect(gvarFilteredModel, &RawItemFilteredModel::dataUpdateComplete, this, &MixesPanel::onModelDataUpdateComplete);
 
   QGridLayout * mixesLayout = new QGridLayout(this);
 
@@ -189,7 +194,8 @@ void MixesPanel::gm_openMix(int index)
 
   MixData mixd(model->mixData[index]);
 
-  MixerDialog *dlg = new MixerDialog(this, *model, &mixd, generalSettings, firmware, rawSourceFilteredModel, rawSwitchFilteredModel, curveFilteredModel);
+  MixerDialog *dlg = new MixerDialog(this, *model, &mixd, generalSettings, firmware, rawSourceFilteredModel, rawSwitchFilteredModel,
+                                     curveFilteredModel, gvarFilteredModel);
   if(dlg->exec()) {
     model->mixData[index] = mixd;
     emit modified();

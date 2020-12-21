@@ -25,7 +25,7 @@
 
 ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, GeneralSettings & generalSettings,
                           Firmware * firmware, QString & inputName, RawItemFilteredModel * rawSourceModel,
-                          RawItemFilteredModel * rawSwitchModel, RawItemFilteredModel * curveItemModel) :
+                          RawItemFilteredModel * rawSwitchModel, RawItemFilteredModel * curveItemModel, RawItemFilteredModel * gvarItemModel) :
   QDialog(parent),
   ui(new Ui::ExpoDialog),
   model(model),
@@ -50,7 +50,8 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, G
 
   gvWeightGroup = new GVarGroup(ui->weightGV, ui->weightSB, ui->weightCB, ed->weight, model, 100, -100, 100);
   gvOffsetGroup = new GVarGroup(ui->offsetGV, ui->offsetSB, ui->offsetCB, ed->offset, model, 0, -100, 100);
-  curveGroup = new CurveReferenceUIManager(ui->curveTypeCB, ui->curveGVarCB, ui->curveValueSB, ui->curveValueCB, ed->curve, model, curveItemModel, this);
+  curveGroup = new CurveReferenceUIManager(ui->curveTypeCB, ui->curveGVarCB, ui->curveValueSB, ui->curveValueCB, ed->curve, model, curveItemModel,
+                                           gvarItemModel, this);
 
   ui->switchesCB->setModel(rawSwitchModel);
   ui->switchesCB->setCurrentIndex(ui->switchesCB->findData(ed->swtch.toValue()));

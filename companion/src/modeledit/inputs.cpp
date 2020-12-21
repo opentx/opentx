@@ -37,9 +37,14 @@ InputsPanel::InputsPanel(QWidget *parent, ModelData & model, GeneralSettings & g
   connect(rawSwitchFilteredModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &InputsPanel::onModelDataAboutToBeUpdated);
   connect(rawSwitchFilteredModel, &RawItemFilteredModel::dataUpdateComplete, this, &InputsPanel::onModelDataUpdateComplete);
 
-  curveFilteredModel = new RawItemFilteredModel(commonItemModels->curveItemModel(), RawItemFilteredModel::AllFilter, this);
+  const int filter = firmware->getCapability(HasInputDiff) ? RawItemFilteredModel::AllFilter : RawItemFilteredModel::PositiveFilter;
+  curveFilteredModel = new RawItemFilteredModel(commonItemModels->curveItemModel(), filter, this);
   connect(curveFilteredModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &InputsPanel::onModelDataAboutToBeUpdated);
   connect(curveFilteredModel, &RawItemFilteredModel::dataUpdateComplete, this, &InputsPanel::onModelDataUpdateComplete);
+
+  gvarFilteredModel = new RawItemFilteredModel(commonItemModels->gvarItemModel(), RawItemFilteredModel::AllFilter, this);
+  connect(gvarFilteredModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &InputsPanel::onModelDataAboutToBeUpdated);
+  connect(gvarFilteredModel, &RawItemFilteredModel::dataUpdateComplete, this, &InputsPanel::onModelDataUpdateComplete);
 
   inputsCount = firmware->getCapability(VirtualInputs);
   if (inputsCount == 0)
@@ -194,7 +199,8 @@ void InputsPanel::gm_openExpo(int index)
   if (firmware->getCapability(VirtualInputs))
     inputName = model->inputNames[ed.chn];
 
-  ExpoDialog *dlg = new ExpoDialog(this, *model, &ed, generalSettings, firmware, inputName, rawSourceFilteredModel, rawSwitchFilteredModel, curveFilteredModel);
+  ExpoDialog *dlg = new ExpoDialog(this, *model, &ed, generalSettings, firmware, inputName, rawSourceFilteredModel, rawSwitchFilteredModel,
+                                   curveFilteredModel, gvarFilteredModel);
   if (dlg->exec())  {
     model->expoData[index] = ed;
     if (firmware->getCapability(VirtualInputs))

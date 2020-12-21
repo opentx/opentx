@@ -36,7 +36,8 @@ class MixerDialog : public QDialog {
     Q_OBJECT
   public:
     MixerDialog(QWidget *parent, ModelData & model, MixData *mixdata, GeneralSettings & generalSettings, Firmware * firmware,
-                  RawItemFilteredModel * rawSourceModel, RawItemFilteredModel * rawSwitchModel, RawItemFilteredModel * curveItemModel);
+                  RawItemFilteredModel * rawSourceModel, RawItemFilteredModel * rawSwitchModel, RawItemFilteredModel * curveItemModel,
+                  RawItemFilteredModel * gvarItemModel);
     ~MixerDialog();
 
   protected:

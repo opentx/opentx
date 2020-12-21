@@ -91,8 +91,6 @@ QString CurveReference::typeToString(const CurveRefType type)
   return strl.at(idx);
 }
 
-constexpr int MAX_CURVE_REF_FUNC { 6 };
-
 //  static
 QString CurveReference::functionToString(const int value)
 {
@@ -105,25 +103,50 @@ QString CurveReference::functionToString(const int value)
   return strl.at(idx);
 }
 
-/*
+//  static
+bool CurveReference::isTypeAvailable(const CurveRefType type)
+{
+  bool ret = false;
+  Firmware * fw = getCurrentFirmware();
 
+  switch(type) {
+    case CURVE_REF_DIFF:
+      if (fw->getCapability(HasInputDiff))
+        ret = true;
+      break;
+    case CURVE_REF_EXPO:
+      if (fw->getCapability(HasMixerExpo))
+        ret = true;
+      break;
+    case CURVE_REF_FUNC:
+    case CURVE_REF_CUSTOM:
+      ret = true;
+      break;
+  }
+
+  return ret;
+}
+
+//  static
+bool CurveReference::isFunctionAvailable(const int value)
+{
+  return true;
+}
+
+//  static
+int CurveReference::functionCount()
+{
+  return 6;
+}
+
+
+/*
  * CurveReferenceUIManager
 */
 
-constexpr int CURVE_REF_UI_HIDE_DIFF             { 0x01 };
-constexpr int CURVE_REF_UI_HIDE_EXPO             { 0x02 };
-constexpr int CURVE_REF_UI_HIDE_NEGATIVE_CURVES  { 0x04 };
-
-//  static
-bool CurveReferenceUIManager::firsttime { true };
-int CurveReferenceUIManager::flags { 0 };
-bool CurveReferenceUIManager::hasCapabilityGvars { false };
-int CurveReferenceUIManager::numCurves { 0 };
-RawItemFilteredModel * CurveReferenceUIManager::curveItemModel { nullptr };
-QStandardItemModel * CurveReferenceUIManager::tempModel { nullptr };
-
 CurveReferenceUIManager::CurveReferenceUIManager(QComboBox * curveValueCB, CurveReference & curve, const ModelData & model,
-                                                 RawItemFilteredModel * curveItemModel, QObject * parent) :
+                                                 RawItemFilteredModel * curveItemModel, RawItemFilteredModel * gvarItemModel,
+                                                 QObject * parent) :
   QObject(parent),
   curveTypeCB(nullptr),
   curveGVarCB(nullptr),
@@ -131,14 +154,17 @@ CurveReferenceUIManager::CurveReferenceUIManager(QComboBox * curveValueCB, Curve
   curveValueCB(curveValueCB),
   curve(curve),
   model(model),
-  lock(false)
+  lock(false),
+  curveItemModel(curveItemModel),
+  gvarItemModel(gvarItemModel)
 {
-  init(curveItemModel);
+  init(parent);
 }
 
 CurveReferenceUIManager::CurveReferenceUIManager(QComboBox * curveTypeCB, QCheckBox * curveGVarCB, QSpinBox * curveValueSB,
                                                  QComboBox * curveValueCB, CurveReference & curve, const ModelData & model,
-                                                 RawItemFilteredModel * curveItemModel, QObject * parent) :
+                                                 RawItemFilteredModel * curveItemModel, RawItemFilteredModel * gvarItemModel,
+                                                 QObject * parent) :
   QObject(parent),
   curveTypeCB(curveTypeCB),
   curveGVarCB(curveGVarCB),
@@ -146,36 +172,25 @@ CurveReferenceUIManager::CurveReferenceUIManager(QComboBox * curveTypeCB, QCheck
   curveValueCB(curveValueCB),
   curve(curve),
   model(model),
-  lock(false)
+  lock(false),
+  curveItemModel(curveItemModel),
+  gvarItemModel(gvarItemModel)
 {
-  init(curveItemModel);
+  init(parent);
 }
 
 CurveReferenceUIManager::~CurveReferenceUIManager()
 {
-  delete tempModel;
 }
 
-void CurveReferenceUIManager::init(RawItemFilteredModel * curveModel)
+void CurveReferenceUIManager::init(QObject * parent)
 {
-  tempModel = new QStandardItemModel();
-
-  if (firsttime) {
-    firsttime = false;
-    Firmware * fw = getCurrentFirmware();
-    hasCapabilityGvars = fw->getCapability(Gvars);
-    numCurves = fw->getCapability(NumCurves);
-    curveItemModel = curveModel;
-
-    if (!fw->getCapability(HasInputDiff))
-      flags |= (CURVE_REF_UI_HIDE_DIFF | CURVE_REF_UI_HIDE_NEGATIVE_CURVES);
-
-    if (!fw->getCapability(HasMixerExpo))
-      flags |= CURVE_REF_UI_HIDE_EXPO;
-  }
+  hasCapabilityGvars = getCurrentFirmware()->getCapability(Gvars);
 
   if (curveTypeCB) {
-    populateTypeCB(curveTypeCB, curve);
+    typeItemModel = new RawItemFilteredModel(new CurveRefTypeItemModel(parent), parent);
+    curveTypeCB->setModel(typeItemModel);
+    curveTypeCB->setCurrentIndex(curveTypeCB->findData((int)curve.type));
     connect(curveTypeCB, SIGNAL(currentIndexChanged(int)), this, SLOT(typeChanged(int)));
   }
 
@@ -188,9 +203,12 @@ void CurveReferenceUIManager::init(RawItemFilteredModel * curveModel)
     connect(curveValueSB, SIGNAL(editingFinished()), this, SLOT(valueSBChanged()));
   }
 
-  curveValueCB->setSizeAdjustPolicy(QComboBox::AdjustToContents);
-  curveValueCB->setMaxVisibleItems(10);
-  connect(curveValueCB, SIGNAL(currentIndexChanged(int)), this, SLOT(valueCBChanged()));
+  if (curveValueCB) {
+    funcItemModel = new RawItemFilteredModel(new CurveRefFuncItemModel(parent), parent);
+    curveValueCB->setSizeAdjustPolicy(QComboBox::AdjustToContents);
+    curveValueCB->setMaxVisibleItems(10);
+    connect(curveValueCB, SIGNAL(currentIndexChanged(int)), this, SLOT(valueCBChanged()));
+  }
 
   update();
 }
@@ -231,7 +249,7 @@ void CurveReferenceUIManager::update()
     curveValueSB->setVisible(widgetsMask & CURVE_REF_UI_VALUE_SHOW);
   if(curveValueCB) {
     if (curve.isValueReference())
-      populateValueCB(curveValueCB, curve, &model);
+      populateValueCB(curveValueCB);
     curveValueCB->setVisible(widgetsMask & CURVE_REF_UI_REF_SHOW);
   }
 
@@ -271,39 +289,16 @@ void CurveReferenceUIManager::valueCBChanged()
   }
 }
 
-//  static
-void CurveReferenceUIManager::populateTypeCB(QComboBox * cb, const CurveReference & curveRef)
+void CurveReferenceUIManager::populateValueCB(QComboBox * cb)
 {
   if (cb) {
-    cb->clear();
-    for (int i = 0; i <= CurveReference::MAX_CURVE_REF_TYPE; i++) {
-      if ((curveRef.type == CurveReference::CURVE_REF_DIFF && !(flags & CURVE_REF_UI_HIDE_DIFF)) ||
-          (curveRef.type == CurveReference::CURVE_REF_EXPO && !(flags & CURVE_REF_UI_HIDE_EXPO)) ||
-          (curveRef.type != CurveReference::CURVE_REF_DIFF && curveRef.type != CurveReference::CURVE_REF_EXPO))
-        cb->addItem(CurveReference::typeToString((CurveReference::CurveRefType)i), i);
-    }
-
-    cb->setCurrentIndex(cb->findData((int)curveRef.type));
-  }
-}
-
-//  static
-void CurveReferenceUIManager::populateValueCB(QComboBox * cb, const CurveReference & curveRef, const ModelData * model)
-{
-  if (cb) {
-    cb->setModel(tempModel);  //  do not want to clear/alter the shared curves model and set to nullptr is invalid
-
-    switch (curveRef.type) {
+    switch (curve.type) {
       case CurveReference::CURVE_REF_DIFF:
       case CurveReference::CURVE_REF_EXPO:
-        cb->clear();
-        Helpers::populateGVCB(*cb, curveRef.value, *model);
+        cb->setModel(gvarItemModel);
         break;
       case CurveReference::CURVE_REF_FUNC:
-        cb->clear();
-        for (int i = 1; i <= MAX_CURVE_REF_FUNC; i++) {
-          cb->addItem(CurveReference::functionToString(i), i);
-        }
+        cb->setModel(funcItemModel);
         break;
       case CurveReference::CURVE_REF_CUSTOM:
         cb->setModel(curveItemModel);
@@ -312,6 +307,6 @@ void CurveReferenceUIManager::populateValueCB(QComboBox * cb, const CurveReferen
         break;
     }
 
-    cb->setCurrentIndex(cb->findData(curveRef.value));
+    cb->setCurrentIndex(cb->findData(curve.value));
   }
 }

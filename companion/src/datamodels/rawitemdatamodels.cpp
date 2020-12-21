@@ -505,3 +505,27 @@ void dumpModelContents(QString desc, AbstractRawItemDataModel * dataModel)
   else
     qDebug() << "model:" << desc << "did not cast";
 }
+
+CurveRefTypeItemModel::CurveRefTypeItemModel(QObject * parent) :
+  AbstractStandardItemModel(parent)
+{
+  for (int i = 0; i <= CurveReference::MAX_CURVE_REF_TYPE; i++) {
+    QStandardItem * modelItem = new QStandardItem();
+    modelItem->setText(CurveReference::typeToString((CurveReference::CurveRefType)i));
+    modelItem->setData(i, ItemIdRole);
+    modelItem->setData(CurveReference::isTypeAvailable((CurveReference::CurveRefType)i), IsAvailableRole);
+    appendRow(modelItem);
+  }
+}
+
+CurveRefFuncItemModel::CurveRefFuncItemModel(QObject * parent) :
+  AbstractStandardItemModel(parent)
+{
+  for (int i = 1; i <= CurveReference::functionCount(); i++) {
+    QStandardItem * modelItem = new QStandardItem();
+    modelItem->setText(CurveReference::functionToString(i));
+    modelItem->setData(i, ItemIdRole);
+    modelItem->setData(CurveReference::isFunctionAvailable(i), IsAvailableRole);
+    appendRow(modelItem);
+  }
+}

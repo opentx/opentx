@@ -79,6 +79,9 @@ class CurveReference {
     static int getDefaultValue(const CurveRefType type, const bool isGVar = false);
     static QString typeToString(const CurveRefType type);
     static QString functionToString(const int value);
+    static bool isTypeAvailable(const CurveRefType type);
+    static bool isFunctionAvailable(const int value);
+    static int functionCount();
 };
 
 class CurveReferenceUIManager : public QObject {
@@ -87,18 +90,18 @@ class CurveReferenceUIManager : public QObject {
 
   public:
     CurveReferenceUIManager(QComboBox *curveValueCB, CurveReference & curve, const ModelData & model,
-                            RawItemFilteredModel * curveItemModel, QObject * parent = nullptr);
+                            RawItemFilteredModel * curveItemModel, RawItemFilteredModel * gvarItemModel, QObject * parent = nullptr);
     CurveReferenceUIManager(QComboBox *curveTypeCB, QCheckBox *curveGVarCB, QSpinBox *curveValueSB, QComboBox *curveValueCB,
-                            CurveReference & curve, const ModelData & model, RawItemFilteredModel * curveItemModel, QObject * parent = nullptr);
+                            CurveReference & curve, const ModelData & model, RawItemFilteredModel * curveItemModel,
+                            RawItemFilteredModel * gvarItemModel, QObject * parent = nullptr);
     virtual ~CurveReferenceUIManager();
-    void init(RawItemFilteredModel * curveModel);
-    void update();
 
   protected slots:
     void gvarCBChanged(int);
     void typeChanged(int);
     void valueSBChanged();
     void valueCBChanged();
+    void update();
 
   protected:
     QComboBox *curveTypeCB;
@@ -108,16 +111,16 @@ class CurveReferenceUIManager : public QObject {
     CurveReference & curve;
     const ModelData & model;
     bool lock;
+    bool hasCapabilityGvars;
+    RawItemFilteredModel * curveItemModel;
+    RawItemFilteredModel * gvarItemModel;
+    RawItemFilteredModel * typeItemModel;
+    RawItemFilteredModel * funcItemModel;
 
-    static bool firsttime;
-    static int flags;
-    static bool hasCapabilityGvars;
-    static int numCurves;
-    static RawItemFilteredModel * curveItemModel;
-    static QStandardItemModel * tempModel;
+    void populateValueCB(QComboBox * cb);
 
-    static void populateTypeCB(QComboBox * cb, const CurveReference & curveRef);
-    static void populateValueCB(QComboBox * cb, const CurveReference & curveRef, const ModelData * model = nullptr);
+  private:
+    void init(QObject * parent);
 };
 
 #endif // CURVEREFERENCE_H

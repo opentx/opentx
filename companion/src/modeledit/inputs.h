@@ -76,6 +76,7 @@ class InputsPanel : public ModelPanel
     RawItemFilteredModel *rawSourceFilteredModel;
     RawItemFilteredModel *rawSwitchFilteredModel;
     RawItemFilteredModel *curveFilteredModel;
+    RawItemFilteredModel *gvarFilteredModel;
 
     int getExpoIndex(unsigned int dch);
     bool gm_insertExpo(int idx);

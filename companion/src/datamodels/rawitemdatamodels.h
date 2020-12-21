@@ -30,11 +30,20 @@ class GeneralSettings;
 class ModelData;
 class AdjustmentReference;
 
-class AbstractRawItemDataModel: public QStandardItemModel
+class AbstractStandardItemModel: public QStandardItemModel
 {
     Q_OBJECT
   public:
-    enum DataRoles { ItemIdRole = Qt::UserRole, ItemTypeRole, ItemFlagsRole, IsAvailableRole };
+    explicit AbstractStandardItemModel(QObject * parent = nullptr) :
+      QStandardItemModel(parent)
+    {}
+
+    enum DataRoles {
+      ItemIdRole = Qt::UserRole,
+      ItemTypeRole,
+      ItemFlagsRole,
+      IsAvailableRole
+    };
     Q_ENUM(DataRoles)
 
     enum DataGroups {
@@ -43,9 +52,14 @@ class AbstractRawItemDataModel: public QStandardItemModel
       PositiveGroup = 0x04
     };
     Q_ENUM(DataGroups)
+};
 
+class AbstractRawItemDataModel: public AbstractStandardItemModel
+{
+    Q_OBJECT
+  public:
     explicit AbstractRawItemDataModel(const GeneralSettings * const generalSettings, const ModelData * const modelData, QObject * parent = nullptr)  :
-      QStandardItemModel(parent),
+      AbstractStandardItemModel(parent),
       generalSettings(generalSettings),
       modelData(modelData)
     {}
@@ -220,5 +234,21 @@ class CommonItemModels: public QObject
 };
 
 void dumpModelContents(QString desc, AbstractRawItemDataModel * dataModel);
+
+
+class CurveRefTypeItemModel : public AbstractStandardItemModel
+{
+    Q_OBJECT
+  public:
+    explicit CurveRefTypeItemModel(QObject * parent = nullptr);
+};
+
+class CurveRefFuncItemModel : public AbstractStandardItemModel
+{
+    Q_OBJECT
+  public:
+    explicit CurveRefFuncItemModel(QObject * parent = nullptr);
+};
+
 
 #endif // RAWITEMDATAMODELS_H
