@@ -63,6 +63,11 @@ const bool CurveReference::isValueNumber() const
   return (type == CURVE_REF_DIFF || type == CURVE_REF_EXPO) && AdjustmentReference(value).type == AdjustmentReference::ADJUST_REF_VALUE;
 }
 
+const bool CurveReference::isAvailable() const
+{
+  return true;
+}
+
 //  static
 int CurveReference::getDefaultValue(const CurveRefType type, const bool isGVar)
 {
@@ -101,6 +106,7 @@ QString CurveReference::functionToString(const int value)
 }
 
 /*
+
  * CurveReferenceUIManager
 */
 

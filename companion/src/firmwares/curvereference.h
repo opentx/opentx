@@ -63,6 +63,7 @@ class CurveReference {
     const bool isValueNumber() const;
     const bool isValueReference() const { return !isValueNumber(); }
     const QString toString(const ModelData * model = nullptr, bool verbose = true) const;
+    const bool isAvailable() const;
 
     CurveRefType type;
     int value;

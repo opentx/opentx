@@ -22,6 +22,7 @@
 #include "generalsettings.h"
 #include "eeprominterface.h"
 #include "modeldata.h"
+#include "adjustmentreference.h"
 
 RawSourceItemModel::RawSourceItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData, QObject * parent) :
   AbstractRawItemDataModel(generalSettings, modelData, parent)
@@ -187,28 +188,28 @@ void RawSwitchItemModel::update()
 CurveItemModel::CurveItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData, QObject * parent) :
   AbstractRawItemDataModel(generalSettings, modelData, parent)
 {
+  if (!modelData)
+    return;
+
   const int count = getCurrentFirmware()->getCapability(NumCurves);
 
   for (int i = -count ; i <= count; ++i) {
     QStandardItem * modelItem = new QStandardItem();
     modelItem->setData(i, ItemIdRole);
-    int flags;
-    if (i < 0)
-      flags = DataGroups::NegativeGroup;
-    else if (i > 0)
-      flags = DataGroups::PositiveGroup;
-    else
-      flags = DataGroups::NoneGroup;
+    int flags = i < 0 ? DataGroups::NegativeGroup : DataGroups::PositiveGroup;
+    if (i == 0)
+      flags |= DataGroups::NoneGroup;
     modelItem->setData(flags, ItemFlagsRole);
     setDynamicItemData(modelItem, i);
     appendRow(modelItem);
   }
 }
 
-void CurveItemModel::setDynamicItemData(QStandardItem * item, int index) const
+void CurveItemModel::setDynamicItemData(QStandardItem * item, const int index) const
 {
-  item->setText(CurveReference(CurveReference::CURVE_REF_CUSTOM, index).toString(modelData, false));
-  item->setData(true, IsAvailableRole);
+  CurveReference cr = CurveReference(CurveReference::CURVE_REF_CUSTOM, index);
+  item->setText(cr.toString(modelData, false));
+  item->setData(cr.isAvailable(), IsAvailableRole);
 }
 
 void CurveItemModel::update()
@@ -221,16 +222,228 @@ void CurveItemModel::update()
   emit dataUpdateComplete();
 }
 
+
 //
-//  CommonItemModels
+// GVarReferenceItemModel
+//
+
+GVarReferenceItemModel::GVarReferenceItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData, QObject * parent) :
+  AbstractRawItemDataModel(generalSettings, modelData, parent)
+{
+  if (!modelData)
+    return;
+
+  const int count = getCurrentFirmware()->getCapability(Gvars);
+  if (count > 0) {
+    addItems(-count);
+    addItems(count);
+  }
+}
+
+void GVarReferenceItemModel::addItems(int count)
+{
+  int i = (count < 0 ? count : 1);
+  count = (i < 0 ? 0 : count + i);
+  for ( ; i < count; ++i) {
+    QStandardItem * modelItem = new QStandardItem();
+    AdjustmentReference ar(AdjustmentReference::ADJUST_REF_GVAR, i);
+    modelItem->setData(ar.toValue(), ItemIdRole);
+    modelItem->setData(i < 0 ? DataGroups::NegativeGroup : DataGroups::PositiveGroup, ItemFlagsRole);
+    setDynamicItemData(modelItem, ar);
+    appendRow(modelItem);
+  }
+}
+
+void GVarReferenceItemModel::setDynamicItemData(QStandardItem * item, const AdjustmentReference & ar) const
+{
+  item->setText(ar.toString(modelData, false));
+  item->setData(ar.isAvailable(), IsAvailableRole);
+}
+
+void GVarReferenceItemModel::update()
+{
+  emit dataAboutToBeUpdated();
+
+  for (int i = 0; i < rowCount(); ++i)
+   setDynamicItemData(item(i), AdjustmentReference(item(i)->data(ItemIdRole).toInt()));
+
+  emit dataUpdateComplete();
+}
+
+
+//
+// ThrottleSourceItemModel
+//
+
+ThrottleSourceItemModel::ThrottleSourceItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData, QObject * parent) :
+  AbstractRawItemDataModel(generalSettings, modelData, parent)
+{
+  if (!modelData)
+    return;
+
+  for (int i = 0; i < modelData->thrTraceSrcCount(); i++) {
+    QStandardItem * modelItem = new QStandardItem();
+    modelItem->setData(i, ItemIdRole);
+    setDynamicItemData(modelItem, i);
+    appendRow(modelItem);
+  }
+}
+
+void ThrottleSourceItemModel::setDynamicItemData(QStandardItem * item, const int index) const
+{
+  item->setText(modelData->thrTraceSrcToString(index));
+  item->setData(modelData->isThrTraceSrcAvailable(generalSettings, index), IsAvailableRole);
+}
+
+void ThrottleSourceItemModel::update()
+{
+  emit dataAboutToBeUpdated();
+
+  for (int i = 0; i < rowCount(); ++i)
+    setDynamicItemData(item(i), item(i)->data(ItemIdRole).toInt());
+
+  emit dataUpdateComplete();
+}
+
+
+//
+// CustomFuncActionItemModel
+//
+
+CustomFuncActionItemModel::CustomFuncActionItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData, QObject * parent) :
+  AbstractRawItemDataModel(generalSettings, modelData, parent)
+{
+  for (int i = 0; i < AssignFunc::FuncCount; i++) {
+    QStandardItem * modelItem = new QStandardItem();
+    modelItem->setData(i, ItemIdRole);
+    modelItem->setData(CustomFunctionData::funcContext(i), ItemFlagsRole);
+    setDynamicItemData(modelItem, i);
+    appendRow(modelItem);
+  }
+}
+
+void CustomFuncActionItemModel::setDynamicItemData(QStandardItem * item, const int index) const
+{
+  item->setText(CustomFunctionData(AssignFunc(index)).funcToString(modelData));
+  item->setData(CustomFunctionData::isFuncAvailable(index), IsAvailableRole);
+}
+
+void CustomFuncActionItemModel::update()
+{
+  emit dataAboutToBeUpdated();
+
+  for (int i = 0; i < rowCount(); ++i)
+    setDynamicItemData(item(i), item(i)->data(ItemIdRole).toInt());
+
+  emit dataUpdateComplete();
+}
+
+
+//
+// CustomFuncResetParamItemModel
+//
+
+CustomFuncResetParamItemModel::CustomFuncResetParamItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData, QObject * parent) :
+  AbstractRawItemDataModel(generalSettings, modelData, parent)
+{
+  for (int i = 0; i < CustomFunctionData::resetParamCount(modelData); i++) {
+    QStandardItem * modelItem = new QStandardItem();
+    modelItem->setData(i, ItemIdRole);
+    setDynamicItemData(modelItem, i);
+    appendRow(modelItem);
+  }
+}
+
+void CustomFuncResetParamItemModel::setDynamicItemData(QStandardItem * item, const int index) const
+{
+  CustomFunctionData cfd = CustomFunctionData(AssignFunc::FuncReset);
+  cfd.param = index;
+  item->setText(cfd.paramToString(modelData));
+  item->setData(CustomFunctionData::isResetParamAvailable(modelData, index), IsAvailableRole);
+}
+
+void CustomFuncResetParamItemModel::update()
+{
+  emit dataAboutToBeUpdated();
+
+  for (int i = 0; i < rowCount(); ++i)
+    setDynamicItemData(item(i), item(i)->data(ItemIdRole).toInt());
+
+  emit dataUpdateComplete();
+}
+
+
+//
+// TelemetrySourceItemModel
+//
+
+TelemetrySourceItemModel::TelemetrySourceItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData, QObject * parent) :
+  AbstractRawItemDataModel(generalSettings, modelData, parent)
+{
+  if (!modelData)
+    return;
+
+  const int count = getCurrentFirmware()->getCapability(Sensors);
+
+  for (int i = -count + 1; i < count; ++i) {
+    QStandardItem * modelItem = new QStandardItem();
+    modelItem->setData(i, ItemIdRole);
+    int flags = i < 0 ? DataGroups::NegativeGroup : DataGroups::PositiveGroup;
+    if (i == 0)
+      flags |= DataGroups::NoneGroup;
+    modelItem->setData(flags, ItemFlagsRole);
+    setDynamicItemData(modelItem, i);
+    appendRow(modelItem);
+  }
+}
+
+void TelemetrySourceItemModel::setDynamicItemData(QStandardItem * item, const int index) const
+{
+  item->setText(SensorData::sourceToString(modelData, index));
+  item->setData(SensorData::isSourceAvailable(modelData, index), IsAvailableRole);
+}
+
+void TelemetrySourceItemModel::update()
+{
+  emit dataAboutToBeUpdated();
+
+  for (int i = 0; i < rowCount(); ++i)
+   setDynamicItemData(item(i), item(i)->data(ItemIdRole).toInt());
+
+  emit dataUpdateComplete();
+}
+
+
+//
+//  CommonItemModels  TODO  rename to DynamicDataModels
 //
 
 CommonItemModels::CommonItemModels(const GeneralSettings * const generalSettings, const ModelData * const modelData, QObject * parent) :
   QObject(parent)
 {
   m_rawSourceItemModel = new RawSourceItemModel(generalSettings, modelData, parent);
+  //dumpModelContents(QString("raw source"), qobject_cast<AbstractRawItemDataModel *>(m_rawSourceItemModel));
+
   m_rawSwitchItemModel = new RawSwitchItemModel(generalSettings, modelData, parent);
+  //dumpModelContents(QString("raw switch"), qobject_cast<AbstractRawItemDataModel *>(m_rawSwitchItemModel));
+
   m_curveItemModel = new CurveItemModel(generalSettings, modelData, parent);
+  //dumpModelContents(QString("curve"), qobject_cast<AbstractRawItemDataModel *>(m_curveItemModel));
+
+  m_gvarReferenceItemModel = new GVarReferenceItemModel(generalSettings, modelData, parent);
+  //dumpModelContents(QString("gvar ref"), qobject_cast<AbstractRawItemDataModel *>(m_gvarReferenceItemModel));
+
+  m_throttleSourceItemModel = new ThrottleSourceItemModel(generalSettings, modelData, parent);
+  //dumpModelContents(QString("thr source"), qobject_cast<AbstractRawItemDataModel *>(m_throttleSourceItemModel));
+
+  m_customFuncActionItemModel = new CustomFuncActionItemModel(generalSettings, modelData, parent);
+  //dumpModelContents(QString("cf action"), qobject_cast<AbstractRawItemDataModel *>(m_customFuncActionItemModel));
+
+  m_customFuncResetParamItemModel = new CustomFuncResetParamItemModel(generalSettings, modelData, parent);
+  //dumpModelContents(QString("cf reset param"), qobject_cast<AbstractRawItemDataModel *>(m_customFuncResetParamItemModel));
+
+  m_telemetrySourceItemModel = new TelemetrySourceItemModel(generalSettings, modelData, parent);
+  //dumpModelContents(QString("tele source"), qobject_cast<AbstractRawItemDataModel *>(m_telemetrySourceItemModel));
 }
 
 CommonItemModels::~CommonItemModels()
@@ -241,24 +454,54 @@ void CommonItemModels::update(const RadioModelObjects radioModelObjects)
 {
   switch (radioModelObjects) {
     case RMO_CHANNELS:
+      m_throttleSourceItemModel->update();
+      //  no break
+    case RMO_TIMERS:
+      m_customFuncActionItemModel->update();
+      //  no break
     case RMO_INPUTS:
     case RMO_TELEMETRY_SENSORS:
-    case RMO_TIMERS:
       m_rawSourceItemModel->update();
+      m_customFuncResetParamItemModel->update();
+      m_telemetrySourceItemModel->update();
       break;
-    case RMO_FLIGHT_MODES:
+
     case RMO_GLOBAL_VARIABLES:
+      m_gvarReferenceItemModel->update();
+      m_customFuncActionItemModel->update();
+      //  no break
+    case RMO_FLIGHT_MODES:
     case RMO_LOGICAL_SWITCHES:
       m_rawSourceItemModel->update();
       m_rawSwitchItemModel->update();
       break;
+
     case RMO_CURVES:
       m_curveItemModel->update();
       break;
+
     case RMO_SCRIPTS:
       //  no need to refresh
       break;
+
     default:
       qDebug() << "Unknown RadioModelObject:" << radioModelObjects;
   }
+}
+
+
+void dumpModelContents(QString desc, AbstractRawItemDataModel * dataModel)
+{
+  if (dataModel) {
+    qDebug() << "model:" << desc << "rows:" << dataModel->rowCount();
+    for (int i = 0; i < dataModel->rowCount(); ++i) {
+      qDebug() << "row:"    << i << "text:" << dataModel->item(i)->data(Qt::DisplayRole).toString()
+               << "id:"     << dataModel->item(i)->data(AbstractRawItemDataModel::ItemIdRole).toInt()
+               << "avail:"  << dataModel->item(i)->data(AbstractRawItemDataModel::IsAvailableRole).toBool()
+               << "flags:"  << dataModel->item(i)->data(AbstractRawItemDataModel::ItemFlagsRole).toInt()
+               << "type:"   << dataModel->item(i)->data(AbstractRawItemDataModel::ItemTypeRole).toInt();
+    }
+  }
+  else
+    qDebug() << "model:" << desc << "did not cast";
 }

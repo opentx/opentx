@@ -28,6 +28,7 @@
 
 class GeneralSettings;
 class ModelData;
+class AdjustmentReference;
 
 class AbstractRawItemDataModel: public QStandardItemModel
 {
@@ -102,7 +103,78 @@ class CurveItemModel: public AbstractRawItemDataModel
     void update() override;
 
   protected:
-    void setDynamicItemData(QStandardItem * item, int index) const;
+    void setDynamicItemData(QStandardItem * item, const int index) const;
+};
+
+
+class GVarReferenceItemModel: public AbstractRawItemDataModel
+{
+    Q_OBJECT
+  public:
+    explicit GVarReferenceItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData, QObject * parent = nullptr);
+
+  public slots:
+    void update() override;
+
+  protected:
+    void setDynamicItemData(QStandardItem * item, const AdjustmentReference & ar) const;
+    void addItems(int count);
+};
+
+
+class ThrottleSourceItemModel: public AbstractRawItemDataModel
+{
+    Q_OBJECT
+  public:
+    explicit ThrottleSourceItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData, QObject * parent = nullptr);
+
+  public slots:
+    void update() override;
+
+  protected:
+    void setDynamicItemData(QStandardItem * item, const int index) const;
+};
+
+
+class CustomFuncActionItemModel: public AbstractRawItemDataModel
+{
+    Q_OBJECT
+  public:
+    explicit CustomFuncActionItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData, QObject * parent = nullptr);
+
+  public slots:
+    void update() override;
+
+  protected:
+    void setDynamicItemData(QStandardItem * item, const int index) const;
+};
+
+
+class CustomFuncResetParamItemModel: public AbstractRawItemDataModel
+{
+    Q_OBJECT
+  public:
+    explicit CustomFuncResetParamItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData, QObject * parent = nullptr);
+
+  public slots:
+    void update() override;
+
+  protected:
+    void setDynamicItemData(QStandardItem * item, const int index) const;
+};
+
+
+class TelemetrySourceItemModel: public AbstractRawItemDataModel
+{
+    Q_OBJECT
+  public:
+    explicit TelemetrySourceItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData, QObject * parent = nullptr);
+
+  public slots:
+    void update() override;
+
+  protected:
+    void setDynamicItemData(QStandardItem * item, const int index) const;
 };
 
 
@@ -130,11 +202,23 @@ class CommonItemModels: public QObject
     RawSourceItemModel * rawSourceItemModel() const { return m_rawSourceItemModel; }
     RawSwitchItemModel * rawSwitchItemModel() const { return m_rawSwitchItemModel; }
     CurveItemModel * curveItemModel() const { return m_curveItemModel; }
+    GVarReferenceItemModel * gvarItemModel() const { return m_gvarReferenceItemModel; }
+    ThrottleSourceItemModel * throttleSourceItemModel() const { return m_throttleSourceItemModel; }
+    CustomFuncActionItemModel * customFuncActionItemModel() const { return m_customFuncActionItemModel; }
+    CustomFuncResetParamItemModel * customFuncResetParamItemModel() const { return m_customFuncResetParamItemModel; }
+    TelemetrySourceItemModel * telemetrySourceItemModel() const { return m_telemetrySourceItemModel; }
 
   private:
     RawSourceItemModel *m_rawSourceItemModel;
     RawSwitchItemModel *m_rawSwitchItemModel;
     CurveItemModel *m_curveItemModel;
+    GVarReferenceItemModel *m_gvarReferenceItemModel;
+    ThrottleSourceItemModel *m_throttleSourceItemModel;
+    CustomFuncActionItemModel *m_customFuncActionItemModel;
+    CustomFuncResetParamItemModel *m_customFuncResetParamItemModel;
+    TelemetrySourceItemModel *m_telemetrySourceItemModel;
 };
+
+void dumpModelContents(QString desc, AbstractRawItemDataModel * dataModel);
 
 #endif // RAWITEMDATAMODELS_H
