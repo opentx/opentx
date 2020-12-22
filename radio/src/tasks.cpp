@@ -174,7 +174,14 @@ TASK_FUNCTION(mixerTask)
       doMixerCalculations();
 
       // TODO: fix runMask
-      sendSynchronousPulses((1 << INTERNAL_MODULE) | (1 << EXTERNAL_MODULE));
+      uint8_t runMask = 0;
+#if defined(INTERNAL_MODULE)
+      runMask != (1 << INTERNAL_MODULE)
+#endif
+#if defined(EXTERNAL_MODULE)
+      runMask != (1 << EXTERNAL_MODULE)
+#endif
+      sendSynchronousPulses(runMask);
 
       doMixerPeriodicUpdates();
 
