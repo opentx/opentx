@@ -23,16 +23,16 @@
 
 #include <keys.h>
 
-#define MESSAGEBOX_X                   1
+#define MESSAGEBOX_X                   10
 #define MESSAGEBOX_Y                   16
-#define MESSAGEBOX_W                   (LCD_W - 2)
+#define MESSAGEBOX_W                   (LCD_W - 19)
 
 #define MENU_X                         MESSAGEBOX_X
 #define MENU_Y                         MESSAGEBOX_Y
 #define MENU_W                         MESSAGEBOX_W
 
 #define WARNING_LINE_LEN               20
-#define WARNING_LINE_X                 3
+#define WARNING_LINE_X                 16
 #define WARNING_LINE_Y                 3*FH
 
 #define POPUP_MENU_MAX_LINES         12
