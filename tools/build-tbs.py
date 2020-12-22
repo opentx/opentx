@@ -28,7 +28,7 @@ def build(board, translation, srcdir):
     command = "cmake %s -DTRANSLATIONS=%s -DTBS_RELEASE=YES -DTEST_BUILD_WARNING=YES %s" % (cmake_options, translation, srcdir)
     print(command)
     os.system(command)
-    os.system("make firmware -j6")
+    os.system("make firmware -j16")
     os.chdir(cwd)
     index = 0
     while 1:
