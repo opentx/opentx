@@ -1723,7 +1723,7 @@ Si vous avez un fichier de sauvegarde des paramètres, vous pouvez l&apos;import
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="95"/>
         <source>Set Failsafe</source>
-        <translation type="unfinished"></translation>
+        <translation>Définir Failsafe</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="97"/>
@@ -5325,7 +5325,7 @@ Cette fonction ne peut pas être désactivée sur la radio.
     <message>
         <location filename="../generaledit/hardware.ui" line="1133"/>
         <source>S.Port Power</source>
-        <translation type="unfinished"></translation>
+        <translation>Alimentation S.Port</translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.ui" line="439"/>
@@ -8337,13 +8337,13 @@ Mixage actif par défaut si non-renseigné.</translation>
         <location filename="../modelprinter.cpp" line="400"/>
         <location filename="../modelprinter.cpp" line="451"/>
         <source>Weight(%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ratio(%1)</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="409"/>
         <location filename="../modelprinter.cpp" line="458"/>
         <source>Switch(%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Inter(%1)</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="449"/>
@@ -8353,17 +8353,17 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../modelprinter.cpp" line="475"/>
         <source>Delay(u%1:d%2)</source>
-        <translation type="unfinished"></translation>
+        <translation>Délai(h%1:b%2)</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="477"/>
         <source>Slow(u%1:d%2)</source>
-        <translation type="unfinished"></translation>
+        <translation>Ralenti(h%1:b%2)</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="479"/>
         <source>Warn(%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Alerte(%1)</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="1278"/>
@@ -8690,22 +8690,22 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../modelprinter.cpp" line="1286"/>
         <source>Auto Offset</source>
-        <translation type="unfinished">Offset auto</translation>
+        <translation>Offset Auto</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="1381"/>
         <source>0.</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="1383"/>
         <source>0.0</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="1385"/>
         <source>0.00</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="1248"/>
@@ -10923,7 +10923,7 @@ E</translation>
     <message>
         <location filename="../modeledit/setup.ui" line="582"/>
         <source>Throttle trim switch</source>
-        <translation type="unfinished"></translation>
+        <translation>Inter trim gaz</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.ui" line="602"/>
