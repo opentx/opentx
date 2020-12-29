@@ -398,6 +398,9 @@ void telemetryPortInit(uint32_t baudrate, uint8_t mode);
 inline void telemetryPortSetDirectionOutput()
 {
 }
+inline void telemetryPortSetDirectionInput()
+{
+}
 uint32_t telemetryTransmitPending();
 void telemetryTransmitBuffer(const uint8_t * buffer, uint32_t size);
 void rxPdcUsart( void (*pChProcess)(uint8_t x) );
