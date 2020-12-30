@@ -246,6 +246,7 @@ void onModelSelectMenu(const char * result)
       if (!confirmModelChange())
         return;
     }
+    EXTERNAL_MODULE_PWR_OFF();
     // we store the latest changes if any
     storageFlushCurrentModel();
     storageCheck(true);
