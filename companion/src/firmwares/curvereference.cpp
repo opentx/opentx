@@ -144,37 +144,41 @@ int CurveReference::functionCount()
  * CurveReferenceUIManager
 */
 
-CurveReferenceUIManager::CurveReferenceUIManager(QComboBox * curveValueCB, CurveReference & curve, const ModelData & model,
-                                                 RawItemFilteredModel * curveItemModel, RawItemFilteredModel * gvarItemModel,
-                                                 QObject * parent) :
+CurveReferenceUIManager::CurveReferenceUIManager(QComboBox * curveValueCB, CurveReference & curveRef, const ModelData & model,
+                                                 FilteredItemModel * curveItemModel, FilteredItemModel * gvarItemModel,
+                                                 FilteredItemModel * typeItemModel, FilteredItemModel * funcItemModel, QObject * parent) :
   QObject(parent),
   curveTypeCB(nullptr),
   curveGVarCB(nullptr),
   curveValueSB(nullptr),
   curveValueCB(curveValueCB),
-  curve(curve),
+  curveRef(curveRef),
   model(model),
   lock(false),
   curveItemModel(curveItemModel),
-  gvarItemModel(gvarItemModel)
+  gvarItemModel(gvarItemModel),
+  typeItemModel(typeItemModel),
+  funcItemModel(funcItemModel)
 {
   init(parent);
 }
 
 CurveReferenceUIManager::CurveReferenceUIManager(QComboBox * curveTypeCB, QCheckBox * curveGVarCB, QSpinBox * curveValueSB,
-                                                 QComboBox * curveValueCB, CurveReference & curve, const ModelData & model,
-                                                 RawItemFilteredModel * curveItemModel, RawItemFilteredModel * gvarItemModel,
-                                                 QObject * parent) :
+                                                 QComboBox * curveValueCB, CurveReference & curveRef, const ModelData & model,
+                                                 FilteredItemModel * curveItemModel, FilteredItemModel * gvarItemModel,
+                                                 FilteredItemModel * typeItemModel, FilteredItemModel * funcItemModel, QObject * parent) :
   QObject(parent),
   curveTypeCB(curveTypeCB),
   curveGVarCB(curveGVarCB),
   curveValueSB(curveValueSB),
   curveValueCB(curveValueCB),
-  curve(curve),
+  curveRef(curveRef),
   model(model),
   lock(false),
   curveItemModel(curveItemModel),
-  gvarItemModel(gvarItemModel)
+  gvarItemModel(gvarItemModel),
+  typeItemModel(typeItemModel),
+  funcItemModel(funcItemModel)
 {
   init(parent);
 }
@@ -188,9 +192,8 @@ void CurveReferenceUIManager::init(QObject * parent)
   hasCapabilityGvars = getCurrentFirmware()->getCapability(Gvars);
 
   if (curveTypeCB) {
-    typeItemModel = new RawItemFilteredModel(new CurveRefTypeItemModel(parent), parent);
     curveTypeCB->setModel(typeItemModel);
-    curveTypeCB->setCurrentIndex(curveTypeCB->findData((int)curve.type));
+    curveTypeCB->setCurrentIndex(curveTypeCB->findData((int)curveRef.type));
     connect(curveTypeCB, SIGNAL(currentIndexChanged(int)), this, SLOT(typeChanged(int)));
   }
 
@@ -204,7 +207,6 @@ void CurveReferenceUIManager::init(QObject * parent)
   }
 
   if (curveValueCB) {
-    funcItemModel = new RawItemFilteredModel(new CurveRefFuncItemModel(parent), parent);
     curveValueCB->setSizeAdjustPolicy(QComboBox::AdjustToContents);
     curveValueCB->setMaxVisibleItems(10);
     connect(curveValueCB, SIGNAL(currentIndexChanged(int)), this, SLOT(valueCBChanged()));
@@ -222,12 +224,12 @@ void CurveReferenceUIManager::update()
   lock = true;
   int widgetsMask = 0;
 
-  if (curve.type == CurveReference::CURVE_REF_DIFF || curve.type == CurveReference::CURVE_REF_EXPO) {
+  if (curveRef.type == CurveReference::CURVE_REF_DIFF || curveRef.type == CurveReference::CURVE_REF_EXPO) {
     if (hasCapabilityGvars)
       widgetsMask |= CURVE_REF_UI_GVAR_SHOW;
-    if (curve.isValueNumber()) {
+    if (curveRef.isValueNumber()) {
       curveGVarCB->setChecked(false);
-      curveValueSB->setValue(curve.value);
+      curveValueSB->setValue(curveRef.value);
       widgetsMask |= CURVE_REF_UI_VALUE_SHOW;
     }
     else {
@@ -240,7 +242,7 @@ void CurveReferenceUIManager::update()
   }
 
   if(curveTypeCB) {
-    curveTypeCB->setCurrentIndex(curveTypeCB->findData(curve.type));
+    curveTypeCB->setCurrentIndex(curveTypeCB->findData(curveRef.type));
     curveTypeCB->show();
   }
   if(curveGVarCB)
@@ -248,7 +250,7 @@ void CurveReferenceUIManager::update()
   if(curveValueSB)
     curveValueSB->setVisible(widgetsMask & CURVE_REF_UI_VALUE_SHOW);
   if(curveValueCB) {
-    if (curve.isValueReference())
+    if (curveRef.isValueReference())
       populateValueCB(curveValueCB);
     curveValueCB->setVisible(widgetsMask & CURVE_REF_UI_REF_SHOW);
   }
@@ -259,7 +261,7 @@ void CurveReferenceUIManager::update()
 void CurveReferenceUIManager::gvarCBChanged(int state)
 {
   if (!lock) {
-    curve.value = CurveReference::getDefaultValue(curve.type, state);
+    curveRef.value = CurveReference::getDefaultValue(curveRef.type, state);
     update();
   }
 }
@@ -268,7 +270,7 @@ void CurveReferenceUIManager::typeChanged(int value)
 {
   if (!lock) {
     CurveReference::CurveRefType type = (CurveReference::CurveRefType)curveTypeCB->itemData(curveTypeCB->currentIndex()).toInt();
-    curve = CurveReference(type, CurveReference::getDefaultValue(type));
+    curveRef = CurveReference(type, CurveReference::getDefaultValue(type));
     update();
   }
 }
@@ -276,7 +278,7 @@ void CurveReferenceUIManager::typeChanged(int value)
 void CurveReferenceUIManager::valueSBChanged()
 {
   if (!lock) {
-    curve.value = curveValueSB->value();
+    curveRef.value = curveValueSB->value();
     update();
   }
 }
@@ -284,7 +286,7 @@ void CurveReferenceUIManager::valueSBChanged()
 void CurveReferenceUIManager::valueCBChanged()
 {
   if (!lock) {
-    curve.value = curveValueCB->itemData(curveValueCB->currentIndex()).toInt();
+    curveRef.value = curveValueCB->itemData(curveValueCB->currentIndex()).toInt();
     update();
   }
 }
@@ -292,7 +294,7 @@ void CurveReferenceUIManager::valueCBChanged()
 void CurveReferenceUIManager::populateValueCB(QComboBox * cb)
 {
   if (cb) {
-    switch (curve.type) {
+    switch (curveRef.type) {
       case CurveReference::CURVE_REF_DIFF:
       case CurveReference::CURVE_REF_EXPO:
         cb->setModel(gvarItemModel);
@@ -307,6 +309,6 @@ void CurveReferenceUIManager::populateValueCB(QComboBox * cb)
         break;
     }
 
-    cb->setCurrentIndex(cb->findData(curve.value));
+    cb->setCurrentIndex(cb->findData(curveRef.value));
   }
 }

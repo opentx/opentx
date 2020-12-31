@@ -96,16 +96,14 @@ void LimitsGroup::updateMinMax(int max)
     }
   }
 }
-ChannelsPanel::ChannelsPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, CommonItemModels * commonItemModels):
+ChannelsPanel::ChannelsPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, ItemModelsFactory * sharedItemModels):
   ModelPanel(parent, model, generalSettings, firmware),
-  commonItemModels(commonItemModels)
+  sharedItemModels(sharedItemModels)
 {
   chnCapability = firmware->getCapability(Outputs);
   int channelNameMaxLen = firmware->getCapability(ChannelsName);
 
-  curveFilteredModel = new RawItemFilteredModel(commonItemModels->curveItemModel(), RawItemFilteredModel::AllFilter, this);
-  connect(curveFilteredModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &ChannelsPanel::onModelDataAboutToBeUpdated);
-  connect(curveFilteredModel, &RawItemFilteredModel::dataUpdateComplete, this, &ChannelsPanel::onModelDataUpdateComplete);
+  FILTEREDITEMMODELNOFLAGS(curveFilteredModel, ChannelsPanel, CurveId)
 
   QStringList headerLabels;
   headerLabels << "#";
@@ -214,6 +212,7 @@ ChannelsPanel::~ChannelsPanel()
     delete centerSB[i];
     delete symlimitsChk[i];
   }
+  delete curveFilteredModel;
 }
 
 void ChannelsPanel::symlimitsEdited()
@@ -474,12 +473,12 @@ void ChannelsPanel::swapData(int idx1, int idx2)
   }
 }
 
-void ChannelsPanel::onModelDataAboutToBeUpdated()
+void ChannelsPanel::onItemModelAboutToBeUpdated()
 {
   lock = true;
 }
 
-void ChannelsPanel::onModelDataUpdateComplete()
+void ChannelsPanel::onItemModelUpdateComplete()
 {
   update();
   lock = false;
@@ -487,5 +486,5 @@ void ChannelsPanel::onModelDataUpdateComplete()
 
 void ChannelsPanel::updateItemModels()
 {
-  commonItemModels->update(CommonItemModels::RMO_CHANNELS);
+  sharedItemModels->update(AbstractItemModel::ChannelsUpdated);
 }

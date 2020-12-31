@@ -25,8 +25,9 @@
 #include "helpers.h"
 
 MixerDialog::MixerDialog(QWidget *parent, ModelData & model, MixData * mixdata, GeneralSettings & generalSettings, Firmware * firmware,
-                            RawItemFilteredModel * rawSourceModel, RawItemFilteredModel * rawSwitchModel, RawItemFilteredModel * curveItemModel,
-                            RawItemFilteredModel * gvarItemModel) :
+                         FilteredItemModel * rawSourceFilteredModel, FilteredItemModel * rawSwitchFilteredModel,
+                         FilteredItemModel * curveFilteredModel, FilteredItemModel * gvarFilteredModel,
+                         FilteredItemModel * crTypeFilteredModel, FilteredItemModel * crFuncFilteredModel) :
   QDialog(parent),
   ui(new Ui::MixerDialog),
   model(model),
@@ -46,15 +47,15 @@ MixerDialog::MixerDialog(QWidget *parent, ModelData & model, MixData * mixdata, 
 
   this->setWindowTitle(tr("DEST -> %1").arg(RawSource(SOURCE_TYPE_CH, md->destCh - 1).toString(&model, &generalSettings)));
 
-  ui->sourceCB->setModel(rawSourceModel);
+  ui->sourceCB->setModel(rawSourceFilteredModel);
   ui->sourceCB->setCurrentIndex(ui->sourceCB->findData(md->srcRaw.toValue()));
 
   int limit = firmware->getCapability(OffsetWeight);
 
   gvWeightGroup = new GVarGroup(ui->weightGV, ui->weightSB, ui->weightCB, md->weight, model, 100, -limit, limit);
   gvOffsetGroup = new GVarGroup(ui->offsetGV, ui->offsetSB, ui->offsetCB, md->sOffset, model, 0, -limit, limit);
-  curveGroup = new CurveReferenceUIManager(ui->curveTypeCB, ui->curveGVarCB, ui->curveValueSB, ui->curveValueCB, md->curve, model, curveItemModel,
-                                           gvarItemModel, this);
+  curveGroup = new CurveReferenceUIManager(ui->curveTypeCB, ui->curveGVarCB, ui->curveValueSB, ui->curveValueCB, md->curve, model,
+                                           curveFilteredModel, gvarFilteredModel, crTypeFilteredModel, crFuncFilteredModel, this);
 
   ui->MixDR_CB->setChecked(md->noExpo == 0);
 
@@ -106,7 +107,7 @@ MixerDialog::MixerDialog(QWidget *parent, ModelData & model, MixData * mixdata, 
     }
   }
 
-  ui->switchesCB->setModel(rawSwitchModel);
+  ui->switchesCB->setModel(rawSwitchFilteredModel);
   ui->switchesCB->setCurrentIndex(ui->switchesCB->findData(md->swtch.toValue()));
   ui->warningCB->setCurrentIndex(md->mixWarn);
   ui->mltpxCB->setCurrentIndex(md->mltpx);

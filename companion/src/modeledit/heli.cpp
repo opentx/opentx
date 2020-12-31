@@ -23,16 +23,13 @@
 #include "helpers.h"
 #include "rawitemfilteredmodel.h"
 
-HeliPanel::HeliPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, CommonItemModels * commonItemModels):
+HeliPanel::HeliPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, ItemModelsFactory * sharedItemModels):
   ModelPanel(parent, model, generalSettings, firmware),
-  ui(new Ui::Heli),
-  commonItemModels(commonItemModels)
+  ui(new Ui::Heli)
 {
   ui->setupUi(this);
 
-  rawSourceFilteredModel = new RawItemFilteredModel(commonItemModels->rawSourceItemModel(), RawSource::InputSourceGroups, this);
-  connect(rawSourceFilteredModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &HeliPanel::onModelDataAboutToBeUpdated);
-  connect(rawSourceFilteredModel, &RawItemFilteredModel::dataUpdateComplete, this, &HeliPanel::onModelDataUpdateComplete);
+  FILTEREDITEMMODEL(rawSourceFilteredModel, HeliPanel, RawSourceId, RawSource::InputSourceGroups)
 
   connect(ui->swashType, SIGNAL(currentIndexChanged(int)), this, SLOT(edited()));
   connect(ui->swashRingVal, SIGNAL(editingFinished()), this, SLOT(edited()));
@@ -71,6 +68,7 @@ HeliPanel::HeliPanel(QWidget *parent, ModelData & model, GeneralSettings & gener
 HeliPanel::~HeliPanel()
 {
   delete ui;
+  delete rawSourceFilteredModel;
 }
 
 void HeliPanel::update()
@@ -118,12 +116,12 @@ void HeliPanel::edited()
   }
 }
 
-void HeliPanel::onModelDataAboutToBeUpdated()
+void HeliPanel::onItemModelAboutToBeUpdated()
 {
   lock = true;
 }
 
-void HeliPanel::onModelDataUpdateComplete()
+void HeliPanel::onItemModelUpdateComplete()
 {
   update();
   lock = false;

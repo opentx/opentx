@@ -26,7 +26,7 @@
 #include "modelprinter.h"
 
 class GVarGroup;
-class RawItemFilteredModel;
+class FilteredItemModel;
 class CurveReferenceUIManager;
 
 namespace Ui {
@@ -37,9 +37,10 @@ class ExpoDialog : public QDialog {
     Q_OBJECT
   public:
     ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expodata, GeneralSettings & generalSettings,
-                Firmware * firmware, QString & inputName, RawItemFilteredModel * rawSourceItemModel,
-                RawItemFilteredModel * rawSwitchItemModel, RawItemFilteredModel * curveItemModel, RawItemFilteredModel * gvarItemModel);
-    ~ExpoDialog();
+                Firmware * firmware, QString & inputName, FilteredItemModel * rawSourceFilteredModel,
+                FilteredItemModel * rawSwitchFilteredModel, FilteredItemModel * curveFilteredModel, FilteredItemModel * gvarFilteredModel,
+                FilteredItemModel * crTypeFilteredModel, FilteredItemModel * crFuncFilteredModel);
+    virtual ~ExpoDialog();
 
   protected:
     void updateScale();

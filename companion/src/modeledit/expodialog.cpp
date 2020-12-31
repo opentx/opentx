@@ -24,8 +24,9 @@
 #include "helpers.h"
 
 ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, GeneralSettings & generalSettings,
-                          Firmware * firmware, QString & inputName, RawItemFilteredModel * rawSourceModel,
-                          RawItemFilteredModel * rawSwitchModel, RawItemFilteredModel * curveItemModel, RawItemFilteredModel * gvarItemModel) :
+                       Firmware * firmware, QString & inputName, FilteredItemModel * rawSourceFilteredModel,
+                       FilteredItemModel * rawSwitchFilteredModel, FilteredItemModel * curveFilteredModel,
+                       FilteredItemModel * gvarFilteredModel, FilteredItemModel * crTypeFilteredModel, FilteredItemModel * crFuncFilteredModel) :
   QDialog(parent),
   ui(new Ui::ExpoDialog),
   model(model),
@@ -50,10 +51,10 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, G
 
   gvWeightGroup = new GVarGroup(ui->weightGV, ui->weightSB, ui->weightCB, ed->weight, model, 100, -100, 100);
   gvOffsetGroup = new GVarGroup(ui->offsetGV, ui->offsetSB, ui->offsetCB, ed->offset, model, 0, -100, 100);
-  curveGroup = new CurveReferenceUIManager(ui->curveTypeCB, ui->curveGVarCB, ui->curveValueSB, ui->curveValueCB, ed->curve, model, curveItemModel,
-                                           gvarItemModel, this);
+  curveGroup = new CurveReferenceUIManager(ui->curveTypeCB, ui->curveGVarCB, ui->curveValueSB, ui->curveValueCB, ed->curve, model,
+                                           curveFilteredModel, gvarFilteredModel, crTypeFilteredModel, crFuncFilteredModel, this);
 
-  ui->switchesCB->setModel(rawSwitchModel);
+  ui->switchesCB->setModel(rawSwitchFilteredModel);
   ui->switchesCB->setCurrentIndex(ui->switchesCB->findData(ed->swtch.toValue()));
 
   ui->sideCB->setCurrentIndex(ed->mode - 1);
@@ -84,7 +85,7 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, G
 
   if (firmware->getCapability(VirtualInputs)) {
     ui->inputName->setMaxLength(firmware->getCapability(InputsLength));
-    ui->sourceCB->setModel(rawSourceModel);
+    ui->sourceCB->setModel(rawSourceFilteredModel);
     ui->sourceCB->setCurrentIndex(ui->sourceCB->findData(ed->srcRaw.toValue()));
     ui->inputName->setValidator(new QRegExpValidator(rx, this));
     ui->inputName->setText(inputName);

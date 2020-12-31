@@ -22,29 +22,19 @@
 #include "helpers.h"
 #include "rawitemfilteredmodel.h"
 
-MixesPanel::MixesPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware,CommonItemModels * commonItemModels):
+MixesPanel::MixesPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, ItemModelsFactory * sharedItemModels):
   ModelPanel(parent, model, generalSettings, firmware),
   mixInserted(false),
   highlightedSource(0),
   modelPrinter(firmware, generalSettings, model),
-  commonItemModels(commonItemModels)
+  sharedItemModels(sharedItemModels)
 {
-  rawSourceFilteredModel = new RawItemFilteredModel(commonItemModels->rawSourceItemModel(), ((RawSource::InputSourceGroups | RawSource::ScriptsGroup) & ~ RawSource::NoneGroup), this);
-  connect(rawSourceFilteredModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &MixesPanel::onModelDataAboutToBeUpdated);
-  connect(rawSourceFilteredModel, &RawItemFilteredModel::dataUpdateComplete, this, &MixesPanel::onModelDataUpdateComplete);
-
-  rawSwitchFilteredModel = new RawItemFilteredModel(commonItemModels->rawSwitchItemModel(), RawSwitch::MixesContext, this);
-  connect(rawSwitchFilteredModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &MixesPanel::onModelDataAboutToBeUpdated);
-  connect(rawSwitchFilteredModel, &RawItemFilteredModel::dataUpdateComplete, this, &MixesPanel::onModelDataUpdateComplete);
-
-  const int filter = firmware->getCapability(HasMixerExpo) ? RawItemFilteredModel::AllFilter : RawItemFilteredModel::PositiveFilter;
-  curveFilteredModel = new RawItemFilteredModel(commonItemModels->curveItemModel(), filter, this);
-  connect(curveFilteredModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &MixesPanel::onModelDataAboutToBeUpdated);
-  connect(curveFilteredModel, &RawItemFilteredModel::dataUpdateComplete, this, &MixesPanel::onModelDataUpdateComplete);
-
-  gvarFilteredModel = new RawItemFilteredModel(commonItemModels->gvarItemModel(), RawItemFilteredModel::AllFilter, this);
-  connect(gvarFilteredModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &MixesPanel::onModelDataAboutToBeUpdated);
-  connect(gvarFilteredModel, &RawItemFilteredModel::dataUpdateComplete, this, &MixesPanel::onModelDataUpdateComplete);
+  FILTEREDITEMMODEL(rawSourceFilteredModel, MixesPanel, RawSourceId,((RawSource::InputSourceGroups | RawSource::ScriptsGroup) & ~ RawSource::NoneGroup))
+  FILTEREDITEMMODEL(rawSwitchFilteredModel, MixesPanel, RawSwitchId, RawSwitch::MixesContext)
+  FILTEREDITEMMODEL(curveFilteredModel, MixesPanel, CurveId, firmware->getCapability(HasMixerExpo) ? 0 : FilteredItemModel::PositiveFilter)
+  FILTEREDITEMMODELNOFLAGS(gvarFilteredModel, MixesPanel, GVarRefId)
+  FILTEREDITEMMODELNOFLAGS(crTypeFilteredModel, MixesPanel, CurveRefTypeId)
+  FILTEREDITEMMODELNOFLAGS(crFuncFilteredModel, MixesPanel, CurveRefFuncId)
 
   QGridLayout * mixesLayout = new QGridLayout(this);
 
@@ -79,6 +69,12 @@ MixesPanel::MixesPanel(QWidget *parent, ModelData & model, GeneralSettings & gen
 
 MixesPanel::~MixesPanel()
 {
+  delete rawSourceFilteredModel;
+  delete rawSwitchFilteredModel;
+  delete curveFilteredModel;
+  delete gvarFilteredModel;
+  delete crTypeFilteredModel;
+  delete crFuncFilteredModel;
 }
 
 void MixesPanel::update()
@@ -194,8 +190,8 @@ void MixesPanel::gm_openMix(int index)
 
   MixData mixd(model->mixData[index]);
 
-  MixerDialog *dlg = new MixerDialog(this, *model, &mixd, generalSettings, firmware, rawSourceFilteredModel, rawSwitchFilteredModel,
-                                     curveFilteredModel, gvarFilteredModel);
+  MixerDialog *dlg = new MixerDialog(this, *model, &mixd, generalSettings, firmware,  rawSourceFilteredModel, rawSwitchFilteredModel,
+                                     curveFilteredModel, gvarFilteredModel, crTypeFilteredModel, crFuncFilteredModel);
   if(dlg->exec()) {
     model->mixData[index] = mixd;
     emit modified();
@@ -551,12 +547,12 @@ void MixesPanel::clearMixes()
   }
 }
 
-void MixesPanel::onModelDataAboutToBeUpdated()
+void MixesPanel::onItemModelAboutToBeUpdated()
 {
   lock = true;
 }
 
-void MixesPanel::onModelDataUpdateComplete()
+void MixesPanel::onItemModelUpdateComplete()
 {
   update();
   lock = false;

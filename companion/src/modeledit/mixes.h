@@ -26,15 +26,15 @@
 #include "mixerdialog.h"
 #include "modelprinter.h"
 
-class CommonItemModels;
-class RawItemFilteredModel;
+class ItemModelsFactory;
+class FilteredItemModel;
 
 class MixesPanel : public ModelPanel
 {
     Q_OBJECT
 
   public:
-    MixesPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, CommonItemModels * commonItemModels);
+    MixesPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, ItemModelsFactory * sharedItemModels);
     virtual ~MixesPanel();
 
     virtual void update();
@@ -60,19 +60,21 @@ class MixesPanel : public ModelPanel
     void mimeMixerDropped(int index, const QMimeData *data, Qt::DropAction action);
     void pasteMixerMimeData(const QMimeData * mimeData, int destIdx);
 
-    void onModelDataAboutToBeUpdated();
-    void onModelDataUpdateComplete();
+    void onItemModelAboutToBeUpdated();
+    void onItemModelUpdateComplete();
 
   private:
     MixersListWidget * mixersListWidget;
     bool mixInserted;
     unsigned int highlightedSource;
     ModelPrinter modelPrinter;
-    CommonItemModels * commonItemModels;
-    RawItemFilteredModel *rawSourceFilteredModel;
-    RawItemFilteredModel *rawSwitchFilteredModel;
-    RawItemFilteredModel *curveFilteredModel;
-    RawItemFilteredModel *gvarFilteredModel;
+    ItemModelsFactory *sharedItemModels;
+    FilteredItemModel *rawSourceFilteredModel;
+    FilteredItemModel *rawSwitchFilteredModel;
+    FilteredItemModel *curveFilteredModel;
+    FilteredItemModel *gvarFilteredModel;
+    FilteredItemModel *crTypeFilteredModel;
+    FilteredItemModel *crFuncFilteredModel;
 
     int getMixerIndex(unsigned int dch);
     bool gm_insertMix(int idx);

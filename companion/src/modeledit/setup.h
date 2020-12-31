@@ -26,8 +26,8 @@
 
 constexpr char MIMETYPE_TIMER[] = "application/x-companion-timer";
 
-class CommonItemModels;
-class RawItemFilteredModel;
+class ItemModelsFactory;
+class FilteredItemModel;
 
 namespace Ui {
   class Setup;
@@ -40,7 +40,8 @@ class TimerPanel : public ModelPanel
     Q_OBJECT
 
   public:
-    TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, GeneralSettings & generalSettings, Firmware * firmware, QWidget *prevFocus, RawItemFilteredModel * switchModel);
+    TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, GeneralSettings & generalSettings, Firmware * firmware,
+               QWidget *prevFocus, FilteredItemModel * switchModel);
     virtual ~TimerPanel();
 
     virtual void update();
@@ -51,8 +52,8 @@ class TimerPanel : public ModelPanel
     void on_value_editingFinished();
     void on_minuteBeep_toggled(bool checked);
     void on_name_editingFinished();
-    void onModelDataAboutToBeUpdated();
-    void onModelDataUpdateComplete();
+    void onItemModelAboutToBeUpdated();
+    void onItemModelUpdateComplete();
 
   signals:
     void nameChanged();
@@ -131,7 +132,7 @@ class SetupPanel : public ModelPanel
     Q_OBJECT
 
   public:
-    SetupPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, CommonItemModels * commonItemModels);
+    SetupPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, ItemModelsFactory * sharedItemModels);
     virtual ~SetupPanel();
 
     virtual void update();
@@ -170,6 +171,8 @@ class SetupPanel : public ModelPanel
     void cmTimerMoveDown();
     void cmTimerMoveUp();
     void onTimerNameChanged();
+    void onItemModelAboutToBeUpdated();
+    void onItemModelUpdateComplete();
 
   private:
     Ui::Setup *ui;
@@ -191,8 +194,9 @@ class SetupPanel : public ModelPanel
     bool moveTimerDownAllowed() const;
     bool moveTimerUpAllowed() const;
     void swapTimerData(int idx1, int idx2);
-    CommonItemModels * commonItemModels;
-    RawItemFilteredModel * rawSwitchFilteredModel;
+    ItemModelsFactory * sharedItemModels;
+    FilteredItemModel * rawSwitchFilteredModel;
+    FilteredItemModel * thrSourceFilteredModel;
     void updateItemModels();
   };
 

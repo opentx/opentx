@@ -56,10 +56,14 @@ GeneralEdit::GeneralEdit(QWidget * parent, RadioData & radioData, Firmware * fir
     }
   }
 
-  commonItemModels = new CommonItemModels(&generalSettings, nullptr, this);
+  sharedItemModels = new ItemModelsFactory(&generalSettings, nullptr);
+  sharedItemModels->addItemModel(AbstractItemModel::RawSourceId);
+  sharedItemModels->addItemModel(AbstractItemModel::RawSwitchId);
+  sharedItemModels->addItemModel(AbstractItemModel::CustomFuncActionId);
+  sharedItemModels->addItemModel(AbstractItemModel::CustomFuncResetParamId);
 
   addTab(new GeneralSetupPanel(this, generalSettings, firmware), tr("Setup"));
-  addTab(new CustomFunctionsPanel(this, nullptr, generalSettings, firmware, commonItemModels), tr("Global Functions"));
+  addTab(new CustomFunctionsPanel(this, nullptr, generalSettings, firmware, sharedItemModels), tr("Global Functions"));
   addTab(new TrainerPanel(this, generalSettings, firmware), tr("Trainer"));
   addTab(new HardwarePanel(this, generalSettings, firmware), tr("Hardware"));
   addTab(new CalibrationPanel(this, generalSettings, firmware), tr("Calibration"));
@@ -70,6 +74,7 @@ GeneralEdit::GeneralEdit(QWidget * parent, RadioData & radioData, Firmware * fir
 GeneralEdit::~GeneralEdit()
 {
   delete ui;
+  delete sharedItemModels;
 }
 
 void GeneralEdit::closeEvent(QCloseEvent *event)

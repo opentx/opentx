@@ -23,28 +23,18 @@
 #include "helpers.h"
 #include "rawitemfilteredmodel.h"
 
-InputsPanel::InputsPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, CommonItemModels * commonItemModels):
+InputsPanel::InputsPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, ItemModelsFactory * sharedItemModels):
   ModelPanel(parent, model, generalSettings, firmware),
   expoInserted(false),
   modelPrinter(firmware, generalSettings, model),
-  commonItemModels(commonItemModels)
+  sharedItemModels(sharedItemModels)
 {
-  rawSourceFilteredModel = new RawItemFilteredModel(commonItemModels->rawSourceItemModel(), (RawSource::InputSourceGroups & ~ RawSource::NoneGroup & ~RawSource::InputsGroup), this);
-  connect(rawSourceFilteredModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &InputsPanel::onModelDataAboutToBeUpdated);
-  connect(rawSourceFilteredModel, &RawItemFilteredModel::dataUpdateComplete, this, &InputsPanel::onModelDataUpdateComplete);
-
-  rawSwitchFilteredModel = new RawItemFilteredModel(commonItemModels->rawSwitchItemModel(), RawSwitch::MixesContext, this);
-  connect(rawSwitchFilteredModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &InputsPanel::onModelDataAboutToBeUpdated);
-  connect(rawSwitchFilteredModel, &RawItemFilteredModel::dataUpdateComplete, this, &InputsPanel::onModelDataUpdateComplete);
-
-  const int filter = firmware->getCapability(HasInputDiff) ? RawItemFilteredModel::AllFilter : RawItemFilteredModel::PositiveFilter;
-  curveFilteredModel = new RawItemFilteredModel(commonItemModels->curveItemModel(), filter, this);
-  connect(curveFilteredModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &InputsPanel::onModelDataAboutToBeUpdated);
-  connect(curveFilteredModel, &RawItemFilteredModel::dataUpdateComplete, this, &InputsPanel::onModelDataUpdateComplete);
-
-  gvarFilteredModel = new RawItemFilteredModel(commonItemModels->gvarItemModel(), RawItemFilteredModel::AllFilter, this);
-  connect(gvarFilteredModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &InputsPanel::onModelDataAboutToBeUpdated);
-  connect(gvarFilteredModel, &RawItemFilteredModel::dataUpdateComplete, this, &InputsPanel::onModelDataUpdateComplete);
+  FILTEREDITEMMODEL(rawSourceFilteredModel, InputsPanel, RawSourceId,(RawSource::InputSourceGroups & ~ RawSource::NoneGroup & ~RawSource::InputsGroup))
+  FILTEREDITEMMODEL(rawSwitchFilteredModel, InputsPanel, RawSwitchId, RawSwitch::MixesContext)
+  FILTEREDITEMMODEL(curveFilteredModel, InputsPanel, CurveId, firmware->getCapability(HasInputDiff) ? 0 : FilteredItemModel::PositiveFilter)
+  FILTEREDITEMMODELNOFLAGS(gvarFilteredModel, InputsPanel, GVarRefId)
+  FILTEREDITEMMODELNOFLAGS(crTypeFilteredModel, InputsPanel, CurveRefTypeId)
+  FILTEREDITEMMODELNOFLAGS(crFuncFilteredModel, InputsPanel, CurveRefFuncId)
 
   inputsCount = firmware->getCapability(VirtualInputs);
   if (inputsCount == 0)
@@ -84,6 +74,12 @@ InputsPanel::InputsPanel(QWidget *parent, ModelData & model, GeneralSettings & g
 
 InputsPanel::~InputsPanel()
 {
+  delete rawSourceFilteredModel;
+  delete rawSwitchFilteredModel;
+  delete curveFilteredModel;
+  delete gvarFilteredModel;
+  delete crTypeFilteredModel;
+  delete crFuncFilteredModel;
 }
 
 void InputsPanel::update()
@@ -200,7 +196,7 @@ void InputsPanel::gm_openExpo(int index)
     inputName = model->inputNames[ed.chn];
 
   ExpoDialog *dlg = new ExpoDialog(this, *model, &ed, generalSettings, firmware, inputName, rawSourceFilteredModel, rawSwitchFilteredModel,
-                                   curveFilteredModel, gvarFilteredModel);
+                                   curveFilteredModel, gvarFilteredModel, crTypeFilteredModel, crFuncFilteredModel);
   if (dlg->exec())  {
     model->expoData[index] = ed;
     if (firmware->getCapability(VirtualInputs))
@@ -736,12 +732,12 @@ int InputsPanel::getInputIndexFromSelected()
   return idx;
 }
 
-void InputsPanel::onModelDataAboutToBeUpdated()
+void InputsPanel::onItemModelAboutToBeUpdated()
 {
   lock = true;
 }
 
-void InputsPanel::onModelDataUpdateComplete()
+void InputsPanel::onItemModelUpdateComplete()
 {
   update();
   lock = false;
@@ -749,5 +745,5 @@ void InputsPanel::onModelDataUpdateComplete()
 
 void InputsPanel::updateItemModels()
 {
-  commonItemModels->update(CommonItemModels::RMO_INPUTS);
+  sharedItemModels->update(AbstractItemModel::InputsUpdated);
 }

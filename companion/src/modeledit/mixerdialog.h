@@ -25,7 +25,7 @@
 #include "eeprominterface.h"
 
 class GVarGroup;
-class RawItemFilteredModel;
+class FilteredItemModel;
 class CurveReferenceUIManager;
 
 namespace Ui {
@@ -36,8 +36,8 @@ class MixerDialog : public QDialog {
     Q_OBJECT
   public:
     MixerDialog(QWidget *parent, ModelData & model, MixData *mixdata, GeneralSettings & generalSettings, Firmware * firmware,
-                  RawItemFilteredModel * rawSourceModel, RawItemFilteredModel * rawSwitchModel, RawItemFilteredModel * curveItemModel,
-                  RawItemFilteredModel * gvarItemModel);
+                FilteredItemModel * rawSourceFilteredModel, FilteredItemModel * rawSwitchFilteredModel, FilteredItemModel * curveFilteredModel,
+                FilteredItemModel * gvarFilteredModel, FilteredItemModel * crTypeFilteredModel, FilteredItemModel * crFuncFilteredModel);
     ~MixerDialog();
 
   protected:

@@ -25,8 +25,8 @@
 #include "mixerslistwidget.h"
 #include "modelprinter.h"
 
-class CommonItemModels;
-class RawItemFilteredModel;
+class ItemModelsFactory;
+class FilteredItemModel;
 
 constexpr char MIMETYPE_EXPO[] = "application/x-companion-expo";
 
@@ -35,7 +35,7 @@ class InputsPanel : public ModelPanel
     Q_OBJECT
 
   public:
-    InputsPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, CommonItemModels * commonItemModels);
+    InputsPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, ItemModelsFactory * sharedItemModels);
     virtual ~InputsPanel();
 
     virtual void update();
@@ -62,8 +62,8 @@ class InputsPanel : public ModelPanel
     void cmInputInsert();
     void cmInputMoveDown();
     void cmInputMoveUp();
-    void onModelDataAboutToBeUpdated();
-    void onModelDataUpdateComplete();
+    void onItemModelAboutToBeUpdated();
+    void onItemModelUpdateComplete();
 
   private:
     bool expoInserted;
@@ -72,11 +72,13 @@ class InputsPanel : public ModelPanel
     ModelPrinter modelPrinter;
     int selectedIdx;
     int inputIdx;
-    CommonItemModels * commonItemModels;
-    RawItemFilteredModel *rawSourceFilteredModel;
-    RawItemFilteredModel *rawSwitchFilteredModel;
-    RawItemFilteredModel *curveFilteredModel;
-    RawItemFilteredModel *gvarFilteredModel;
+    ItemModelsFactory *sharedItemModels;
+    FilteredItemModel *rawSourceFilteredModel;
+    FilteredItemModel *rawSwitchFilteredModel;
+    FilteredItemModel *curveFilteredModel;
+    FilteredItemModel *gvarFilteredModel;
+    FilteredItemModel *crTypeFilteredModel;
+    FilteredItemModel *crFuncFilteredModel;
 
     int getExpoIndex(unsigned int dch);
     bool gm_insertExpo(int idx);

@@ -24,24 +24,31 @@
 #include "ui_telemetry_sensor.h"
 #include "helpers.h"
 #include "appdata.h"
-#include "rawitemfilteredmodel.h"
 
 #include <TimerEdit>
 
-TelemetryCustomScreen::TelemetryCustomScreen(QWidget *parent, ModelData & model, FrSkyScreenData & screen, GeneralSettings & generalSettings, Firmware * firmware, RawItemFilteredModel * rawSourceModel):
+constexpr char FIM_NAME_RAWSOURCE[]  {"Raw Source"};
+constexpr char FIM_NAME_TELEALLSRC[] {"Tele All Source"};
+constexpr char FIM_NAME_TELEPOSSRC[] {"Tele Pos Source"};
+
+TelemetryCustomScreen::TelemetryCustomScreen(QWidget *parent, ModelData & model, FrSkyScreenData & screen, GeneralSettings & generalSettings,
+                                             Firmware * firmware, const bool & parentLock, FilteredItemModelsFactory * localFilteredItemModels):
   ModelPanel(parent, model, generalSettings, firmware),
   ui(new Ui::TelemetryCustomScreen),
-  screen(screen)
+  screen(screen),
+  modelsUpdateCnt(0),
+  parentLock(parentLock)
 {
   ui->setupUi(this);
-  connect(rawSourceModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &TelemetryCustomScreen::onModelDataAboutToBeUpdated);
-  connect(rawSourceModel, &RawItemFilteredModel::dataUpdateComplete, this, &TelemetryCustomScreen::onModelDataUpdateComplete);
+
+  FilteredItemModel * rawSourceFilteredModel = localFilteredItemModels->getItemModel(FIM_NAME_RAWSOURCE);
+  connectItemModelEvents(rawSourceFilteredModel);
 
   for (int l = 0; l < firmware->getCapability(TelemetryCustomScreensLines); l++) {
     for (int c = 0; c < firmware->getCapability(TelemetryCustomScreensFieldsPerLine); c++) {
       fieldsCB[l][c] = new QComboBox(this);
       fieldsCB[l][c]->setProperty("index", c + (l << 8));
-      fieldsCB[l][c]->setModel(rawSourceModel);
+      fieldsCB[l][c]->setModel(rawSourceFilteredModel);
       ui->screenNumsLayout->addWidget(fieldsCB[l][c], l, c, 1, 1);
       connect(fieldsCB[l][c], SIGNAL(activated(int)), this, SLOT(customFieldChanged(int)));
     }
@@ -50,7 +57,7 @@ TelemetryCustomScreen::TelemetryCustomScreen(QWidget *parent, ModelData & model,
   for (int l = 0; l < firmware->getCapability(TelemetryCustomScreensBars); l++) {
     barsCB[l] = new QComboBox(this);
     barsCB[l]->setProperty("index", l);
-    barsCB[l]->setModel(rawSourceModel);
+    barsCB[l]->setModel(rawSourceFilteredModel);
     connect(barsCB[l], SIGNAL(activated(int)), this, SLOT(barSourceChanged(int)));
     ui->screenBarsLayout->addWidget(barsCB[l], l, 0, 1, 1);
 
@@ -203,7 +210,7 @@ void TelemetryCustomScreen::updateBar(int line)
 
 void TelemetryCustomScreen::on_screenType_currentIndexChanged(int index)
 {
-  if (!lock) {
+  if (!isLocked()) {
     memset(reinterpret_cast<void *>(&screen.body), 0, sizeof(screen.body));
     update();
     emit modified();
@@ -212,7 +219,7 @@ void TelemetryCustomScreen::on_screenType_currentIndexChanged(int index)
 
 void TelemetryCustomScreen::scriptNameEdited()
 {
-  if (!lock) {
+  if (!isLocked()) {
     lock = true;
     Helpers::getFileComboBoxValue(ui->scriptName, screen.body.script.filename, 8);
     emit modified();
@@ -222,7 +229,7 @@ void TelemetryCustomScreen::scriptNameEdited()
 
 void TelemetryCustomScreen::customFieldChanged(int value)
 {
-  if (lock || !sender() || !qobject_cast<QComboBox *>(sender()))
+  if (isLocked() || !sender() || !qobject_cast<QComboBox *>(sender()))
     return;
 
   bool ok;
@@ -238,7 +245,7 @@ void TelemetryCustomScreen::customFieldChanged(int value)
 
 void TelemetryCustomScreen::barSourceChanged(int value)
 {
-  if (lock || !sender() || !qobject_cast<QComboBox *>(sender()))
+  if (isLocked() || !sender() || !qobject_cast<QComboBox *>(sender()))
     return;
 
   bool ok;
@@ -256,7 +263,7 @@ void TelemetryCustomScreen::barSourceChanged(int value)
 
 void TelemetryCustomScreen::barMinChanged(double value)
 {
-  if (!lock) {
+  if (!isLocked()) {
     int line = sender()->property("index").toInt();
     screen.body.bars[line].barMin = round(value / minSB[line]->singleStep());
     // TODO set min (maxSB)
@@ -266,7 +273,7 @@ void TelemetryCustomScreen::barMinChanged(double value)
 
 void TelemetryCustomScreen::barMaxChanged(double value)
 {
-  if (!lock) {
+  if (!isLocked()) {
     int line = sender()->property("index").toInt();
     screen.body.bars[line].barMax = round((value) / maxSB[line]->singleStep());
     // TODO set max (minSB)
@@ -276,7 +283,7 @@ void TelemetryCustomScreen::barMaxChanged(double value)
 
 void TelemetryCustomScreen::barTimeChanged()
 {
-  if (!lock) {
+  if (!isLocked()) {
     int line = sender()->property("index").toInt();
     int & valRef = (sender()->property("type").toString() == "min" ? screen.body.bars[line].barMin : screen.body.bars[line].barMax);
     TimerEdit * te = qobject_cast<TimerEdit *>(sender());
@@ -289,29 +296,49 @@ void TelemetryCustomScreen::barTimeChanged()
   }
 }
 
-void TelemetryCustomScreen::onModelDataAboutToBeUpdated()
+void TelemetryCustomScreen::connectItemModelEvents(const FilteredItemModel * itemModel)
 {
-  lock = true;
+  connect(itemModel, &FilteredItemModel::aboutToBeUpdated, this, &TelemetryCustomScreen::onItemModelAboutToBeUpdated);
+  connect(itemModel, &FilteredItemModel::updateComplete, this, &TelemetryCustomScreen::onItemModelUpdateComplete);
 }
 
-void TelemetryCustomScreen::onModelDataUpdateComplete()
+void TelemetryCustomScreen::onItemModelAboutToBeUpdated()
 {
-  update();
-  lock = false;
+  lock = true;
+  modelsUpdateCnt++;
+}
+
+void TelemetryCustomScreen::onItemModelUpdateComplete()
+{
+  modelsUpdateCnt--;
+  if (modelsUpdateCnt < 1) {
+    //  leave updating to parent
+    lock = false;
+  }
 }
 
 /******************************************************/
 
-TelemetrySensorPanel::TelemetrySensorPanel(QWidget *parent, SensorData & sensor, int sensorIndex, int sensorCapability, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware):
+TelemetrySensorPanel::TelemetrySensorPanel(QWidget *parent, SensorData & sensor, int sensorIndex, int sensorCapability, ModelData & model,
+                                           GeneralSettings & generalSettings, Firmware * firmware, const bool & parentLock,
+                                           FilteredItemModelsFactory * localFilteredItemModels) :
   ModelPanel(parent, model, generalSettings, firmware),
   ui(new Ui::TelemetrySensor),
   sensor(sensor),
-  lock(false),
+  //lock(false),
   sensorIndex(sensorIndex),
   selectedIndex(0),
-  sensorCapability(sensorCapability)
+  sensorCapability(sensorCapability),
+  modelsUpdateCnt(0),
+  parentLock(parentLock)
 {
   ui->setupUi(this);
+
+  FilteredItemModel * teleAllSrcFilteredModel = localFilteredItemModels->getItemModel(FIM_NAME_TELEALLSRC);
+  connectItemModelEvents(teleAllSrcFilteredModel);
+  FilteredItemModel * telePosSrcFilteredModel = localFilteredItemModels->getItemModel(FIM_NAME_TELEPOSSRC);
+  connectItemModelEvents(telePosSrcFilteredModel);
+
   ui->numLabel->setText(tr("TELE%1").arg(sensorIndex + 1));
   ui->numLabel->setProperty("index", sensorIndex);
   ui->numLabel->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
@@ -333,9 +360,13 @@ TelemetrySensorPanel::TelemetrySensorPanel(QWidget *parent, SensorData & sensor,
   ui->logs->setField(sensor.logs, this);
   ui->persistent->setField(sensor.persistent, this);
   ui->onlyPositive->setField(sensor.onlyPositive, this);
+  ui->gpsSensor->setModel(telePosSrcFilteredModel);
   ui->gpsSensor->setField(sensor.gps, this);
+  ui->altSensor->setModel(telePosSrcFilteredModel);
   ui->altSensor->setField(sensor.alt, this);
+  ui->ampsSensor->setModel(telePosSrcFilteredModel);
   ui->ampsSensor->setField(sensor.amps, this);
+  ui->cellsSensor->setModel(telePosSrcFilteredModel);
   ui->cellsSensor->setField(sensor.source, this);
   ui->cellsIndex->addItem(tr("Lowest"), SensorData::TELEM_CELL_INDEX_LOWEST);
   for (int i = SensorData::TELEM_CELL_INDEX_LOWEST + 1; i < SensorData::TELEM_CELL_INDEX_HIGHEST; i++)
@@ -343,9 +374,13 @@ TelemetrySensorPanel::TelemetrySensorPanel(QWidget *parent, SensorData & sensor,
   ui->cellsIndex->addItem(tr("Highest"), SensorData::TELEM_CELL_INDEX_HIGHEST);
   ui->cellsIndex->addItem(tr("Delta"), SensorData::TELEM_CELL_INDEX_DELTA);
   ui->cellsIndex->setField(sensor.index);
+  ui->source1->setModel(teleAllSrcFilteredModel);
   ui->source1->setField(sensor.sources[0], this);
+  ui->source2->setModel(teleAllSrcFilteredModel);
   ui->source2->setField(sensor.sources[1], this);
+  ui->source3->setModel(teleAllSrcFilteredModel);
   ui->source3->setField(sensor.sources[2], this);
+  ui->source4->setModel(teleAllSrcFilteredModel);
   ui->source4->setField(sensor.sources[3], this);
   ui->prec->setField(sensor.prec, 0, 2, false, "", this);
   update();
@@ -404,14 +439,10 @@ void TelemetrySensorPanel::update()
     sources12FieldsDisplayed = (sensor.formula <= SensorData::TELEM_FORMULA_MULTIPLY);
     sources34FieldsDisplayed = (sensor.formula < SensorData::TELEM_FORMULA_MULTIPLY);
     totalizeFieldsDisplayed = (sensor.formula == SensorData::TELEM_FORMULA_TOTALIZE);
-    updateSourcesComboBox(ui->source1, true);
-    updateSourcesComboBox(ui->source2, true);
-    updateSourcesComboBox(ui->source3, true);
-    updateSourcesComboBox(ui->source4, true);
-    updateSourcesComboBox(ui->gpsSensor, false);
-    updateSourcesComboBox(ui->altSensor, false);
-    updateSourcesComboBox(ui->ampsSensor, false);
-    updateSourcesComboBox(ui->cellsSensor, false);
+    ui->source1->updateValue();
+    ui->source2->updateValue();
+    ui->source3->updateValue();
+    ui->source4->updateValue();
   }
   else {
     ui->idLabel->show();
@@ -483,40 +514,9 @@ void TelemetrySensorPanel::update()
   lock = false;
 }
 
-void populateTelemetrySourcesComboBox(AutoComboBox * cb, const ModelData * model, bool negative)
-{
-  cb->clear();
-  if (negative) {
-    for (int i = -CPN_MAX_SENSORS; i < 0; ++i) {
-      const SensorData& sensor = model->sensorData[-i - 1];
-      if (sensor.isAvailable()) {
-        if (sensor.type == SensorData::TELEM_TYPE_CUSTOM)
-          cb->addItem(QString("-%1 (%2)").arg(sensor.label, sensor.getOrigin(model)), i);
-        else
-          cb->addItem(QString("-%1").arg(sensor.label), i);
-      }
-    }
-  }
-  cb->addItem("---", 0);
-  for (unsigned i = 1; i <= CPN_MAX_SENSORS; ++i) {
-    const SensorData& sensor = model->sensorData[i-1];
-    if (sensor.isAvailable()) {
-      if (sensor.type == SensorData::TELEM_TYPE_CUSTOM)
-        cb->addItem(QString("%1 (%2)").arg(sensor.label, sensor.getOrigin(model)), i);
-      else
-        cb->addItem(QString("%1").arg(sensor.label), i);
-    }
-  }
-}
-
-void TelemetrySensorPanel::updateSourcesComboBox(AutoComboBox * cb, bool negative)
-{
-  populateTelemetrySourcesComboBox(cb, model, negative);
-}
-
 void TelemetrySensorPanel::on_name_editingFinished()
 {
-  if (!lock) {
+  if (!isLocked() && (sensor.label != ui->name->text().toLatin1())) {
     strcpy(sensor.label, ui->name->text().toLatin1());
     emit dataModified();
   }
@@ -524,7 +524,7 @@ void TelemetrySensorPanel::on_name_editingFinished()
 
 void TelemetrySensorPanel::on_type_currentIndexChanged(int index)
 {
-  if (!lock) {
+  if (!isLocked()) {
     sensor.type = index;
     update();
     emit modified();
@@ -533,7 +533,7 @@ void TelemetrySensorPanel::on_type_currentIndexChanged(int index)
 
 void TelemetrySensorPanel::on_formula_currentIndexChanged(int index)
 {
-  if (!lock) {
+  if (!isLocked()) {
     sensor.formula = index;
     if (sensor.formula == SensorData::TELEM_FORMULA_CELL) {
       sensor.prec = 2;
@@ -553,7 +553,7 @@ void TelemetrySensorPanel::on_formula_currentIndexChanged(int index)
 
 void TelemetrySensorPanel::on_unit_currentIndexChanged(int index)
 {
-  if (!lock) {
+  if (!isLocked()) {
     sensor.unit = index;
     if (sensor.unit == SensorData::UNIT_FAHRENHEIT) {
       sensor.prec = 0;
@@ -565,7 +565,7 @@ void TelemetrySensorPanel::on_unit_currentIndexChanged(int index)
 
 void TelemetrySensorPanel::on_prec_valueChanged()
 {
-  if (!lock) {
+  if (!isLocked()) {
     update();
   }
 }
@@ -686,15 +686,52 @@ void TelemetrySensorPanel::cmMoveDown()
   emit moveDownSensor(selectedIndex);
 }
 
+void TelemetrySensorPanel::connectItemModelEvents(const FilteredItemModel * itemModel)
+{
+  connect(itemModel, &FilteredItemModel::aboutToBeUpdated, this, &TelemetrySensorPanel::onItemModelAboutToBeUpdated);
+  connect(itemModel, &FilteredItemModel::updateComplete, this, &TelemetrySensorPanel::onItemModelUpdateComplete);
+}
+
+void TelemetrySensorPanel::onItemModelAboutToBeUpdated()
+{
+  lock = true;
+  modelsUpdateCnt++;
+}
+
+void TelemetrySensorPanel::onItemModelUpdateComplete()
+{
+  modelsUpdateCnt--;
+  if (modelsUpdateCnt < 1) {
+    //  leave updating to parent
+    lock = false;
+  }
+}
+
 /******************************************************/
 
-TelemetryPanel::TelemetryPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, CommonItemModels * commonItemModels):
+TelemetryPanel::TelemetryPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware,
+                               ItemModelsFactory * sharedItemModels):
   ModelPanel(parent, model, generalSettings, firmware),
   ui(new Ui::Telemetry),
-  commonItemModels(commonItemModels)
+  sharedItemModels(sharedItemModels),
+  modelsUpdateCnt(0)
 {
   ui->setupUi(this);
-  rawSourceFilteredModel = new RawItemFilteredModel(commonItemModels->rawSourceItemModel(), this);
+
+  localFilteredItemModels = new FilteredItemModelsFactory();
+  int newid;
+
+  newid = localFilteredItemModels->registerItemModel(new FilteredItemModel(sharedItemModels->getItemModel(AbstractItemModel::RawSourceId)),
+                                                     FIM_NAME_RAWSOURCE);
+  connectItemModelEvents(localFilteredItemModels->getItemModel(newid));
+
+  newid = localFilteredItemModels->registerItemModel(new FilteredItemModel(sharedItemModels->getItemModel(AbstractItemModel::TeleSourceId)),
+                                                     FIM_NAME_TELEALLSRC);
+  connectItemModelEvents(localFilteredItemModels->getItemModel(newid));
+
+  newid = localFilteredItemModels->registerItemModel(new FilteredItemModel(sharedItemModels->getItemModel(AbstractItemModel::TeleSourceId),
+                                                     FilteredItemModel::PositiveFilter), FIM_NAME_TELEPOSSRC);
+  connectItemModelEvents(localFilteredItemModels->getItemModel(newid));
 
   sensorCapability = firmware->getCapability(Sensors);
   if (sensorCapability > CPN_MAX_SENSORS) //  TODO should be role of getCapability
@@ -704,13 +741,15 @@ TelemetryPanel::TelemetryPanel(QWidget *parent, ModelData & model, GeneralSettin
     model.frsky.usrProto = 1;
   }
 
+  ui->varioSource->setModel(localFilteredItemModels->getItemModel(FIM_NAME_TELEPOSSRC));
   ui->varioSource->setField(model.frsky.varioSource, this);
   ui->varioCenterSilent->setField(model.frsky.varioCenterSilent, this);
   ui->A1GB->hide();
   ui->A2GB->hide();
 
   for (int i = 0; i < sensorCapability; ++i) {
-    TelemetrySensorPanel * panel = new TelemetrySensorPanel(this, model.sensorData[i], i, sensorCapability, model, generalSettings, firmware);
+    TelemetrySensorPanel * panel = new TelemetrySensorPanel(this, model.sensorData[i], i, sensorCapability, model, generalSettings,
+                                                            firmware, lock, localFilteredItemModels);
     ui->sensorsLayout->addWidget(panel);
     sensorPanels[i] = panel;
     connect(panel, SIGNAL(dataModified()), this, SLOT(on_dataModifiedSensor()));
@@ -723,7 +762,9 @@ TelemetryPanel::TelemetryPanel(QWidget *parent, ModelData & model, GeneralSettin
   }
 
   if (IS_TARANIS_X9(firmware->getBoard())) {
+    ui->voltsSource->setModel(localFilteredItemModels->getItemModel(FIM_NAME_TELEPOSSRC));
     ui->voltsSource->setField(model.frsky.voltsSource, this);
+    ui->altitudeSource->setModel(localFilteredItemModels->getItemModel(FIM_NAME_TELEPOSSRC));
     ui->altitudeSource->setField(model.frsky.altitudeSource, this);
   }
   else {
@@ -731,7 +772,8 @@ TelemetryPanel::TelemetryPanel(QWidget *parent, ModelData & model, GeneralSettin
   }
 
   for (int i = 0; i < firmware->getCapability(TelemetryCustomScreens); i++) {
-    TelemetryCustomScreen * tab = new TelemetryCustomScreen(this, model, model.frsky.screens[i], generalSettings, firmware, rawSourceFilteredModel);
+    TelemetryCustomScreen * tab = new TelemetryCustomScreen(this, model, model.frsky.screens[i], generalSettings, firmware, lock,
+                                                            localFilteredItemModels);
     ui->customScreens->addTab(tab, tr("Telemetry screen %1").arg(i + 1));
     telemetryCustomScreens[i] = tab;
     connect(tab, &TelemetryCustomScreen::modified, this, &TelemetryPanel::onModified);
@@ -745,10 +787,13 @@ TelemetryPanel::TelemetryPanel(QWidget *parent, ModelData & model, GeneralSettin
 TelemetryPanel::~TelemetryPanel()
 {
   delete ui;
+  delete localFilteredItemModels;
 }
 
 void TelemetryPanel::update()
 {
+  lock = true;
+
   if (IS_HORUS_OR_TARANIS(firmware->getBoard())) {
     if (model->moduleData[0].protocol == PULSES_OFF && model->moduleData[1].protocol == PULSES_PPM) {
       ui->telemetryProtocol->setEnabled(true);
@@ -758,10 +803,10 @@ void TelemetryPanel::update()
       ui->telemetryProtocol->setCurrentIndex(0);
     }
 
-    populateTelemetrySourcesComboBox(ui->rssiSourceCB, model, false);
-    populateTelemetrySourcesComboBox(ui->voltsSource, model, false);
-    populateTelemetrySourcesComboBox(ui->altitudeSource, model, false);
-    populateTelemetrySourcesComboBox(ui->varioSource, model, false);
+    ui->rssiSourceCB->updateValue();
+    ui->voltsSource->updateValue();
+    ui->altitudeSource->updateValue();
+    ui->varioSource->updateValue();
   }
 
   for (int i = 0; i < sensorCapability; ++i) {
@@ -771,6 +816,8 @@ void TelemetryPanel::update()
   for (int i = 0; i < firmware->getCapability(TelemetryCustomScreens); i++) {
     telemetryCustomScreens[i]->update();
   }
+
+  lock = false;
 }
 
 void TelemetryPanel::setup()
@@ -792,9 +839,9 @@ void TelemetryPanel::setup()
 
   ui->rssiSourceLabel->show();
   ui->rssiSourceLabel->setText(tr("Source"));
+  ui->rssiSourceCB->setModel(localFilteredItemModels->getItemModel(FIM_NAME_TELEPOSSRC));
   ui->rssiSourceCB->setField(model->rssiSource, this);
   ui->rssiSourceCB->show();
-  populateTelemetrySourcesComboBox(ui->rssiSourceCB, model, false);
 
   ui->rssiAlarmWarningCB->hide();
   ui->rssiAlarmCriticalCB->hide();
@@ -842,44 +889,9 @@ void TelemetryPanel::setup()
   lock = false;
 }
 
-void TelemetryPanel::populateVarioSource()
-{
-  AutoComboBox * cb = ui->varioSource;
-  cb->setField(model->frsky.varioSource, this);
-  cb->addItem(tr("Alti"), TELEMETRY_VARIO_SOURCE_ALTI);
-  cb->addItem(tr("Alti+"), TELEMETRY_VARIO_SOURCE_ALTI_PLUS);
-  cb->addItem(tr("VSpeed"), TELEMETRY_VARIO_SOURCE_VSPEED);
-  cb->addItem(tr("A1"), TELEMETRY_VARIO_SOURCE_A1);
-  cb->addItem(tr("A2"), TELEMETRY_VARIO_SOURCE_A2);
-}
-
-void TelemetryPanel::populateVoltsSource()
-{
-  AutoComboBox * cb = ui->frskyVoltCB;
-  cb->setField(model->frsky.voltsSource, this);
-  cb->addItem(tr("A1"), TELEMETRY_VOLTS_SOURCE_A1);
-  cb->addItem(tr("A2"), TELEMETRY_VOLTS_SOURCE_A2);
-  cb->addItem(tr("A3"), TELEMETRY_VOLTS_SOURCE_A3);
-  cb->addItem(tr("A4"), TELEMETRY_VOLTS_SOURCE_A4);
-  cb->addItem(tr("FAS"), TELEMETRY_VOLTS_SOURCE_FAS);
-  cb->addItem(tr("Cells"), TELEMETRY_VOLTS_SOURCE_CELLS);
-}
-
-void TelemetryPanel::populateCurrentSource()
-{
-  AutoComboBox * cb = ui->frskyCurrentCB;
-  cb->setField(model->frsky.currentSource, this);
-  cb->addItem(tr("---"), TELEMETRY_CURRENT_SOURCE_NONE);
-  cb->addItem(tr("A1"), TELEMETRY_CURRENT_SOURCE_A1);
-  cb->addItem(tr("A2"), TELEMETRY_CURRENT_SOURCE_A2);
-  cb->addItem(tr("A3"), TELEMETRY_CURRENT_SOURCE_A3);
-  cb->addItem(tr("A4"), TELEMETRY_CURRENT_SOURCE_A4);
-  cb->addItem(tr("FAS"), TELEMETRY_CURRENT_SOURCE_FAS);
-}
-
 void TelemetryPanel::on_telemetryProtocol_currentIndexChanged(int index)
 {
-  if (!lock) {
+  if (!isLocked()) {
     model->telemetryProtocol = index;
     emit modified();
   }
@@ -892,7 +904,7 @@ void TelemetryPanel::onModified()
 
 void TelemetryPanel::on_bladesCount_editingFinished()
 {
-  if (!lock) {
+  if (!isLocked()) {
     model->frsky.blades = ui->bladesCount->value();
     emit modified();
   }
@@ -900,7 +912,7 @@ void TelemetryPanel::on_bladesCount_editingFinished()
 
 void TelemetryPanel::on_frskyProtoCB_currentIndexChanged(int index)
 {
-  if (!lock) {
+  if (!isLocked()) {
     model->frsky.usrProto = index;
     for (int i = 0; i < firmware->getCapability(TelemetryCustomScreens); i++)
       telemetryCustomScreens[i]->update();
@@ -910,31 +922,39 @@ void TelemetryPanel::on_frskyProtoCB_currentIndexChanged(int index)
 
 void TelemetryPanel::on_rssiAlarmWarningSB_editingFinished()
 {
-  model->rssiAlarms.warning= ui->rssiAlarmWarningSB->value();
-  emit modified();
+  if (!isLocked()) {
+    model->rssiAlarms.warning= ui->rssiAlarmWarningSB->value();
+    emit modified();
+  }
 }
 
 void TelemetryPanel::on_rssiAlarmCriticalSB_editingFinished()
 {
-  model->rssiAlarms.critical = ui->rssiAlarmCriticalSB->value();
-  emit modified();
+  if (!isLocked()) {
+    model->rssiAlarms.critical = ui->rssiAlarmCriticalSB->value();
+    emit modified();
+  }
 }
 
 void TelemetryPanel::on_varioLimitMin_DSB_editingFinished()
 {
-  model->frsky.varioMin = round(ui->varioLimitMin_DSB->value() + 10);
-  emit modified();
+  if (!isLocked()) {
+    model->frsky.varioMin = round(ui->varioLimitMin_DSB->value() + 10);
+    emit modified();
+  }
 }
 
 void TelemetryPanel::on_varioLimitMax_DSB_editingFinished()
 {
-  model->frsky.varioMax = round(ui->varioLimitMax_DSB->value() - 10);
-  emit modified();
+  if (!isLocked()) {
+    model->frsky.varioMax = round(ui->varioLimitMax_DSB->value() - 10);
+    emit modified();
+  }
 }
 
 void TelemetryPanel::on_varioLimitCenterMin_DSB_editingFinished()
 {
-  if (!lock) {
+  if (!isLocked()) {
     if (ui->varioLimitCenterMin_DSB->value() > ui->varioLimitCenterMax_DSB->value()) {
       ui->varioLimitCenterMax_DSB->setValue(ui->varioLimitCenterMin_DSB->value());
     }
@@ -945,7 +965,7 @@ void TelemetryPanel::on_varioLimitCenterMin_DSB_editingFinished()
 
 void TelemetryPanel::on_varioLimitCenterMax_DSB_editingFinished()
 {
-  if (!lock) {
+  if (!isLocked()) {
     if (ui->varioLimitCenterMin_DSB->value() > ui->varioLimitCenterMax_DSB->value()) {
       ui->varioLimitCenterMax_DSB->setValue(ui->varioLimitCenterMin_DSB->value());
     }
@@ -956,21 +976,27 @@ void TelemetryPanel::on_varioLimitCenterMax_DSB_editingFinished()
 
 void TelemetryPanel::on_fasOffset_DSB_editingFinished()
 {
-  model->frsky.fasOffset = ui->fasOffset_DSB->value() * 10;
-  emit modified();
+  if (!isLocked()) {
+    model->frsky.fasOffset = ui->fasOffset_DSB->value() * 10;
+    emit modified();
+  }
 }
 
 void TelemetryPanel::on_mahCount_SB_editingFinished()
 {
-  model->frsky.storedMah = ui->mahCount_SB->value();
-  emit modified();
+  if (!isLocked()) {
+    model->frsky.storedMah = ui->mahCount_SB->value();
+    emit modified();
+  }
 }
 
 void TelemetryPanel::on_mahCount_ChkB_toggled(bool checked)
 {
-  model->frsky.mAhPersistent = checked;
-  ui->mahCount_SB->setDisabled(!checked);
-  emit modified();
+  if (!isLocked()) {
+    model->frsky.mAhPersistent = checked;
+    ui->mahCount_SB->setDisabled(!checked);
+    emit modified();
+  }
 }
 
 void TelemetryPanel::on_clearAllSensors()
@@ -980,9 +1006,7 @@ void TelemetryPanel::on_clearAllSensors()
     model->updateAllReferences(ModelData::REF_UPD_TYPE_SENSOR, ModelData::REF_UPD_ACT_CLEAR, i);
   }
 
-  updateItemModels();
-  update();
-  emit modified();
+  on_dataModifiedSensor();
 }
 
 void TelemetryPanel::on_insertSensor(int selectedIndex)
@@ -990,10 +1014,7 @@ void TelemetryPanel::on_insertSensor(int selectedIndex)
   memmove(&model->sensorData[selectedIndex + 1], &model->sensorData[selectedIndex], (CPN_MAX_SENSORS - (selectedIndex + 1)) * sizeof(SensorData));
   model->sensorData[selectedIndex].clear();
   model->updateAllReferences(ModelData::REF_UPD_TYPE_SENSOR, ModelData::REF_UPD_ACT_SHIFT, selectedIndex, 0, 1);
-
-  updateItemModels();
-  update();
-  emit modified();
+  on_dataModifiedSensor();
 }
 
 void TelemetryPanel::on_deleteSensor(int selectedIndex)
@@ -1004,10 +1025,7 @@ void TelemetryPanel::on_deleteSensor(int selectedIndex)
   memmove(&model->sensorData[selectedIndex], &model->sensorData[selectedIndex + 1], (CPN_MAX_SENSORS - (selectedIndex + 1)) * sizeof(SensorData));
   model->sensorData[CPN_MAX_SENSORS - 1].clear();
   model->updateAllReferences(ModelData::REF_UPD_TYPE_SENSOR, ModelData::REF_UPD_ACT_SHIFT, selectedIndex, 0, -1);
-
-  updateItemModels();
-  update();
-  emit modified();
+  on_dataModifiedSensor();
 }
 
 void TelemetryPanel::on_moveUpSensor(int selectedIndex)
@@ -1029,20 +1047,33 @@ void TelemetryPanel::swapData(int idx1, int idx2)
     memcpy(sd2, sd1, sizeof(SensorData));
     memcpy(sd1, &sdtmp, sizeof(SensorData));
     model->updateAllReferences(ModelData::REF_UPD_TYPE_SENSOR, ModelData::REF_UPD_ACT_SWAP, idx1, idx2);
-    updateItemModels();
-    update();
-    emit modified();
+    on_dataModifiedSensor();
   }
 }
 
 void TelemetryPanel::on_dataModifiedSensor()
 {
-  updateItemModels();
-  update();
+  sharedItemModels->update(AbstractItemModel::TeleSensorsUpdated);
   emit modified();
 }
 
-void TelemetryPanel::updateItemModels()
+void TelemetryPanel::connectItemModelEvents(const FilteredItemModel * itemModel)
 {
-  commonItemModels->update(CommonItemModels::RMO_TELEMETRY_SENSORS);
+  connect(itemModel, &FilteredItemModel::aboutToBeUpdated, this, &TelemetryPanel::onItemModelAboutToBeUpdated);
+  connect(itemModel, &FilteredItemModel::updateComplete, this, &TelemetryPanel::onItemModelUpdateComplete);
+}
+
+void TelemetryPanel::onItemModelAboutToBeUpdated()
+{
+  lock = true;
+  modelsUpdateCnt++;
+}
+
+void TelemetryPanel::onItemModelUpdateComplete()
+{
+  modelsUpdateCnt--;
+  if (modelsUpdateCnt < 1) {
+    update();
+    lock = false;
+  }
 }

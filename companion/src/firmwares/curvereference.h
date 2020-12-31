@@ -29,7 +29,7 @@
 
 
 class ModelData;
-class RawItemFilteredModel;
+class FilteredItemModel;
 
 class CurveReference {
 
@@ -90,10 +90,14 @@ class CurveReferenceUIManager : public QObject {
 
   public:
     CurveReferenceUIManager(QComboBox *curveValueCB, CurveReference & curve, const ModelData & model,
-                            RawItemFilteredModel * curveItemModel, RawItemFilteredModel * gvarItemModel, QObject * parent = nullptr);
+                            FilteredItemModel * curveItemModel, FilteredItemModel * gvarItemModel, FilteredItemModel * typeItemModel,
+                            FilteredItemModel * funcItemModel, QObject * parent = nullptr);
+
     CurveReferenceUIManager(QComboBox *curveTypeCB, QCheckBox *curveGVarCB, QSpinBox *curveValueSB, QComboBox *curveValueCB,
-                            CurveReference & curve, const ModelData & model, RawItemFilteredModel * curveItemModel,
-                            RawItemFilteredModel * gvarItemModel, QObject * parent = nullptr);
+                            CurveReference & curve, const ModelData & model, FilteredItemModel * curveItemModel,
+                            FilteredItemModel * gvarItemModel, FilteredItemModel * typeItemModel,
+                            FilteredItemModel * funcItemModel, QObject * parent = nullptr);
+
     virtual ~CurveReferenceUIManager();
 
   protected slots:
@@ -103,24 +107,22 @@ class CurveReferenceUIManager : public QObject {
     void valueCBChanged();
     void update();
 
-  protected:
+  private:
     QComboBox *curveTypeCB;
     QCheckBox *curveGVarCB;
     QSpinBox *curveValueSB;
     QComboBox *curveValueCB;
-    CurveReference & curve;
+    CurveReference & curveRef;
     const ModelData & model;
     bool lock;
     bool hasCapabilityGvars;
-    RawItemFilteredModel * curveItemModel;
-    RawItemFilteredModel * gvarItemModel;
-    RawItemFilteredModel * typeItemModel;
-    RawItemFilteredModel * funcItemModel;
+    FilteredItemModel * curveItemModel;
+    FilteredItemModel * gvarItemModel;
+    FilteredItemModel * typeItemModel;
+    FilteredItemModel * funcItemModel;
 
-    void populateValueCB(QComboBox * cb);
-
-  private:
     void init(QObject * parent);
+    void populateValueCB(QComboBox * cb);
 };
 
 #endif // CURVEREFERENCE_H

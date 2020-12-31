@@ -30,13 +30,24 @@ class GeneralSettings;
 class ModelData;
 class AdjustmentReference;
 
-class AbstractStandardItemModel: public QStandardItemModel
+class AbstractItemModel: public QStandardItemModel
 {
     Q_OBJECT
   public:
-    explicit AbstractStandardItemModel(QObject * parent = nullptr) :
-      QStandardItemModel(parent)
-    {}
+    enum ItemModelId {
+      UnknownId,
+      RawSourceId,
+      RawSwitchId,
+      CurveId,
+      GVarRefId,
+      ThrSourceId,
+      CustomFuncActionId,
+      CustomFuncResetParamId,
+      TeleSourceId,
+      CurveRefTypeId,
+      CurveRefFuncId
+    };
+    Q_ENUM(ItemModelId)
 
     enum DataRoles {
       ItemIdRole = Qt::UserRole,
@@ -52,203 +63,254 @@ class AbstractStandardItemModel: public QStandardItemModel
       PositiveGroup = 0x04
     };
     Q_ENUM(DataGroups)
-};
 
-class AbstractRawItemDataModel: public AbstractStandardItemModel
-{
-    Q_OBJECT
-  public:
-    explicit AbstractRawItemDataModel(const GeneralSettings * const generalSettings, const ModelData * const modelData, QObject * parent = nullptr)  :
-      AbstractStandardItemModel(parent),
+    enum UpdateTrigger {
+      SystemRefresh           = 1 << 0,
+      ChannelsUpdated         = 1 << 1,
+      CurvesUpdated           = 1 << 2,
+      FlightModesUpdated      = 1 << 3,
+      GVarsUpdated            = 1 << 4,
+      InputsUpdated           = 1 << 5,
+      LogicalSwitchesUpdated  = 1 << 6,
+      ScriptsUpdated          = 1 << 7,
+      TeleSensorsUpdated      = 1 << 8,
+      TimersUpdated           = 1 << 9,
+      AllTriggers = SystemRefresh | ChannelsUpdated | CurvesUpdated | FlightModesUpdated | GVarsUpdated | InputsUpdated |
+                    LogicalSwitchesUpdated | ScriptsUpdated | TeleSensorsUpdated | TimersUpdated,
+      NoTriggers = 0
+    };
+    Q_ENUM(UpdateTrigger)
+
+    explicit AbstractItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData,
+                               Firmware * firmware, const Boards * const board, const Board::Type boardType) :
+      QStandardItemModel(nullptr),
       generalSettings(generalSettings),
-      modelData(modelData)
+      modelData(modelData),
+      firmware(firmware),
+      board(board),
+      boardType(boardType)
     {}
 
-  public slots:
-    virtual void update() = 0;
+    virtual ~AbstractItemModel() {};
 
-  signals:
-    void dataAboutToBeUpdated();
-    void dataUpdateComplete();
+    void setId(ItemModelId id) { m_id = id; }
+    ItemModelId getId () const { return m_id; }
+
+    void setUpdateMask(const int mask) { m_updateMask = mask; }
+    int getUpdateMask() const { return m_updateMask; }
+    inline bool doUpdate(const UpdateTrigger trigger) const { return m_updateMask & (int)trigger; }
+
+    AbstractItemModel * getItemModel(const ItemModelId id) const;
+
+    static void dumpItemModelContents(AbstractItemModel * itemModel);
+
+  public slots:
+    virtual void update(const UpdateTrigger trigger = SystemRefresh) = 0;
 
   protected:
     const GeneralSettings * generalSettings;
     const ModelData * modelData;
+    Firmware * firmware;
+    const Boards * board;
+    const Board::Type boardType;
+
+  private:
+    ItemModelId m_id = UnknownId;
+    int m_updateMask = 0;
 };
 
-
-class RawSourceItemModel: public AbstractRawItemDataModel
+class AbstractStaticItemModel: public AbstractItemModel
 {
     Q_OBJECT
   public:
-    explicit RawSourceItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData, QObject * parent = nullptr);
+    explicit AbstractStaticItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData,
+                                     Firmware * firmware, const Boards * const board, const Board::Type boardType) :
+      AbstractItemModel(generalSettings, modelData, firmware, board, boardType) {}
+    virtual ~AbstractStaticItemModel() {};
 
   public slots:
-    void update() override;
+    virtual void update(const UpdateTrigger trigger = SystemRefresh) override final {}
+};
+
+class AbstractDynamicItemModel: public AbstractItemModel
+{
+    Q_OBJECT
+  public:
+    explicit AbstractDynamicItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData,
+                                      Firmware * firmware, const Boards * const board, const Board::Type boardType) :
+      AbstractItemModel(generalSettings, modelData, firmware, board, boardType) {}
+    virtual ~AbstractDynamicItemModel() {};
+
+  public slots:
+    virtual void update(const UpdateTrigger trigger = SystemRefresh) {}
+
+  signals:
+    void aboutToBeUpdated();
+    void updateComplete();
+};
+
+class RawSourceItemModel: public AbstractDynamicItemModel
+{
+    Q_OBJECT
+  public:
+    explicit RawSourceItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData,
+                                Firmware * firmware, const Boards * const board, const Board::Type boardType);
+    virtual ~RawSourceItemModel() {};
+
+  public slots:
+    virtual void update(const UpdateTrigger trigger = SystemRefresh) override;
 
   protected:
-    void setDynamicItemData(QStandardItem * item, const RawSource & src) const;
+    virtual void setDynamicItemData(QStandardItem * item, const RawSource & src) const;
     void addItems(const RawSourceType & type, const int group, const int count, const int start = 0);
 };
 
-
-class RawSwitchItemModel: public AbstractRawItemDataModel
+class RawSwitchItemModel: public AbstractDynamicItemModel
 {
     Q_OBJECT
   public:
-    explicit RawSwitchItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData, QObject * parent = nullptr);
+    explicit RawSwitchItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData,
+                                Firmware * firmware, const Boards * const board, const Board::Type boardType);
+    virtual ~RawSwitchItemModel() {};
 
   public slots:
-    void update() override;
+    virtual void update(const UpdateTrigger trigger = SystemRefresh) override;
 
   protected:
-    void setDynamicItemData(QStandardItem * item, const RawSwitch & rsw) const;
+    virtual void setDynamicItemData(QStandardItem * item, const RawSwitch & rsw) const;
     void addItems(const RawSwitchType & type, int count);
 };
 
-
-class CurveItemModel: public AbstractRawItemDataModel
+class CurveItemModel: public AbstractDynamicItemModel
 {
     Q_OBJECT
   public:
-    explicit CurveItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData, QObject * parent = nullptr);
+    explicit CurveItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData,
+                            Firmware * firmware, const Boards * const board, const Board::Type boardType);
+    virtual ~CurveItemModel() {};
 
   public slots:
-    void update() override;
+    virtual void update(const UpdateTrigger trigger = SystemRefresh) override;
 
   protected:
-    void setDynamicItemData(QStandardItem * item, const int index) const;
+    virtual void setDynamicItemData(QStandardItem * item, const int value) const;
 };
 
-
-class GVarReferenceItemModel: public AbstractRawItemDataModel
+class GVarReferenceItemModel: public AbstractDynamicItemModel
 {
     Q_OBJECT
   public:
-    explicit GVarReferenceItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData, QObject * parent = nullptr);
+    explicit GVarReferenceItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData,
+                                    Firmware * firmware, const Boards * const board, const Board::Type boardType);
+    virtual ~GVarReferenceItemModel() {};
 
   public slots:
-    void update() override;
+    virtual void update(const UpdateTrigger trigger = SystemRefresh) override;
 
   protected:
-    void setDynamicItemData(QStandardItem * item, const AdjustmentReference & ar) const;
+    virtual void setDynamicItemData(QStandardItem * item, const AdjustmentReference & ar) const;
     void addItems(int count);
 };
 
-
-class ThrottleSourceItemModel: public AbstractRawItemDataModel
+class ThrottleSourceItemModel: public AbstractDynamicItemModel
 {
     Q_OBJECT
   public:
-    explicit ThrottleSourceItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData, QObject * parent = nullptr);
+    explicit ThrottleSourceItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData,
+                                     Firmware * firmware, const Boards * const board, const Board::Type boardType);
+    virtual ~ThrottleSourceItemModel() {};
 
   public slots:
-    void update() override;
+    virtual void update(const UpdateTrigger trigger = SystemRefresh) override;
 
   protected:
-    void setDynamicItemData(QStandardItem * item, const int index) const;
+    virtual void setDynamicItemData(QStandardItem * item, const int value) const;
 };
 
-
-class CustomFuncActionItemModel: public AbstractRawItemDataModel
+class CustomFuncActionItemModel: public AbstractDynamicItemModel
 {
     Q_OBJECT
   public:
-    explicit CustomFuncActionItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData, QObject * parent = nullptr);
+    explicit CustomFuncActionItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData,
+                                       Firmware * firmware, const Boards * const board, const Board::Type boardType);
+    virtual ~CustomFuncActionItemModel() {};
 
   public slots:
-    void update() override;
+    virtual void update(const UpdateTrigger trigger = SystemRefresh) override;
 
   protected:
-    void setDynamicItemData(QStandardItem * item, const int index) const;
+    virtual void setDynamicItemData(QStandardItem * item, const int value) const;
 };
 
-
-class CustomFuncResetParamItemModel: public AbstractRawItemDataModel
+class CustomFuncResetParamItemModel: public AbstractDynamicItemModel
 {
     Q_OBJECT
   public:
-    explicit CustomFuncResetParamItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData, QObject * parent = nullptr);
+    explicit CustomFuncResetParamItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData,
+                                           Firmware * firmware, const Boards * const board, const Board::Type boardType);
+    virtual ~CustomFuncResetParamItemModel() {};
 
   public slots:
-    void update() override;
+    virtual void update(const UpdateTrigger trigger = SystemRefresh) override;
 
   protected:
-    void setDynamicItemData(QStandardItem * item, const int index) const;
+    virtual void setDynamicItemData(QStandardItem * item, const int value) const;
 };
 
-
-class TelemetrySourceItemModel: public AbstractRawItemDataModel
+class TelemetrySourceItemModel: public AbstractDynamicItemModel
 {
     Q_OBJECT
   public:
-    explicit TelemetrySourceItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData, QObject * parent = nullptr);
+    explicit TelemetrySourceItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData,
+                                      Firmware * firmware, const Boards * const board, const Board::Type boardType);
+    virtual ~TelemetrySourceItemModel() {};
 
   public slots:
-    void update() override;
+    virtual void update(const UpdateTrigger trigger = SystemRefresh) override;
 
   protected:
-    void setDynamicItemData(QStandardItem * item, const int index) const;
+    virtual void setDynamicItemData(QStandardItem * item, const int value) const;
 };
 
-
-class CommonItemModels: public QObject
+class CurveRefTypeItemModel : public AbstractStaticItemModel
 {
     Q_OBJECT
   public:
-    enum RadioModelObjects {
-      RMO_CHANNELS,
-      RMO_CURVES,
-      RMO_FLIGHT_MODES,
-      RMO_GLOBAL_VARIABLES,
-      RMO_INPUTS,
-      RMO_LOGICAL_SWITCHES,
-      RMO_SCRIPTS,
-      RMO_TELEMETRY_SENSORS,
-      RMO_TIMERS
-    };
-    Q_ENUM(RadioModelObjects)
-
-    explicit CommonItemModels(const GeneralSettings * const generalSettings, const ModelData * const modelData, QObject * parent = nullptr);
-    ~CommonItemModels();
-
-    void update(const RadioModelObjects radioModelObjects);
-    RawSourceItemModel * rawSourceItemModel() const { return m_rawSourceItemModel; }
-    RawSwitchItemModel * rawSwitchItemModel() const { return m_rawSwitchItemModel; }
-    CurveItemModel * curveItemModel() const { return m_curveItemModel; }
-    GVarReferenceItemModel * gvarItemModel() const { return m_gvarReferenceItemModel; }
-    ThrottleSourceItemModel * throttleSourceItemModel() const { return m_throttleSourceItemModel; }
-    CustomFuncActionItemModel * customFuncActionItemModel() const { return m_customFuncActionItemModel; }
-    CustomFuncResetParamItemModel * customFuncResetParamItemModel() const { return m_customFuncResetParamItemModel; }
-    TelemetrySourceItemModel * telemetrySourceItemModel() const { return m_telemetrySourceItemModel; }
-
-  private:
-    RawSourceItemModel *m_rawSourceItemModel;
-    RawSwitchItemModel *m_rawSwitchItemModel;
-    CurveItemModel *m_curveItemModel;
-    GVarReferenceItemModel *m_gvarReferenceItemModel;
-    ThrottleSourceItemModel *m_throttleSourceItemModel;
-    CustomFuncActionItemModel *m_customFuncActionItemModel;
-    CustomFuncResetParamItemModel *m_customFuncResetParamItemModel;
-    TelemetrySourceItemModel *m_telemetrySourceItemModel;
+    explicit CurveRefTypeItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData,
+                                   Firmware * firmware, const Boards * const board, const Board::Type boardType);
+    virtual ~CurveRefTypeItemModel() {};
 };
 
-void dumpModelContents(QString desc, AbstractRawItemDataModel * dataModel);
-
-
-class CurveRefTypeItemModel : public AbstractStandardItemModel
+class CurveRefFuncItemModel : public AbstractStaticItemModel
 {
     Q_OBJECT
   public:
-    explicit CurveRefTypeItemModel(QObject * parent = nullptr);
+    explicit CurveRefFuncItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData,
+                                   Firmware * firmware, const Boards * const board, const Board::Type boardType);
+    virtual ~CurveRefFuncItemModel() {};
 };
 
-class CurveRefFuncItemModel : public AbstractStandardItemModel
+class ItemModelsFactory
 {
-    Q_OBJECT
   public:
-    explicit CurveRefFuncItemModel(QObject * parent = nullptr);
-};
+    ItemModelsFactory(const GeneralSettings * const generalSettings, const ModelData * const modelData);
+    virtual ~ItemModelsFactory();
 
+    void addItemModel(const AbstractItemModel::ItemModelId id);
+    void registerItemModel(AbstractItemModel * itemModel);
+    void unregisterItemModels();
+    void unregisterItemModel(const AbstractItemModel::ItemModelId id);
+    AbstractItemModel * getItemModel(const AbstractItemModel::ItemModelId id) const;
+    void update(const AbstractItemModel::UpdateTrigger trigger = AbstractItemModel::SystemRefresh);
+    void dumpAllItemModelContents() const;
+
+  protected:
+    const GeneralSettings * generalSettings;
+    const ModelData * modelData;
+    Firmware * firmware;
+    Boards * board;
+    Board::Type boardType;
+    QVector<AbstractItemModel *> registeredItemModels;
+};
 
 #endif // RAWITEMDATAMODELS_H

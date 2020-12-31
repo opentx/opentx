@@ -24,35 +24,57 @@
 #include "modeldata.h"
 #include "adjustmentreference.h"
 
-RawSourceItemModel::RawSourceItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData, QObject * parent) :
-  AbstractRawItemDataModel(generalSettings, modelData, parent)
+// static
+void AbstractItemModel::dumpItemModelContents(AbstractItemModel * itemModel)
 {
-  const Boards board = Boards(getCurrentBoard());
-  Firmware * fw = getCurrentFirmware();
+  if (itemModel) {
+    qDebug() << "modelid:" << itemModel->getId();
+    for (int i = 0; i < itemModel->rowCount(); ++i) {
+      qDebug() << "row:"   << i
+               << "text:"  << itemModel->data(itemModel->index(i, 0), Qt::DisplayRole).toString()
+               << "id:"    << itemModel->data(itemModel->index(i, 0), AbstractItemModel::ItemIdRole).toInt()
+               << "avail:" << itemModel->data(itemModel->index(i, 0), AbstractItemModel::IsAvailableRole).toBool()
+               << "flags:" << itemModel->data(itemModel->index(i, 0), AbstractItemModel::ItemFlagsRole).toInt()
+               << "type:"  << itemModel->data(itemModel->index(i, 0), AbstractItemModel::ItemTypeRole).toInt();
+    }
+  }
+  else
+    qDebug() << "Error: model did not cast";
+}
+
+//
+// RawSourceItemModel
+//
+
+RawSourceItemModel::RawSourceItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData,
+                                       Firmware * firmware, const Boards * const board, const Board::Type boardType) :
+  AbstractDynamicItemModel(generalSettings, modelData, firmware, board, boardType)
+{
+  setId(RawSourceId);
+  setUpdateMask(AllTriggers &~ (CurvesUpdated | ScriptsUpdated));
 
   addItems(SOURCE_TYPE_NONE,           RawSource::NoneGroup,     1);
-  for (int i = 0; i < fw->getCapability(LuaScripts); i++)
-    addItems(SOURCE_TYPE_LUA_OUTPUT,   RawSource::ScriptsGroup,  fw->getCapability(LuaOutputsPerScript), i * 16);
-  addItems(SOURCE_TYPE_VIRTUAL_INPUT,  RawSource::InputsGroup,   fw->getCapability(VirtualInputs));
-  addItems(SOURCE_TYPE_STICK,          RawSource::SourcesGroup,  board.getCapability(Board::MaxAnalogs));
-  addItems(SOURCE_TYPE_ROTARY_ENCODER, RawSource::SourcesGroup,  fw->getCapability(RotaryEncoders));
-  addItems(SOURCE_TYPE_TRIM,           RawSource::TrimsGroup,    board.getCapability(Board::NumTrims));
+  for (int i = 0; i < firmware->getCapability(LuaScripts); i++)
+    addItems(SOURCE_TYPE_LUA_OUTPUT,   RawSource::ScriptsGroup,  firmware->getCapability(LuaOutputsPerScript), i * 16);
+  addItems(SOURCE_TYPE_VIRTUAL_INPUT,  RawSource::InputsGroup,   firmware->getCapability(VirtualInputs));
+  addItems(SOURCE_TYPE_STICK,          RawSource::SourcesGroup,  board->getCapability(Board::MaxAnalogs));
+  addItems(SOURCE_TYPE_ROTARY_ENCODER, RawSource::SourcesGroup,  firmware->getCapability(RotaryEncoders));
+  addItems(SOURCE_TYPE_TRIM,           RawSource::TrimsGroup,    board->getCapability(Board::NumTrims));
   addItems(SOURCE_TYPE_MAX,            RawSource::SourcesGroup,  1);
-  addItems(SOURCE_TYPE_SWITCH,         RawSource::SwitchesGroup, board.getCapability(Board::Switches));
-  addItems(SOURCE_TYPE_CUSTOM_SWITCH,  RawSource::SwitchesGroup, fw->getCapability(LogicalSwitches));
+  addItems(SOURCE_TYPE_SWITCH,         RawSource::SwitchesGroup, board->getCapability(Board::Switches));
+  addItems(SOURCE_TYPE_CUSTOM_SWITCH,  RawSource::SwitchesGroup, firmware->getCapability(LogicalSwitches));
   addItems(SOURCE_TYPE_CYC,            RawSource::SourcesGroup,  CPN_MAX_CYC);
-  addItems(SOURCE_TYPE_PPM,            RawSource::SourcesGroup,  fw->getCapability(TrainerInputs));
-  addItems(SOURCE_TYPE_CH,             RawSource::SourcesGroup,  fw->getCapability(Outputs));
+  addItems(SOURCE_TYPE_PPM,            RawSource::SourcesGroup,  firmware->getCapability(TrainerInputs));
+  addItems(SOURCE_TYPE_CH,             RawSource::SourcesGroup,  firmware->getCapability(Outputs));
   addItems(SOURCE_TYPE_SPECIAL,        RawSource::TelemGroup,    5);
-  addItems(SOURCE_TYPE_TELEMETRY,      RawSource::TelemGroup,    fw->getCapability(Sensors) * 3);
-  addItems(SOURCE_TYPE_GVAR,           RawSource::GVarsGroup,    fw->getCapability(Gvars));
+  addItems(SOURCE_TYPE_TELEMETRY,      RawSource::TelemGroup,    firmware->getCapability(Sensors) * 3);
+  addItems(SOURCE_TYPE_GVAR,           RawSource::GVarsGroup,    firmware->getCapability(Gvars));
 }
 
 void RawSourceItemModel::setDynamicItemData(QStandardItem * item, const RawSource & src) const
 {
-  Board::Type board = getCurrentBoard();
-  item->setText(src.toString(modelData, generalSettings, board));
-  item->setData(src.isAvailable(modelData, generalSettings, board), IsAvailableRole);
+  item->setText(src.toString(modelData, generalSettings, boardType));
+  item->setData(src.isAvailable(modelData, generalSettings, boardType), IsAvailableRole);
 }
 
 void RawSourceItemModel::addItems(const RawSourceType & type, const int group, const int count, const int start)
@@ -68,49 +90,51 @@ void RawSourceItemModel::addItems(const RawSourceType & type, const int group, c
   }
 }
 
-void RawSourceItemModel::update()
+void RawSourceItemModel::update(const UpdateTrigger trigger)
 {
-  emit dataAboutToBeUpdated();
+  if (doUpdate(trigger)) {
+    emit aboutToBeUpdated();
 
-  for (int i = 0; i < rowCount(); ++i)
-    setDynamicItemData(item(i), RawSource(item(i)->data(ItemIdRole).toInt()));
+    for (int i = 0; i < rowCount(); ++i)
+      setDynamicItemData(item(i), RawSource(item(i)->data(ItemIdRole).toInt()));
 
-  emit dataUpdateComplete();
+    emit updateComplete();
+  }
 }
-
 
 //
 // RawSwitchItemModel
 //
 
-RawSwitchItemModel::RawSwitchItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData, QObject * parent) :
-  AbstractRawItemDataModel(generalSettings, modelData, parent)
+RawSwitchItemModel::RawSwitchItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData,
+                                       Firmware * firmware, const Boards * const board, const Board::Type boardType) :
+    AbstractDynamicItemModel(generalSettings, modelData, firmware, board, boardType)
 {
-  Boards board = Boards(getCurrentBoard());
-  Firmware * fw = getCurrentFirmware();
+  setId(RawSwitchId);
+  setUpdateMask(FlightModesUpdated | LogicalSwitchesUpdated | TeleSensorsUpdated);
 
   // Descending switch direction: NOT (!) switches
   addItems(SWITCH_TYPE_ACT,            -1);
-  addItems(SWITCH_TYPE_SENSOR,         -fw->getCapability(Sensors));
+  addItems(SWITCH_TYPE_SENSOR,         -firmware->getCapability(Sensors));
   addItems(SWITCH_TYPE_TELEMETRY,      -1);
-  addItems(SWITCH_TYPE_FLIGHT_MODE,    -fw->getCapability(FlightModes));
-  addItems(SWITCH_TYPE_VIRTUAL,        -fw->getCapability(LogicalSwitches));
-  addItems(SWITCH_TYPE_ROTARY_ENCODER, -fw->getCapability(RotaryEncoders));
-  addItems(SWITCH_TYPE_TRIM,           -board.getCapability(Board::NumTrimSwitches));
-  addItems(SWITCH_TYPE_MULTIPOS_POT,   -(board.getCapability(Board::MultiposPots) * board.getCapability(Board::MultiposPotsPositions)));
-  addItems(SWITCH_TYPE_SWITCH,         -board.getCapability(Board::SwitchPositions));
+  addItems(SWITCH_TYPE_FLIGHT_MODE,    -firmware->getCapability(FlightModes));
+  addItems(SWITCH_TYPE_VIRTUAL,        -firmware->getCapability(LogicalSwitches));
+  addItems(SWITCH_TYPE_ROTARY_ENCODER, -firmware->getCapability(RotaryEncoders));
+  addItems(SWITCH_TYPE_TRIM,           -board->getCapability(Board::NumTrimSwitches));
+  addItems(SWITCH_TYPE_MULTIPOS_POT,   -(board->getCapability(Board::MultiposPots) * board->getCapability(Board::MultiposPotsPositions)));
+  addItems(SWITCH_TYPE_SWITCH,         -board->getCapability(Board::SwitchPositions));
 
   // Ascending switch direction (including zero)
   addItems(SWITCH_TYPE_TIMER_MODE, 5);
   addItems(SWITCH_TYPE_NONE, 1);
-  addItems(SWITCH_TYPE_SWITCH,         board.getCapability(Board::SwitchPositions));
-  addItems(SWITCH_TYPE_MULTIPOS_POT,   board.getCapability(Board::MultiposPots) * board.getCapability(Board::MultiposPotsPositions));
-  addItems(SWITCH_TYPE_TRIM,           board.getCapability(Board::NumTrimSwitches));
-  addItems(SWITCH_TYPE_ROTARY_ENCODER, fw->getCapability(RotaryEncoders));
-  addItems(SWITCH_TYPE_VIRTUAL,        fw->getCapability(LogicalSwitches));
-  addItems(SWITCH_TYPE_FLIGHT_MODE,    fw->getCapability(FlightModes));
+  addItems(SWITCH_TYPE_SWITCH,         board->getCapability(Board::SwitchPositions));
+  addItems(SWITCH_TYPE_MULTIPOS_POT,   board->getCapability(Board::MultiposPots) * board->getCapability(Board::MultiposPotsPositions));
+  addItems(SWITCH_TYPE_TRIM,           board->getCapability(Board::NumTrimSwitches));
+  addItems(SWITCH_TYPE_ROTARY_ENCODER, firmware->getCapability(RotaryEncoders));
+  addItems(SWITCH_TYPE_VIRTUAL,        firmware->getCapability(LogicalSwitches));
+  addItems(SWITCH_TYPE_FLIGHT_MODE,    firmware->getCapability(FlightModes));
   addItems(SWITCH_TYPE_TELEMETRY,      1);
-  addItems(SWITCH_TYPE_SENSOR,         fw->getCapability(Sensors));
+  addItems(SWITCH_TYPE_SENSOR,         firmware->getCapability(Sensors));
   addItems(SWITCH_TYPE_ON,             1);
   addItems(SWITCH_TYPE_ONE,            1);
   addItems(SWITCH_TYPE_ACT,            1);
@@ -118,9 +142,8 @@ RawSwitchItemModel::RawSwitchItemModel(const GeneralSettings * const generalSett
 
 void RawSwitchItemModel::setDynamicItemData(QStandardItem * item, const RawSwitch & rsw) const
 {
-  const Board::Type board = getCurrentBoard();
-  item->setText(rsw.toString(board, generalSettings, modelData));
-  item->setData(rsw.isAvailable(modelData, generalSettings, board), IsAvailableRole);
+  item->setText(rsw.toString(boardType, generalSettings, modelData));
+  item->setData(rsw.isAvailable(modelData, generalSettings, boardType), IsAvailableRole);
 }
 
 void RawSwitchItemModel::addItems(const RawSwitchType & type, int count)
@@ -171,27 +194,34 @@ void RawSwitchItemModel::addItems(const RawSwitchType & type, int count)
   }
 }
 
-void RawSwitchItemModel::update()
+void RawSwitchItemModel::update(const UpdateTrigger trigger)
 {
-  emit dataAboutToBeUpdated();
+  if (doUpdate(trigger)) {
+    emit aboutToBeUpdated();
 
-  for (int i = 0; i < rowCount(); ++i)
-    setDynamicItemData(item(i), RawSwitch(item(i)->data(ItemIdRole).toInt()));
+    for (int i = 0; i < rowCount(); ++i)
+      setDynamicItemData(item(i), RawSwitch(item(i)->data(ItemIdRole).toInt()));
 
-  emit dataUpdateComplete();
+    emit updateComplete();
+  }
 }
 
 //
 // CurveItemModel
 //
 
-CurveItemModel::CurveItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData, QObject * parent) :
-  AbstractRawItemDataModel(generalSettings, modelData, parent)
+CurveItemModel::CurveItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData,
+                               Firmware * firmware, const Boards * const board, const Board::Type boardType) :
+    AbstractDynamicItemModel(generalSettings, modelData, firmware, board, boardType)
 {
+  setId(CurveId);
+
   if (!modelData)
     return;
 
-  const int count = getCurrentFirmware()->getCapability(NumCurves);
+  setUpdateMask(CurvesUpdated);
+
+  const int count = firmware->getCapability(NumCurves);
 
   for (int i = -count ; i <= count; ++i) {
     QStandardItem * modelItem = new QStandardItem();
@@ -205,35 +235,42 @@ CurveItemModel::CurveItemModel(const GeneralSettings * const generalSettings, co
   }
 }
 
-void CurveItemModel::setDynamicItemData(QStandardItem * item, const int index) const
+void CurveItemModel::setDynamicItemData(QStandardItem * item, const int value) const
 {
-  CurveReference cr = CurveReference(CurveReference::CURVE_REF_CUSTOM, index);
+  CurveReference cr = CurveReference(CurveReference::CURVE_REF_CUSTOM, value);
   item->setText(cr.toString(modelData, false));
   item->setData(cr.isAvailable(), IsAvailableRole);
 }
 
-void CurveItemModel::update()
+void CurveItemModel::update(const UpdateTrigger trigger)
 {
-  emit dataAboutToBeUpdated();
+  if (doUpdate(trigger)) {
+    emit aboutToBeUpdated();
 
-  for (int i = 0; i < rowCount(); ++i)
-   setDynamicItemData(item(i), item(i)->data(ItemIdRole).toInt());
+    for (int i = 0; i < rowCount(); ++i)
+     setDynamicItemData(item(i), item(i)->data(ItemIdRole).toInt());
 
-  emit dataUpdateComplete();
+    emit updateComplete();
+  }
 }
-
 
 //
 // GVarReferenceItemModel
 //
 
-GVarReferenceItemModel::GVarReferenceItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData, QObject * parent) :
-  AbstractRawItemDataModel(generalSettings, modelData, parent)
+GVarReferenceItemModel::GVarReferenceItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData,
+                                               Firmware * firmware, const Boards * const board, const Board::Type boardType) :
+    AbstractDynamicItemModel(generalSettings, modelData, firmware, board, boardType)
 {
+  setId(GVarRefId);
+
   if (!modelData)
     return;
 
-  const int count = getCurrentFirmware()->getCapability(Gvars);
+  setUpdateMask(GVarsUpdated | FlightModesUpdated | LogicalSwitchesUpdated);
+
+  const int count = firmware->getCapability(Gvars);
+
   if (count > 0) {
     addItems(-count);
     addItems(count);
@@ -260,26 +297,32 @@ void GVarReferenceItemModel::setDynamicItemData(QStandardItem * item, const Adju
   item->setData(ar.isAvailable(), IsAvailableRole);
 }
 
-void GVarReferenceItemModel::update()
+void GVarReferenceItemModel::update(const UpdateTrigger trigger)
 {
-  emit dataAboutToBeUpdated();
+  if (doUpdate(trigger)) {
+    emit aboutToBeUpdated();
 
-  for (int i = 0; i < rowCount(); ++i)
-   setDynamicItemData(item(i), AdjustmentReference(item(i)->data(ItemIdRole).toInt()));
+    for (int i = 0; i < rowCount(); ++i)
+     setDynamicItemData(item(i), AdjustmentReference(item(i)->data(ItemIdRole).toInt()));
 
-  emit dataUpdateComplete();
+    emit updateComplete();
+  }
 }
-
 
 //
 // ThrottleSourceItemModel
 //
 
-ThrottleSourceItemModel::ThrottleSourceItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData, QObject * parent) :
-  AbstractRawItemDataModel(generalSettings, modelData, parent)
+ThrottleSourceItemModel::ThrottleSourceItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData,
+                                                 Firmware * firmware, const Boards * const board, const Board::Type boardType) :
+    AbstractDynamicItemModel(generalSettings, modelData, firmware, board, boardType)
 {
+  setId(ThrSourceId);
+
   if (!modelData)
     return;
+
+  setUpdateMask(TimersUpdated | InputsUpdated | TeleSensorsUpdated);
 
   for (int i = 0; i < modelData->thrTraceSrcCount(); i++) {
     QStandardItem * modelItem = new QStandardItem();
@@ -289,30 +332,35 @@ ThrottleSourceItemModel::ThrottleSourceItemModel(const GeneralSettings * const g
   }
 }
 
-void ThrottleSourceItemModel::setDynamicItemData(QStandardItem * item, const int index) const
+void ThrottleSourceItemModel::setDynamicItemData(QStandardItem * item, const int value) const
 {
-  item->setText(modelData->thrTraceSrcToString(index));
-  item->setData(modelData->isThrTraceSrcAvailable(generalSettings, index), IsAvailableRole);
+  item->setText(modelData->thrTraceSrcToString(value));
+  item->setData(modelData->isThrTraceSrcAvailable(generalSettings, value), IsAvailableRole);
 }
 
-void ThrottleSourceItemModel::update()
+void ThrottleSourceItemModel::update(const UpdateTrigger trigger)
 {
-  emit dataAboutToBeUpdated();
+  if (doUpdate(trigger)) {
+    emit aboutToBeUpdated();
 
-  for (int i = 0; i < rowCount(); ++i)
-    setDynamicItemData(item(i), item(i)->data(ItemIdRole).toInt());
+    for (int i = 0; i < rowCount(); ++i)
+      setDynamicItemData(item(i), item(i)->data(ItemIdRole).toInt());
 
-  emit dataUpdateComplete();
+    emit updateComplete();
+  }
 }
-
 
 //
 // CustomFuncActionItemModel
 //
 
-CustomFuncActionItemModel::CustomFuncActionItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData, QObject * parent) :
-  AbstractRawItemDataModel(generalSettings, modelData, parent)
+CustomFuncActionItemModel::CustomFuncActionItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData,
+                                                     Firmware * firmware, const Boards * const board, const Board::Type boardType) :
+    AbstractDynamicItemModel(generalSettings, modelData, firmware, board, boardType)
 {
+  setId(CustomFuncActionId);
+  setUpdateMask(AllTriggers &~ (CurvesUpdated | ScriptsUpdated));
+
   for (int i = 0; i < AssignFunc::FuncCount; i++) {
     QStandardItem * modelItem = new QStandardItem();
     modelItem->setData(i, ItemIdRole);
@@ -322,30 +370,35 @@ CustomFuncActionItemModel::CustomFuncActionItemModel(const GeneralSettings * con
   }
 }
 
-void CustomFuncActionItemModel::setDynamicItemData(QStandardItem * item, const int index) const
+void CustomFuncActionItemModel::setDynamicItemData(QStandardItem * item, const int value) const
 {
-  item->setText(CustomFunctionData(AssignFunc(index)).funcToString(modelData));
-  item->setData(CustomFunctionData::isFuncAvailable(index), IsAvailableRole);
+  item->setText(CustomFunctionData(AssignFunc(value)).funcToString(modelData));
+  item->setData(CustomFunctionData::isFuncAvailable(value), IsAvailableRole);
 }
 
-void CustomFuncActionItemModel::update()
+void CustomFuncActionItemModel::update(const UpdateTrigger trigger)
 {
-  emit dataAboutToBeUpdated();
+  if (doUpdate(trigger)) {
+    emit aboutToBeUpdated();
 
-  for (int i = 0; i < rowCount(); ++i)
-    setDynamicItemData(item(i), item(i)->data(ItemIdRole).toInt());
+    for (int i = 0; i < rowCount(); ++i)
+      setDynamicItemData(item(i), item(i)->data(ItemIdRole).toInt());
 
-  emit dataUpdateComplete();
+    emit updateComplete();
+  }
 }
-
 
 //
 // CustomFuncResetParamItemModel
 //
 
-CustomFuncResetParamItemModel::CustomFuncResetParamItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData, QObject * parent) :
-  AbstractRawItemDataModel(generalSettings, modelData, parent)
+CustomFuncResetParamItemModel::CustomFuncResetParamItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData,
+                                                             Firmware * firmware, const Boards * const board, const Board::Type boardType) :
+    AbstractDynamicItemModel(generalSettings, modelData, firmware, board, boardType)
 {
+  setId(CustomFuncResetParamId);
+  setUpdateMask(TeleSensorsUpdated);
+
   for (int i = 0; i < CustomFunctionData::resetParamCount(modelData); i++) {
     QStandardItem * modelItem = new QStandardItem();
     modelItem->setData(i, ItemIdRole);
@@ -354,38 +407,43 @@ CustomFuncResetParamItemModel::CustomFuncResetParamItemModel(const GeneralSettin
   }
 }
 
-void CustomFuncResetParamItemModel::setDynamicItemData(QStandardItem * item, const int index) const
+void CustomFuncResetParamItemModel::setDynamicItemData(QStandardItem * item, const int value) const
 {
   CustomFunctionData cfd = CustomFunctionData(AssignFunc::FuncReset);
-  cfd.param = index;
+  cfd.param = value;
   item->setText(cfd.paramToString(modelData));
-  item->setData(CustomFunctionData::isResetParamAvailable(modelData, index), IsAvailableRole);
+  item->setData(CustomFunctionData::isResetParamAvailable(modelData, value), IsAvailableRole);
 }
 
-void CustomFuncResetParamItemModel::update()
+void CustomFuncResetParamItemModel::update(const UpdateTrigger trigger)
 {
-  emit dataAboutToBeUpdated();
+  if (doUpdate(trigger)) {
+    emit aboutToBeUpdated();
 
-  for (int i = 0; i < rowCount(); ++i)
-    setDynamicItemData(item(i), item(i)->data(ItemIdRole).toInt());
+    for (int i = 0; i < rowCount(); ++i)
+      setDynamicItemData(item(i), item(i)->data(ItemIdRole).toInt());
 
-  emit dataUpdateComplete();
+    emit updateComplete();
+  }
 }
-
 
 //
 // TelemetrySourceItemModel
 //
 
-TelemetrySourceItemModel::TelemetrySourceItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData, QObject * parent) :
-  AbstractRawItemDataModel(generalSettings, modelData, parent)
+TelemetrySourceItemModel::TelemetrySourceItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData,
+                                                   Firmware * firmware, const Boards * const board, const Board::Type boardType) :
+    AbstractDynamicItemModel(generalSettings, modelData, firmware, board, boardType)
 {
+  setId(TeleSourceId);
+
   if (!modelData)
     return;
 
-  const int count = getCurrentFirmware()->getCapability(Sensors);
+  setUpdateMask(TeleSensorsUpdated);
+  const int count = firmware->getCapability(Sensors);
 
-  for (int i = -count + 1; i < count; ++i) {
+  for (int i = -count; i <= count; ++i) {
     QStandardItem * modelItem = new QStandardItem();
     modelItem->setData(i, ItemIdRole);
     int flags = i < 0 ? DataGroups::NegativeGroup : DataGroups::PositiveGroup;
@@ -397,118 +455,35 @@ TelemetrySourceItemModel::TelemetrySourceItemModel(const GeneralSettings * const
   }
 }
 
-void TelemetrySourceItemModel::setDynamicItemData(QStandardItem * item, const int index) const
+void TelemetrySourceItemModel::setDynamicItemData(QStandardItem * item, const int value) const
 {
-  item->setText(SensorData::sourceToString(modelData, index));
-  item->setData(SensorData::isSourceAvailable(modelData, index), IsAvailableRole);
+  item->setText(SensorData::sourceToString(modelData, value));
+  item->setData(SensorData::isSourceAvailable(modelData, value), IsAvailableRole);
 }
 
-void TelemetrySourceItemModel::update()
+void TelemetrySourceItemModel::update(const UpdateTrigger trigger)
 {
-  emit dataAboutToBeUpdated();
+  if (doUpdate(trigger)) {
+    emit aboutToBeUpdated();
 
-  for (int i = 0; i < rowCount(); ++i)
-   setDynamicItemData(item(i), item(i)->data(ItemIdRole).toInt());
-
-  emit dataUpdateComplete();
-}
-
-
-//
-//  CommonItemModels  TODO  rename to DynamicDataModels
-//
-
-CommonItemModels::CommonItemModels(const GeneralSettings * const generalSettings, const ModelData * const modelData, QObject * parent) :
-  QObject(parent)
-{
-  m_rawSourceItemModel = new RawSourceItemModel(generalSettings, modelData, parent);
-  //dumpModelContents(QString("raw source"), qobject_cast<AbstractRawItemDataModel *>(m_rawSourceItemModel));
-
-  m_rawSwitchItemModel = new RawSwitchItemModel(generalSettings, modelData, parent);
-  //dumpModelContents(QString("raw switch"), qobject_cast<AbstractRawItemDataModel *>(m_rawSwitchItemModel));
-
-  m_curveItemModel = new CurveItemModel(generalSettings, modelData, parent);
-  //dumpModelContents(QString("curve"), qobject_cast<AbstractRawItemDataModel *>(m_curveItemModel));
-
-  m_gvarReferenceItemModel = new GVarReferenceItemModel(generalSettings, modelData, parent);
-  //dumpModelContents(QString("gvar ref"), qobject_cast<AbstractRawItemDataModel *>(m_gvarReferenceItemModel));
-
-  m_throttleSourceItemModel = new ThrottleSourceItemModel(generalSettings, modelData, parent);
-  //dumpModelContents(QString("thr source"), qobject_cast<AbstractRawItemDataModel *>(m_throttleSourceItemModel));
-
-  m_customFuncActionItemModel = new CustomFuncActionItemModel(generalSettings, modelData, parent);
-  //dumpModelContents(QString("cf action"), qobject_cast<AbstractRawItemDataModel *>(m_customFuncActionItemModel));
-
-  m_customFuncResetParamItemModel = new CustomFuncResetParamItemModel(generalSettings, modelData, parent);
-  //dumpModelContents(QString("cf reset param"), qobject_cast<AbstractRawItemDataModel *>(m_customFuncResetParamItemModel));
-
-  m_telemetrySourceItemModel = new TelemetrySourceItemModel(generalSettings, modelData, parent);
-  //dumpModelContents(QString("tele source"), qobject_cast<AbstractRawItemDataModel *>(m_telemetrySourceItemModel));
-}
-
-CommonItemModels::~CommonItemModels()
-{
-}
-
-void CommonItemModels::update(const RadioModelObjects radioModelObjects)
-{
-  switch (radioModelObjects) {
-    case RMO_CHANNELS:
-      m_throttleSourceItemModel->update();
-      //  no break
-    case RMO_TIMERS:
-      m_customFuncActionItemModel->update();
-      //  no break
-    case RMO_INPUTS:
-    case RMO_TELEMETRY_SENSORS:
-      m_rawSourceItemModel->update();
-      m_customFuncResetParamItemModel->update();
-      m_telemetrySourceItemModel->update();
-      break;
-
-    case RMO_GLOBAL_VARIABLES:
-      m_gvarReferenceItemModel->update();
-      m_customFuncActionItemModel->update();
-      //  no break
-    case RMO_FLIGHT_MODES:
-    case RMO_LOGICAL_SWITCHES:
-      m_rawSourceItemModel->update();
-      m_rawSwitchItemModel->update();
-      break;
-
-    case RMO_CURVES:
-      m_curveItemModel->update();
-      break;
-
-    case RMO_SCRIPTS:
-      //  no need to refresh
-      break;
-
-    default:
-      qDebug() << "Unknown RadioModelObject:" << radioModelObjects;
-  }
-}
-
-
-void dumpModelContents(QString desc, AbstractRawItemDataModel * dataModel)
-{
-  if (dataModel) {
-    qDebug() << "model:" << desc << "rows:" << dataModel->rowCount();
-    for (int i = 0; i < dataModel->rowCount(); ++i) {
-      qDebug() << "row:"    << i << "text:" << dataModel->item(i)->data(Qt::DisplayRole).toString()
-               << "id:"     << dataModel->item(i)->data(AbstractRawItemDataModel::ItemIdRole).toInt()
-               << "avail:"  << dataModel->item(i)->data(AbstractRawItemDataModel::IsAvailableRole).toBool()
-               << "flags:"  << dataModel->item(i)->data(AbstractRawItemDataModel::ItemFlagsRole).toInt()
-               << "type:"   << dataModel->item(i)->data(AbstractRawItemDataModel::ItemTypeRole).toInt();
+    for (int i = 0; i < rowCount(); ++i) {
+      setDynamicItemData(item(i), item(i)->data(ItemIdRole).toInt());
     }
+
+    emit updateComplete();
   }
-  else
-    qDebug() << "model:" << desc << "did not cast";
 }
 
-CurveRefTypeItemModel::CurveRefTypeItemModel(QObject * parent) :
-  AbstractStandardItemModel(parent)
+//
+// CurveRefTypeItemModel
+//
+
+CurveRefTypeItemModel::CurveRefTypeItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData,
+                                             Firmware * firmware, const Boards * const board, const Board::Type boardType) :
+  AbstractStaticItemModel(generalSettings, modelData, firmware, board, boardType)
 {
+  setId(CurveRefTypeId);
+
   for (int i = 0; i <= CurveReference::MAX_CURVE_REF_TYPE; i++) {
     QStandardItem * modelItem = new QStandardItem();
     modelItem->setText(CurveReference::typeToString((CurveReference::CurveRefType)i));
@@ -518,14 +493,124 @@ CurveRefTypeItemModel::CurveRefTypeItemModel(QObject * parent) :
   }
 }
 
-CurveRefFuncItemModel::CurveRefFuncItemModel(QObject * parent) :
-  AbstractStandardItemModel(parent)
+//
+// CurveRefFuncItemModel
+//
+
+CurveRefFuncItemModel::CurveRefFuncItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData,
+                                             Firmware * firmware, const Boards * const board, const Board::Type boardType) :
+  AbstractStaticItemModel(generalSettings, modelData, firmware, board, boardType)
 {
+  setId(CurveRefFuncId);
+
   for (int i = 1; i <= CurveReference::functionCount(); i++) {
     QStandardItem * modelItem = new QStandardItem();
     modelItem->setText(CurveReference::functionToString(i));
     modelItem->setData(i, ItemIdRole);
     modelItem->setData(CurveReference::isFunctionAvailable(i), IsAvailableRole);
     appendRow(modelItem);
+  }
+}
+
+//
+// ItemModelsFactory
+//
+
+ItemModelsFactory::ItemModelsFactory(const GeneralSettings * const generalSettings, const ModelData * const modelData) :
+  generalSettings(generalSettings),
+  modelData(modelData)
+{
+  firmware = getCurrentFirmware();
+  board = new Boards(getCurrentBoard());
+  boardType = getCurrentBoard();
+}
+
+ItemModelsFactory::~ItemModelsFactory()
+{
+  unregisterItemModels();
+  delete board;
+}
+
+void ItemModelsFactory::addItemModel(const AbstractItemModel::ItemModelId id)
+{
+  switch (id) {
+    case AbstractItemModel::RawSourceId:
+      registerItemModel(new RawSourceItemModel(generalSettings, modelData, firmware, board, boardType));
+      break;
+    case AbstractItemModel::RawSwitchId:
+      registerItemModel(new RawSwitchItemModel(generalSettings, modelData, firmware, board, boardType));
+      break;
+    case AbstractItemModel::CurveId:
+      registerItemModel(new CurveItemModel(generalSettings, modelData, firmware, board, boardType));
+      break;
+    case AbstractItemModel::GVarRefId:
+      registerItemModel(new GVarReferenceItemModel(generalSettings, modelData, firmware, board, boardType));
+      break;
+    case AbstractItemModel::ThrSourceId:
+      registerItemModel(new ThrottleSourceItemModel(generalSettings, modelData, firmware, board, boardType));
+      break;
+    case AbstractItemModel::CustomFuncActionId:
+      registerItemModel(new CustomFuncActionItemModel(generalSettings, modelData, firmware, board, boardType));
+      break;
+    case AbstractItemModel::CustomFuncResetParamId:
+      registerItemModel(new CustomFuncResetParamItemModel(generalSettings, modelData, firmware, board, boardType));
+      break;
+    case AbstractItemModel::TeleSourceId:
+      registerItemModel(new TelemetrySourceItemModel(generalSettings, modelData, firmware, board, boardType));
+      break;
+    case AbstractItemModel::CurveRefTypeId:
+      registerItemModel(new CurveRefTypeItemModel(generalSettings, modelData, firmware, board, boardType));
+      break;
+    case AbstractItemModel::CurveRefFuncId:
+      registerItemModel(new CurveRefFuncItemModel(generalSettings, modelData, firmware, board, boardType));
+      break;
+    default:
+      qDebug() << "Error: unknown item model: id";
+      break;
+  }
+}
+
+void ItemModelsFactory::registerItemModel(AbstractItemModel * itemModel)
+{
+  if (itemModel && !getItemModel(itemModel->getId())) {
+    registeredItemModels.push_back(itemModel);
+  }
+}
+
+void ItemModelsFactory::unregisterItemModels()
+{
+  foreach (AbstractItemModel *itemModel, registeredItemModels) {
+    delete itemModel;
+  }
+}
+
+void ItemModelsFactory::unregisterItemModel(const AbstractItemModel::ItemModelId id)
+{
+  AbstractItemModel * itemModel =  getItemModel(id);
+  if (itemModel)
+    delete itemModel;
+}
+
+AbstractItemModel * ItemModelsFactory::getItemModel(const AbstractItemModel::ItemModelId id) const
+{
+  foreach (AbstractItemModel * itemModel, registeredItemModels) {
+    if (itemModel->getId() == id)
+      return itemModel;
+  }
+
+  return nullptr;
+}
+
+void ItemModelsFactory::update(const AbstractItemModel::UpdateTrigger trigger)
+{
+  foreach (AbstractItemModel * itemModel, registeredItemModels) {
+    itemModel->update(trigger);
+  }
+}
+
+void ItemModelsFactory::dumpAllItemModelContents() const
+{
+  foreach (AbstractItemModel * itemModel, registeredItemModels) {
+    AbstractItemModel::dumpItemModelContents(itemModel);
   }
 }

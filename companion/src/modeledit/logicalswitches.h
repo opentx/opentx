@@ -24,8 +24,8 @@
 #include "modeledit.h"
 #include "radiodata.h"
 
-class CommonItemModels;
-class RawItemFilteredModel;
+class ItemModelsFactory;
+class FilteredItemModel;
 class TimerEdit;
 
 constexpr char MIMETYPE_LOGICAL_SWITCH[] = "application/x-companion-logical-switch";
@@ -35,7 +35,7 @@ class LogicalSwitchesPanel : public ModelPanel
     Q_OBJECT
 
   public:
-    LogicalSwitchesPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, CommonItemModels * commonItemModels);
+    LogicalSwitchesPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, ItemModelsFactory * sharedItemModels);
     virtual ~LogicalSwitchesPanel();
 
     virtual void update();
@@ -60,8 +60,8 @@ class LogicalSwitchesPanel : public ModelPanel
     void cmInsert();
     void cmClear(bool prompt = true);
     void cmClearAll();
-    void onModelDataAboutToBeUpdated();
-    void onModelDataUpdateComplete();
+    void onItemModelAboutToBeUpdated();
+    void onItemModelUpdateComplete();
 
   private:
     QComboBox * cbFunction[CPN_MAX_LOGICAL_SWITCHES];
@@ -74,9 +74,9 @@ class LogicalSwitchesPanel : public ModelPanel
     QDoubleSpinBox * dsbDelay[CPN_MAX_LOGICAL_SWITCHES];
     QComboBox * cbSource1[CPN_MAX_LOGICAL_SWITCHES];
     QComboBox * cbSource2[CPN_MAX_LOGICAL_SWITCHES];
-    CommonItemModels * commonItemModels;
-    RawItemFilteredModel * rawSwitchFilteredModel;
-    RawItemFilteredModel * rawSourceFilteredModel;
+    ItemModelsFactory * sharedItemModels;
+    FilteredItemModel * rawSwitchFilteredModel;
+    FilteredItemModel * rawSourceFilteredModel;
     int selectedIndex;
     void populateFunctionCB(QComboBox *b);
     void updateTimerParam(QDoubleSpinBox *sb, int timer, double minimum=0);

@@ -26,8 +26,8 @@
 
 #include <QMediaPlayer>
 
-class CommonItemModels;
-class RawItemFilteredModel;
+class ItemModelsFactory;
+class FilteredItemModel;
 class TimerEdit;
 
 constexpr char MIMETYPE_CUSTOM_FUNCTION[] = "application/x-companion-custom-function";
@@ -55,8 +55,8 @@ class CustomFunctionsPanel : public GenericPanel
   Q_OBJECT
 
   public:
-    CustomFunctionsPanel(QWidget *parent, ModelData * model, GeneralSettings & generalSettings, Firmware * firmware, CommonItemModels * commonItemModels);
-    ~CustomFunctionsPanel();
+    CustomFunctionsPanel(QWidget *parent, ModelData * model, GeneralSettings & generalSettings, Firmware * firmware, ItemModelsFactory * sharedItemModels);
+    virtual ~CustomFunctionsPanel();
 
     virtual void update();
 
@@ -83,8 +83,8 @@ class CustomFunctionsPanel : public GenericPanel
     void cmInsert();
     void cmClear(bool prompt = true);
     void cmClearAll();
-    void onModelDataAboutToBeUpdated();
-    void onModelDataUpdateComplete();
+    void onItemModelAboutToBeUpdated();
+    void onItemModelUpdateComplete();
 
   private:
     void populateFuncCB(QComboBox *b, unsigned int value);
@@ -96,11 +96,10 @@ class CustomFunctionsPanel : public GenericPanel
     bool moveUpAllowed() const;
     void swapData(int idx1, int idx2);
     void resetCBsAndRefresh(int idx);
-    CommonItemModels * commonItemModels;
-    RawItemFilteredModel * rawSwitchFilteredModel;
-    RawItemFilteredModel * rawSourceAllModel;
-    RawItemFilteredModel * rawSourceInputsModel;
-    RawItemFilteredModel * rawSourceGVarsModel;
+    FilteredItemModel * rawSwitchFilteredModel;
+    FilteredItemModel * rawSourceAllModel;
+    FilteredItemModel * rawSourceInputsModel;
+    FilteredItemModel * rawSourceGVarsModel;
 
     QSet<QString> tracksSet;
     QSet<QString> scriptsSet;

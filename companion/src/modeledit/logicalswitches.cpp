@@ -24,20 +24,16 @@
 
 #include <TimerEdit>
 
-LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, CommonItemModels * commonItemModels):
+LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware,
+                                           ItemModelsFactory * sharedItemModels):
   ModelPanel(parent, model, generalSettings, firmware),
-  commonItemModels(commonItemModels),
+  sharedItemModels(sharedItemModels),
   selectedIndex(0),
   modelsUpdateCnt(0)
 {
-  rawSwitchFilteredModel = new RawItemFilteredModel(commonItemModels->rawSwitchItemModel(), RawSwitch::LogicalSwitchesContext, this);
-  connect(rawSwitchFilteredModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &LogicalSwitchesPanel::onModelDataAboutToBeUpdated);
-  connect(rawSwitchFilteredModel, &RawItemFilteredModel::dataUpdateComplete, this, &LogicalSwitchesPanel::onModelDataUpdateComplete);
-
+  FILTEREDITEMMODEL(rawSwitchFilteredModel, LogicalSwitchesPanel, RawSwitchId, RawSwitch::LogicalSwitchesContext)
   const int srcGroups = firmware->getCapability(GvarsInCS) ? 0 : (RawSource::AllSourceGroups & ~RawSource::GVarsGroup);
-  rawSourceFilteredModel = new RawItemFilteredModel(commonItemModels->rawSourceItemModel(), srcGroups, this);
-  connect(rawSourceFilteredModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &LogicalSwitchesPanel::onModelDataAboutToBeUpdated);
-  connect(rawSourceFilteredModel, &RawItemFilteredModel::dataUpdateComplete, this, &LogicalSwitchesPanel::onModelDataUpdateComplete);
+  FILTEREDITEMMODEL(rawSourceFilteredModel, LogicalSwitchesPanel, RawSourceId, srcGroups)
 
   lsCapability = firmware->getCapability(LogicalSwitches);
   lsCapabilityExt = firmware->getCapability(LogicalSwitchesExt);
@@ -161,6 +157,8 @@ LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, 
 
 LogicalSwitchesPanel::~LogicalSwitchesPanel()
 {
+  delete rawSourceFilteredModel;
+  delete rawSwitchFilteredModel;
 }
 
 void LogicalSwitchesPanel::onFunctionChanged()
@@ -644,16 +642,16 @@ void LogicalSwitchesPanel::swapData(int idx1, int idx2)
 void LogicalSwitchesPanel::updateItemModels()
 {
   lock = true;
-  commonItemModels->update(CommonItemModels::RMO_LOGICAL_SWITCHES);
+  sharedItemModels->update(AbstractItemModel::LogicalSwitchesUpdated);
 }
 
-void LogicalSwitchesPanel::onModelDataAboutToBeUpdated()
+void LogicalSwitchesPanel::onItemModelAboutToBeUpdated()
 {
   lock = true;
   modelsUpdateCnt++;
 }
 
-void LogicalSwitchesPanel::onModelDataUpdateComplete()
+void LogicalSwitchesPanel::onItemModelUpdateComplete()
 {
   modelsUpdateCnt--;
   if (modelsUpdateCnt < 1) {
