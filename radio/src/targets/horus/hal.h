@@ -275,6 +275,7 @@
   #define ADC_DMA                       DMA2
   #define ADC_DMA_Stream                DMA2_Stream0
   #define ADC_SAMPTIME                  3
+  #define VBAT_ADC_SAMPTIME             ADC_SAMPTIME
   #define ADC_VREF_PREC2                300
 #elif defined(PCBX10)
   #define ADC_RCC_AHB1Periph            (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOF | RCC_AHB1Periph_DMA2)
@@ -315,6 +316,7 @@
   #define ADC_CHANNEL_EXT2              ADC_Channel_7   // ADC3_IN7
   #define ADC_MAIN                      ADC3
   #define ADC_SAMPTIME                  3
+  #define VBAT_ADC_SAMPTIME             ADC_SAMPTIME
   #define ADC_DMA                       DMA2
   #define ADC_DMA_SxCR_CHSEL            DMA_SxCR_CHSEL_1
   #define ADC_DMA_Stream                DMA2_Stream0

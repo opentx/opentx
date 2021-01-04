@@ -251,7 +251,7 @@ void menuRadioSetup(event_t event)
         putsVolts(lcdLastRightPos+FW, y, 120+g_eeGeneral.vBatMax, (menuHorizontalPosition>0 ? attr : 0)|LEFT|NO_UNIT);
         if (attr && s_editMode>0) {
           if (menuHorizontalPosition==0)
-            CHECK_INCDEC_GENVAR(event, g_eeGeneral.vBatMin, -50, g_eeGeneral.vBatMax+29); // min=4.0V
+            CHECK_INCDEC_GENVAR(event, g_eeGeneral.vBatMin, -60, g_eeGeneral.vBatMax+29); // min=3.0V
           else
             CHECK_INCDEC_GENVAR(event, g_eeGeneral.vBatMax, g_eeGeneral.vBatMin-29, +40); // max=16.0V
         }
@@ -411,7 +411,7 @@ void menuRadioSetup(event_t event)
       case ITEM_RADIO_SETUP_BATTERY_WARNING:
         lcdDrawTextAlignedLeft(y, STR_BATTERYWARNING);
         putsVolts(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.vBatWarn, attr|LEFT);
-        if(attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.vBatWarn, 40, 120); //4-12V
+        if(attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.vBatWarn, 30, 120); //3-12V
         break;
 
       case ITEM_RADIO_SETUP_MEMORY_WARNING:

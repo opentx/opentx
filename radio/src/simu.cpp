@@ -255,7 +255,7 @@ void OpenTxSim::updateKeysAndSwitches(bool start)
     KEY_Down,      KEY_DOWN,
     KEY_Right,     KEY_RIGHT,
     KEY_Left,      KEY_LEFT,
-#elif defined(PCBXLITE) || defined(RADIO_T12)
+#elif defined(PCBXLITE) || defined(RADIO_FAMILY_JUMPER_T12)
   #if defined(KEYS_GPIO_REG_SHIFT)
     KEY_Shift_L,   KEY_SHIFT,
   #endif

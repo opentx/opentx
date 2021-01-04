@@ -53,9 +53,10 @@ namespace Board {
     BOARD_RADIOMASTER_TX16S,
     BOARD_JUMPER_T18,
     BOARD_RADIOMASTER_TX12,
+    BOARD_JUMPER_TLITE
   };
 
-  constexpr int BOARD_TYPE_MAX = BOARD_RADIOMASTER_TX12;
+  constexpr int BOARD_TYPE_MAX = BOARD_JUMPER_TLITE;
 
   enum PotType
   {
@@ -117,6 +118,7 @@ namespace Board {
   enum Capability {
     Sticks,
     Pots,
+    AvailablePots,
     FactoryInstalledPots,
     Sliders,
     MouseAnalogs,
@@ -126,6 +128,7 @@ namespace Board {
     MultiposPotsPositions,
     Switches,
     SwitchPositions,
+    AvailableSwitches,
     FactoryInstalledSwitches,
     NumTrims,
     NumTrimSwitches
@@ -204,6 +207,11 @@ inline bool IS_JUMPER_T12(Board::Type board)
   return board == Board::BOARD_JUMPER_T12;
 }
 
+inline bool IS_JUMPER_TLITE(Board::Type board)
+{
+  return board == Board::BOARD_JUMPER_TLITE;
+}
+
 inline bool IS_JUMPER_T16(Board::Type board)
 {
   return board == Board::BOARD_JUMPER_T16;
@@ -231,7 +239,7 @@ inline bool IS_FAMILY_T16(Board::Type board)
 
 inline bool IS_FAMILY_T12(Board::Type board)
 {
-  return board == Board::BOARD_JUMPER_T12 || board == Board::BOARD_RADIOMASTER_TX12;
+  return board == Board::BOARD_JUMPER_T12 || board == Board::BOARD_RADIOMASTER_TX12 || board == Board::BOARD_JUMPER_TLITE;;
 }
 
 inline bool IS_TARANIS_XLITE(Board::Type board)
