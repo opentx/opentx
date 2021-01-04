@@ -57,7 +57,7 @@
 #define USBD_VID                            0x0483
 
 #define USBD_LANGID_STRING                  0x409
-#define USBD_MANUFACTURER_STRING            "FrSky"
+#define USBD_MANUFACTURER_STRING            "OpenTX"
 #define USBD_SERIALNUMBER_FS_STRING         "00000000001B"
 
 
@@ -71,7 +71,8 @@
 #define USBD_MSC_CONFIGURATION_FS_STRING    "MSC Config"
 #define USBD_MSC_INTERFACE_FS_STRING        "MSC Interface"
 
-#define USBD_HID_PID                        0x5710
+#define USBD_HID_VID                        0x1209     // https://pid.codes
+#define USBD_HID_PID                        0x4F54     // OpenTX assigned PID
 #define USBD_HID_PRODUCT_FS_STRING          USB_NAME " Joystick"
 #define USBD_HID_CONFIGURATION_FS_STRING    "HID Config"
 #define USBD_HID_INTERFACE_FS_STRING        "HID Interface"
@@ -129,10 +130,12 @@ __ALIGN_BEGIN uint8_t USBD_StrDesc[USB_MAX_STR_DESC_SIZ] __ALIGN_END ;	// modifi
 uint8_t *  USBD_USR_DeviceDescriptor( uint8_t speed , uint16_t *length)
 {
   int pid=0;
+  int vid= USBD_VID;
 
   switch (getSelectedUsbMode()) {
     case USB_JOYSTICK_MODE:
       pid = USBD_HID_PID;
+      vid = USBD_HID_VID;
       break;
     case USB_SERIAL_MODE:
       pid = USBD_CDC_PID;
@@ -153,10 +156,10 @@ uint8_t *  USBD_USR_DeviceDescriptor( uint8_t speed , uint16_t *length)
       0x00,                       /*bDeviceSubClass*/
       0x00,                       /*bDeviceProtocol*/
       USB_OTG_MAX_EP0_SIZE,       /*bMaxPacketSize*/
-      LOBYTE(USBD_VID),           /*idVendor*/
-      HIBYTE(USBD_VID),           /*idVendor*/
-      LOBYTE(pid),               /*idVendor*/
-      HIBYTE(pid),               /*idVendor*/
+      LOBYTE(vid),                /*idVendor*/
+      HIBYTE(vid),                /*idVendor*/
+      LOBYTE(pid),                /*idVendor*/
+      HIBYTE(pid),                /*idVendor*/
       0x00,                       /*bcdDevice rel. 2.00*/
       0x02,
       USBD_IDX_MFC_STR,           /*Index of manufacturer  string*/
