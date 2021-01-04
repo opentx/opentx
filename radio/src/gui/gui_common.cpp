@@ -554,7 +554,7 @@ bool isPxx2IsrmChannelsCountAllowed(int channels)
 bool isTrainerUsingModuleBay()
 {
 #if defined(PCBTARANIS)
-  if (TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE <= g_model.trainerData.mode && g_model.trainerData.mode <= TRAINER_MODE_MASTER_BATTERY_COMPARTMENT)
+  if (TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE <= g_model.trainerData.mode && g_model.trainerData.mode <= TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE)
     return true;
 #endif
   return false;
