@@ -290,9 +290,7 @@ void telemetryInit(uint8_t protocol)
 #if defined(LUA)
     outputTelemetryBuffer.reset();
 #endif
-#if !defined(SIMU)
     telemetryPortSetDirectionInput();
-#endif
   }
   else if (protocol == PROTOCOL_TELEMETRY_SPEKTRUM) {
     // Spektrum's own small race RX (SPM4648) uses 125000 8N1, use the same since there is no real standard
@@ -327,7 +325,7 @@ void telemetryInit(uint8_t protocol)
   }
 #endif
 
-#if defined(AFHDS3) && !defined(SIMU)
+#if defined(AFHDS3)
   else if (protocol == PROTOCOL_TELEMETRY_AFHDS3) {
     telemetryPortInvertedInit(AFHDS3_BAUDRATE);
     telemetryPortSetDirectionInput();
