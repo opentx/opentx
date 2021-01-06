@@ -131,8 +131,7 @@ __ALIGN_BEGIN uint8_t USBD_StrDesc[USB_MAX_STR_DESC_SIZ] __ALIGN_END ;	// modifi
 */
 uint8_t * USBD_USR_DeviceDescriptor( uint8_t speed , uint16_t *length)
 {
-  int vid;
-  int pid;
+  int vid, pid;
 
   switch (getSelectedUsbMode()) {
     case USB_JOYSTICK_MODE:
