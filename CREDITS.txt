@@ -2080,3 +2080,5 @@ Carl Payne
 Adam Sosnowski
 Гасак Сергей
 SaltCtyRacingFPV
+Georg Bernhardt
+James Mildenhall
