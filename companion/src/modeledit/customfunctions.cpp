@@ -19,7 +19,7 @@
  */
 
 #include "customfunctions.h"
-#include "rawitemfilteredmodel.h"
+#include "filtereditemmodels.h"
 #include "helpers.h"
 #include "appdata.h"
 
@@ -67,7 +67,7 @@ void RepeatComboBox::update()
 }
 
 CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, GeneralSettings & generalSettings, Firmware * firmware,
-                                           ItemModelsFactory * sharedItemModels):
+                                           CompoundItemModelFactory * sharedItemModels):
   GenericPanel(parent, model, generalSettings, firmware),
   functions(model ? model->customFn : generalSettings.customFn),
   mediaPlayerCurrent(-1),
@@ -77,10 +77,18 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
   lock = true;
   fswCapability = model ? firmware->getCapability(CustomFunctions) : firmware->getCapability(GlobalFunctions);
 
-  FILTEREDITEMMODEL(rawSwitchFilteredModel, CustomFunctionsPanel, RawSwitchId, model ? RawSwitch::SpecialFunctionsContext : RawSwitch::GlobalFunctionsContext)
-  FILTEREDITEMMODELNOFLAGS(rawSourceAllModel, CustomFunctionsPanel, RawSourceId)
-  FILTEREDITEMMODEL(rawSourceInputsModel, CustomFunctionsPanel, RawSourceId, RawSource::InputSourceGroups)
-  FILTEREDITEMMODEL(rawSourceGVarsModel, CustomFunctionsPanel, RawSourceId, RawSource::GVarsGroup)
+  rawSwitchFilteredModel = new FilteredItemModel(sharedItemModels->getItemModel(AbstractItemModel::IMID_RawSwitch),
+                                                 model ? RawSwitch::SpecialFunctionsContext : RawSwitch::GlobalFunctionsContext);
+  connectItemModelEvents(rawSwitchFilteredModel);
+
+  rawSourceAllModel = new FilteredItemModel(sharedItemModels->getItemModel(AbstractItemModel::IMID_RawSource));
+  connectItemModelEvents(rawSourceAllModel);
+
+  rawSourceInputsModel = new FilteredItemModel(sharedItemModels->getItemModel(AbstractItemModel::IMID_RawSource), RawSource::InputSourceGroups);
+  connectItemModelEvents(rawSourceInputsModel);
+
+  rawSourceGVarsModel = new FilteredItemModel(sharedItemModels->getItemModel(AbstractItemModel::IMID_RawSource), RawSource::GVarsGroup);
+  connectItemModelEvents(rawSourceGVarsModel);
 
   if (!firmware->getCapability(VoicesAsNumbers)) {
     tracksSet = getFilesSet(getSoundsPath(generalSettings), QStringList() << "*.wav" << "*.WAV", firmware->getCapability(VoicesMaxLength));
@@ -818,6 +826,12 @@ bool CustomFunctionsPanel::moveDownAllowed() const
 bool CustomFunctionsPanel::moveUpAllowed() const
 {
   return selectedIndex > 0;
+}
+
+void CustomFunctionsPanel::connectItemModelEvents(const FilteredItemModel * itemModel)
+{
+  connect(itemModel, &FilteredItemModel::aboutToBeUpdated, this, &CustomFunctionsPanel::onItemModelAboutToBeUpdated);
+  connect(itemModel, &FilteredItemModel::updateComplete, this, &CustomFunctionsPanel::onItemModelUpdateComplete);
 }
 
 void CustomFunctionsPanel::onItemModelAboutToBeUpdated()

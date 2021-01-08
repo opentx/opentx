@@ -26,7 +26,9 @@
 #include "modelprinter.h"
 
 class GVarGroup;
-class FilteredItemModel;
+class CompoundItemModelFactory;
+class FilteredItemModelFactory;
+class CurveRefFilteredFactory;
 class CurveReferenceUIManager;
 
 namespace Ui {
@@ -37,9 +39,7 @@ class ExpoDialog : public QDialog {
     Q_OBJECT
   public:
     ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expodata, GeneralSettings & generalSettings,
-                Firmware * firmware, QString & inputName, FilteredItemModel * rawSourceFilteredModel,
-                FilteredItemModel * rawSwitchFilteredModel, FilteredItemModel * curveFilteredModel, FilteredItemModel * gvarFilteredModel,
-                FilteredItemModel * crTypeFilteredModel, FilteredItemModel * crFuncFilteredModel);
+                Firmware * firmware, QString & inputName, CompoundItemModelFactory * sharedItemModels);
     virtual ~ExpoDialog();
 
   protected:
@@ -66,6 +66,8 @@ class ExpoDialog : public QDialog {
     ModelPrinter modelPrinter;
     bool lock;
     QCheckBox * cb_fp[CPN_MAX_FLIGHT_MODES];
+    FilteredItemModelFactory *dialogFilteredItemModels;
+    CurveRefFilteredFactory *curveRefFilteredItemModels;
 };
 
 #endif // _EXPODIALOG_H_

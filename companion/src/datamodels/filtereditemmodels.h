@@ -18,10 +18,10 @@
  * GNU General Public License for more details.
  */
 
-#ifndef RAWITEMFILTEREDMODEL_H
-#define RAWITEMFILTEREDMODEL_H
+#ifndef FILTEREDITEMMODELS_H
+#define FILTEREDITEMMODELS_H
 
-#include "rawitemdatamodels.h"
+#include "compounditemmodels.h"
 
 #include <QObject>
 #include <QSortFilterProxyModel>
@@ -32,12 +32,12 @@ class FilteredItemModel: public QSortFilterProxyModel
     Q_OBJECT
   public:
     enum DataFilters {
-      AllFilter = AbstractItemModel::NegativeGroup | AbstractItemModel::NoneGroup | AbstractItemModel::PositiveGroup,
-      AllExcludeNoneFilter = AllFilter &~ AbstractItemModel::NoneGroup,
-      NegativeFilter = AbstractItemModel::NegativeGroup | AbstractItemModel::NoneGroup,
-      NegativeExcludeNoneFilter = AbstractItemModel::NegativeGroup,
-      PositiveFilter = AbstractItemModel::PositiveGroup | AbstractItemModel::NoneGroup,
-      PositiveExcludeNoneFilter = AbstractItemModel::PositiveGroup
+      AllFilter = AbstractItemModel::IMDG_Negative | AbstractItemModel::IMDG_None | AbstractItemModel::IMDG_Positive,
+      AllExcludeNoneFilter = AllFilter &~ AbstractItemModel::IMDG_None,
+      NegativeFilter = AbstractItemModel::IMDG_Negative | AbstractItemModel::IMDG_None,
+      NegativeExcludeNoneFilter = AbstractItemModel::IMDG_Negative,
+      PositiveFilter = AbstractItemModel::IMDG_Positive | AbstractItemModel::IMDG_None,
+      PositiveExcludeNoneFilter = AbstractItemModel::IMDG_Positive
     };
     Q_ENUM(DataFilters)
 
@@ -73,13 +73,13 @@ class FilteredItemModel: public QSortFilterProxyModel
     QString m_name = "";
 };
 
-class FilteredItemModelsFactory
+class FilteredItemModelFactory
 {
   public:
-    FilteredItemModelsFactory();
-    virtual ~FilteredItemModelsFactory();
+    explicit FilteredItemModelFactory();
+    virtual ~FilteredItemModelFactory();
 
-    int registerItemModel(FilteredItemModel * itemModel, QString name);
+    int registerItemModel(FilteredItemModel * itemModel, const QString name, const int id = -1);
     void unregisterItemModels();
     void unregisterItemModel(const int id);
     bool isItemModelRegistered(const int id) const;
@@ -96,17 +96,20 @@ class FilteredItemModelsFactory
     QVector<FilteredItemModel *> registeredItemModels;
 };
 
+class CurveRefFilteredFactory : public FilteredItemModelFactory
+{
+  public:
+    enum FilteredItemModelId {
+      CRFIM_CURVE,
+      CRFIM_GVARREF,
+      CRFIM_TYPE,
+      CRFIM_FUNC
+    };
 
-#define FILTEREDITEMMODELCONNECT(fltrmodel) \
-  connect(fltrmodel, SIGNAL(aboutToBeUpdated()), this, SLOT(onItemModelAboutToBeUpdated())); \
-  connect(fltrmodel, SIGNAL(updateComplete()), this, SLOT(onItemModelUpdateComplete()));
+    explicit CurveRefFilteredFactory(CompoundItemModelFactory * sharedItemModels, const int curveFlags = 0, const int gvarRefFlags = 0);
+    virtual ~CurveRefFilteredFactory();
 
-#define FILTEREDITEMMODEL(fltrmodel, class, modelid, flags) \
-  fltrmodel = new FilteredItemModel(sharedItemModels->getItemModel(AbstractItemModel::modelid), flags); \
-  FILTEREDITEMMODELCONNECT(fltrmodel)
+    static QString fidToString(const int value);
+};
 
-#define FILTEREDITEMMODELNOFLAGS(fltrmodel, class, modelid) \
-  fltrmodel = new FilteredItemModel(sharedItemModels->getItemModel(AbstractItemModel::modelid)); \
-  FILTEREDITEMMODELCONNECT(fltrmodel)
-
-#endif // RAWITEMFILTEREDMODEL_H
+#endif // FILTEREDITEMMODELS_H

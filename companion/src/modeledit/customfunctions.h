@@ -26,7 +26,7 @@
 
 #include <QMediaPlayer>
 
-class ItemModelsFactory;
+class CompoundItemModelFactory;
 class FilteredItemModel;
 class TimerEdit;
 
@@ -55,7 +55,7 @@ class CustomFunctionsPanel : public GenericPanel
   Q_OBJECT
 
   public:
-    CustomFunctionsPanel(QWidget *parent, ModelData * model, GeneralSettings & generalSettings, Firmware * firmware, ItemModelsFactory * sharedItemModels);
+    CustomFunctionsPanel(QWidget *parent, ModelData * model, GeneralSettings & generalSettings, Firmware * firmware, CompoundItemModelFactory * sharedItemModels);
     virtual ~CustomFunctionsPanel();
 
     virtual void update();
@@ -96,6 +96,8 @@ class CustomFunctionsPanel : public GenericPanel
     bool moveUpAllowed() const;
     void swapData(int idx1, int idx2);
     void resetCBsAndRefresh(int idx);
+    void connectItemModelEvents(const FilteredItemModel * itemModel);
+
     FilteredItemModel * rawSwitchFilteredModel;
     FilteredItemModel * rawSourceAllModel;
     FilteredItemModel * rawSourceInputsModel;

@@ -28,7 +28,7 @@
 #include "hardware.h"
 #include "../modeledit/customfunctions.h"
 #include "verticalscrollarea.h"
-#include "rawitemdatamodels.h"
+#include "compounditemmodels.h"
 
 GeneralEdit::GeneralEdit(QWidget * parent, RadioData & radioData, Firmware * firmware) :
   QDialog(parent),
@@ -56,11 +56,11 @@ GeneralEdit::GeneralEdit(QWidget * parent, RadioData & radioData, Firmware * fir
     }
   }
 
-  sharedItemModels = new ItemModelsFactory(&generalSettings, nullptr);
-  sharedItemModels->addItemModel(AbstractItemModel::RawSourceId);
-  sharedItemModels->addItemModel(AbstractItemModel::RawSwitchId);
-  sharedItemModels->addItemModel(AbstractItemModel::CustomFuncActionId);
-  sharedItemModels->addItemModel(AbstractItemModel::CustomFuncResetParamId);
+  sharedItemModels = new CompoundItemModelFactory(&generalSettings, nullptr);
+  sharedItemModels->addItemModel(AbstractItemModel::IMID_RawSource);
+  sharedItemModels->addItemModel(AbstractItemModel::IMID_RawSwitch);
+  sharedItemModels->addItemModel(AbstractItemModel::IMID_CustomFuncAction);
+  sharedItemModels->addItemModel(AbstractItemModel::IMID_CustomFuncResetParam);
 
   addTab(new GeneralSetupPanel(this, generalSettings, firmware), tr("Setup"));
   addTab(new CustomFunctionsPanel(this, nullptr, generalSettings, firmware, sharedItemModels), tr("Global Functions"));

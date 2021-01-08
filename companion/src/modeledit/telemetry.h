@@ -23,7 +23,7 @@
 
 #include "modeledit.h"
 #include "eeprominterface.h"
-#include "rawitemfilteredmodel.h"
+#include "filtereditemmodels.h"
 
 constexpr char MIMETYPE_TELE_SENSOR[] {"application/x-companion-tele-sensor"};
 
@@ -42,7 +42,7 @@ class TelemetryCustomScreen: public ModelPanel
 
   public:
     TelemetryCustomScreen(QWidget *parent, ModelData & model, FrSkyScreenData & screen, GeneralSettings & generalSettings, Firmware * firmware,
-                          const bool & parentLock, FilteredItemModelsFactory * localFilteredItemModels);
+                          const bool & parentLock, FilteredItemModelFactory * panelFilteredItemModels);
     ~TelemetryCustomScreen();
     void update();
 
@@ -81,7 +81,7 @@ class TelemetrySensorPanel: public ModelPanel
   public:
     TelemetrySensorPanel(QWidget *parent, SensorData & sensor, int sensorIndex, int sensorCapability, ModelData & model,
                          GeneralSettings & generalSettings, Firmware * firmware, const bool & parentLock,
-                         FilteredItemModelsFactory * localFilteredItemModels);
+                         FilteredItemModelFactory * panelFilteredItemModels);
     ~TelemetrySensorPanel();
     void update();
 
@@ -116,7 +116,6 @@ class TelemetrySensorPanel: public ModelPanel
   private:
     Ui::TelemetrySensor * ui;
     SensorData & sensor;
-    //bool lock = false;
     int sensorIndex = 0;
     int selectedIndex = 0;
     int sensorCapability;
@@ -136,7 +135,7 @@ class TelemetryPanel : public ModelPanel
 
   public:
     TelemetryPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware,
-                   ItemModelsFactory * sharedItemModels);
+                   CompoundItemModelFactory * sharedItemModels);
     virtual ~TelemetryPanel();
     virtual void update();
 
@@ -171,14 +170,15 @@ class TelemetryPanel : public ModelPanel
     TelemetryCustomScreen *telemetryCustomScreens[4];
     TelemetrySensorPanel *sensorPanels[CPN_MAX_SENSORS];
     int sensorCapability;
-    ItemModelsFactory *sharedItemModels;
-    FilteredItemModelsFactory *localFilteredItemModels;
+    CompoundItemModelFactory *sharedItemModels;
+    CompoundItemModelFactory *panelItemModels;
+    FilteredItemModelFactory *panelFilteredItemModels;
     int modelsUpdateCnt;
 
     void setup();
     void telBarUpdate();
     void swapData(int idx1, int idx2);
-    void connectItemModelEvents(const FilteredItemModel * itemModel);
+    void connectItemModelEvents(const int id);
     inline bool isLocked() { return lock; }
 };
 

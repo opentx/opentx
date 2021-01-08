@@ -22,7 +22,7 @@
 #include "ui_setup.h"
 #include "ui_setup_timer.h"
 #include "ui_setup_module.h"
-#include "rawitemfilteredmodel.h"
+#include "filtereditemmodels.h"
 #include "appdata.h"
 #include "modelprinter.h"
 #include "multiprotocols.h"
@@ -38,8 +38,7 @@ TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, Ge
   ui(new Ui::Timer)
 {
   ui->setupUi(this);
-  connect(rawSwitchFilteredModel, &FilteredItemModel::aboutToBeUpdated, this, &TimerPanel::onItemModelAboutToBeUpdated);
-  connect(rawSwitchFilteredModel, &FilteredItemModel::updateComplete, this, &TimerPanel::onItemModelUpdateComplete);
+  connectItemModelEvents(rawSwitchFilteredModel);
 
   lock = true;
 
@@ -171,6 +170,12 @@ void TimerPanel::on_name_editingFinished()
       emit modified();
     }
   }
+}
+
+void TimerPanel::connectItemModelEvents(const FilteredItemModel * itemModel)
+{
+  connect(itemModel, &FilteredItemModel::aboutToBeUpdated, this, &TimerPanel::onItemModelAboutToBeUpdated);
+  connect(itemModel, &FilteredItemModel::updateComplete, this, &TimerPanel::onItemModelUpdateComplete);
 }
 
 void TimerPanel::onItemModelAboutToBeUpdated()
@@ -993,14 +998,18 @@ void ModulePanel::onClearAccessRxClicked()
 /******************************************************************************/
 
 SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware,
-                       ItemModelsFactory * sharedItemModels) :
+                       CompoundItemModelFactory * sharedItemModels) :
   ModelPanel(parent, model, generalSettings, firmware),
   ui(new Ui::Setup),
   sharedItemModels(sharedItemModels)
 {
   ui->setupUi(this);
-  FILTEREDITEMMODEL(rawSwitchFilteredModel, SetupPanel, RawSwitchId, RawSwitch::TimersContext)
-  FILTEREDITEMMODELNOFLAGS(thrSourceFilteredModel, SetupPanel, ThrSourceId)
+
+  rawSwitchFilteredModel = new FilteredItemModel(sharedItemModels->getItemModel(AbstractItemModel::IMID_RawSwitch), RawSwitch::TimersContext);
+  connectItemModelEvents(rawSwitchFilteredModel);
+
+  thrSourceFilteredModel = new FilteredItemModel(sharedItemModels->getItemModel(AbstractItemModel::IMID_ThrSource));
+  connectItemModelEvents(thrSourceFilteredModel);
 
   Board::Type board = firmware->getBoard();
 
@@ -1755,6 +1764,12 @@ void SetupPanel::onTimerNameChanged()
   updateItemModels();
 }
 
+void SetupPanel::connectItemModelEvents(const FilteredItemModel * itemModel)
+{
+  connect(itemModel, &FilteredItemModel::aboutToBeUpdated, this, &SetupPanel::onItemModelAboutToBeUpdated);
+  connect(itemModel, &FilteredItemModel::updateComplete, this, &SetupPanel::onItemModelUpdateComplete);
+}
+
 void SetupPanel::onItemModelAboutToBeUpdated()
 {
 }
@@ -1765,5 +1780,5 @@ void SetupPanel::onItemModelUpdateComplete()
 
 void SetupPanel::updateItemModels()
 {
-  sharedItemModels->update(AbstractItemModel::TimersUpdated);
+  sharedItemModels->update(AbstractItemModel::IMUE_Timers);
 }

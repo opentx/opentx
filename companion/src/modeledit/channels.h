@@ -26,7 +26,7 @@
 
 #include <QtCore>
 
-class ItemModelsFactory;
+class CompoundItemModelFactory;
 class FilteredItemModel;
 
 constexpr char MIMETYPE_CHANNEL[] = "application/x-companion-channel";
@@ -57,7 +57,7 @@ class ChannelsPanel : public ModelPanel
     Q_OBJECT
 
   public:
-    ChannelsPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, ItemModelsFactory * sharedItemModels);
+    ChannelsPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, CompoundItemModelFactory * sharedItemModels);
     virtual ~ChannelsPanel();
 
   public slots:
@@ -100,9 +100,10 @@ class ChannelsPanel : public ModelPanel
     QCheckBox *symlimitsChk[CPN_MAX_CHNOUT];
     int selectedIndex;
     int chnCapability;
-    ItemModelsFactory *sharedItemModels;
+    CompoundItemModelFactory *sharedItemModels;
     FilteredItemModel *curveFilteredModel;
     void updateItemModels();
+    void connectItemModelEvents(const FilteredItemModel * itemModel);
 };
 
 #endif // _CHANNELS_H_

@@ -20,21 +20,20 @@
 
 #include "mixes.h"
 #include "helpers.h"
-#include "rawitemfilteredmodel.h"
+#include "filtereditemmodels.h"
 
-MixesPanel::MixesPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, ItemModelsFactory * sharedItemModels):
+MixesPanel::MixesPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, CompoundItemModelFactory * sharedItemModels):
   ModelPanel(parent, model, generalSettings, firmware),
   mixInserted(false),
   highlightedSource(0),
   modelPrinter(firmware, generalSettings, model),
-  sharedItemModels(sharedItemModels)
+  sharedItemModels(sharedItemModels),
+  modelsUpdateCnt(0)
 {
-  FILTEREDITEMMODEL(rawSourceFilteredModel, MixesPanel, RawSourceId,((RawSource::InputSourceGroups | RawSource::ScriptsGroup) & ~ RawSource::NoneGroup))
-  FILTEREDITEMMODEL(rawSwitchFilteredModel, MixesPanel, RawSwitchId, RawSwitch::MixesContext)
-  FILTEREDITEMMODEL(curveFilteredModel, MixesPanel, CurveId, firmware->getCapability(HasMixerExpo) ? 0 : FilteredItemModel::PositiveFilter)
-  FILTEREDITEMMODELNOFLAGS(gvarFilteredModel, MixesPanel, GVarRefId)
-  FILTEREDITEMMODELNOFLAGS(crTypeFilteredModel, MixesPanel, CurveRefTypeId)
-  FILTEREDITEMMODELNOFLAGS(crFuncFilteredModel, MixesPanel, CurveRefFuncId)
+  connectItemModelEvents(AbstractItemModel::IMID_RawSource);
+  connectItemModelEvents(AbstractItemModel::IMID_RawSwitch);
+  connectItemModelEvents(AbstractItemModel::IMID_Curve);
+  connectItemModelEvents(AbstractItemModel::IMID_GVarRef);
 
   QGridLayout * mixesLayout = new QGridLayout(this);
 
@@ -69,12 +68,6 @@ MixesPanel::MixesPanel(QWidget *parent, ModelData & model, GeneralSettings & gen
 
 MixesPanel::~MixesPanel()
 {
-  delete rawSourceFilteredModel;
-  delete rawSwitchFilteredModel;
-  delete curveFilteredModel;
-  delete gvarFilteredModel;
-  delete crTypeFilteredModel;
-  delete crFuncFilteredModel;
 }
 
 void MixesPanel::update()
@@ -190,8 +183,7 @@ void MixesPanel::gm_openMix(int index)
 
   MixData mixd(model->mixData[index]);
 
-  MixerDialog *dlg = new MixerDialog(this, *model, &mixd, generalSettings, firmware,  rawSourceFilteredModel, rawSwitchFilteredModel,
-                                     curveFilteredModel, gvarFilteredModel, crTypeFilteredModel, crFuncFilteredModel);
+  MixerDialog *dlg = new MixerDialog(this, *model, &mixd, generalSettings, firmware, sharedItemModels);
   if(dlg->exec()) {
     model->mixData[index] = mixd;
     emit modified();
@@ -547,13 +539,26 @@ void MixesPanel::clearMixes()
   }
 }
 
+void MixesPanel::connectItemModelEvents(const int id)
+{
+  AbstractDynamicItemModel * itemModel = qobject_cast<AbstractDynamicItemModel *>(sharedItemModels->getItemModel(id));
+  if (itemModel) {
+    connect(itemModel, &AbstractDynamicItemModel::aboutToBeUpdated, this, &MixesPanel::onItemModelAboutToBeUpdated);
+    connect(itemModel, &AbstractDynamicItemModel::updateComplete, this, &MixesPanel::onItemModelUpdateComplete);
+  }
+}
+
 void MixesPanel::onItemModelAboutToBeUpdated()
 {
   lock = true;
+  modelsUpdateCnt++;
 }
 
 void MixesPanel::onItemModelUpdateComplete()
 {
-  update();
-  lock = false;
+  modelsUpdateCnt--;
+  if (modelsUpdateCnt < 1) {
+    update();
+    lock = false;
+  }
 }

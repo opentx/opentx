@@ -19,21 +19,25 @@
  */
 
 #include "logicalswitches.h"
-#include "rawitemfilteredmodel.h"
+#include "filtereditemmodels.h"
 #include "helpers.h"
 
 #include <TimerEdit>
 
 LogicalSwitchesPanel::LogicalSwitchesPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware,
-                                           ItemModelsFactory * sharedItemModels):
+                                           CompoundItemModelFactory * sharedItemModels):
   ModelPanel(parent, model, generalSettings, firmware),
   sharedItemModels(sharedItemModels),
   selectedIndex(0),
   modelsUpdateCnt(0)
 {
-  FILTEREDITEMMODEL(rawSwitchFilteredModel, LogicalSwitchesPanel, RawSwitchId, RawSwitch::LogicalSwitchesContext)
+  rawSwitchFilteredModel = new FilteredItemModel(sharedItemModels->getItemModel(AbstractItemModel::IMID_RawSwitch),
+                                                 RawSwitch::LogicalSwitchesContext);
+  connectItemModelEvents(rawSwitchFilteredModel);
+
   const int srcGroups = firmware->getCapability(GvarsInCS) ? 0 : (RawSource::AllSourceGroups & ~RawSource::GVarsGroup);
-  FILTEREDITEMMODEL(rawSourceFilteredModel, LogicalSwitchesPanel, RawSourceId, srcGroups)
+  rawSourceFilteredModel = new FilteredItemModel(sharedItemModels->getItemModel(AbstractItemModel::IMID_RawSource), srcGroups);
+  connectItemModelEvents(rawSourceFilteredModel);
 
   lsCapability = firmware->getCapability(LogicalSwitches);
   lsCapabilityExt = firmware->getCapability(LogicalSwitchesExt);
@@ -642,7 +646,13 @@ void LogicalSwitchesPanel::swapData(int idx1, int idx2)
 void LogicalSwitchesPanel::updateItemModels()
 {
   lock = true;
-  sharedItemModels->update(AbstractItemModel::LogicalSwitchesUpdated);
+  sharedItemModels->update(AbstractItemModel::IMUE_LogicalSwitches);
+}
+
+void LogicalSwitchesPanel::connectItemModelEvents(const FilteredItemModel * itemModel)
+{
+  connect(itemModel, &FilteredItemModel::aboutToBeUpdated, this, &LogicalSwitchesPanel::onItemModelAboutToBeUpdated);
+  connect(itemModel, &FilteredItemModel::updateComplete, this, &LogicalSwitchesPanel::onItemModelUpdateComplete);
 }
 
 void LogicalSwitchesPanel::onItemModelAboutToBeUpdated()

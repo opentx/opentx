@@ -18,8 +18,8 @@
  * GNU General Public License for more details.
  */
 
-#ifndef RAWITEMDATAMODELS_H
-#define RAWITEMDATAMODELS_H
+#ifndef COMPOUNDITEMMODELS_H
+#define COMPOUNDITEMMODELS_H
 
 #include "rawsource.h"
 #include "rawswitch.h"
@@ -35,51 +35,53 @@ class AbstractItemModel: public QStandardItemModel
     Q_OBJECT
   public:
     enum ItemModelId {
-      UnknownId,
-      RawSourceId,
-      RawSwitchId,
-      CurveId,
-      GVarRefId,
-      ThrSourceId,
-      CustomFuncActionId,
-      CustomFuncResetParamId,
-      TeleSourceId,
-      CurveRefTypeId,
-      CurveRefFuncId
+      IMID_Unknown,
+      IMID_RawSource,
+      IMID_RawSwitch,
+      IMID_Curve,
+      IMID_GVarRef,
+      IMID_ThrSource,
+      IMID_CustomFuncAction,
+      IMID_CustomFuncResetParam,
+      IMID_TeleSource,
+      IMID_CurveRefType,
+      IMID_CurveRefFunc,
+      IMID_ReservedCount,
+      IMID_Custom
     };
     Q_ENUM(ItemModelId)
 
-    enum DataRoles {
-      ItemIdRole = Qt::UserRole,
-      ItemTypeRole,
-      ItemFlagsRole,
-      IsAvailableRole
+    enum ItemModelDataRoles {
+      IMDR_Id = Qt::UserRole,
+      IMDR_Type,
+      IMDR_Flags,
+      IMDR_Available
     };
-    Q_ENUM(DataRoles)
+    Q_ENUM(ItemModelDataRoles)
 
-    enum DataGroups {
-      NoneGroup     = 0x01,
-      NegativeGroup = 0x02,
-      PositiveGroup = 0x04
+    enum ItemModelDataGroups {
+      IMDG_None     = 0x01,
+      IMDG_Negative = 0x02,
+      IMDG_Positive = 0x04
     };
-    Q_ENUM(DataGroups)
+    Q_ENUM(ItemModelDataGroups)
 
-    enum UpdateTrigger {
-      SystemRefresh           = 1 << 0,
-      ChannelsUpdated         = 1 << 1,
-      CurvesUpdated           = 1 << 2,
-      FlightModesUpdated      = 1 << 3,
-      GVarsUpdated            = 1 << 4,
-      InputsUpdated           = 1 << 5,
-      LogicalSwitchesUpdated  = 1 << 6,
-      ScriptsUpdated          = 1 << 7,
-      TeleSensorsUpdated      = 1 << 8,
-      TimersUpdated           = 1 << 9,
-      AllTriggers = SystemRefresh | ChannelsUpdated | CurvesUpdated | FlightModesUpdated | GVarsUpdated | InputsUpdated |
-                    LogicalSwitchesUpdated | ScriptsUpdated | TeleSensorsUpdated | TimersUpdated,
-      NoTriggers = 0
+    enum ItemModelUpdateEvent {
+      IMUE_None            = 0,
+      IMUE_SystemRefresh   = 1 << 0,
+      IMUE_Channels        = 1 << 1,
+      IMUE_Curves          = 1 << 2,
+      IMUE_FlightModes     = 1 << 3,
+      IMUE_GVars           = 1 << 4,
+      IMUE_Inputs          = 1 << 5,
+      IMUE_LogicalSwitches = 1 << 6,
+      IMUE_Scripts         = 1 << 7,
+      IMUE_TeleSensors     = 1 << 8,
+      IMUE_Timers          = 1 << 9,
+      IMUE_All             = IMUE_SystemRefresh | IMUE_Channels | IMUE_Curves | IMUE_FlightModes | IMUE_GVars | IMUE_Inputs |
+                             IMUE_LogicalSwitches | IMUE_Scripts | IMUE_TeleSensors | IMUE_Timers
     };
-    Q_ENUM(UpdateTrigger)
+    Q_ENUM(ItemModelUpdateEvent)
 
     explicit AbstractItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData,
                                Firmware * firmware, const Boards * const board, const Board::Type boardType) :
@@ -88,24 +90,30 @@ class AbstractItemModel: public QStandardItemModel
       modelData(modelData),
       firmware(firmware),
       board(board),
-      boardType(boardType)
-    {}
+      boardType(boardType),
+      m_id(IMID_Unknown),
+      m_name(""),
+      m_updateMask(IMUE_None)
+      {}
 
-    virtual ~AbstractItemModel() {};
+    virtual ~AbstractItemModel() {}
 
-    void setId(ItemModelId id) { m_id = id; }
-    ItemModelId getId () const { return m_id; }
-
+    void setId(int id) { m_id = id; }
+    int getId () const { return m_id; }
+    bool isReservedModelId() const { return m_id > IMID_Unknown && m_id < IMID_ReservedCount; }
+    void setName(QString name) { m_name = name; }
+    QString getName() const { return isReservedModelId() ? idToString(m_id) : m_name; }
     void setUpdateMask(const int mask) { m_updateMask = mask; }
     int getUpdateMask() const { return m_updateMask; }
-    inline bool doUpdate(const UpdateTrigger trigger) const { return m_updateMask & (int)trigger; }
 
-    AbstractItemModel * getItemModel(const ItemModelId id) const;
+    inline bool doUpdate(const int event) const { return m_updateMask & event; }
+
+    AbstractItemModel * getItemModel(const int id) const;
 
     static void dumpItemModelContents(AbstractItemModel * itemModel);
 
   public slots:
-    virtual void update(const UpdateTrigger trigger = SystemRefresh) = 0;
+    virtual void update(const int event = IMUE_SystemRefresh) = 0;
 
   protected:
     const GeneralSettings * generalSettings;
@@ -115,21 +123,46 @@ class AbstractItemModel: public QStandardItemModel
     const Board::Type boardType;
 
   private:
-    ItemModelId m_id = UnknownId;
-    int m_updateMask = 0;
+    int m_id = IMID_Unknown;
+    QString m_name = "";
+    int m_updateMask = IMUE_None;
+
+    static QString idToString(const int value);
 };
 
 class AbstractStaticItemModel: public AbstractItemModel
 {
     Q_OBJECT
   public:
-    explicit AbstractStaticItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData,
-                                     Firmware * firmware, const Boards * const board, const Board::Type boardType) :
+    explicit AbstractStaticItemModel(const GeneralSettings * const generalSettings = nullptr, const ModelData * const modelData = nullptr,
+                                     Firmware * firmware = nullptr, const Boards * const board = nullptr,
+                                     const Board::Type boardType = Board::BOARD_UNKNOWN) :
       AbstractItemModel(generalSettings, modelData, firmware, board, boardType) {}
     virtual ~AbstractStaticItemModel() {};
 
+    inline void appendToItemList(QString text, int id, bool isAvailable = true, int type = 0, int flags = 0)
+                                  { itemList.append(new ListItem(text, id, isAvailable, type, flags)); }
+
+    void loadItemList();
+
   public slots:
-    virtual void update(const UpdateTrigger trigger = SystemRefresh) override final {}
+    virtual void update(const int event) override final {}
+
+  protected:
+    struct ListItem
+    {
+      QString text;
+      int id;
+      bool isAvailable;
+      int type;
+      int flags;
+
+      ListItem() {}
+      ListItem(QString p_text, int p_id, bool p_isAvailable, int p_type, int p_flags) :
+               text(p_text), id(p_id), isAvailable(p_isAvailable), type(p_type), flags(p_flags) {}
+    };
+
+    QVector<ListItem *> itemList;
 };
 
 class AbstractDynamicItemModel: public AbstractItemModel
@@ -142,7 +175,7 @@ class AbstractDynamicItemModel: public AbstractItemModel
     virtual ~AbstractDynamicItemModel() {};
 
   public slots:
-    virtual void update(const UpdateTrigger trigger = SystemRefresh) {}
+    virtual void update(const int event = IMUE_SystemRefresh) {}
 
   signals:
     void aboutToBeUpdated();
@@ -158,7 +191,7 @@ class RawSourceItemModel: public AbstractDynamicItemModel
     virtual ~RawSourceItemModel() {};
 
   public slots:
-    virtual void update(const UpdateTrigger trigger = SystemRefresh) override;
+    virtual void update(const int event = IMUE_SystemRefresh) override;
 
   protected:
     virtual void setDynamicItemData(QStandardItem * item, const RawSource & src) const;
@@ -174,7 +207,7 @@ class RawSwitchItemModel: public AbstractDynamicItemModel
     virtual ~RawSwitchItemModel() {};
 
   public slots:
-    virtual void update(const UpdateTrigger trigger = SystemRefresh) override;
+    virtual void update(const int event = IMUE_SystemRefresh) override;
 
   protected:
     virtual void setDynamicItemData(QStandardItem * item, const RawSwitch & rsw) const;
@@ -190,7 +223,7 @@ class CurveItemModel: public AbstractDynamicItemModel
     virtual ~CurveItemModel() {};
 
   public slots:
-    virtual void update(const UpdateTrigger trigger = SystemRefresh) override;
+    virtual void update(const int event = IMUE_SystemRefresh) override;
 
   protected:
     virtual void setDynamicItemData(QStandardItem * item, const int value) const;
@@ -205,7 +238,7 @@ class GVarReferenceItemModel: public AbstractDynamicItemModel
     virtual ~GVarReferenceItemModel() {};
 
   public slots:
-    virtual void update(const UpdateTrigger trigger = SystemRefresh) override;
+    virtual void update(const int event = IMUE_SystemRefresh) override;
 
   protected:
     virtual void setDynamicItemData(QStandardItem * item, const AdjustmentReference & ar) const;
@@ -221,7 +254,7 @@ class ThrottleSourceItemModel: public AbstractDynamicItemModel
     virtual ~ThrottleSourceItemModel() {};
 
   public slots:
-    virtual void update(const UpdateTrigger trigger = SystemRefresh) override;
+    virtual void update(const int event = IMUE_SystemRefresh) override;
 
   protected:
     virtual void setDynamicItemData(QStandardItem * item, const int value) const;
@@ -236,7 +269,7 @@ class CustomFuncActionItemModel: public AbstractDynamicItemModel
     virtual ~CustomFuncActionItemModel() {};
 
   public slots:
-    virtual void update(const UpdateTrigger trigger = SystemRefresh) override;
+    virtual void update(const int event = IMUE_SystemRefresh) override;
 
   protected:
     virtual void setDynamicItemData(QStandardItem * item, const int value) const;
@@ -251,7 +284,7 @@ class CustomFuncResetParamItemModel: public AbstractDynamicItemModel
     virtual ~CustomFuncResetParamItemModel() {};
 
   public slots:
-    virtual void update(const UpdateTrigger trigger = SystemRefresh) override;
+    virtual void update(const int event = IMUE_SystemRefresh) override;
 
   protected:
     virtual void setDynamicItemData(QStandardItem * item, const int value) const;
@@ -266,7 +299,7 @@ class TelemetrySourceItemModel: public AbstractDynamicItemModel
     virtual ~TelemetrySourceItemModel() {};
 
   public slots:
-    virtual void update(const UpdateTrigger trigger = SystemRefresh) override;
+    virtual void update(const int event = IMUE_SystemRefresh) override;
 
   protected:
     virtual void setDynamicItemData(QStandardItem * item, const int value) const;
@@ -290,18 +323,31 @@ class CurveRefFuncItemModel : public AbstractStaticItemModel
     virtual ~CurveRefFuncItemModel() {};
 };
 
-class ItemModelsFactory
+class PrecisionItemModel : public AbstractStaticItemModel
+{
+    Q_OBJECT
+  public:
+    explicit PrecisionItemModel(const int minDecimals, const int maxDecimals, const QString suffix = "", const bool placeholders = false);
+    virtual ~PrecisionItemModel() {};
+};
+
+//
+//  CompoundItemModelFactory
+//
+
+class CompoundItemModelFactory
 {
   public:
-    ItemModelsFactory(const GeneralSettings * const generalSettings, const ModelData * const modelData);
-    virtual ~ItemModelsFactory();
+    CompoundItemModelFactory(const GeneralSettings * const generalSettings, const ModelData * const modelData);
+    virtual ~CompoundItemModelFactory();
 
-    void addItemModel(const AbstractItemModel::ItemModelId id);
-    void registerItemModel(AbstractItemModel * itemModel);
+    void addItemModel(const int id);
+    int registerItemModel(AbstractItemModel * itemModel);
     void unregisterItemModels();
-    void unregisterItemModel(const AbstractItemModel::ItemModelId id);
-    AbstractItemModel * getItemModel(const AbstractItemModel::ItemModelId id) const;
-    void update(const AbstractItemModel::UpdateTrigger trigger = AbstractItemModel::SystemRefresh);
+    void unregisterItemModel(const int id);
+    bool isItemModelRegistered(const int id) const;
+    AbstractItemModel * getItemModel(const int id) const;
+    void update(const int event = AbstractItemModel::IMUE_SystemRefresh);
     void dumpAllItemModelContents() const;
 
   protected:
@@ -311,6 +357,9 @@ class ItemModelsFactory
     Boards * board;
     Board::Type boardType;
     QVector<AbstractItemModel *> registeredItemModels;
+
+  private:
+    void setSourceId(AbstractItemModel * itemModel);
 };
 
-#endif // RAWITEMDATAMODELS_H
+#endif // COMPOUNDITEMMODELS_H

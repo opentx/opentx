@@ -24,7 +24,7 @@
 #include "modeledit.h"
 #include "eeprominterface.h"
 
-class ItemModelsFactory;
+class CompoundItemModelFactory;
 class FilteredItemModel;
 
 constexpr char MIMETYPE_FLIGHTMODE[] = "application/x-companion-flightmode";
@@ -139,6 +139,7 @@ class FlightModePanel : public ModelPanel
     bool gvMoveDownAllowed() const;
     bool gvMoveUpAllowed() const;
     void gvSwapData(int idx1, int idx2);
+    void connectItemModelEvents(const FilteredItemModel * itemModel);
 };
 
 class FlightModesPanel : public ModelPanel
@@ -146,7 +147,7 @@ class FlightModesPanel : public ModelPanel
     Q_OBJECT
 
   public:
-    FlightModesPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, ItemModelsFactory * sharedItemModels);
+    FlightModesPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, CompoundItemModelFactory * sharedItemModels);
     virtual ~FlightModesPanel();
 
   public slots:
@@ -166,10 +167,11 @@ class FlightModesPanel : public ModelPanel
 
     int modesCount;
     QTabWidget *tabWidget;
-    ItemModelsFactory *sharedItemModels;
+    CompoundItemModelFactory *sharedItemModels;
     FilteredItemModel *rawSwitchFilteredModel;
     QVector<GenericPanel *> panels;
     void updateItemModels();
+    void connectItemModelEvents(const FilteredItemModel * itemModel);
 };
 
 #endif // _FLIGHTMODES_H_

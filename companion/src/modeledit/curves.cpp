@@ -23,7 +23,7 @@
 #include "node.h"
 #include "edge.h"
 #include "helpers.h"
-#include "rawitemfilteredmodel.h"
+#include "filtereditemmodels.h"
 
 #define GFX_MARGIN 16
 
@@ -110,7 +110,7 @@ float curveSymmetricalX(float x, float coeff, float yMin, float yMid, float yMax
 }
 
 CurvesPanel::CurvesPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware,
-                         ItemModelsFactory * sharedItemModels):
+                         CompoundItemModelFactory * sharedItemModels):
   ModelPanel(parent, model, generalSettings, firmware),
   ui(new Ui::Curves),
   currentCurve(0),
@@ -813,7 +813,7 @@ void CurvesPanel::swapData(int idx1, int idx2)
 
 void CurvesPanel::updateItemModels()
 {
-  sharedItemModels->update(AbstractItemModel::CurvesUpdated);
+  sharedItemModels->update(AbstractItemModel::IMUE_Curves);
 }
 
 CustomScene::CustomScene(QGraphicsView * view) :

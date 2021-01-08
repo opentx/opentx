@@ -49,11 +49,11 @@ class ItemModelFactory
     QVector<AbstractItemModel *> registeredItemModels;
 };
 
-class FilteredItemModelsFactory
+class FilteredItemModelFactory
 {
   public:
-    FilteredItemModelsFactory();
-    virtual ~FilteredItemModelsFactory();
+    FilteredItemModelFactory();
+    virtual ~FilteredItemModelFactory();
 
     int registerItemModel(FilteredItemModel * itemModel, QString name);
     void unregisterItemModels();

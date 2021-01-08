@@ -29,7 +29,7 @@
 
 
 class ModelData;
-class FilteredItemModel;
+class CurveRefFilteredFactory;
 
 class CurveReference {
 
@@ -89,14 +89,13 @@ class CurveReferenceUIManager : public QObject {
   Q_OBJECT
 
   public:
-    CurveReferenceUIManager(QComboBox *curveValueCB, CurveReference & curve, const ModelData & model,
-                            FilteredItemModel * curveItemModel, FilteredItemModel * gvarItemModel, FilteredItemModel * typeItemModel,
-                            FilteredItemModel * funcItemModel, QObject * parent = nullptr);
+    explicit CurveReferenceUIManager(QComboBox *curveTypeCB, QCheckBox *curveGVarCB, QSpinBox *curveValueSB, QComboBox *curveValueCB,
+                            CurveReference & curve, const ModelData & model, CurveRefFilteredFactory * curveRefFilteredFactory,
+                            QObject * parent = nullptr);
 
-    CurveReferenceUIManager(QComboBox *curveTypeCB, QCheckBox *curveGVarCB, QSpinBox *curveValueSB, QComboBox *curveValueCB,
-                            CurveReference & curve, const ModelData & model, FilteredItemModel * curveItemModel,
-                            FilteredItemModel * gvarItemModel, FilteredItemModel * typeItemModel,
-                            FilteredItemModel * funcItemModel, QObject * parent = nullptr);
+    explicit CurveReferenceUIManager(QComboBox *curveValueCB, CurveReference & curve, const ModelData & model,
+                            CurveRefFilteredFactory * curveRefFilteredFactory, QObject * parent = nullptr) :
+                CurveReferenceUIManager(nullptr, nullptr, nullptr, curveValueCB, curve, model, curveRefFilteredFactory, parent) {}
 
     virtual ~CurveReferenceUIManager();
 
@@ -116,12 +115,7 @@ class CurveReferenceUIManager : public QObject {
     const ModelData & model;
     bool lock;
     bool hasCapabilityGvars;
-    FilteredItemModel * curveItemModel;
-    FilteredItemModel * gvarItemModel;
-    FilteredItemModel * typeItemModel;
-    FilteredItemModel * funcItemModel;
-
-    void init(QObject * parent);
+    CurveRefFilteredFactory *filteredModelFactory;
     void populateValueCB(QComboBox * cb);
 };
 

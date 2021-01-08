@@ -33,7 +33,7 @@
 #include "customfunctions.h"
 #include "telemetry.h"
 #include "appdata.h"
-#include "rawitemdatamodels.h"
+#include "compounditemmodels.h"
 
 ModelEdit::ModelEdit(QWidget * parent, RadioData & radioData, int modelId, Firmware * firmware) :
   QDialog(parent),
@@ -53,17 +53,17 @@ ModelEdit::ModelEdit(QWidget * parent, RadioData & radioData, int modelId, Firmw
   GeneralSettings &generalSettings = radioData.generalSettings;
   ModelData &model = radioData.models[modelId];
 
-  sharedItemModels = new ItemModelsFactory(&generalSettings, &model);
-  sharedItemModels->addItemModel(AbstractItemModel::RawSourceId);
-  sharedItemModels->addItemModel(AbstractItemModel::RawSwitchId);
-  sharedItemModels->addItemModel(AbstractItemModel::CurveId);
-  sharedItemModels->addItemModel(AbstractItemModel::GVarRefId);
-  sharedItemModels->addItemModel(AbstractItemModel::ThrSourceId);
-  sharedItemModels->addItemModel(AbstractItemModel::CustomFuncActionId);
-  sharedItemModels->addItemModel(AbstractItemModel::CustomFuncResetParamId);
-  sharedItemModels->addItemModel(AbstractItemModel::TeleSourceId);
-  sharedItemModels->addItemModel(AbstractItemModel::CurveRefTypeId);
-  sharedItemModels->addItemModel(AbstractItemModel::CurveRefFuncId);
+  sharedItemModels = new CompoundItemModelFactory(&generalSettings, &model);
+  sharedItemModels->addItemModel(AbstractItemModel::IMID_RawSource);
+  sharedItemModels->addItemModel(AbstractItemModel::IMID_RawSwitch);
+  sharedItemModels->addItemModel(AbstractItemModel::IMID_Curve);
+  sharedItemModels->addItemModel(AbstractItemModel::IMID_GVarRef);
+  sharedItemModels->addItemModel(AbstractItemModel::IMID_ThrSource);
+  sharedItemModels->addItemModel(AbstractItemModel::IMID_CustomFuncAction);
+  sharedItemModels->addItemModel(AbstractItemModel::IMID_CustomFuncResetParam);
+  sharedItemModels->addItemModel(AbstractItemModel::IMID_TeleSource);
+  sharedItemModels->addItemModel(AbstractItemModel::IMID_CurveRefType);
+  sharedItemModels->addItemModel(AbstractItemModel::IMID_CurveRefFunc);
 
   s1.report("Init");
 

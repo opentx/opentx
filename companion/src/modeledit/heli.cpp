@@ -21,15 +21,16 @@
 #include "heli.h"
 #include "ui_heli.h"
 #include "helpers.h"
-#include "rawitemfilteredmodel.h"
+#include "filtereditemmodels.h"
 
-HeliPanel::HeliPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, ItemModelsFactory * sharedItemModels):
+HeliPanel::HeliPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, CompoundItemModelFactory * sharedItemModels):
   ModelPanel(parent, model, generalSettings, firmware),
   ui(new Ui::Heli)
 {
   ui->setupUi(this);
 
-  FILTEREDITEMMODEL(rawSourceFilteredModel, HeliPanel, RawSourceId, RawSource::InputSourceGroups)
+  rawSourceFilteredModel = new FilteredItemModel(sharedItemModels->getItemModel(AbstractItemModel::IMID_RawSource), RawSource::InputSourceGroups);
+  connectItemModelEvents(rawSourceFilteredModel);
 
   connect(ui->swashType, SIGNAL(currentIndexChanged(int)), this, SLOT(edited()));
   connect(ui->swashRingVal, SIGNAL(editingFinished()), this, SLOT(edited()));
@@ -114,6 +115,12 @@ void HeliPanel::edited()
     }
     emit modified();
   }
+}
+
+void HeliPanel::connectItemModelEvents(const FilteredItemModel * itemModel)
+{
+  connect(itemModel, &FilteredItemModel::aboutToBeUpdated, this, &HeliPanel::onItemModelAboutToBeUpdated);
+  connect(itemModel, &FilteredItemModel::updateComplete, this, &HeliPanel::onItemModelUpdateComplete);
 }
 
 void HeliPanel::onItemModelAboutToBeUpdated()

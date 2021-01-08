@@ -20,8 +20,8 @@
 
 #include "itemmodelfactory.h"
 
-#include "rawitemdatamodels.h"
-#include "rawitemfilteredmodel.h"
+#include "compounditemmodels.h"
+#include "filtereditemmodels.h"
 
 #include "eeprominterface.h"
 #include "generalsettings.h"
@@ -102,7 +102,7 @@ void ItemModelFactory::unregisterItemModel(const AbstractItemModel::ItemModelId 
     delete itemModel;
 }
 
-QAbstractItemModel * ItemModelsFactory::getItemModel(const AbstractItemModel::ItemModelId id) const
+QAbstractItemModel * CompoundItemModelFactory::getItemModel(const AbstractItemModel::ItemModelId id) const
 {
   foreach (AbstractItemModel * itemModel, registeredItemModels) {
     if (itemModel->getId() == id)
@@ -127,7 +127,7 @@ void ItemModelFactory::dumpAllItemModelContents() const
 }
 
 //
-// FilteredItemModelsFactory
+// FilteredItemModelFactory
 //
 
 FilteredItemModelFactory::FilteredItemModelFactory()

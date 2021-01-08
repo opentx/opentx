@@ -21,20 +21,19 @@
 #include "inputs.h"
 #include "expodialog.h"
 #include "helpers.h"
-#include "rawitemfilteredmodel.h"
+#include "filtereditemmodels.h"
 
-InputsPanel::InputsPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, ItemModelsFactory * sharedItemModels):
+InputsPanel::InputsPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, CompoundItemModelFactory * sharedItemModels):
   ModelPanel(parent, model, generalSettings, firmware),
   expoInserted(false),
   modelPrinter(firmware, generalSettings, model),
-  sharedItemModels(sharedItemModels)
+  sharedItemModels(sharedItemModels),
+  modelsUpdateCnt(0)
 {
-  FILTEREDITEMMODEL(rawSourceFilteredModel, InputsPanel, RawSourceId,(RawSource::InputSourceGroups & ~ RawSource::NoneGroup & ~RawSource::InputsGroup))
-  FILTEREDITEMMODEL(rawSwitchFilteredModel, InputsPanel, RawSwitchId, RawSwitch::MixesContext)
-  FILTEREDITEMMODEL(curveFilteredModel, InputsPanel, CurveId, firmware->getCapability(HasInputDiff) ? 0 : FilteredItemModel::PositiveFilter)
-  FILTEREDITEMMODELNOFLAGS(gvarFilteredModel, InputsPanel, GVarRefId)
-  FILTEREDITEMMODELNOFLAGS(crTypeFilteredModel, InputsPanel, CurveRefTypeId)
-  FILTEREDITEMMODELNOFLAGS(crFuncFilteredModel, InputsPanel, CurveRefFuncId)
+  connectItemModelEvents(AbstractItemModel::IMID_RawSource);
+  connectItemModelEvents(AbstractItemModel::IMID_RawSwitch);
+  connectItemModelEvents(AbstractItemModel::IMID_Curve);
+  connectItemModelEvents(AbstractItemModel::IMID_GVarRef);
 
   inputsCount = firmware->getCapability(VirtualInputs);
   if (inputsCount == 0)
@@ -74,12 +73,6 @@ InputsPanel::InputsPanel(QWidget *parent, ModelData & model, GeneralSettings & g
 
 InputsPanel::~InputsPanel()
 {
-  delete rawSourceFilteredModel;
-  delete rawSwitchFilteredModel;
-  delete curveFilteredModel;
-  delete gvarFilteredModel;
-  delete crTypeFilteredModel;
-  delete crFuncFilteredModel;
 }
 
 void InputsPanel::update()
@@ -195,8 +188,7 @@ void InputsPanel::gm_openExpo(int index)
   if (firmware->getCapability(VirtualInputs))
     inputName = model->inputNames[ed.chn];
 
-  ExpoDialog *dlg = new ExpoDialog(this, *model, &ed, generalSettings, firmware, inputName, rawSourceFilteredModel, rawSwitchFilteredModel,
-                                   curveFilteredModel, gvarFilteredModel, crTypeFilteredModel, crFuncFilteredModel);
+  ExpoDialog *dlg = new ExpoDialog(this, *model, &ed, generalSettings, firmware, inputName, sharedItemModels);
   if (dlg->exec())  {
     model->expoData[index] = ed;
     if (firmware->getCapability(VirtualInputs))
@@ -732,18 +724,31 @@ int InputsPanel::getInputIndexFromSelected()
   return idx;
 }
 
+void InputsPanel::connectItemModelEvents(const int id)
+{
+  AbstractDynamicItemModel * itemModel = qobject_cast<AbstractDynamicItemModel *>(sharedItemModels->getItemModel(id));
+  if (itemModel) {
+    connect(itemModel, &AbstractDynamicItemModel::aboutToBeUpdated, this, &InputsPanel::onItemModelAboutToBeUpdated);
+    connect(itemModel, &AbstractDynamicItemModel::updateComplete, this, &InputsPanel::onItemModelUpdateComplete);
+  }
+}
+
 void InputsPanel::onItemModelAboutToBeUpdated()
 {
   lock = true;
+  modelsUpdateCnt++;
 }
 
 void InputsPanel::onItemModelUpdateComplete()
 {
-  update();
-  lock = false;
+  modelsUpdateCnt--;
+  if (modelsUpdateCnt < 1) {
+    update();
+    lock = false;
+  }
 }
 
 void InputsPanel::updateItemModels()
 {
-  sharedItemModels->update(AbstractItemModel::InputsUpdated);
+  sharedItemModels->update(AbstractItemModel::IMUE_Inputs);
 }

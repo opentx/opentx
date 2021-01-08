@@ -26,7 +26,7 @@
 
 constexpr char MIMETYPE_TIMER[] = "application/x-companion-timer";
 
-class ItemModelsFactory;
+class CompoundItemModelFactory;
 class FilteredItemModel;
 
 namespace Ui {
@@ -61,6 +61,7 @@ class TimerPanel : public ModelPanel
   private:
     TimerData & timer;
     Ui::Timer * ui;
+    void connectItemModelEvents(const FilteredItemModel * itemModel);
 };
 
 class ModulePanel : public ModelPanel
@@ -132,7 +133,7 @@ class SetupPanel : public ModelPanel
     Q_OBJECT
 
   public:
-    SetupPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, ItemModelsFactory * sharedItemModels);
+    SetupPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, CompoundItemModelFactory * sharedItemModels);
     virtual ~SetupPanel();
 
     virtual void update();
@@ -194,10 +195,11 @@ class SetupPanel : public ModelPanel
     bool moveTimerDownAllowed() const;
     bool moveTimerUpAllowed() const;
     void swapTimerData(int idx1, int idx2);
-    ItemModelsFactory * sharedItemModels;
+    CompoundItemModelFactory * sharedItemModels;
     FilteredItemModel * rawSwitchFilteredModel;
     FilteredItemModel * thrSourceFilteredModel;
     void updateItemModels();
-  };
+    void connectItemModelEvents(const FilteredItemModel * itemModel);
+};
 
 #endif // _SETUP_H_
