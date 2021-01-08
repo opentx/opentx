@@ -27,6 +27,8 @@ constexpr int CPN_MAX_SENSORS = 60;
 constexpr int SENSOR_LABEL_LEN = 4;
 
 class ModelData;
+class AbstractStaticItemModel;
+class PrecisionItemModel;
 
 class SensorData {
   Q_DECLARE_TR_FUNCTIONS(SensorData)
@@ -36,7 +38,8 @@ class SensorData {
     enum
     {
       TELEM_TYPE_CUSTOM,
-      TELEM_TYPE_CALCULATED
+      TELEM_TYPE_CALCULATED,
+      TELEM_TYPE_LAST = TELEM_TYPE_CALCULATED
     };
 
     enum
@@ -63,6 +66,7 @@ class SensorData {
       TELEM_CELL_INDEX_6,
       TELEM_CELL_INDEX_HIGHEST,
       TELEM_CELL_INDEX_DELTA,
+      TELEM_CELL_INDEX_LAST = TELEM_CELL_INDEX_DELTA
     };
 
     enum
@@ -169,8 +173,19 @@ class SensorData {
     void clear() { memset(this, 0, sizeof(SensorData)); }
     bool isEmpty() const;
 
-    static QString sourceToString(const ModelData * model, const int index, const bool sign = true);
+    static QString sourceToString(const ModelData * model, const int index, const bool sign = false);
     static bool isSourceAvailable(const ModelData * model, const int index);
+    static QString typeToString(const int value);
+    static QString formulaToString(const int value);
+    static QString cellIndexToString(const int value);
+    static QString unitToString(const int value);
+    static QString precisionToString(const int value);
+
+    static AbstractStaticItemModel * typeItemModel();
+    static AbstractStaticItemModel * formulaItemModel();
+    static AbstractStaticItemModel * cellIndexItemModel();
+    static AbstractStaticItemModel * unitItemModel();
+    static PrecisionItemModel * precisionItemModel();
 };
 
 #endif // SENSORDATA_H

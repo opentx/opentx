@@ -23,6 +23,7 @@
 #include "radiodata.h"
 #include "modeldata.h"
 #include "eeprominterface.h"
+#include "compounditemmodels.h"
 
 void SensorData::updateUnit()
 {
@@ -32,9 +33,18 @@ void SensorData::updateUnit()
   }
 }
 
+//  TODO depreciated
 QString SensorData::unitString() const
 {
-  switch (unit) {
+  return unitToString(unit);
+}
+
+//  static
+QString SensorData::unitToString(const int value)
+{
+  switch (value) {
+    case UNIT_RAW:
+      return tr("Raw (-)");
     case UNIT_VOLTS:
       return tr("V");
     case UNIT_AMPS:
@@ -92,7 +102,7 @@ QString SensorData::unitString() const
     case UNIT_US:
       return tr("uS");
     default:
-      return "";
+      return CPN_STR_UNKNOWN_ITEM;
   }
 }
 
@@ -121,10 +131,70 @@ bool SensorData::isEmpty() const
 }
 
 //  static
+QString SensorData::typeToString(const int value)
+{
+  switch(value) {
+    case TELEM_TYPE_CUSTOM:
+      return tr("Custom");
+    case TELEM_TYPE_CALCULATED:
+      return tr("Calculated");
+    default:
+      return CPN_STR_UNKNOWN_ITEM;
+  }
+}
+
+//  static
+QString SensorData::formulaToString(const int value)
+{
+  switch(value) {
+    case TELEM_FORMULA_ADD:
+      return tr("Add");
+    case TELEM_FORMULA_AVERAGE:
+      return tr("Average");
+    case TELEM_FORMULA_MIN:
+      return tr("Minimum");
+    case TELEM_FORMULA_MAX:
+      return tr("Maximum");
+    case TELEM_FORMULA_MULTIPLY:
+      return tr("Multiply");
+    case TELEM_FORMULA_TOTALIZE:
+      return tr("Totalize");
+    case TELEM_FORMULA_CELL:
+      return tr("Cell");
+    case TELEM_FORMULA_CONSUMPTION:
+      return tr("Consumption");
+    case TELEM_FORMULA_DIST:
+      return tr("Distance");
+    default:
+      return CPN_STR_UNKNOWN_ITEM;
+  }
+}
+
+//  static
+QString SensorData::cellIndexToString(const int value)
+{
+  if (value == TELEM_CELL_INDEX_LOWEST)
+    return tr("Lowest");
+  if (value > TELEM_CELL_INDEX_LOWEST && value < TELEM_CELL_INDEX_HIGHEST)
+    return tr("Cell %1").arg(value - TELEM_CELL_INDEX_LOWEST);
+  if (value== TELEM_CELL_INDEX_HIGHEST)
+    return tr("Highest");
+  if (value == TELEM_CELL_INDEX_DELTA)
+    return tr("Delta");
+  return CPN_STR_UNKNOWN_ITEM;
+}
+
+//  static
+QString SensorData::precisionToString(const int value)
+{
+  return QString("0.%1").arg(QString(value, '0'));
+}
+
+//  static
 QString SensorData::sourceToString(const ModelData * model, const int index, const bool sign)
 {
   if (model) {
-    const QString prfx = sign ? index < 0 ? "-" : "" : "";
+    const QString prfx = sign ? index < 0 ? "-" : "+" : "";
 
     if (abs(index) > 0) {
       const SensorData &sd = model->sensorData[abs(index) - 1];
@@ -136,23 +206,89 @@ QString SensorData::sourceToString(const ModelData * model, const int index, con
     else
       return CPN_STR_NONE_ITEM;
   }
-  else
-    return "";
+
+  return "";
 }
 
 //  static
 bool SensorData::isSourceAvailable(const ModelData * model, const int index)
 {
-  if (model) {
-    Firmware * firmware = getCurrentFirmware();
-    const int i = abs(index);
-    if (i <= firmware->getCapability(Sensors)) {
-      if (i > 0)
-        return model->sensorData[i - 1].isAvailable();
-      else
-        return true;
-    }
+  Firmware * firmware = getCurrentFirmware();
+  const int sensorcnt = firmware->getCapability(Sensors);
+  const int i = abs(index);
+
+  if (model && sensorcnt > 0 and i <= sensorcnt) {
+    if (i > 0)
+      return model->sensorData[i - 1].isAvailable();
+    else
+      return true;
   }
 
   return false;
+}
+
+//  static
+AbstractStaticItemModel * SensorData::typeItemModel()
+{
+  AbstractStaticItemModel * mdl = new AbstractStaticItemModel();
+  mdl->setName("sensordata.type");
+
+  for (int i = 0; i <= TELEM_TYPE_LAST; i++) {
+    mdl->appendToItemList(typeToString(i), i);
+  }
+
+  mdl->loadItemList();
+  return mdl;
+}
+
+//  static
+AbstractStaticItemModel * SensorData::formulaItemModel()
+{
+  AbstractStaticItemModel * mdl = new AbstractStaticItemModel();
+  mdl->setName("sensordata.formula");
+
+  for (int i = 0; i <= TELEM_FORMULA_LAST; i++) {
+    mdl->appendToItemList(formulaToString(i), i);
+  }
+
+  mdl->loadItemList();
+  return mdl;
+}
+
+//  static
+AbstractStaticItemModel * SensorData::cellIndexItemModel()
+{
+  AbstractStaticItemModel * mdl = new AbstractStaticItemModel();
+  mdl->setName("sensordata.cellindex");
+
+  for (int i = 0; i <= TELEM_CELL_INDEX_LAST; i++) {
+    mdl->appendToItemList(cellIndexToString(i), i);
+  }
+
+  mdl->loadItemList();
+  return mdl;
+}
+
+//  static
+AbstractStaticItemModel * SensorData::unitItemModel()
+{
+  AbstractStaticItemModel * mdl = new AbstractStaticItemModel();
+  mdl->setName("sensordata.unit");
+
+  for (int i = 0; i <= UNIT_MAX; i++) {
+    QString str = unitToString(i);
+    if (str != CPN_STR_UNKNOWN_ITEM)
+      mdl->appendToItemList(str, i);
+  }
+
+  mdl->loadItemList();
+  return mdl;
+}
+
+//  static
+PrecisionItemModel * SensorData::precisionItemModel()
+{
+  PrecisionItemModel * mdl = new PrecisionItemModel(0, 2);
+  mdl->setName("sensordata.precision");
+  return mdl;
 }
