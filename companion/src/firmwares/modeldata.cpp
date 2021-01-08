@@ -1439,3 +1439,42 @@ void ModelData::updateResetParam(CustomFunctionData * cfd)
     updRefInfo.updcnt++;
   }
 }
+
+QString ModelData::thrTraceSrcToString() const
+{
+  return thrTraceSrcToString((int)thrTraceSrc);
+}
+
+QString ModelData::thrTraceSrcToString(const int index) const
+{
+  Firmware * firmware = getCurrentFirmware();
+  const Boards board = Boards(getCurrentBoard());
+  const int pscnt = board.getCapability(Board::Pots) + board.getCapability(Board::Sliders);
+
+  if (index == 0)
+    return tr("THR");
+  else if (index <= pscnt)
+    return board.getAnalogInputName(index + board.getCapability(Board::Sticks) - 1);
+  else if (index <= pscnt + firmware->getCapability(Outputs))
+    return RawSource(SOURCE_TYPE_CH, index - pscnt - 1).toString(this);
+
+  return QString(CPN_STR_UNKNOWN_ITEM);
+}
+
+int ModelData::thrTraceSrcCount() const
+{
+  const Boards board = Boards(getCurrentBoard());
+  Firmware * firmware = getCurrentFirmware();
+
+  return 1 + board.getCapability(Board::Pots) + board.getCapability(Board::Sliders) + firmware->getCapability(Outputs);
+}
+
+bool ModelData::isThrTraceSrcAvailable(const GeneralSettings * generalSettings, const int index) const
+{
+  const Boards board = Boards(getCurrentBoard());
+
+  if (index > 0 && index <= board.getCapability(Board::Pots) + board.getCapability(Board::Sliders))
+    return RawSource(SOURCE_TYPE_STICK, index + board.getCapability(Board::Sticks) - 1).isAvailable(this, generalSettings, board.getBoardType());
+  else
+    return true;
+}
