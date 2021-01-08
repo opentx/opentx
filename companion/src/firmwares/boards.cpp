@@ -191,7 +191,20 @@ SwitchInfo Boards::getSwitchInfo(Board::Type board, int index)
     if (index < DIM(switches))
       return switches[index];
   }
-  else if (IS_TARANIS_X7(board)) {
+  else if (board == BOARD_TARANIS_X7_ACCESS) {
+    const Board::SwitchInfo switches[] = {
+      {SWITCH_3POS,   "SA"},
+      {SWITCH_3POS,   "SB"},
+      {SWITCH_3POS,   "SC"},
+      {SWITCH_3POS,   "SD"},
+      {SWITCH_2POS,   "SF"},
+      {SWITCH_TOGGLE, "SH"},
+      {SWITCH_2POS,   "SI"}
+    };
+    if (index < DIM(switches))
+      return switches[index];
+  }
+  else if (board == BOARD_TARANIS_X7) {
     const Board::SwitchInfo switches[] = {
       {SWITCH_3POS,   "SA"},
       {SWITCH_3POS,   "SB"},
@@ -350,7 +363,9 @@ int Boards::getCapability(Board::Type board, Board::Capability capability)
         return 5;
       else if (board == Board::BOARD_TARANIS_X9LITES)
         return 7;
-      else if (IS_TARANIS_X7(board))
+      else if (board == BOARD_TARANIS_X7_ACCESS)
+        return 7;
+      else if (board == BOARD_TARANIS_X7)
         return 8;
       else if (IS_FAMILY_T12(board))
         return 8;
