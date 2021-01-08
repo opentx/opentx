@@ -554,7 +554,7 @@ bool isPxx2IsrmChannelsCountAllowed(int channels)
 bool isTrainerUsingModuleBay()
 {
 #if defined(PCBTARANIS)
-  if (TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE <= g_model.trainerData.mode && g_model.trainerData.mode <= TRAINER_MODE_MASTER_BATTERY_COMPARTMENT)
+  if (TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE <= g_model.trainerData.mode && g_model.trainerData.mode <= TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE)
     return true;
 #endif
   return false;
@@ -979,10 +979,10 @@ const char STR_SUBTYPE_FRSKYL[] =     "\010""LR12\0   ""LR12 6ch";
 const char STR_SUBTYPE_ESKY150V2[] =  "\006""150 V2";
 const char STR_SUBTYPE_JJRC345[] =    "\007""Std\0   ""SkyTmbr";
 const char STR_SUBTYPE_KYOSHO[] =     "\004""FHSS""Hype";
-const char STR_SUBTYPE_RLINK[] =      "\007""Surface""Air\0   ";
+const char STR_SUBTYPE_RLINK[] =      "\007""Surface""Air\0   ""DumboRC";
 const char STR_SUBTYPE_ELRS[] =       "\007""N/A WIP";
 const char STR_SUBTYPE_REALACC[] =    "\003""R11";
-const char STR_SUBTYPE_WFLYRF[] =     "\005""RF20x";
+const char STR_SUBTYPE_WFLY2[] =      "\005""RF20x";
 
 const char* mm_options_strings::options[] = {
   nullptr,
@@ -1045,7 +1045,7 @@ const mm_protocol_definition multi_protocols[] = {
   {MODULE_SUBTYPE_MULTI_FRSKYX_RX,  1, false, false,  STR_SUBTYPE_FRSKYX_RX, STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_HOTT,       1, true,  false,  STR_SUBTYPE_HOTT,      STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_FX816,      0, false, false,  STR_SUBTYPE_FX816,     nullptr},
-  {MODULE_SUBTYPE_MULTI_PELIKAN,    1, false, false,  STR_SUBTYPE_PELIKAN,   nullptr},
+  {MODULE_SUBTYPE_MULTI_PELIKAN,    1, false, true,   STR_SUBTYPE_PELIKAN,   nullptr},
   {MODULE_SUBTYPE_MULTI_XK,         1, false, false,  STR_SUBTYPE_XK,        STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_XN297DUMP,  4, false, false,  STR_SUBTYPE_XN297DUMP, STR_MULTI_RFCHAN},
   {MODULE_SUBTYPE_MULTI_FRSKYX2,    5, true,  false,  STR_SUBTYPE_FRSKYX2,   STR_MULTI_RFTUNE},
@@ -1057,11 +1057,12 @@ const mm_protocol_definition multi_protocols[] = {
   {MODULE_SUBTYPE_MULTI_JJRC345,    1, false, false,  STR_SUBTYPE_JJRC345,   nullptr},
   {MODULE_SUBTYPE_MULTI_Q90C,       0, false, false,  NO_SUBTYPE,            STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_KYOSHO,     1, false, true,   STR_SUBTYPE_KYOSHO,    nullptr},
-  {MODULE_SUBTYPE_MULTI_RLINK,      1, false, false,  STR_SUBTYPE_RLINK,     STR_MULTI_RFTUNE},
+  {MODULE_SUBTYPE_MULTI_RLINK,      2, false, false,  STR_SUBTYPE_RLINK,     STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_ELRS,       0, false, false,  STR_SUBTYPE_ELRS,      nullptr},
   {MODULE_SUBTYPE_MULTI_REALACC,    0, false, false,  STR_SUBTYPE_REALACC,   nullptr},
   {MODULE_SUBTYPE_MULTI_OMP,        0, false, false,  NO_SUBTYPE,            STR_MULTI_RFTUNE},
-  {MODULE_SUBTYPE_MULTI_WFLYRF,     0, false, false,  STR_SUBTYPE_WFLYRF,    nullptr},
+  {MODULE_SUBTYPE_MULTI_WFLY2,      0, false, false,  STR_SUBTYPE_WFLY2,     STR_MULTI_OPTION},
+  {MODULE_SUBTYPE_MULTI_E016HV2,    0, false, false,  NO_SUBTYPE,            STR_MULTI_RFTUNE},
   {MM_RF_CUSTOM_SELECTED,           7, true,  true,   NO_SUBTYPE,            STR_MULTI_OPTION},
 
   // Sentinel and default for protocols not listed above (MM_RF_CUSTOM is 0xff)

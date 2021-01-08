@@ -1142,6 +1142,10 @@
   #define TR_ABOUT_HARDWARE_2  "Proucent/projektant Hardware"
   #define TR_ABOUT_HARDWARE_3  "Współautor firmware"
 #else
+  #define TR_ABOUT_HARDWARE_1          "Brent Nelson"
+  #define TR_ABOUT_HARDWARE_2          "Sky9x designer/výrobce"
+  #define TR_ABOUT_HARDWARE_3          ""
+#endif
 
 #define TR_ABOUT_PARENTS_1     "Projekty macierzyste"
 #define TR_ABOUT_PARENTS_2     TR("Ersky9x (Mike Blandford)", "Ersky9x (Mike Blandford)")
