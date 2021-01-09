@@ -72,6 +72,7 @@ const char RADIO_SETTINGS_PATH[] = RADIO_PATH "/radio.bin";
 #define SPORT_FIRMWARE_EXT  ".frk"
 #define FRSKY_FIRMWARE_EXT  ".frsk"
 #define MULTI_FIRMWARE_EXT  ".bin"
+#define ELRS_FIRMWARE_EXT   ".elrs"
 
 #define LEN_FILE_EXTENSION_MAX  5  // longest used, including the dot, excluding null term.
 
@@ -142,6 +143,8 @@ const char * getBasename(const char * path);
   #define OTX_FOURCC 0x3978746F // otx for Taranis X-Lite
 #elif defined(RADIO_T12)
   #define OTX_FOURCC 0x3D78746F // otx for Jumper T12
+#elif defined(RADIO_TX12)
+  #define OTX_FOURCC 0x4178746F // otx for Radiomaster TX12
 #elif defined(PCBX7)
   #define OTX_FOURCC 0x3678746F // otx for Taranis X7 / X7S / X7 Express / X7S Express
 #elif defined(PCBX9LITES)

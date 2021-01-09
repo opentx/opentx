@@ -36,6 +36,7 @@
 #define TARANIS_X9LITE_VARIANT         0x0800
 #define TARANIS_X9LITES_VARIANT        0x0801
 #define JUMPER_T12_VARIANT             0x4001
+#define RADIOMASTER_TX12_VARIANT       0x4002
 
 class OpenTxGeneralData: public TransformedField {
   public:

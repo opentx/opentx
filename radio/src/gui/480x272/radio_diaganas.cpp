@@ -26,7 +26,6 @@
 #endif
 
 constexpr coord_t LEFT_NAME_COLUMN = MENUS_MARGIN_LEFT;
-constexpr coord_t RIGHT_NAME_COLUMN = LCD_W / 2;
 constexpr coord_t ANA_OFFSET = 150;
 
 bool menuRadioDiagAnalogs(event_t event)

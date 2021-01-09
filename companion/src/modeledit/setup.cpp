@@ -31,13 +31,14 @@
 
 #include <QDir>
 
-TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, GeneralSettings & generalSettings, Firmware * firmware, QWidget * prevFocus, RawSwitchFilterItemModel * switchModel):
+TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, GeneralSettings & generalSettings, Firmware * firmware, QWidget * prevFocus, RawItemFilteredModel * rawSwitchFilteredModel):
   ModelPanel(parent, model, generalSettings, firmware),
   timer(timer),
   ui(new Ui::Timer)
 {
-
   ui->setupUi(this);
+  connect(rawSwitchFilteredModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &TimerPanel::onModelDataAboutToBeUpdated);
+  connect(rawSwitchFilteredModel, &RawItemFilteredModel::dataUpdateComplete, this, &TimerPanel::onModelDataUpdateComplete);
 
   lock = true;
 
@@ -48,11 +49,10 @@ TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, Ge
   }
   else {
     ui->name->setMaxLength(length);
-    //ui->name->setText(timer.name);
   }
 
   // Mode
-  ui->mode->setModel(switchModel);
+  ui->mode->setModel(rawSwitchFilteredModel);
   ui->mode->setCurrentIndex(ui->mode->findData(timer.mode.toValue()));
   connect(ui->mode, SIGNAL(activated(int)), this, SLOT(onModeChanged(int)));
 
@@ -94,6 +94,7 @@ TimerPanel::~TimerPanel()
 void TimerPanel::update()
 {
   lock = true;
+
   ui->name->setText(timer.name);
 
   int hour = timer.val / 3600;
@@ -114,7 +115,7 @@ void TimerPanel::update()
     pvalue -= hours * 3600;
     int minutes = pvalue / 60;
     int seconds = pvalue % 60;
-    ui->persistentValue->setText(QString(" %1(%2:%3:%4)").arg(sign<0 ? "-" :" ").arg(hours, 2, 10, QLatin1Char('0')).arg(minutes, 2, 10, QLatin1Char('0')).arg(seconds, 2, 10, QLatin1Char('0')));
+    ui->persistentValue->setText(QString(" %1(%2:%3:%4)").arg(sign < 0 ? "-" :" ").arg(hours, 2, 10, QLatin1Char('0')).arg(minutes, 2, 10, QLatin1Char('0')).arg(seconds, 2, 10, QLatin1Char('0')));
   }
 
   ui->countdownBeep->updateValue();
@@ -131,7 +132,7 @@ QWidget * TimerPanel::getLastFocus()
 void TimerPanel::on_value_editingFinished()
 {
   if (!lock) {
-    unsigned val = ui->value->time().hour()*3600 + ui->value->time().minute()*60 + ui->value->time().second();
+    unsigned val = ui->value->time().hour() * 3600 + ui->value->time().minute() * 60 + ui->value->time().second();
     if (timer.val != val) {
       timer.val = val;
       emit modified();
@@ -165,9 +166,21 @@ void TimerPanel::on_name_editingFinished()
     if (QString(timer.name) != ui->name->text()) {
       int length = ui->name->maxLength();
       strncpy(timer.name, ui->name->text().toLatin1(), length);
+      emit nameChanged();
       emit modified();
     }
   }
+}
+
+void TimerPanel::onModelDataAboutToBeUpdated()
+{
+  lock = true;
+}
+
+void TimerPanel::onModelDataUpdateComplete()
+{
+  update();
+  lock = false;
 }
 
 /******************************************************************************/
@@ -237,19 +250,19 @@ ModulePanel::ModulePanel(QWidget * parent, ModelData & model, ModuleData & modul
   }
 
   // The protocols available on this board
-  for (unsigned int i=0; i<PULSES_PROTOCOL_LAST; i++) {
+  for (unsigned int i = 0; i < PULSES_PROTOCOL_LAST; i++) {
     if (firmware->isAvailable((PulsesProtocol) i, moduleIdx)) {
       ui->protocol->addItem(ModuleData::protocolToString(i), i);
       if (i == module.protocol)
-        ui->protocol->setCurrentIndex(ui->protocol->count()-1);
+        ui->protocol->setCurrentIndex(ui->protocol->count() - 1);
     }
   }
-  for (int i=0; i<=MODULE_SUBTYPE_MULTI_LAST; i++) {
+  for (int i = 0; i <= MODULE_SUBTYPE_MULTI_LAST; i++) {
     if (i == MODULE_SUBTYPE_MULTI_SCANNER)
       continue;
     ui->multiProtocol->addItem(Multiprotocols::protocolToString(i), i);
   }
-  for (int i=MODULE_SUBTYPE_MULTI_LAST + 1; i <= 124; i++) {
+  for (int i = MODULE_SUBTYPE_MULTI_LAST + 1; i <= 124; i++) {
     ui->multiProtocol->addItem(QString::number(i + 3), i);
   }
 
@@ -327,7 +340,7 @@ void ModulePanel::setupFailsafes()
     else {
       QLabel * label = new QLabel(this);
       label->setProperty("index", i);
-      label->setText(QString::number(i+1));
+      label->setText(QString::number(i + 1));
 
       QComboBox * combo = new QComboBox(this);
       combo->setProperty("index", i);
@@ -506,7 +519,7 @@ void ModulePanel::update()
   ui->ppmFrameLength->setVisible(mask & MASK_SBUSPPM_FIELDS);
   ui->ppmFrameLength->setMinimum(module.channelsCount * (model->extendedLimits ? 2.250 : 2)+3.5);
   ui->ppmFrameLength->setMaximum(firmware->getCapability(PPMFrameLength));
-  ui->ppmFrameLength->setValue(22.5+((double)module.ppm.frameLength)*0.5);
+  ui->ppmFrameLength->setValue(22.5 + ((double)module.ppm.frameLength) * 0.5);
 
   // Antenna mode on Horus and XLite
   if (mask & MASK_ANTENNA) {
@@ -600,17 +613,17 @@ void ModulePanel::update()
   ui->registrationIdLabel->setVisible(mask & MASK_ACCESS);
   ui->registrationId->setVisible(mask & MASK_ACCESS);
 
-  ui->rx1Label->setVisible((mask & MASK_ACCESS) && (module.access.receivers & (1<<0)));
-  ui->clearRx1->setVisible((mask & MASK_ACCESS) && (module.access.receivers & (1<<0)));
-  ui->rx1->setVisible((mask & MASK_ACCESS) && (module.access.receivers & (1<<0)));
+  ui->rx1Label->setVisible((mask & MASK_ACCESS) && (module.access.receivers & (1 << 0)));
+  ui->clearRx1->setVisible((mask & MASK_ACCESS) && (module.access.receivers & (1 << 0)));
+  ui->rx1->setVisible((mask & MASK_ACCESS) && (module.access.receivers & (1 << 0)));
 
-  ui->rx2Label->setVisible((mask & MASK_ACCESS) && (module.access.receivers & (1<<1)));
-  ui->clearRx2->setVisible((mask & MASK_ACCESS) && (module.access.receivers & (1<<1)));
-  ui->rx2->setVisible((mask & MASK_ACCESS) && (module.access.receivers & (1<<1)));
+  ui->rx2Label->setVisible((mask & MASK_ACCESS) && (module.access.receivers & (1 << 1)));
+  ui->clearRx2->setVisible((mask & MASK_ACCESS) && (module.access.receivers & (1 << 1)));
+  ui->rx2->setVisible((mask & MASK_ACCESS) && (module.access.receivers & (1 << 1)));
 
-  ui->rx3Label->setVisible((mask & MASK_ACCESS) && (module.access.receivers & (1<<2)));
-  ui->clearRx3->setVisible((mask & MASK_ACCESS) && (module.access.receivers & (1<<2)));
-  ui->rx3->setVisible((mask & MASK_ACCESS) && (module.access.receivers & (1<<2)));
+  ui->rx3Label->setVisible((mask & MASK_ACCESS) && (module.access.receivers & (1 << 2)));
+  ui->clearRx3->setVisible((mask & MASK_ACCESS) && (module.access.receivers & (1 << 2)));
+  ui->rx3->setVisible((mask & MASK_ACCESS) && (module.access.receivers & (1 << 2)));
 
   // Failsafes
   ui->label_failsafeMode->setVisible(mask & MASK_FAILSAFES);
@@ -703,8 +716,8 @@ void ModulePanel::on_channelsCount_editingFinished()
 {
   if (!lock && module.channelsCount != ui->channelsCount->value()) {
     module.channelsCount = ui->channelsCount->value();
-    update();
     emit channelsRangeChanged();
+    update();
     emit modified();
   }
 }
@@ -713,8 +726,8 @@ void ModulePanel::on_channelsStart_editingFinished()
 {
   if (!lock && module.channelsStart != (unsigned)ui->channelsStart->value() - 1) {
     module.channelsStart = (unsigned)ui->channelsStart->value() - 1;
-    update();
     emit channelsRangeChanged();
+    update();
     emit modified();
   }
 }
@@ -738,7 +751,7 @@ void ModulePanel::on_rxNumber_editingFinished()
 
 void ModulePanel::on_ppmFrameLength_editingFinished()
 {
-  int val = (ui->ppmFrameLength->value()-22.5) / 0.5;
+  int val = (ui->ppmFrameLength->value() - 22.5) / 0.5;
   if (module.ppm.frameLength != val) {
     module.ppm.frameLength = val;
     emit modified();
@@ -762,8 +775,8 @@ void ModulePanel::onMultiProtocolChanged(int index)
     module.multi.rfProtocol = (unsigned int)rfProtocol;
     unsigned int maxSubTypes = multiProtocols.getProtocol(index).numSubTypes();
     if (rfProtocol > MODULE_SUBTYPE_MULTI_LAST)
-      maxSubTypes=8;
-    module.subType = std::min(module.subType, maxSubTypes -1);
+      maxSubTypes = 8;
+    module.subType = std::min(module.subType, maxSubTypes - 1);
     module.channelsCount = module.getMaxChannelCount();
     update();
     emit modified();
@@ -957,19 +970,19 @@ void ModulePanel::onClearAccessRxClicked()
   QPushButton *button = qobject_cast<QPushButton *>(sender());
 
   if (button == ui->clearRx1) {
-    module.access.receivers &= ~(1<<0);
+    module.access.receivers &= ~(1 << 0);
     ui->rx1->clear();
     update();
     emit modified();
   }
   else if (button == ui->clearRx2) {
-    module.access.receivers &= ~(1<<1);
+    module.access.receivers &= ~(1 << 1);
     ui->rx2->clear();
     update();
     emit modified();
   }
   else if (button == ui->clearRx3) {
-    module.access.receivers &= ~(1<<2);
+    module.access.receivers &= ~(1 << 2);
     ui->rx3->clear();
     update();
     emit modified();
@@ -978,17 +991,19 @@ void ModulePanel::onClearAccessRxClicked()
 
 /******************************************************************************/
 
-SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware):
+SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, CommonItemModels * commonItemModels):
   ModelPanel(parent, model, generalSettings, firmware),
-  ui(new Ui::Setup)
+  ui(new Ui::Setup),
+  commonItemModels(commonItemModels)
 {
+  ui->setupUi(this);
+  rawSwitchFilteredModel = new RawItemFilteredModel(commonItemModels->rawSwitchItemModel(), RawSwitch::TimersContext, this);
+
   Board::Type board = firmware->getBoard();
 
   lock = true;
 
   memset(modules, 0, sizeof(modules));
-
-  ui->setupUi(this);
 
   QRegExp rx(CHAR_FOR_NAMES_REGEX);
   ui->name->setValidator(new QRegExpValidator(rx, this));
@@ -1007,7 +1022,7 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
         foreach ( QString file, qd.entryList(filters, QDir::Files) ) {
           QFileInfo fi(file);
           QString temp = fi.fileName();
-          if (!items.contains(temp) && temp.length() <= 6+4) {
+          if (!items.contains(temp) && temp.length() <= 6 + 4) {
             items.append(temp);
           }
         }
@@ -1017,7 +1032,7 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
         foreach (QString file, qd.entryList(filters, QDir::Files)) {
           QFileInfo fi(file);
           QString temp = fi.completeBaseName();
-          if (!items.contains(temp) && temp.length() <= 10+4) {
+          if (!items.contains(temp) && temp.length() <= 10 + 4) {
             items.append(temp);
           }
         }
@@ -1030,7 +1045,7 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
     foreach (QString file, items) {
       ui->image->addItem(file);
       if (file == model.bitmap) {
-        ui->image->setCurrentIndex(ui->image->count()-1);
+        ui->image->setCurrentIndex(ui->image->count() - 1);
         QString fileName = path;
         fileName.append(model.bitmap);
         if (!IS_FAMILY_HORUS_OR_T16(board))
@@ -1062,18 +1077,16 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
   }
 
   QWidget * prevFocus = ui->image;
-  RawSwitchFilterItemModel * swModel = new RawSwitchFilterItemModel(&generalSettings, &model, RawSwitch::TimersContext, this);
-  connect(this, &SetupPanel::updated, swModel, &RawSwitchFilterItemModel::update);
 
   timersCount = firmware->getCapability(Timers);
 
   for (int i = 0; i < CPN_MAX_TIMERS; i++) {
     if (i < timersCount) {
-      timers[i] = new TimerPanel(this, model, model.timers[i], generalSettings, firmware, prevFocus, swModel);
+      timers[i] = new TimerPanel(this, model, model.timers[i], generalSettings, firmware, prevFocus, rawSwitchFilteredModel);
       ui->gridLayout->addWidget(timers[i], 1+i, 1);
       connect(timers[i], &TimerPanel::modified, this, &SetupPanel::modified);
+      connect(timers[i], &TimerPanel::nameChanged, this, &SetupPanel::onTimerNameChanged);
       connect(this, &SetupPanel::updated, timers[i], &TimerPanel::update);
-      connect(this, &SetupPanel::timerUpdated, timers[i], &TimerPanel::update);
       prevFocus = timers[i]->getLastFocus();
       //  TODO more reliable method required
       QLabel *label = findChild<QLabel *>(QString("label_timer%1").arg(i + 1));
@@ -1095,7 +1108,7 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
   if (firmware->getCapability(HasTopLcd)) {
     ui->toplcdTimer->setField(model.toplcdTimer, this);
     for (int i = 0; i < CPN_MAX_TIMERS; i++) {
-      if (i<timersCount) {
+      if (i < timersCount) {
         ui->toplcdTimer->addItem(tr("Timer %1").arg(i + 1), i);
       }
     }
@@ -1118,12 +1131,12 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
   prevFocus = ui->trimsDisplay;
   int analogs = CPN_MAX_STICKS + getBoardCapability(board, Board::Pots) + getBoardCapability(board, Board::Sliders);
   int genAryIdx = 0;
-  for (int i=0; i < analogs + firmware->getCapability(RotaryEncoders); i++) {
+  for (int i = 0; i < analogs + firmware->getCapability(RotaryEncoders); i++) {
     RawSource src((i < analogs) ? SOURCE_TYPE_STICK : SOURCE_TYPE_ROTARY_ENCODER, (i < analogs) ? i : analogs - i);
     QCheckBox * checkbox = new QCheckBox(this);
     checkbox->setProperty("index", i);
     checkbox->setText(src.toString(&model, &generalSettings));
-    ui->centerBeepLayout->addWidget(checkbox, 0, i+1);
+    ui->centerBeepLayout->addWidget(checkbox, 0, i + 1);
     connect(checkbox, SIGNAL(toggled(bool)), this, SLOT(onBeepCenterToggled(bool)));
     centerBeepCheckboxes << checkbox;
     if (IS_HORUS_OR_TARANIS(board)) {
@@ -1139,7 +1152,7 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
   }
 
   // Startup switches warnings
-  for (int i=0; i<getBoardCapability(board, Board::Switches); i++) {
+  for (int i = 0; i < getBoardCapability(board, Board::Switches); i++) {
     Board::SwitchInfo switchInfo = Boards::getSwitchInfo(board, i);
     switchInfo.config = Board::SwitchType(generalSettings.switchConfig[i]);
     if (switchInfo.config == Board::SWITCH_NOT_AVAILABLE || switchInfo.config == Board::SWITCH_TOGGLE) {
@@ -1163,11 +1176,11 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
     label->setText(src.toString(&model, &generalSettings));
     slider->setMaximum(switchInfo.config == Board::SWITCH_3POS ? 2 : 1);
     cb->setProperty("index", i);
-    ui->switchesStartupLayout->addWidget(label, 0, i+1);
+    ui->switchesStartupLayout->addWidget(label, 0, i + 1);
     ui->switchesStartupLayout->setAlignment(label, Qt::AlignCenter);
-    ui->switchesStartupLayout->addWidget(slider, 1, i+1);
+    ui->switchesStartupLayout->addWidget(slider, 1, i + 1);
     ui->switchesStartupLayout->setAlignment(slider, Qt::AlignCenter);
-    ui->switchesStartupLayout->addWidget(cb, 2, i+1);
+    ui->switchesStartupLayout->addWidget(cb, 2, i + 1);
     ui->switchesStartupLayout->setAlignment(cb, Qt::AlignCenter);
     connect(slider, SIGNAL(valueChanged(int)), this, SLOT(startupSwitchEdited(int)));
     connect(cb, SIGNAL(toggled(bool)), this, SLOT(startupSwitchToggled(bool)));
@@ -1181,12 +1194,12 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
   // Pot warnings
   prevFocus = ui->potWarningMode;
   if (IS_HORUS_OR_TARANIS(board)) {
-    for (int i=0; i<getBoardCapability(board, Board::Pots)+getBoardCapability(board, Board::Sliders); i++) {
+    for (int i = 0; i < getBoardCapability(board, Board::Pots) + getBoardCapability(board, Board::Sliders); i++) {
       RawSource src(SOURCE_TYPE_STICK, CPN_MAX_STICKS + i);
       QCheckBox * cb = new QCheckBox(this);
       cb->setProperty("index", i);
       cb->setText(src.toString(&model, &generalSettings));
-      ui->potWarningLayout->addWidget(cb, 0, i+1);
+      ui->potWarningLayout->addWidget(cb, 0, i + 1);
       connect(cb, SIGNAL(toggled(bool)), this, SLOT(potWarningToggled(bool)));
       potWarningCheckboxes << cb;
       if (src.isPot(&genAryIdx) && !generalSettings.isPotAvailable(genAryIdx)) {
@@ -1264,7 +1277,7 @@ void SetupPanel::on_extendedTrims_toggled(bool checked)
 
 void SetupPanel::on_trimIncrement_currentIndexChanged(int index)
 {
-  model->trimInc = index-2;
+  model->trimInc = index - 2;
   emit modified();
 }
 
@@ -1341,13 +1354,13 @@ void SetupPanel::populateThrottleSourceCB()
   ui->throttleSource->clear();
   ui->throttleSource->addItem(tr("THR"), 0);
 
-  int idx=1;
-  for (int i=0; i<getBoardCapability(board, Board::Pots)+getBoardCapability(board, Board::Sliders); i++, idx++) {
-    if (RawSource(SOURCE_TYPE_STICK,4+i).isAvailable(model,&generalSettings,board)) {
-      ui->throttleSource->addItem(firmware->getAnalogInputName(4+i), idx);
+  int idx = 1;
+  for (int i = 0; i < getBoardCapability(board, Board::Pots) + getBoardCapability(board, Board::Sliders); i++, idx++) {
+    if (RawSource(SOURCE_TYPE_STICK, 4 + i).isAvailable(model, &generalSettings, board)) {
+      ui->throttleSource->addItem(firmware->getAnalogInputName(4 + i), idx);
     }
   }
-  for (int i=0; i<firmware->getCapability(Outputs); i++, idx++) {
+  for (int i = 0; i < firmware->getCapability(Outputs); i++, idx++) {
     ui->throttleSource->addItem(RawSource(SOURCE_TYPE_CH, i).toString(model, &generalSettings), idx);
   }
 
@@ -1362,9 +1375,15 @@ void SetupPanel::populateThrottleTrimSwitchCB()
   lock = true;
   ui->throttleTrimSwitch->clear();
   int idx=0;
+  QString trim;
   for (int i=0; i<getBoardCapability(board, Board::NumTrims); i++, idx++) {
-    QString trim = RawSource(SOURCE_TYPE_TRIM, i).toString(model, &generalSettings);
-    trim = (trim == "TrmR") ? "TrmT" : (trim == "TmrT") ? "TmrR" : trim;
+    // here order is TERA instead of RETA
+    if (i == 0)
+      trim = RawSource(SOURCE_TYPE_TRIM, 2).toString(model, &generalSettings);
+    else if (i == 2)
+      trim = RawSource(SOURCE_TYPE_TRIM, 0).toString(model, &generalSettings);
+    else
+      trim = RawSource(SOURCE_TYPE_TRIM, i).toString(model, &generalSettings);
     ui->throttleTrimSwitch->addItem(trim, idx);
   }
 
@@ -1394,7 +1413,7 @@ void SetupPanel::update()
     updatePotWarnings();
   }
 
-  for (int i=0; i<CPN_MAX_MODULES+1; i++) {
+  for (int i = 0; i < CPN_MAX_MODULES + 1; i++) {
     if (modules[i]) {
       modules[i]->update();
     }
@@ -1405,7 +1424,7 @@ void SetupPanel::update()
 
 void SetupPanel::updateBeepCenter()
 {
-  for (int i=0; i<centerBeepCheckboxes.size(); i++) {
+  for (int i = 0; i < centerBeepCheckboxes.size(); i++) {
     centerBeepCheckboxes[i]->setChecked(model->beepANACenter & (0x01 << i));
   }
 }
@@ -1417,20 +1436,20 @@ void SetupPanel::updateStartupSwitches()
   uint64_t switchStates = model->switchWarningStates;
   uint64_t value;
 
-  for (int i=0; i<startupSwitchesSliders.size(); i++) {
+  for (int i = 0; i < startupSwitchesSliders.size(); i++) {
     QSlider * slider = startupSwitchesSliders[i];
     QCheckBox * cb = startupSwitchesCheckboxes[i];
     int index = slider->property("index").toInt();
     bool enabled = !(model->switchWarningEnable & (1 << index));
     if (IS_HORUS_OR_TARANIS(firmware->getBoard())) {
-      value = (switchStates >> (2*index)) & 0x03;
+      value = (switchStates >> (2 * index)) & 0x03;
       if (generalSettings.switchConfig[index] != Board::SWITCH_3POS && value == 2) {
         value = 1;
       }
     }
     else {
-      value = (i==0 ? switchStates & 0x3 : switchStates & 0x1);
-      switchStates >>= (i==0 ? 2 : 1);
+      value = (i == 0 ? switchStates & 0x3 : switchStates & 0x1);
+      switchStates >>= (i == 0 ? 2 : 1);
     }
     slider->setValue(value);
     slider->setEnabled(enabled);
@@ -1456,7 +1475,7 @@ void SetupPanel::startupSwitchEdited(int value)
         mask = 0x03;
       }
       else {
-        shift = index+1;
+        shift = index + 1;
         mask = 0x01ull << shift;
       }
     }
@@ -1497,7 +1516,7 @@ void SetupPanel::updatePotWarnings()
 {
   lock = true;
   ui->potWarningMode->setCurrentIndex(model->potsWarningMode);
-  for (int i=0; i<potWarningCheckboxes.size(); i++) {
+  for (int i = 0; i < potWarningCheckboxes.size(); i++) {
     QCheckBox *checkbox = potWarningCheckboxes[i];
     int index = checkbox->property("index").toInt();
     checkbox->setChecked(!model->potsWarnEnabled[index]);
@@ -1627,7 +1646,7 @@ void SetupPanel::cmTimerClear(bool prompt)
 
   model->timers[selectedTimerIndex].clear();
   model->updateAllReferences(ModelData::REF_UPD_TYPE_TIMER, ModelData::REF_UPD_ACT_CLEAR, selectedTimerIndex);
-  emit timerUpdated();
+  updateItemModels();
   emit modified();
 }
 
@@ -1640,7 +1659,7 @@ void SetupPanel::cmTimerClearAll()
     model->timers[i].clear();
     model->updateAllReferences(ModelData::REF_UPD_TYPE_TIMER, ModelData::REF_UPD_ACT_CLEAR, i);
   }
-  emit timerUpdated();
+  updateItemModels();
   emit modified();
 }
 
@@ -1674,7 +1693,7 @@ void SetupPanel::cmTimerDelete()
   }
   model->timers[maxidx].clear();
   model->updateAllReferences(ModelData::REF_UPD_TYPE_TIMER, ModelData::REF_UPD_ACT_SHIFT, selectedTimerIndex, 0, -1);
-  emit timerUpdated();
+  updateItemModels();
   emit modified();
 }
 
@@ -1687,7 +1706,7 @@ void SetupPanel::cmTimerInsert()
   }
   model->timers[selectedTimerIndex].clear();
   model->updateAllReferences(ModelData::REF_UPD_TYPE_TIMER, ModelData::REF_UPD_ACT_SHIFT, selectedTimerIndex, 0, 1);
-  emit timerUpdated();
+  updateItemModels();
   emit modified();
 }
 
@@ -1707,7 +1726,7 @@ void SetupPanel::cmTimerPaste()
   if (hasTimerClipboardData(&data)) {
     TimerData *td = &model->timers[selectedTimerIndex];
     memcpy(td, data.constData(), sizeof(TimerData));
-    emit timerUpdated();
+    updateItemModels();
     emit modified();
   }
 }
@@ -1721,7 +1740,17 @@ void SetupPanel::swapTimerData(int idx1, int idx2)
     memcpy(td2, td1, sizeof(TimerData));
     memcpy(td1, &tdtmp, sizeof(TimerData));
     model->updateAllReferences(ModelData::REF_UPD_TYPE_TIMER, ModelData::REF_UPD_ACT_SWAP, idx1, idx2);
-    emit timerUpdated();
+    updateItemModels();
     emit modified();
   }
+}
+
+void SetupPanel::onTimerNameChanged()
+{
+  updateItemModels();
+}
+
+void SetupPanel::updateItemModels()
+{
+  commonItemModels->update(CommonItemModels::RMO_TIMERS);
 }

@@ -546,7 +546,8 @@ void backlightInit();
 #else
 void backlightEnable(uint8_t dutyCycle = 0);
 #endif
-#define BACKLIGHT_LEVEL_MAX   100
+#define BACKLIGHT_LEVEL_MAX     100
+#define BACKLIGHT_FORCED_ON     BACKLIGHT_LEVEL_MAX + 1
 #if defined(PCBX12S)
 #define BACKLIGHT_LEVEL_MIN   5
 #elif defined(RADIO_FAMILY_T16)
@@ -574,9 +575,9 @@ void usbJoystickUpdate();
   #define USB_MANUFACTURER             'J', 'u', 'm', 'p', 'e', 'r', ' ', ' '  /* 8 bytes */
   #define USB_PRODUCT                  'T', '1', '8', ' ', ' ', ' ', ' ', ' '  /* 8 Bytes */
 #elif defined(RADIO_TX16S)
-  #define USB_NAME                     "RadioMas TX16S"
-  #define USB_MANUFACTURER             'R', 'a', 'd', 'i', 'o', 'M', 'a', 's'  /* 8 bytes */
-  #define USB_PRODUCT                  'T', 'X', '1', '6', 'S', ' ', ' ', ' '  /* 8 Bytes */
+  #define USB_NAME                     "RM TX16S"
+  #define USB_MANUFACTURER             'R', 'M', '_', 'T', 'X', ' ', ' ', ' '  /* 8 bytes */
+  #define USB_PRODUCT                  'R', 'M', ' ', 'T', 'X', '1', '6', 'S'  /* 8 Bytes */
 #elif defined(PCBX10)
   #define USB_NAME                     "FrSky X10"
   #define USB_MANUFACTURER             'F', 'r', 'S', 'k', 'y', ' ', ' ', ' '  /* 8 bytes */
@@ -634,8 +635,12 @@ void sportUpdatePowerInit();
 #endif
 
 // Aux serial port driver
+#if defined(RADIO_TX16S)
+  #define DEBUG_BAUDRATE                  400000
+#else
+  #define DEBUG_BAUDRATE                  115200
+#endif
 #if defined(AUX_SERIAL_GPIO)
-#define DEBUG_BAUDRATE                  115200
 extern uint8_t auxSerialMode;
 void auxSerialInit(unsigned int mode, unsigned int protocol);
 void auxSerialPutc(char c);
@@ -722,6 +727,7 @@ void bluetoothDisable();
 extern DMAFifo<512> telemetryFifo;
 typedef DMAFifo<32> AuxSerialRxFifo;
 extern AuxSerialRxFifo auxSerialRxFifo;
+extern AuxSerialRxFifo aux2SerialRxFifo;
 extern volatile uint32_t externalModulePort;
 #endif
 

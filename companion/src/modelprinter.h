@@ -128,10 +128,10 @@ class ModelPrinter: public QObject
     QString printSensorCells(unsigned int val);
     QString printSensorTypeCond(unsigned int idx);
     QString printSensorParams(unsigned int idx);
-    QString printSensorDetails(unsigned int idx);
     QString printTelemetryScreenType(unsigned int val);
     QString printTelemetryScreen(unsigned int idx, unsigned int line, unsigned int width);
     QString printChecklist();
+    QString printTelemetryPrecision(unsigned int val);
 
   private:
     Firmware * firmware;

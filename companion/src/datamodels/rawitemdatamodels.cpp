@@ -30,7 +30,7 @@ RawSourceItemModel::RawSourceItemModel(const GeneralSettings * const generalSett
   Firmware * fw = getCurrentFirmware();
 
   addItems(SOURCE_TYPE_NONE,           RawSource::NoneGroup,     1);
-  for (int i=0; i < fw->getCapability(LuaScripts); i++)
+  for (int i = 0; i < fw->getCapability(LuaScripts); i++)
     addItems(SOURCE_TYPE_LUA_OUTPUT,   RawSource::ScriptsGroup,  fw->getCapability(LuaOutputsPerScript), i * 16);
   addItems(SOURCE_TYPE_VIRTUAL_INPUT,  RawSource::InputsGroup,   fw->getCapability(VirtualInputs));
   addItems(SOURCE_TYPE_STICK,          RawSource::SourcesGroup,  board.getCapability(Board::MaxAnalogs));
@@ -43,7 +43,7 @@ RawSourceItemModel::RawSourceItemModel(const GeneralSettings * const generalSett
   addItems(SOURCE_TYPE_PPM,            RawSource::SourcesGroup,  fw->getCapability(TrainerInputs));
   addItems(SOURCE_TYPE_CH,             RawSource::SourcesGroup,  fw->getCapability(Outputs));
   addItems(SOURCE_TYPE_SPECIAL,        RawSource::TelemGroup,    5);
-  addItems(SOURCE_TYPE_TELEMETRY,      RawSource::TelemGroup,    CPN_MAX_SENSORS * 3);
+  addItems(SOURCE_TYPE_TELEMETRY,      RawSource::TelemGroup,    fw->getCapability(Sensors) * 3);
   addItems(SOURCE_TYPE_GVAR,           RawSource::GVarsGroup,    fw->getCapability(Gvars));
 }
 
@@ -67,10 +67,14 @@ void RawSourceItemModel::addItems(const RawSourceType & type, const int group, c
   }
 }
 
-void RawSourceItemModel::update() const
+void RawSourceItemModel::update()
 {
-  for (int i=0; i < rowCount(); ++i)
+  emit dataAboutToBeUpdated();
+
+  for (int i = 0; i < rowCount(); ++i)
     setDynamicItemData(item(i), RawSource(item(i)->data(ItemIdRole).toInt()));
+
+  emit dataUpdateComplete();
 }
 
 
@@ -86,7 +90,7 @@ RawSwitchItemModel::RawSwitchItemModel(const GeneralSettings * const generalSett
 
   // Descending switch direction: NOT (!) switches
   addItems(SWITCH_TYPE_ACT,            -1);
-  addItems(SWITCH_TYPE_SENSOR,         -CPN_MAX_SENSORS);
+  addItems(SWITCH_TYPE_SENSOR,         -fw->getCapability(Sensors));
   addItems(SWITCH_TYPE_TELEMETRY,      -1);
   addItems(SWITCH_TYPE_FLIGHT_MODE,    -fw->getCapability(FlightModes));
   addItems(SWITCH_TYPE_VIRTUAL,        -fw->getCapability(LogicalSwitches));
@@ -105,7 +109,7 @@ RawSwitchItemModel::RawSwitchItemModel(const GeneralSettings * const generalSett
   addItems(SWITCH_TYPE_VIRTUAL,        fw->getCapability(LogicalSwitches));
   addItems(SWITCH_TYPE_FLIGHT_MODE,    fw->getCapability(FlightModes));
   addItems(SWITCH_TYPE_TELEMETRY,      1);
-  addItems(SWITCH_TYPE_SENSOR,         CPN_MAX_SENSORS);
+  addItems(SWITCH_TYPE_SENSOR,         fw->getCapability(Sensors));
   addItems(SWITCH_TYPE_ON,             1);
   addItems(SWITCH_TYPE_ONE,            1);
   addItems(SWITCH_TYPE_ACT,            1);
@@ -166,8 +170,95 @@ void RawSwitchItemModel::addItems(const RawSwitchType & type, int count)
   }
 }
 
-void RawSwitchItemModel::update() const
+void RawSwitchItemModel::update()
 {
-  for (int i=0; i < rowCount(); ++i)
+  emit dataAboutToBeUpdated();
+
+  for (int i = 0; i < rowCount(); ++i)
     setDynamicItemData(item(i), RawSwitch(item(i)->data(ItemIdRole).toInt()));
+
+  emit dataUpdateComplete();
+}
+
+//
+// CurveItemModel
+//
+
+CurveItemModel::CurveItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData, QObject * parent) :
+  AbstractRawItemDataModel(generalSettings, modelData, parent)
+{
+  const int count = getCurrentFirmware()->getCapability(NumCurves);
+
+  for (int i = -count ; i <= count; ++i) {
+    QStandardItem * modelItem = new QStandardItem();
+    modelItem->setData(i, ItemIdRole);
+    int flags;
+    if (i < 0)
+      flags = DataGroups::NegativeGroup;
+    else if (i > 0)
+      flags = DataGroups::PositiveGroup;
+    else
+      flags = DataGroups::NoneGroup;
+    modelItem->setData(flags, ItemFlagsRole);
+    setDynamicItemData(modelItem, i);
+    appendRow(modelItem);
+  }
+}
+
+void CurveItemModel::setDynamicItemData(QStandardItem * item, int index) const
+{
+  item->setText(CurveReference(CurveReference::CURVE_REF_CUSTOM, index).toString(modelData, false));
+  item->setData(true, IsAvailableRole);
+}
+
+void CurveItemModel::update()
+{
+  emit dataAboutToBeUpdated();
+
+  for (int i = 0; i < rowCount(); ++i)
+   setDynamicItemData(item(i), item(i)->data(ItemIdRole).toInt());
+
+  emit dataUpdateComplete();
+}
+
+//
+//  CommonItemModels
+//
+
+CommonItemModels::CommonItemModels(const GeneralSettings * const generalSettings, const ModelData * const modelData, QObject * parent) :
+  QObject(parent)
+{
+  m_rawSourceItemModel = new RawSourceItemModel(generalSettings, modelData, parent);
+  m_rawSwitchItemModel = new RawSwitchItemModel(generalSettings, modelData, parent);
+  m_curveItemModel = new CurveItemModel(generalSettings, modelData, parent);
+}
+
+CommonItemModels::~CommonItemModels()
+{
+}
+
+void CommonItemModels::update(const RadioModelObjects radioModelObjects)
+{
+  switch (radioModelObjects) {
+    case RMO_CHANNELS:
+    case RMO_INPUTS:
+    case RMO_TELEMETRY_SENSORS:
+    case RMO_TIMERS:
+      m_rawSourceItemModel->update();
+      break;
+    case RMO_FLIGHT_MODES:
+    case RMO_GLOBAL_VARIABLES:
+    case RMO_LOGICAL_SWITCHES:
+      m_rawSourceItemModel->update();
+      m_rawSwitchItemModel->update();
+      break;
+    case RMO_CURVES:
+      m_curveItemModel->update();
+      break;
+    case RMO_SCRIPTS:
+      //  no need to refresh
+      break;
+    default:
+      qDebug() << "Unknown RadioModelObject:" << radioModelObjects;
+  }
 }

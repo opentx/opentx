@@ -171,6 +171,8 @@ local function init()
   local ver, radio, maj, minor, rev = getVersion()
   if string.match(radio, "x7") then
     switches = {"SA", "SB", "SC", "SD", "SF", "SH"}
+  elseif string.match(radio, "tx12") then
+    switches = {"SA", "SB", "SC", "SD", "SE", "SF"}
   else
     switches = {"SA", "SB", "SC", "SD"}
   end

@@ -169,7 +169,7 @@ void setupPulsesMulti(uint8_t moduleIdx)
 
   // Multi V1.3.X.X -> Send byte 26, Protocol (bits 7 & 6), RX_Num (bits 5 & 4), invert, not used, disable telemetry, disable mapping
   if (moduleState[moduleIdx].mode == MODULE_MODE_SPECTRUM_ANALYSER) {
-    sendMulti(moduleIdx,  0);
+    sendMulti(moduleIdx, invert[moduleIdx] & 0x08);
   }
   else {
     sendMulti(moduleIdx, (uint8_t) (((g_model.moduleData[moduleIdx].getMultiProtocol() + 3) & 0xC0)

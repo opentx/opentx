@@ -111,11 +111,11 @@ void drawCursor(FnFuncP fn)
   }
   
   x = limit(-1024, x, 1024);
-  int y = limit<int>(-1024, applyCurrentCurve(x), 1024);
+  int y = limit<int>(-1024, fn(x), 1024);
   strAppendSigned(texty, calcRESXto100(y));
 
   x = divRoundClosest(x * CURVE_SIDE_WIDTH, RESX);
-  y = CURVE_CENTER_Y + getCurveYCoord(applyCurrentCurve, x, CURVE_SIDE_WIDTH);
+  y = CURVE_CENTER_Y + getCurveYCoord(fn, x, CURVE_SIDE_WIDTH);
 
   lcdDrawSolidFilledRect(CURVE_CENTER_X + x, CURVE_CENTER_Y - CURVE_SIDE_WIDTH, 2, 2 * CURVE_SIDE_WIDTH + 2, CURVE_CURSOR_COLOR);
   lcdDrawSolidFilledRect(CURVE_CENTER_X - CURVE_SIDE_WIDTH-2, y-1, 2*CURVE_SIDE_WIDTH + 2, 2, CURVE_CURSOR_COLOR);

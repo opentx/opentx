@@ -66,6 +66,8 @@ const char * OpenTxEepromInterface::getName()
       return "OpenTX for Jumper T18";
     case BOARD_RADIOMASTER_TX16S:
       return "OpenTX for Radiomaster TX16S";
+    case BOARD_RADIOMASTER_TX12:
+      return "OpenTX for Radiomaster TX12";
     case BOARD_TARANIS_X9D:
       return "OpenTX for FrSky Taranis X9D";
     case BOARD_TARANIS_X9DP:
@@ -334,7 +336,9 @@ int OpenTxEepromInterface::save(uint8_t * eeprom, const RadioData & radioData, u
   else if (IS_JUMPER_T12(board)) {
     variant |= JUMPER_T12_VARIANT;
   }
-
+  else if (IS_RADIOMASTER_TX12(board)) {
+    variant |= RADIOMASTER_TX12_VARIANT;
+  }
   OpenTxGeneralData generator((GeneralSettings &)radioData.generalSettings, board, version, variant);
   // generator.dump();
   QByteArray data;
@@ -520,7 +524,7 @@ int OpenTxFirmware::getCapability(::Capability capability)
     case MaxVolume:
       return 23;
     case MaxContrast:
-      if (IS_TARANIS_SMALL(board) || IS_JUMPER_T12(board))
+      if (IS_TARANIS_SMALL(board))
         return 30;
       else
         return 45;
@@ -615,7 +619,7 @@ int OpenTxFirmware::getCapability(::Capability capability)
     case LcdWidth:
       if (IS_FAMILY_HORUS_OR_T16(board))
         return 480;
-      else if (IS_TARANIS_SMALL(board) || IS_JUMPER_T12(board))
+      else if (IS_TARANIS_SMALL(board))
         return 128;
       else if (IS_TARANIS(board))
         return 212;
@@ -629,7 +633,7 @@ int OpenTxFirmware::getCapability(::Capability capability)
     case LcdDepth:
       if (IS_FAMILY_HORUS_OR_T16(board))
         return 16;
-      else if (IS_TARANIS_SMALL(board) || IS_JUMPER_T12(board))
+      else if (IS_TARANIS_SMALL(board))
         return 1;
       else if (IS_TARANIS(board))
         return 4;
@@ -679,6 +683,8 @@ int OpenTxFirmware::getCapability(::Capability capability)
         return TARANIS_XLITE_VARIANT;
       else if (IS_JUMPER_T12(board))
         return JUMPER_T12_VARIANT;
+      else if (IS_RADIOMASTER_TX12(board))
+        return RADIOMASTER_TX12_VARIANT;
       else
         return 0;
     case MavlinkTelemetry:
@@ -696,6 +702,8 @@ int OpenTxFirmware::getCapability(::Capability capability)
       return IS_FAMILY_HORUS_OR_T16(board);
     case HasSwitchableJack:
       return IS_TARANIS_XLITES(board);
+    case HasSportConnector:
+      return IS_ACCESS_RADIO(board, id) || IS_TARANIS_X7(board) || IS_HORUS_X10(board) || IS_TARANIS_XLITE(board);
     case PwrButtonPress:
       return IS_HORUS_OR_TARANIS(board) && (board!=Board::BOARD_TARANIS_X9D) && (board!=Board::BOARD_TARANIS_X9DP);
     case Sensors:
@@ -731,9 +739,9 @@ bool OpenTxFirmware::isAvailable(PulsesProtocol proto, int port)
             return true;
           case PULSES_PXX_XJT_X16:
           case PULSES_PXX_XJT_LR12:
-            return !IS_ACCESS_RADIO(board, id) && !IS_FAMILY_T16(board) && !IS_JUMPER_T12(board);
+            return !IS_ACCESS_RADIO(board, id) && !IS_FAMILY_T16(board) && !IS_FAMILY_T12(board);
           case PULSES_PXX_XJT_D8:
-            return !(IS_ACCESS_RADIO(board, id)  || id.contains("eu")) && !IS_FAMILY_T16(board) && !IS_JUMPER_T12(board);
+            return !(IS_ACCESS_RADIO(board, id)  || id.contains("eu")) && !IS_FAMILY_T16(board) && !IS_FAMILY_T12(board);
           case PULSES_ACCESS_ISRM:
           case PULSES_ACCST_ISRM_D16:
             return IS_ACCESS_RADIO(board, id);
@@ -763,7 +771,7 @@ bool OpenTxFirmware::isAvailable(PulsesProtocol proto, int port)
           case PULSES_GHOST:
             return true;
           case PULSES_ACCESS_R9M:
-            return IS_ACCESS_RADIO(board, id);
+            return IS_ACCESS_RADIO(board, id)  || (IS_FAMILY_HORUS_OR_T16(board) && id.contains("externalaccessmod"));
           case PULSES_PXX_R9M_LITE:
           case PULSES_ACCESS_R9M_LITE:
           case PULSES_ACCESS_R9M_LITE_PRO:
@@ -938,6 +946,11 @@ bool OpenTxEepromInterface::checkVariant(unsigned int version, unsigned int vari
   }
   else if (IS_JUMPER_T12(board)) {
     if (variant != JUMPER_T12_VARIANT) {
+      variantError = true;
+    }
+  }
+  else if (IS_RADIOMASTER_TX12(board)) {
+    if (variant != RADIOMASTER_TX12_VARIANT) {
       variantError = true;
     }
   }
@@ -1189,19 +1202,19 @@ void registerOpenTxFirmwares()
   firmware->addOption("horussticks", Firmware::tr("Horus gimbals installed (Hall sensors)"));
   addOpenTxTaranisOptions(firmware);
   registerOpenTxFirmware(firmware);
-  addOpenTxRfOptions(firmware, EU + FLEX + AFHDS3);
+  addOpenTxRfOptions(firmware, EU + FLEX);
 
   /* FrSky X9-Lite board */
   firmware = new OpenTxFirmware("opentx-x9lite", Firmware::tr("FrSky Taranis X9-Lite"), BOARD_TARANIS_X9LITE);
   addOpenTxTaranisOptions(firmware);
   registerOpenTxFirmware(firmware);
-  addOpenTxRfOptions(firmware, FLEX + AFHDS3);
+  addOpenTxRfOptions(firmware, FLEX);
 
   /* FrSky X9-LiteS board */
   firmware = new OpenTxFirmware("opentx-x9lites", Firmware::tr("FrSky Taranis X9-Lite S"), BOARD_TARANIS_X9LITES);
   addOpenTxTaranisOptions(firmware);
   registerOpenTxFirmware(firmware);
-  addOpenTxRfOptions(firmware, FLEX + AFHDS3);
+  addOpenTxRfOptions(firmware, FLEX);
 
   /* FrSky X7 board */
   firmware = new OpenTxFirmware("opentx-x7", Firmware::tr("FrSky Taranis X7 / X7S"), BOARD_TARANIS_X7);
@@ -1219,7 +1232,7 @@ void registerOpenTxFirmwares()
   firmware = new OpenTxFirmware("opentx-xlites", Firmware::tr("FrSky Taranis X-Lite S/PRO"), BOARD_TARANIS_XLITES);
   addOpenTxTaranisOptions(firmware);
   registerOpenTxFirmware(firmware);
-  addOpenTxRfOptions(firmware, FLEX + AFHDS3);
+  addOpenTxRfOptions(firmware, FLEX);
 
   /* FrSky X-Lite board */
   firmware = new OpenTxFirmware("opentx-xlite", Firmware::tr("FrSky Taranis X-Lite"), BOARD_TARANIS_XLITE);
@@ -1232,6 +1245,7 @@ void registerOpenTxFirmwares()
   firmware = new OpenTxFirmware("opentx-x10", Firmware::tr("FrSky Horus X10 / X10S"), BOARD_X10);
   addOpenTxFrskyOptions(firmware);
   firmware->addOption("internalaccess", Firmware::tr("Support for ACCESS internal module replacement"));
+  firmware->addOption("externalaccessmod", Firmware::tr("Support hardware mod: R9M ACCESS"));
   registerOpenTxFirmware(firmware);
   addOpenTxRfOptions(firmware, EU + FLEX);
 
@@ -1245,6 +1259,7 @@ void registerOpenTxFirmwares()
   firmware = new OpenTxFirmware("opentx-x12s", Firmware::tr("FrSky Horus X12S"), BOARD_HORUS_X12S);
   addOpenTxFrskyOptions(firmware);
   firmware->addOption("internalaccess", Firmware::tr("Support for ACCESS internal module replacement"));
+  firmware->addOption("externalaccessmod", Firmware::tr("Support hardware mod: R9M ACCESS"));
   firmware->addOption("pcbdev", Firmware::tr("Use ONLY with first DEV pcb version"));
   registerOpenTxFirmware(firmware);
   addOpenTxRfOptions(firmware, EU + FLEX);
@@ -1258,15 +1273,26 @@ void registerOpenTxFirmwares()
   firmware->addOption("internalmulti", Firmware::tr("Support for MULTI internal module"));
   addOpenTxFontOptions(firmware);
   registerOpenTxFirmware(firmware);
-  addOpenTxRfOptions(firmware, FLEX + AFHDS3);
+  addOpenTxRfOptions(firmware, FLEX);
 
   /* Jumper T16 board */
   firmware = new OpenTxFirmware("opentx-t16", Firmware::tr("Jumper T16 / T16+ / T16 Pro"), BOARD_JUMPER_T16);
   addOpenTxFrskyOptions(firmware);
   firmware->addOption("internalmulti", Firmware::tr("Support for MULTI internal module"));
   firmware->addOption("bluetooth", Firmware::tr("Support for bluetooth module"));
+  firmware->addOption("externalaccessmod", Firmware::tr("Support hardware mod: R9M ACCESS"));
   addOpenTxRfOptions(firmware, FLEX);
   registerOpenTxFirmware(firmware);
+
+  /* Radiomaster TX12 board */
+  firmware = new OpenTxFirmware("opentx-tx12", QCoreApplication::translate("Firmware", "Radiomaster TX12"), BOARD_RADIOMASTER_TX12);
+  addOpenTxCommonOptions(firmware);
+  firmware->addOption("noheli", Firmware::tr("Disable HELI menu and cyclic mix support"));
+  firmware->addOption("nogvars", Firmware::tr("Disable Global variables"));
+  firmware->addOption("lua", Firmware::tr("Enable Lua custom scripts screen"));
+  addOpenTxFontOptions(firmware);
+  registerOpenTxFirmware(firmware);
+  addOpenTxRfOptions(firmware, FLEX);
 
   /* Radiomaster TX16S board */
   firmware = new OpenTxFirmware("opentx-tx16s", Firmware::tr("Radiomaster TX16S / SE / Hall / Masterfire"), BOARD_RADIOMASTER_TX16S);
@@ -1275,12 +1301,14 @@ void registerOpenTxFirmwares()
   static const Firmware::Option opt_bt("bluetooth", Firmware::tr("Support for bluetooth module"));
   static const Firmware::Option opt_internal_gps("internalgps", Firmware::tr("Support internal GPS"));
   firmware->addOptionsGroup({opt_bt, opt_internal_gps});
+  firmware->addOption("externalaccessmod", Firmware::tr("Support hardware mod: R9M ACCESS"));
   registerOpenTxFirmware(firmware);
 
   /* Jumper T18 board */
   firmware = new OpenTxFirmware("opentx-t18", Firmware::tr("Jumper T18"), BOARD_JUMPER_T18);
   addOpenTxFrskyOptions(firmware);
   firmware->addOption("bluetooth", Firmware::tr("Support for bluetooth module"));
+  firmware->addOption("externalaccessmod", Firmware::tr("Support hardware mod: R9M ACCESS"));
   registerOpenTxFirmware(firmware);
   addOpenTxRfOptions(firmware, FLEX);
 

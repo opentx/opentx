@@ -91,10 +91,8 @@ QString CustomFunctionData::funcToString(const ModelData * model) const
     return tr("Background Music Pause");
   else if (func >= FuncAdjustGV1 && func <= FuncAdjustGVLast)
     return tr("Adjust %1").arg(RawSource(SOURCE_TYPE_GVAR, func-FuncAdjustGV1).toString(model));
-  else if (func == FuncSetFailsafeInternalModule)
-    return tr("SetFailsafe Int. Module");
-  else if (func == FuncSetFailsafeExternalModule)
-    return tr("SetFailsafe Ext. Module");
+  else if (func == FuncSetFailsafe)
+    return tr("Set Failsafe");
   else if (func == FuncRangeCheckInternalModule)
     return tr("RangeCheck Int. Module");
   else if (func == FuncRangeCheckExternalModule)
@@ -126,20 +124,15 @@ void CustomFunctionData::populateResetParams(const ModelData * model, QComboBox 
     b->addItem(tr("REa"), val++);
     b->addItem(tr("REb"), val++);
   }
-  if ((int)value < b->count()) {
-    b->setCurrentIndex(value);
-  }
   if (model) {
-    for (unsigned i=0; i<CPN_MAX_SENSORS; ++i) {
+    for (int i = 0; i < firmware->getCapability(Sensors); ++i) {
       if (model->sensorData[i].isAvailable()) {
-        RawSource item = RawSource(SOURCE_TYPE_TELEMETRY, 3*i);
-        b->addItem(item.toString(model), val+i);
-        if (value == val+i) {
-          b->setCurrentIndex(b->count()-1);
-        }
+        RawSource item = RawSource(SOURCE_TYPE_TELEMETRY, 3 * i);
+        b->addItem(item.toString(model), val + i);
       }
     }
   }
+  b->setCurrentIndex(b->findData(value));
 }
 
 void CustomFunctionData::populatePlaySoundParams(QStringList & qs)

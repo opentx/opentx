@@ -44,6 +44,8 @@ before_install:
   - sudo ln -s /opt/gcc-arm-none-eabi/bin/arm-none-eabi-size /usr/bin/arm-none-eabi-size
   - sudo apt-get install --yes --force-yes -qq qt${QT_BASE}base qt${QT_BASE}multimedia qt${QT_BASE}svg qt${QT_BASE}tools; source /opt/qt${QT_BASE}/bin/qt${QT_BASE}-env.sh
   - sudo ln -sf /usr/bin/python3 /usr/bin/python
+  - python3 -m pip install --upgrade pip
+  - sudo apt-get install python3-setuptools
   - python3 -m pip install pillow clang
 
 script:

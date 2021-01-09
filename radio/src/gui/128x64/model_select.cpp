@@ -83,7 +83,7 @@ void onModelSelectMenu(const char * result)
 void menuModelSelect(event_t event)
 {
   event_t _event_ = event;
-  if ((s_copyMode && EVT_KEY_MASK(event) == KEY_EXIT) || event == EVT_KEY_BREAK(KEY_EXIT) || IS_ROTARY_BREAK(event) || IS_ROTARY_LONG(event)) {
+  if ((s_copyMode && IS_KEY_EVT(event, KEY_EXIT)) || event == EVT_KEY_BREAK(KEY_EXIT) || IS_ROTARY_BREAK(event) || IS_ROTARY_LONG(event)) {
     _event_ = 0;
   }
 
@@ -203,7 +203,16 @@ void menuModelSelect(event_t event)
       }
       break;
 
-#if defined(NAVIGATION_X7)
+#if defined(NAVIGATION_X7_TX12)
+    case EVT_KEY_FIRST(KEY_PAGEUP):
+      chainMenu(menuTabModel[DIM(menuTabModel)-1]);
+      killEvents(event);
+      break;
+
+    case EVT_KEY_FIRST(KEY_PAGEDN):
+      chainMenu(menuModelSetup);
+      break;
+#elif defined(NAVIGATION_X7)
     case EVT_KEY_LONG(KEY_PAGE):
       chainMenu(menuTabModel[DIM(menuTabModel)-1]);
       killEvents(event);
