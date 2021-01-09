@@ -51,6 +51,10 @@
 #define GHST_CH_BITS_12                 12
 #define GHST_CH_BITS_8                  8
 
+// RxID 0 = Rx1, RxID 15 = Rx16
+#define GHST_RX_ID_MAX                  15
+
+
 enum GhstPowerMode
 {
   GHST_PWR_16UW =   0,

@@ -49,6 +49,7 @@ enum
   GHOST_ID_PACK_VOLTS = 0x000c,         // Battery Pack Voltage
   GHOST_ID_PACK_AMPS = 0x000d,          // Battery Pack Current
   GHOST_ID_PACK_MAH = 0x000e,           // Battery Pack mAh consumed
+  GHOST_ID_RX_ID = 0x0000f,             // Receiver ID for Team Racing
 };
 
 const GhostSensor ghostSensors[] = {
@@ -65,6 +66,7 @@ const GhostSensor ghostSensors[] = {
   {GHOST_ID_VTX_POWER,       ZSTR_VTX_PWR,          UNIT_RAW,               0},
   {GHOST_ID_VTX_CHAN,        ZSTR_VTX_CHAN,         UNIT_RAW,               0},
   {GHOST_ID_VTX_BAND,        ZSTR_VTX_BAND,         UNIT_TEXT,              0},
+  {GHOST_ID_RX_ID,           ZSTR_RX_ID,            UNIT_RAW,              0},
 
   {GHOST_ID_PACK_VOLTS,      ZSTR_BATT,             UNIT_VOLTS,             2},
   {GHOST_ID_PACK_AMPS,       ZSTR_CURR,             UNIT_AMPS,              2},
@@ -197,6 +199,7 @@ void processGhostTelemetryFrame()
       processGhostTelemetryValue(GHOST_ID_VTX_FREQ, getTelemetryValue_u16(4));
       processGhostTelemetryValue(GHOST_ID_VTX_POWER, getTelemetryValue_u16(6));
       processGhostTelemetryValue(GHOST_ID_VTX_CHAN, min<uint8_t>(telemetryRxBuffer[9], 8));
+      processGhostTelemetryValue(GHOST_ID_RX_ID, min<uint8_t>(telemetryRxBuffer[10] + 1, GHST_RX_ID_MAX));
       processGhostTelemetryValueString(sensor, vtxBandString);
       break;
     }
