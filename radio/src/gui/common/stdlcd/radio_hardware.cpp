@@ -332,27 +332,19 @@ void menuRadioHardware(event_t event)
     POTS_ROWS,
     LABEL(Switches),
     SWITCHES_ROWS,
-
     0 /* battery calib */,
     RTC_ROW
-      TX_CAPACITY_MEASUREMENT_ROWS
-
+    TX_CAPACITY_MEASUREMENT_ROWS
     MAX_BAUD_ROWS
-
-      BLUETOOTH_ROWS
-
+    BLUETOOTH_ROWS
     EXTERNAL_ANTENNA_ROW
-
-      AUX_SERIAL_ROWS
-
+    AUX_SERIAL_ROWS
     0 /* ADC filter */,
     READONLY_ROW /* RAS */,
     SPORT_POWER_ROWS
     1 /* debugs */,
-
-    0,
-
-    0
+    0 /* EEPROM backup */,
+    0 /* Factory reset */
   });
 
   uint8_t sub = menuVerticalPosition - HEADER_LINE;
@@ -478,7 +470,7 @@ void menuRadioHardware(event_t event)
       case ITEM_RADIO_HARDWARE_SI:
 #endif
 #if defined(HARDWARE_SWITCH_J)
-        case ITEM_RADIO_HARDWARE_SJ:
+      case ITEM_RADIO_HARDWARE_SJ:
 #endif
 #if defined(HARDWARE_SWITCH_K)
       case ITEM_RADIO_HARDWARE_SK:
