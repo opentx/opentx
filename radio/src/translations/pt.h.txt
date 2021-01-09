@@ -302,8 +302,22 @@
 #define LEN_VSWASHTYPE   "\004"
 #define TR_VSWASHTYPE    "--- ""120 ""120X""140 ""90\0"
 
-#define LEN_VKEYS        "\005"
-#define TR_VKEYS         TR("Menu\0""Sair\0""Desce""Sobe\0""Direi""Esqda", "Menu\0""Exit\0""Enter""Page\0""Plus\0""Minus")
+#if defined(PCBHORUS)
+  #define LEN_VKEYS            "\005"
+  #define TR_VKEYS             "PGUP\0""PGDN\0""ENTER""MDL\0 ""RTN\0 ""TELE\0""SYS\0 "
+#elif defined(RADIO_T12)
+  #define LEN_VKEYS            "\005"
+  #define TR_VKEYS             "Exit\0""Enter""Down\0""Up\0  ""Right""Left\0"
+#elif defined(RADIO_TX12)
+  #define LEN_VKEYS            "\005"
+  #define TR_VKEYS             "Exit\0""Enter""Up\0  ""Down\0""SYS\0 ""MDL\0 ""TELE\0"
+#elif defined(PCBTARANIS)
+  #define LEN_VKEYS            "\005"
+  #define TR_VKEYS             "Menu\0""Exit\0""Enter""Page\0""Plus\0""Minus"
+#else
+  #define LEN_VKEYS            "\005"
+  #define TR_VKEYS             "Menu\0""Exit\0""Ned\0 ""Upp\0 ""Höger""Vänst"
+#endif
 
 #define LEN_VSWITCHES    "\003"
 #define LEN_VSRCRAW      "\004"
@@ -528,6 +542,7 @@
 #define TR_BEEPCOUNTDOWN       INDENT "Beep Regressivo"
 #define TR_PERSISTENT          INDENT "Persist."
 #define TR_BACKLIGHT_LABEL     "Backlight"
+#define TR_GHOST_MENU_LABEL            "GHOST MENU"
 #define TR_BLDELAY             INDENT "Tempo Backlight"
 #define TR_BLONBRIGHTNESS      INDENT "ON Brightness"
 #define TR_BLOFFBRIGHTNESS     INDENT "OFF Brightness"
@@ -710,6 +725,7 @@
 #define TR_NO_SDCARD           "Sem SDCARD"
 #define TR_WAITING_FOR_RX              "Waiting for RX..."
 #define TR_WAITING_FOR_TX              "Waiting for TX..."
+#define TR_WAITING_FOR_MODULE          TR("Waiting module", "Waiting for module...")
 #define TR_NO_TOOLS                    "No tools available"
 #define TR_NORMAL                      "Normal"
 #define TR_NOT_INVERTED                "Not inv"
@@ -851,6 +867,7 @@
 #define TR_FLASH_INTERNAL_MULTI        TR("Flash Int. Multi", "Flash Internal Multi")
 #define TR_FLASH_EXTERNAL_MODULE       "Flash external module"
 #define TR_FLASH_EXTERNAL_MULTI        TR("Flash Ext. Multi", "Flash External Multi")
+#define TR_FLASH_EXTERNAL_ELRS         TR("Flash Ext. ELRS", "Flash External ELRS")
 #define TR_FIRMWARE_UPDATE_ERROR TR("FW update Error","Firmware update error")
 #define TR_FIRMWARE_UPDATE_SUCCESS     "Flash successful"
 #define TR_WRITING             "Writing..."
@@ -1113,10 +1130,18 @@
 #define TR_ABOUT_MARTIN_1      "Martin Hotar"
 #define TR_ABOUT_MARTIN_2      "Graphics designer"
 
-#if defined(PCBTARANIS)
-  #define TR_ABOUT_HARDWARE_1  "FrSky"
-  #define TR_ABOUT_HARDWARE_2  "Hardware designer/producer"
-  #define TR_ABOUT_HARDWARE_3  "Firmware contributor"
+#if defined(MANUFACTURER_FRSKY)
+  #define TR_ABOUT_HARDWARE_1          "FrSky"
+  #define TR_ABOUT_HARDWARE_2          TR("Hardware design/producer", "Hardware designer/producer")
+  #define TR_ABOUT_HARDWARE_3          "Firmware contributor"
+#elif defined(MANUFACTURER_RADIOMASTER)
+  #define TR_ABOUT_HARDWARE_1          "Radiomaster"
+  #define TR_ABOUT_HARDWARE_2          TR("Hardware design/producer", "Hardware designer/producer")
+  #define TR_ABOUT_HARDWARE_3          "Firmware contributor"
+#elif defined(MANUFACTURER_JUMPER)
+  #define TR_ABOUT_HARDWARE_1          "JumperRC"
+  #define TR_ABOUT_HARDWARE_2          TR("Hardware design/producer", "Hardware designer/producer")
+  #define TR_ABOUT_HARDWARE_3          "Firmware contributor"
 #else
   #define TR_ABOUT_HARDWARE_1  "Brent Nelson"
   #define TR_ABOUT_HARDWARE_2  "Sky9x designer/producer"

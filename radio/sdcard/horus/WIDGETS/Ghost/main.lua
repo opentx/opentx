@@ -16,6 +16,8 @@
 ---- #########################################################################
 
 local backgroundBitmap
+local orangeLed
+local greenLed
 local offsetX
 local offsetY
 local sensors = {}
@@ -45,6 +47,8 @@ end
 local function create(zone, options)
   local wgt = { zone=zone, options=options}
   backgroundBitmap = Bitmap.open("/WIDGETS/Ghost/img/background.png")
+  orangeLed = Bitmap.open("/WIDGETS/Ghost/img/orange.png")
+  greenLed = Bitmap.open("/WIDGETS/Ghost/img/green.png")
   offsetX = (wgt.zone.w - 178) / 2
   offsetY = (wgt.zone.h - 148) / 2
   return wgt
@@ -68,6 +72,14 @@ function refresh(wgt)
   end
 
   if getRSSI() ~= 0 then
+    if getValue("RFMD") == "Pure" then
+      if orangeLed ~= nil then
+        lcd.drawBitmap(orangeLed, wgt.zone.x + offsetX + 143, wgt.zone.y + offsetY)
+      end
+    elseif greenLed ~= nil then
+      lcd.drawBitmap(greenLed, wgt.zone.x + offsetX + 143, wgt.zone.y + offsetY)
+    end
+
     getValues(wgt)
 
     -- RF Mode/Band

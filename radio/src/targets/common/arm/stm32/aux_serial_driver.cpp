@@ -26,7 +26,7 @@ extern Fifo<uint8_t, 32> trainerSbusFifo;
 #endif
 
 #if defined(AUX_SERIAL)
-uint8_t auxSerialMode = 0;
+uint8_t auxSerialMode = UART_MODE_COUNT;  // Prevent debug output before port is setup
 Fifo<uint8_t, 512> auxSerialTxFifo;
 AuxSerialRxFifo auxSerialRxFifo __DMA (AUX_SERIAL_DMA_Stream_RX);
 
@@ -128,7 +128,7 @@ void auxSerialInit(unsigned int mode, unsigned int protocol)
       break;
 
     case UART_MODE_SBUS_TRAINER:
-      auxSerialSetup(SBUS_BAUDRATE, false, USART_WordLength_9b, USART_Parity_Even, USART_StopBits_2); // 2 stop bits requires USART_WordLength_9b
+      auxSerialSetup(SBUS_BAUDRATE, true, USART_WordLength_9b, USART_Parity_Even, USART_StopBits_2); // 2 stop bits requires USART_WordLength_9b
       AUX_SERIAL_POWER_ON();
       break;
 
@@ -214,10 +214,6 @@ extern "C" void AUX_SERIAL_USART_IRQHandler(void)
       if (luaRxFifo && auxSerialMode == UART_MODE_LUA)
         luaRxFifo->push(data);
 #endif
-#if !defined(BOOT)
-      if (auxSerialMode == UART_MODE_SBUS_TRAINER)
-        trainerSbusFifo.push(data);
-#endif
     }
     status = AUX_SERIAL_USART->SR;
   }
@@ -226,7 +222,7 @@ extern "C" void AUX_SERIAL_USART_IRQHandler(void)
 #endif
 
 #if defined(AUX2_SERIAL)
-uint8_t aux2SerialMode = 0;
+uint8_t aux2SerialMode = UART_MODE_COUNT;  // Prevent debug output before port is setup
 Fifo<uint8_t, 512> aux2SerialTxFifo;
 AuxSerialRxFifo aux2SerialRxFifo __DMA (AUX2_SERIAL_DMA_Stream_RX);
 
@@ -328,7 +324,7 @@ void aux2SerialInit(unsigned int mode, unsigned int protocol)
       break;
 
     case UART_MODE_SBUS_TRAINER:
-      aux2SerialSetup(SBUS_BAUDRATE, false, USART_WordLength_9b, USART_Parity_Even, USART_StopBits_2); // 2 stop bits requires USART_WordLength_9b
+      aux2SerialSetup(SBUS_BAUDRATE, true, USART_WordLength_9b, USART_Parity_Even, USART_StopBits_2); // 2 stop bits requires USART_WordLength_9b
       AUX2_SERIAL_POWER_ON();
       break;
 
@@ -414,11 +410,6 @@ extern "C" void AUX2_SERIAL_USART_IRQHandler(void)
 #if defined(LUA) & !defined(CLI)
       if (luaRxFifo && aux2SerialMode == UART_MODE_LUA) {
         luaRxFifo->push(data);
-      }
-#endif
-#if !defined(BOOT)
-      if (aux2SerialMode == UART_MODE_SBUS_TRAINER) {
-        trainerSbusFifo.push(data);
       }
 #endif
     }

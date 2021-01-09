@@ -92,7 +92,8 @@ void boardInit()
                          TRAINER_RCC_AHB1Periph |
                          TRAINER_MODULE_RCC_AHB1Periph |
                          BT_RCC_AHB1Periph |
-                         GYRO_RCC_AHB1Periph,
+                         GYRO_RCC_AHB1Periph |
+                         USB_CHARGER_RCC_AHB1Periph,
                          ENABLE);
 
   RCC_APB1PeriphClockCmd(ROTARY_ENCODER_RCC_APB1Periph |
@@ -193,6 +194,10 @@ void boardInit()
   toplcdInit();
 #endif
 
+#if defined(USB_CHARGER)
+  usbChargerInit();
+#endif
+
   if (HAS_SPORT_UPDATE_CONNECTOR()) {
     sportUpdateInit();
   }
@@ -265,10 +270,16 @@ void boardOff()
   // this function must not return!
 }
 
+#if defined (RADIO_TX12)
+  #define BATTERY_DIVIDER 22830
+#else
+  #define BATTERY_DIVIDER 26214
+#endif 
+
 uint16_t getBatteryVoltage()
 {
   int32_t instant_vbat = anaIn(TX_VOLTAGE); // using filtered ADC value on purpose
-  instant_vbat = (instant_vbat * BATT_SCALE * (128 + g_eeGeneral.txVoltageCalibration) ) / 26214;
+  instant_vbat = (instant_vbat * BATT_SCALE * (128 + g_eeGeneral.txVoltageCalibration) ) / BATTERY_DIVIDER;
   instant_vbat += 20; // add 0.2V because of the diode TODO check if this is needed, but removal will break existing calibrations!
   return (uint16_t)instant_vbat;
 }

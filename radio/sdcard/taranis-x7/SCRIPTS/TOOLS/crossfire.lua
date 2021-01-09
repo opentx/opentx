@@ -30,6 +30,11 @@ local function run(event)
     return 2
   end
 
+  if crossfireTelemetryPush() == nil then
+    error("Crossfire not available!")
+    return 2
+  end
+  
   chdir("/SCRIPTS/TOOLS/CROSSFIRE")
   return "crossfire.lua"
 end

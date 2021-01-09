@@ -24,7 +24,8 @@
 #include "helpers.h"
 
 ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, GeneralSettings & generalSettings,
-                          Firmware * firmware, QString & inputName) :
+                          Firmware * firmware, QString & inputName, RawItemFilteredModel * rawSourceModel,
+                          RawItemFilteredModel * rawSwitchModel, RawItemFilteredModel * curveItemModel) :
   QDialog(parent),
   ui(new Ui::ExpoDialog),
   model(model),
@@ -36,9 +37,10 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, G
   lock(false)
 {
   ui->setupUi(this);
-  QLabel * lb_fp[CPN_MAX_FLIGHT_MODES] = {ui->lb_FP0,ui->lb_FP1,ui->lb_FP2,ui->lb_FP3,ui->lb_FP4,ui->lb_FP5,ui->lb_FP6,ui->lb_FP7,ui->lb_FP8 };
-  QCheckBox * tmp[CPN_MAX_FLIGHT_MODES] = {ui->cb_FP0,ui->cb_FP1,ui->cb_FP2,ui->cb_FP3,ui->cb_FP4,ui->cb_FP5,ui->cb_FP6,ui->cb_FP7,ui->cb_FP8 };
-  for (int i=0; i<CPN_MAX_FLIGHT_MODES; i++) {
+
+  QLabel * lb_fp[CPN_MAX_FLIGHT_MODES] = {ui->lb_FP0, ui->lb_FP1, ui->lb_FP2, ui->lb_FP3, ui->lb_FP4, ui->lb_FP5, ui->lb_FP6, ui->lb_FP7, ui->lb_FP8 };
+  QCheckBox * tmp[CPN_MAX_FLIGHT_MODES] = {ui->cb_FP0, ui->cb_FP1, ui->cb_FP2, ui->cb_FP3, ui->cb_FP4, ui->cb_FP5, ui->cb_FP6, ui->cb_FP7, ui->cb_FP8 };
+  for (int i = 0; i < CPN_MAX_FLIGHT_MODES; i++) {
     cb_fp[i] = tmp[i];
   }
 
@@ -48,18 +50,16 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, G
 
   gvWeightGroup = new GVarGroup(ui->weightGV, ui->weightSB, ui->weightCB, ed->weight, model, 100, -100, 100);
   gvOffsetGroup = new GVarGroup(ui->offsetGV, ui->offsetSB, ui->offsetCB, ed->offset, model, 0, -100, 100);
+  curveGroup = new CurveReferenceUIManager(ui->curveTypeCB, ui->curveGVarCB, ui->curveValueSB, ui->curveValueCB, ed->curve, model, curveItemModel, this);
 
-  curveGroup = new CurveGroup(ui->curveTypeCB, ui->curveGVarCB, ui->curveValueCB, ui->curveValueSB, ed->curve, model,
-                              firmware->getCapability(HasInputDiff) ? 0 : (HIDE_DIFF | HIDE_NEGATIVE_CURVES));
-
-  ui->switchesCB->setModel(new RawSwitchFilterItemModel(&generalSettings, &model, RawSwitch::MixesContext, this));
+  ui->switchesCB->setModel(rawSwitchModel);
   ui->switchesCB->setCurrentIndex(ui->switchesCB->findData(ed->swtch.toValue()));
 
-  ui->sideCB->setCurrentIndex(ed->mode-1);
+  ui->sideCB->setCurrentIndex(ed->mode - 1);
 
   if (!firmware->getCapability(FlightModes)) {
     ui->label_phases->hide();
-    for (int i=0; i<CPN_MAX_FLIGHT_MODES; i++) {
+    for (int i = 0; i < CPN_MAX_FLIGHT_MODES; i++) {
       lb_fp[i]->hide();
       cb_fp[i]->hide();
     }
@@ -69,13 +69,13 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, G
     ui->label_phases->setContextMenuPolicy(Qt::CustomContextMenu);
     connect(ui->label_phases, SIGNAL(customContextMenuRequested(const QPoint &)), this, SLOT(label_phases_customContextMenuRequested(const QPoint &)));
     int mask = 1;
-    for (int i=0; i<CPN_MAX_FLIGHT_MODES; i++) {
+    for (int i = 0; i < CPN_MAX_FLIGHT_MODES; i++) {
       if ((ed->flightModes & mask) == 0) {
         cb_fp[i]->setChecked(true);
       }
       mask <<= 1;
     }
-    for (int i=firmware->getCapability(FlightModes); i<CPN_MAX_FLIGHT_MODES; i++) {
+    for (int i = firmware->getCapability(FlightModes); i < CPN_MAX_FLIGHT_MODES; i++) {
       lb_fp[i]->hide();
       cb_fp[i]->hide();
     }
@@ -83,9 +83,8 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, G
 
   if (firmware->getCapability(VirtualInputs)) {
     ui->inputName->setMaxLength(firmware->getCapability(InputsLength));
-    ui->sourceCB->setModel(new RawSourceFilterItemModel(&generalSettings, &model, (RawSource::InputSourceGroups & ~RawSource::InputsGroup) | RawSource::TelemGroup, this));
+    ui->sourceCB->setModel(rawSourceModel);
     ui->sourceCB->setCurrentIndex(ui->sourceCB->findData(ed->srcRaw.toValue()));
-    ui->sourceCB->removeItem(0);
     ui->inputName->setValidator(new QRegExpValidator(rx, this));
     ui->inputName->setText(inputName);
   }
@@ -98,8 +97,8 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, G
     ui->trimCB->hide();
   }
 
-  for(int i=0; i < getBoardCapability(getCurrentBoard(), Board::NumTrims); i++) {
-    ui->trimCB->addItem(RawSource(SOURCE_TYPE_TRIM, i).toString(), i+1);
+  for(int i = 0; i < getBoardCapability(getCurrentBoard(), Board::NumTrims); i++) {
+    ui->trimCB->addItem(RawSource(SOURCE_TYPE_TRIM, i).toString(), i + 1);
   }
   ui->trimCB->setCurrentIndex(1 - ed->carryTrim);
 
@@ -124,7 +123,7 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, G
   connect(ui->trimCB, SIGNAL(currentIndexChanged(int)), this, SLOT(valuesChanged()));
   connect(ui->switchesCB, SIGNAL(currentIndexChanged(int)), this, SLOT(valuesChanged()));
   connect(ui->sideCB, SIGNAL(currentIndexChanged(int)), this, SLOT(valuesChanged()));
-  for (int i=0; i<CPN_MAX_FLIGHT_MODES; i++) {
+  for (int i = 0; i < CPN_MAX_FLIGHT_MODES; i++) {
     connect(cb_fp[i], SIGNAL(toggled(bool)), this, SLOT(valuesChanged()));
   }
   if (firmware->getCapability(VirtualInputs)) {
@@ -138,7 +137,6 @@ ExpoDialog::~ExpoDialog()
 {
   delete gvWeightGroup;
   delete gvOffsetGroup;
-  delete curveGroup;
   delete ui;
 }
 
@@ -181,7 +179,7 @@ void ExpoDialog::valuesChanged()
     }
 
     ed->flightModes = 0;
-    for (int i=CPN_MAX_FLIGHT_MODES-1; i>=0 ; i--) {
+    for (int i = CPN_MAX_FLIGHT_MODES - 1; i >= 0 ; i--) {
       if (!cb_fp[i]->checkState()) {
         ed->flightModes++;
       }
@@ -212,7 +210,7 @@ void ExpoDialog::label_phases_customContextMenuRequested(const QPoint & pos)
 void ExpoDialog::fmClearAll()
 {
   lock = true;
-  for (int i=0; i<CPN_MAX_FLIGHT_MODES; i++) {
+  for (int i = 0; i < CPN_MAX_FLIGHT_MODES; i++) {
     cb_fp[i]->setChecked(false);
   }
   lock = false;
@@ -222,7 +220,7 @@ void ExpoDialog::fmClearAll()
 void ExpoDialog::fmSetAll()
 {
   lock = true;
-  for (int i=0; i<CPN_MAX_FLIGHT_MODES; i++) {
+  for (int i = 0; i < CPN_MAX_FLIGHT_MODES; i++) {
     cb_fp[i]->setChecked(true);
   }
   lock = false;
@@ -232,7 +230,7 @@ void ExpoDialog::fmSetAll()
 void ExpoDialog::fmInvertAll()
 {
   lock = true;
-  for (int i=0; i<CPN_MAX_FLIGHT_MODES; i++) {
+  for (int i = 0; i < CPN_MAX_FLIGHT_MODES; i++) {
     cb_fp[i]->setChecked(!cb_fp[i]->isChecked());
   }
   lock = false;

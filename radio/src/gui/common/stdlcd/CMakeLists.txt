@@ -41,6 +41,13 @@ if(PXX2)
     )
 endif()
 
+if(GHOST)
+  set(GUI_SRC
+    ${GUI_SRC}
+    ../common/stdlcd/radio_ghost_menu.cpp
+    )
+endif()
+
 if(PXX2 OR MULTIMODULE)
   set(GUI_SRC
     ${GUI_SRC}

@@ -264,7 +264,7 @@ void memswap(void * a, void * b, uint8_t size)
 void setDefaultOwnerId()
 {
   for (uint8_t i = 0; i < PXX2_LEN_REGISTRATION_ID; i++) {
-    g_eeGeneral.ownerRegistrationID[i] = (cpu_uid[1 + i] & 0x3f) - 26;
+    g_eeGeneral.ownerRegistrationID[i] = (((uint8_t *)cpu_uid)[4 + i] & 0x3fu) - 26;
   }
 }
 #endif
@@ -702,18 +702,26 @@ void checkBacklight()
       }
     }
 
-    bool backlightOn = (g_eeGeneral.backlightMode == e_backlight_mode_on || (g_eeGeneral.backlightMode != e_backlight_mode_off && lightOffCounter));
-
-    if (flashCounter) {
-      backlightOn = !backlightOn;
-    }
-
-    if (backlightOn) {
-      currentBacklightBright = requiredBacklightBright;
+    if (requiredBacklightBright == BACKLIGHT_FORCED_ON) {
+      currentBacklightBright = g_eeGeneral.backlightBright;
       BACKLIGHT_ENABLE();
     }
     else {
-      BACKLIGHT_DISABLE();
+      bool backlightOn = ((g_eeGeneral.backlightMode == e_backlight_mode_on) ||
+                          (g_eeGeneral.backlightMode != e_backlight_mode_off && lightOffCounter) ||
+                          (g_eeGeneral.backlightMode == e_backlight_mode_off && isFunctionActive(FUNCTION_BACKLIGHT)));
+
+      if (flashCounter) {
+        backlightOn = !backlightOn;
+      }
+
+      if (backlightOn) {
+        currentBacklightBright = requiredBacklightBright;
+        BACKLIGHT_ENABLE();
+      }
+      else {
+        BACKLIGHT_DISABLE();
+      }
     }
   }
 }
@@ -1118,7 +1126,7 @@ void checkTrims()
     else {
       phase = getTrimFlightMode(mixerCurrentFlightMode, idx);
       before = getTrimValue(phase, idx);
-      thro = (idx==THR_STICK && g_model.thrTrim);
+      thro = (idx == (g_model.getThrottleStickTrimSource() - MIXSRC_FIRST_TRIM) && g_model.thrTrim);
     }
 #else
     phase = getTrimFlightMode(mixerCurrentFlightMode, idx);
@@ -1747,7 +1755,8 @@ void copyTrimsToOffset(uint8_t ch)
 
   int16_t output = applyLimits(ch, chans[ch]) - zero;
   int16_t v = g_model.limitData[ch].offset;
-  if (g_model.limitData[ch].revert) output = -output;
+  if (g_model.limitData[ch].revert)
+    output = -output;
   v += (output * 125) / 128;
   g_model.limitData[ch].offset = limit((int16_t)-1000, (int16_t)v, (int16_t)1000); // make sure the offset doesn't go haywire
 
@@ -1822,23 +1831,27 @@ void moveTrimsToOffsets() // copy state of 3 primary to subtrim
   pauseMixerCalculations();
 
   evalFlightModeMixes(e_perout_mode_noinput, 0); // do output loop - zero input sticks and trims
-  for (uint8_t i=0; i<MAX_OUTPUT_CHANNELS; i++) {
+
+  for (uint8_t i = 0; i < MAX_OUTPUT_CHANNELS; i++) {
     zeros[i] = applyLimits(i, chans[i]);
   }
 
   evalFlightModeMixes(e_perout_mode_noinput-e_perout_mode_notrims, 0); // do output loop - only trims
 
-  for (uint8_t i=0; i<MAX_OUTPUT_CHANNELS; i++) {
-    int16_t output = applyLimits(i, chans[i]) - zeros[i];
+  for (uint8_t i = 0; i < MAX_OUTPUT_CHANNELS; i++) {
+    int16_t diff = applyLimits(i, chans[i]) - zeros[i];
     int16_t v = g_model.limitData[i].offset;
-    if (g_model.limitData[i].revert) output = -output;
-    v += (output * 125) / 128;
-    g_model.limitData[i].offset = limit((int16_t)-1000, (int16_t)v, (int16_t)1000); // make sure the offset doesn't go haywire
+    if (g_model.limitData[i].revert)
+      diff = -diff;
+    v += (diff * 125) / 128;
+
+    g_model.limitData[i].offset = limit((int16_t) -1000, (int16_t) v, (int16_t) 1000); // make sure the offset doesn't go haywire
   }
 
   // reset all trims, except throttle (if throttle trim)
   for (uint8_t i=0; i<NUM_TRIMS; i++) {
-    if (i != THR_STICK || !g_model.thrTrim) {
+    auto thrStick = g_model.getThrottleStickTrimSource() - MIXSRC_FIRST_TRIM;
+    if (i != thrStick || !g_model.thrTrim) {
       int16_t original_trim = getTrimValue(mixerCurrentFlightMode, i);
       for (uint8_t fm=0; fm<MAX_FLIGHT_MODES; fm++) {
         trim_t trim = getRawTrimValue(fm, i);

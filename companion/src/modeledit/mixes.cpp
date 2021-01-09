@@ -20,13 +20,27 @@
 
 #include "mixes.h"
 #include "helpers.h"
+#include "rawitemfilteredmodel.h"
 
-MixesPanel::MixesPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware):
+MixesPanel::MixesPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware,CommonItemModels * commonItemModels):
   ModelPanel(parent, model, generalSettings, firmware),
   mixInserted(false),
   highlightedSource(0),
-  modelPrinter(firmware, generalSettings, model)
+  modelPrinter(firmware, generalSettings, model),
+  commonItemModels(commonItemModels)
 {
+  rawSourceFilteredModel = new RawItemFilteredModel(commonItemModels->rawSourceItemModel(), ((RawSource::InputSourceGroups | RawSource::ScriptsGroup) & ~ RawSource::NoneGroup), this);
+  connect(rawSourceFilteredModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &MixesPanel::onModelDataAboutToBeUpdated);
+  connect(rawSourceFilteredModel, &RawItemFilteredModel::dataUpdateComplete, this, &MixesPanel::onModelDataUpdateComplete);
+
+  rawSwitchFilteredModel = new RawItemFilteredModel(commonItemModels->rawSwitchItemModel(), RawSwitch::MixesContext, this);
+  connect(rawSwitchFilteredModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &MixesPanel::onModelDataAboutToBeUpdated);
+  connect(rawSwitchFilteredModel, &RawItemFilteredModel::dataUpdateComplete, this, &MixesPanel::onModelDataUpdateComplete);
+
+  curveFilteredModel = new RawItemFilteredModel(commonItemModels->curveItemModel(), RawItemFilteredModel::AllFilter, this);
+  connect(curveFilteredModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &MixesPanel::onModelDataAboutToBeUpdated);
+  connect(curveFilteredModel, &RawItemFilteredModel::dataUpdateComplete, this, &MixesPanel::onModelDataUpdateComplete);
+
   QGridLayout * mixesLayout = new QGridLayout(this);
 
   mixersListWidget = new MixersListWidget(this, false); // TODO enum
@@ -175,8 +189,8 @@ void MixesPanel::gm_openMix(int index)
 
   MixData mixd(model->mixData[index]);
 
-  MixerDialog *g = new MixerDialog(this, *model, &mixd, generalSettings, firmware);
-  if(g->exec()) {
+  MixerDialog *dlg = new MixerDialog(this, *model, &mixd, generalSettings, firmware, rawSourceFilteredModel, rawSwitchFilteredModel, curveFilteredModel);
+  if(dlg->exec()) {
     model->mixData[index] = mixd;
     emit modified();
     update();
@@ -188,6 +202,7 @@ void MixesPanel::gm_openMix(int index)
     mixInserted = false;
     update();
   }
+  delete dlg;
 }
 
 int MixesPanel::getMixerIndex(unsigned int dch)
@@ -528,4 +543,15 @@ void MixesPanel::clearMixes()
     emit modified();
     update();
   }
+}
+
+void MixesPanel::onModelDataAboutToBeUpdated()
+{
+  lock = true;
+}
+
+void MixesPanel::onModelDataUpdateComplete()
+{
+  update();
+  lock = false;
 }

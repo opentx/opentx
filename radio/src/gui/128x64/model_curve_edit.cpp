@@ -165,8 +165,13 @@ void menuModelCurveOne(event_t event)
       }
       break;
 
-#if defined(NAVIGATION_X7)
-    case EVT_KEY_LONG(KEY_MENU):
+#if defined(NAVIGATION_X7_TX12)
+    case EVT_KEY_FIRST(KEY_MODEL):
+      pushMenu(menuChannelsView);
+      killEvents(event);
+      break;
+#elif defined(NAVIGATION_X7)
+    case EVT_KEY_FIRST(KEY_MENU):
       pushMenu(menuChannelsView);
       killEvents(event);
       break;

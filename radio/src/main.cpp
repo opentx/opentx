@@ -22,8 +22,8 @@
 
 uint8_t currentSpeakerVolume = 255;
 uint8_t requiredSpeakerVolume = 255;
-uint8_t currentBacklightBright = 255;
-uint8_t requiredBacklightBright = 255;
+uint8_t currentBacklightBright = 0;
+uint8_t requiredBacklightBright = 0;
 uint8_t mainRequestFlags = 0;
 
 #if defined(STM32)

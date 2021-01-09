@@ -52,9 +52,10 @@ namespace Board {
     BOARD_JUMPER_T16,
     BOARD_RADIOMASTER_TX16S,
     BOARD_JUMPER_T18,
+    BOARD_RADIOMASTER_TX12,
   };
 
-  constexpr int BOARD_TYPE_MAX = BOARD_JUMPER_T18;
+  constexpr int BOARD_TYPE_MAX = BOARD_RADIOMASTER_TX12;
 
   enum PotType
   {
@@ -218,9 +219,19 @@ inline bool IS_RADIOMASTER_TX16S(Board::Type board)
   return board == Board::BOARD_RADIOMASTER_TX16S;
 }
 
+inline bool IS_RADIOMASTER_TX12(Board::Type board)
+{
+  return board == Board::BOARD_RADIOMASTER_TX12;
+}
+
 inline bool IS_FAMILY_T16(Board::Type board)
 {
   return board == Board::BOARD_JUMPER_T16 || board == Board::BOARD_RADIOMASTER_TX16S || board == Board::BOARD_JUMPER_T18;
+}
+
+inline bool IS_FAMILY_T12(Board::Type board)
+{
+  return board == Board::BOARD_JUMPER_T12 || board == Board::BOARD_RADIOMASTER_TX12;
 }
 
 inline bool IS_TARANIS_XLITE(Board::Type board)
@@ -273,14 +284,14 @@ inline bool IS_TARANIS_X9E(Board::Type board)
   return board == Board::BOARD_TARANIS_X9E;
 }
 
-inline bool IS_TARANIS(Board::Type board)
-{
-  return IS_TARANIS_X9(board) || IS_TARANIS_X7(board) || IS_TARANIS_X9LITE(board) || IS_TARANIS_XLITE(board) || IS_JUMPER_T12(board);
-}
-
 inline bool IS_TARANIS_SMALL(Board::Type board)
 {
-  return IS_TARANIS_X7(board) || IS_TARANIS_XLITE(board) || IS_TARANIS_X9LITE(board) || IS_JUMPER_T12(board);
+  return IS_TARANIS_X7(board) || IS_TARANIS_XLITE(board) || IS_TARANIS_X9LITE(board) || IS_FAMILY_T12(board);
+}
+
+inline bool IS_TARANIS(Board::Type board)
+{
+  return IS_TARANIS_X9(board) || IS_TARANIS_SMALL(board);
 }
 
 inline bool IS_HORUS_X10(Board::Type board)

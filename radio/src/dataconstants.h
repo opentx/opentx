@@ -193,7 +193,7 @@ enum TrainerMode {
   TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE,
   TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE,
 #endif
-#if defined(PCBTARANIS) || defined(AUX_SERIAL)
+#if defined(PCBTARANIS) || defined(AUX_SERIAL) || defined(AUX2_SERIAL)
   TRAINER_MODE_MASTER_BATTERY_COMPARTMENT,
 #endif
   TRAINER_MODE_MASTER_BLUETOOTH,
@@ -208,7 +208,13 @@ enum TrainerMode {
   };
 #endif
 
-#if defined(RADIO_FAMILY_T16) || (defined(RADIO_T12) && defined(INTERNAL_MODULE_MULTI)) || defined(ALLOW_TRAINER_MULTI)
+#if defined(RADIO_T16) && !defined(INTERNAL_MODULE_MULTI)
+#if  defined(BLUETOOTH)
+  #define TRAINER_MODE_MAX()             TRAINER_MODE_SLAVE_BLUETOOTH
+#else
+  #define TRAINER_MODE_MAX()             TRAINER_MODE_SLAVE
+#endif
+#elif defined(INTERNAL_MODULE_MULTI) || defined(ALLOW_TRAINER_MULTI)
   #define TRAINER_MODE_MAX()             TRAINER_MODE_MULTI
 #elif defined(BLUETOOTH)
   #define TRAINER_MODE_MAX()             TRAINER_MODE_SLAVE_BLUETOOTH
@@ -535,10 +541,6 @@ enum SwitchSources {
   SWSRC_TrimT5Up,
   SWSRC_TrimT6Down,
   SWSRC_TrimT6Up,
-#endif
-
-#if defined(PCBSKY9X)
-  SWSRC_REa,
 #endif
 
   SWSRC_FIRST_LOGICAL_SWITCH,

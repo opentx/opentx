@@ -36,6 +36,13 @@ class AbstractRawItemDataModel: public QStandardItemModel
     enum DataRoles { ItemIdRole = Qt::UserRole, ItemTypeRole, ItemFlagsRole, IsAvailableRole };
     Q_ENUM(DataRoles)
 
+    enum DataGroups {
+      NoneGroup     = 0x01,
+      NegativeGroup = 0x02,
+      PositiveGroup = 0x04
+    };
+    Q_ENUM(DataGroups)
+
     explicit AbstractRawItemDataModel(const GeneralSettings * const generalSettings, const ModelData * const modelData, QObject * parent = nullptr)  :
       QStandardItemModel(parent),
       generalSettings(generalSettings),
@@ -43,7 +50,11 @@ class AbstractRawItemDataModel: public QStandardItemModel
     {}
 
   public slots:
-    virtual void update() const = 0;
+    virtual void update() = 0;
+
+  signals:
+    void dataAboutToBeUpdated();
+    void dataUpdateComplete();
 
   protected:
     const GeneralSettings * generalSettings;
@@ -58,7 +69,7 @@ class RawSourceItemModel: public AbstractRawItemDataModel
     explicit RawSourceItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData, QObject * parent = nullptr);
 
   public slots:
-    void update() const override;
+    void update() override;
 
   protected:
     void setDynamicItemData(QStandardItem * item, const RawSource & src) const;
@@ -73,12 +84,57 @@ class RawSwitchItemModel: public AbstractRawItemDataModel
     explicit RawSwitchItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData, QObject * parent = nullptr);
 
   public slots:
-    void update() const override;
+    void update() override;
 
   protected:
     void setDynamicItemData(QStandardItem * item, const RawSwitch & rsw) const;
     void addItems(const RawSwitchType & type, int count);
 };
 
+
+class CurveItemModel: public AbstractRawItemDataModel
+{
+    Q_OBJECT
+  public:
+    explicit CurveItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData, QObject * parent = nullptr);
+
+  public slots:
+    void update() override;
+
+  protected:
+    void setDynamicItemData(QStandardItem * item, int index) const;
+};
+
+
+class CommonItemModels: public QObject
+{
+    Q_OBJECT
+  public:
+    enum RadioModelObjects {
+      RMO_CHANNELS,
+      RMO_CURVES,
+      RMO_FLIGHT_MODES,
+      RMO_GLOBAL_VARIABLES,
+      RMO_INPUTS,
+      RMO_LOGICAL_SWITCHES,
+      RMO_SCRIPTS,
+      RMO_TELEMETRY_SENSORS,
+      RMO_TIMERS
+    };
+    Q_ENUM(RadioModelObjects)
+
+    explicit CommonItemModels(const GeneralSettings * const generalSettings, const ModelData * const modelData, QObject * parent = nullptr);
+    ~CommonItemModels();
+
+    void update(const RadioModelObjects radioModelObjects);
+    RawSourceItemModel * rawSourceItemModel() const { return m_rawSourceItemModel; }
+    RawSwitchItemModel * rawSwitchItemModel() const { return m_rawSwitchItemModel; }
+    CurveItemModel * curveItemModel() const { return m_curveItemModel; }
+
+  private:
+    RawSourceItemModel *m_rawSourceItemModel;
+    RawSwitchItemModel *m_rawSwitchItemModel;
+    CurveItemModel *m_curveItemModel;
+};
 
 #endif // RAWITEMDATAMODELS_H

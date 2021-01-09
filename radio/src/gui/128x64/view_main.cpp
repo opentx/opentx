@@ -35,7 +35,6 @@
 #define PHASE_FLAGS   0
 #define VBATT_X       (6*FW-1)
 #define VBATT_Y       (2*FH)
-#define VBATTUNIT_X   (VBATT_X-1)
 #define VBATTUNIT_Y   (3*FH)
 #define REBOOT_X      (20*FW-3)
 #define BAR_HEIGHT    (BOX_WIDTH-1l) // don't remove the l here to force 16bits maths on 9X
@@ -184,8 +183,13 @@ void displayBattVoltage()
   lcdDrawSolidFilledRect(VBATT_X - 25, VBATT_Y + 9, 21, 5);
   lcdDrawSolidVerticalLine(VBATT_X - 4, VBATT_Y + 10, 3);
   uint8_t count = GET_TXBATT_BARS(20);
-  for (uint8_t i = 0; i < count; i += 2)
+  for (uint8_t i = 0; i < count; i += 2) {
+#if defined(USB_CHARGER)
+    if ((i >= count - 2) && usbChargerLed() && BLINK_ON_PHASE)  // Blink last segment on charge
+      continue;
+#endif
     lcdDrawSolidVerticalLine(VBATT_X - 24 + i, VBATT_Y + 10, 3);
+  }
   if (!IS_TXBATT_WARNING() || BLINK_ON_PHASE)
     lcdDrawSolidFilledRect(VBATT_X - 26, VBATT_Y, 24, 15);
 #else
@@ -209,7 +213,16 @@ void displayVoltageOrAlarm()
 #define displayVoltageOrAlarm() displayBattVoltage()
 #endif
 
-#if defined(NAVIGATION_X7)
+#if defined(NAVIGATION_X7_TX12)
+#define EVT_KEY_CONTEXT_MENU           EVT_KEY_LONG(KEY_ENTER)
+#define EVT_KEY_PREVIOUS_VIEW          EVT_KEY_FIRST(KEY_PAGEUP)
+#define EVT_KEY_NEXT_VIEW              EVT_KEY_FIRST(KEY_PAGEDN)
+#define EVT_KEY_NEXT_PAGE              EVT_ROTARY_RIGHT
+#define EVT_KEY_PREVIOUS_PAGE          EVT_ROTARY_LEFT
+#define EVT_KEY_MODEL_MENU             EVT_KEY_LONG(KEY_MODEL)
+#define EVT_KEY_GENERAL_MENU           EVT_KEY_LONG(KEY_SYS)
+#define EVT_KEY_TELEMETRY              EVT_KEY_FIRST(KEY_TELE)
+#elif defined(NAVIGATION_X7)
 #define EVT_KEY_CONTEXT_MENU           EVT_KEY_LONG(KEY_ENTER)
 #define EVT_KEY_NEXT_VIEW              EVT_KEY_BREAK(KEY_PAGE)
 #define EVT_KEY_NEXT_PAGE              EVT_ROTARY_RIGHT

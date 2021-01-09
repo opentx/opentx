@@ -539,14 +539,25 @@ int getStickTrimValue(int stick, int stickValue)
   return trim;
 }
 
-int getSourceTrimValue(int source, int stickValue=0)
+int getSourceTrimOrigin(int source)
 {
   if (source >= MIXSRC_Rud && source <= MIXSRC_Ail)
-    return getStickTrimValue(source - MIXSRC_Rud, stickValue);
+    return source - MIXSRC_Rud;
   else if (source >= MIXSRC_FIRST_INPUT && source <= MIXSRC_LAST_INPUT)
-    return getStickTrimValue(virtualInputsTrims[source - MIXSRC_FIRST_INPUT], stickValue);
+    return virtualInputsTrims[source - MIXSRC_FIRST_INPUT];
   else
+    return -1;
+}
+
+int getSourceTrimValue(int source, int stickValue=0)
+{
+  auto origin = getSourceTrimOrigin(source);
+  if (origin >= 0) {
+    return getStickTrimValue(origin, stickValue);
+  }
+  else {
     return 0;
+  }
 }
 
 uint8_t mixerCurrentFlightMode;
@@ -741,12 +752,15 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
       }
 
       if (applyOffsetAndCurve) {
-
-        //========== TRIMS ================
-        if (!(mode & e_perout_mode_notrims)) {
-          if (md->carryTrim == 0) {
-            v += getSourceTrimValue(md->srcRaw, v);
+        bool applyTrims = !(mode & e_perout_mode_notrims);
+        if (!applyTrims && g_model.thrTrim) {
+          auto origin = getSourceTrimOrigin(md->srcRaw);
+          if (origin == g_model.getThrottleStickTrimSource() - MIXSRC_FIRST_TRIM) {
+            applyTrims = true;
           }
+        }
+        if (applyTrims && md->carryTrim == 0) {
+          v += getSourceTrimValue(md->srcRaw, v);
         }
       }
 
