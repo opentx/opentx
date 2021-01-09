@@ -2082,3 +2082,8 @@ Adam Sosnowski
 SaltCtyRacingFPV
 Georg Bernhardt
 James Mildenhall
+Dave Plummer
+Ivan Mokris
+Patrick Daniels
+Stuart Olson
+Cory Znebel
