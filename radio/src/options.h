@@ -23,6 +23,7 @@
 #define OPENTX_OPTIONS_H
 
 static const char * const options[] = {
+  "synced",
 #if defined(AUTOUPDATE)
   "autoupdate",
 #endif
