@@ -25,7 +25,7 @@ def build(board, translation, srcdir):
         os.mkdir("output")
     path = tempfile.mkdtemp()
     os.chdir(path)
-    command = "cmake %s -DTRANSLATIONS=%s -DTBS_RELEASE=YES -DTEST_BUILD_WARNING=YES %s" % (cmake_options, translation, srcdir)
+    command = "cmake %s -DTRANSLATIONS=%s -DTBS_RELEASE=YES %s" % (cmake_options, translation, srcdir)
     print(command)
     os.system(command)
     os.system("make firmware -j16")
