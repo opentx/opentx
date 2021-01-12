@@ -76,6 +76,7 @@ const char RADIO_SETTINGS_YAML_PATH[] = RADIO_PATH "/radio.yml";
 #define SPORT_FIRMWARE_EXT  ".frk"
 #define FRSKY_FIRMWARE_EXT  ".frsk"
 #define MULTI_FIRMWARE_EXT  ".bin"
+#define ELRS_FIRMWARE_EXT   ".elrs"
 #define YAML_EXT            ".yml"
 
 #if defined(COLORLCD)

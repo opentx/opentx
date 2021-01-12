@@ -125,9 +125,13 @@ set(FIRMWARE_TARGET_SRC
   MEDSdcard.c
   )
 
+set(FIRMWARE_TARGET_SRC
+  ${FIRMWARE_TARGET_SRC}
+  telemetry_driver.cpp
+  )
+
 set(TARGET_SRC
   ${TARGET_SRC}
-  telemetry_driver.cpp
   adc_driver.cpp
   pulses_driver.cpp
   audio_driver.cpp

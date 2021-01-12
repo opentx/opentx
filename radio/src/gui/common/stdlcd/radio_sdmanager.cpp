@@ -227,14 +227,19 @@ void onSdManagerMenu(const char * result)
 #if defined(INTERNAL_MODULE_MULTI)
   else if (result == STR_FLASH_INTERNAL_MULTI) {
     getSelectionFullPath(lfn);
-    MultiDeviceFirmwareUpdate device(INTERNAL_MODULE);
+    MultiDeviceFirmwareUpdate device(INTERNAL_MODULE, MULTI_TYPE_MULTIMODULE);
     device.flashFirmware(lfn, drawProgressScreen);
   }
 #endif
   else if (result == STR_FLASH_EXTERNAL_MULTI) {
     getSelectionFullPath(lfn);
     MultiDeviceFirmwareUpdate device(EXTERNAL_MODULE);
-    device.flashFirmware(lfn, drawProgressScreen);
+    device.flashFirmware(lfn, MULTI_TYPE_MULTIMODULE, drawProgressScreen);
+  }
+  else if (result == STR_FLASH_EXTERNAL_ELRS) {
+    getSelectionFullPath(lfn);
+    MultiDeviceFirmwareUpdate device(EXTERNAL_MODULE);
+    device.flashFirmware(lfn, MULTI_TYPE_ELRS, drawProgressScreen);
   }
 #endif
 #if defined(BLUETOOTH)
@@ -403,6 +408,12 @@ void menuRadioSdManager(event_t _event)
 #endif
               POPUP_MENU_ADD_ITEM(STR_FLASH_EXTERNAL_MULTI);
             }
+          }
+
+          if (!READ_ONLY() && !strcasecmp(ext, ELRS_FIRMWARE_EXT)) {
+            TCHAR lfn[FF_MAX_LFN + 1];
+            getSelectionFullPath(lfn);
+            POPUP_MENU_ADD_ITEM(STR_FLASH_EXTERNAL_ELRS);
           }
 #endif
 #if defined(PCBTARANIS)

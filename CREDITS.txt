@@ -1,6 +1,7 @@
 [Main developers]
 Bertrand Songis (bsongis)
 André Bernet (kilrah)
+JC D. (3djc)
 Michael Blandford
 Damjan Adamic (projectkk2glider)
 Franck Aguerre (jivarofad)
@@ -9,6 +10,7 @@ Martin Hotař (mhotar)
 Maxim (Max) Paperno (mpaperno)
 Arne Schwabe (schwabe)
 Daniel Gorbea (dgatf)
+Neil Horne (elecpower)
 
 [Translators]
 [fr] Sebastien Charpentier (LapinFou)
@@ -1942,3 +1944,152 @@ Miklos Turcsin
 Edward Skerness
 Stefano Perinetti
 Toni Marchante
+Stuart Olson
+Peter Campbell
+Keith Wood
+Leo Duflou
+Michael Florey
+Gerhard Weixelbaumer
+Peter K Lehotsky
+Elisha Jones
+Joerg Sattler
+paul42
+Pascal Heg
+Bjorn Sorenssen
+Chris Payne
+Pascal Afflard
+Robert Boboryko
+Chris Whitehead
+David Bradley
+Ian Lever
+Phillip Barber
+Jan Bronee
+N Haasnoot
+Rick Smith
+Randall Grant
+Patrick Degouy
+Piotr Zdanowski
+David Gardner
+TMac FPV
+Bernard Thompson
+Mark Sutton
+Darren J Crane
+Michael Keyes
+Magnus Borg
+David Lorentzen
+Antony Smith
+Aleksandr Sarkisov
+Johannes Kuhne
+Kathleen Cilluffo
+David Hoffmann
+Alan Porter
+Arlé Mooldijk
+Tenbones
+Kim Bitsch Lauridsen
+Arthur Costerus
+Peter Harvey
+John Simpson
+Landy de los Santos
+Graham Ridley
+Schenk Peter
+Joseph Rex
+Richard Honeywell
+Roy Nixon
+Andrew Shewan
+David Bradley
+Alan Micklethwaite
+Susan Siegel
+Stephen Evans
+William Hallman
+Franck Michel
+László Gajcsi (monthly)
+Danny Koch
+Robert Martin
+Gavin Meerwald
+Frédéric Maix
+Frank Steinberg
+Kevin Berkefeld
+Marccos Colon
+Kerry Reynolds
+Kim Jeppesen
+Arthur Peters
+Andrew Lowes
+Anthony Hallo
+Bill Hill
+Gerard Falaise
+Kevin Raynor
+Lorenzo gh
+Jan Landeweer
+David Bland
+Manuel Spoerri
+Jeff Jacobs
+David Thorne
+Maddox Philip
+James Jewitt
+Justin Digby
+John Magnuson (monthly)
+Holger Lippert
+Hubert Huber
+David Blum
+Noam Kfir
+Mats gårdstad friberg
+Jesper Frickmann
+Alan Bunker
+Emanuel Kircher
+Barry Andersen
+Gabriel Formanek
+Timothy Justiniano
+Kelvin Garcia Urbina
+Jan Lau
+Choon Wei Jonathan Tan
+Daniel Navas
+Ray Moss
+Markus Frielingsdorf
+Michael Hirschauer
+Jesse Frey
+Philipp Koch
+Robert Rubio
+Dennis G Miller
+Leonardo Garcia Osuna
+Antonio Carrasco Pastor
+Musa Pinar
+Jens Moder
+Josef de Beer
+Chad Mofford
+Pim Pouw
+Kenth Jonsson
+Gordon Westfall
+Jean-Michel Saves
+Roberto Orsello
+Luboš Konvalinka
+Lawrence Dorn
+Michael Dittmann
+Bernd Schmiedel
+Raoul Piccioli
+Uwe Probst
+Glendon Satchell
+Trevor Collins
+Horst Grashauser
+Miguel José Cárdenas Herrera
+Mike Jennings
+José Bernardo
+Carlos Dangle
+Gordon Evans
+Pablo Peinado Abad
+Carl Payne
+Adam Sosnowski
+Гасак Сергей
+SaltCtyRacingFPV
+Georg Bernhardt
+James Mildenhall
+Dave Plummer
+Ivan Mokris
+Patrick Daniels
+Stuart Olson
+Cory Znebel
+Andrey Yarovoy
+Christian Pons
+Burt Pickard-Richardson
+Michal Mesaros
+Conrad Young
+Martin Mathes

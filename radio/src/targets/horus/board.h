@@ -637,7 +637,11 @@ void sportUpdatePowerInit();
 #endif
 
 // Aux serial port driver
-#define DEBUG_BAUDRATE                  115200
+#if defined(RADIO_TX16S)
+  #define DEBUG_BAUDRATE                  400000
+#else
+  #define DEBUG_BAUDRATE                  115200
+#endif
 #if defined(AUX_SERIAL_GPIO)
 extern uint8_t auxSerialMode;
 void auxSerialInit(unsigned int mode, unsigned int protocol);
@@ -711,6 +715,7 @@ void bluetoothDisable();
 extern DMAFifo<512> telemetryFifo;
 typedef DMAFifo<32> AuxSerialRxFifo;
 extern AuxSerialRxFifo auxSerialRxFifo;
+extern AuxSerialRxFifo aux2SerialRxFifo;
 extern volatile uint32_t externalModulePort;
 #endif
 

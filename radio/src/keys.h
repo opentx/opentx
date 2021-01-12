@@ -76,9 +76,22 @@ constexpr bool IS_VIRTUAL_KEY_EVENT(event_t event)
 
 // normal order of events is: FIRST, LONG, REPEAT, REPEAT, ..., BREAK
 #define EVT_KEY_MASK(e)                ((e) & 0x1F)
-#define EVT_KEY_FIRST(key)             ((key)|_MSK_KEY_FIRST)  // fired when key is pressed
-#define EVT_KEY_LONG(key)              ((key)|_MSK_KEY_LONG)   // fired when key is held pressed for a while
-#define EVT_KEY_REPT(key)              ((key)|_MSK_KEY_REPT)   // fired when key is held pressed long enough, fires multiple times with increasing speed
+
+constexpr event_t EVT_KEY_FIRST(uint8_t key)
+{
+  return (key | _MSK_KEY_FIRST);  // fired when key is pressed
+}
+
+constexpr event_t EVT_KEY_REPT(uint8_t key)
+{
+  return (key | _MSK_KEY_REPT);  // fired when key is held pressed long enough, fires multiple times with increasing speed
+}
+
+constexpr event_t EVT_KEY_LONG(uint8_t key)
+{
+  return (key | _MSK_KEY_LONG);  // fired when key is held pressed for a while
+}
+
 constexpr event_t EVT_KEY_BREAK(uint8_t key)
 {
   return (key | _MSK_KEY_BREAK);  // fired when key is released (short or long), but only if the event was not killed
@@ -94,10 +107,30 @@ constexpr bool IS_TRIM_EVENT(event_t event)
   return (IS_KEY_EVENT(event) && EVT_KEY_MASK(event) >= TRM_BASE);
 }
 
-#define IS_KEY_FIRST(evt)              (((evt) & _MSK_KEY_FLAGS) == _MSK_KEY_FIRST)
-#define IS_KEY_LONG(evt)               (((evt) & _MSK_KEY_FLAGS) == _MSK_KEY_LONG)
-#define IS_KEY_REPT(evt)               (((evt) & _MSK_KEY_FLAGS) == _MSK_KEY_REPT)
-#define IS_KEY_BREAK(evt)              (((evt) & _MSK_KEY_FLAGS) == _MSK_KEY_BREAK)
+inline bool IS_KEY_FIRST(event_t evt)
+{
+  return (evt & _MSK_KEY_FLAGS) == _MSK_KEY_FIRST;
+}
+
+inline bool IS_KEY_REPT(event_t evt)
+{
+  return (evt & _MSK_KEY_FLAGS) == _MSK_KEY_REPT;
+}
+
+inline bool IS_KEY_LONG(event_t evt)
+{
+  return (evt & _MSK_KEY_FLAGS) == _MSK_KEY_LONG;
+}
+
+inline bool IS_KEY_BREAK(event_t evt)
+{
+  return (evt & _MSK_KEY_FLAGS) == _MSK_KEY_BREAK;
+}
+
+inline bool IS_KEY_EVT(event_t evt, uint8_t key)
+{
+  return (evt & _MSK_KEY_FLAGS) && (EVT_KEY_MASK(evt) == key);
+}
 
 #if defined(PCBXLITE)
   #define EVT_ROTARY_BREAK             EVT_KEY_BREAK(KEY_ENTER)

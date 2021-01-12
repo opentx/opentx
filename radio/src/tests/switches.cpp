@@ -106,7 +106,7 @@ TEST(evalLogicalSwitches, playFile)
   char filename[AUDIO_FILENAME_MAXLEN+1];
 
 //#if defined(EEPROM)
-#define MODELNAME "MODEL01"
+#define MODELNAME TR_MODEL "01"
 /*#else
 #define MODELNAME "Model00"
 #endif*/

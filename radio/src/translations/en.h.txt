@@ -542,8 +542,10 @@
 #define TR_BEEPCOUNTDOWN               INDENT "Countdown"
 #define TR_PERSISTENT                  TR(INDENT "Persist.", INDENT "Persistent")
 #define TR_BACKLIGHT_LABEL             "Backlight"
-#define TR_BLONBRIGHTNESS              "ON brightness"
-#define TR_BLOFFBRIGHTNESS             "OFF brightness"
+#define TR_GHOST_MENU_LABEL            "GHOST MENU"
+#define TR_BLDELAY                     INDENT "Duration"
+#define TR_BLONBRIGHTNESS              INDENT "ON brightness"
+#define TR_BLOFFBRIGHTNESS             INDENT "OFF brightness"
 #define TR_KEYS_BACKLIGHT              "Keys backlight"
 #define TR_BLCOLOR                     "Color"
 #define TR_SPLASHSCREEN                "Splash screen"
@@ -737,6 +739,7 @@
 #define TR_NO_SDCARD                   "No SD card"
 #define TR_WAITING_FOR_RX              "Waiting for RX..."
 #define TR_WAITING_FOR_TX              "Waiting for TX..."
+#define TR_WAITING_FOR_MODULE          TR("Waiting module", "Waiting for module...")
 #define TR_NO_TOOLS                    "No tools available"
 #define TR_NORMAL                      "Normal"
 #define TR_NOT_INVERTED                "Not inv"
@@ -879,6 +882,7 @@
 #define TR_FLASH_INTERNAL_MULTI        TR("Flash Int. Multi", "Flash Internal Multi")
 #define TR_FLASH_EXTERNAL_MODULE       TR("Flash ext. module", "Flash external module")
 #define TR_FLASH_EXTERNAL_MULTI        TR("Flash Ext. Multi", "Flash External Multi")
+#define TR_FLASH_EXTERNAL_ELRS         TR("Flash Ext. ELRS", "Flash External ELRS")
 #define TR_FIRMWARE_UPDATE_ERROR       TR("FW update error", "Firmware update error")
 #define TR_FIRMWARE_UPDATE_SUCCESS     "Flash successful"
 #define TR_WRITING                     "Writing..."
@@ -1147,6 +1151,14 @@
 
 #if defined(MANUFACTURER_FRSKY)
   #define TR_ABOUT_HARDWARE_1          "FrSky"
+  #define TR_ABOUT_HARDWARE_2          TR("Hardware design/producer", "Hardware designer/producer")
+  #define TR_ABOUT_HARDWARE_3          "Firmware contributor"
+#elif defined(MANUFACTURER_RADIOMASTER)
+  #define TR_ABOUT_HARDWARE_1          "Radiomaster"
+  #define TR_ABOUT_HARDWARE_2          TR("Hardware design/producer", "Hardware designer/producer")
+  #define TR_ABOUT_HARDWARE_3          "Firmware contributor"
+#elif defined(MANUFACTURER_JUMPER)
+  #define TR_ABOUT_HARDWARE_1          "JumperRC"
   #define TR_ABOUT_HARDWARE_2          TR("Hardware design/producer", "Hardware designer/producer")
   #define TR_ABOUT_HARDWARE_3          "Firmware contributor"
 #elif defined(MANUFACTURER_RADIOMASTER)

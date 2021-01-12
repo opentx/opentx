@@ -48,6 +48,9 @@ inline int MAX_SWITCHES(Board::Type board, int version)
   if (IS_FAMILY_T12(board))
     return 8;
 
+  if (IS_TARANIS_X7(board))
+    return 8;
+
   return Boards::getCapability(board, Board::Switches);
 }
 
@@ -1406,8 +1409,7 @@ class CustomFunctionsConversionTable: public ConversionTable {
         addConversion(FuncAdjustGV1+i, val);
       val++;
       addConversion(FuncVolume, val++);
-      addConversion(FuncSetFailsafeInternalModule, val);
-      addConversion(FuncSetFailsafeExternalModule, val++);
+      addConversion(FuncSetFailsafe, val++);
       addConversion(FuncRangeCheckInternalModule, val);
       addConversion(FuncRangeCheckExternalModule, val++);
       addConversion(FuncBindInternalModule, val);
@@ -1519,9 +1521,6 @@ class ArmCustomFunctionField: public TransformedField {
         else if (fn.func >= FuncSetTimer1 && fn.func <= FuncSetTimer3) {
           *((uint16_t *)_param) = fn.param;
           *((uint8_t *)(_param+3)) = fn.func - FuncSetTimer1;
-        }
-        else if (fn.func >= FuncSetFailsafeInternalModule && fn.func <= FuncSetFailsafeExternalModule) {
-          *((uint16_t *)_param) = fn.func - FuncSetFailsafeInternalModule;
         }
         else if (fn.func >= FuncRangeCheckInternalModule && fn.func <= FuncRangeCheckExternalModule) {
           *((uint16_t *)_param) = fn.func - FuncRangeCheckInternalModule;

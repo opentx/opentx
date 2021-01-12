@@ -18,8 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _OPENTX_H_
-#define _OPENTX_H_
+#pragma once
 
 #include <stdlib.h>
 #include "definitions.h"
@@ -1115,6 +1114,7 @@ union ReusableBuffer
 #if defined(GHOST)
   struct {
     GhostMenuData line[GHST_MENU_LINES + 1];
+    uint8_t menuStatus;
     uint8_t menuAction;
     uint8_t buttonAction;
   } ghostMenu;
@@ -1313,4 +1313,3 @@ inline bool isAsteriskDisplayed()
 #include "thirdparty/libACCESS/libAccess.h"
 #endif
 
-#endif // _OPENTX_H_

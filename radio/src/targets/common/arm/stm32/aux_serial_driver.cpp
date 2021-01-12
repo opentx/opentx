@@ -150,7 +150,7 @@ void auxSerialInit(unsigned int mode, unsigned int protocol)
       break;
 
     case UART_MODE_SBUS_TRAINER:
-      auxSerialSetup(SBUS_BAUDRATE, false, USART_WordLength_9b, USART_Parity_Even, USART_StopBits_2); // 2 stop bits requires USART_WordLength_9b
+      auxSerialSetup(SBUS_BAUDRATE, true, USART_WordLength_9b, USART_Parity_Even, USART_StopBits_2); // 2 stop bits requires USART_WordLength_9b
       AUX_SERIAL_POWER_ON();
       break;
 
@@ -238,10 +238,6 @@ extern "C" void AUX_SERIAL_USART_IRQHandler(void)
 #if defined(LUA) & !defined(CLI)
       if (luaRxFifo && auxSerialMode == UART_MODE_LUA)
         luaRxFifo->push(data);
-#endif
-#if !defined(BOOT)
-      if (auxSerialMode == UART_MODE_SBUS_TRAINER)
-        trainerSbusFifo.push(data);
 #endif
     }
     status = AUX_SERIAL_USART->SR;
@@ -352,7 +348,7 @@ void aux2SerialInit(unsigned int mode, unsigned int protocol)
       break;
 
     case UART_MODE_SBUS_TRAINER:
-      aux2SerialSetup(SBUS_BAUDRATE, false, USART_WordLength_9b, USART_Parity_Even, USART_StopBits_2); // 2 stop bits requires USART_WordLength_9b
+      aux2SerialSetup(SBUS_BAUDRATE, true, USART_WordLength_9b, USART_Parity_Even, USART_StopBits_2); // 2 stop bits requires USART_WordLength_9b
       AUX2_SERIAL_POWER_ON();
       break;
 
@@ -437,11 +433,6 @@ extern "C" void AUX2_SERIAL_USART_IRQHandler(void)
 #if defined(LUA) & !defined(CLI)
       if (luaRxFifo && aux2SerialMode == UART_MODE_LUA) {
         luaRxFifo->push(data);
-      }
-#endif
-#if !defined(BOOT)
-      if (aux2SerialMode == UART_MODE_SBUS_TRAINER) {
-        trainerSbusFifo.push(data);
       }
 #endif
     }

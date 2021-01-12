@@ -562,8 +562,10 @@
 #define TR_BEEPCOUNTDOWN               TR(INDENT "Bip fin", INDENT "Compte à rebours")
 #define TR_PERSISTENT                  TR(INDENT "Persist.", INDENT "Persistant")
 #define TR_BACKLIGHT_LABEL             "Rétroéclairage"
-#define TR_BLONBRIGHTNESS              "Luminosité ON"
-#define TR_BLOFFBRIGHTNESS             "Luminosité OFF"
+#define TR_GHOST_MENU_LABEL            "GHOST MENU"
+#define TR_BLDELAY                     INDENT "Durée"
+#define TR_BLONBRIGHTNESS              INDENT "Luminosité ON"
+#define TR_BLOFFBRIGHTNESS             INDENT "Luminosité OFF"
 #define TR_KEYS_BACKLIGHT              "Keys backlight"
 #define TR_BLCOLOR                     "Couleur"
 #define TR_SPLASHSCREEN                "Logo d'accueil"
@@ -754,6 +756,7 @@
 #define TR_NO_SDCARD                   "Carte SD indisponible"
 #define TR_WAITING_FOR_RX              "Attente du RX..."
 #define TR_WAITING_FOR_TX              "Attente du TX..."
+#define TR_WAITING_FOR_MODULE          TR("Waiting module", "Waiting for module...")
 #define TR_NO_TOOLS                    "Pas d'outils dispo"
 #define TR_NORMAL                      "Normal"
 #define TR_NOT_INVERTED                "Non inv"
@@ -895,6 +898,7 @@
 #define TR_FLASH_INTERNAL_MULTI        TR("Flash Int. Multi", "Flash Internal Multi")
 #define TR_FLASH_EXTERNAL_MODULE       TR("Flasher module ext.", "Flasher module externe")
 #define TR_FLASH_EXTERNAL_MULTI        TR("Flash Ext. Multi", "Flash External Multi")
+#define TR_FLASH_EXTERNAL_ELRS         TR("Flash Ext. ELRS", "Flash External ELRS")
 #define TR_FIRMWARE_UPDATE_ERROR       TR("Erreur màj FW","Erreur de mise à jour")
 #define TR_FIRMWARE_UPDATE_SUCCESS     "Flash ok"
 #define TR_WRITING                     "Ecriture..."
@@ -1172,6 +1176,14 @@
 
 #if defined(MANUFACTURER_FRSKY)
   #define TR_ABOUT_HARDWARE_1          "FrSky"
+  #define TR_ABOUT_HARDWARE_2          "Développeur/fabricant"
+  #define TR_ABOUT_HARDWARE_3          "du matériel"
+#elif defined(MANUFACTURER_RADIOMASTER)
+  #define TR_ABOUT_HARDWARE_1          "Radiomaster"
+  #define TR_ABOUT_HARDWARE_2          "Développeur/fabricant"
+  #define TR_ABOUT_HARDWARE_3          "du matériel"
+#elif defined(MANUFACTURER_JUMPER)
+  #define TR_ABOUT_HARDWARE_1          "JumperRC"
   #define TR_ABOUT_HARDWARE_2          "Développeur/fabricant"
   #define TR_ABOUT_HARDWARE_3          "du matériel"
 #elif defined(MANUFACTURER_RADIOMASTER)

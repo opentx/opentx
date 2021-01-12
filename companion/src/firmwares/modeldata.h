@@ -338,6 +338,7 @@ class ModelData {
         value = swtch.toValue();
     }
     void sortMixes();
+    void updateResetParam(CustomFunctionData * cfd);
 };
 
 #endif // MODELDATA_H

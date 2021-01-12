@@ -26,8 +26,8 @@ uint8_t currentTrainerMode = 0xff;
 
 void checkTrainerSignalWarning()
 {
-  enum PpmInValidState_t {
-    PPM_IN_IS_NOT_USED=0,
+  enum {
+    PPM_IN_IS_NOT_USED = 0,
     PPM_IN_IS_VALID,
     PPM_IN_INVALID
   };
@@ -137,17 +137,20 @@ void checkTrainerSettings()
 #if defined(TRAINER_BATTERY_COMPARTMENT)
       case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:
 #if defined(AUX_SERIAL)
-        if (g_eeGeneral.auxSerialMode == UART_MODE_SBUS_TRAINER)
+        if (g_eeGeneral.auxSerialMode == UART_MODE_SBUS_TRAINER) {
           auxSerialSbusInit();
-        else
+          break;
+        }
 #endif
+
 #if defined(AUX2_SERIAL)
-        if (g_eeGeneral.aux2SerialMode == UART_MODE_SBUS_TRAINER)
+        if (g_eeGeneral.aux2SerialMode == UART_MODE_SBUS_TRAINER) {
           aux2SerialSbusInit();
-        else
+          break;
+        }
 #endif
-          init_trainer_capture();
-        break;
+
+        // no break
 #endif
 
       case TRAINER_MODE_MASTER_TRAINER_JACK:

@@ -614,6 +614,7 @@ bool menuScreenSetup(int index, event_t event)
           ZoneOptionValue * value = currentScreen->getOptionValue(o);
           if (editZoneOption(y, option, value, attr, EE_MODEL, event)) {
             currentScreen->update();
+            loadCustomScreens();
           }
         }
         else if (menuPageCount > 3 && o == optionsCount) {

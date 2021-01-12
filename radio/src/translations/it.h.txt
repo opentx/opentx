@@ -566,8 +566,10 @@
 #define TR_BEEPCOUNTDOWN       TR(INDENT "Conto rov", INDENT "Conto rovescia")
 #define TR_PERSISTENT          TR(INDENT "Persist.", INDENT "Persistente")
 #define TR_BACKLIGHT_LABEL     TR("Retroillu.", "Retroilluminazione")
-#define TR_BLONBRIGHTNESS      TR("Lumin. ON",  "Luminosità ON")
-#define TR_BLOFFBRIGHTNESS     TR("Lumin. OFF",  "Luminosità OFF")
+#define TR_GHOST_MENU_LABEL            "GHOST MENU"
+#define TR_BLDELAY             INDENT "Durata"
+#define TR_BLONBRIGHTNESS      TR(INDENT "Lumin. ON", INDENT "Luminosità ON")
+#define TR_BLOFFBRIGHTNESS     TR(INDENT "Lumin. OFF", INDENT "Luminosità OFF")
 #define TR_KEYS_BACKLIGHT              "Keys backlight"
 #define TR_BLCOLOR             "Colore"
 #define TR_SPLASHSCREEN        TR("Sch. avvio", "Schermata d'avvio")
@@ -756,6 +758,7 @@
 #define TR_NO_SDCARD           "No SDCard"
 #define TR_WAITING_FOR_RX              "Attendo la RX..."
 #define TR_WAITING_FOR_TX              "Attendo la TX..."
+#define TR_WAITING_FOR_MODULE          TR("Waiting module", "Waiting for module...")
 #define TR_NO_TOOLS                    "Tools non disp."
 #define TR_NORMAL                      "Normale"
 #define TR_NOT_INVERTED                "No inv."
@@ -894,6 +897,7 @@
 #define TR_FLASH_BLUETOOTH_MODULE      TR("Prog. mod. BT", INDENT "Prog. modulo Bluetooth")
 #define TR_FLASH_POWER_MANAGEMENT_UNIT TR("Prog. PMU", "Programma PMU")
 #define TR_CURRENT_VERSION             TR("Vers. currente ", "Versione corrente: ")
+#define TR_FLASH_EXTERNAL_ELRS         TR("Flash Ext. ELRS", "Flash External ELRS")
 #define TR_FLASH_INTERNAL_MODULE       TR("Prog. modulo int.", "Programma modulo interno")
 #define TR_FLASH_EXTERNAL_MODULE       TR("Prog. modulo est.", "Programma modulo esterno")
 #define TR_FLASH_INTERNAL_MULTI        TR("Prog. MULTI int.", "Programma MULTI interno")
