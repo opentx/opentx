@@ -935,7 +935,6 @@ void menuModelSetup(event_t event)
 #if defined(HARDWARE_EXTERNAL_MODULE)
       case ITEM_MODEL_SETUP_EXTERNAL_MODULE_TYPE:
 #endif
-
         lcdDrawTextAlignedLeft(y, INDENT TR_MODE);
         lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_EXTERNAL_MODULE_PROTOCOLS, moduleIdx == EXTERNAL_MODULE ? reusableBuffer.moduleSetup.newType : g_model.moduleData[moduleIdx].type, menuHorizontalPosition==0 ? attr : 0);
         if (isModuleXJT(moduleIdx))
