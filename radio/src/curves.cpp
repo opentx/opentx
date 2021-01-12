@@ -360,7 +360,10 @@ point_t getPoint(uint8_t curveIndex, uint8_t index)
 #if !defined(COLORLCD)
 point_t getPoint(uint8_t index)
 {
-  return getPoint(s_currIdxSubMenu, index);
+  point_t result = getPoint(s_currIdxSubMenu, index);
+  result.x = CURVE_CENTER_X + divRoundClosest(result.x * CURVE_SIDE_WIDTH, RESX);
+  result.y = CURVE_CENTER_Y + divRoundClosest(result.y * CURVE_SIDE_WIDTH, RESX);
+  return result;
 }
 
 int applyCurrentCurve(int x)

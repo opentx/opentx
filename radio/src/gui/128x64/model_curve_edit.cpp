@@ -219,8 +219,8 @@ void menuModelCurveOne(event_t event)
       lcdDrawNumber(7+2*FW+1, 5*FH, points[i], LEFT|(selectionMode==2?attr:0));
       
       // Selection square
-      lcdDrawFilledRect(point.x-1, point.y-2, 5, 5, SOLID, FORCE);
-      lcdDrawFilledRect(point.x, point.y-1, 3, 3, SOLID);
+      lcdDrawFilledRect(point.x - 2, point.y - 2, 5, 5, SOLID, FORCE);
+      lcdDrawFilledRect(point.x - 1, point.y - 1, 3, 3, SOLID);
       
       if (s_editMode > 0) {
         if (selectionMode == 1)

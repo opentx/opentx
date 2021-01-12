@@ -31,15 +31,12 @@
 void drawCurve(coord_t offset)
 {
   drawFunction(applyCurrentCurve, offset);
-  
-  uint8_t i = 0;
-  do {
+
+  CurveHeader & crv = g_model.curves[s_currIdxSubMenu];
+  for (uint8_t i = 0; i < crv.points + 5; i++) {
     point_t point = getPoint(i);
-    i++;
-    if (point.x == 0)
-      break;
-    lcdDrawFilledRect(point.x - offset, point.y - 1, 3, 3, SOLID, FORCE); // do markup square
-  } while (true);
+    lcdDrawFilledRect(point.x - 1 - offset, point.y - 1, 3, 3, SOLID, FORCE); // do markup square
+  }
 }
 
 void menuModelCurvesAll(event_t event)
