@@ -440,7 +440,7 @@
 #define TR_COPYINGMODEL        "Copying model..."
 #define TR_MOVINGMODEL         "Moving model..."
 #define TR_LOADINGMODEL        "Loading model..."
-#define STR_NAME                "Name"
+#define TR_NAME                "Name"
 #define TR_MODELNAME           "Model Name"
 #define TR_PHASENAME           "Mode Name"
 #define TR_MIXNAME             "Mix Name"
@@ -982,7 +982,6 @@
 #define TR_ANALOGS_BTN                 BUTTON(TR("Analog","Analogs"))
 #define TR_TOUCH_NOTFOUND              "Touch hardware not found"
 #define TR_TOUCH_EXIT                  "Touch screen to exit"
-#define TR_CALIBRATION                   "Calibration"
 #define TR_SET                 "[Set]"
 #define TR_TRAINER             "Trainer"
 #define TR_CHANS                       "Chans"

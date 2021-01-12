@@ -986,7 +986,6 @@
 #define TR_ANALOGS_BTN                 BUTTON(TR("Anas", "Analogs"))
 #define TR_TOUCH_NOTFOUND              "Touch hardware not found"
 #define TR_TOUCH_EXIT                  "Touch screen to exit"
-#define TR_CALIBRATION                 "Calibration"
 #define TR_SET                         BUTTON("Déf")
 #define TR_TRAINER                     "Ecolage"
 #define TR_CHANS                       "Chans"

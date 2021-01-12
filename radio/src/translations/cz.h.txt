@@ -308,9 +308,6 @@
 #define LEN_VSWITCHES                  "\003"
 #define LEN_VSRCRAW                    "\004"
 
-#define LEN_INPUTNAMES                 "\004"
-#define TR_INPUTNAMES                  "Sme\0""Vys\0""Pln\0""Kri\0"
-
 #define TR_STICKS_VSRCRAW              STR_CHAR_STICK "Smě"  STR_CHAR_STICK "Výš"  STR_CHAR_STICK "Pln"  STR_CHAR_STICK "Kři"
 
 #if defined(PCBHORUS)
@@ -920,6 +917,8 @@
 #define TR_COPY                        "Kopírovat"
 #define TR_MOVE                        "Přesunout"
 #define TR_PASTE                       "Vložit"
+#define TR_PASTE_AFTER                 "Paste after"
+#define TR_PASTE_BEFORE                "Paste before"
 #define TR_DELETE                      "Odstranit"
 #define TR_INSERT                      "Přidat"
 #define TR_RESET_FLIGHT                "Let"
@@ -973,6 +972,8 @@
 #define TR_TELEMETRY_TYPE              TR("Typ", "Typ telemetrie")
 #define TR_TELEMETRY_SENSORS           "Senzory"
 #define TR_VALUE                       "Hodnota"
+#define TR_REPEAT                      "Repeat"
+#define TR_ENABLE                      "Enable"
 #define TR_TOPLCDTIMER                 "Stopky horního LCD"
 #define TR_UNIT                        "Jednotky"
 #define TR_TELEMETRY_NEWSENSOR         INDENT "Přidat senzor ručně"

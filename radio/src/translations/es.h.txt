@@ -430,7 +430,7 @@
 #define TR_COPYINGMODEL        "Copiando modelo.."
 #define TR_MOVINGMODEL         "Moviendo modelo..."
 #define TR_LOADINGMODEL        "Cargando modelo..."
-#define STR_NAME                "Nombre"
+#define TR_NAME                "Nombre"
 #define TR_MODELNAME           TR("Nom. modelo", "Nombre modelo")
 #define TR_PHASENAME           "Nombre fase "
 #define TR_MIXNAME             TR("Nom. mezcla", "Nombre mezcla")
@@ -550,7 +550,7 @@
 #define TR_SPLASHSCREEN        "Pantalla inicio"
 #define TR_PWR_ON_DELAY        TR("Atraso On", "Atraso encendido")
 #define TR_PWR_OFF_DELAY       TR("Atraso Off", "Atraso apagado")
-#define TR_THROTTLEWARNING     TR("Aviso-A", INDENT "Aviso acelerador")
+#define TR_THROTTLE_WARNING    TR("Aviso-A", INDENT "Aviso acelerador")
 #define TR_SWITCHWARNING       TR("Aviso-I", INDENT "Aviso interruptor")
 #define TR_POTWARNINGSTATE     TR(INDENT "Pot&Slid.", INDENT "Pots & sliders")
 #define TR_SLIDERWARNING       TR(INDENT "Pos. slid.", INDENT "Posiciones slider")
@@ -567,10 +567,9 @@
 #define TR_MODESRC             "Modo\006% Fuente"
 #define TR_MULTIPLIER          "Multiplicar"
 #define TR_CAL                 "Cal"
-#define TR_CALIBRATION                 "Calibration"
 #define TR_VTRIM               "Trim- +"
 #define TR_BG                  "BG:"
-#define TR_CALIB_DONE                  "Calibration completed"
+#define TR_CALIB_DONE          "Calibration completed"
 #if defined(PCBHORUS)
   #define TR_MENUTOSTART       "Presiona [Enter] para empezar"
   #define TR_SETMIDPOINT       "Centra sticks/pots/sliders y presiona [Enter]"
@@ -629,6 +628,7 @@
 #define TR_CHANNELS2FAILSAFE   "Canales=>Failsafe"
 #define TR_CHANNEL2FAILSAFE    "Canal=>Failsafe"
 #define TR_MENUMODELSEL        TR("MODELOS", "SELECCIÓN MODELO")
+#define TR_MENU_MODEL_SETUP            TR("SETUP", "MODEL SETUP")
 #define TR_MENUSETUP           TR("CONFIG. MODELO", "CONFIGURACIÓN MODELO")
 #define TR_MENUFLIGHTMODE      "MODO DE VUELO"
 #define TR_MENUFLIGHTMODES     "MODOS DE VUELO"
@@ -703,9 +703,10 @@
 #define TR_SYNCMENU                    "Sync " TR_ENTER
 #define TR_LIMIT                       INDENT"Límite"
 #define TR_MINRSSI                     "Min Rssi"
+#define TR_FLYSKY_TELEMETRY            TR("FlySky RSSI #", "Use FlySky RSSI value without rescalling")
 #define TR_LATITUDE                    "Latitud"
 #define TR_LONGITUDE                   "Longitud"
-#define TR_GPSCOORD                    TR("Coords GPS", INDENT "Formato coordenadas")
+#define TR_GPS_COORDS_FORMAT           TR("Coords GPS", INDENT "Formato coordenadas")
 #define TR_VARIO                       TR("Vario", "Variómetro")
 #define TR_PITCH_AT_ZERO               INDENT "Pitch en cero"
 #define TR_PITCH_AT_MAX                INDENT "Pitch en máx"
@@ -775,7 +776,7 @@
 #define TR_EEPROMWARN          "EEPROM"
 #define TR_STORAGE_WARNING     "ALMAC."
 #define TR_EEPROM_CONVERTING   "Convirtiendo EEPROM"
-#define TR_THROTTLEWARN        TR("ACELERAD.", "ACELERADOR")
+#define TR_THROTTLE_UPPERCASE        TR("ACELERAD.", "ACELERADOR")
 #define TR_ALARMSWARN          "ALARMAS"
 #define TR_SWITCHWARN          TR("INTERRUP.", "INTERRUPTOR")
 #define TR_FAILSAFEWARN        "FAILSAFE"

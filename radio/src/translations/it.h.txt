@@ -455,7 +455,7 @@
 #define TR_COPYINGMODEL        "Copia in corso.."
 #define TR_MOVINGMODEL         "Spostamento..."
 #define TR_LOADINGMODEL        "Caricamento..."
-#define STR_NAME                "Nome"
+#define TR_NAME                "Nome"
 #define TR_MODELNAME            TR("Nome Mode.", "Nome Modello")
 #define TR_PHASENAME           "Nome fase"
 #define TR_MIXNAME             "Nome mix"
@@ -556,7 +556,7 @@
 #define TR_INACTIVITYALARM     INDENT "Inattività"
 #define TR_MEMORYWARNING       TR(INDENT "Avv. Mem.", INDENT "Avviso Memoria")
 #define TR_ALARMWARNING        INDENT "Spegni suono"
-#define TR_RSSISHUTDOWNALARM   TR(INDENT "RSSI Shut.", INDENT "Control. RSSI al Shutdown")
+#define TR_RSSI_SHUTDOWN_ALARM TR(INDENT "RSSI Shut.", INDENT "Control. RSSI al Shutdown")
 #define TR_MODEL_STILL_POWERED "Ricevente ancora connessa"
 #define TR_MODEL_SHUTDOWN              "Shutdown?"
 #define TR_PRESS_ENTER_TO_CONFIRM      "Premi [ENT] per confermare"
@@ -592,7 +592,6 @@
 #define TR_MODESRC             "Modo\006% Origine"
 #define TR_MULTIPLIER          "Moltiplica"
 #define TR_CAL                 "Cal"
-#define TR_CALIBRATION                 "Calibration"
 #define TR_VTRIM               "Trim- +"
 #define TR_BG                  "BG:"
 #define TR_CALIB_DONE                  "Calibration completed"

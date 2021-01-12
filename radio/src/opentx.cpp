@@ -373,17 +373,11 @@ void defaultInputs()
     expo->chn = i;
     expo->weight = 100;
     expo->mode = 3; // TODO constant
-#if defined(TRANSLATIONS_CZ)
-    for (int c = 0; c < 4; c++) {
-      g_model.inputNames[i][c] = STR_INPUTNAMES[1 + 4 * stick_index + c];
-    }
-#else
     for (int c = 0; c < 3; c++) {
       g_model.inputNames[i][c] = STR_VSRCRAW[2 + 4 * stick_index + c];
     }
 #if LEN_INPUT_NAME > 3
     g_model.inputNames[i][3] = '\0';
-#endif
 #endif
   }
   storageDirty(EE_MODEL);
