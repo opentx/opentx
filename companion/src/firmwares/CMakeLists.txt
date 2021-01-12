@@ -32,8 +32,14 @@ list(APPEND firmwares_HDRS
   moduledata.h
   )
 
+set(firmwares_QT
+  curvereference.h
+  )
+
+qt5_wrap_cpp(firmwares_SRCS ${firmwares_QT})
+
 add_library(firmwares ${firmwares_SRCS} ${firmwares_HDRS})
-target_link_libraries(firmwares ${CPN_COMMON_LIB} Qt5::Core Qt5::Xml Qt5::Widgets)
+target_link_libraries(firmwares ${CPN_COMMON_LIB} datamodels Qt5::Core Qt5::Xml Qt5::Widgets)
 target_include_directories(firmwares
   PRIVATE
     ${CMAKE_SOURCE_DIR}

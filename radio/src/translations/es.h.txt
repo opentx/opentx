@@ -452,10 +452,10 @@
   #define TR_OUTPUT_TYPE       INDENT "Output"
 #endif
 #define TR_PROTO               TR(INDENT"Proto",INDENT"Protocolo")
-#define TR_PPMFRAME            "Trama PPM"
+#define TR_PPMFRAME            INDENT "Trama PPM"
 #define TR_REFRESHRATE         TR(INDENT "Refresco", INDENT "Velocidad refresco")
 #define STR_WARN_BATTVOLTAGE   TR(INDENT "Salida es VBAT: ", INDENT "Aviso: señal salida es VBAT: ")
-#define TR_WARN_5VOLTS                 "Warning: output level is 5 volts"
+#define TR_WARN_5VOLTS                 "Aviso: nivel de salida 5 voltios"
 #define TR_MS                  "ms"
 #define TR_FREQUENCY           INDENT "Frequencia"
 #define TR_SWITCH              TR("Interr.", "Interruptor")
@@ -541,6 +541,7 @@
 #define TR_BEEPCOUNTDOWN       TR(INDENT"Cta. atrás", INDENT"Cuenta atrás")
 #define TR_PERSISTENT          TR(INDENT"Persisten.", INDENT"Persistente")
 #define TR_BACKLIGHT_LABEL     "Luz fondo"
+#define TR_GHOST_MENU_LABEL            "GHOST MENU"
 #define TR_BLDELAY             INDENT"Duración"
 #define TR_BLONBRIGHTNESS      INDENT"MAS brillo"
 #define TR_BLOFFBRIGHTNESS     INDENT"MENOS brillo"
@@ -735,6 +736,7 @@
 #define TR_NO_SDCARD                   "No SDCARD"
 #define TR_WAITING_FOR_RX              "Esperando a RX..."
 #define TR_WAITING_FOR_TX              "Esperando a TX..."
+#define TR_WAITING_FOR_MODULE          TR("Waiting module", "Waiting for module...")
 #define TR_NO_TOOLS                    "No hay utils"
 #define TR_NORMAL                      "Normal"
 #define TR_NOT_INVERTED                "No inv"
@@ -877,6 +879,7 @@
 #define TR_FLASH_INTERNAL_MULTI        TR("Flash Multi int", "Flash Multi interno")
 #define TR_FLASH_EXTERNAL_MODULE       TR("Flash módulo ext", "Flash módulo externo")
 #define TR_FLASH_EXTERNAL_MULTI        TR("Flash Multi ext", "Flash Multi externo")
+#define TR_FLASH_EXTERNAL_ELRS         TR("Flash Ext. ELRS", "Flash External ELRS")
 #define TR_FIRMWARE_UPDATE_ERROR       TR("Error act FW", "Error actualiz. firmware")
 #define TR_FIRMWARE_UPDATE_SUCCESS     "Flash ok"
 #define TR_WRITING                     "Escribiendo..."
@@ -962,8 +965,8 @@
 #define TR_DEBUG                       "Debug"
 #define TR_KEYS_BTN                BUTTON(TR("SW","Switches"))
 #define TR_ANALOGS_BTN                 BUTTON(TR("Analog","Analogs"))
-#define TR_TOUCH_NOTFOUND              "Touch hardware not found"
-#define TR_TOUCH_EXIT                  "Touch screen to exit"
+#define TR_TOUCH_NOTFOUND              "Hardware táctil no encontrado"
+#define TR_TOUCH_EXIT                  "Tocar pantalla para salir"
 #define TR_CALIBRATION                   "Calibración"
 #define TR_SET                 "[Ajuste]"
 #define TR_TRAINER             "Entrenador"
@@ -981,8 +984,8 @@
 #define TR_UNIT                "Unidad"
 #define TR_TELEMETRY_NEWSENSOR INDENT "Añadir sensor..."
 #define TR_CHANNELRANGE        INDENT "Canales"
-#define TR_AFHDS3_RX_FREQ              TR("RX freq.", "RX frequency")
-#define TR_AFHDS3_ONE_TO_ONE_TELEMETRY TR("Unicast/Tel.", "Unicast/Telemetry")
+#define TR_AFHDS3_RX_FREQ              TR("RX freq.", "RX frequencia")
+#define TR_AFHDS3_ONE_TO_ONE_TELEMETRY TR("Unicast/Tel.", "Unicast/Telemetría")
 #define TR_AFHDS3_ONE_TO_MANY          "Multicast"
 #define TR_AFHDS3_ACTUAL_POWER         TR("Act. pow", "Actual power")
 #define TR_AFHDS3_POWER_SOURCE         TR("Power src.", "Power source")
@@ -1047,7 +1050,7 @@
 #define LEN_SPORT_UPDATE_POWER_MODES   "\004"
 #define TR_SPORT_UPDATE_POWER_MODES    "AUTO""ON\0 "
 #define TR_NO_TELEMETRY_SCREENS        TR("No hay pant. telemetría", "No hay pantallas de telemetría")
-#define TR_TOUCH_PANEL                 "Touch panel:"
+#define TR_TOUCH_PANEL                 "Pantalla táctil:"
 
 // Horus and Taranis column headers
 #define TR_PHASES_HEADERS_NAME         "Nombre"
@@ -1146,8 +1149,16 @@
 #define TR_ABOUT_MARTIN_1      "Martin Hotar"
 #define TR_ABOUT_MARTIN_2      "Dise\201o gráfico"
 
-#if defined(PCBTARANIS)
+#if defined(MANUFACTURER_FRSKY)
   #define TR_ABOUT_HARDWARE_1  "FrSky"
+  #define TR_ABOUT_HARDWARE_2  "Productor dise\201o de hardware"
+  #define TR_ABOUT_HARDWARE_3  "Colaborador firmware"
+#elif defined(MANUFACTURER_RADIOMASTER)
+  #define TR_ABOUT_HARDWARE_1  "Radiomaster"
+  #define TR_ABOUT_HARDWARE_2  "Productor dise\201o de hardware"
+  #define TR_ABOUT_HARDWARE_3  "Colaborador firmware"
+#elif defined(MANUFACTURER_JUMPER)
+  #define TR_ABOUT_HARDWARE_1  "JumperRC"
   #define TR_ABOUT_HARDWARE_2  "Productor dise\201o de hardware"
   #define TR_ABOUT_HARDWARE_3  "Colaborador firmware"
 #else
@@ -1225,9 +1236,9 @@
 #define TR_ADD_MAIN_VIEW         "Añadir vista pral."
 #define TR_BACKGROUND_COLOR    "Color de fondo"
 #define TR_MAIN_COLOR          "Color principal"
-#define TR_BAR2_COLOR                  "Secondary bar color"
-#define TR_BAR1_COLOR                  "Main bar color"
-#define TR_TEXT_COLOR                  "Text color"
+#define TR_BAR2_COLOR                  "Color barra secundaria"
+#define TR_BAR1_COLOR                  "Color barra principal"
+#define TR_TEXT_COLOR                  "Color texto"
 #define TR_TEXT_VIEWER         "Visor de texto"
 
 #define TR_MENU_INPUTS          STR_CHAR_INPUT "Entradas"

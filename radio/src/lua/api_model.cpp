@@ -1518,16 +1518,16 @@ Get Telemetry Sensor parameters
 
 @param sensor (unsigned number) sensor number (use 0 for sensor 1)
 
-@retval nil requested logical switch does not exist
+@retval nil requested sensor does not exist
 
-@retval table logical switch data:
- * `func` (number) function index
- * `v1` (number) V1 value (index)
- * `v2` (number) V2 value (index or value)
- * `v3` (number) V3 value (index or value)
- * `and` (number) AND switch index
- * `delay` (number) delay (time in 1/10 s)
- * `duration` (number) duration (time in 1/10 s)
+@retval table with sensor data:
+ * `type` (number) 0 = custom, 1 = calculated
+ * `name` (string) Name
+ * `unit` (number) See list of units in the appendix of the OpenTX Lua Reference Guide
+ * `prec` (number) Number of decimals
+ * `id`   (number) Only custom sensors
+ * `instance` (number) Only custom sensors
+ * `formula` (number) Only calculated sensors. 0 = Add etc. see list of formula choices in Companion popup
 
 @status current Introduced in 2.3.0
 */
@@ -1552,6 +1552,28 @@ static int luaModelGetSensor(lua_State *L)
   else {
     lua_pushnil(L);
   }
+  return 1;
+}
+
+/*luadoc
+@function model.resetSensor(sensor)
+
+Reset Telemetry Sensor parameters
+
+@param sensor (unsigned number) sensor number (use 0 for sensor 1)
+
+@retval nil
+
+@status current Introduced in 2.3.11
+*/
+static int luaModelResetSensor(lua_State *L)
+{
+  unsigned int idx = luaL_checkunsigned(L, 1);
+  if (idx < MAX_TELEMETRY_SENSORS) {
+    telemetryItems[idx].clear();
+  }
+
+  lua_pushnil(L);
   return 1;
 }
 
@@ -1588,5 +1610,6 @@ const luaL_Reg modelLib[] = {
   { "getGlobalVariable", luaModelGetGlobalVariable },
   { "setGlobalVariable", luaModelSetGlobalVariable },
   { "getSensor", luaModelGetSensor },
+  { "resetSensor", luaModelResetSensor },
   { NULL, NULL }  /* sentinel */
 };

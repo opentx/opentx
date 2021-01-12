@@ -399,10 +399,8 @@ void debugPutc(const char c);
 
 // Telemetry driver
 void telemetryPortInit(uint32_t baudrate, uint8_t mode);
-inline void telemetryPortSetDirectionOutput()
-{
-}
-uint32_t telemetryTransmitPending();
+void telemetryPortSetDirectionOutput();
+void telemetryPortSetDirectionInput();
 void telemetryTransmitBuffer(const uint8_t * buffer, uint32_t size);
 void rxPdcUsart( void (*pChProcess)(uint8_t x) );
 void sportSendBuffer(const uint8_t * buffer, uint32_t size);

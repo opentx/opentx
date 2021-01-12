@@ -22,8 +22,6 @@
 
 uint8_t createGhostMenuControlFrame(uint8_t * frame, int16_t * pulses)
 {
-  moduleState[EXTERNAL_MODULE].counter = GHST_FRAME_CHANNEL;
-
   uint8_t * buf = frame;
 #if SPORT_MAX_BAUDRATE < 400000
   *buf++ = g_eeGeneral.telemetryBaudrate == GHST_TELEMETRY_RATE_400K ? GHST_ADDR_MODULE_SYM : GHST_ADDR_MODULE_ASYM;
@@ -118,5 +116,7 @@ void setupPulsesGhost()
       extmodulePulsesData.ghost.length = createGhostMenuControlFrame(pulses, &channelOutputs[g_model.moduleData[EXTERNAL_MODULE].channelsStart]);
     else
       extmodulePulsesData.ghost.length = createGhostChannelsFrame(pulses, &channelOutputs[g_model.moduleData[EXTERNAL_MODULE].channelsStart]);
+
+    moduleState[EXTERNAL_MODULE].counter = GHST_FRAME_CHANNEL;
   }
 }

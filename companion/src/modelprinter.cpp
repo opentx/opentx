@@ -24,6 +24,7 @@
 #include "boards.h"
 #include "helpers_html.h"
 #include "appdata.h"
+#include "adjustmentreference.h"
 
 #include <QApplication>
 #include <QPainter>
@@ -396,7 +397,7 @@ QString ModelPrinter::printInputLine(const ExpoData & input)
     str += input.srcRaw.toString(&model, &generalSettings).toHtmlEscaped();
   }
 
-  str += " " + tr("Weight").toHtmlEscaped() + QString("(%1)").arg(Helpers::getAdjustmentString(input.weight, &model, true).toHtmlEscaped());
+  str += " " + tr("Weight(%1)").arg(AdjustmentReference(input.weight).toString(&model, true)).toHtmlEscaped();
   if (input.curve.value)
     str += " " + input.curve.toString(&model).toHtmlEscaped();
 
@@ -405,19 +406,18 @@ QString ModelPrinter::printInputLine(const ExpoData & input)
     str += " " + flightModesStr.toHtmlEscaped();
 
   if (input.swtch.type != SWITCH_TYPE_NONE)
-    str += " " + tr("Switch").toHtmlEscaped() + QString("(%1)").arg(input.swtch.toString(getCurrentBoard(), &generalSettings)).toHtmlEscaped();
+    str += " " + tr("Switch(%1)").arg(input.swtch.toString(getCurrentBoard(), &generalSettings)).toHtmlEscaped();
 
 
   if (firmware->getCapability(VirtualInputs)) {
-    if (input.carryTrim>0)
-      str += " " + tr("NoTrim").toHtmlEscaped();
-    else if (input.carryTrim<0)
-      str += " " + RawSource(SOURCE_TYPE_TRIM, (-(input.carryTrim)-1)).toString(&model, &generalSettings).toHtmlEscaped();
+    if (input.carryTrim > 0)
+      str += " " + tr("NoTrim");
+    else if (input.carryTrim < 0)
+      str += " " + RawSource(SOURCE_TYPE_TRIM, (-(input.carryTrim) - 1)).toString(&model, &generalSettings).toHtmlEscaped();
   }
 
   if (input.offset)
-    str += " " + tr("Offset(%1)").arg(Helpers::getAdjustmentString(input.offset, &model)).toHtmlEscaped();
-
+    str += " " + tr("Offset(%1)").arg(AdjustmentReference(input.offset).toString(&model)).toHtmlEscaped();
   if (firmware->getCapability(HasExpoNames) && input.name[0])
     str += QString(" [%1]").arg(input.name).toHtmlEscaped();
 
@@ -440,7 +440,7 @@ QString ModelPrinter::printMixerLine(const MixData & mix, bool showMultiplex, in
   }
   // highlight source if needed
   QString source = mix.srcRaw.toString(&model, &generalSettings).toHtmlEscaped();
-  if ( (mix.srcRaw.type == SOURCE_TYPE_CH) && (mix.srcRaw.index+1 == (int)highlightedSource) ) {
+  if ( (mix.srcRaw.type == SOURCE_TYPE_CH) && (mix.srcRaw.index + 1 == (int)highlightedSource) ) {
     source = "<b>" + source + "</b>";
   }
   str += "&nbsp;" + source;
@@ -448,35 +448,35 @@ QString ModelPrinter::printMixerLine(const MixData & mix, bool showMultiplex, in
   if (mix.mltpx == MLTPX_MUL && !showMultiplex)
     str += " " + tr("MULT!").toHtmlEscaped();
   else
-    str += " " + tr("Weight") + QString("(%1)").arg(Helpers::getAdjustmentString(mix.weight, &model, true)).toHtmlEscaped();
+    str += " " + tr("Weight(%1)").arg(AdjustmentReference(mix.weight).toString(&model, true)).toHtmlEscaped();
 
   QString flightModesStr = printFlightModes(mix.flightModes);
   if (!flightModesStr.isEmpty())
     str += " " + flightModesStr.toHtmlEscaped();
 
   if (mix.swtch.type != SWITCH_TYPE_NONE)
-    str += " " + tr("Switch") + QString("(%1)").arg(mix.swtch.toString(getCurrentBoard(), &generalSettings)).toHtmlEscaped();
+    str += " " + tr("Switch(%1)").arg(mix.swtch.toString(getCurrentBoard(), &generalSettings)).toHtmlEscaped();
 
   if (mix.carryTrim > 0)
-    str += " " + tr("NoTrim").toHtmlEscaped();
+    str += " " + tr("NoTrim");
   else if (mix.carryTrim < 0)
     str += " " + RawSource(SOURCE_TYPE_TRIM, (-(mix.carryTrim)-1)).toString(&model, &generalSettings);
 
   if (firmware->getCapability(HasNoExpo) && mix.noExpo)
     str += " " + tr("No DR/Expo").toHtmlEscaped();
   if (mix.sOffset)
-    str += " " + tr("Offset") + QString("(%1)").arg(Helpers::getAdjustmentString(mix.sOffset, &model)).toHtmlEscaped();
+    str += " " + tr("Offset(%1)").arg(AdjustmentReference(mix.sOffset).toString(&model)).toHtmlEscaped();
   if (mix.curve.value)
     str += " " + mix.curve.toString(&model).toHtmlEscaped();
   int scale = firmware->getCapability(SlowScale);
   if (scale == 0)
     scale = 1;
   if (mix.delayDown || mix.delayUp)
-    str += " " + tr("Delay") + QString("(u%1:d%2)").arg((double)mix.delayUp/scale).arg((double)mix.delayDown/scale).toHtmlEscaped();
+    str += " " + tr("Delay(u%1:d%2)").arg((double)mix.delayUp / scale).arg((double)mix.delayDown / scale).toHtmlEscaped();
   if (mix.speedDown || mix.speedUp)
-    str += " " + tr("Slow") + QString("(u%1:d%2)").arg((double)mix.speedUp/scale).arg((double)mix.speedDown/scale).toHtmlEscaped();
+    str += " " + tr("Slow(u%1:d%2)").arg((double)mix.speedUp / scale).arg((double)mix.speedDown / scale).toHtmlEscaped();
   if (mix.mixWarn)
-    str += " " + tr("Warn") + QString("(%1)").arg(mix.mixWarn).toHtmlEscaped();
+    str += " " + tr("Warn(%1)").arg(mix.mixWarn).toHtmlEscaped();
   if (firmware->getCapability(HasMixerNames) && mix.name[0])
     str += QString(" [%1]").arg(mix.name).toHtmlEscaped();
   return str;
@@ -496,13 +496,13 @@ QString ModelPrinter::printFlightModes(unsigned int flightModes)
 {
   int numFlightModes = firmware->getCapability(FlightModes);
   if (numFlightModes && flightModes) {
-    if (flightModes == (unsigned int)(1<<numFlightModes) - 1) {
+    if (flightModes == (unsigned int)(1 << numFlightModes) - 1) {
       return tr("Disabled in all flight modes");
     }
     else {
       QStringList list;
-      for (int i=0; i<numFlightModes; i++) {
-        if (!(flightModes & (1<<i))) {
+      for (int i = 0; i < numFlightModes; i++) {
+        if (!(flightModes & (1 << i))) {
           list << printFlightModeName(i);
         }
       }
@@ -517,13 +517,13 @@ QString ModelPrinter::printInputFlightModes(unsigned int flightModes)
 {
   int numFlightModes = firmware->getCapability(FlightModes);
   if (numFlightModes && flightModes) {
-    if (flightModes == (unsigned int)(1<<numFlightModes) - 1) {
+    if (flightModes == (unsigned int)(1 << numFlightModes) - 1) {
       return tr("None");
     }
     else {
       QStringList list;
-      for (int i=0; i<numFlightModes; i++) {
-        if (!(flightModes & (1<<i))) {
+      for (int i = 0; i < numFlightModes; i++) {
+        if (!(flightModes & (1 << i))) {
           list << printFlightModeName(i);
         }
       }

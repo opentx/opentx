@@ -1248,29 +1248,6 @@
   #define EXTMODULE_USART_TX_DMA_STREAM         DMA2_Stream6
   #define EXTMODULE_USART_RX_DMA_CHANNEL        DMA_Channel_5
   #define EXTMODULE_USART_RX_DMA_STREAM         DMA2_Stream1
-#elif defined(RADIO_X9DP2019)
-  #define EXTMODULE_RCC_AHB1Periph      (RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_DMA2)
-  #define EXTMODULE_RCC_APB2Periph      (RCC_APB2Periph_TIM8 | RCC_APB2Periph_USART6)
-  #define EXTMODULE_PWR_GPIO            GPIOD
-  #define EXTMODULE_PWR_GPIO_PIN        GPIO_Pin_8  // PD.08
-  #define EXTERNAL_MODULE_PWR_ON()      GPIO_SetBits(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN)
-  #define EXTERNAL_MODULE_PWR_OFF()     GPIO_ResetBits(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN)
-  #define IS_EXTERNAL_MODULE_ON()       (GPIO_ReadInputDataBit(EXTMODULE_PWR_GPIO, EXTMODULE_PWR_GPIO_PIN) == Bit_SET)
-  #define EXTMODULE_TX_GPIO             GPIOC
-  #define EXTMODULE_TX_GPIO_PIN         GPIO_Pin_7  // PC.07
-  #define EXTMODULE_TX_GPIO_PinSource   GPIO_PinSource7
-  #define EXTMODULE_TIMER               TIM8
-  #define EXTMODULE_TIMER_TX_GPIO_AF    GPIO_AF_TIM8 // TIM8_CH2
-  #define EXTMODULE_TIMER_CC_IRQn       TIM8_CC_IRQn
-  #define EXTMODULE_TIMER_CC_IRQHandler TIM8_CC_IRQHandler
-  #define EXTMODULE_TIMER_DMA_CHANNEL         DMA_Channel_7 // TIM8_UP
-  #define EXTMODULE_TIMER_DMA_STREAM          DMA2_Stream1 // TIM8_UP
-  #define EXTMODULE_TIMER_DMA_STREAM_IRQn       DMA2_Stream1_IRQn
-  #define EXTMODULE_TIMER_DMA_STREAM_IRQHandler DMA2_Stream1_IRQHandler
-  #define EXTMODULE_TIMER_DMA_FLAG_TC           DMA_IT_TCIF1
-  #define EXTMODULE_TIMER_OUTPUT_ENABLE         TIM_CCER_CC2E
-  #define EXTMODULE_TIMER_OUTPUT_POLARITY       TIM_CCER_CC2NP
-  #define EXTMODULE_TIMER_FREQ                  (PERI2_FREQUENCY * TIMER_MULT_APB2)
 #else
   #define EXTMODULE_RCC_AHB1Periph              (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_DMA2)
   #define EXTMODULE_RCC_APB2Periph              RCC_APB2Periph_TIM8
@@ -1454,6 +1431,16 @@
   #define PCBREV_RCC_AHB1Periph         0
 #endif
 
+
+// USB Charger
+#if defined(USB_CHARGER)
+  #define USB_CHARGER_RCC_AHB1Periph      RCC_AHB1Periph_GPIOB
+  #define USB_CHARGER_GPIO                GPIOB
+  #define USB_CHARGER_GPIO_PIN            GPIO_Pin_5  // PB.05
+#else
+  #define USB_CHARGER_RCC_AHB1Periph      0
+#endif
+
 // S.Port update connector
 #if defined(PCBXLITE)
   #define SPORT_MAX_BAUDRATE            250000 // not tested
@@ -1469,7 +1456,7 @@
   #define SPORT_UPDATE_PWR_GPIO_PIN     GPIO_Pin_3  // PB.03
   #define GPIO_SPORT_UPDATE_PWR_GPIO_ON  GPIO_SetBits
   #define GPIO_SPORT_UPDATE_PWR_GPIO_OFF GPIO_ResetBits
-#elif defined(PCBX7)
+#elif defined(RADIO_X7)
   #define SPORT_MAX_BAUDRATE            250000 // < 400000
   #define SPORT_UPDATE_RCC_AHB1Periph   RCC_AHB1Periph_GPIOB
   #define SPORT_UPDATE_PWR_GPIO         GPIOB

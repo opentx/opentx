@@ -1677,7 +1677,7 @@ void menuModelSetup(event_t event)
 #endif
 #if defined(AFHDS3)
       else if (isModuleAFHDS3(EXTERNAL_MODULE)) {
-        lcdDrawText(INDENT_WIDTH, y, STR_RFPOWER);
+        lcdDrawText(INDENT_WIDTH, y, STR_RF_POWER);
         lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_AFHDS3_POWERS, g_model.moduleData[EXTERNAL_MODULE].afhds3.runPower, LEFT | attr);
         if (attr)
           CHECK_INCDEC_MODELVAR(event, g_model.moduleData[EXTERNAL_MODULE].afhds3.runPower, afhds3::RUN_POWER::RUN_POWER_FIRST, afhds3::RUN_POWER::RUN_POWER_LAST);

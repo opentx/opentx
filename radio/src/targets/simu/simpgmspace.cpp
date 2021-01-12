@@ -42,6 +42,8 @@ char * main_thread_error = nullptr;
 bool simu_shutdown = false;
 bool simu_running = false;
 
+uint32_t telemetryErrors = 0;
+
 #if defined(STM32)
 GPIO_TypeDef gpioa, gpiob, gpioc, gpiod, gpioe, gpiof, gpiog, gpioh, gpioi, gpioj;
 TIM_TypeDef tim1, tim2, tim3, tim4, tim5, tim6, tim7, tim8, tim9, tim10;
@@ -467,6 +469,47 @@ void sportUpdatePowerOff()
 }
 
 void sportUpdatePowerInit()
+{
+}
+
+void telemetryPortSetDirectionInput()
+{
+}
+
+void telemetryPortSetDirectionOutput()
+{
+}
+
+void rxPdcUsart( void (*pChProcess)(uint8_t x) )
+{
+}
+
+void telemetryPortInit(uint32_t baudrate, uint8_t mode)
+{
+}
+
+bool telemetryGetByte(uint8_t * byte)
+{
+  return false;
+}
+
+void telemetryClearFifo()
+{
+}
+
+void telemetryPortInvertedInit(uint32_t baudrate)
+{
+}
+
+void sportSendByte(uint8_t byte)
+{
+}
+
+void sportSendBuffer(const uint8_t * buffer, uint32_t count)
+{
+}
+
+void check_telemetry_exti()
 {
 }
 

@@ -18,8 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#ifndef OPENTX_MULTI_FIRMWARE_H
-#define OPENTX_MULTI_FIRMWARE_H
+#pragma once
 
 #include "ff.h"
 
@@ -101,6 +100,11 @@ class MultiFirmwareInformation {
     const char * readV2Signature(const char * buffer);
 };
 
+enum MultiModuleType {
+  MULTI_TYPE_MULTIMODULE = 0,
+  MULTI_TYPE_ELRS,
+};
+
 class MultiDeviceFirmwareUpdate {
   public:
     explicit MultiDeviceFirmwareUpdate(ModuleIndex module):
@@ -108,10 +112,8 @@ class MultiDeviceFirmwareUpdate {
     {
     }
 
-    bool flashFirmware(const char * filename, ProgressHandler progressHandler);
+    bool flashFirmware(const char * filename, MultiModuleType type, ProgressHandler progressHandler);
 
   protected:
     ModuleIndex module;
 };
-
-#endif //OPENTX_MULTI_FIRMWARE_H

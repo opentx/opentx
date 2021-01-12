@@ -339,6 +339,106 @@ TEST_F(TrimsTest, CopySticksToOffset)
   EXPECT_EQ(g_model.limitData[1].offset, -97);
 }
 
+TEST_F(TrimsTest, MoveTrimsToOffsets)
+{
+  // No trim idle only
+  g_model.thrTrim = 0;
+  anaInValues[THR_STICK] = 0;
+  setTrimValue(0, MIXSRC_TrimThr - MIXSRC_FIRST_TRIM, 100);
+  setTrimValue(0, MIXSRC_TrimEle - MIXSRC_FIRST_TRIM, -100);
+  evalMixes(1);
+  EXPECT_EQ(channelOutputs[2], 200);  // THR output value is reflecting 100 trim
+  moveTrimsToOffsets();
+  EXPECT_EQ(getTrimValue(0, MIXSRC_TrimThr - MIXSRC_FIRST_TRIM), 0);  // back to neutral
+  EXPECT_EQ(g_model.limitData[2].offset, 195); // value transferred
+  EXPECT_EQ(getTrimValue(0, MIXSRC_TrimEle - MIXSRC_FIRST_TRIM), 0);  // back to neutral
+  EXPECT_EQ(g_model.limitData[1].offset, -195); // value transferred
+  evalMixes(1);
+  EXPECT_EQ(channelOutputs[2], 200); // THR output value is still reflecting 100 trim
+}
+
+TEST_F(TrimsTest, MoveTrimsToOffsetsWithTrimIdle)
+{
+  // Trim idle only
+  g_model.thrTrim = 1;
+  anaInValues[THR_STICK] = -1024;  // Min stick
+  g_model.limitData[2].offset = 0;
+  g_model.limitData[1].offset = 0;
+  setTrimValue(0, MIXSRC_TrimThr - MIXSRC_FIRST_TRIM, 100);
+  setTrimValue(0, MIXSRC_TrimEle - MIXSRC_FIRST_TRIM, -100);
+  evalMixes(1);
+  EXPECT_EQ(channelOutputs[2], -574);  // THR output value is reflecting 100 trim idle
+  moveTrimsToOffsets();
+
+  // Trim affecting Throttle should not be affected
+  EXPECT_EQ(getTrimValue(0, MIXSRC_TrimThr - MIXSRC_FIRST_TRIM), 100);  // unchanged
+  EXPECT_EQ(g_model.limitData[2].offset, 0); // unchanged
+
+  // Other trims should
+  EXPECT_EQ(getTrimValue(0, MIXSRC_TrimEle - MIXSRC_FIRST_TRIM), 0);  // back to neutral
+  EXPECT_EQ(g_model.limitData[1].offset, -195); // value transferred
+  evalMixes(1);
+  EXPECT_EQ(channelOutputs[2], -574);  // THR output value is still reflecting 100 trim idle
+}
+
+TEST_F(TrimsTest, MoveTrimsToOffsetsWithCrossTrims)
+{
+  // No trim idle only
+  // Cross trims
+  g_model.thrTrim = 0;
+  g_model.limitData[2].offset = 0;
+  g_model.limitData[1].offset = 0;
+  g_model.thrTrimSw = MIXSRC_TrimEle - MIXSRC_FIRST_TRIM;
+  ExpoData *expo = expoAddress(THR_STICK);
+  expo->carryTrim = TRIM_ELE;
+  expo = expoAddress(ELE_STICK);
+  expo->carryTrim = TRIM_THR;
+
+  anaInValues[THR_STICK] = 0;
+  setTrimValue(0, MIXSRC_TrimEle - MIXSRC_FIRST_TRIM, 100);
+  setTrimValue(0, MIXSRC_TrimThr - MIXSRC_FIRST_TRIM, -100);
+  evalMixes(1);
+  EXPECT_EQ(channelOutputs[2], 200);  // THR output value is reflecting 100 Ele trim
+  moveTrimsToOffsets();
+  evalMixes(1);
+  EXPECT_EQ(channelOutputs[2], 200);  // THR output value remains unchanged
+  EXPECT_EQ(getTrimValue(0, MIXSRC_TrimThr - MIXSRC_FIRST_TRIM), 0);  // back to neutral
+  EXPECT_EQ(g_model.limitData[2].offset, 195); // value transferred
+  EXPECT_EQ(getTrimValue(0, MIXSRC_TrimEle - MIXSRC_FIRST_TRIM), 0);  // back to neutral
+  EXPECT_EQ(g_model.limitData[1].offset, -195); // value transferred
+}
+
+TEST_F(TrimsTest, MoveTrimsToOffsetsWithCrosstrimsAndTrimIdle)
+{
+  // Trim idle only
+  // Cross trims
+  g_model.limitData[2].offset = 0;
+  g_model.limitData[1].offset = 0;
+  g_model.thrTrim = 1;
+  g_model.thrTrimSw = MIXSRC_TrimEle - MIXSRC_FIRST_TRIM;
+  ExpoData *expo = expoAddress(THR_STICK);
+  expo->carryTrim = TRIM_ELE;
+  expo = expoAddress(ELE_STICK);
+  expo->carryTrim = TRIM_THR;
+
+  anaInValues[THR_STICK] = -1024;  // Min stick
+  setTrimValue(0, MIXSRC_TrimEle - MIXSRC_FIRST_TRIM, 100);
+  setTrimValue(0, MIXSRC_TrimThr - MIXSRC_FIRST_TRIM, -100);
+  evalMixes(1);
+  EXPECT_EQ(channelOutputs[2], -574);  // THR output value is reflecting 100 ele trim idle
+  moveTrimsToOffsets();
+
+  // Trim affecting Throttle (now Ele because of crosstrims) should not be affected
+  EXPECT_EQ(getTrimValue(0, MIXSRC_TrimEle - MIXSRC_FIRST_TRIM), 100);  // unchanged
+  EXPECT_EQ(g_model.limitData[2].offset, 0); // THR chan offset unchanged
+
+  // Other trims should
+  EXPECT_EQ(getTrimValue(0, MIXSRC_TrimThr - MIXSRC_FIRST_TRIM), 0);  // back to neutral
+  EXPECT_EQ(g_model.limitData[1].offset, -195); // Ele chan offset transfered
+  evalMixes(1);
+  EXPECT_EQ(channelOutputs[2], -574);  // THR output value is still reflecting 100 trim idle
+}
+
 TEST_F(TrimsTest, InstantTrim)
 {
   anaInValues[AIL_STICK] = 50;

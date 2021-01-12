@@ -25,7 +25,8 @@
 #include "eeprominterface.h"
 
 class GVarGroup;
-class CurveGroup;
+class RawItemFilteredModel;
+class CurveReferenceUIManager;
 
 namespace Ui {
   class MixerDialog;
@@ -34,7 +35,8 @@ namespace Ui {
 class MixerDialog : public QDialog {
     Q_OBJECT
   public:
-    MixerDialog(QWidget *parent, ModelData & model, MixData *mixdata, GeneralSettings & generalSettings, Firmware * firmware);
+    MixerDialog(QWidget *parent, ModelData & model, MixData *mixdata, GeneralSettings & generalSettings, Firmware * firmware,
+                  RawItemFilteredModel * rawSourceModel, RawItemFilteredModel * rawSwitchModel, RawItemFilteredModel * curveItemModel);
     ~MixerDialog();
 
   protected:
@@ -57,7 +59,7 @@ class MixerDialog : public QDialog {
     bool lock;
     GVarGroup * gvWeightGroup;
     GVarGroup * gvOffsetGroup;
-    CurveGroup * curveGroup;
+    CurveReferenceUIManager * curveGroup;
     QCheckBox * cb_fp[CPN_MAX_FLIGHT_MODES];
 };
 
