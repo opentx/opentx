@@ -375,7 +375,7 @@ void defaultInputs()
     expo->mode = 3; // TODO constant
 #if defined(TRANSLATIONS_CZ)
     for (int c = 0; c < 4; c++) {
-      g_model.inputNames[i][c] = STR_INPUTNAMES[1+4*(stick_index-1)+c];
+      g_model.inputNames[i][c] = STR_INPUTNAMES[1 + 4 * stick_index + c];
     }
 #else
     for (int c = 0; c < 3; c++) {
