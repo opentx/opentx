@@ -9,11 +9,7 @@ set(CJK_FONT_BOLD "Noto/NotoSansCJKsc-Bold")
 #set(FONT "Ubuntu/Ubuntu-Regular")
 #set(FONT_BOLD "Ubuntu/Ubuntu-Bold")
 
-if(TRANSLATIONS STREQUAL CN)
-  set(subset all)
-else()
-  string(TOLOWER ${TRANSLATIONS} subset)
-endif()
+string(TOLOWER ${TRANSLATIONS} subset)
 
 add_truetype_font_target(9      9  ${subset} none)
 add_truetype_font_target(13     13 ${subset} none)

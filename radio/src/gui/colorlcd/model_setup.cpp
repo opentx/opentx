@@ -1024,9 +1024,8 @@ void ModelSetupPage::build(FormWindow * window)
     TimerData * timer = &g_model.timers[i];
 
     // Timer label
-    char timerLabel[8];
-    strAppendStringWithIndex(timerLabel, STR_TIMER, i + 1);
-    new Subtitle(window, grid.getLineSlot(), timerLabel);
+    strAppendStringWithIndex(reusableBuffer.moduleSetup.msg, STR_TIMER, i + 1);
+    new Subtitle(window, grid.getLineSlot(), reusableBuffer.moduleSetup.msg);
     grid.nextLine();
 
     auto group = new FormGroup(window, grid.getFieldSlot(), FORM_BORDER_FOCUS_ONLY | PAINT_CHILDREN_FIRST);

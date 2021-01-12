@@ -10,10 +10,10 @@ standard_chars = """ !"#$%&'()*+,-./0123456789:;<=>?°ABCDEFGHIJKLMNOPQRSTUVWXYZ
 extra_chars = "".join([chr(0x10000+i) for i in range(21)])
 
 
-def chinese_chars():
+def cjk_chars(lang):
     charset = set()
     tools_path = os.path.dirname(os.path.realpath(__file__))
-    with open(os.path.join(tools_path, "../radio/src/translations/cn.h.txt"), encoding='utf-8') as f:
+    with open(os.path.join(tools_path, "../radio/src/translations/%s.h.txt" % lang), encoding='utf-8') as f:
         data = f.read()
         for c in data:
             if 0x4E00 <= ord(c) <= 0x9FFF:
@@ -36,7 +36,8 @@ special_chars = {
     "pl": "ąćęłńóśżźĄĆĘŁŃÓŚŻŹ",
     "pt": "ÁáÂâÃãÀàÇçÉéÊêÍíÓóÔôÕõÚú",
     "se": "åäöÅÄÖ",
-    "cn": "".join(chinese_chars())
+    "cn": "".join(cjk_chars("cn")),
+    "tw": "".join(cjk_chars("tw")),
 }
 
 subset_lowercase = {
@@ -53,7 +54,7 @@ subset_lowercase = {
 
 def get_chars(subset):
     result = standard_chars + extra_chars
-    if subset == "all":
+    if False: # subset == "all":
         for key, chars in special_chars.items():
             result += "".join([char for char in chars if char not in result])
     else:
@@ -64,11 +65,11 @@ def get_chars(subset):
 
 def get_chars_encoding(subset):
     result = {}
-    if subset == "all":
+    if subset in ("cn", "tw"):
         chars = get_chars(subset)
         for char in chars:
-            if char in special_chars["cn"]:
-                index = special_chars["cn"].index(char) + 1
+            if char in special_chars[subset]:
+                index = special_chars[subset].index(char) + 1
                 if index >= 0x100:
                     index += 1
                 result[char] = "\\%03o\\%03o" % (0xFE + ((index >> 8) & 0x01), index & 0xFF)

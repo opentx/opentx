@@ -98,8 +98,8 @@ extern coord_t lcdNextPos;
   extern volatile uint32_t lcdInputs ;
 #endif
 
-void lcdDrawChar(coord_t x, coord_t y, char c);
-void lcdDrawChar(coord_t x, coord_t y, char c, LcdFlags flags);
+void lcdDrawChar(coord_t x, coord_t y, uint8_t c);
+void lcdDrawChar(coord_t x, coord_t y, uint8_t c, LcdFlags flags);
 void lcdDrawCenteredText(coord_t y, const char * s, LcdFlags flags = 0);
 void lcdDrawText(coord_t x, coord_t y, const char * s, LcdFlags flags);
 void lcdDrawTextAtIndex(coord_t x, coord_t y, const char * s, uint8_t idx, LcdFlags flags);

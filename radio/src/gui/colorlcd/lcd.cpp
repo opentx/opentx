@@ -29,10 +29,7 @@ uint8_t getMappedChar(uint8_t c)
 {
   uint8_t result;
 
-  if (c < 0x80)
-    result = c - 0x20;
-  else
-    result = c - 0x80 + 32 + 26 + 6 + 26 + 5; // 96;
+  result = c - 0x20;
 
 //  TRACE("getMappedChar '%c' (0x%x) = %d", c, c, result);
 
@@ -61,7 +58,7 @@ int getTextWidth(const char * s, int len, LcdFlags flags)
 
   int result = 0;
   for (int i = 0; len == 0 || i < len; ++i) {
-    unsigned int c = uint8_t(*s);
+    unsigned c = uint8_t(*s);
     if (!c) {
       break;
     }

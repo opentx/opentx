@@ -22,6 +22,7 @@
 
 const unsigned char font_5x7[]  = {
 #include "font_05x07.lbm"
+#include "font_05x07_extra.lbm"
 #if defined(TRANSLATIONS_DE)
 #include "font_de_05x07.lbm"
 #elif defined(TRANSLATIONS_CZ)
@@ -127,10 +128,6 @@ const unsigned char font_22x38_num[]  = {
 
 const unsigned char font_4x6_extra[]  = {
 #include "font_04x06_extra.lbm"
-};
-
-const unsigned char font_5x7_extra[]  = {
-#include "font_05x07_extra.lbm"
 };
 
 const unsigned char font_10x14_extra[]  = {
