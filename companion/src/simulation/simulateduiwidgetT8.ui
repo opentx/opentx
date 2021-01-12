@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>641</width>
-    <height>272</height>
+    <width>480</width>
+    <height>300</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -18,18 +18,18 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>641</width>
-    <height>272</height>
+    <width>480</width>
+    <height>300</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>641</width>
-    <height>272</height>
+    <width>480</width>
+    <height>300</height>
    </size>
   </property>
   <property name="windowTitle">
-   <string notr="true">Taranis T8 Simulator</string>
+   <string notr="true">Radiomaster T8 Simulator</string>
   </property>
   <property name="styleSheet">
    <string notr="true">background-color: qlineargradient(spread:reflect, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(255, 255, 255, 255), stop:0.757062 rgba(241, 238, 238, 255), stop:1 rgba(247, 245, 245, 255));</string>
@@ -60,14 +60,14 @@
      </property>
      <property name="minimumSize">
       <size>
-       <width>196</width>
-       <height>253</height>
+       <width>113</width>
+       <height>280</height>
       </size>
      </property>
      <property name="maximumSize">
       <size>
-       <width>196</width>
-       <height>253</height>
+       <width>113</width>
+       <height>280</height>
       </size>
      </property>
      <property name="styleSheet">
@@ -85,14 +85,14 @@
      </property>
      <property name="minimumSize">
       <size>
-       <width>256</width>
-       <height>128</height>
+       <width>254</width>
+       <height>158</height>
       </size>
      </property>
      <property name="maximumSize">
       <size>
-       <width>424</width>
-       <height>128</height>
+       <width>254</width>
+       <height>158</height>
       </size>
      </property>
      <property name="styleSheet">
@@ -110,14 +110,14 @@
      </property>
      <property name="minimumSize">
       <size>
-       <width>189</width>
-       <height>253</height>
+       <width>113</width>
+       <height>280</height>
       </size>
      </property>
      <property name="maximumSize">
       <size>
-       <width>189</width>
-       <height>253</height>
+       <width>113</width>
+       <height>280</height>
       </size>
      </property>
      <property name="styleSheet">
@@ -135,14 +135,14 @@
      </property>
      <property name="minimumSize">
       <size>
-       <width>261</width>
-       <height>101</height>
+       <width>254</width>
+       <height>35</height>
       </size>
      </property>
      <property name="maximumSize">
       <size>
-       <width>261</width>
-       <height>101</height>
+       <width>254</width>
+       <height>35</height>
       </size>
      </property>
      <property name="styleSheet">
@@ -160,14 +160,14 @@
      </property>
      <property name="minimumSize">
       <size>
-       <width>261</width>
-       <height>24</height>
+       <width>254</width>
+       <height>113</height>
       </size>
      </property>
      <property name="maximumSize">
       <size>
-       <width>261</width>
-       <height>24</height>
+       <width>254</width>
+       <height>113</height>
       </size>
      </property>
      <property name="styleSheet">

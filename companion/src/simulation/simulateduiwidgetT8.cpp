@@ -14,29 +14,29 @@ SimulatedUIWidgetT8::SimulatedUIWidgetT8(SimulatorInterface *simulator, QWidget 
   // add actions in order of appearance on the help menu
 
   act = new RadioUiAction(5, QList<int>() << Qt::Key_Up, SIMU_STR_HLP_KEY_UP, SIMU_STR_HLP_ACT_MDL);
-  addRadioWidget(ui->rightbuttons->addArea(QRect(60, 5, 90, 60), "T8/right-mdl.png", act));
+  addRadioWidget(ui->rightbuttons->addArea(QRect(25, 40, 35, 20), "T8/right-mdl.png", act));
 
-  m_mouseMidClickAction = new RadioUiAction(1, QList<int>() << Qt::Key_Enter << Qt::Key_Return, SIMU_STR_HLP_KEYS_ACTIVATE, SIMU_STR_HLP_ACT_ROT_DN);
-  addRadioWidget(ui->rightbuttons->addArea(QRect(45, 100, 70, 120), "T8/right-ent.png", m_mouseMidClickAction));
+  act = new RadioUiAction(6, QList<int>() << Qt::Key_Enter << Qt::Key_Return, SIMU_STR_HLP_KEYS_GO_UP, SIMU_STR_HLP_ACT_UP);
+  addRadioWidget(ui->rightbuttons->addArea(QRect(25, 90, 35, 20), "T8/right-up.png", act));
+
+  act = new RadioUiAction(7, QList<int>() << Qt::Key_Enter << Qt::Key_Return, SIMU_STR_HLP_KEYS_GO_DN, SIMU_STR_HLP_ACT_DN);
+  addRadioWidget(ui->rightbuttons->addArea(QRect(25, 135, 35, 20), "T8/right-dn.png", act));
+
+  act = new RadioUiAction(1, QList<int>() << Qt::Key_Enter << Qt::Key_Return, SIMU_STR_HLP_KEYS_ACTIVATE, SIMU_STR_HLP_ACT_ENT);
+  addRadioWidget(ui->rightbuttons->addArea(QRect(25, 180, 35, 20), "T8/right-ent.png", act));
 
   act = new RadioUiAction(4, QList<int>() << Qt::Key_Left, SIMU_STR_HLP_KEY_LFT, SIMU_STR_HLP_ACT_SYS);
-  addRadioWidget(ui->leftbuttons->addArea(QRect(35, 5, 80, 50), "T8/left-sys.png", act));
-
-  act = new RadioUiAction(6, QList<int>() << Qt::Key_Right, SIMU_STR_HLP_KEY_RGT, SIMU_STR_HLP_ACT_TELE);
-  addRadioWidget(ui->leftbuttons->addArea(QRect(90, 210, 80, 35), "T8/left-tele.png", act));
-
-  act = new RadioUiAction(3, QList<int>() << Qt::Key_PageDown, SIMU_STR_HLP_KEY_PGDN, SIMU_STR_HLP_ACT_PGDN);
-  addRadioWidget(ui->leftbuttons->addArea(QRect(75, 125, 80, 35), "T8/left-pagedn.png", act));
-
-  act = new RadioUiAction(2, QList<int>() << Qt::Key_PageUp, SIMU_STR_HLP_KEY_PGUP, SIMU_STR_HLP_ACT_PGUP);
-  addRadioWidget(ui->leftbuttons->addArea(QRect(80, 170, 80, 35), "T8/left-pageup.png", act));
+  addRadioWidget(ui->leftbuttons->addArea(QRect(60, 45, 35, 20), "T8/left-sys.png", act));
 
   act = new RadioUiAction(0, QList<int>() << Qt::Key_Down << Qt::Key_Delete << Qt::Key_Escape << Qt::Key_Backspace, SIMU_STR_HLP_KEYS_EXIT, SIMU_STR_HLP_ACT_EXIT);
-  addRadioWidget(ui->leftbuttons->addArea(QRect(70, 85, 80, 35), "T8/left-rtn.png", act));
+  addRadioWidget(ui->leftbuttons->addArea(QRect(60, 85, 35, 20), "T8/left-rtn.png", act));
 
-  m_scrollUpAction = new RadioUiAction(-1, QList<int>() << Qt::Key_Minus << Qt::Key_Equal << Qt::Key_Left, SIMU_STR_HLP_KEYS_GO_LFT, SIMU_STR_HLP_ACT_ROT_LFT);
-  m_scrollDnAction = new RadioUiAction(-1, QList<int>() << Qt::Key_Plus << Qt::Key_Right, SIMU_STR_HLP_KEYS_GO_RGT, SIMU_STR_HLP_ACT_ROT_RGT);
-  connectScrollActions();
+  act = new RadioUiAction(3, QList<int>() << Qt::Key_PageDown, SIMU_STR_HLP_KEY_PGDN, SIMU_STR_HLP_ACT_PGDN);
+  addRadioWidget(ui->leftbuttons->addArea(QRect(60, 135, 35, 20), "T8/left-pagedn.png", act));
+
+  act = new RadioUiAction(2, QList<int>() << Qt::Key_PageUp, SIMU_STR_HLP_KEY_PGUP, SIMU_STR_HLP_ACT_PGUP);
+  addRadioWidget(ui->leftbuttons->addArea(QRect(60, 180, 35, 20), "T8/left-pageup.png", act));
+
 
   m_backlightColors << QColor(215, 243, 255);  // X7 Blue
   m_backlightColors << QColor(166,247,159);

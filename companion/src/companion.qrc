@@ -195,10 +195,11 @@
     <file>images/simulator/T8/left-pagedn.png</file>
     <file>images/simulator/T8/left-rtn.png</file>
     <file>images/simulator/T8/left-sys.png</file>
-    <file>images/simulator/T8/left-tele.png</file>
     <file>images/simulator/T8/right.png</file>
     <file>images/simulator/T8/right-ent.png</file>
     <file>images/simulator/T8/right-mdl.png</file>
+    <file>images/simulator/T8/right-up.png</file>
+    <file>images/simulator/T8/right-dn.png</file>
     <file>images/simulator/T8/bottom.png</file>
     <file>images/simulator/T8/top.png</file>
     <file>images/simulator/JumperT16/left.png</file>
