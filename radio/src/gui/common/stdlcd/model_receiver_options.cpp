@@ -176,7 +176,7 @@ void menuModelReceiverOptions(event_t event)
         case ITEM_RECEIVER_SETTINGS_SPORT_MODE:
         {
           lcdDrawText(0, y, STR_PROTOCOL);
-          uint8_t portType = reusableBuffer.hardwareAndSettings.receiverSettings.fport | reusableBuffer.hardwareAndSettings.receiverSettings.fport2 << 1;
+          uint8_t portType = reusableBuffer.hardwareAndSettings.receiverSettings.fport | (reusableBuffer.hardwareAndSettings.receiverSettings.fport2 << 1);
           lcdDrawTextAtIndex(LCD_W/2, y, STR_SPORT_MODES, portType, attr);
           portType = checkIncDec(event, portType, 0, 2, EE_MODEL, isSPortModeAvailable);
           if (checkIncDec_Ret) {
