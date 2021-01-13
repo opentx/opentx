@@ -1249,6 +1249,7 @@
 #define TR_JITTER_FILTER               "Filtre ADC"
 #define TR_RTC_CHECK                   TR("Vérif. RTC", "Vérif. pile RTC")
 #define TR_AUTH_FAILURE                "Auth-failure"
+#define TR_PROTOCOL                    "Protocol"
 
 #define ZSTR_VFR                       "VFR"
 #define ZSTR_RSSI                      "RSSI"
