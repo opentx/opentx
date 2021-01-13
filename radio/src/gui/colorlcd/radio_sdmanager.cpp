@@ -123,6 +123,44 @@ class FlashDialog: public FullScreenDialog
     Progress progress;
 };
 
+template <class T>
+class MultiFlashDialog: public FullScreenDialog
+{
+  public:
+    explicit MultiFlashDialog(ModuleIndex module,  MultiModuleType type):
+      FullScreenDialog(WARNING_TYPE_INFO, "Flash device"),
+      device(module),
+      type(type),
+      progress(this, {LCD_W / 2 - 50, LCD_H / 2, 100, 15})
+    {
+    }
+
+    void deleteLater(bool detach = true, bool trash = true) override
+    {
+      if (_deleted)
+        return;
+
+      progress.deleteLater(true, false);
+
+      FullScreenDialog::deleteLater(detach, trash);
+    }
+
+    void flash(const char * filename)
+    {
+      device.flashFirmware(filename, type, [=](const char * title, const char * message, int count, int total) -> void {
+          setMessage(message);
+          progress.setValue(total > 0 ? count * 100 / total : 0);
+          MainWindow::instance()->run(false);
+      });
+      deleteLater();
+    }
+
+  protected:
+    T device;
+    MultiModuleType type;
+    Progress progress;
+};
+
 void RadioSdManagerPage::build(FormWindow * window)
 {
   FormGridLayout grid;
@@ -187,17 +225,23 @@ void RadioSdManagerPage::build(FormWindow * window)
               if (information.readMultiFirmwareInformation(name.data()) == nullptr) {
 #if defined(INTERNAL_MODULE_MULTI)
                 menu->addLine(STR_FLASH_INTERNAL_MULTI, [=]() {
-                    auto dialog = new FlashDialog<MultiDeviceFirmwareUpdate>(INTERNAL_MODULE);
+                    auto dialog = new MultiFlashDialog<MultiDeviceFirmwareUpdate>(INTERNAL_MODULE, MULTI_TYPE_MULTIMODULE);
                     dialog->flash(getFullPath(name));
                 });
 #endif
                 menu->addLine(STR_FLASH_EXTERNAL_MULTI, [=]() {
-                    auto dialog = new FlashDialog<MultiDeviceFirmwareUpdate>(EXTERNAL_MODULE);
+                    auto dialog = new MultiFlashDialog<MultiDeviceFirmwareUpdate>(EXTERNAL_MODULE, MULTI_TYPE_MULTIMODULE);
                     dialog->flash(getFullPath(name));
                 });
               }
             }
 #endif
+            else if (!READ_ONLY() && !strcasecmp(ext, ELRS_FIRMWARE_EXT)) {
+              menu->addLine(STR_FLASH_EXTERNAL_ELRS, [=]() {
+                  auto dialog = new MultiFlashDialog<MultiDeviceFirmwareUpdate>(EXTERNAL_MODULE, MULTI_TYPE_ELRS);
+                  dialog->flash(getFullPath(name));
+              });
+            }
             else if (isExtensionMatching(ext, BITMAPS_EXT)) {
               // TODO
             }

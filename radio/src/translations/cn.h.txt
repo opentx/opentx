@@ -456,6 +456,8 @@
 #define TR_BEEPCOUNTDOWN               INDENT "倒数"
 #define TR_PERSISTENT                  TR(INDENT "Persist.", INDENT "关机保持")
 #define TR_BACKLIGHT_LABEL             "背光"
+#define TR_BLDELAY                     INDENT "Duration"
+#define TR_GHOST_MENU_LABEL            "GHOST MENU"
 #define TR_BLONBRIGHTNESS              "背光开"
 #define TR_BLOFFBRIGHTNESS             "背光关"
 #define TR_KEYS_BACKLIGHT              "按键背光"
@@ -643,6 +645,7 @@
 #define TR_NO_SDCARD                   "存储卡未安装"
 #define TR_WAITING_FOR_RX              "等待接收机响应..."
 #define TR_WAITING_FOR_TX              "等待发射机响应..."
+#define TR_WAITING_FOR_MODULE          "Waiting for module..."
 #define TR_NO_TOOLS                    "无可用附加功能"
 #define TR_NORMAL                      "正常"
 #define TR_NOT_INVERTED                "正向"
@@ -779,11 +782,12 @@
 #define TR_FLASH_FLIGHT_CONTROLLER_BY_INTERNAL_MODULE_OTA "Flash FC by int. OTA"
 #define TR_FLASH_BLUETOOTH_MODULE      TR("Flash BT module", "刷新蓝牙模块")
 #define TR_FLASH_POWER_MANAGEMENT_UNIT "Flash pwr mngt unit"
-#define TR_CURRENT_VERSION             "当前版本: "
-#define TR_FLASH_INTERNAL_MODULE       TR("Flash int. module", "更新内置模块固件")
-#define TR_FLASH_INTERNAL_MULTI        TR("Flash Int. Multi", "更新内置多协议模块固件")
-#define TR_FLASH_EXTERNAL_MODULE       TR("Flash ext. module", "更新外置模块固件")
-#define TR_FLASH_EXTERNAL_MULTI        TR("Flash Ext. Multi", "更新外置多协议模块固件")
+#define TR_CURRENT_VERSION              "当前版本: "
+#define TR_FLASH_INTERNAL_MODULE       "更新内置模块固件"
+#define TR_FLASH_INTERNAL_MULTI        "更新内置多协议模块固件"
+#define TR_FLASH_EXTERNAL_MODULE       "更新外置模块固件"
+#define TR_FLASH_EXTERNAL_MULTI        "更新外置多协议模块固件"
+#define TR_FLASH_EXTERNAL_ELRS         "Flash External ELRS"
 #define TR_FIRMWARE_UPDATE_ERROR       TR("FW update error", "固件更新失败")
 #define TR_FIRMWARE_UPDATE_SUCCESS     "固件更新成功"
 #define TR_WRITING                     "正在写入..."
