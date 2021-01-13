@@ -109,8 +109,8 @@
 #define LEN_R9M_PXX2_RF_PROTOCOLS      "\006"
 #define TR_R9M_PXX2_RF_PROTOCOLS       "ACCESS""FCC\0  ""EU\0   ""Flex"
 
-#define LEN_PORT_TYPES                 "\007"
-#define TR_PORT_TYPES                  "S.PORT\0""F.PORT\0""F.PORT2"
+#define LEN_PORT_TYPES                 "\014"
+#define TR_PORT_TYPES                  "S.PORT\0     ""F.PORT\0     ""FBUS(FPORT2)"
 
 #define LEN_R9M_REGION                 "\006"
 #define TR_R9M_REGION                  "FCC\0  ""EU\0   ""868MHz""915MHz"
