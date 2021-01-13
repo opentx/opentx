@@ -376,7 +376,7 @@ void evalFunctions(const CustomFunctionData * functions, CustomFunctionsContext 
 
           case FUNC_SCREENSHOT:
             if (!(functionsContext.activeSwitches & switch_mask)) {
-              mainRequestFlags |= (1 << REQUEST_SCREENSHOT);
+              mainRequestFlags |= (1u << REQUEST_SCREENSHOT);
             }
             break;
 

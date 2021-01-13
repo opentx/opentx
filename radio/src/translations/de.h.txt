@@ -1227,6 +1227,7 @@
 #define TR_JITTER_FILTER               "ADC Filter"
 #define TR_RTC_CHECK                   TR("Check RTC", "Check RTC voltage")
 #define TR_AUTH_FAILURE                "Auth-failure"
+#define TR_RACING_MODE                 INDENT "Racing mode"
 
 // ----------------------------------------------------------------
 #define ZSTR_VFR                       "VFR"
