@@ -77,7 +77,7 @@ int CurveReference::getDefaultValue(const CurveRefType type, const bool isGVar)
 //  static
 QString CurveReference::typeToString(const CurveRefType type)
 {
-  const QStringList strl = { "Diff", "Expo" , "Func", "Curve" };
+  const QStringList strl = { tr("Diff"), tr("Expo") , tr("Func"), tr("Curve") };
   int idx = (int)type;
 
   if (idx < 0 || idx >= strl.count())
