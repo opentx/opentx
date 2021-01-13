@@ -463,8 +463,8 @@
 #if defined(PCBSKY9X) && defined(REVX)
   #define TR_OUTPUT_TYPE       INDENT "Uscita"
 #endif
-#define TR_PROTO               TR(INDENT "Protoc.", INDENT "Protocollo")
-  #define TR_PPMFRAME          INDENT "Frame PPM"
+#define TR_PROTOCOL            TR("Protoc.", "Protocollo")
+#define TR_PPMFRAME            INDENT "Frame PPM"
 #define TR_REFRESHRATE         TR(INDENT "Refresh", INDENT "Refresh rate")
 #define STR_WARN_BATTVOLTAGE   TR(INDENT "Uscita VBAT: ", INDENT "Att.: livel. uscita VBAT: ")
 #define TR_WARN_5VOLTS         "Attenzione: il livello d'uscita è 5 Volts"
@@ -1242,7 +1242,6 @@
 #define TR_JITTER_FILTER       "Filtro ADC"
 #define TR_RTC_CHECK           TR("Controllo RTC", "Controllo volt. RTC")
 #define TR_AUTH_FAILURE        "Auth-failure"
-#define TR_PROTOCOL            "Protocol"
 
 #define ZSTR_VFR               "VFR"
 #define ZSTR_RSSI              "RSSI"

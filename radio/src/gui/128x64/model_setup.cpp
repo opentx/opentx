@@ -857,7 +857,7 @@ void menuModelSetup(event_t event)
 #if !defined(INTERNAL_MODULE_MULTI)
       case ITEM_MODEL_SETUP_INTERNAL_MODULE_TYPE:
       {
-        lcdDrawTextAlignedLeft(y, INDENT TR_MODE);
+        lcdDrawText(INDENT_WIDTH, y, STR_MODE);
 #if defined(INTERNAL_MODULE_PXX1)
         lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_INTERNAL_MODULE_PROTOCOLS, g_model.moduleData[INTERNAL_MODULE].type, menuHorizontalPosition==0 ? attr : 0);
         if (isModuleXJT(INTERNAL_MODULE))
@@ -1073,7 +1073,7 @@ void menuModelSetup(event_t event)
 
 #if defined(AFHDS3)
       case ITEM_MODEL_SETUP_EXTERNAL_MODULE_AFHDS_PROTOCOL:
-        lcdDrawTextAlignedLeft(y, TR_PROTO);
+        lcdDrawText(INDENT_WIDTH, y, STR_PROTOCOL);
         lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_AFHDS3_PROTOCOLS, g_model.moduleData[EXTERNAL_MODULE].subType, attr);
         if (attr && s_editMode > 0 && menuHorizontalPosition == 0) {
           CHECK_INCDEC_MODELVAR(event, g_model.moduleData[moduleIdx].subType, AFHDS_SUBTYPE_FIRST, AFHDS_SUBTYPE_LAST);
