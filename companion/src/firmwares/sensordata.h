@@ -167,11 +167,11 @@ class SensorData {
 
     bool isAvailable() const { return strlen(label) > 0; }
     void updateUnit();
-    QString unitString() const;
     QString nameToString(int index) const;
     QString getOrigin(const ModelData* model) const;
     void clear() { memset(this, 0, sizeof(SensorData)); }
     bool isEmpty() const;
+    QString paramsToString(const ModelData * model) const;
 
     static QString sourceToString(const ModelData * model, const int index, const bool sign = false);
     static bool isSourceAvailable(const ModelData * model, const int index);
@@ -179,7 +179,8 @@ class SensorData {
     static QString formulaToString(const int value);
     static QString cellIndexToString(const int value);
     static QString unitToString(const int value);
-    static QString precisionToString(const int value);
+    static QString precToString(const int value);
+    static QString boolToString(const bool value) { return value ? tr("Y") : tr("N"); }
 
     static AbstractStaticItemModel * typeItemModel();
     static AbstractStaticItemModel * formulaItemModel();
