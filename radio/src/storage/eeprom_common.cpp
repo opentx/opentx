@@ -67,7 +67,6 @@ uint8_t eeFindEmptyModel(uint8_t id, bool down)
 
 void selectModel(uint8_t sub)
 {
-  EXTERNAL_MODULE_PWR_OFF();
 #if !defined(COLORLCD)
   showMessageBox(STR_LOADINGMODEL);
 #endif

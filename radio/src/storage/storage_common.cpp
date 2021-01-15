@@ -53,6 +53,8 @@ void preModelLoad()
   }
   pauseMixerCalculations();
 
+  EXTERNAL_MODULE_PWR_OFF();
+
   stopTrainer();
 }
 
