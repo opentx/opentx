@@ -338,6 +338,8 @@ void generalDefault()
   // Those settings are for headless radio
   g_eeGeneral.USBMode = USB_JOYSTICK_MODE;
   g_eeGeneral.disableRtcWarning = 1;
+  g_eeGeneral.splashMode = 3; // Disable splash
+  g_eeGeneral.pwrOnSpeed = 1; // 1 second
 #endif
 
   g_eeGeneral.chkSum = 0xFFFF;
