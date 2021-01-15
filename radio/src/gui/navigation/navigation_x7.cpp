@@ -59,7 +59,7 @@ int checkIncDec(event_t event, int val, int i_min, int i_max, unsigned int i_fla
 #if defined(ROTARY_ENCODER_NAVIGATION)
   if (s_editMode>0 && event==EVT_ROTARY_RIGHT) {
 #else
-  if (s_editMode>0 && (event==EVT_KEY_FIRST(KEY_MINUS) || event==EVT_KEY_REPT(KEY_MINUS))) {
+  if (s_editMode>0 && (event==EVT_KEY_FIRST(KEY_PLUS) || event==EVT_KEY_REPT(KEY_PLUS))) {
 #endif
     newval += min<int>(rotencSpeed, i_max-val);
     while (isValueAvailable && !isValueAvailable(newval) && newval<=i_max) {
@@ -73,7 +73,7 @@ int checkIncDec(event_t event, int val, int i_min, int i_max, unsigned int i_fla
 #if defined(ROTARY_ENCODER_NAVIGATION)
   else if (s_editMode>0 && event==EVT_ROTARY_LEFT) {
 #else
-  if (s_editMode>0 && (event==EVT_KEY_FIRST(KEY_PLUS) || event==EVT_KEY_REPT(KEY_PLUS))) {
+  if (s_editMode>0 && (event==EVT_KEY_FIRST(KEY_MINUS) || event==EVT_KEY_REPT(KEY_MINUS))) {
 #endif
     newval -= min<int>(rotencSpeed, val-i_min);
     while (isValueAvailable && !isValueAvailable(newval) && newval>=i_min) {
