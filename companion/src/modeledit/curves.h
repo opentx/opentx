@@ -26,7 +26,7 @@
 #include <QGraphicsScene>
 #include <QGraphicsView>
 
-class CommonItemModels;
+class CompoundItemModelFactory;
 
 constexpr char MIMETYPE_CURVE[] = "application/x-companion-curve";
 
@@ -61,7 +61,7 @@ class CurvesPanel : public ModelPanel
     Q_OBJECT
 
   public:
-    CurvesPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, CommonItemModels * commonItemModels);
+    CurvesPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, CompoundItemModelFactory * sharedItemModels);
     virtual ~CurvesPanel();
 
     virtual void update();
@@ -121,7 +121,7 @@ class CurvesPanel : public ModelPanel
     bool moveDownAllowed() const;
     bool moveUpAllowed() const;
     void swapData(int idx1, int idx2);
-    CommonItemModels * commonItemModels;
+    CompoundItemModelFactory * sharedItemModels;
     void updateItemModels();
 };
 
