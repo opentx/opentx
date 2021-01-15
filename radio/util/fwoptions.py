@@ -207,6 +207,18 @@ options_horus_x10express = {
     "flexr9m": ("MODULE_PROTOCOL_FLEX", "YES", None),
 }
 
+options_jumper_tlite = {
+    "noheli": ("HELI", "NO", "YES"),
+    "ppmus": ("PPM_UNIT", "US", "PERCENT_PREC1"),
+    "lua": ("LUA", "YES", "NO_MODEL_SCRIPTS"),
+    "nogvars": ("GVARS", "NO", "YES"),
+    "faimode": ("FAI", "YES", None),
+    "faichoice": ("FAI", "CHOICE", None),
+    "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
+    "flexr9m": ("MODULE_PROTOCOL_FLEX", "YES", None),
+}
+
+
 options_jumper_t12 = {
     "noheli": ("HELI", "NO", "YES"),
     "ppmus": ("PPM_UNIT", "US", "PERCENT_PREC1"),
@@ -256,6 +268,17 @@ options_radiomaster_tx12 = {
     "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
     "flexr9m": ("MODULE_PROTOCOL_FLEX", "YES", None),
     "afhds3": ("AFHDS3", "YES", "NO")
+}
+
+options_radiomaster_t8 = {
+    "noheli": ("HELI", "NO", "YES"),
+    "ppmus": ("PPM_UNIT", "US", "PERCENT_PREC1"),
+    "lua": ("LUA", "YES", "NO_MODEL_SCRIPTS"),
+    "nogvars": ("GVARS", "NO", "YES"),
+    "faimode": ("FAI", "YES", None),
+    "faichoice": ("FAI", "CHOICE", None),
+    "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
+    "bindkey": ("BIND_KEY", "NO", "YES"),
 }
 
 options_radiomaster_tx16s = {

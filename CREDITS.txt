@@ -2082,3 +2082,41 @@ Adam Sosnowski
 SaltCtyRacingFPV
 Georg Bernhardt
 James Mildenhall
+Dave Plummer
+Ivan Mokris
+Patrick Daniels
+Stuart Olson
+Cory Znebel
+Andrey Yarovoy
+Christian Pons
+Burt Pickard-Richardson
+Michal Mesaros
+Conrad Young
+Martin Mathes
+Jens Rainer Hansen
+Mark Trible
+Marc Dubois
+Alan Wilkins
+Daniel Hryciuk
+Thomas Fox
+Sidney B Harden
+Augustas Sereika
+David Belletete
+Karl-Heinz Behn
+Lena Hjort
+Jan Langhorst
+Alberto Scotti
+John Rock
+Adam Kouse
+Ricardo Martins
+Noel Irwin
+Christoph Rausch
+Anthony Hrabusicky
+Sergio Tondini
+Aldo Visentin
+Greg Wilson
+Mark Sutton
+Lukas Kana
+Peter Newman
+Kevin Cave
+Arold Reinders

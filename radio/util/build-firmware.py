@@ -138,6 +138,11 @@ def main():
         cmake_options["PCB"] = "X12S"
         firmware_options = options_horus_x12s
         maxsize = 2 * 1024 * 1024
+    elif board_name == "tlite":
+        cmake_options["PCB"] = "X7"
+        cmake_options["PCBREV"] = "TLITE"
+        firmware_options = options_jumper_tlite
+        maxsize = 65536 * 8
     elif board_name == "t12":
         cmake_options["PCB"] = "X7"
         cmake_options["PCBREV"] = "T12"
@@ -147,6 +152,11 @@ def main():
         cmake_options["PCB"] = "X7"
         cmake_options["PCBREV"] = "TX12"
         firmware_options = options_radiomaster_tx12
+        maxsize = 65536 * 8
+    elif board_name == "t8":
+        cmake_options["PCB"] = "X7"
+        cmake_options["PCBREV"] = "T8"
+        firmware_options = options_radiomaster_t8
         maxsize = 65536 * 8
     elif board_name == "t16":
         cmake_options["PCB"] = "X10"

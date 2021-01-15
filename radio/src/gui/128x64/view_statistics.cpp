@@ -31,7 +31,7 @@ void menuStatisticsView(event_t event)
 
   switch (event) {
     case EVT_KEY_FIRST(KEY_UP):
-#if defined(NAVIGATION_X7_TX12)
+#if defined(KEYS_GPIO_REG_PAGEDN)
     case EVT_KEY_BREAK(KEY_PAGEDN):
 #elif defined(NAVIGATION_X7)
     case EVT_KEY_BREAK(KEY_PAGE):
@@ -41,7 +41,7 @@ void menuStatisticsView(event_t event)
       break;
 
     case EVT_KEY_FIRST(KEY_DOWN):
-#if defined(NAVIGATION_X7_TX12)
+#if defined(KEYS_GPIO_REG_PAGEUP)
     case EVT_KEY_BREAK(KEY_PAGEUP):
       killEvents(event);
       chainMenu(menuStatisticsDebug2);
@@ -140,7 +140,7 @@ void menuStatisticsDebug(event_t event)
       break;
 
     case EVT_KEY_FIRST(KEY_UP):
-#if defined(NAVIGATION_X7_TX12)
+#if defined(KEYS_GPIO_REG_PAGEDN)
     case EVT_KEY_BREAK(KEY_PAGEDN):
       disableVBatBridge();
       chainMenu(menuStatisticsDebug2);
@@ -153,7 +153,7 @@ void menuStatisticsDebug(event_t event)
 #endif
 
     case EVT_KEY_FIRST(KEY_DOWN):
-#if defined(NAVIGATION_X7_TX12)
+#if defined(KEYS_GPIO_REG_PAGEUP)
     case EVT_KEY_BREAK(KEY_PAGEUP):
 #elif defined(NAVIGATION_X7)
     case EVT_KEY_LONG(KEY_PAGE):
@@ -278,7 +278,7 @@ void menuStatisticsDebug2(event_t event)
       break;
 
     case EVT_KEY_FIRST(KEY_UP):
-#if defined(NAVIGATION_X7_TX12)
+#if defined(KEYS_GPIO_REG_PAGEDN)
     case EVT_KEY_BREAK(KEY_PAGEDN):
 #elif defined(NAVIGATION_X7)
     case EVT_KEY_BREAK(KEY_PAGE):
@@ -287,7 +287,7 @@ void menuStatisticsDebug2(event_t event)
       return;
 
     case EVT_KEY_FIRST(KEY_DOWN):
-#if defined(NAVIGATION_X7_TX12)
+#if defined(KEYS_GPIO_REG_PAGEUP)
     case EVT_KEY_BREAK(KEY_PAGEUP):
 #elif defined(NAVIGATION_X7)
     case EVT_KEY_LONG(KEY_PAGE):

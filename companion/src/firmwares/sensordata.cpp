@@ -309,7 +309,7 @@ bool SensorData::isSourceAvailable(const ModelData * model, const int index)
   const int sensorcnt = firmware->getCapability(Sensors);
   const int i = abs(index);
 
-  if (model && sensorcnt > 0 and i <= sensorcnt) {
+  if (model && sensorcnt > 0 && i <= sensorcnt) {
     if (i > 0)
       return model->sensorData[i - 1].isAvailable();
     else

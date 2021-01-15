@@ -53,6 +53,13 @@ void preModelLoad()
   }
   pauseMixerCalculations();
 
+#if defined(INTMODULE_PWR_GPIO)
+  INTERNAL_MODULE_OFF();
+#endif
+#if defined(EXTMODULE_PWR_GPIO)
+  EXTERNAL_MODULE_OFF();
+#endif
+
   stopTrainer();
 }
 

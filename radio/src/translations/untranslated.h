@@ -41,7 +41,7 @@
 #elif defined(PCBXLITE)
   #define TR_POTS_VSRCRAW              "\310S1\0""\310S2\0"
   #define TR_SW_VSRCRAW                "\312SA\0""\312SB\0""\312SC\0""\312SD\0""\312SE\0""\312SF\0"
-#elif defined(RADIO_T12)
+#elif defined(RADIO_FAMILY_JUMPER_T12)
   #define TR_POTS_VSRCRAW              "\310S1\0""\310S2\0"
   #define TR_SW_VSRCRAW                "\312SA\0""\312SB\0""\312SC\0""\312SD\0""\312SG\0""\312SH\0""\312SI\0""\312SJ\0"
 #elif defined(RADIO_TX12)
@@ -108,6 +108,9 @@
 
 #define LEN_R9M_PXX2_RF_PROTOCOLS      "\006"
 #define TR_R9M_PXX2_RF_PROTOCOLS       "ACCESS""FCC\0  ""EU\0   ""Flex"
+
+#define LEN_SPORT_MODES                "\014"
+#define TR_SPORT_MODES                 "S.PORT\0     ""F.PORT\0     ""FBUS(FPORT2)"
 
 #define LEN_R9M_REGION                 "\006"
 #define TR_R9M_REGION                  "FCC\0  ""EU\0   ""868MHz""915MHz"

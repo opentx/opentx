@@ -1585,7 +1585,7 @@ void MainWindow::updateWindowActions()
     QString scut;
     if (++count < 10)
       scut = tr("Alt+%1").arg(count);
-    QAction * act = addActToGroup(windowsListActions, "", "", "window_ptr", qVariantFromValue(win), QVariant(), scut);
+    QAction * act = addActToGroup(windowsListActions, "", "", "window_ptr", QVariant::fromValue(win), QVariant(), scut);
     act->setChecked(win == mdiArea->activeSubWindow());
     updateWindowActionTitle(win, act);
   }

@@ -288,12 +288,15 @@
 #if defined(PCBHORUS)
   #define LEN_VKEYS                    "\005"
   #define TR_VKEYS                     "PGUP\0""PGDN\0""ENTER""MDL\0 ""RTN\0 ""TELE\0""SYS\0 "
-#elif defined(RADIO_T12)
+#elif defined(RADIO_FAMILY_JUMPER_T12)
   #define LEN_VKEYS                    "\005"
   #define TR_VKEYS                     "Exit\0""Enter""Dolů\0""Nhoru""Vprvo""Vlevo"
 #elif defined(RADIO_TX12)
   #define LEN_VKEYS                    "\005"
   #define TR_VKEYS                     "Exit\0""Enter""Up\0  ""Down\0""SYS\0 ""MDL\0 ""TELE\0"
+#elif defined(RADIO_T8)
+  #define LEN_VKEYS                    "\005"
+  #define TR_VKEYS                     "RTN\0 ""ENTER""PGUP\0""PGDN\0""SYS\0 ""MDL\0 ""UP\0  ""DOWN\0"
 #elif defined(PCBTARANIS)
 #define LEN_VKEYS                      "\005"
 #define TR_VKEYS                       "Menu\0""Exit\0""Enter""Page\0""Plus\0""Mínus"
@@ -441,7 +444,7 @@
 #if defined(PCBSKY9X) && defined(REVX)
   #define TR_OUTPUT_TYPE               INDENT "Výstup"
 #endif
-#define TR_PROTO                       INDENT "Protokol"
+#define TR_PROTOCOL                    "Protokol"
 #define TR_PPMFRAME                    INDENT "PPM modulace"
 #define TR_REFRESHRATE                 TR(INDENT "Obnovit", INDENT "Obn. frekv.")
 #define STR_WARN_BATTVOLTAGE           TR(INDENT "Výstup VBAT: ", INDENT "Varování: výstupní hodnota VBAT: ")
@@ -780,7 +783,7 @@
 #define TR_NO_MODELS_ON_SD             "žádný model" BREAKSPACE "na SD"
 #define TR_NO_BITMAPS_ON_SD            "žádné obrázky" BREAKSPACE "na SD"
 #define TR_NO_SCRIPTS_ON_SD            "žádný skript" BREAKSPACE "na SD"
-#define TR_SCRIPT_SYNTAX_ERROR         "Syntaktická chyba skriptu"
+#define TR_SCRIPT_SYNTAX_ERROR         TR("Syntaktická chyba", "Syntaktická chyba skriptu")
 #define TR_SCRIPT_PANIC                "Script zmaten"
 #define TR_SCRIPT_KILLED               "Script ukončen"
 #define TR_SCRIPT_ERROR                "Neznámá chyba"
