@@ -1136,18 +1136,18 @@
   #define TR_ABOUT_HARDWARE_1         "FrSky"
   #define TR_ABOUT_HARDWARE_2         "Proucent/projektant Hardware"
   #define TR_ABOUT_HARDWARE_3         "Współautor firmware"
-#elif defined(MANUFACTURER_RADI       OMASTER)
+#elif defined(MANUFACTURER_RADIOMASTER)
   #define TR_ABOUT_HARDWARE_1         "Radiomaster"
   #define TR_ABOUT_HARDWARE_2         "Proucent/projektant Hardware"
   #define TR_ABOUT_HARDWARE_3         "Współautor firmware"
-#elif defined(MANUFACTURER_JUMP       ER)
+#elif defined(MANUFACTURER_JUMPER)
   #define TR_ABOUT_HARDWARE_1         "JumperRC"
   #define TR_ABOUT_HARDWARE_2         "Proucent/projektant Hardware"
   #define TR_ABOUT_HARDWARE_3         "Współautor firmware"
 #else
-  #define TR_ABOUT_HARDWARE_1          "Brent Nelson"
-  #define TR_ABOUT_HARDWARE_2          "Sky9x designer/výrobce"
-  #define TR_ABOUT_HARDWARE_3          ""
+  #define TR_ABOUT_HARDWARE_1         "Brent Nelson"
+  #define TR_ABOUT_HARDWARE_2         "Sky9x designer/výrobce"
+  #define TR_ABOUT_HARDWARE_3         ""
 #endif
 
 #define TR_ABOUT_PARENTS_1     "Projekty macierzyste"
