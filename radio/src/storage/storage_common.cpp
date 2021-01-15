@@ -52,6 +52,9 @@ void preModelLoad()
     pausePulses();
   }
   pauseMixerCalculations();
+#if defined(EXTMODULE_PWR_GPIO)
+  EXTERNAL_MODULE_PWR_OFF();
+#endif
 
   stopTrainer();
 }
