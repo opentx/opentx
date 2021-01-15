@@ -801,7 +801,7 @@
 #define TR_NO_MODELS_ON_SD     "No Model." BREAKSPACE "su SD"
 #define TR_NO_BITMAPS_ON_SD    "No Immag." BREAKSPACE "su SD"
 #define TR_NO_SCRIPTS_ON_SD    "No Scripts" BREAKSPACE "su SD"
-#define TR_SCRIPT_SYNTAX_ERROR "Script errore sintassi"
+#define TR_SCRIPT_SYNTAX_ERROR TR("Errore sintassi", "Script errore sintassi")
 #define TR_SCRIPT_PANIC        "Script panic"
 #define TR_SCRIPT_KILLED       "Script fermato"
 #define TR_SCRIPT_ERROR        "Errore sconosciuto"

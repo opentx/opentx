@@ -802,7 +802,7 @@
 #define TR_NO_MODELS_ON_SD             "Aucun modèle SD"
 #define TR_NO_BITMAPS_ON_SD            "Aucun Bitmap SD"
 #define TR_NO_SCRIPTS_ON_SD            "Aucun Script SD"
-#define TR_SCRIPT_SYNTAX_ERROR         "Erreur syntaxe script"
+#define TR_SCRIPT_SYNTAX_ERROR          TR("Erreur syntaxe", "Erreur syntaxe script")
 #define TR_SCRIPT_PANIC                "Script bloqué"
 #define TR_SCRIPT_KILLED               "Script interrompu"
 #define TR_SCRIPT_ERROR                "Erreur inconnue"

@@ -800,7 +800,7 @@
 #define TR_NO_MODELS_ON_SD     "Brak modelu na SD"
 #define TR_NO_BITMAPS_ON_SD    "Brak obrazków na SD"
 #define TR_NO_SCRIPTS_ON_SD    "Brak skryptów na SD"
-#define TR_SCRIPT_SYNTAX_ERROR "Skrypt:syntax error"
+#define TR_SCRIPT_SYNTAX_ERROR TR("Syntax error", "Skrypt:syntax error")
 #define TR_SCRIPT_PANIC        "Skrypt:panic"
 #define TR_SCRIPT_KILLED       "Skrypt:killed"
 #define TR_SCRIPT_ERROR        "Nieznany błąd"
