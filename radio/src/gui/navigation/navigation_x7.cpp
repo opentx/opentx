@@ -56,10 +56,10 @@ void onSwitchLongEnterPress(const char * result)
 int checkIncDec(event_t event, int val, int i_min, int i_max, unsigned int i_flags, IsValueAvailable isValueAvailable, const CheckIncDecStops &stops)
 {
   int newval = val;
-#if defined(KEYS_GPIO_REG_MINUS)
-  if (s_editMode>0 && (event==EVT_KEY_FIRST(KEY_MINUS) || event==EVT_KEY_REPT(KEY_MINUS))) {
-#else
+#if defined(ROTARY_ENCODER_NAVIGATION)
   if (s_editMode>0 && event==EVT_ROTARY_RIGHT) {
+#else
+  if (s_editMode>0 && (event==EVT_KEY_FIRST(KEY_MINUS) || event==EVT_KEY_REPT(KEY_MINUS))) {
 #endif
     newval += min<int>(rotencSpeed, i_max-val);
     while (isValueAvailable && !isValueAvailable(newval) && newval<=i_max) {
@@ -70,10 +70,10 @@ int checkIncDec(event_t event, int val, int i_min, int i_max, unsigned int i_fla
       AUDIO_KEY_ERROR();
     }
   }
-#if defined(KEYS_GPIO_REG_PLUS)
-  if (s_editMode>0 && (event==EVT_KEY_FIRST(KEY_PLUS) || event==EVT_KEY_REPT(KEY_PLUS))) {
-#else
+#if defined(ROTARY_ENCODER_NAVIGATION)
   else if (s_editMode>0 && event==EVT_ROTARY_LEFT) {
+#else
+  if (s_editMode>0 && (event==EVT_KEY_FIRST(KEY_PLUS) || event==EVT_KEY_REPT(KEY_PLUS))) {
 #endif
     newval -= min<int>(rotencSpeed, val-i_min);
     while (isValueAvailable && !isValueAvailable(newval) && newval>=i_min) {

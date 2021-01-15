@@ -342,7 +342,7 @@ int OpenTxEepromInterface::save(uint8_t * eeprom, const RadioData & radioData, u
     variant |= RADIOMASTER_TX12_VARIANT;
   }
   else if (IS_RADIOMASTER_T8(board)) {
-      variant |= RADIOMASTER_T8_VARIANT;
+    variant |= RADIOMASTER_T8_VARIANT;
   }
   OpenTxGeneralData generator((GeneralSettings &)radioData.generalSettings, board, version, variant);
   // generator.dump();

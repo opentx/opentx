@@ -196,7 +196,7 @@ enum {
 };
 
 #if (NUM_POTS + NUM_SLIDERS) == 0
-#define POTS_ROWS                 HIDDEN_ROW
+  #define POTS_ROWS                 HIDDEN_ROW
 #elif (NUM_POTS + NUM_SLIDERS) == 1
   #define POTS_ROWS               NAVIGATION_LINE_BY_LINE|1
 #elif (NUM_POTS + NUM_SLIDERS) == 2
