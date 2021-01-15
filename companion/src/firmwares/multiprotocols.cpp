@@ -90,10 +90,10 @@ static const QStringList STR_SUBTYPE_FRSKYL    {"LR12", "LR12 6-Channel"};
 static const QStringList STR_SUBTYPE_ESKY150V2 {"150 V2"};
 static const QStringList STR_SUBTYPE_JJRC345   {"Standard", "SkyTumbler"};
 static const QStringList STR_SUBTYPE_KYOSHO    {"FHSS", "Hype"};
-static const QStringList STR_SUBTYPE_RLINK     {"Surface", "Air"};
+static const QStringList STR_SUBTYPE_RLINK     {"Surface", "Air", "DumboRC"};
 static const QStringList STR_SUBTYPE_ELRS      {"Not Available WIP"};
 static const QStringList STR_SUBTYPE_REALACC   {"R11"};
-static const QStringList STR_SUBTYPE_WFLYRF    {"RF20x"};
+static const QStringList STR_SUBTYPE_WFLY2     {"RF20x"};
 
 static const QStringList NO_SUBTYPE            {STR_MULTI_DEFAULT};
 
@@ -159,11 +159,12 @@ const Multiprotocols multiProtocols {
   {MODULE_SUBTYPE_MULTI_JJRC345,    1, false,      STR_SUBTYPE_JJRC345,   nullptr},
   {MODULE_SUBTYPE_MULTI_Q90C,       0, false,      NO_SUBTYPE,            STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_KYOSHO,     1, false,      STR_SUBTYPE_KYOSHO,    nullptr},
-  {MODULE_SUBTYPE_MULTI_RLINK,      1, false,      STR_SUBTYPE_RLINK,     STR_MULTI_RFTUNE},
+  {MODULE_SUBTYPE_MULTI_RLINK,      2, false,      STR_SUBTYPE_RLINK,     STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_ELRS,       0, false,      STR_SUBTYPE_ELRS,      nullptr},
   {MODULE_SUBTYPE_MULTI_REALACC,    0, false,      STR_SUBTYPE_REALACC,   nullptr},
   {MODULE_SUBTYPE_MULTI_OMP,        0, false,      NO_SUBTYPE,            STR_MULTI_RFTUNE},
-  {MODULE_SUBTYPE_MULTI_WFLYRF,     0, false,      STR_SUBTYPE_WFLYRF,    nullptr},
+  {MODULE_SUBTYPE_MULTI_WFLY2,      0, false,      STR_SUBTYPE_WFLY2,     STR_MULTI_OPTION},
+  {MODULE_SUBTYPE_MULTI_E016HV2,    0, false,      NO_SUBTYPE,            STR_MULTI_RFTUNE},
   {MM_RF_CUSTOM_SELECTED,           7, true,       STR_SUBTYPE_CUSTOM,    STR_MULTI_OPTION},
 
   // Sentinel and default for protocols not listed above (MM_RF_CUSTOM is 0xff)
@@ -208,7 +209,8 @@ QString Multiprotocols::protocolToString(int protocol, bool custom)
     "Hitec", "Wfly", "Bugs", "Bugs Mini", "Traxxas", "NCC-1701-A", "E01X", "WL Heli V911S", "GD00X", "Volantex V761",
     "KFPlan KF606", "Redpine", "Potensic", "ZSX", "Height", "Scanner", "FrSky RX", "FlySky AFHDS2A RX", "HoTT", "Fx816",
     "Bayang RX", "Pelikan", "Tiger", "XK", "XN297 Dump", "FrSky X 2.1", "FrSky R9", "Propel", "FrSky L", "Skyartec",
-    "ESky 150v2", "DSM RX", "JJRC345", "Q90C", "Kyosho", "RadioLink", "ExpressLRS", "Realacc", "OMP", "M-Link", "Wfly RF"
+    "ESky 150v2", "DSM RX", "JJRC345", "Q90C", "Kyosho", "RadioLink", "ExpressLRS", "Realacc", "OMP", "M-Link", "Wfly 2",
+    "E016H v2"
   });
 
   return strings.value(protocol, CPN_STR_UNKNOWN_ITEM);

@@ -27,7 +27,7 @@
 #include "board_common.h"
 #include "hal.h"
 
-#if defined(RADIO_TX12)
+#if defined(RADIO_TX12) || defined(RADIO_TX12)
  #define  NAVIGATION_X7_TX12
 #endif
 
@@ -152,7 +152,7 @@ void extmoduleSendInvertedByte(uint8_t byte);
 // Trainer driver
 #define SLAVE_MODE()                    (g_model.trainerData.mode == TRAINER_MODE_SLAVE)
 
-#if defined(PCBX9D) || (defined(PCBX9DP) && PCBREV < 2019)
+#if defined(TRAINER_DETECT_GPIO)
   // Trainer detect is a switch on the jack
   #define TRAINER_CONNECTED()           (GPIO_ReadInputDataBit(TRAINER_DETECT_GPIO, TRAINER_DETECT_GPIO_PIN) == Bit_RESET)
 #elif defined(PCBXLITES)
@@ -270,6 +270,10 @@ enum EnumKeys
   KEY_COUNT,
   KEY_MAX = KEY_COUNT - 1,
 
+#if defined(KEYS_GPIO_REG_BIND)
+  KEY_BIND,
+#endif
+
 #if defined(ROTARY_ENCODER_NAVIGATION)
   KEY_PLUS,
   KEY_MINUS,
@@ -355,7 +359,7 @@ enum EnumSwitchesPositions
   SW_SE1,
   SW_SE2,
 #endif
-#if defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E) || defined(PCBX7) || defined(PCBXLITES) || defined(PCBX9LITES)
+#if defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E) || defined(PCBX7) || defined(PCBXLITES) || defined(PCBX9LITES) || defined(RADIO_T8)
   SW_SF0,
   SW_SF1,
   SW_SF2,
@@ -365,7 +369,7 @@ enum EnumSwitchesPositions
   SW_SG1,
   SW_SG2,
 #endif
-#if defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E) || (defined(PCBX7) && !defined(RADIO_TX12))
+#if defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E) || (defined(PCBX7) && !defined(RADIO_TX12)) || defined(RADIO_T8)
   SW_SH0,
   SW_SH1,
   SW_SH2,
@@ -447,6 +451,11 @@ enum EnumSwitchesPositions
   #define STORAGE_NUM_SWITCHES          NUM_SWITCHES
   #define DEFAULT_SWITCH_CONFIG         (SWITCH_3POS << 10) + (SWITCH_3POS << 8) + (SWITCH_TOGGLE << 6) + (SWITCH_3POS << 4) + (SWITCH_3POS << 2) + (SWITCH_TOGGLE << 0)
   #define DEFAULT_POTS_CONFIG           (POT_WITH_DETENT << 0) + (POT_WITH_DETENT << 2);
+#elif defined(RADIO_T8)
+  #define NUM_SWITCHES                  4
+  #define STORAGE_NUM_SWITCHES          8
+  #define DEFAULT_SWITCH_CONFIG         (SWITCH_2POS << 6) + (SWITCH_3POS << 4) + (SWITCH_3POS << 2) + (SWITCH_2POS << 0);
+  #define DEFAULT_POTS_CONFIG           (0)
 #elif defined(PCBX7ACCESS)
   #define NUM_SWITCHES                  7
   #define STORAGE_NUM_SWITCHES          8
@@ -549,7 +558,7 @@ enum Analogs {
   #define NUM_SLIDERS                   0
   #define STORAGE_NUM_POTS              1
   #define STORAGE_NUM_SLIDERS           0
-#elif defined(RADIO_TLITE)
+#elif defined(RADIO_T8) || defined(RADIO_TLITE)
   #define NUM_POTS                      0
   #define NUM_SLIDERS                   0
   #define STORAGE_NUM_POTS              2
@@ -654,7 +663,7 @@ extern uint16_t adcValues[NUM_ANALOGS];
   #define BATTERY_WARN                  66 // 6.6V
   #define BATTERY_MIN                   67 // 6.7V
   #define BATTERY_MAX                   83 // 8.3V
-#elif defined(RADIO_TLITE)
+#elif defined(RADIO_T8) || defined(RADIO_TLITE)
   // 1S Li-ion /  Lipo
   #define BATTERY_WARN                  33 // 3.3V
   #define BATTERY_MIN                   32 // 3.2V
@@ -725,6 +734,10 @@ uint8_t isBacklightEnabled();
   #define USB_NAME                     "Radiomaster TX12"
   #define USB_MANUFACTURER             'R', 'M', '_', 'T', 'X', ' ', ' ', ' '  /* 8 bytes */
   #define USB_PRODUCT                  'R', 'M', ' ', 'T', 'X', '1', '2', ' '  /* 8 Bytes */
+#elif defined(RADIO_T8)
+  #define USB_NAME                     "Radiomaster T8"
+  #define USB_MANUFACTURER             'R', 'M', '_', 'T', 'X', ' ', ' ', ' '  /* 8 bytes */
+  #define USB_PRODUCT                  'R', 'M', ' ', 'T', '8', ' ', ' ', ' '  /* 8 Bytes */
 #elif defined(RADIO_TLITE)
   #define USB_NAME                     "Jumper TLite"
   #define USB_MANUFACTURER             'J', 'U', 'M', 'P', 'E', 'R', ' ', ' '  /* 8 bytes */
@@ -883,8 +896,10 @@ void bluetoothDisable();
 #endif
 
 // USB Charger
+#if defined(USB_CHARGER)
 void usbChargerInit();
 bool usbChargerLed();
+#endif
 
 // LED driver
 void ledInit();

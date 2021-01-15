@@ -89,6 +89,8 @@ uint32_t Boards::getFourCC(Type board)
       return 0x3878746F;
     case BOARD_RADIOMASTER_TX12:
       return 0x4178746F;
+    case BOARD_RADIOMASTER_T8:
+      return 0x4378746F;
     case BOARD_UNKNOWN:
       break;
   }
@@ -117,6 +119,7 @@ int Boards::getEEpromSize(Board::Type board)
     case BOARD_JUMPER_T12:
     case BOARD_JUMPER_TLITE:
     case BOARD_RADIOMASTER_TX12:
+    case BOARD_RADIOMASTER_T8:
       return EESIZE_TARANIS;
     case BOARD_UNKNOWN:
       return EESIZE_MAX;
@@ -153,6 +156,7 @@ int Boards::getFlashSize(Type board)
     case BOARD_JUMPER_T12:
     case BOARD_JUMPER_TLITE:
     case BOARD_RADIOMASTER_TX12:
+    case BOARD_RADIOMASTER_T8:
       return FSIZE_TARANIS;
     case BOARD_HORUS_X12S:
     case BOARD_X10:
@@ -195,7 +199,20 @@ SwitchInfo Boards::getSwitchInfo(Board::Type board, int index)
     if (index < DIM(switches))
       return switches[index];
   }
-  else if (IS_TARANIS_X7(board)) {
+  else if (board == BOARD_TARANIS_X7_ACCESS) {
+    const Board::SwitchInfo switches[] = {
+      {SWITCH_3POS,   "SA"},
+      {SWITCH_3POS,   "SB"},
+      {SWITCH_3POS,   "SC"},
+      {SWITCH_3POS,   "SD"},
+      {SWITCH_2POS,   "SF"},
+      {SWITCH_TOGGLE, "SH"},
+      {SWITCH_2POS,   "SI"}
+    };
+    if (index < DIM(switches))
+      return switches[index];
+  }
+  else if (board == BOARD_TARANIS_X7) {
     const Board::SwitchInfo switches[] = {
       {SWITCH_3POS,   "SA"},
       {SWITCH_3POS,   "SB"},
@@ -219,6 +236,16 @@ SwitchInfo Boards::getSwitchInfo(Board::Type board, int index)
       {SWITCH_3POS,     "SF"},
       {SWITCH_2POS,     "SI"},
       {SWITCH_2POS,     "SJ"}
+    };
+    if (index < DIM(switches))
+      return switches[index];
+  }
+  else if (IS_RADIOMASTER_T8(board)) {
+    const Board::SwitchInfo switches[] = {
+      {SWITCH_TOGGLE,   "SA"},
+      {SWITCH_3POS,     "SB"},
+      {SWITCH_3POS,     "SC"},
+      {SWITCH_TOGGLE,   "SD"}
     };
     if (index < DIM(switches))
       return switches[index];
@@ -360,7 +387,9 @@ int Boards::getCapability(Board::Type board, Board::Capability capability)
         return 5;
       else if (board == Board::BOARD_TARANIS_X9LITES)
         return 7;
-      else if (IS_TARANIS_X7(board))
+      else if (board == BOARD_TARANIS_X7_ACCESS)
+        return 7;
+      else if (board == BOARD_TARANIS_X7)
         return 8;
       else if (IS_FAMILY_T12(board))
         return 8;
@@ -573,6 +602,8 @@ QString Boards::getBoardName(Board::Type board)
       return "Radiomaster TX16S";
     case BOARD_RADIOMASTER_TX12:
       return "Radiomaster TX12";
+    case BOARD_RADIOMASTER_T8:
+      return "Radiomaster T8";
     default:
       return tr("Unknown");
   }

@@ -26,8 +26,8 @@
 
 #include <QtCore>
 
-class CommonItemModels;
-class RawItemFilteredModel;
+class CompoundItemModelFactory;
+class FilteredItemModel;
 
 constexpr char MIMETYPE_CHANNEL[] = "application/x-companion-channel";
 
@@ -57,8 +57,8 @@ class ChannelsPanel : public ModelPanel
     Q_OBJECT
 
   public:
-    ChannelsPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, CommonItemModels * commonItemModels);
-    ~ChannelsPanel();
+    ChannelsPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, CompoundItemModelFactory * sharedItemModels);
+    virtual ~ChannelsPanel();
 
   public slots:
     void refreshExtendedLimits();
@@ -81,8 +81,8 @@ class ChannelsPanel : public ModelPanel
     void cmClear(bool prompt = true);
     void cmClearAll();
     void onCustomContextMenuRequested(QPoint pos);
-    void onModelDataAboutToBeUpdated();
-    void onModelDataUpdateComplete();
+    void onItemModelAboutToBeUpdated();
+    void onItemModelUpdateComplete();
 
   private:
     bool hasClipboardData(QByteArray * data = nullptr) const;
@@ -100,9 +100,10 @@ class ChannelsPanel : public ModelPanel
     QCheckBox *symlimitsChk[CPN_MAX_CHNOUT];
     int selectedIndex;
     int chnCapability;
-    CommonItemModels * commonItemModels;
-    RawItemFilteredModel *curveFilteredModel;
+    CompoundItemModelFactory *sharedItemModels;
+    FilteredItemModel *curveFilteredModel;
     void updateItemModels();
+    void connectItemModelEvents(const FilteredItemModel * itemModel);
 };
 
 #endif // _CHANNELS_H_

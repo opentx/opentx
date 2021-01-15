@@ -248,9 +248,9 @@ enum {
 #endif
 
 #if defined(INTERNAL_MODULE_PXX1) && defined(EXTERNAL_ANTENNA)
-#define EXTERNAL_ANTENNA_ROW           0,
-void onHardwareAntennaSwitchConfirm(const char * result)
-{
+  #define EXTERNAL_ANTENNA_ROW           0,
+  void onHardwareAntennaSwitchConfirm(const char * result)
+  {
   if (result == STR_OK) {
     // Switch to external antenna confirmation
     g_eeGeneral.antennaMode = reusableBuffer.radioHardware.antennaMode;
@@ -259,9 +259,9 @@ void onHardwareAntennaSwitchConfirm(const char * result)
   else {
     reusableBuffer.radioHardware.antennaMode = g_eeGeneral.antennaMode;
   }
-}
+  }
 #else
-#define EXTERNAL_ANTENNA_ROW
+  #define EXTERNAL_ANTENNA_ROW
 #endif
 
 #if defined(PCBX9LITE)
@@ -272,7 +272,7 @@ void onHardwareAntennaSwitchConfirm(const char * result)
   #define SWITCH_TYPE_MAX(sw)            (SWITCH_3POS)
 #elif defined(PCBX9E)
   #define SWITCH_TYPE_MAX(sw)            ((MIXSRC_SF - MIXSRC_FIRST_SWITCH == sw || MIXSRC_SH - MIXSRC_FIRST_SWITCH == sw) ? SWITCH_2POS : SWITCH_3POS)
-#elif defined(RADIO_TX12)
+#elif defined(RADIO_TX12) || defined(RADIO_T8)
   #define SWITCH_TYPE_MAX(sw)            ((MIXSRC_SA - MIXSRC_FIRST_SWITCH == sw || MIXSRC_SD - MIXSRC_FIRST_SWITCH == sw) ? SWITCH_2POS : SWITCH_3POS)
 #else
   #define SWITCH_TYPE_MAX(sw)            ((MIXSRC_SF - MIXSRC_FIRST_SWITCH == sw || MIXSRC_SH - MIXSRC_FIRST_SWITCH <= sw) ? SWITCH_2POS : SWITCH_3POS)
@@ -340,27 +340,19 @@ void menuRadioHardware(event_t event)
       POTS_ROWS,
     LABEL(Switches),
       SWITCHES_ROWS,
-
     0 /* battery calib */,
     RTC_ROW
     TX_CAPACITY_MEASUREMENT_ROWS
-
     MAX_BAUD_ROWS
-
     BLUETOOTH_ROWS
-
     EXTERNAL_ANTENNA_ROW
-
     AUX_SERIAL_ROWS
-
     0 /* ADC filter */,
     READONLY_ROW /* RAS */,
     SPORT_POWER_ROWS
     1 /* debugs */,
-
-    0,
-
-    0
+    0 /* EEPROM backup */,
+    0 /* Factory reset */
   });
 
   uint8_t sub = menuVerticalPosition - HEADER_LINE;

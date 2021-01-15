@@ -258,6 +258,17 @@ options_radiomaster_tx12 = {
     "afhds3": ("AFHDS3", "YES", "NO")
 }
 
+options_radiomaster_t8 = {
+    "noheli": ("HELI", "NO", "YES"),
+    "ppmus": ("PPM_UNIT", "US", "PERCENT_PREC1"),
+    "lua": ("LUA", "YES", "NO_MODEL_SCRIPTS"),
+    "nogvars": ("GVARS", "NO", "YES"),
+    "faimode": ("FAI", "YES", None),
+    "faichoice": ("FAI", "CHOICE", None),
+    "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
+    "bindkey": ("BIND_KEY", "NO", "YES"),
+}
+
 options_radiomaster_tx16s = {
     "noheli": ("HELI", "NO", "YES"),
     "ppmus": ("PPM_UNIT", "US", "PERCENT_PREC1"),

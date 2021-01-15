@@ -745,11 +745,23 @@ void displayLuaError(const char * title)
   if (lua_warning_info[0]) {
     char * split = strstr(lua_warning_info, ": ");
     if (split) {
-      lcdDrawSizedText(WARNING_LINE_X, WARNING_LINE_Y+FH+3, lua_warning_info, split-lua_warning_info, SMLSIZE);
-      lcdDrawSizedText(WARNING_LINE_X, WARNING_LINE_Y+2*FH+2, split+2, lua_warning_info+LUA_WARNING_INFO_LEN-split, SMLSIZE);
+#if LCD_W == 128
+      if (strlen(split + 2) <= 20) {
+        lcdDrawSizedText(WARNING_LINE_X, WARNING_LINE_Y + FH + 3, lua_warning_info, split - lua_warning_info, SMLSIZE);
+        lcdDrawSizedText(WARNING_LINE_X, WARNING_LINE_Y + 2 * FH + 2, split + 2, strlen(split + 2), SMLSIZE);
+      }
+      else {
+        lcdDrawSizedText(WARNING_LINE_X, WARNING_LINE_Y + FH, lua_warning_info, split - lua_warning_info, SMLSIZE);
+        lcdDrawSizedText(WARNING_LINE_X, WARNING_LINE_Y + 2 * FH, split + 2, 20, SMLSIZE);
+        lcdDrawSizedText(WARNING_LINE_X, WARNING_LINE_Y + 3 * FH, split + 22, strlen(split + 22), SMLSIZE);
+      }
+#else
+      lcdDrawSizedText(WARNING_LINE_X, WARNING_LINE_Y + FH + 3, lua_warning_info, split - lua_warning_info, SMLSIZE);
+      lcdDrawSizedText(WARNING_LINE_X, WARNING_LINE_Y + 2 * FH + 2, split + 2, lua_warning_info + LUA_WARNING_INFO_LEN - split, SMLSIZE);
+#endif
     }
     else {
-      lcdDrawSizedText(WARNING_LINE_X, WARNING_LINE_Y+FH+3, lua_warning_info, 40, SMLSIZE);
+      lcdDrawSizedText(WARNING_LINE_X, WARNING_LINE_Y + FH + 3, lua_warning_info, 40, SMLSIZE);
     }
   }
 }
@@ -787,7 +799,11 @@ void luaError(lua_State * L, uint8_t error, bool acknowledge)
 #if defined(SIMU)
     if (!strncmp(msg, ".", 2)) msg += 1;
 #endif
+#if LCD_W == 128
+      msg = strrchr(msg, '/') + 1;
+#else
     if (!strncmp(msg, "/SCRIPTS/", 9)) msg += 9;
+#endif
     strncpy(lua_warning_info, msg, LUA_WARNING_INFO_LEN);
     lua_warning_info[LUA_WARNING_INFO_LEN] = '\0';
   }
