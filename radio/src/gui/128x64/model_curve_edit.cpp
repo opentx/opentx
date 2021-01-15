@@ -165,7 +165,7 @@ void menuModelCurveOne(event_t event)
       }
       break;
 
-#if defined(NAVIGATION_X7_TX12)
+#if defined(KEYS_GPIO_REG_MDL)
     case EVT_KEY_FIRST(KEY_MODEL):
       pushMenu(menuChannelsView);
       killEvents(event);

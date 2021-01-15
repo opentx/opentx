@@ -334,6 +334,12 @@ void generalDefault()
   setDefaultOwnerId();
 #endif
 
+#if defined(RADIOMASTER_RTF_RELEASE)
+  // Those settings are for headless radio
+  g_eeGeneral.USBMode = USB_JOYSTICK_MODE;
+  g_eeGeneral.disableRtcWarning = 1;
+#endif
+
   g_eeGeneral.chkSum = 0xFFFF;
 }
 
@@ -522,6 +528,15 @@ void modelDefault(uint8_t id)
   for (int i=0; i<NUM_SWITCHES; i++) {
     g_model.switchWarningState |= (1 << (3*i));
   }
+#endif
+
+#if defined(RADIOMASTER_RTF_RELEASE)
+  // Those settings are for headless radio
+  g_model.trainerData.mode = TRAINER_MODE_SLAVE;
+  g_model.moduleData[INTERNAL_MODULE].type = MODULE_TYPE_MULTIMODULE;
+  g_model.moduleData[INTERNAL_MODULE].setMultiProtocol(MODULE_SUBTYPE_MULTI_FRSKY);
+  g_model.moduleData[INTERNAL_MODULE].subType = MM_RF_FRSKY_SUBTYPE_D8;
+  g_model.moduleData[INTERNAL_MODULE].failsafeMode = FAILSAFE_NOPULSES;
 #endif
 }
 
@@ -917,7 +932,7 @@ void checkAll()
   checkFailsafe();
   checkRSSIAlarmsDisabled();
 
-#if defined(SDCARD)
+#if defined(SDCARD) && !defined(RADIOMASTER_RTF_RELEASE)
   checkSDVersion();
 #endif
 
@@ -2183,6 +2198,7 @@ uint32_t pwrCheck()
 #endif
           event_t evt = getEvent(false);
           DISPLAY_WARNING(evt);
+          LED_ERROR_BEGIN();
           lcdRefresh();
 
           if (warningResult) {
@@ -2192,6 +2208,7 @@ uint32_t pwrCheck()
           else if (!warningText) {
             // shutdown has been cancelled
             pwr_check_state = PWR_CHECK_PAUSED;
+            LED_ERROR_END();
             return e_power_on;
           }
         }
