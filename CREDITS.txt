@@ -2058,3 +2058,42 @@ Josef de Beer
 Chad Mofford
 Pim Pouw
 Kenth Jonsson
+Gordon Westfall
+Jean-Michel Saves
+Roberto Orsello
+Luboš Konvalinka
+Lawrence Dorn
+Michael Dittmann
+Bernd Schmiedel
+Raoul Piccioli
+Uwe Probst
+Glendon Satchell
+Trevor Collins
+Horst Grashauser
+Miguel José Cárdenas Herrera
+Mike Jennings
+José Bernardo
+Carlos Dangle
+Gordon Evans
+Pablo Peinado Abad
+Carl Payne
+Adam Sosnowski
+Гасак Сергей
+SaltCtyRacingFPV
+Georg Bernhardt
+James Mildenhall
+Dave Plummer
+Ivan Mokris
+Patrick Daniels
+Stuart Olson
+Cory Znebel
+Andrey Yarovoy
+Christian Pons
+Burt Pickard-Richardson
+Michal Mesaros
+Conrad Young
+Martin Mathes
+Jens Rainer Hansen
+Mark Trible
+Marc Dubois
+Alan Wilkins

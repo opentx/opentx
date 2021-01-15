@@ -713,6 +713,7 @@ void bluetoothDisable();
 extern DMAFifo<512> telemetryFifo;
 typedef DMAFifo<32> AuxSerialRxFifo;
 extern AuxSerialRxFifo auxSerialRxFifo;
+extern AuxSerialRxFifo aux2SerialRxFifo;
 extern volatile uint32_t externalModulePort;
 #endif
 

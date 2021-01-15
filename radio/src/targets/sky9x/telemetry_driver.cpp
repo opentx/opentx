@@ -93,10 +93,8 @@ void startPdcUsartReceive()
 {
   Usart *pUsart = SECOND_USART;
   TelemetryInBuffer.outPtr = TelemetryInBuffer.fifo ;
-#ifndef SIMU
   pUsart->US_RPR = (uint32_t)TelemetryInBuffer.fifo ;
   pUsart->US_RNPR = (uint32_t)TelemetryInBuffer.fifo ;
-#endif
   pUsart->US_RCR = RX_UART_BUFFER_SIZE ;
   pUsart->US_RNCR = RX_UART_BUFFER_SIZE ;
   pUsart->US_PTCR = US_PTCR_RXTEN ;
@@ -104,7 +102,6 @@ void startPdcUsartReceive()
 
 void rxPdcUsart( void (*pChProcess)(uint8_t x) )
 {
-#if !defined(SIMU)
   Usart *pUsart = SECOND_USART;
   uint8_t *ptr ;
   uint8_t *endPtr ;
@@ -132,7 +129,6 @@ void rxPdcUsart( void (*pChProcess)(uint8_t x) )
     pUsart->US_RNPR = (uint32_t)TelemetryInBuffer.fifo ;
     pUsart->US_RNCR = RX_UART_BUFFER_SIZE ;
   }
-#endif
 }
 
 uint32_t txPdcUsart(const uint8_t * buffer, uint32_t size)
@@ -140,9 +136,7 @@ uint32_t txPdcUsart(const uint8_t * buffer, uint32_t size)
   Usart * pUsart = SECOND_USART;
 
   if (pUsart->US_TNCR == 0) {
-#ifndef SIMU
     pUsart->US_TNPR = (uint32_t)buffer ;
-#endif
     pUsart->US_TNCR = size ;
     pUsart->US_PTCR = US_PTCR_TXTEN ;
     return 1 ;
@@ -150,6 +144,7 @@ uint32_t txPdcUsart(const uint8_t * buffer, uint32_t size)
   return 0 ;
 }
 
+/*
 uint32_t telemetryTransmitPending()
 {
   Usart *pUsart = SECOND_USART;
@@ -164,13 +159,20 @@ uint32_t telemetryTransmitPending()
 
   return x ;
 }
+*/
+
+void telemetryPortSetDirectionOutput()
+{
+}
+
+void telemetryPortSetDirectionInput()
+{
+}
 
 void telemetryPortInit(uint32_t baudrate, uint8_t mode)
 {
-#if !defined(SIMU)
   UART2_Configure(baudrate, Master_frequency, mode);
   startPdcUsartReceive();
-#endif
 }
 
 void sportSendBuffer(const uint8_t * buffer, uint32_t size)

@@ -195,7 +195,9 @@ enum {
   ITEM_RADIO_HARDWARE_MAX
 };
 
-#if (NUM_POTS + NUM_SLIDERS) == 1
+#if (NUM_POTS + NUM_SLIDERS) == 0
+  #define POTS_ROWS                 HIDDEN_ROW
+#elif (NUM_POTS + NUM_SLIDERS) == 1
   #define POTS_ROWS               NAVIGATION_LINE_BY_LINE|1
 #elif (NUM_POTS + NUM_SLIDERS) == 2
   #define POTS_ROWS               NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
@@ -238,20 +240,20 @@ enum {
 #endif
 
 #if defined(INTERNAL_MODULE_PXX1) && defined(EXTERNAL_ANTENNA)
-#define EXTERNAL_ANTENNA_ROW           0,
-void onHardwareAntennaSwitchConfirm(const char * result)
-{
-  if (result == STR_OK) {
-    // Switch to external antenna confirmation
-    g_eeGeneral.antennaMode = reusableBuffer.radioHardware.antennaMode;
-    storageDirty(EE_GENERAL);
+  #define EXTERNAL_ANTENNA_ROW           0,
+  void onHardwareAntennaSwitchConfirm(const char * result)
+  {
+    if (result == STR_OK) {
+      // Switch to external antenna confirmation
+      g_eeGeneral.antennaMode = reusableBuffer.radioHardware.antennaMode;
+      storageDirty(EE_GENERAL);
+    }
+    else {
+      reusableBuffer.radioHardware.antennaMode = g_eeGeneral.antennaMode;
+    }
   }
-  else {
-    reusableBuffer.radioHardware.antennaMode = g_eeGeneral.antennaMode;
-  }
-}
 #else
-#define EXTERNAL_ANTENNA_ROW
+  #define EXTERNAL_ANTENNA_ROW
 #endif
 
 #if defined(PCBX9LITE)
@@ -262,7 +264,7 @@ void onHardwareAntennaSwitchConfirm(const char * result)
   #define SWITCH_TYPE_MAX(sw)            (SWITCH_3POS)
 #elif defined(PCBX9E)
   #define SWITCH_TYPE_MAX(sw)            ((MIXSRC_SF - MIXSRC_FIRST_SWITCH == sw || MIXSRC_SH - MIXSRC_FIRST_SWITCH == sw) ? SWITCH_2POS : SWITCH_3POS)
-#elif defined(RADIO_TX12)
+#elif defined(RADIO_TX12) || defined(RADIO_T8)
   #define SWITCH_TYPE_MAX(sw)            ((MIXSRC_SA - MIXSRC_FIRST_SWITCH == sw || MIXSRC_SD - MIXSRC_FIRST_SWITCH == sw) ? SWITCH_2POS : SWITCH_3POS)
 #else
   #define SWITCH_TYPE_MAX(sw)            ((MIXSRC_SF - MIXSRC_FIRST_SWITCH == sw || MIXSRC_SH - MIXSRC_FIRST_SWITCH <= sw) ? SWITCH_2POS : SWITCH_3POS)
@@ -322,35 +324,27 @@ void menuRadioHardware(event_t event)
   MENU(STR_HARDWARE, menuTabGeneral, MENU_RADIO_HARDWARE, HEADER_LINE + ITEM_RADIO_HARDWARE_MAX, {
     HEADER_LINE_COLUMNS
     0 /* calibration button */,
-      0 /* stick 1 */,
-      0 /* stick 2 */,
-      0 /* stick 3 */,
-      0 /* stick 4 */,
+    0 /* stick 1 */,
+    0 /* stick 2 */,
+    0 /* stick 3 */,
+    0 /* stick 4 */,
     LABEL(Pots),
-      POTS_ROWS,
+    POTS_ROWS,
     LABEL(Switches),
-      SWITCHES_ROWS,
-
+    SWITCHES_ROWS,
     0 /* battery calib */,
     RTC_ROW
     TX_CAPACITY_MEASUREMENT_ROWS
-
     MAX_BAUD_ROWS
-
     BLUETOOTH_ROWS
-
     EXTERNAL_ANTENNA_ROW
-
     AUX_SERIAL_ROWS
-
     0 /* ADC filter */,
     READONLY_ROW /* RAS */,
     SPORT_POWER_ROWS
     1 /* debugs */,
-
-    0,
-
-    0
+    0 /* EEPROM backup */,
+    0 /* Factory reset */
   });
 
   uint8_t sub = menuVerticalPosition - HEADER_LINE;

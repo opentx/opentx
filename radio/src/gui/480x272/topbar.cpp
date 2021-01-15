@@ -61,6 +61,11 @@ void drawTopBar()
     lcdDrawBitmapPattern(LCD_W-98, 8, LBM_TOPMENU_USB, MENU_TITLE_COLOR);
   }
 
+  // Logs
+  if (isFunctionActive(FUNCTION_LOGS) && !usbPlugged() && BLINK_ON_PHASE) {
+    lcdDrawBitmapPattern(LCD_W-98, 6, LBM_DOT, MENU_TITLE_COLOR);
+  }
+
   // RSSI
   const uint8_t rssiBarsValue[] = {30, 40, 50, 60, 80};
   const uint8_t rssiBarsHeight[] = {5, 10, 15, 21, 31};
