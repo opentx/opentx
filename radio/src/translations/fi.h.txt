@@ -455,7 +455,7 @@
 #if defined(PCBSKY9X) && defined(REVX)
   #define TR_OUTPUT_TYPE       INDENT "Output"
 #endif
-#define TR_PROTO               TR(INDENT "Proto", INDENT "Protocol")
+#define TR_PROTOCOL            TR("Proto", "Protocol")
 #define TR_PPMFRAME            TR("PPM frame", INDENT "PPM frame")
 #define TR_REFRESHRATE               TR(INDENT "Refresh", INDENT "Refresh rate")
 #define STR_WARN_BATTVOLTAGE           TR(INDENT "Output is VBAT: ", INDENT "Warning: output level is VBAT: ")
