@@ -49,10 +49,15 @@ void menuRadioDiagKeys(event_t event)
       displayKeyState(i&1? 20*FW : 18*FW, y, TRM_BASE+i);
     }
 
-    if (i <= KEY_MAX) {
-      y = (i != 7) ? MENU_HEADER_HEIGHT + 1 + FH * i : MENU_HEADER_HEIGHT + 1 + FH * 6;
-      lcdDrawTextAtIndex((i != 7) ? 0 : 8 * FW + 4, y, STR_VKEYS, i, 0);
-      displayKeyState((i != 7) ? 5 * FW + 2 : lcdNextPos + 10, y, i);
+    if (i == 7) {
+      y = MENU_HEADER_HEIGHT + 1 + FH * 6;
+      lcdDrawTextAtIndex(8, y, STR_VKEYS, i, 0);
+      displayKeyState(lcdNextPos + 10, y, i);
+    }
+    else if (i <= KEY_MAX) {
+      y = MENU_HEADER_HEIGHT + 1 + FH * i;
+      lcdDrawTextAtIndex(0, y, STR_VKEYS, i, 0);
+      displayKeyState(5 * FW + 2, y, i);
     }
 
 #if defined(PCBSKY9X)
