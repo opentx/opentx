@@ -1781,11 +1781,11 @@ const luaR_value_entry opentxConstants[] = {
   { "MIXSRC_SE", MIXSRC_SE },
   { "MIXSRC_SG", MIXSRC_SG },
 #endif
-#if !defined(PCBXLITE) && !defined(PCBX9LITE)
+#if defined(HARDWARE_SWITCH_F)
   { "MIXSRC_SF", MIXSRC_SF },
-#if !(defined(RADIO_TX12) || defined(RADIO_T8))
-  { "MIXSRC_SH", MIXSRC_SH },
 #endif
+#if defined(HARDWARE_SWITCH_H)
+  { "MIXSRC_SH", MIXSRC_SH },
 #endif
   { "MIXSRC_CH1", MIXSRC_CH1 },
   { "SWSRC_LAST", SWSRC_LAST_LOGICAL_SWITCH },
