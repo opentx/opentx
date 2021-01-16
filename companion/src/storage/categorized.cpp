@@ -153,7 +153,7 @@ bool CategorizedStorageFormat::write(const RadioData & radioData)
 
   if (getCurrentFirmware()->getCapability(HasModelCategories)) {
     for (size_t c=0; c<numCategories; c++) {
-      modelsList.append(QString().sprintf("[%s]\n", radioData.categories[c].name));
+      modelsList.append(QString().asprintf("[%s]\n", radioData.categories[c].name));
       numModels = sortedModels[c].size();
       for (size_t m=0; m<numModels; m++) {
         modelsList.append(sortedModels[c][m]);
