@@ -39,7 +39,7 @@ int HexSpinBox::valueFromText(const QString &text) const
 QString HexSpinBox::textFromValue(int value) const
 {
   QString text;
-  text.sprintf("%04X", value);
+  text.asprintf("%04X", value);
   return text;
 }
 

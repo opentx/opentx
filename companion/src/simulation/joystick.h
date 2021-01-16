@@ -23,8 +23,8 @@
 
 #include <QObject>
 #include <QMap>
-#include <QTime>
 #include <QTimer>
+#include <QElapsedTimer>
 #include <QStringList>
 #include <SDL.h>
 
@@ -63,9 +63,9 @@ class Joystick : public QObject
     QMap<int, Sint16> axes;
     QMap<int, Uint8> buttons;
     QMap<int, Uint8> hats;
-    QMap<int, QTime> axisRepeatTimers;
-    QMap<int, QTime> buttonRepeatTimers;
-    QMap<int, QTime> hatRepeatTimers;
+    QMap<int, QElapsedTimer> axisRepeatTimers;
+    QMap<int, QElapsedTimer> buttonRepeatTimers;
+    QMap<int, QElapsedTimer> hatRepeatTimers;
 
   signals:
     void axisValueChanged(int axis, int value);
