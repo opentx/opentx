@@ -87,6 +87,8 @@ uint32_t Boards::getFourCC(Type board)
       return 0x3878746F;
     case BOARD_RADIOMASTER_TX12:
       return 0x4178746F;
+    case BOARD_RADIOMASTER_T8:
+      return 0x4378746F;
     case BOARD_UNKNOWN:
       break;
   }
@@ -114,6 +116,7 @@ int Boards::getEEpromSize(Board::Type board)
     case BOARD_TARANIS_X9E:
     case BOARD_JUMPER_T12:
     case BOARD_RADIOMASTER_TX12:
+    case BOARD_RADIOMASTER_T8:
       return EESIZE_TARANIS;
     case BOARD_UNKNOWN:
       return EESIZE_MAX;
@@ -149,6 +152,7 @@ int Boards::getFlashSize(Type board)
     case BOARD_TARANIS_X9E:
     case BOARD_JUMPER_T12:
     case BOARD_RADIOMASTER_TX12:
+    case BOARD_RADIOMASTER_T8:
       return FSIZE_TARANIS;
     case BOARD_HORUS_X12S:
     case BOARD_X10:
@@ -228,6 +232,16 @@ SwitchInfo Boards::getSwitchInfo(Board::Type board, int index)
       {SWITCH_3POS,     "SF"},
       {SWITCH_2POS,     "SI"},
       {SWITCH_2POS,     "SJ"}
+    };
+    if (index < DIM(switches))
+      return switches[index];
+  }
+  else if (IS_RADIOMASTER_T8(board)) {
+    const Board::SwitchInfo switches[] = {
+      {SWITCH_TOGGLE,   "SA"},
+      {SWITCH_3POS,     "SB"},
+      {SWITCH_3POS,     "SC"},
+      {SWITCH_TOGGLE,   "SD"}
     };
     if (index < DIM(switches))
       return switches[index];
@@ -568,6 +582,8 @@ QString Boards::getBoardName(Board::Type board)
       return "Radiomaster TX16S";
     case BOARD_RADIOMASTER_TX12:
       return "Radiomaster TX12";
+    case BOARD_RADIOMASTER_T8:
+      return "Radiomaster T8";
     default:
       return tr("Unknown");
   }

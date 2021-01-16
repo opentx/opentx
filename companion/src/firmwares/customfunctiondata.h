@@ -35,7 +35,8 @@ class RadioDataConversionState;
 
 enum AssignFunc {
   FuncOverrideCH1 = 0,
-  FuncOverrideCH32 = FuncOverrideCH1+CPN_MAX_CHNOUT-1,
+  FuncOverrideCHLast = FuncOverrideCH1 + CPN_MAX_CHNOUT - 1,
+  FuncOverrideCH32 = FuncOverrideCHLast,  //  TODO remove
   FuncTrainer,
   FuncTrainerRUD,
   FuncTrainerELE,
@@ -47,8 +48,9 @@ enum AssignFunc {
   FuncPlayHaptic,
   FuncReset,
   FuncSetTimer1,
-  FuncSetTimer2,
-  FuncSetTimer3,
+  FuncSetTimer2,  //  TODO remove
+  FuncSetTimer3,  //  TODO remove
+  FuncSetTimerLast = FuncSetTimer1 + CPN_MAX_TIMERS - 1,
   FuncVario,
   FuncPlayPrompt,
   FuncPlayBoth,
@@ -61,7 +63,7 @@ enum AssignFunc {
   FuncBackgroundMusic,
   FuncBackgroundMusicPause,
   FuncAdjustGV1,
-  FuncAdjustGVLast = FuncAdjustGV1+CPN_MAX_GVARS-1,
+  FuncAdjustGVLast = FuncAdjustGV1 + CPN_MAX_GVARS - 1,
   FuncSetFailsafe,
   FuncRangeCheckInternalModule,
   FuncRangeCheckExternalModule,
@@ -83,7 +85,15 @@ class CustomFunctionData {
   Q_DECLARE_TR_FUNCTIONS(CustomFunctionData)
 
   public:
-    CustomFunctionData(AssignFunc func=FuncOverrideCH1) { clear(); this->func = func; }
+    enum CustomFunctionContext
+    {
+      GlobalFunctionsContext  = 0x01,
+      SpecialFunctionsContext = 0x02,
+
+      AllFunctionContexts     = GlobalFunctionsContext | SpecialFunctionsContext
+    };
+
+    CustomFunctionData(AssignFunc func = FuncOverrideCH1) { clear(); this->func = func; }
     RawSwitch    swtch;
     AssignFunc   func;
     int param;
@@ -95,7 +105,7 @@ class CustomFunctionData {
     void clear();
     bool isEmpty() const;
     QString nameToString(int index, bool globalContext = false) const;
-    QString funcToString(const ModelData * model = NULL) const;
+    QString funcToString(const ModelData * model = nullptr) const;
     QString paramToString(const ModelData * model) const;
     QString repeatToString() const;
     QString enabledToString() const;
@@ -103,6 +113,10 @@ class CustomFunctionData {
     static void populateResetParams(const ModelData * model, QComboBox * b, unsigned int value);
     static void populatePlaySoundParams(QStringList & qs);
     static void populateHapticParams(QStringList & qs);
+    static bool isFuncAvailable(int index);
+    static int funcContext(int index);
+    static int resetParamCount(const ModelData * model);
+    static bool isResetParamAvailable(const ModelData * model, int index);
 
     void convert(RadioDataConversionState & cstate);
 

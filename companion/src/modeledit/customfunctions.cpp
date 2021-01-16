@@ -19,7 +19,7 @@
  */
 
 #include "customfunctions.h"
-#include "rawitemfilteredmodel.h"
+#include "filtereditemmodels.h"
 #include "helpers.h"
 #include "appdata.h"
 
@@ -66,10 +66,10 @@ void RepeatComboBox::update()
   setCurrentIndex(value);
 }
 
-CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, GeneralSettings & generalSettings, Firmware * firmware, CommonItemModels * commonItemModels):
+CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, GeneralSettings & generalSettings, Firmware * firmware,
+                                           CompoundItemModelFactory * sharedItemModels):
   GenericPanel(parent, model, generalSettings, firmware),
   functions(model ? model->customFn : generalSettings.customFn),
-  commonItemModels(commonItemModels),
   mediaPlayerCurrent(-1),
   mediaPlayer(nullptr),
   modelsUpdateCnt(0)
@@ -77,21 +77,18 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
   lock = true;
   fswCapability = model ? firmware->getCapability(CustomFunctions) : firmware->getCapability(GlobalFunctions);
 
-  rawSwitchFilteredModel = new RawItemFilteredModel(commonItemModels->rawSwitchItemModel(), model ? RawSwitch::SpecialFunctionsContext : RawSwitch::GlobalFunctionsContext, this);
-  connect(rawSwitchFilteredModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &CustomFunctionsPanel::onModelDataAboutToBeUpdated);
-  connect(rawSwitchFilteredModel, &RawItemFilteredModel::dataUpdateComplete, this, &CustomFunctionsPanel::onModelDataUpdateComplete);
+  rawSwitchFilteredModel = new FilteredItemModel(sharedItemModels->getItemModel(AbstractItemModel::IMID_RawSwitch),
+                                                 model ? RawSwitch::SpecialFunctionsContext : RawSwitch::GlobalFunctionsContext);
+  connectItemModelEvents(rawSwitchFilteredModel);
 
-  rawSourceAllModel = new RawItemFilteredModel(commonItemModels->rawSourceItemModel(), this);
-  connect(rawSourceAllModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &CustomFunctionsPanel::onModelDataAboutToBeUpdated);
-  connect(rawSourceAllModel, &RawItemFilteredModel::dataUpdateComplete, this, &CustomFunctionsPanel::onModelDataUpdateComplete);
+  rawSourceAllModel = new FilteredItemModel(sharedItemModels->getItemModel(AbstractItemModel::IMID_RawSource));
+  connectItemModelEvents(rawSourceAllModel);
 
-  rawSourceInputsModel = new RawItemFilteredModel(commonItemModels->rawSourceItemModel(), RawSource::InputSourceGroups, this);
-  connect(rawSourceInputsModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &CustomFunctionsPanel::onModelDataAboutToBeUpdated);
-  connect(rawSourceInputsModel, &RawItemFilteredModel::dataUpdateComplete, this, &CustomFunctionsPanel::onModelDataUpdateComplete);
+  rawSourceInputsModel = new FilteredItemModel(sharedItemModels->getItemModel(AbstractItemModel::IMID_RawSource), RawSource::InputSourceGroups);
+  connectItemModelEvents(rawSourceInputsModel);
 
-  rawSourceGVarsModel = new RawItemFilteredModel(commonItemModels->rawSourceItemModel(), RawSource::GVarsGroup, this);
-  connect(rawSourceGVarsModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &CustomFunctionsPanel::onModelDataAboutToBeUpdated);
-  connect(rawSourceGVarsModel, &RawItemFilteredModel::dataUpdateComplete, this, &CustomFunctionsPanel::onModelDataUpdateComplete);
+  rawSourceGVarsModel = new FilteredItemModel(sharedItemModels->getItemModel(AbstractItemModel::IMID_RawSource), RawSource::GVarsGroup);
+  connectItemModelEvents(rawSourceGVarsModel);
 
   if (!firmware->getCapability(VoicesAsNumbers)) {
     tracksSet = getFilesSet(getSoundsPath(generalSettings), QStringList() << "*.wav" << "*.WAV", firmware->getCapability(VoicesMaxLength));
@@ -253,6 +250,10 @@ CustomFunctionsPanel::~CustomFunctionsPanel()
 {
   if (mediaPlayer)
     stopSound(mediaPlayerCurrent);
+  delete rawSwitchFilteredModel;
+  delete rawSourceAllModel;
+  delete rawSourceInputsModel;
+  delete rawSourceGVarsModel;
 }
 
 void CustomFunctionsPanel::onMediaPlayerStateChanged(QMediaPlayer::State state)
@@ -827,13 +828,19 @@ bool CustomFunctionsPanel::moveUpAllowed() const
   return selectedIndex > 0;
 }
 
-void CustomFunctionsPanel::onModelDataAboutToBeUpdated()
+void CustomFunctionsPanel::connectItemModelEvents(const FilteredItemModel * itemModel)
+{
+  connect(itemModel, &FilteredItemModel::aboutToBeUpdated, this, &CustomFunctionsPanel::onItemModelAboutToBeUpdated);
+  connect(itemModel, &FilteredItemModel::updateComplete, this, &CustomFunctionsPanel::onItemModelUpdateComplete);
+}
+
+void CustomFunctionsPanel::onItemModelAboutToBeUpdated()
 {
   lock = true;
   modelsUpdateCnt++;
 }
 
-void CustomFunctionsPanel::onModelDataUpdateComplete()
+void CustomFunctionsPanel::onItemModelUpdateComplete()
 {
   modelsUpdateCnt--;
   if (modelsUpdateCnt < 1) {

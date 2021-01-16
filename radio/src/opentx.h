@@ -69,6 +69,12 @@
 #define CASE_GYRO(x)
 #endif
 
+#if defined(BACKLIGHT_GPIO)
+#define CASE_BACKLIGHT(x) x,
+#else
+#define CASE_BACKLIGHT(x)
+#endif
+
 #if defined(LUA)
   #define CASE_LUA(x) x,
 #else
@@ -382,6 +388,8 @@ inline bool SPLASH_NEEDED()
   #define ROTENC_HIGHSPEED             50
   #define ROTENC_DELAY_MIDSPEED        32
   #define ROTENC_DELAY_HIGHSPEED       16
+#elif defined(RADIO_T8)
+  constexpr uint8_t rotencSpeed = 1;
 #endif
 
 constexpr uint8_t HEART_TIMER_10MS = 0x01;
@@ -436,6 +444,10 @@ extern uint8_t potsPos[NUM_XPOTS];
 
 bool trimDown(uint8_t idx);
 void readKeysAndTrims();
+
+#if defined(KEYS_GPIO_REG_BIND)
+void bindButtonHandler(event_t event);
+#endif
 
 uint16_t evalChkSum();
 
@@ -998,7 +1010,13 @@ constexpr uint8_t OPENTX_START_NO_CHECKS = 0x04;
 
 #if defined(STATUS_LEDS)
   #define LED_ERROR_BEGIN()            ledRed()
+#if defined(RADIO_T8)
+  // Because of green backlit logo, green is preferred on this radio
+  #define LED_ERROR_END()              ledGreen()
+  #define LED_BIND()                   ledBlue()
+#else
   #define LED_ERROR_END()              ledBlue()
+#endif
 #else
   #define LED_ERROR_BEGIN()
   #define LED_ERROR_END()

@@ -37,30 +37,37 @@ class AutoComboBox: public QComboBox
 
     void clear()
     {
-      lock = true;
-      QComboBox::clear();
-      next = 0;
-      lock = false;
+      if (!hasModel) {
+        lock = true;
+        QComboBox::clear();
+        next = 0;
+        lock = false;
+      }
     }
 
     virtual void insertItems(int index, const QStringList & items)
     {
-      foreach(QString item, items) {
-        addItem(item);
+      if (!hasModel) {
+        foreach(QString item, items) {
+          addItem(item);
+        }
       }
     }
 
     virtual void addItem(const QString & item)
     {
-      addItem(item, next++);
+      if (!hasModel)
+        addItem(item, next++);
     }
 
     virtual void addItem(const QString & item, int value)
     {
-      lock = true;
-      QComboBox::addItem(item, value);
-      lock = false;
-      updateValue();
+      if (!hasModel) {
+        lock = true;
+        QComboBox::addItem(item, value);
+        lock = false;
+        updateValue();
+      }
     }
 
     void setField(unsigned int & field, GenericPanel * panel=nullptr)
@@ -77,11 +84,22 @@ class AutoComboBox: public QComboBox
       updateValue();
     }
 
+    void setModel(QAbstractItemModel * model)
+    {
+      lock = true;
+      QComboBox::setModel(model);
+      lock = false;
+      hasModel = true;
+      updateValue();
+    }
+
     void setAutoIndexes()
     {
-      for (int i=0; i<count(); ++i)
-        setItemData(i, i);
-      updateValue();
+      if (!hasModel) {
+        for (int i = 0; i < count(); ++i)
+          setItemData(i, i);
+        updateValue();
+      }
     }
 
     void updateValue()
@@ -99,13 +117,17 @@ class AutoComboBox: public QComboBox
   protected slots:
     void onCurrentIndexChanged(int index)
     {
-      const int val = itemData(index).toInt();
-      if (field && !lock) {
-        *field = val;
-        if (panel)
-          emit panel->modified();
+      if (panel && panel->lock)
+        return;
+      if (index > -1) {
+        const int val = itemData(index).toInt();
+        if (field && !lock) {
+          *field = val;
+          if (panel)
+            emit panel->modified();
+        }
+        emit currentDataChanged(val);
       }
-      emit currentDataChanged(val);
     }
 
   protected:
@@ -113,6 +135,7 @@ class AutoComboBox: public QComboBox
     GenericPanel * panel = nullptr;
     int next = 0;
     bool lock = false;
+    bool hasModel = false;
 };
 
 #endif // _AUTOCOMBOBOX_H_

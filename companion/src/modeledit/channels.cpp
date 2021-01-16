@@ -20,7 +20,7 @@
 
 #include "channels.h"
 #include "helpers.h"
-#include "rawitemfilteredmodel.h"
+#include "filtereditemmodels.h"
 
 LimitsGroup::LimitsGroup(Firmware * firmware, TableLayout * tableLayout, int row, int col, int & value, const ModelData & model, int min, int max, int deflt, ModelPanel * panel):
   firmware(firmware),
@@ -96,16 +96,15 @@ void LimitsGroup::updateMinMax(int max)
     }
   }
 }
-ChannelsPanel::ChannelsPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, CommonItemModels * commonItemModels):
+ChannelsPanel::ChannelsPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, CompoundItemModelFactory * sharedItemModels):
   ModelPanel(parent, model, generalSettings, firmware),
-  commonItemModels(commonItemModels)
+  sharedItemModels(sharedItemModels)
 {
   chnCapability = firmware->getCapability(Outputs);
   int channelNameMaxLen = firmware->getCapability(ChannelsName);
 
-  curveFilteredModel = new RawItemFilteredModel(commonItemModels->curveItemModel(), RawItemFilteredModel::AllFilter, this);
-  connect(curveFilteredModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &ChannelsPanel::onModelDataAboutToBeUpdated);
-  connect(curveFilteredModel, &RawItemFilteredModel::dataUpdateComplete, this, &ChannelsPanel::onModelDataUpdateComplete);
+  curveFilteredModel = new FilteredItemModel(sharedItemModels->getItemModel(AbstractItemModel::IMID_Curve));
+  connectItemModelEvents(curveFilteredModel);
 
   QStringList headerLabels;
   headerLabels << "#";
@@ -214,6 +213,7 @@ ChannelsPanel::~ChannelsPanel()
     delete centerSB[i];
     delete symlimitsChk[i];
   }
+  delete curveFilteredModel;
 }
 
 void ChannelsPanel::symlimitsEdited()
@@ -474,12 +474,18 @@ void ChannelsPanel::swapData(int idx1, int idx2)
   }
 }
 
-void ChannelsPanel::onModelDataAboutToBeUpdated()
+void ChannelsPanel::connectItemModelEvents(const FilteredItemModel * itemModel)
+{
+  connect(itemModel, &FilteredItemModel::aboutToBeUpdated, this, &ChannelsPanel::onItemModelAboutToBeUpdated);
+  connect(itemModel, &FilteredItemModel::updateComplete, this, &ChannelsPanel::onItemModelUpdateComplete);
+}
+
+void ChannelsPanel::onItemModelAboutToBeUpdated()
 {
   lock = true;
 }
 
-void ChannelsPanel::onModelDataUpdateComplete()
+void ChannelsPanel::onItemModelUpdateComplete()
 {
   update();
   lock = false;
@@ -487,5 +493,5 @@ void ChannelsPanel::onModelDataUpdateComplete()
 
 void ChannelsPanel::updateItemModels()
 {
-  commonItemModels->update(CommonItemModels::RMO_CHANNELS);
+  sharedItemModels->update(AbstractItemModel::IMUE_Channels);
 }

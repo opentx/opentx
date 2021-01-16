@@ -663,6 +663,9 @@ void checkSwitches()
       }
       int x = SWITCH_WARNING_LIST_X;
       int y = SWITCH_WARNING_LIST_Y;
+#if defined(COLORLCD)
+      lcdNextPos = SWITCH_WARNING_LIST_X;
+#endif
       int numWarnings = 0;
       for (int i=0; i<NUM_SWITCHES; ++i) {
 #if defined(COLORLCD)
@@ -672,8 +675,7 @@ void checkSwitches()
             if (++numWarnings < 6) {
               // LcdFlags attr = ((states & mask) == (switches_states & mask)) ? TEXT_COLOR : ALARM_COLOR;
               LcdFlags attr = ALARM_COLOR;
-              drawSwitch(x, y, SWSRC_FIRST_SWITCH+i*3+state-1, attr);
-              x += 35;
+              drawSwitch(lcdNextPos, y, SWSRC_FIRST_SWITCH+i*3+state-1, attr);
             }
           }
         }
@@ -706,8 +708,7 @@ void checkSwitches()
                 // TODO add an helper
                 strncpy(s, &STR_VSRCRAW[1+(NUM_STICKS+1+i)*STR_VSRCRAW[0]], STR_VSRCRAW[0]);
                 s[int(STR_VSRCRAW[0])] = '\0';
-                lcdDrawText(x, y, s, ALARM_COLOR);
-                x += 40;
+                lcdDrawText(lcdNextPos, y, s, ALARM_COLOR);
 #else
                 lcdDrawTextAtIndex(x, y, STR_VSRCRAW, NUM_STICKS + 1 + i, INVERS);
                 if (IS_POT(POT1 + i))

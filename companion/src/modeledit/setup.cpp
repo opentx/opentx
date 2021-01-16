@@ -22,7 +22,7 @@
 #include "ui_setup.h"
 #include "ui_setup_timer.h"
 #include "ui_setup_module.h"
-#include "rawitemfilteredmodel.h"
+#include "filtereditemmodels.h"
 #include "appdata.h"
 #include "modelprinter.h"
 #include "multiprotocols.h"
@@ -31,14 +31,14 @@
 
 #include <QDir>
 
-TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, GeneralSettings & generalSettings, Firmware * firmware, QWidget * prevFocus, RawItemFilteredModel * rawSwitchFilteredModel):
+TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, GeneralSettings & generalSettings, Firmware * firmware,
+                       QWidget * prevFocus, FilteredItemModel * rawSwitchFilteredModel):
   ModelPanel(parent, model, generalSettings, firmware),
   timer(timer),
   ui(new Ui::Timer)
 {
   ui->setupUi(this);
-  connect(rawSwitchFilteredModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &TimerPanel::onModelDataAboutToBeUpdated);
-  connect(rawSwitchFilteredModel, &RawItemFilteredModel::dataUpdateComplete, this, &TimerPanel::onModelDataUpdateComplete);
+  connectItemModelEvents(rawSwitchFilteredModel);
 
   lock = true;
 
@@ -172,12 +172,18 @@ void TimerPanel::on_name_editingFinished()
   }
 }
 
-void TimerPanel::onModelDataAboutToBeUpdated()
+void TimerPanel::connectItemModelEvents(const FilteredItemModel * itemModel)
+{
+  connect(itemModel, &FilteredItemModel::aboutToBeUpdated, this, &TimerPanel::onItemModelAboutToBeUpdated);
+  connect(itemModel, &FilteredItemModel::updateComplete, this, &TimerPanel::onItemModelUpdateComplete);
+}
+
+void TimerPanel::onItemModelAboutToBeUpdated()
 {
   lock = true;
 }
 
-void TimerPanel::onModelDataUpdateComplete()
+void TimerPanel::onItemModelUpdateComplete()
 {
   update();
   lock = false;
@@ -991,13 +997,19 @@ void ModulePanel::onClearAccessRxClicked()
 
 /******************************************************************************/
 
-SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, CommonItemModels * commonItemModels):
+SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware,
+                       CompoundItemModelFactory * sharedItemModels) :
   ModelPanel(parent, model, generalSettings, firmware),
   ui(new Ui::Setup),
-  commonItemModels(commonItemModels)
+  sharedItemModels(sharedItemModels)
 {
   ui->setupUi(this);
-  rawSwitchFilteredModel = new RawItemFilteredModel(commonItemModels->rawSwitchItemModel(), RawSwitch::TimersContext, this);
+
+  rawSwitchFilteredModel = new FilteredItemModel(sharedItemModels->getItemModel(AbstractItemModel::IMID_RawSwitch), RawSwitch::TimersContext);
+  connectItemModelEvents(rawSwitchFilteredModel);
+
+  thrSourceFilteredModel = new FilteredItemModel(sharedItemModels->getItemModel(AbstractItemModel::IMID_ThrSource));
+  connectItemModelEvents(thrSourceFilteredModel);
 
   Board::Type board = firmware->getBoard();
 
@@ -1248,6 +1260,8 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
 SetupPanel::~SetupPanel()
 {
   delete ui;
+  delete rawSwitchFilteredModel;
+  delete thrSourceFilteredModel;
 }
 
 void SetupPanel::on_extendedLimits_toggled(bool checked)
@@ -1750,7 +1764,21 @@ void SetupPanel::onTimerNameChanged()
   updateItemModels();
 }
 
+void SetupPanel::connectItemModelEvents(const FilteredItemModel * itemModel)
+{
+  connect(itemModel, &FilteredItemModel::aboutToBeUpdated, this, &SetupPanel::onItemModelAboutToBeUpdated);
+  connect(itemModel, &FilteredItemModel::updateComplete, this, &SetupPanel::onItemModelUpdateComplete);
+}
+
+void SetupPanel::onItemModelAboutToBeUpdated()
+{
+}
+
+void SetupPanel::onItemModelUpdateComplete()
+{
+}
+
 void SetupPanel::updateItemModels()
 {
-  commonItemModels->update(CommonItemModels::RMO_TIMERS);
+  sharedItemModels->update(AbstractItemModel::IMUE_Timers);
 }

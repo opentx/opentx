@@ -38,12 +38,12 @@ bool CustomFunctionData::isEmpty() const
 
 QString CustomFunctionData::nameToString(int index, bool globalContext) const
 {
-  return RadioData::getElementName((globalContext ? tr("GF") : tr("SF")), index+1, 0, true);
+  return RadioData::getElementName((globalContext ? tr("GF") : tr("SF")), index + 1, 0, true);
 }
 
 QString CustomFunctionData::funcToString(const ModelData * model) const
 {
-  if (func >= FuncOverrideCH1 && func <= FuncOverrideCH32)
+  if (func >= FuncOverrideCH1 && func <= FuncOverrideCHLast)
     return tr("Override %1").arg(RawSource(SOURCE_TYPE_CH, func).toString(model));
   else if (func == FuncTrainer)
     return tr("Trainer Sticks");
@@ -65,8 +65,8 @@ QString CustomFunctionData::funcToString(const ModelData * model) const
     return tr("Haptic");
   else if (func == FuncReset)
     return tr("Reset");
-  else if (func >= FuncSetTimer1 && func <= FuncSetTimer3)
-    return tr("Set Timer %1").arg(func-FuncSetTimer1+1);
+  else if (func >= FuncSetTimer1 && func <= FuncSetTimerLast)
+    return tr("Set %1").arg(RawSource(SOURCE_TYPE_SPECIAL, SOURCE_TYPE_SPECIAL_TIMER1_IDX + func - FuncSetTimer1).toString(model));
   else if (func == FuncVario)
     return tr("Vario");
   else if (func == FuncPlayPrompt)
@@ -90,7 +90,7 @@ QString CustomFunctionData::funcToString(const ModelData * model) const
   else if (func == FuncBackgroundMusicPause)
     return tr("Background Music Pause");
   else if (func >= FuncAdjustGV1 && func <= FuncAdjustGVLast)
-    return tr("Adjust %1").arg(RawSource(SOURCE_TYPE_GVAR, func-FuncAdjustGV1).toString(model));
+    return tr("Adjust %1").arg(RawSource(SOURCE_TYPE_GVAR, func - FuncAdjustGV1).toString(model));
   else if (func == FuncSetFailsafe)
     return tr("Set Failsafe");
   else if (func == FuncRangeCheckInternalModule)
@@ -102,7 +102,7 @@ QString CustomFunctionData::funcToString(const ModelData * model) const
   else if (func == FuncBindExternalModule)
     return tr("Bind Ext. Module");
   else {
-    return QString("???"); // Highlight unknown functions with output of question marks.(BTW should not happen that we do not know what a function is)
+    return QString(CPN_STR_UNKNOWN_ITEM);
   }
 }
 
@@ -111,11 +111,16 @@ void CustomFunctionData::populateResetParams(const ModelData * model, QComboBox 
   int val = 0;
   Firmware * firmware = Firmware::getCurrentVariant();
 
-  b->addItem(tr("Timer1"), val++);
-  b->addItem(tr("Timer2"), val++);
-  b->addItem( tr("Timer3"), val++);
+  for (int i = 0; i < CPN_MAX_TIMERS; i++, val++) {
+    if (i < firmware->getCapability(Timers)) {
+      RawSource item = RawSource(SOURCE_TYPE_SPECIAL, i + SOURCE_TYPE_SPECIAL_TIMER1_IDX);
+      b->addItem(item.toString(model), val);
+    }
+  }
+
   b->addItem(tr("Flight"), val++);
   b->addItem(tr("Telemetry"), val++);
+
   int reCount = firmware->getCapability(RotaryEncoders);
   if (reCount == 1) {
     b->addItem(tr("Rotary Encoder"), val++);
@@ -124,6 +129,7 @@ void CustomFunctionData::populateResetParams(const ModelData * model, QComboBox 
     b->addItem(tr("REa"), val++);
     b->addItem(tr("REb"), val++);
   }
+
   if (model) {
     for (int i = 0; i < firmware->getCapability(Sensors); ++i) {
       if (model->sensorData[i].isAvailable()) {
@@ -132,6 +138,7 @@ void CustomFunctionData::populateResetParams(const ModelData * model, QComboBox 
       }
     }
   }
+
   b->setCurrentIndex(b->findData(value));
 }
 
@@ -153,18 +160,18 @@ QString CustomFunctionData::paramToString(const ModelData * model) const
     return QString("%1").arg(param);
   }
   else if (func == FuncLogs) {
-    return QString("%1").arg(param/10.0) + tr("s");
+    return QString("%1").arg(param / 10.0) + tr("s");
   }
   else if (func == FuncPlaySound) {
     CustomFunctionData::populatePlaySoundParams(qs);
-    if (param>=0 && param<(int)qs.count())
+    if (param >= 0 && param < (int)qs.count())
       return qs.at(param);
     else
       return tr("<font color=red><b>Inconsistent parameter</b></font>");
   }
   else if (func == FuncPlayHaptic) {
     CustomFunctionData::populateHapticParams(qs);
-    if (param>=0 && param<(int)qs.count())
+    if (param >= 0 && param < (int)qs.count())
       return qs.at(param);
     else
       return tr("<font color=red><b>Inconsistent parameter</b></font>");
@@ -193,7 +200,7 @@ QString CustomFunctionData::paramToString(const ModelData * model) const
   else if (func >= FuncAdjustGV1 && func < FuncCount) {
     switch (adjustMode) {
       case FUNC_ADJUST_GVAR_CONSTANT:
-        return tr("Value ")+QString("%1").arg(param);
+        return tr("Value ") + QString("%1").arg(param);
       case FUNC_ADJUST_GVAR_SOURCE:
       case FUNC_ADJUST_GVAR_GVAR:
         return RawSource(param).toString();
@@ -218,16 +225,16 @@ QString CustomFunctionData::repeatToString() const
   }
   else {
     unsigned int step = 1;
-    return tr("repeat(%1s)").arg(step*repeatParam);
+    return tr("repeat(%1s)").arg(step * repeatParam);
   }
 }
 
 QString CustomFunctionData::enabledToString() const
 {
-  if ((func >= FuncOverrideCH1 && func <= FuncOverrideCH32) ||
+  if ((func >= FuncOverrideCH1 && func <= FuncOverrideCHLast) ||
       (func >= FuncAdjustGV1 && func <= FuncAdjustGVLast) ||
       (func == FuncReset) ||
-      (func >= FuncSetTimer1 && func <= FuncSetTimer2) ||
+      (func >= FuncSetTimer1 && func <= FuncSetTimerLast) ||
       (func == FuncVolume) ||
       (func == FuncBacklight) ||
       (func <= FuncInstantTrim)) {
@@ -236,6 +243,64 @@ QString CustomFunctionData::enabledToString() const
     }
   }
   return "";
+}
+
+//  static
+bool CustomFunctionData::isFuncAvailable(int index)
+{
+  Firmware * fw = getCurrentFirmware();
+
+  bool ret = (((index >= FuncOverrideCH1 && index <= FuncOverrideCHLast) && !fw->getCapability(SafetyChannelCustomFunction)) ||
+        ((index == FuncVolume || index == FuncBackgroundMusic || index == FuncBackgroundMusicPause) && !fw->getCapability(HasVolume)) ||
+        ((index == FuncPlayScript && !IS_HORUS_OR_TARANIS(fw->getBoard()))) ||
+        ((index == FuncPlayHaptic) && !fw->getCapability(Haptic)) ||
+        ((index == FuncPlayBoth) && !fw->getCapability(HasBeeper)) ||
+        ((index == FuncLogs) && !fw->getCapability(HasSDLogs)) ||
+        ((index >= FuncSetTimer1 && index <= FuncSetTimerLast) && index > FuncSetTimer1 + fw->getCapability(Timers)) ||
+        ((index == FuncScreenshot) && !IS_HORUS_OR_TARANIS(fw->getBoard())) ||
+        ((index >= FuncRangeCheckInternalModule && index <= FuncBindExternalModule) && !fw->getCapability(DangerousFunctions)) ||
+        ((index >= FuncAdjustGV1 && index <= FuncAdjustGVLast) && !fw->getCapability(Gvars))
+        );
+  return !ret;
+}
+
+//  static
+int CustomFunctionData::funcContext(int index)
+{
+  int ret = AllFunctionContexts;
+
+  if ((index >= FuncOverrideCH1 && index <= FuncOverrideCHLast) ||
+      (index >= FuncRangeCheckInternalModule && index <= FuncBindExternalModule) ||
+      (index >= FuncAdjustGV1 && index <= FuncAdjustGVLast))
+    ret &= ~GlobalFunctionsContext;
+
+  return ret;
+}
+//  static
+int CustomFunctionData::resetParamCount(const ModelData * model)
+{
+  QComboBox cb;
+  CustomFunctionData::populateResetParams(model, &cb);
+  return cb.count();
+}
+
+//  static
+bool CustomFunctionData::isResetParamAvailable(const ModelData * model, int index)
+{
+  Firmware * firmware = getCurrentFirmware();
+
+  if (index < CPN_MAX_TIMERS) {
+    if (index < firmware->getCapability(Timers))
+      return true;
+    else
+      return false;
+  }
+  else if (index < CPN_MAX_TIMERS + firmware->getCapability(RotaryEncoders))
+    return true;
+  else if (model && index < CPN_MAX_TIMERS + firmware->getCapability(RotaryEncoders) + firmware->getCapability(Sensors))
+    return model->sensorData[index - CPN_MAX_TIMERS - firmware->getCapability(RotaryEncoders)].isAvailable();
+
+  return false;
 }
 
 void CustomFunctionData::convert(RadioDataConversionState & cstate)
