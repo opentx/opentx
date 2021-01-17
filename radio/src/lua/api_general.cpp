@@ -1599,12 +1599,37 @@ static int luaMultiBuffer(lua_State * L)
 #endif
 
 /*luadoc
+@function setSerialBaudrate(baudrate)
+@param baudrate Desired baurate
+
+Set baudrate for serial port(s) affected to LUA
+
+@status current Introduced in 2.3.12
+*/
+static int luaSetSerialBaudrate(lua_State * L)
+{
+  unsigned int baudrate = luaL_checkunsigned(L, 1);
+
+#if defined(AUX_SERIAL)
+  if (auxSerialMode == UART_MODE_LUA) {
+    auxSerialSetup(baudrate, true);
+  }
+#endif
+#if defined(AUX2_SERIAL)
+  if (aux2SerialMode == UART_MODE_LUA) {
+    aux2SerialSetup(baudrate, true);
+  }
+#endif
+  return 1;
+}
+
+/*luadoc
 @function serialWrite(str)
 @param str (string) String to be written to the serial port.
 
 Writes a string to the serial port. The string is allowed to contain any character, including 0.
 
-@status current Introduced in TODO
+@status current Introduced in 2.3.10
 */
 static int luaSerialWrite(lua_State * L)
 {
@@ -1742,6 +1767,7 @@ const luaL_Reg opentxLib[] = {
 #if defined(MULTIMODULE)
   { "multiBuffer", luaMultiBuffer },
 #endif
+  { "setSerialBaudrate", luaSetSerialBaudrate },
   { "serialWrite", luaSerialWrite },
   { "serialRead", luaSerialRead },
   { nullptr, nullptr }  /* sentinel */
