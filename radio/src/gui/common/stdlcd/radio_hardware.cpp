@@ -251,14 +251,14 @@ enum {
   #define EXTERNAL_ANTENNA_ROW           0,
   void onHardwareAntennaSwitchConfirm(const char * result)
   {
-  if (result == STR_OK) {
-    // Switch to external antenna confirmation
-    g_eeGeneral.antennaMode = reusableBuffer.radioHardware.antennaMode;
-    storageDirty(EE_GENERAL);
-  }
-  else {
-    reusableBuffer.radioHardware.antennaMode = g_eeGeneral.antennaMode;
-  }
+    if (result == STR_OK) {
+      // Switch to external antenna confirmation
+      g_eeGeneral.antennaMode = reusableBuffer.radioHardware.antennaMode;
+      storageDirty(EE_GENERAL);
+    }
+    else {
+      reusableBuffer.radioHardware.antennaMode = g_eeGeneral.antennaMode;
+    }
   }
 #else
   #define EXTERNAL_ANTENNA_ROW
