@@ -850,6 +850,7 @@ void hapticOff();
 // Aux serial port driver
 #if defined(AUX_SERIAL_GPIO)
 #define DEBUG_BAUDRATE                  115200
+#define LUA_DEFAULT_BAUDRATE            115200
 #define AUX_SERIAL
 extern uint8_t auxSerialMode;
 #if defined __cplusplus

@@ -674,7 +674,7 @@ enum MixSources {
   MIXSRC_GYRO2,                         LUA_EXPORT("gyry", "Gyro Y")
 #endif
 
-  MIXSRC_MAX,
+  MIXSRC_MAX,                          LUA_EXPORT("max", "MAX")
 
   MIXSRC_FIRST_HELI,
   MIXSRC_CYC1 = MIXSRC_FIRST_HELI,     LUA_EXPORT("cyc1", "Cyclic 1")

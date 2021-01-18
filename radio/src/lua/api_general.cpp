@@ -1639,30 +1639,28 @@ static int luaSerialWrite(lua_State * L)
   if (!str || len < 1)
     return 0;
 
-#if !defined(SIMU)
-  #if defined(USB_SERIAL)
+#if defined(USB_SERIAL)
   if (getSelectedUsbMode() == USB_SERIAL_MODE) {
     size_t wr_len = len;
     const char* p = str;
     while(wr_len--) usbSerialPutc(*p++);
   }
-  #endif
-  #if defined(AUX_SERIAL)
+#endif
+
+#if defined(AUX_SERIAL)
   if (auxSerialMode == UART_MODE_LUA) {
     size_t wr_len = len;
     const char* p = str;
     while(wr_len--) auxSerialPutc(*p++);
   }
-  #endif
+#endif
+
 #if defined(AUX2_SERIAL)
   if (aux2SerialMode == UART_MODE_LUA) {
     size_t wr_len = len;
     const char* p = str;
     while(wr_len--) aux2SerialPutc(*p++);
   }
-#endif
-#else
-  debugPrintf("luaSerialWrite: %.*s",len,str);
 #endif
 
   return 0;
