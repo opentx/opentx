@@ -557,7 +557,7 @@ bool isInputRecursive(int index)
 }
 
 #if defined(AUTOSOURCE)
-constexpr int MULTIPOS_STEP_SIZE = (2 * RESX) / (XPOTS_MULTIPOS_COUNT);
+constexpr int MULTIPOS_STEP_SIZE = (2 * RESX) / XPOTS_MULTIPOS_COUNT;
 
 int8_t getMovedSource(GET_MOVED_SOURCE_PARAMS)
 {
