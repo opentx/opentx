@@ -246,6 +246,7 @@ void onModelSelectMenu(const char * result)
       if (!confirmModelChange())
         return;
     }
+
     // we store the latest changes if any
     storageFlushCurrentModel();
     storageCheck(true);

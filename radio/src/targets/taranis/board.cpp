@@ -273,6 +273,8 @@ void boardOff()
 
 #if defined (RADIO_TX12)
   #define BATTERY_DIVIDER 22830
+#elif defined (RADIO_T8)
+  #define BATTERY_DIVIDER 50000
 #else
   #define BATTERY_DIVIDER 26214
 #endif 

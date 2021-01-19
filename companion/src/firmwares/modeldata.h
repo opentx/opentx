@@ -283,6 +283,10 @@ class ModelData {
     bool hasExpoChildren(const int index);
     bool hasExpoSiblings(const int index);
     void removeMix(const int idx);
+    QString thrTraceSrcToString() const;
+    QString thrTraceSrcToString(const int index) const;
+    int thrTraceSrcCount() const;
+    bool isThrTraceSrcAvailable(const GeneralSettings * generalSettings, const int index) const;
 
   protected:
     void removeGlobalVar(int & var);
