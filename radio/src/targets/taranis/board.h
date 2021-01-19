@@ -850,8 +850,12 @@ void hapticOff();
 // Aux serial port driver
 #if defined(AUX_SERIAL_GPIO)
 #define DEBUG_BAUDRATE                  115200
+#define LUA_DEFAULT_BAUDRATE            115200
 #define AUX_SERIAL
 extern uint8_t auxSerialMode;
+#if defined __cplusplus
+void auxSerialSetup(unsigned int baudrate, bool dma, uint16_t length = USART_WordLength_8b, uint16_t parity = USART_Parity_No, uint16_t stop = USART_StopBits_1);
+#endif
 void auxSerialInit(unsigned int mode, unsigned int protocol);
 void auxSerialPutc(char c);
 #define auxSerialTelemetryInit(protocol) auxSerialInit(UART_MODE_TELEMETRY, protocol)
