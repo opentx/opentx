@@ -28,7 +28,7 @@
 #include "hal.h"
 
 #if defined(RADIO_TX12) || defined(RADIO_TX12)
- #define  NAVIGATION_X7_TX12
+  #define  NAVIGATION_X7_TX12
 #endif
 
 #if defined(ROTARY_ENCODER_NAVIGATION)

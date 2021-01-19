@@ -875,9 +875,11 @@
 #define ADC_TRANSFER_COMPLETE()         (ADC_DMA->HISR & DMA_HISR_TCIF4)
 #define ADC_SAMPTIME                    2   // sample time = 28 cycles
 #if defined(RADIO_TLITE)
-  #define VBAT_ADC_SAMPTIME             (ADC_SAMPTIME + 1)
+  #define ADC_MAIN_SMPR1               (ADC_SAMPTIME << 0) + (ADC_SAMPTIME << 3) + (ADC_SAMPTIME << 6) + (ADC_SAMPTIME << 9) + (ADC_SAMPTIME << 12) + (ADC_SAMPTIME << 15) + (ADC_SAMPTIME << 18) + (ADC_SAMPTIME << 21) + ((ADC_SAMPTIME + 1) << 24);
+  #define ADC_MAIN_SMPR2               (ADC_SAMPTIME << 0) + (ADC_SAMPTIME << 3) + (ADC_SAMPTIME << 6) + (ADC_SAMPTIME << 9) + (ADC_SAMPTIME << 12) + (ADC_SAMPTIME << 15) + (ADC_SAMPTIME << 18) + (ADC_SAMPTIME << 21) + (ADC_SAMPTIME << 24) + (ADC_SAMPTIME << 27);
 #else
-  #define VBAT_ADC_SAMPTIME             ADC_SAMPTIME
+  #define ADC_MAIN_SMPR1               (ADC_SAMPTIME << 0) + (ADC_SAMPTIME << 3) + (ADC_SAMPTIME << 6) + (ADC_SAMPTIME << 9) + (ADC_SAMPTIME << 12) + (ADC_SAMPTIME << 15) + (ADC_SAMPTIME << 18) + (ADC_SAMPTIME << 21) + ((ADC_SAMPTIME + 1) << 24);
+  #define ADC_MAIN_SMPR2               (ADC_SAMPTIME << 0) + (ADC_SAMPTIME << 3) + (ADC_SAMPTIME << 6) + (ADC_SAMPTIME << 9) + (ADC_SAMPTIME << 12) + (ADC_SAMPTIME << 15) + (ADC_SAMPTIME << 18) + (ADC_SAMPTIME << 21) + (ADC_SAMPTIME << 24) + (ADC_SAMPTIME << 27);
 #endif
 #if defined(PCBX9E)
   #define HARDWARE_POT1
@@ -2032,16 +2034,16 @@
   #define AUDIO_SPEAKER_ENABLE_GPIO_PIN GPIO_Pin_14 // PD.14
   #define HEADPHONE_TRAINER_SWITCH_GPIO      GPIOD
   #define HEADPHONE_TRAINER_SWITCH_GPIO_PIN  GPIO_Pin_9 // PD.09
-#elif defined(RADIO_TX12) || defined(RADIO_T8)
+#elif defined(AUDIO_MUTE_GPIO)
   #define AUDIO_RCC_AHB1Periph          (RCC_AHB1Periph_GPIOE | RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_DMA1)
   #define AUDIO_MUTE_GPIO               GPIOE
   #define AUDIO_MUTE_GPIO_PIN           GPIO_Pin_12  // PE.12
+  #define AUDIO_MUTE_DELAY              500  // ms
 #if defined(RADIO_TLITE)
   #define AUDIO_UNMUTE_DELAY            250  // ms
 #else
   #define AUDIO_UNMUTE_DELAY            150  // ms
 #endif
-  #define AUDIO_MUTE_DELAY              500  // ms
 #else
   #define AUDIO_RCC_AHB1Periph          (RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_DMA1)
 #endif
