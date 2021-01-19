@@ -557,6 +557,8 @@ bool isInputRecursive(int index)
 }
 
 #if defined(AUTOSOURCE)
+constexpr int MULTIPOS_STEP_SIZE = (2 * RESX) / (XPOTS_MULTIPOS_COUNT + 1);
+
 int8_t getMovedSource(GET_MOVED_SOURCE_PARAMS)
 {
   int8_t result = 0;
@@ -565,7 +567,7 @@ int8_t getMovedSource(GET_MOVED_SOURCE_PARAMS)
   static int16_t inputsStates[MAX_INPUTS];
   if (min <= MIXSRC_FIRST_INPUT) {
     for (uint8_t i=0; i<MAX_INPUTS; i++) {
-      if (abs(anas[i] - inputsStates[i]) > 512) {
+      if (abs(anas[i] - inputsStates[i]) > MULTIPOS_STEP_SIZE) {
         if (!isInputRecursive(i)) {
           result = MIXSRC_FIRST_INPUT+i;
           break;
@@ -577,7 +579,7 @@ int8_t getMovedSource(GET_MOVED_SOURCE_PARAMS)
   static int16_t sourcesStates[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS];
   if (result == 0) {
     for (uint8_t i=0; i<NUM_STICKS+NUM_POTS+NUM_SLIDERS; i++) {
-      if (abs(calibratedAnalogs[i] - sourcesStates[i]) > 512) {
+      if (abs(calibratedAnalogs[i] - sourcesStates[i]) > MULTIPOS_STEP_SIZE) {
         result = MIXSRC_Rud+i;
         break;
       }
