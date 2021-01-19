@@ -2105,3 +2105,5 @@ David Belletete
 Karl-Heinz Behn
 Lena Hjort
 Jan Langhorst
+Alberto Scotti
+John Rock
