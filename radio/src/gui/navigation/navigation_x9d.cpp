@@ -173,7 +173,7 @@ int checkIncDec(event_t event, int val, int i_min, int i_max, unsigned int i_fla
 #if defined(AUTOSWITCH)
       else {
         unsigned int swtch = abs(getMovedSwitch());
-        if (swtch) {
+        if (swtch && !IS_SWITCH_MULTIPOS(swtch)) {
           newval = switchToMix(swtch);
         }
       }
