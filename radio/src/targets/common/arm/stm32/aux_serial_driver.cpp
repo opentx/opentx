@@ -133,7 +133,7 @@ void auxSerialInit(unsigned int mode, unsigned int protocol)
       break;
 
     case UART_MODE_LUA:
-      auxSerialSetup(LUA_DEFAULT_BAUDRATE, true);
+      auxSerialSetup(LUA_DEFAULT_BAUDRATE, false);
       AUX_SERIAL_POWER_ON();
   }
 }
@@ -329,7 +329,7 @@ void aux2SerialInit(unsigned int mode, unsigned int protocol)
       break;
 
     case UART_MODE_LUA:
-      aux2SerialSetup(DEBUG_BAUDRATE, false);
+      aux2SerialSetup(LUA_DEFAULT_BAUDRATE, false);
       AUX2_SERIAL_POWER_ON();
   }
 }
