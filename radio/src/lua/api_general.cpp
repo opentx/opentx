@@ -1612,12 +1612,14 @@ static int luaSetSerialBaudrate(lua_State * L)
 
 #if defined(AUX_SERIAL)
   if (auxSerialMode == UART_MODE_LUA) {
-    auxSerialSetup(baudrate, true);
+    auxSerialStop();
+    auxSerialSetup(baudrate, false);
   }
 #endif
 #if defined(AUX2_SERIAL)
   if (aux2SerialMode == UART_MODE_LUA) {
-    aux2SerialSetup(baudrate, true);
+    aux2SerialStop();
+    aux2SerialSetup(baudrate, false);
   }
 #endif
   return 1;
