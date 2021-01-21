@@ -456,6 +456,8 @@
 #define TR_BEEPCOUNTDOWN                INDENT "倒數"
 #define TR_PERSISTENT                   TR(INDENT "Persist.", INDENT "關機保持")
 #define TR_BACKLIGHT_LABEL              "背光"
+#define TR_GHOST_MENU_LABEL             "GHOST MENU"
+#define TR_BLDELAY                      INDENT "Duration"
 #define TR_BLONBRIGHTNESS               "背光開"
 #define TR_BLOFFBRIGHTNESS              "背光關"
 #define TR_KEYS_BACKLIGHT               "按鍵背光"
@@ -643,6 +645,7 @@
 #define TR_NO_SDCARD                    "存儲卡未安裝"
 #define TR_WAITING_FOR_RX               "等待接收機響應..."
 #define TR_WAITING_FOR_TX               "等待發射機響應..."
+#define TR_WAITING_FOR_MODULE           "Waiting for module..."
 #define TR_NO_TOOLS                     "無可用附加功能"
 #define TR_NORMAL                       "正常"
 #define TR_NOT_INVERTED                 "正向"
@@ -780,11 +783,12 @@
 #define TR_FLASH_BLUETOOTH_MODULE       TR("Flash BT module", "刷新藍牙模塊")
 #define TR_FLASH_POWER_MANAGEMENT_UNIT "Flash pwr mngt unit"
 #define TR_CURRENT_VERSION              "當前版本: "
-#define TR_FLASH_INTERNAL_MODULE TR("Flash int. module", "更新內置模塊韌體")
-#define TR_FLASH_INTERNAL_MULTI TR("Flash Int. Multi", "更新內置多協議模塊韌體")
-#define TR_FLASH_EXTERNAL_MODULE TR("Flash ext. module", "更新外置模塊韌體")
-#define TR_FLASH_EXTERNAL_MULTI TR("Flash Ext. Multi", "更新外置多協議模塊韌體")
-#define TR_FIRMWARE_UPDATE_ERROR TR("FW update error", "韌體更新失敗韌體")
+#define TR_FLASH_INTERNAL_MODULE        "更新內置模塊韌體"
+#define TR_FLASH_INTERNAL_MULTI         "更新內置多協議模塊韌體"
+#define TR_FLASH_EXTERNAL_MODULE        "更新外置模塊韌體"
+#define TR_FLASH_EXTERNAL_MULTI         "更新外置多協議模塊韌體"
+#define TR_FIRMWARE_UPDATE_ERROR        "韌體更新失敗韌體"
+#define TR_FLASH_EXTERNAL_ELRS          "Flash External ELRS"
 #define TR_FIRMWARE_UPDATE_SUCCESS      "韌體更新成功"
 #define TR_WRITING                      "正在寫入..."
 #define TR_CONFIRM_FORMAT               "是否格式化?"
@@ -1046,8 +1050,16 @@
 #define TR_ABOUT_MARTIN_1              "Martin Hotar"
 #define TR_ABOUT_MARTIN_2              "Graphics designer"
 
-#if defined(PCBFRSKY)
+#if defined(MANUFACTURER_FRSKY)
   #define TR_ABOUT_HARDWARE_1          "FrSky"
+  #define TR_ABOUT_HARDWARE_2          TR("Hardware design/producer", "Hardware designer/producer")
+  #define TR_ABOUT_HARDWARE_3          "Firmware contributor"
+#elif defined(MANUFACTURER_RADIOMASTER)
+  #define TR_ABOUT_HARDWARE_1          "Radiomaster"
+  #define TR_ABOUT_HARDWARE_2          TR("Hardware design/producer", "Hardware designer/producer")
+  #define TR_ABOUT_HARDWARE_3          "Firmware contributor"
+#elif defined(MANUFACTURER_JUMPER)
+  #define TR_ABOUT_HARDWARE_1          "JumperRC"
   #define TR_ABOUT_HARDWARE_2          TR("Hardware design/producer", "Hardware designer/producer")
   #define TR_ABOUT_HARDWARE_3          "Firmware contributor"
 #else
