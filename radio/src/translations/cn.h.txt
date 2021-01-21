@@ -265,7 +265,7 @@
 #endif
 
 #if defined(PCBHORUS)
-  #define TR_TRIMS_SWITCHES            STR_CHAR_TRIM "Rl" STR_CHAR_TRIM "Rr" STR_CHAR_TRIM "Ed" STR_CHAR_TRIM "Eu" STR_CHAR_TRIM "Td" STR_CHAR_TRIM  STR_CHAR_TRIM "Tu"  STR_CHAR_TRIM "Al"  STR_CHAR_TRIM "Ar"  STR_CHAR_TRIM "5d"  STR_CHAR_TRIM "5u"  STR_CHAR_TRIM "6d"  STR_CHAR_TRIM "6u"
+  #define TR_TRIMS_SWITCHES            STR_CHAR_TRIM "Rl" STR_CHAR_TRIM "Rr" STR_CHAR_TRIM "Ed" STR_CHAR_TRIM "Eu" STR_CHAR_TRIM "Td" STR_CHAR_TRIM "Tu"  STR_CHAR_TRIM "Al"  STR_CHAR_TRIM "Ar"  STR_CHAR_TRIM "5d"  STR_CHAR_TRIM "5u"  STR_CHAR_TRIM "6d"  STR_CHAR_TRIM "6u"
 #else
   #define TR_TRIMS_SWITCHES            TR("tRl" "tRr" "tEd" "tEu" "tTd" "tTu" "tAl" "tAr", STR_CHAR_TRIM "Rl"  STR_CHAR_TRIM "Rr"  STR_CHAR_TRIM "Ed"  STR_CHAR_TRIM "Eu"  STR_CHAR_TRIM "Td"  STR_CHAR_TRIM "Tu"  STR_CHAR_TRIM "Al"  STR_CHAR_TRIM "Ar")
 #endif
@@ -325,7 +325,7 @@
 #define TR_TEXT_SIZE                   "标准" "小\0 " "较小" "中等" "双倍"
 
 #define LEN_SUBTRIMMODES               "\010"
-#define TR_SUBTRIMMODES                STR_CHAR_DELTA "(中点)\0 " "= (整体)"
+#define TR_SUBTRIMMODES                STR_CHAR_DELTA "(中点)\0 " "=(整体)\0"
 
 // ZERO TERMINATED STRINGS
 
@@ -782,7 +782,7 @@
 #define TR_FLASH_FLIGHT_CONTROLLER_BY_INTERNAL_MODULE_OTA "Flash FC by int. OTA"
 #define TR_FLASH_BLUETOOTH_MODULE      TR("Flash BT module", "刷新蓝牙模块")
 #define TR_FLASH_POWER_MANAGEMENT_UNIT "Flash pwr mngt unit"
-#define TR_CURRENT_VERSION              "当前版本: "
+#define TR_CURRENT_VERSION             "当前版本: "
 #define TR_FLASH_INTERNAL_MODULE       "更新内置模块固件"
 #define TR_FLASH_INTERNAL_MULTI        "更新内置多协议模块固件"
 #define TR_FLASH_EXTERNAL_MODULE       "更新外置模块固件"
