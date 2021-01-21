@@ -112,7 +112,7 @@ namespace Ui {
   class SimulatedUIWidgetX10;
   class SimulatedUIWidgetX12;
   class SimulatedUIWidgetJumperT12;
-    class SimulatedUIWidgetJumperTLITE;
+  class SimulatedUIWidgetJumperTLITE;
   class SimulatedUIWidgetJumperT16;
   class SimulatedUIWidgetJumperT18;
   class SimulatedUIWidgetTX16S;
