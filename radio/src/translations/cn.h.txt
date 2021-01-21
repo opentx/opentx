@@ -265,7 +265,7 @@
 #endif
 
 #if defined(PCBHORUS)
-  #define TR_TRIMS_SWITCHES            STR_CHAR_TRIM "Rl" STR_CHAR_TRIM "Rr" STR_CHAR_TRIM "Ed" STR_CHAR_TRIM "Eu" STR_CHAR_TRIM "Td" STR_CHAR_TRIM  STR_CHAR_TRIM "Tu"  STR_CHAR_TRIM "Al"  STR_CHAR_TRIM "Ar"  STR_CHAR_TRIM "5d"  STR_CHAR_TRIM "5u"  STR_CHAR_TRIM "6d"  STR_CHAR_TRIM "6u"
+  #define TR_TRIMS_SWITCHES            STR_CHAR_TRIM "Rl" STR_CHAR_TRIM "Rr" STR_CHAR_TRIM "Ed" STR_CHAR_TRIM "Eu" STR_CHAR_TRIM "Td" STR_CHAR_TRIM "Tu"  STR_CHAR_TRIM "Al"  STR_CHAR_TRIM "Ar"  STR_CHAR_TRIM "5d"  STR_CHAR_TRIM "5u"  STR_CHAR_TRIM "6d"  STR_CHAR_TRIM "6u"
 #else
   #define TR_TRIMS_SWITCHES            TR("tRl" "tRr" "tEd" "tEu" "tTd" "tTu" "tAl" "tAr", STR_CHAR_TRIM "Rl"  STR_CHAR_TRIM "Rr"  STR_CHAR_TRIM "Ed"  STR_CHAR_TRIM "Eu"  STR_CHAR_TRIM "Td"  STR_CHAR_TRIM "Tu"  STR_CHAR_TRIM "Al"  STR_CHAR_TRIM "Ar")
 #endif
@@ -325,7 +325,7 @@
 #define TR_TEXT_SIZE                   "标准" "小\0 " "较小" "中等" "双倍"
 
 #define LEN_SUBTRIMMODES               "\010"
-#define TR_SUBTRIMMODES                STR_CHAR_DELTA "(中点)\0 " "= (整体)"
+#define TR_SUBTRIMMODES                STR_CHAR_DELTA "(中点)\0 " "=(整体)\0"
 
 // ZERO TERMINATED STRINGS
 
