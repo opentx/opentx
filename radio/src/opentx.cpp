@@ -2166,7 +2166,7 @@ uint32_t pwrCheck()
     return e_power_off;
   }
   else if (pwrPressed()) {
-    if (TELEMETRY_STREAMING()) {
+    if (MODEL_TELEMETRY_STREAMING()) {
       message = STR_MODEL_STILL_POWERED;
     }
     if (pwr_check_state == PWR_CHECK_PAUSED) {
@@ -2187,7 +2187,7 @@ uint32_t pwrCheck()
 #if defined(SHUTDOWN_CONFIRMATION)
         while (1) {
 #else
-        while ((TELEMETRY_STREAMING() && !g_eeGeneral.disableRssiPoweroffAlarm)) {
+        while ((MODEL_TELEMETRY_STREAMING() && !g_eeGeneral.disableRssiPoweroffAlarm)) {
 #endif
           lcdRefreshWait();
           lcdClear();

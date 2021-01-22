@@ -18,8 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _TELEMETRY_H_
-#define _TELEMETRY_H_
+#pragma once
 
 #include "frsky.h"
 #include "crossfire.h"
@@ -39,6 +38,16 @@
 #endif
 
 extern uint8_t telemetryStreaming; // >0 (true) == data is streaming in. 0 = no data detected for some time
+extern uint8_t modelTelemetryStreaming; // allows to differentiate between module telem and model telem
+
+inline bool MODEL_TELEMETRY_STREAMING()
+{
+  if ( g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_GHOST) {
+    return modelTelemetryStreaming;
+  }
+
+  return telemetryStreaming > 0;
+}
 
 inline bool TELEMETRY_STREAMING()
 {
@@ -289,4 +298,3 @@ extern Fifo<uint8_t, LUA_TELEMETRY_INPUT_FIFO_SIZE> * luaInputTelemetryFifo;
 
 void processPXX2Frame(uint8_t module, const uint8_t *frame);
 
-#endif // _TELEMETRY_H_

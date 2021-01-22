@@ -79,9 +79,9 @@ enum GhstRFProfile
   GHST_RF_PROFILE_LongRange   = 4,
   GHST_RF_PROFILE_Reserved    = 5,
   GHST_RF_PROFILE_Race2       = 6,
-  GHST_RF_PROFILE_PureRace2   = 7,
-  GHST_RF_PROFILE_MAX = GHST_RF_PROFILE_PureRace2,
-  GHST_RF_PROFILE_COUNT
+  GHST_RF_PROFILE_Race25      = 7,
+  GHST_RF_PROFILE_COUNT,
+  GHST_RF_PROFILE_MAX = GHST_RF_PROFILE_COUNT - 1
 };
 
 enum GhstVtxBand
