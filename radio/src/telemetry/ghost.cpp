@@ -151,21 +151,16 @@ void processGhostTelemetryFrame()
       processGhostTelemetryValue(GHOST_ID_FRAME_RATE, getTelemetryValue_u16(8));
       processGhostTelemetryValue(GHOST_ID_TOTAL_LATENCY, getTelemetryValue_u16(10));
 
-      uint8_t rfModeEnum = min<uint8_t>(telemetryRxBuffer[12], GHST_RF_PROFILE_MAX);
+      uint8_t rfMode = min<uint8_t>(telemetryRxBuffer[12], GHST_RF_PROFILE_MAX);
       const GhostSensor * sensor = getGhostSensor(GHOST_ID_RF_MODE);
-      const char * rfModeString = ghstRfProfileValue[rfModeEnum];
+      const char * rfModeString = ghstRfProfileValue[rfMode];
       processGhostTelemetryValueString(sensor, rfModeString);
 
       // give OpenTx the LQ value, not RSSI
       if (lqVal) {
         telemetryData.rssi.set(lqVal);
         telemetryStreaming = TELEMETRY_TIMEOUT10ms;
-        if (rfModeEnum ==  GHST_RF_PROFILE_PureRace) {
-          modelTelemetryStreaming = false;
-        }
-        else {
-          modelTelemetryStreaming = true;
-        }
+        modelTelemetryStreaming = (rfMode != GHST_RF_PROFILE_PureRace);
       }
       else {
         telemetryData.rssi.reset();
