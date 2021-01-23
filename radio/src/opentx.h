@@ -32,6 +32,9 @@
 //OWEND
 
 /*
+v20 2021-01-23:
+mavlink submodule changed to main git repo, file generator updated
+uart totally revised, uses now AUX_SERIAL and AUX2_SERIAL
 v18 2020-12-07:
 mavlink storm32.xml, qshots
 v17 2020-10-15:
@@ -39,26 +42,28 @@ mavlink submodule changed to main git repo, file generator added
 one needs to run mavgenerate_dialect.py to generate the mavlink c code files
 modified files in radio/src/
 
-    CMakeList.txt:  1x
-    datastructs.h:  2x
-    keys.cpp:       2x
-    keys.h:         1x
-    opentx.cpp:     1x
-    opentx.h:       2x
-    options.h:      1x
-    tasks.cpp:      1x
-    gui/480x272/lcd.cpp:            1x
-    gui/480x272/lcd.h:              1x
-    gui/480x272/model_setup.cpp:    3x
+    dataconstants.h:  1x
+    datastructs.h:    3x
+    keys.cpp:         2x
+    keys.h:           1x
+    opentx.cpp:       1x
+    opentx.h:         2x
+    options.h:        1x
+    tasks.cpp:        1x
+    gui/480x272/lcd.cpp:             1x
+    gui/480x272/lcd.h:               1x
+    gui/480x272/model_setup.cpp:     3x
+    gui/480x272/radio_hardware.cpp:  6x
+    gui/gui_common.cpp:              2x
     lua/api_general.cpp:    3x
     lua/api_lcd.cpp:        2x
-    targets/horus/board.cpp:        4x
-    targets/horus/board.h:          1x
-    targets/horus/hal.h:            1x
-    targets/horus/CMakeList.txt:    1x
-    thirdparty/Lua/src/lauxlib.h:   1x
-    thirdparty/Lua/src/linit.c:     1x
-    thirdparty/Lua/src/lrotable.h:  1x
+    targets/common/arm/stm32/aux_serial_driver.cpp:  7x
+    targets/horus/board.h:           1x
+    targets/horus/hal.h:             1x
+    targets/horus/CMakeList.txt:     2x
+    thirdparty/Lua/src/lauxlib.h:    1x
+    thirdparty/Lua/src/linit.c:      1x
+    thirdparty/Lua/src/lrotable.h:   1x
 
 added files in radio/src/
     mavlink_telem_autopilot.cpp
@@ -69,7 +74,6 @@ added files in radio/src/
     mavlink_telem.h
     lua/api_mavlink.cpp
     lua/api_mavsdk.cpp
-    targets/horus/mavlink_telem_driver.cpp
     thirdparty/Mavlink/
 
 
