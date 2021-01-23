@@ -14,8 +14,6 @@ mavlinkoutputdirectory = 'out'
 
 mavlinkpathtorepository = r'mavlink'
 
-#you need to do that manually if your dialect has more non-standard dialects 
-dialectstocorrect = [mavlinkdialect,'storm32_4otx']
 
 mavlinklight = False
 #mavlinklight = True
@@ -51,7 +49,6 @@ error_limit = 5
 strict_units = mavgen.DEFAULT_STRICT_UNITS
         
 xmfile = mavlinkdialect+'.xml'        
-args = [xmfile]
 
 #recreate out directory
 print('----------')
@@ -74,35 +71,4 @@ if True:
             exStr = str(ex)
             print('Error Generating Headers','{0!s}'.format(exStr))
             exit()
-
-'''
-Corrects the #include in a generated dialect C header files to the required "../dialect/dialect.h"
-assumes that it inlcudes only one #include
-this is not needed for mavlink-light, or a standard dialect
-PR raised but ignored so far: https://github.com/ArduPilot/pymavlink/pull/458
-'''
-print('----------')
-if not mavlinklight:
-    for f in dialectstocorrect:
-        dialectfile = outdir + "\\" + f + "\\" + f + ".h"
-        print('correct', dialectfile)
-        F = open(dialectfile, 'r')
-        fstr = F.read()
-        F.close()
-        #get #include we need to correct, it is of the form
-        '''
-        // base include
-        #include "../minimal/minimal.h"
-        '''
-        m = re.search(r'base include\s+#include[ ]+"(.+)"', fstr)
-        d = os.path.basename(m.group(1))[:-2]
-        fstr_corrected = re.sub(r'base include\s+#include[ ]+"(.+)"', 'base include\n#include "../'+d+'/'+d+'.h"', fstr)
-        F = open(dialectfile+'.orig', 'w')
-        F.write(fstr)
-        F.close()
-        F = open(dialectfile, 'w')
-        F.write(fstr_corrected)
-        F.close()
-
-
 

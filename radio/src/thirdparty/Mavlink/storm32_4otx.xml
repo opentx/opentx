@@ -1,28 +1,32 @@
 <?xml version="1.0"?>
-<!-- 
-  STORM32 and OLLIW additions
-  2. Dez. 2020
-  All messages are technically WIP, but some are quite stable now. See comment to each. 
-  The classification is "quite stable", "wip", "very wip".
-  A more detailed description of the concept underlying the STORM32 and QSHOT messages can be found here: 
+<!--
+Contact:
+  - send a PM to user OlliW at https://www.rcgroups.com (most quick)
+  - raise an issue in the https://github.com/olliw42/storm32bgc github repository
+  - send a message to user olliw at https://discuss.px4.io/ (may take a while to respond)
+Range of IDs:
+  messages: 62000 - 62025
+  commands: 62000 - 62025
+Documentation:  
+  STORM32 and QSHOT additions
+  25. Dez. 2020
+  All messages are technically WIP, but some are quite stable now.
+  Quite stable means that it is in practical use, but may see extension.
+  A more detailed description of the concept underlying the STORM32 and QSHOT messages can be found here:
   http://www.olliw.eu/2020/mavlink-gimbal-protocol-v2/
 -->
 <mavlink>
-  <!-- For ArduPilot, comment this, and include storm32.xml in ardupilotmega.xml (common.xml doesn't yet work)
+  <!-- For ArduPilot, comment out the <include> and include storm32.xml in ardupilotmega.xml (common.xml doesn't yet work in stable branches)
     This makes it possible that ArduPilot's build system can handle it without modifications. -->
-  <!-- <include>C:\Users\Olli\Documents\GitHub\mavlink\message_definitions\v1.0\ardupilotmega.xml</include> -->
-  <!-- For OpentTx, uncomment this -->
-  <include>mavlink\message_definitions\v1.0\ardupilotmega.xml</include>
-  <!-- For EasyMavlink, uncomment this -->
-  <!-- <include>ardupilotmega.xml</include> -->
+  <!-- <include>../../message_definitions/v1.0/ardupilotmega.xml</include> -->
   <version>1</version>
   <dialect>0</dialect>
-  <!-- 
+  <!--
   STORM32 enums
   -->
   <enums>
     <!-- ***************************
-    STORM32 tunnel enum, this is merely a redefinition for convennience 
+    STORM32 tunnel enum, this is merely a redefinition for convennience
     *************************** -->
     <enum name="MAV_STORM32_TUNNEL_PAYLOAD_TYPE">
       <!-- Stable -->
@@ -58,7 +62,7 @@
       </entry>
     </enum>
     <!-- ***************************
-    STORM32 gimbal device enums 
+    STORM32 gimbal device enums
     *************************** -->
     <enum name="MAV_STORM32_GIMBAL_DEVICE_CAP_FLAGS" bitmask="true">
       <!-- Quite stable -->
@@ -175,7 +179,7 @@
       </entry>
     </enum>
     <!-- ***************************
-    STORM32 gimbal manager enums 
+    STORM32 gimbal manager enums
     *************************** -->
     <enum name="MAV_STORM32_GIMBAL_MANAGER_CAP_FLAGS" bitmask="true">
       <!-- WIP -->
@@ -229,7 +233,7 @@
     </enum>
     <enum name="MAV_STORM32_GIMBAL_MANAGER_CLIENT">
       <!-- Quite stable -->
-      <description>Gimbal manager client ID. In a prioritizing profile, the priorities are determined by the implementation; they could e.g. be custom1 > onboard > GCS > autopilot/camera > GCS2 > custom2.</description>
+      <description>Gimbal manager client ID. In a prioritizing profile, the priorities are determined by the implementation; they could e.g. be custom1 &gt; onboard &gt; GCS &gt; autopilot/camera &gt; GCS2 &gt; custom2.</description>
       <entry value="0" name="MAV_STORM32_GIMBAL_MANAGER_CLIENT_NONE">
         <description>For convenience.</description>
       </entry>
@@ -259,7 +263,7 @@
       </entry>
     </enum>
     <enum name="MAV_STORM32_GIMBAL_MANAGER_SETUP_FLAGS" bitmask="true">
-      <!-- very WIP -->
+      <!-- WIP -->
       <description>Flags for gimbal manager set up. Used for setting and reporting, unless specified otherwise.</description>
       <entry value="16384" name="MAV_STORM32_GIMBAL_MANAGER_SETUP_FLAGS_ENABLE">
         <description>Enable gimbal manager. This flag is only for setting, is not reported.</description>
@@ -270,7 +274,7 @@
     </enum>
     <enum name="MAV_STORM32_GIMBAL_MANAGER_PROFILE">
       <!-- WIP -->
-      <description>Gimbal manager profiles. Only standard profiles are defined. Any implementation can define it's own profile in addition, and should use enum values > 16.</description>
+      <description>Gimbal manager profiles. Only standard profiles are defined. Any implementation can define it's own profile in addition, and should use enum values &gt; 16.</description>
       <entry value="0" name="MAV_STORM32_GIMBAL_MANAGER_PROFILE_DEFAULT">
         <description>Default profile. Implementation specific.</description>
       </entry>
@@ -291,7 +295,7 @@
       </entry>
     </enum>
     <enum name="MAV_STORM32_GIMBAL_ACTION">
-      <!-- very WIP -->
+      <!-- WIP -->
       <description>Gimbal actions.</description>
       <entry value="1" name="MAV_STORM32_GIMBAL_ACTION_RECENTER">
         <description>Trigger the gimbal device to recenter the gimbal.</description>
@@ -304,7 +308,7 @@
       </entry>
     </enum>
     <!-- ***************************
-    QSHOT manager mode enums 
+    QSHOT manager mode enums
     *************************** -->
     <enum name="MAV_QSHOT_MODE">
       <!-- Quite stable, will grow however -->
@@ -338,7 +342,7 @@
       </entry>
     </enum>
     <!-- ***************************
-    STORM32 and OLLIW cmds 
+    STORM32 and QSHOT cmds
     *************************** -->
     <enum name="MAV_CMD">
       <!-- leave room for 62000 gimbal device configure -->
@@ -355,6 +359,7 @@
         <param index="7" label="Gimbal ID and client ID">Gimbal ID of the gimbal manager to address (component ID or 1-6 for non-MAVLink gimbal, 0 for all gimbals, send command multiple times for more than one but not all gimbals). The client is copied into bits 8-15.</param>
       </entry>
       <entry value="62010" name="MAV_CMD_STORM32_DO_GIMBAL_MANAGER_SETUP" hasLocation="false" isDestination="false">
+        <wip/>
         <!-- WIP -->
         <description>Command to configure a gimbal manager. A gimbal device is never to react to this command. The selected profile is reported in the STORM32_GIMBAL_MANAGER_STATUS message.</description>
         <param index="1" label="Profile" enum="MAV_STORM32_GIMBAL_MANAGER_PROFILE">Gimbal manager profile (0 = default).</param>
@@ -362,25 +367,27 @@
         <param index="7" label="Gimbal ID">Gimbal ID of the gimbal manager to address (component ID or 1-6 for non-MAVLink gimbal, 0 for all gimbals). Send command multiple times for more than one but not all gimbals.</param>
       </entry>
       <entry value="62011" name="MAV_CMD_STORM32_DO_GIMBAL_ACTION" hasLocation="false" isDestination="false">
-        <!-- very WIP -->
+        <wip/>
+        <!-- WIP -->
         <description>Command to initiate gimbal actions. Usually performed by the gimbal device, but some can also be done by the gimbal manager. It is hence best to broadcast this command.</description>
         <param index="1" label="Action" enum="MAV_STORM32_GIMBAL_ACTION">Gimbal action to initiate (0 = none).</param>
         <param index="7" label="Gimbal ID">Gimbal ID of the gimbal to address (component ID or 1-6 for non-MAVLink gimbal, 0 for all gimbals). Send command multiple times for more than one but not all gimbals.</param>
       </entry>
       <entry value="62020" name="MAV_CMD_QSHOT_DO_CONFIGURE" hasLocation="false" isDestination="false">
-        <!-- very WIP -->
+        <wip/>
+        <!-- WIP -->
         <description>Command to set the shot manager mode.</description>
         <param index="1" label="Mode" enum="MAV_QSHOT_MODE">Set shot mode.</param>
         <param index="2" label="Shot state or command">Set shot state or command. The allowed values are specific to the selected shot mode.</param>
       </entry>
     </enum>
   </enums>
-  <!-- 
-  STORM32 messages 
+  <!--
+  STORM32 messages
   -->
   <messages>
     <!-- ***************************
-    STORM32 gimbal device messages 
+    STORM32 gimbal device messages
     *************************** -->
     <!-- leave room for 62000 gimbal device information -->
     <message id="62001" name="STORM32_GIMBAL_DEVICE_STATUS">
@@ -409,7 +416,7 @@
       <field type="float" name="angular_velocity_z" units="rad/s">Z component of angular velocity (positive: pan to the right, the frame is determined by the STORM32_GIMBAL_DEVICE_FLAGS_YAW_ABSOLUTE flag, NaN to be ignored).</field>
     </message>
     <!-- ***************************
-    STORM32 gimbal manager messages 
+    STORM32 gimbal manager messages
     *************************** -->
     <message id="62010" name="STORM32_GIMBAL_MANAGER_INFORMATION">
       <!-- Quite stable, may grow however -->
@@ -471,6 +478,7 @@
       <field type="float" name="roll" units="rad">Roll angle (positive to roll to the right).</field>
     </message>
     <message id="62015" name="STORM32_GIMBAL_MANAGER_PROFILE">
+      <wip/>
       <!-- WIP -->
       <description>Message to set a gimbal manager profile. A gimbal device is never to react to this command. The selected profile is reported in the STORM32_GIMBAL_MANAGER_STATUS message.</description>
       <field type="uint8_t" name="target_system">System ID</field>
@@ -483,10 +491,11 @@
       <field type="uint8_t[8]" name="timeouts">Timeouts for custom profile (0 = infinite, in uints of 100 ms).</field>
     </message>
     <!-- ***************************
-    QSHOT manager messages 
+    QSHOT manager messages
     *************************** -->
     <message id="62020" name="QSHOT_STATUS">
-      <!-- very WIP -->
+      <wip/>
+      <!-- WIP -->
       <description>Information about the shot operation.</description>
       <field type="uint16_t" name="mode" enum="MAV_QSHOT_MODE">Current shot mode.</field>
       <field type="uint16_t" name="shot_state">Current state in the shot. States are specific to the selected shot mode.</field>
