@@ -28,7 +28,7 @@
 #include "opentx_helpers.h"
 
 //OW
-#define OWVERSIONSTR  "olliw-v19rc01"
+#define OWVERSIONSTR  "olliw-v20rc01"
 //OWEND
 
 /*
@@ -104,9 +104,42 @@ api_general.cpp etc. -> CMakeList.txt
 sportTelemetryPop
 getValue
 
-PCBX10, RADIO_T16:
-	both are set for JumperT16
-    often used in a way that first RADIO_T16 is checked before PCBX10 is checked
+----
+BOARD_NAME
+-> build-fw.py
+-> t16   -> PCB = X10, PCBREV = T16
+   tx16s -> PCB = X10, PCBREV = TX16S
+
+horus/CMakeList
+-> PCB = X10   -> -DPCBX10
+-> PCBREV = T16   -> -DRADIO_T16   -DRADIO_FAMILY_T16
+   PCBREV = TX16S -> -DRADIO_TX16S -DRADIO_FAMILY_T16
+-> -DPCBREV=${PCBREV}
+-> -DPCBREV_${PCBREV}
+
+
+T16
+  BLUETOOTH = USART6
+  USART3 is free
+
+Tx16S
+  AUX_SERIAL = USART3
+  AUX2_SERIAL = USART6
+  INTERNAL_GPS = USART6
+  BLUETOOTH = USART6
+
+
+mixerTask -> bluetooth.wakeup();
+menusTask -> perMain() -> gpsWakeup();
+
+per10ms() ->  outputTelemetryBuffer.per10ms();
+
+
+LEN_AUX_SERIAL_MODES
+STR_AUX_SERIAL_MODES
+INTERNAL_GPS
+
+----
 
 AUX_SERIAL:
 	according to targets/horus/hal.h it is set only #if defined(PCBX12S)

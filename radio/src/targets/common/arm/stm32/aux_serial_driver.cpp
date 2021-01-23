@@ -25,6 +25,28 @@
 extern Fifo<uint8_t, 32> trainerSbusFifo;
 #endif
 
+//OW
+#if defined(TELEMETRY_MAVLINK_AUX)
+#if defined(AUX_SERIAL)
+  Fifo<uint8_t, 512> auxSerialRxFifo_4MavlinkTelem;
+#endif
+#if defined(AUX2_SERIAL)
+  Fifo<uint8_t, 512> aux2SerialRxFifo_4MavlinkTelem;
+#endif
+
+uint32_t _cvtMavlinkBaud(uint16_t baud)
+{
+  switch (baud) {
+    case 0: return 57600;
+    case 1: return 115200;
+    case 2: return 38400;
+    case 3: return 19200;
+  }
+  return 57600;
+}
+#endif
+//OWEND
+
 #if defined(AUX_SERIAL)
 uint8_t auxSerialMode = UART_MODE_COUNT;  // Prevent debug output before port is setup
 Fifo<uint8_t, 512> auxSerialTxFifo;
@@ -135,6 +157,18 @@ void auxSerialInit(unsigned int mode, unsigned int protocol)
     case UART_MODE_LUA:
       auxSerialSetup(DEBUG_BAUDRATE, false);
       AUX_SERIAL_POWER_ON();
+//OW
+      break;
+
+#if defined(TELEMETRY_MAVLINK_AUX)
+    case UART_MODE_MAVLINK:
+      auxSerialSetup(_cvtMavlinkBaud(g_eeGeneral.mavlinkBaudrate), false);
+      AUX_SERIAL_POWER_ON();
+      auxSerialTxFifo.clear();
+      auxSerialRxFifo_4MavlinkTelem.clear();
+      break;
+#endif
+//OWEND
   }
 }
 
@@ -160,6 +194,14 @@ void auxSerialStop()
 {
   DMA_DeInit(AUX_SERIAL_DMA_Stream_RX);
   USART_DeInit(AUX_SERIAL_USART);
+//OW
+#if defined(TELEMETRY_MAVLINK_AUX)
+  if (auxSerialMode == UART_MODE_MAVLINK) {
+    auxSerialTxFifo.clear();
+    auxSerialRxFifo_4MavlinkTelem.clear();
+  }
+#endif
+//OWEND
 }
 
 uint8_t auxSerialTracesEnabled()
@@ -186,6 +228,18 @@ extern "C" void AUX_SERIAL_USART_IRQHandler(void)
       USART_ITConfig(AUX_SERIAL_USART, USART_IT_TXE, DISABLE);
     }
   }
+//OW
+#if defined(TELEMETRY_MAVLINK_AUX)
+  if (auxSerialMode == UART_MODE_MAVLINK) {
+    if (USART_GetITStatus(AUX_SERIAL_USART, USART_IT_RXNE) != RESET) {
+      USART_ClearITPendingBit(AUX_SERIAL_USART, USART_IT_RXNE);
+      uint8_t c = USART_ReceiveData(AUX_SERIAL_USART);
+      auxSerialRxFifo_4MavlinkTelem.push(c);
+    }
+    return;
+  }
+#endif
+//OWEND
 
 #if defined(CLI)
   if (getSelectedUsbMode() != USB_SERIAL_MODE) {
@@ -331,6 +385,18 @@ void aux2SerialInit(unsigned int mode, unsigned int protocol)
     case UART_MODE_LUA:
       aux2SerialSetup(DEBUG_BAUDRATE, false);
       AUX2_SERIAL_POWER_ON();
+//OW
+      break;
+
+#if defined(TELEMETRY_MAVLINK_AUX)
+      case UART_MODE_MAVLINK:
+        aux2SerialSetup(_cvtMavlinkBaud(g_eeGeneral.mavlinkBaudrate2), false);
+        AUX2_SERIAL_POWER_ON();
+        aux2SerialTxFifo.clear();
+        aux2SerialRxFifo_4MavlinkTelem.clear();
+        break;
+#endif
+//OWEND
   }
 }
 
@@ -356,6 +422,14 @@ void aux2SerialStop()
 {
   DMA_DeInit(AUX2_SERIAL_DMA_Stream_RX);
   USART_DeInit(AUX2_SERIAL_USART);
+//OW
+#if defined(TELEMETRY_MAVLINK_AUX)
+  if (aux2SerialMode == UART_MODE_MAVLINK) {
+    aux2SerialTxFifo.clear();
+    aux2SerialRxFifo_4MavlinkTelem.clear();
+  }
+#endif
+//OWEND
 }
 
 uint8_t aux2SerialTracesEnabled()
@@ -382,6 +456,18 @@ extern "C" void AUX2_SERIAL_USART_IRQHandler(void)
       USART_ITConfig(AUX2_SERIAL_USART, USART_IT_TXE, DISABLE);
     }
   }
+//OW
+#if defined(TELEMETRY_MAVLINK_AUX)
+  if (aux2SerialMode == UART_MODE_MAVLINK) {
+    if (USART_GetITStatus(AUX2_SERIAL_USART, USART_IT_RXNE) != RESET) {
+      USART_ClearITPendingBit(AUX2_SERIAL_USART, USART_IT_RXNE);
+      uint8_t c = USART_ReceiveData(AUX2_SERIAL_USART);
+      aux2SerialRxFifo_4MavlinkTelem.push(c);
+    }
+    return;
+  }
+#endif
+//OWEND
 
 #if defined(CLI)
   if (getSelectedUsbMode() != USB_SERIAL_MODE) {
@@ -420,3 +506,63 @@ extern "C" void AUX2_SERIAL_USART_IRQHandler(void)
 
 #endif
 #endif // AUX_SERIAL
+
+//OW
+#if defined(TELEMETRY_MAVLINK_AUX)
+#if defined(AUX_SERIAL)
+
+uint32_t mavlinkTelemAvailable(void)
+{
+  if (auxSerialMode != UART_MODE_MAVLINK) return 0;
+  return auxSerialRxFifo_4MavlinkTelem.size();
+}
+
+uint8_t mavlinkTelemGetc(uint8_t *c)
+{
+  return auxSerialRxFifo_4MavlinkTelem.pop(*c);
+}
+
+bool mavlinkTelemPutBuf(const uint8_t *buf, const uint16_t count)
+{
+  if (auxSerialMode != UART_MODE_MAVLINK || !buf || !auxSerialTxFifo.hasSpace(count)) {
+    return false;
+  }
+  for (uint16_t i = 0; i < count; i++) {
+    uint8_t c = buf[i];
+    auxSerialTxFifo.push(c);
+  }
+  USART_ITConfig(AUX_SERIAL_USART, USART_IT_TXE, ENABLE);
+  return true;
+}
+
+#endif
+
+#if defined(AUX2_SERIAL)
+
+uint32_t mavlinkTelem2Available(void)
+{
+  if (aux2SerialMode != UART_MODE_MAVLINK) return 0;
+  return aux2SerialRxFifo_4MavlinkTelem.size();
+}
+
+uint8_t mavlinkTelem2Getc(uint8_t *c)
+{
+  return aux2SerialRxFifo_4MavlinkTelem.pop(*c);
+}
+
+bool mavlinkTelem2PutBuf(const uint8_t *buf, const uint16_t count)
+{
+  if (aux2SerialMode != UART_MODE_MAVLINK || !buf || !aux2SerialTxFifo.hasSpace(count)) {
+    return false;
+  }
+  for (uint16_t i = 0; i < count; i++) {
+    uint8_t c = buf[i];
+    aux2SerialTxFifo.push(c);
+  }
+  USART_ITConfig(AUX2_SERIAL_USART, USART_IT_TXE, ENABLE);
+  return true;
+}
+
+#endif
+#endif
+//OWEND

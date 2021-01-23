@@ -73,6 +73,14 @@ enum MenuRadioHardwareItems {
 #if defined(AUX2_SERIAL)
   ITEM_RADIO_HARDWARE_AUX2_SERIAL_MODE,
 #endif
+//OW
+#if defined(TELEMETRY_MAVLINK_AUX) && defined(AUX_SERIAL)
+  ITEM_RADIO_HARDWARE_MAVLINK_BAUDRATE,
+#endif
+#if defined(TELEMETRY_MAVLINK_AUX) && defined(AUX2_SERIAL)
+  ITEM_RADIO_HARDWARE_MAVLINK_BAUDRATE2,
+#endif
+//OWEND
   ITEM_RADIO_HARDWARE_JITTER_FILTER,
   ITEM_RADIO_HARDWARE_RAS,
 
@@ -96,6 +104,27 @@ enum MenuRadioHardwareItems {
 #else
 #define AUX2_SERIAL_ROW
 #endif
+//OW
+#if defined(TELEMETRY_MAVLINK_AUX)
+  #if defined(AUX_SERIAL)
+    #define MAVLINK_BAUDRATE_ROW       0,
+  #else
+    #define MAVLINK_BAUDRATE_ROW
+  #endif
+  #if defined(AUX2_SERIAL)
+    #define MAVLINK_BAUDRATE2_ROW      0,
+  #else
+    #define MAVLINK_BAUDRATE2_ROW
+  #endif
+  #if defined(CLI) || defined(DEBUG)
+  #define MAVLINK_AUX_SERIAL_MODES     "\015""Debug\0       ""Telem Mirror\0""Telemetry In\0""SBUS Trainer\0""LUA\0         ""Mavlink\0     "
+  #else
+  #define MAVLINK_AUX_SERIAL_MODES     "\015""OFF\0         ""Telem Mirror\0""Telemetry In\0""SBUS Trainer\0""LUA\0         ""Mavlink\0     "
+  #endif
+//  #define MAVLINK_AUX_SERIAL_MODES     "\015""Debug\0       ""Telem Mirror\0""Telemetry In\0""SBUS Trainer\0""LUA\0         ""Mavlink\0     "
+  #define MAVLINK_AUX_BAUDRATES        "\006""57600\0""115200""38400\0""19200\0"
+#endif
+//OWEND
 
 #define POTS_ROWS                      NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
 #define SWITCHES_ROWS                  NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
@@ -167,6 +196,10 @@ bool menuRadioHardware(event_t event)
 
     AUX_SERIAL_ROW /* aux serial mode */
     AUX2_SERIAL_ROW /* aux2 serial mode */
+//OW
+    MAVLINK_BAUDRATE_ROW
+    MAVLINK_BAUDRATE2_ROW
+//OWEND
     0, /* ADC filter */
     READONLY_ROW /* RAS */,
     SPORT_POWER_ROWS
@@ -372,7 +405,10 @@ bool menuRadioHardware(event_t event)
 #if defined(RADIO_TX16S)
         lcdDrawText(lcdNextPos, y, " (TTL)");
 #endif
-        g_eeGeneral.auxSerialMode = editChoice(HW_SETTINGS_COLUMN2, y, STR_AUX_SERIAL_MODES, g_eeGeneral.auxSerialMode, 0, UART_MODE_MAX, attr, event, isAux1ModeAvailable);
+//OW
+//        g_eeGeneral.auxSerialMode = editChoice(HW_SETTINGS_COLUMN2, y, STR_AUX_SERIAL_MODES, g_eeGeneral.auxSerialMode, 0, UART_MODE_MAX, attr, event, isAux1ModeAvailable);
+        g_eeGeneral.auxSerialMode = editChoice(HW_SETTINGS_COLUMN2, y, MAVLINK_AUX_SERIAL_MODES, g_eeGeneral.auxSerialMode, 0, UART_MODE_MAX, attr, event, isAux1ModeAvailable);
+//OWEND
         if (attr && checkIncDec_Ret) {
           auxSerialInit(g_eeGeneral.auxSerialMode, modelTelemetryProtocol());
         }
@@ -385,12 +421,36 @@ bool menuRadioHardware(event_t event)
 #if defined(RADIO_TX16S)
         lcdDrawText(lcdNextPos, y, " (TTL)");
 #endif
-        g_eeGeneral.aux2SerialMode = editChoice(HW_SETTINGS_COLUMN2, y, STR_AUX_SERIAL_MODES, g_eeGeneral.aux2SerialMode, 0, UART_MODE_MAX, attr, event, isAux2ModeAvailable);
+//OW
+//        g_eeGeneral.aux2SerialMode = editChoice(HW_SETTINGS_COLUMN2, y, STR_AUX_SERIAL_MODES, g_eeGeneral.aux2SerialMode, 0, UART_MODE_MAX, attr, event, isAux2ModeAvailable);
+        g_eeGeneral.aux2SerialMode = editChoice(HW_SETTINGS_COLUMN2, y, MAVLINK_AUX_SERIAL_MODES, g_eeGeneral.aux2SerialMode, 0, UART_MODE_MAX, attr, event, isAux2ModeAvailable);
+//OWEND
         if (attr && checkIncDec_Ret) {
           aux2SerialInit(g_eeGeneral.aux2SerialMode, modelTelemetryProtocol());
         }
         break;
 #endif
+
+//OW
+#if defined(TELEMETRY_MAVLINK_AUX) && defined(AUX_SERIAL)
+      case ITEM_RADIO_HARDWARE_MAVLINK_BAUDRATE:
+        lcdDrawText(MENUS_MARGIN_LEFT, y, "Mavlink baudrate");
+        g_eeGeneral.mavlinkBaudrate = editChoice(HW_SETTINGS_COLUMN2, y, MAVLINK_AUX_BAUDRATES, g_eeGeneral.mavlinkBaudrate, 0, 3, attr, event);
+        if (attr && checkIncDec_Ret) {
+          auxSerialInit(g_eeGeneral.auxSerialMode, modelTelemetryProtocol());
+        }
+        break;
+#endif
+#if defined(TELEMETRY_MAVLINK_AUX) && defined(AUX2_SERIAL)
+      case ITEM_RADIO_HARDWARE_MAVLINK_BAUDRATE2:
+        lcdDrawText(MENUS_MARGIN_LEFT, y, "Mavlink baudrate2");
+        g_eeGeneral.mavlinkBaudrate2 = editChoice(HW_SETTINGS_COLUMN2, y, MAVLINK_AUX_BAUDRATES, g_eeGeneral.mavlinkBaudrate2, 0, 3, attr, event);
+        if (attr && checkIncDec_Ret) {
+          aux2SerialInit(g_eeGeneral.aux2SerialMode, modelTelemetryProtocol());
+        }
+        break;
+#endif
+//OWEND
 
       case ITEM_RADIO_HARDWARE_JITTER_FILTER:
       {

@@ -628,7 +628,7 @@ PACK(struct ModelData {
   char modelRegistrationID[PXX2_LEN_REGISTRATION_ID];
 
 //OW
-#if defined(TELEMETRY_MAVLINK)
+#if defined(TELEMETRY_MAVLINK) || defined(TELEMETRY_MAVLINK_AUX)
   uint16_t mavlinkEnabled:1; // on/off
   uint16_t mavlinkConfig:3; // allow space for 8 configs
   uint16_t mavlinkMimicSensors:3; // currently just off/on, but allow e.g. FrSky, CF, FrSky passthrough.
@@ -832,6 +832,13 @@ PACK(struct RadioData {
   char ownerRegistrationID[PXX2_LEN_REGISTRATION_ID];
 
   GYRO_FIELDS
+//OW
+#if defined(TELEMETRY_MAVLINK) || defined(TELEMETRY_MAVLINK_AUX)
+  uint16_t mavlinkBaudrate:3;
+  uint16_t mavlinkBaudrate2:3;
+  uint16_t mavlinkDummy:10;
+#endif
+//OWEND
 });
 
 #undef SWITCHES_WARNING_DATA
@@ -966,12 +973,14 @@ static inline void check_struct()
   CHKSIZE(RadioData, 735);
   CHKSIZE(ModelData, 5301);
 #elif defined(PCBHORUS)
-  CHKSIZE(RadioData, 881);
 //OW
+//  CHKSIZE(RadioData, 881);
 //  CHKSIZE(ModelData, 9736);
-#if defined(TELEMETRY_MAVLINK)
+#if defined(TELEMETRY_MAVLINK) || defined(TELEMETRY_MAVLINK_AUX)
+  CHKSIZE(RadioData, 881+2);
   CHKSIZE(ModelData, 9736+2);
 #else
+  CHKSIZE(RadioData, 881);
   CHKSIZE(ModelData, 9736);
 #endif
 //OWEND

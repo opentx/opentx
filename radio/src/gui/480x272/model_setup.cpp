@@ -140,6 +140,12 @@ enum MenuModelSetupItems {
   ITEM_MODEL_SETUP_MAVLINK_MIMICSENSORS,
   ITEM_MODEL_SETUP_MAVLINK_RCOVERRIDE,
 #endif
+
+#if defined(TELEMETRY_MAVLINK_AUX)
+  ITEM_MODEL_SETUP_MAVLINK_LABEL,
+  ITEM_MODEL_SETUP_MAVLINK_MIMICSENSORS,
+  ITEM_MODEL_SETUP_MAVLINK_RCOVERRIDE,
+#endif
 //OWEND
   ITEM_MODEL_SETUP_MAX
 };
@@ -663,6 +669,10 @@ bool menuModelSetup(event_t event)
 //OW
 #if defined(TELEMETRY_MAVLINK)
 		 LABEL(Mavlink), 0, 0, 0, 0
+#endif
+
+#if defined(TELEMETRY_MAVLINK_AUX)
+         LABEL(Mavlink), 0, 0
 #endif
 //OWEND
        });
@@ -1379,6 +1389,25 @@ bool menuModelSetup(event_t event)
         g_model.mavlinkConfig = editChoice(MODEL_SETUP_2ND_COLUMN, y, "\006""57600\0""115200""38400\0""19200\0", g_model.mavlinkConfig, 0, 3, attr, event);
         break;
       }
+
+      case ITEM_MODEL_SETUP_MAVLINK_MIMICSENSORS: {
+        lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, "Sensors");
+        g_model.mavlinkMimicSensors = editCheckBox(g_model.mavlinkMimicSensors, MODEL_SETUP_2ND_COLUMN, y, attr, event);
+        //g_model.mavlinkMimicSensors = editChoice(MODEL_SETUP_2ND_COLUMN, y, "\010""off\0\0\0\0\0\0\0""FrSky\0\0\0\0\0""CrossFire\0""FrSky pass", g_model.mavlinkMimicSensors, 0, 3, attr, event);
+        break;
+      }
+
+      case ITEM_MODEL_SETUP_MAVLINK_RCOVERRIDE: {
+        lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, "RC Override");
+        g_model.mavlinkRcOverride = editCheckBox(g_model.mavlinkRcOverride, MODEL_SETUP_2ND_COLUMN, y, attr, event);
+        break;
+      }
+#endif
+
+#if defined(TELEMETRY_MAVLINK_AUX)
+      case ITEM_MODEL_SETUP_MAVLINK_LABEL:
+        lcdDrawText(MENUS_MARGIN_LEFT, y, "MAVLink");
+        break;
 
       case ITEM_MODEL_SETUP_MAVLINK_MIMICSENSORS: {
         lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, "Sensors");

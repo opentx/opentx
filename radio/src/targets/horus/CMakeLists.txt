@@ -60,6 +60,14 @@ if (PCB STREQUAL X10)
     option(INTERNAL_MODULE_MULTI "Support for MULTI internal module" OFF)
     option(BLUETOOTH "Support for bluetooth module" OFF)
     add_definitions(-DMANUFACTURER_JUMPER)
+    
+    # //OW
+    set(BLUETOOTH OFF)
+    set(INTERNAL_GPS OFF)
+    set(AUX_SERIAL ON)
+    set(AUX2_SERIAL ON)
+    add_definitions(-DTELEMETRY_MAVLINK_AUX)
+    
   elseif (PCBREV STREQUAL TX16S)
     set(FLAVOUR tx16s)
     set(LUA_EXPORT lua_export_t16)

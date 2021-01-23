@@ -99,7 +99,7 @@ static const char * const options[] = {
   "externalaccessmod",
 #endif
 //OW
-#if defined(TELEMETRY_MAVLINK)
+#if defined(TELEMETRY_MAVLINK) || defined(TELEMETRY_MAVLINK_AUX)
  "mavlink",
 #endif
   OWVERSIONSTR, //FIXME: JUST FOR NOW, WILL HAVE TO BE REMOVED
