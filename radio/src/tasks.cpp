@@ -124,18 +124,6 @@ TASK_FUNCTION(mixerTask)
 #if defined(TELEMETRY_MAVLINK)
 //  mavlinkTelem.wakeup();
 #endif
-
-#if defined(TELEMETRY_MAVLINK_AUX)
-    uint32_t available = mavlinkTelemAvailable();
-    if (available > 128) available = 128; //limit how much we read at once, shouldn't ever trigger
-    for (uint32_t i = 0; i < available; i++) {
-      uint8_t c;
-      mavlinkTelemGetc(&c);
-      mavlinkTelemPutBuf(&c, 1);
-    }
-//  uint8_t c = '.';
-//  mavlinkTelemPutBuf(&c, 1);
-#endif
 //OWEND
 
     RTOS_WAIT_TICKS(1);

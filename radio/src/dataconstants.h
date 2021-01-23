@@ -249,7 +249,7 @@ enum UartModes {
   UART_MODE_SBUS_TRAINER,
   UART_MODE_LUA,
 //OW
-#if defined(TELEMETRY_MAVLINK_AUX)
+#if defined(TELEMETRY_MAVLINK)
   UART_MODE_MAVLINK,
 #endif
 //OWEND

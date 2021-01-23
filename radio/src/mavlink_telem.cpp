@@ -23,9 +23,6 @@
 
 #include "opentx.h"
 
-//extern Fifo<uint8_t, MAVLINK_TELEM_TX_FIFO_SIZE> mavlinkTelemTxFifo;
-//extern Fifo<uint8_t, MAVLINK_TELEM_RX_FIFO_SIZE> mavlinkTelemRxFifo;
-
 MavlinkTelem mavlinkTelem;
 
 // -- TASK handlers --
@@ -449,42 +446,49 @@ void MavlinkTelem::doTask(void)
 // -- Wakeup call from OpenTx --
 // this is the single and main entry point
 
+uint32_t _mavlinkTelemAvailable(void)
+{
+  if (g_eeGeneral.auxSerialMode == UART_MODE_MAVLINK) return mavlinkTelemAvailable();
+  return mavlinkTelem2Available();
+}
+
+uint8_t _mavlinkTelemGetc(uint8_t *c)
+{
+  if (g_eeGeneral.auxSerialMode == UART_MODE_MAVLINK) return mavlinkTelemGetc(c);
+  return mavlinkTelem2Getc(c);
+}
+
+bool _mavlinkTelemPutBuf(const uint8_t *buf, const uint16_t count)
+{
+  if (g_eeGeneral.auxSerialMode == UART_MODE_MAVLINK) return mavlinkTelemPutBuf(buf, count);
+  return mavlinkTelem2PutBuf(buf, count);
+}
+
+
 void MavlinkTelem::wakeup()
 {
-  // handle configuration change
-  if ((_interface_enabled != g_model.mavlinkEnabled) || (_interface_config != g_model.mavlinkConfig)) { // a change occurred
-    mavlinkTelemDeInit();
-    _interface_enabled = g_model.mavlinkEnabled;
-    _interface_config = g_model.mavlinkConfig;
-    if (_interface_enabled) {
-      switch (_interface_config) {
-        case CONFIG_UART_A_115200: 
-          mavlinkTelemInit('A', 57600); 
-          break;
-        case CONFIG_UART_A_57600: 
-          mavlinkTelemInit('A', 115200); 
-          break;
-        case CONFIG_UART_A_38400: 
-          mavlinkTelemInit('A', 38400); 
-          break;
-        case CONFIG_UART_A_19200: 
-          mavlinkTelemInit('A', 19200); 
-          break;
-        default: 
-          mavlinkTelemDeInit(); // should never happen
-      }
-    }
+  // check configuration
+  bool serial1_enabled = g_eeGeneral.auxSerialMode == UART_MODE_MAVLINK;
+  bool serial2_enabled = g_eeGeneral.aux2SerialMode == UART_MODE_MAVLINK;
+
+  if ((_serial1_enabled != serial1_enabled) || (_serial2_enabled != serial2_enabled) ||
+      (_serial1_baudrate != g_eeGeneral.mavlinkBaudrate) || (_serial2_baudrate != g_eeGeneral.mavlinkBaudrate2)) {
+    _serial1_enabled = serial1_enabled;
+    _serial2_enabled = serial2_enabled;
+    _serial1_baudrate = g_eeGeneral.mavlinkBaudrate;
+    _serial2_baudrate = g_eeGeneral.mavlinkBaudrate2;
     _reset();
   }
 
-  if (!_interface_enabled) return;
+  // skip out if not enabled
+  if (!_serial1_enabled && !_serial2_enabled) return;
 
   // look for incoming messages, also do statistics
-  uint32_t available = mavlinkTelemAvailable();
-  if (available > 128) available = 128; //limit how much we read at once, shouldn't ever trigger
+  uint32_t available = _mavlinkTelemAvailable();
+  if (available > 128) available = 128; //limit how much we read at once, shouldn't ever trigger, 11.1 ms @ 115200
   for (uint32_t i = 0; i < available; i++) {
     uint8_t c;
-    mavlinkTelemGetc(&c);
+    _mavlinkTelemGetc(&c);
     _bytes_rx_persec_cnt++;
     if (mavlink_parse_char(MAVLINK_COMM_0, c, &_msg, &_status)) {
       // check for lost messages by analyzing seq
@@ -533,7 +537,7 @@ void MavlinkTelem::wakeup()
 
   // send out any pending messages
   if (_txcount) {
-    if (mavlinkTelemPutBuf(_txbuf, _txcount)) {
+    if (_mavlinkTelemPutBuf(_txbuf, _txcount)) {
       _txcount = 0;
     }
   }

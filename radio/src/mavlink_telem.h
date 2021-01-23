@@ -698,8 +698,10 @@ class MavlinkTelem
 
     // STUFF
 
-    bool _interface_enabled = false;
-    uint8_t _interface_config = UINT8_MAX; //to enforce change
+    bool _serial1_enabled = false;
+    uint32_t _serial1_baudrate = UINT32_MAX; //to enforce change
+    bool _serial2_enabled = false;
+    uint32_t _serial2_baudrate = UINT32_MAX; //to enforce change
 
     bool _storm32_gimbal_protocol_v2 = false;
 };

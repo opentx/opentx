@@ -26,7 +26,7 @@ extern Fifo<uint8_t, 32> trainerSbusFifo;
 #endif
 
 //OW
-#if defined(TELEMETRY_MAVLINK_AUX)
+#if defined(TELEMETRY_MAVLINK)
 #if defined(AUX_SERIAL)
   Fifo<uint8_t, 512> auxSerialRxFifo_4MavlinkTelem;
 #endif
@@ -160,7 +160,7 @@ void auxSerialInit(unsigned int mode, unsigned int protocol)
 //OW
       break;
 
-#if defined(TELEMETRY_MAVLINK_AUX)
+#if defined(TELEMETRY_MAVLINK)
     case UART_MODE_MAVLINK:
       auxSerialSetup(_cvtMavlinkBaud(g_eeGeneral.mavlinkBaudrate), false);
       AUX_SERIAL_POWER_ON();
@@ -195,7 +195,7 @@ void auxSerialStop()
   DMA_DeInit(AUX_SERIAL_DMA_Stream_RX);
   USART_DeInit(AUX_SERIAL_USART);
 //OW
-#if defined(TELEMETRY_MAVLINK_AUX)
+#if defined(TELEMETRY_MAVLINK)
   if (auxSerialMode == UART_MODE_MAVLINK) {
     auxSerialTxFifo.clear();
     auxSerialRxFifo_4MavlinkTelem.clear();
@@ -229,7 +229,7 @@ extern "C" void AUX_SERIAL_USART_IRQHandler(void)
     }
   }
 //OW
-#if defined(TELEMETRY_MAVLINK_AUX)
+#if defined(TELEMETRY_MAVLINK)
   if (auxSerialMode == UART_MODE_MAVLINK) {
     if (USART_GetITStatus(AUX_SERIAL_USART, USART_IT_RXNE) != RESET) {
       USART_ClearITPendingBit(AUX_SERIAL_USART, USART_IT_RXNE);
@@ -388,7 +388,7 @@ void aux2SerialInit(unsigned int mode, unsigned int protocol)
 //OW
       break;
 
-#if defined(TELEMETRY_MAVLINK_AUX)
+#if defined(TELEMETRY_MAVLINK)
       case UART_MODE_MAVLINK:
         aux2SerialSetup(_cvtMavlinkBaud(g_eeGeneral.mavlinkBaudrate2), false);
         AUX2_SERIAL_POWER_ON();
@@ -423,7 +423,7 @@ void aux2SerialStop()
   DMA_DeInit(AUX2_SERIAL_DMA_Stream_RX);
   USART_DeInit(AUX2_SERIAL_USART);
 //OW
-#if defined(TELEMETRY_MAVLINK_AUX)
+#if defined(TELEMETRY_MAVLINK)
   if (aux2SerialMode == UART_MODE_MAVLINK) {
     aux2SerialTxFifo.clear();
     aux2SerialRxFifo_4MavlinkTelem.clear();
@@ -457,7 +457,7 @@ extern "C" void AUX2_SERIAL_USART_IRQHandler(void)
     }
   }
 //OW
-#if defined(TELEMETRY_MAVLINK_AUX)
+#if defined(TELEMETRY_MAVLINK)
   if (aux2SerialMode == UART_MODE_MAVLINK) {
     if (USART_GetITStatus(AUX2_SERIAL_USART, USART_IT_RXNE) != RESET) {
       USART_ClearITPendingBit(AUX2_SERIAL_USART, USART_IT_RXNE);
@@ -508,7 +508,7 @@ extern "C" void AUX2_SERIAL_USART_IRQHandler(void)
 #endif // AUX_SERIAL
 
 //OW
-#if defined(TELEMETRY_MAVLINK_AUX)
+#if defined(TELEMETRY_MAVLINK)
 #if defined(AUX_SERIAL)
 
 uint32_t mavlinkTelemAvailable(void)
@@ -535,6 +535,10 @@ bool mavlinkTelemPutBuf(const uint8_t *buf, const uint16_t count)
   return true;
 }
 
+#else
+uint32_t mavlinkTelemAvailable(void){ return 0; }
+uint8_t mavlinkTelemGetc(uint8_t *c){ return 0; }
+bool mavlinkTelemPutBuf(const uint8_t *buf, const uint16_t count){ return false; }
 #endif
 
 #if defined(AUX2_SERIAL)
@@ -563,6 +567,10 @@ bool mavlinkTelem2PutBuf(const uint8_t *buf, const uint16_t count)
   return true;
 }
 
+#else
+uint32_t mavlinkTelem2Available(void){ return 0; }
+uint8_t mavlinkTelem2Getc(uint8_t *c){ return 0; }
+bool mavlinkTelem2PutBuf(const uint8_t *buf, const uint16_t count){ return false; }
 #endif
 #endif
 //OWEND

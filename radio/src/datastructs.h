@@ -628,12 +628,12 @@ PACK(struct ModelData {
   char modelRegistrationID[PXX2_LEN_REGISTRATION_ID];
 
 //OW
-#if defined(TELEMETRY_MAVLINK) || defined(TELEMETRY_MAVLINK_AUX)
-  uint16_t mavlinkEnabled:1; // on/off
-  uint16_t mavlinkConfig:3; // allow space for 8 configs
+#if defined(TELEMETRY_MAVLINK)
+  uint16_t _mavlinkEnabled:1; // not currently used
+  uint16_t _mavlinkConfig:3; // not currently used
   uint16_t mavlinkMimicSensors:3; // currently just off/on, but allow e.g. FrSky, CF, FrSky passthrough.
   uint16_t mavlinkRcOverride:1;
-  uint16_t mavlinkLogging:1; // not currently used
+  uint16_t _mavlinkLogging:1; // not currently used
   // needs to adapt CHKSIZE below //if not all are use compiled optiomizes to lowest size, which may raise error
 #endif
 //OWEND
@@ -833,10 +833,11 @@ PACK(struct RadioData {
 
   GYRO_FIELDS
 //OW
-#if defined(TELEMETRY_MAVLINK) || defined(TELEMETRY_MAVLINK_AUX)
+#if defined(TELEMETRY_MAVLINK)
   uint16_t mavlinkBaudrate:3;
   uint16_t mavlinkBaudrate2:3;
   uint16_t mavlinkDummy:10;
+  // needs to adapt CHKSIZE below
 #endif
 //OWEND
 });
@@ -976,7 +977,7 @@ static inline void check_struct()
 //OW
 //  CHKSIZE(RadioData, 881);
 //  CHKSIZE(ModelData, 9736);
-#if defined(TELEMETRY_MAVLINK) || defined(TELEMETRY_MAVLINK_AUX)
+#if defined(TELEMETRY_MAVLINK)
   CHKSIZE(RadioData, 881+2);
   CHKSIZE(ModelData, 9736+2);
 #else
