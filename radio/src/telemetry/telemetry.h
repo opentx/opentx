@@ -46,7 +46,7 @@ inline bool MODEL_TELEMETRY_STREAMING()
     return modelTelemetryStreaming;
   }
 
-  return telemetryStreaming > 0;
+  return modelTelemetryStreaming > 0;
 }
 
 inline bool TELEMETRY_STREAMING()

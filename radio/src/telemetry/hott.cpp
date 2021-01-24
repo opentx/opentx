@@ -202,6 +202,7 @@ void processHottPacket(const uint8_t * packet)
   static HottGPSMinutes min = {};
   int16_t deg = 0, sec = 0;
 
+  telemetryStreaming = TELEMETRY_TIMEOUT10ms;
   switch (packet[2]) { // Telemetry type
     case HOTT_TELEM_RX:
       if (packet[3] == 0) { // Telemetry page: only page 0 is for RX
@@ -218,7 +219,9 @@ void processHottPacket(const uint8_t * packet)
         // RX_LQI
         telemetryData.rssi.set(packet[8]);
         if (packet[8] > 0)
-          telemetryStreaming = TELEMETRY_TIMEOUT10ms;
+          modelTelemetryStreaming = TELEMETRY_TIMEOUT10ms;
+        else
+          modelTelemetryStreaming = 0;
         setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_RX_LQI_ID, 0, 0, packet[8], UNIT_RAW, 0);
       }
       break;

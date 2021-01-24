@@ -152,6 +152,7 @@ void processFlySkySensor(const uint8_t * packet, uint8_t type)
   const uint8_t instance = packet[1];
   int32_t value;
 
+  telemetryStreaming = TELEMETRY_TIMEOUT10ms;
   //Load most likely value
   if (type == 0xAA)
     value = (packet[3] << 8) | packet[2];
@@ -166,11 +167,17 @@ void processFlySkySensor(const uint8_t * packet, uint8_t type)
   else if (id == AFHDS2A_ID_RX_ERR_RATE) {
     value = 100 - value;
     telemetryData.rssi.set(value);
-    if (value > 0) telemetryStreaming = TELEMETRY_TIMEOUT10ms;
+    if (value > 0)
+      modelTelemetryStreaming = TELEMETRY_TIMEOUT10ms;
+    else
+      modelTelemetryStreaming = 0;
   }
   else if(id == AFHDS2A_ID_RX_SIG_AFHDS3) {
     telemetryData.rssi.set(value);
-    if(value>0) telemetryStreaming = TELEMETRY_TIMEOUT10ms;
+    if (value > 0)
+      modelTelemetryStreaming = TELEMETRY_TIMEOUT10ms;
+    else
+      modelTelemetryStreaming = 0;
   }
   else if (id == AFHDS2A_ID_PRES && value) {
     // Extract temperature to a new sensor

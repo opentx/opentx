@@ -50,7 +50,7 @@ void menuRadioSpectrumAnalyser(event_t event)
   }
 
   if (moduleState[g_moduleIdx].mode != MODULE_MODE_SPECTRUM_ANALYSER) {
-    if (TELEMETRY_STREAMING()) {
+    if (MODEL_TELEMETRY_STREAMING()) {
       lcdDrawCenteredText(LCD_H/2, STR_TURN_OFF_RECEIVER);
       if (event == EVT_KEY_FIRST(KEY_EXIT)) {
         killEvents(event);

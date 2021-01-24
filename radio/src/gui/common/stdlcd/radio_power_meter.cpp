@@ -36,7 +36,7 @@ void menuRadioPowerMeter(event_t event)
 {
   SUBMENU(STR_MENU_POWER_METER, POWER_METER_FIELDS_MAX-1, {0, 0, READONLY_ROW, READONLY_ROW, READONLY_ROW});
 
-  if (TELEMETRY_STREAMING()) {
+  if (MODEL_TELEMETRY_STREAMING()) {
     lcdDrawCenteredText(LCD_H/2, STR_TURN_OFF_RECEIVER);
     if (event == EVT_KEY_FIRST(KEY_EXIT)) {
       killEvents(event);

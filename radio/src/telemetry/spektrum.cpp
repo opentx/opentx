@@ -346,6 +346,7 @@ bool isSpektrumValidValue(int32_t value, const SpektrumDataType type)
 
 void processSpektrumPacket(const uint8_t *packet)
 {
+  telemetryStreaming = TELEMETRY_TIMEOUT10ms;
   setTelemetryValue(PROTOCOL_TELEMETRY_SPEKTRUM, (I2C_PSEUDO_TX << 8) + 0, 0, 0, packet[1], UNIT_RAW, 0);
   // highest bit indicates that TM1100 is in use, ignore it
   uint8_t i2cAddress = (packet[2] & 0x7f);
@@ -461,7 +462,10 @@ void processSpektrumPacket(const uint8_t *packet)
           // Range is 0-31, multiply by 3 to get an almost full reading for 0x1f, the maximum the cyrf chip reports
           telemetryData.rssi.set(packet[1] * 3);
         }
-        telemetryStreaming = TELEMETRY_TIMEOUT10ms;
+        if (TELEMETRY_RSSI() > 0)
+          modelTelemetryStreaming = TELEMETRY_TIMEOUT10ms;
+        else
+          modelTelemetryStreaming = 0;
       }
 
       uint16_t pseudoId = (sensor->i2caddress << 8 | sensor->startByte);

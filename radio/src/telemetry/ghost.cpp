@@ -139,6 +139,7 @@ void processGhostTelemetryFrame()
         bluetooth.write(telemetryRxBuffer, telemetryRxBufferCount);
       }
 #endif
+      telemetryStreaming = TELEMETRY_TIMEOUT10ms;
       uint8_t rssiVal = min<uint8_t>(telemetryRxBuffer[3], 120); // RSSI is a negative value, but sent as a positive integer.
       uint8_t lqVal = min<uint8_t>(telemetryRxBuffer[4], 100);
       uint8_t snrVal = min<uint8_t>(telemetryRxBuffer[5], 100);
@@ -159,12 +160,10 @@ void processGhostTelemetryFrame()
       // give OpenTx the LQ value, not RSSI
       if (lqVal) {
         telemetryData.rssi.set(lqVal);
-        telemetryStreaming = TELEMETRY_TIMEOUT10ms;
-        modelTelemetryStreaming = (rfMode != GHST_RF_PROFILE_PureRace);
+        modelTelemetryStreaming = TELEMETRY_TIMEOUT10ms;
       }
       else {
         telemetryData.rssi.reset();
-        telemetryStreaming = 0;
         modelTelemetryStreaming = 0;
       }
 

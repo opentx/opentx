@@ -216,7 +216,7 @@ void displayTopBar()
   lcdDrawRect(batt_icon_x+FW, BAR_Y+1, 13, 7);
   lcdDrawSolidVerticalLine(batt_icon_x+FW+13, BAR_Y+2, 5);
 
-  if (TELEMETRY_STREAMING()) {
+  if (MODEL_TELEMETRY_STREAMING()) {
     /* RSSI */
     LCD_ICON(batt_icon_x+3*FW+3, BAR_Y, ICON_RSSI);
     lcdDrawRect(batt_icon_x+5*FW, BAR_Y+1, 13, 7);

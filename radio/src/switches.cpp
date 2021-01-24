@@ -311,7 +311,7 @@ bool getLogicalSwitch(uint8_t idx)
       mixsrc_t v1 = ls->v1;
       // Telemetry
       if (v1 >= MIXSRC_FIRST_TELEM) {
-        if (!TELEMETRY_STREAMING() || IS_FAI_FORBIDDEN(v1-1)) {
+        if (!MODEL_TELEMETRY_STREAMING() || IS_FAI_FORBIDDEN(v1-1)) {
           result = false;
           goto DurationAndDelayProcessing;
         }
@@ -472,7 +472,7 @@ bool getSwitch(swsrc_t swtch, uint8_t flags)
     result = !telemetryItems[cs_idx-SWSRC_FIRST_SENSOR].isOld();
   }
   else if (cs_idx == SWSRC_TELEMETRY_STREAMING) {
-    result = TELEMETRY_STREAMING();
+    result = MODEL_TELEMETRY_STREAMING();
   }
   else if (cs_idx >= SWSRC_FIRST_FLIGHT_MODE) {
 #if defined(FLIGHT_MODES)

@@ -73,7 +73,7 @@ bool menuRadioSpectrumAnalyser(event_t event)
   }
 
   if (moduleState[g_moduleIdx].mode != MODULE_MODE_SPECTRUM_ANALYSER) {
-    if (TELEMETRY_STREAMING()) {
+    if (MODEL_TELEMETRY_STREAMING()) {
       POPUP_WARNING(STR_TURN_OFF_RECEIVER);
       if (event == EVT_KEY_FIRST(KEY_EXIT)) {
         killEvents(event);

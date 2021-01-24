@@ -163,7 +163,7 @@ void telemetryWakeup()
   }
 
 #if defined(VARIO)
-  if (TELEMETRY_STREAMING() && !IS_FAI_ENABLED()) {
+  if (MODEL_TELEMETRY_STREAMING() && !IS_FAI_ENABLED()) {
     varioWakeup();
   }
 #endif
@@ -188,7 +188,7 @@ void telemetryWakeup()
       }
     }
 
-    if (sensorLost && TELEMETRY_STREAMING() && !g_model.rssiAlarms.disabled) {
+    if (sensorLost && MODEL_TELEMETRY_STREAMING() && !g_model.rssiAlarms.disabled) {
       audioEvent(AU_SENSOR_LOST);
     }
 
@@ -203,7 +203,7 @@ void telemetryWakeup()
 #endif
 
     if (!g_model.rssiAlarms.disabled) {
-      if (TELEMETRY_STREAMING()) {
+      if (MODEL_TELEMETRY_STREAMING()) {
         if (TELEMETRY_RSSI() < g_model.rssiAlarms.getCriticalRssi() ) {
           AUDIO_RSSI_RED();
           SCHEDULE_NEXT_ALARMS_CHECK(10/*seconds*/);
@@ -214,7 +214,7 @@ void telemetryWakeup()
         }
       }
 
-      if (TELEMETRY_STREAMING()) {
+      if (MODEL_TELEMETRY_STREAMING()) {
         if (telemetryState == TELEMETRY_KO) {
           AUDIO_TELEMETRY_BACK();
 #if defined(CROSSFIRE)
@@ -246,6 +246,9 @@ void telemetryInterrupt10ms()
       }
       if (tick160ms && telemetryItems[i].timeout > 0) {
         telemetryItems[i].timeout--;
+      }
+      if (!MODEL_TELEMETRY_STREAMING() && tick160ms && telemetryItems[i].timeout < TELEMETRY_SENSOR_TIMEOUT_NO_MODEL_TELEM) {
+        telemetryItems[i].timeout = TELEMETRY_SENSOR_TIMEOUT_OLD;
       }
     }
     telemetryStreaming--;

@@ -59,7 +59,7 @@ void drawExternalAntennaAndRSSI()
   }
 #endif
 
-  if (TELEMETRY_RSSI() > 0) {
+  if (MODEL_TELEMETRY_STREAMING()) {
     auto warningRSSI = g_model.rssiAlarms.getWarningRssi();
     int8_t value = TELEMETRY_RSSI() - warningRSSI;
     uint8_t step = (RSSI_MAX - warningRSSI) / 4;

@@ -29,7 +29,7 @@ uint8_t s_frsky_view = 0;
 
 void displayRssiLine()
 {
-  if (TELEMETRY_STREAMING()) {
+  if (MODEL_TELEMETRY_STREAMING()) {
     lcdDrawSolidHorizontalLine(0, 55, 212, 0); // separator
     uint8_t rssi = min((uint8_t)99, TELEMETRY_RSSI());
     lcdDrawSizedText(0, STATUS_BAR_Y, STR_RX, 2);
@@ -107,7 +107,7 @@ bool displayNumbersTelemetryScreen(TelemetryScreenData & screen)
         fields_count++;
       }
       if (i==3) {
-        if (!TELEMETRY_STREAMING()) {
+        if (!MODEL_TELEMETRY_STREAMING()) {
           displayRssiLine();
           return fields_count;
         }
