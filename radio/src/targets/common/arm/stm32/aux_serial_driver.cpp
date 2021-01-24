@@ -217,8 +217,8 @@ extern "C" void AUX_SERIAL_USART_IRQHandler(void)
     }
     status = AUX_SERIAL_USART->SR;
   }
-#endif
 }
+#endif
 #endif
 
 #if defined(AUX2_SERIAL)
@@ -400,7 +400,6 @@ extern "C" void AUX2_SERIAL_USART_IRQHandler(void)
     }
   }
 #endif
-#if defined(AUX2_SERIAL)
   // Receive
   uint32_t status = AUX2_SERIAL_USART->SR;
   while (status & (USART_FLAG_RXNE | USART_FLAG_ERRORS)) {
@@ -416,7 +415,5 @@ extern "C" void AUX2_SERIAL_USART_IRQHandler(void)
     status = AUX2_SERIAL_USART->SR;
   }
 }
-#endif
-
 #endif
 #endif // AUX_SERIAL
