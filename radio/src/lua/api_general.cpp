@@ -1608,7 +1608,9 @@ Set baudrate for serial port(s) affected to LUA
 */
 static int luaSetSerialBaudrate(lua_State * L)
 {
+#if defined(AUX_SERIAL) || defined(AUX2_SERIAL)
   unsigned int baudrate = luaL_checkunsigned(L, 1);
+#endif
 
 #if defined(AUX_SERIAL)
   if (auxSerialMode == UART_MODE_LUA) {
