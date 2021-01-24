@@ -664,9 +664,9 @@ extern uint16_t adcValues[NUM_ANALOGS];
   #define BATTERY_MIN                   67 // 6.7V
   #define BATTERY_MAX                   83 // 8.3V
 #elif defined(RADIO_T8) || defined(RADIO_TLITE)
-  // 1S Li-ion /  Lipo
-  #define BATTERY_WARN                  33 // 3.3V
-  #define BATTERY_MIN                   32 // 3.2V
+  // 1S Li-ion /  Lipo, LDO for 3.3V
+  #define BATTERY_WARN                  35 // 3.5V
+  #define BATTERY_MIN                   34 // 3.4V
   #define BATTERY_MAX                   42 // 4.2V
 #else
   // NI-MH 7.2V
