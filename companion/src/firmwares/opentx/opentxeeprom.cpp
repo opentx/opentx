@@ -87,6 +87,8 @@ inline int MAX_POTS_STORAGE(Board::Type board, int version)
     return 3;
   if (version >= 219 && IS_FAMILY_HORUS_OR_T16(board))
     return 5;
+  if (IS_FAMILY_T12(board))
+    return 2;
   return Boards::getCapability(board, Board::Pots);
 }
 
