@@ -123,6 +123,17 @@ class FlashDialog: public FullScreenDialog
     Progress progress;
 };
 
+template <class T>
+class MultiFlashDialog: public FlashDialog<T>
+{
+  public:
+    explicit MultiFlashDialog(ModuleIndex module,  MultiModuleType type):
+      FlashDialog<T>(module)
+    {
+      FlashDialog<T>::device.setType(type);
+    }
+};
+
 void RadioSdManagerPage::build(FormWindow * window)
 {
   FormGridLayout grid;
@@ -187,17 +198,23 @@ void RadioSdManagerPage::build(FormWindow * window)
               if (information.readMultiFirmwareInformation(name.data()) == nullptr) {
 #if defined(INTERNAL_MODULE_MULTI)
                 menu->addLine(STR_FLASH_INTERNAL_MULTI, [=]() {
-                    auto dialog = new FlashDialog<MultiDeviceFirmwareUpdate>(INTERNAL_MODULE);
+                    auto dialog = new MultiFlashDialog<MultiDeviceFirmwareUpdate>(INTERNAL_MODULE, MULTI_TYPE_MULTIMODULE);
                     dialog->flash(getFullPath(name));
                 });
 #endif
                 menu->addLine(STR_FLASH_EXTERNAL_MULTI, [=]() {
-                    auto dialog = new FlashDialog<MultiDeviceFirmwareUpdate>(EXTERNAL_MODULE);
+                    auto dialog = new MultiFlashDialog<MultiDeviceFirmwareUpdate>(EXTERNAL_MODULE, MULTI_TYPE_MULTIMODULE);
                     dialog->flash(getFullPath(name));
                 });
               }
             }
 #endif
+            else if (!READ_ONLY() && !strcasecmp(ext, ELRS_FIRMWARE_EXT)) {
+              menu->addLine(STR_FLASH_EXTERNAL_ELRS, [=]() {
+                  auto dialog = new MultiFlashDialog<MultiDeviceFirmwareUpdate>(EXTERNAL_MODULE, MULTI_TYPE_ELRS);
+                  dialog->flash(getFullPath(name));
+              });
+            }
             else if (isExtensionMatching(ext, BITMAPS_EXT)) {
               // TODO
             }
