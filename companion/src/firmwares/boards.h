@@ -56,7 +56,7 @@ namespace Board {
     BOARD_RADIOMASTER_T8,
     BOARD_JUMPER_TLITE,
     BOARD_TYPE_COUNT,
-    BOARD_TYPE_MAX = BOARD_TYPE_COUNT-1
+    BOARD_TYPE_MAX = BOARD_TYPE_COUNT - 1
   };
 
   enum PotType
@@ -128,7 +128,6 @@ namespace Board {
     MultiposPotsPositions,
     Switches,
     SwitchPositions,
-
     FactoryInstalledSwitches,
     NumTrims,
     NumTrimSwitches
