@@ -344,8 +344,6 @@ int Boards::getCapability(Board::Type board, Board::Capability capability)
     case FactoryInstalledPots:
       if (IS_TARANIS_X9(board))
         return 2;
-      else if (IS_JUMPER_TLITE(board))
-        return 0;
       else
         return getCapability(board, Pots);
 
