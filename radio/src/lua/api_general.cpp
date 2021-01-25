@@ -40,6 +40,8 @@
   #include "lua/lua_exports_x7.inc"
 #elif defined(RADIO_T12)
   #include "lua/lua_exports_t12.inc"
+#elif defined(RADIO_TLITE)
+  #include "lua/lua_exports_tlite.inc"
 #elif defined(RADIO_TX12)
   #include "lua/lua_exports_tx12.inc"
 #elif defined(RADIO_T8)

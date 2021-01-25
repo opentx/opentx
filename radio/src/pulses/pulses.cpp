@@ -475,7 +475,7 @@ bool setupPulsesInternalModule(uint8_t protocol)
 #endif
 
     default:
-      scheduleNextMixerCalculation(INTERNAL_MODULE, 10 /*ms*/);  // used for USB sim for example
+      scheduleNextMixerCalculation(INTERNAL_MODULE, 10 /* ms */);  // used for USB sim for example
       return false;
   }
 }
