@@ -325,9 +325,11 @@ int Boards::getCapability(Board::Type board, Board::Capability capability)
     case Sticks:
       return 4;
 
-    case Pots:    // Storage pots
+    case Pots:
       if (IS_TARANIS_X9LITE(board))
         return 1;
+      else if (IS_JUMPER_TLITE(board))
+        return 0;
       else if (IS_TARANIS_SMALL(board))
         return 2;
       else if (IS_TARANIS_X9E(board))
