@@ -24,7 +24,7 @@
 void HardwarePanel::setupSwitchType(int index, QLabel * label, AutoLineEdit * name, AutoComboBox * type, bool threePos)
 {
   Board::Type board = getCurrentBoard();
-  if (IS_STM32(board) && index < getBoardCapability(board, Board::AvailableSwitches)) {
+  if (IS_STM32(board) && index < getBoardCapability(board, Board::Switches)) {
     type->addItem(tr("None"), Board::SWITCH_NOT_AVAILABLE);
     type->addItem(tr("2 Positions Toggle"), Board::SWITCH_TOGGLE);
     type->addItem(tr("2 Positions"), Board::SWITCH_2POS);
@@ -75,7 +75,7 @@ void HardwarePanel::setupPotType(int index, QLabel * label, AutoLineEdit * name,
 {
   Board::Type board = firmware->getBoard();
 
-  if (IS_STM32(board) && index < getBoardCapability(board, Board::AvailablePots)) {
+  if (IS_STM32(board) && index < getBoardCapability(board, Board::Pots)) {
     label->setText(RawSource(SOURCE_TYPE_STICK, CPN_MAX_STICKS+index).toString());
     type->addItem(tr("None"), Board::POT_NONE);
     type->addItem(tr("Pot with detent"), Board::POT_WITH_DETENT);

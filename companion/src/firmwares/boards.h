@@ -119,7 +119,6 @@ namespace Board {
   enum Capability {
     Sticks,
     Pots,
-    AvailablePots,
     FactoryInstalledPots,
     Sliders,
     MouseAnalogs,
@@ -129,7 +128,7 @@ namespace Board {
     MultiposPotsPositions,
     Switches,
     SwitchPositions,
-    AvailableSwitches,
+
     FactoryInstalledSwitches,
     NumTrims,
     NumTrimSwitches

@@ -339,15 +339,11 @@ int Boards::getCapability(Board::Type board, Board::Capability capability)
       else
         return 3;
 
-    case AvailablePots:
-      if (IS_JUMPER_TLITE(board))
-        return 0;
-      else
-        return getCapability(board, Pots);
-
     case FactoryInstalledPots:
       if (IS_TARANIS_X9(board))
         return 2;
+      else if (IS_JUMPER_TLITE(board))
+        return 0;
       else
         return getCapability(board, Pots);
 
@@ -391,6 +387,8 @@ int Boards::getCapability(Board::Type board, Board::Capability capability)
         return 7;
       else if (board == BOARD_TARANIS_X7)
         return 8;
+      else if (board == BOARD_JUMPER_TLITE)
+        return 4;
       else if (IS_FAMILY_T12(board))
         return 8;
       else if (IS_TARANIS_XLITE(board))
@@ -404,20 +402,14 @@ int Boards::getCapability(Board::Type board, Board::Capability capability)
       else
         return 7;
 
-    case AvailableSwitches:
-      if (IS_JUMPER_TLITE(board))
-        return 4;
-      else
-        return getCapability(board, Switches);
-
     case FactoryInstalledSwitches:
       if (IS_TARANIS_X9E(board))
         return 8;
       else if (IS_JUMPER_TLITE(board))
         return 4;
-      if (IS_FAMILY_T12(board))
+      else if (IS_FAMILY_T12(board))
         return 6;
-      if (IS_HORUS_X12S(board))
+      else if (IS_HORUS_X12S(board))
         return 8;
       else
         return getCapability(board, Switches);
