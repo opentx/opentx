@@ -77,6 +77,12 @@ def createFontBitmap(filename, fontname, fontsize, fontoffset, foreground, backg
                 image.paste(extraImage.copy(),(width,1))
         elif c == " ":
             pass
+        elif c == "j" and fontsize == 32:
+            w, h = font.getsize(c)
+            draw.text((width + 2, fontoffset), c, fill=foreground, font=font)
+        elif c == "j" and fontsize == 64:
+            aw, h = font.getsize(c)
+            draw.text((width + 3, fontoffset), c, fill=foreground, font=font)
         else:
             w, h = font.getsize(c)
             draw.text((width + 1, fontoffset), c, fill=foreground, font=font)
