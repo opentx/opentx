@@ -130,7 +130,7 @@ class MultiFlashDialog: public FlashDialog<T>
     explicit MultiFlashDialog(ModuleIndex module,  MultiModuleType type):
       FlashDialog<T>(module)
     {
-      device.setType(type);
+      FlashDialog<T>::device.setType(type);
     }
 };
 
