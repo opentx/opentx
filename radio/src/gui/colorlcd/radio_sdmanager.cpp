@@ -124,41 +124,14 @@ class FlashDialog: public FullScreenDialog
 };
 
 template <class T>
-class MultiFlashDialog: public FullScreenDialog
+class MultiFlashDialog: public FlashDialog<T>
 {
   public:
     explicit MultiFlashDialog(ModuleIndex module,  MultiModuleType type):
-      FullScreenDialog(WARNING_TYPE_INFO, "Flash device"),
-      device(module),
-      type(type),
-      progress(this, {LCD_W / 2 - 50, LCD_H / 2, 100, 15})
+      FlashDialog<T>(module)
     {
+      device.setType(type);
     }
-
-    void deleteLater(bool detach = true, bool trash = true) override
-    {
-      if (_deleted)
-        return;
-
-      progress.deleteLater(true, false);
-
-      FullScreenDialog::deleteLater(detach, trash);
-    }
-
-    void flash(const char * filename)
-    {
-      device.flashFirmware(filename, type, [=](const char * title, const char * message, int count, int total) -> void {
-          setMessage(message);
-          progress.setValue(total > 0 ? count * 100 / total : 0);
-          MainWindow::instance()->run(false);
-      });
-      deleteLater();
-    }
-
-  protected:
-    T device;
-    MultiModuleType type;
-    Progress progress;
 };
 
 void RadioSdManagerPage::build(FormWindow * window)

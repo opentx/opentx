@@ -112,8 +112,14 @@ class MultiDeviceFirmwareUpdate {
     {
     }
 
-    bool flashFirmware(const char * filename, MultiModuleType type, ProgressHandler progressHandler);
+    void setType(MultiModuleType value)
+    {
+      type = value;
+    }
+
+    bool flashFirmware(const char * filename, ProgressHandler progressHandler);
 
   protected:
     ModuleIndex module;
+    MultiModuleType type;
 };

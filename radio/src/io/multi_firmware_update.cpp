@@ -546,7 +546,7 @@ const char * MultiFirmwareInformation::readMultiFirmwareInformation(FIL * file)
   return readV1Signature(buffer);
 }
 
-bool MultiDeviceFirmwareUpdate::flashFirmware(const char * filename, MultiModuleType type, ProgressHandler progressHandler)
+bool MultiDeviceFirmwareUpdate::flashFirmware(const char * filename, ProgressHandler progressHandler)
 {
   FIL file;
 
