@@ -103,10 +103,6 @@ opentxConstants -> limit.c, lrotable.h
 lcdLib -> lauxlib.h, limit.c
 modelLib -> lauxlib.h, limit.c
 
-api_general.cpp etc. -> CMakeList.txt
-
-sportTelemetryPop
-getValue
 
 ----
 BOARD_NAME
@@ -138,6 +134,30 @@ LEN_AUX_SERIAL_MODES
 STR_AUX_SERIAL_MODES
 INTERNAL_GPS
 TELEMETRY_MAVLINK_AUX
+
+
+failsafeMode
+TR_EMERGENCY_MODE              "EMERGENCY MODE"
+globalData.unexpectedShutdown  -> drawFatalErrorScreen(STR_EMERGENCY_MODE);
+  checkEeprom()
+  perMain() -> #if defined(RTC_BACKUP_RAM) -> drawFatalErrorScreen(STR_EMERGENCY_MODE);
+            -> drawFatalErrorScreen(STR_NO_SDCARD);
+  opentxInit()
+
+eeGeneral.unexpectedShutdown
+-> storage/eeprom_rlc
+  #if defined(SDCARD)
+  void eepromBackup()
+-> opentx
+  opentxClose(uint8_t shutdown)
+  opentxResume()
+  opentxInit()
+
+bool UNEXPECTED_SHUTDOWN()
+  WAS_RESET_BY_WATCHDOG -> true
+  WAS_RESET_BY_SOFTWARE -> check BKP
+  else -> checks BKP
+
 
 ----
 on T16:
