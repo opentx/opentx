@@ -78,7 +78,7 @@ TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, Ge
   ui->countdownStart->addItem("5s", 1);
   ui->countdownStart->addItem("10s", 0);
   ui->countdownStart->addItem("20s", -1);
-  ui->countdownStart->addItem("30s", 2);
+  ui->countdownStart->addItem("30s", -2);
 
   disableMouseScrolling();
   QWidget::setTabOrder(prevFocus, ui->name);
