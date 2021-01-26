@@ -191,7 +191,6 @@ bool menuModelWizard(event_t event)
           uint16_t x = WIZARD_LEFT_SPACING + (wizidx - first) * (WIZARD_SPACING + WIZARD_ICON_X);
           strcpy(&wizpath[sizeof(WIZARD_PATH)], fno.fname);
           strcpy(&wizpath[sizeof(WIZARD_PATH) + strlen(fno.fname)], "/icon.png");
-          lcdDrawText(x + 10, WIZARD_TEXT_Y, fno.fname);
           BitmapBuffer * background = BitmapBuffer::load(wizpath);
           lcd->drawBitmap(x, WIZARD_ICON_Y, background);
           if(wizidx == wizardSelected ) {

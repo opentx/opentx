@@ -117,7 +117,7 @@ uint32_t isBootloaderStart(const uint8_t * buffer);
   #define INTERNAL_MODULE_OFF()         GPIO_ResetBits(INTMODULE_PWR_GPIO, INTMODULE_PWR_GPIO_PIN)
 #endif
 
-#if !defined(PCBX9LITE) || defined(PCBX9LITES)
+#if (defined(INTERNAL_MODULE_PXX1) || defined(INTERNAL_MODULE_PXX2)) && (!defined(PCBX9LITE) || defined(PCBX9LITES))
   #define HARDWARE_INTERNAL_RAS
 #endif
 
@@ -436,7 +436,12 @@ enum EnumSwitchesPositions
   #define STORAGE_NUM_SWITCHES          6
   #define DEFAULT_SWITCH_CONFIG         (SWITCH_2POS << 6) + (SWITCH_2POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0);
   #define DEFAULT_POTS_CONFIG           (POT_WITHOUT_DETENT << 2) + (POT_WITHOUT_DETENT << 0)
-#elif defined(RADIO_T12)
+#elif defined(RADIO_TLITE)
+  #define NUM_SWITCHES                  4
+  #define STORAGE_NUM_SWITCHES          8
+  #define DEFAULT_SWITCH_CONFIG         (SWITCH_2POS << 6) + (SWITCH_2POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0);
+  #define DEFAULT_POTS_CONFIG           (0)
+#elif defined(RADIO_FAMILY_JUMPER_T12)
   #define NUM_SWITCHES                  8
   #define STORAGE_NUM_SWITCHES          NUM_SWITCHES
   #define DEFAULT_SWITCH_CONFIG         (SWITCH_2POS << 10) + (SWITCH_2POS << 8) + (SWITCH_3POS << 6) + (SWITCH_3POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0)
@@ -553,7 +558,7 @@ enum Analogs {
   #define NUM_SLIDERS                   0
   #define STORAGE_NUM_POTS              1
   #define STORAGE_NUM_SLIDERS           0
-#elif defined(RADIO_T8)
+#elif defined(RADIO_T8) || defined(RADIO_TLITE)
   #define NUM_POTS                      0
   #define NUM_SLIDERS                   0
   #define STORAGE_NUM_POTS              2
@@ -658,10 +663,10 @@ extern uint16_t adcValues[NUM_ANALOGS];
   #define BATTERY_WARN                  66 // 6.6V
   #define BATTERY_MIN                   67 // 6.7V
   #define BATTERY_MAX                   83 // 8.3V
-#elif defined(RADIO_T8)
-  // 1S Li-ion /  Lipo
-  #define BATTERY_WARN                  33 // 3.3V
-  #define BATTERY_MIN                   32 // 3.2V
+#elif defined(RADIO_T8) || defined(RADIO_TLITE)
+  // 1S Li-ion /  Lipo, LDO for 3.3V
+  #define BATTERY_WARN                  35 // 3.5V
+  #define BATTERY_MIN                   34 // 3.4V
   #define BATTERY_MAX                   42 // 4.2V
 #else
   // NI-MH 7.2V
@@ -733,6 +738,10 @@ uint8_t isBacklightEnabled();
   #define USB_NAME                     "Radiomaster T8"
   #define USB_MANUFACTURER             'R', 'M', '_', 'T', 'X', ' ', ' ', ' '  /* 8 bytes */
   #define USB_PRODUCT                  'R', 'M', ' ', 'T', '8', ' ', ' ', ' '  /* 8 Bytes */
+#elif defined(RADIO_TLITE)
+  #define USB_NAME                     "Jumper TLite"
+  #define USB_MANUFACTURER             'J', 'U', 'M', 'P', 'E', 'R', ' ', ' '  /* 8 bytes */
+  #define USB_PRODUCT                  'T', '-', 'L', 'I', 'T', 'E', ' ', ' '  /* 8 Bytes */
 #else
   #define USB_NAME                     "FrSky Taranis"
   #define USB_MANUFACTURER             'F', 'r', 'S', 'k', 'y', ' ', ' ', ' '  /* 8 bytes */
@@ -850,8 +859,12 @@ void hapticOff();
 // Aux serial port driver
 #if defined(AUX_SERIAL_GPIO)
 #define DEBUG_BAUDRATE                  115200
+#define LUA_DEFAULT_BAUDRATE            115200
 #define AUX_SERIAL
 extern uint8_t auxSerialMode;
+#if defined __cplusplus
+void auxSerialSetup(unsigned int baudrate, bool dma, uint16_t length = USART_WordLength_8b, uint16_t parity = USART_Parity_No, uint16_t stop = USART_StopBits_1);
+#endif
 void auxSerialInit(unsigned int mode, unsigned int protocol);
 void auxSerialPutc(char c);
 #define auxSerialTelemetryInit(protocol) auxSerialInit(UART_MODE_TELEMETRY, protocol)
@@ -914,8 +927,8 @@ void ledBlue();
 #define IS_LCD_RESET_NEEDED()           true
 #define LCD_CONTRAST_MIN                10
 #define LCD_CONTRAST_MAX                30
-#if defined(RADIO_TX12) || defined(RADIO_T8)
-  #define LCD_CONTRAST_DEFAULT          21
+#if defined(RADIO_TX12) || defined(RADIO_FAMILY_JUMPER_T12)
+  #define LCD_CONTRAST_DEFAULT          25
 #else
   #define LCD_CONTRAST_DEFAULT          15
 #endif

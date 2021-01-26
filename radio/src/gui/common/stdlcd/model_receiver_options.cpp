@@ -141,11 +141,11 @@ void menuModelReceiverOptions(event_t event)
   lcdInvertLine(0);
 
   if (reusableBuffer.hardwareAndSettings.receiverSettings.state == PXX2_SETTINGS_OK) {
-    for (uint8_t k=0; k<LCD_LINES-1; k++) {
-      coord_t y = MENU_HEADER_HEIGHT + 1 + k*FH;
+    for (uint8_t k = 0; k < LCD_LINES - 1; k++) {
+      coord_t y = MENU_HEADER_HEIGHT + 1 + k * FH;
       uint8_t i = k + menuVerticalOffset;
-      for (int j=0; j<=i; ++j) {
-        if (j<(int)DIM(mstate_tab) && mstate_tab[j] == HIDDEN_ROW) {
+      for (int j = 0; j <= i; ++j) {
+        if (j < (int)DIM(mstate_tab) && mstate_tab[j] == HIDDEN_ROW) {
           ++i;
         }
       }
@@ -177,7 +177,7 @@ void menuModelReceiverOptions(event_t event)
         {
           lcdDrawText(0, y, STR_PROTOCOL);
           uint8_t portType = reusableBuffer.hardwareAndSettings.receiverSettings.fport | (reusableBuffer.hardwareAndSettings.receiverSettings.fport2 << 1);
-          lcdDrawTextAtIndex(LCD_W/2, y, STR_SPORT_MODES, portType, attr);
+          lcdDrawTextAtIndex(RECEIVER_OPTIONS_2ND_COLUMN, y, STR_SPORT_MODES, portType, attr);
           portType = checkIncDec(event, portType, 0, 2, EE_MODEL, isSPortModeAvailable);
           if (checkIncDec_Ret) {
             reusableBuffer.hardwareAndSettings.receiverSettings.fport = portType & 0x01;

@@ -507,7 +507,7 @@ bool setupPulsesInternalModule(uint8_t protocol)
 #else
         mixerSchedulerSetPeriod(INTERNAL_MODULE, PXX2_PERIOD);
 #endif
-      }      
+      }
       return result;
     }
 #endif

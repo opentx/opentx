@@ -282,6 +282,12 @@ void memswap(void * a, void * b, uint8_t size);
   #define IS_MULTIPOS_CALIBRATED(cal)  (false)
 #endif
 
+#if NUM_XPOTS > 0
+  #define IS_SWITCH_MULTIPOS(x)         (SWSRC_FIRST_MULTIPOS_SWITCH <= (x) && (x) <= SWSRC_LAST_MULTIPOS_SWITCH)
+#else
+  #define IS_SWITCH_MULTIPOS(x)         (false)
+#endif
+
 #if defined(PWR_BUTTON_PRESS)
   #define pwrOffPressed()              pwrPressed()
 #else
