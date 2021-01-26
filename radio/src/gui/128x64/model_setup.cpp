@@ -236,7 +236,8 @@ inline uint8_t MODULE_SUBTYPE_ROWS(int moduleIdx)
 }
 
 #define POT_WARN_ROWS                  ((g_model.potsWarnMode) ? (uint8_t)(NUM_POTS+NUM_SLIDERS) : (uint8_t)0)
-#define TIMER_ROWS                     2, 0, 0, 0, 0
+#define TIMER_ROWS(x)                  2, 0, 0, 0, g_model.timers[x].countdownBeep != COUNTDOWN_SILENT ? (uint8_t) 1 : (uint8_t)0
+#define TIMERS_ROWS                    TIMER_ROWS(0), TIMER_ROWS(1), TIMER_ROWS(2)
 
 #if defined(PCBSKY9X)
   #define EXTRA_MODULE_ROWS             LABEL(ExtraModule), 1, 2,
@@ -305,6 +306,63 @@ void onBluetoothConnectMenu(const char * result)
   }
 }
 #endif
+
+void editTimerMode(int timerIdx, coord_t y, LcdFlags attr, event_t event)
+{
+  TimerData & timer = g_model.timers[timerIdx];
+  drawStringWithIndex(0*FW, y, STR_TIMER, timerIdx+1);
+  drawTimerMode(MODEL_SETUP_2ND_COLUMN, y, timer.mode, menuHorizontalPosition==0 ? attr : 0);
+  drawTimer(MODEL_SETUP_2ND_COLUMN + 5 * FW - 2 + 5 * FWNUM + 1, y, timer.start, RIGHT | (menuHorizontalPosition == 1 ? attr : 0),menuHorizontalPosition == 2 ? attr : 0);
+  if (attr && s_editMode>0) {
+    div_t qr = div(timer.start, 60);
+    switch (menuHorizontalPosition) {
+      case 0:
+      {
+        swsrc_t timerMode = timer.mode;
+        if (timerMode < 0) timerMode -= TMRMODE_COUNT-1;
+        CHECK_INCDEC_MODELVAR_CHECK(event, timerMode, -TMRMODE_COUNT-SWSRC_LAST+1, TMRMODE_COUNT+SWSRC_LAST-1, isSwitchAvailableInTimers);
+        if (timerMode < 0) timerMode += TMRMODE_COUNT-1;
+        timer.mode = timerMode;
+#if defined(AUTOSWITCH)
+        if (s_editMode>0) {
+          swsrc_t val = timer.mode - (TMRMODE_COUNT-1);
+          swsrc_t switchVal = checkIncDecMovedSwitch(val);
+          if (val != switchVal) {
+            timer.mode = switchVal + (TMRMODE_COUNT-1);
+            storageDirty(EE_MODEL);
+          }
+        }
+#endif
+        break;
+      }
+      case 1:
+        qr.quot = checkIncDec(event, qr.quot, 0, 1439, EE_MODEL | NO_INCDEC_MARKS); // 23h59
+        timer.start = qr.rem + qr.quot*60;
+        break;
+    }
+  }
+}
+
+void editTimerCountdown(int timerIdx, coord_t y, LcdFlags attr, event_t event)
+{
+  TimerData & timer = g_model.timers[timerIdx];
+  lcdDrawTextAlignedLeft(y, STR_BEEPCOUNTDOWN);
+  lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_VBEEPCOUNTDOWN, timer.countdownBeep, (menuHorizontalPosition==0 ? attr : 0));
+  if (timer.countdownBeep != COUNTDOWN_SILENT) {
+    lcdDrawNumber(MODEL_SETUP_2ND_COLUMN + 6 * FW, y, TIMER_COUNTDOWN_START(timerIdx), (menuHorizontalPosition == 1 ? attr : 0) | LEFT);
+    lcdDrawChar(lcdLastRightPos, y, 's');
+  }
+  if (attr && s_editMode>0) {
+    switch (menuHorizontalPosition) {
+      case 0:
+        CHECK_INCDEC_MODELVAR(event, timer.countdownBeep, COUNTDOWN_SILENT, COUNTDOWN_COUNT - 1);
+        break;
+      case 1:
+        timer.countdownStart = -checkIncDecModel(event, -timer.countdownStart, -1, +2);
+        break;
+    }
+  }
+}
 
 #include "common/stdlcd/model_setup_pxx1.cpp"
 
@@ -375,9 +433,7 @@ void menuModelSetup(event_t event)
   MENU_TAB({
     HEADER_LINE_COLUMNS
     0,
-    TIMER_ROWS,
-    TIMER_ROWS,
-    TIMER_ROWS,
+    TIMERS_ROWS,
     0, // Extended limits
     1, // Extended trims
     0, // Show trims
@@ -502,47 +558,7 @@ void menuModelSetup(event_t event)
       case ITEM_MODEL_SETUP_TIMER2:
       case ITEM_MODEL_SETUP_TIMER3:
       {
-        unsigned int timerIdx = (k>=ITEM_MODEL_SETUP_TIMER3 ? 2 : (k>=ITEM_MODEL_SETUP_TIMER2 ? 1 : 0));
-        TimerData * timer = &g_model.timers[timerIdx];
-        drawStringWithIndex(0*FW, y, STR_TIMER, timerIdx+1);
-        drawTimerMode(MODEL_SETUP_2ND_COLUMN, y, timer->mode, menuHorizontalPosition==0 ? attr : 0);
-        drawTimer(MODEL_SETUP_2ND_COLUMN+5*FW-2+5*FWNUM+1, y, timer->start, RIGHT | (menuHorizontalPosition==1 ? attr : 0), menuHorizontalPosition==2 ? attr : 0);
-        if (attr && s_editMode > 0) {
-          div_t qr = div(timer->start, 60);
-          switch (menuHorizontalPosition) {
-            case 0:
-            {
-              swsrc_t timerMode = timer->mode;
-              if (timerMode < 0)
-                timerMode -= TMRMODE_COUNT-1;
-              CHECK_INCDEC_MODELVAR_CHECK(event, timerMode, -TMRMODE_COUNT-SWSRC_LAST+1, TMRMODE_COUNT+SWSRC_LAST-1, isSwitchAvailableInTimers);
-              if (timerMode < 0)
-                timerMode += TMRMODE_COUNT-1;
-              timer->mode = timerMode;
-#if defined(AUTOSWITCH)
-              if (s_editMode>0) {
-                int8_t val = timer->mode - (TMRMODE_COUNT-1);
-                int8_t switchVal = checkIncDecMovedSwitch(val);
-                if (val != switchVal) {
-                  timer->mode = switchVal + (TMRMODE_COUNT-1);
-                  storageDirty(EE_MODEL);
-                }
-              }
-#endif
-              break;
-            }
-            case 1:
-              CHECK_INCDEC_MODELVAR_ZERO(event, qr.quot, 539); // 8:59
-              timer->start = qr.rem + qr.quot*60;
-              break;
-            case 2:
-              qr.rem -= checkIncDecModel(event, qr.rem+2, 1, 62)-2;
-              timer->start -= qr.rem;
-              if ((int16_t)timer->start < 0) timer->start=0;
-              if ((int16_t)timer->start > 5999) timer->start=32399; // 8:59:59
-              break;
-          }
-        }
+        editTimerMode(k>=ITEM_MODEL_SETUP_TIMER3 ? 2 : (k>=ITEM_MODEL_SETUP_TIMER2 ? 1 : 0), y, attr, event);
         break;
       }
 
@@ -568,8 +584,7 @@ void menuModelSetup(event_t event)
       case ITEM_MODEL_SETUP_TIMER2_COUNTDOWN_BEEP:
       case ITEM_MODEL_SETUP_TIMER3_COUNTDOWN_BEEP:
       {
-        TimerData * timer = &g_model.timers[k>=ITEM_MODEL_SETUP_TIMER3 ? 2 : (k>=ITEM_MODEL_SETUP_TIMER2 ? 1 : 0)];
-        timer->countdownBeep = editChoice(MODEL_SETUP_2ND_COLUMN, y, STR_BEEPCOUNTDOWN, STR_VBEEPCOUNTDOWN, timer->countdownBeep, COUNTDOWN_SILENT, COUNTDOWN_COUNT-1, attr, event);
+        editTimerCountdown(k>=ITEM_MODEL_SETUP_TIMER3 ? 2 : (k>=ITEM_MODEL_SETUP_TIMER2 ? 1 : 0), y, attr, event);
         break;
       }
 
