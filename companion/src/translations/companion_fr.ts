@@ -1391,22 +1391,22 @@ Si vous avez un fichier de sauvegarde des paramètres, vous pouvez l&apos;import
     <message>
         <location filename="../firmwares/curvereference.cpp" line="85"/>
         <source>Diff</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/curvereference.cpp" line="85"/>
         <source>Expo</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/curvereference.cpp" line="85"/>
         <source>Func</source>
-        <translation type="unfinished"></translation>
+        <translation>Fonc</translation>
     </message>
     <message>
         <location filename="../firmwares/curvereference.cpp" line="85"/>
         <source>Curve</source>
-        <translation type="unfinished">Courbe</translation>
+        <translation>Courbe</translation>
     </message>
 </context>
 <context>
@@ -1681,7 +1681,7 @@ Si vous avez un fichier de sauvegarde des paramètres, vous pouvez l&apos;import
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="69"/>
         <source>Set %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Activer %1</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="71"/>
@@ -3078,7 +3078,7 @@ Blanc signifie &quot;inclure tous&quot;.Les métacaractères ?, * et [...] sont 
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1303"/>
         <source>Jumper T-Lite</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1316"/>
@@ -3090,12 +3090,12 @@ Blanc signifie &quot;inclure tous&quot;.Les métacaractères ?, * et [...] sont 
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1332"/>
         <source>Radiomaster T8</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1340"/>
         <source>Allow bind using bind key</source>
-        <translation type="unfinished"></translation>
+        <translation>Autoriser l&apos;appairage avec le bouton&quot;bind&quot;</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1347"/>
@@ -4180,12 +4180,12 @@ Communs à tous les modèles d&apos;une même EEPROM.</translation>
     <message>
         <location filename="../generaledit/generaledit.ui" line="84"/>
         <source>Store calib. and hw settings in selected profile</source>
-        <translation>Sauver étalonnage et paramètres hw dans profil</translation>
+        <translation>Sauver paramètres Radio dans profil</translation>
     </message>
     <message>
         <location filename="../generaledit/generaledit.ui" line="55"/>
         <source>Retrieve calib. and hw settings from profile</source>
-        <translation>Lire étalonnage et paramètres hw du profil</translation>
+        <translation>Lire paramètres Radio depuis profil</translation>
     </message>
     <message>
         <location filename="../generaledit/generaledit.cpp" line="66"/>
@@ -8094,7 +8094,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../firmwares/modeldata.cpp" line="1455"/>
         <source>THR</source>
-        <translation type="unfinished">GAZ</translation>
+        <translation>GAZ</translation>
     </message>
 </context>
 <context>
@@ -10662,7 +10662,7 @@ E</translation>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="47"/>
         <source>Raw (-)</source>
-        <translation type="unfinished">Chiffres bruts (-)</translation>
+        <translation>Chiffres bruts (-)</translation>
     </message>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="49"/>
@@ -10808,77 +10808,77 @@ E</translation>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="138"/>
         <source>Custom</source>
-        <translation type="unfinished">Prédéfini</translation>
+        <translation>Prédéfini</translation>
     </message>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="140"/>
         <source>Calculated</source>
-        <translation type="unfinished">Calculé</translation>
+        <translation>Calculé</translation>
     </message>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="151"/>
         <source>Add</source>
-        <translation type="unfinished">Addition</translation>
+        <translation>Addition</translation>
     </message>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="153"/>
         <source>Average</source>
-        <translation type="unfinished">Moyenne</translation>
+        <translation>Moyenne</translation>
     </message>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="155"/>
         <source>Minimum</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="157"/>
         <source>Maximum</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="159"/>
         <source>Multiply</source>
-        <translation type="unfinished">Multiplication</translation>
+        <translation>Multiplication</translation>
     </message>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="161"/>
         <source>Totalize</source>
-        <translation type="unfinished">Totalisation</translation>
+        <translation>Totalisation</translation>
     </message>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="163"/>
         <source>Cell</source>
-        <translation type="unfinished">Element LiPo</translation>
+        <translation>Element LiPo</translation>
     </message>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="165"/>
         <source>Consumption</source>
-        <translation type="unfinished">Consommation</translation>
+        <translation>Consommation</translation>
     </message>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="167"/>
         <source>Distance</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="177"/>
         <source>Lowest</source>
-        <translation type="unfinished">Min</translation>
+        <translation>Min</translation>
     </message>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="179"/>
         <source>Cell %1</source>
-        <translation type="unfinished">Elém. %1</translation>
+        <translation>Elément %1</translation>
     </message>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="181"/>
         <source>Highest</source>
-        <translation type="unfinished">Max</translation>
+        <translation>Max</translation>
     </message>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="183"/>
         <source>Delta</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
