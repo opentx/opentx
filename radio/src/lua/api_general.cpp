@@ -40,6 +40,8 @@
   #include "lua/lua_exports_x7.inc"
 #elif defined(RADIO_T12)
   #include "lua/lua_exports_t12.inc"
+#elif defined(RADIO_TLITE)
+  #include "lua/lua_exports_tlite.inc"
 #elif defined(RADIO_TX12)
   #include "lua/lua_exports_tx12.inc"
 #elif defined(RADIO_T8)
@@ -1608,7 +1610,9 @@ Set baudrate for serial port(s) affected to LUA
 */
 static int luaSetSerialBaudrate(lua_State * L)
 {
+#if defined(AUX_SERIAL) || defined(AUX2_SERIAL)
   unsigned int baudrate = luaL_checkunsigned(L, 1);
+#endif
 
 #if defined(AUX_SERIAL)
   if (auxSerialMode == UART_MODE_LUA) {

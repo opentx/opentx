@@ -60,6 +60,8 @@ const char * OpenTxEepromInterface::getName()
   switch (board) {
     case BOARD_JUMPER_T12:
       return "OpenTX for Jumper T12";
+    case BOARD_JUMPER_TLITE:
+      return "OpenTX for Jumper T-Lite";
     case BOARD_JUMPER_T16:
       return "OpenTX for Jumper T16";
     case BOARD_JUMPER_T18:
@@ -337,6 +339,9 @@ int OpenTxEepromInterface::save(uint8_t * eeprom, const RadioData & radioData, u
   }
   else if (IS_JUMPER_T12(board)) {
     variant |= JUMPER_T12_VARIANT;
+  }
+  else if (IS_JUMPER_TLITE(board)) {
+    variant |= JUMPER_TLITE_VARIANT;
   }
   else if (IS_RADIOMASTER_TX12(board)) {
     variant |= RADIOMASTER_TX12_VARIANT;
@@ -688,6 +693,8 @@ int OpenTxFirmware::getCapability(::Capability capability)
         return TARANIS_XLITE_VARIANT;
       else if (IS_JUMPER_T12(board))
         return JUMPER_T12_VARIANT;
+      else if (IS_JUMPER_TLITE(board))
+        return JUMPER_TLITE_VARIANT;
       else if (IS_RADIOMASTER_TX12(board))
         return RADIOMASTER_TX12_VARIANT;
       else if (IS_RADIOMASTER_T8(board))
@@ -753,7 +760,7 @@ bool OpenTxFirmware::isAvailable(PulsesProtocol proto, int port)
           case PULSES_ACCST_ISRM_D16:
             return IS_ACCESS_RADIO(board, id);
           case PULSES_MULTIMODULE:
-            return id.contains("internalmulti") || IS_RADIOMASTER_TX16S(board) || IS_JUMPER_T18(board);
+            return id.contains("internalmulti") || IS_RADIOMASTER_TX16S(board) || IS_JUMPER_T18(board) || IS_RADIOMASTER_TX12(board) || IS_JUMPER_TLITE(board);
           default:
             return false;
         }
@@ -785,7 +792,7 @@ bool OpenTxFirmware::isAvailable(PulsesProtocol proto, int port)
           case PULSES_XJT_LITE_X16:
           case PULSES_XJT_LITE_D8:
           case PULSES_XJT_LITE_LR12:
-            return (IS_TARANIS_XLITE(board) || IS_TARANIS_X9LITE(board));
+            return (IS_TARANIS_XLITE(board) || IS_TARANIS_X9LITE(board) || IS_JUMPER_TLITE(board));
           default:
             return false;
         }
@@ -953,6 +960,11 @@ bool OpenTxEepromInterface::checkVariant(unsigned int version, unsigned int vari
   }
   else if (IS_JUMPER_T12(board)) {
     if (variant != JUMPER_T12_VARIANT) {
+      variantError = true;
+    }
+  }
+  else if (IS_JUMPER_TLITE(board)) {
+    if (variant != JUMPER_TLITE_VARIANT) {
       variantError = true;
     }
   }
@@ -1283,6 +1295,16 @@ void registerOpenTxFirmwares()
   firmware->addOption("nogvars", Firmware::tr("Disable Global variables"));
   firmware->addOption("lua", Firmware::tr("Enable Lua custom scripts screen"));
   firmware->addOption("internalmulti", Firmware::tr("Support for MULTI internal module"));
+  addOpenTxFontOptions(firmware);
+  registerOpenTxFirmware(firmware);
+  addOpenTxRfOptions(firmware, FLEX);
+
+  /* Jumper T-Lite board */
+  firmware = new OpenTxFirmware("opentx-tlite", QCoreApplication::translate("Firmware", "Jumper T-Lite"), BOARD_JUMPER_TLITE);
+  addOpenTxCommonOptions(firmware);
+  firmware->addOption("noheli", Firmware::tr("Disable HELI menu and cyclic mix support"));
+  firmware->addOption("nogvars", Firmware::tr("Disable Global variables"));
+  firmware->addOption("lua", Firmware::tr("Enable Lua custom scripts screen"));
   addOpenTxFontOptions(firmware);
   registerOpenTxFirmware(firmware);
   addOpenTxRfOptions(firmware, FLEX);
