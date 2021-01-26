@@ -198,15 +198,10 @@ void MavlinkTelem::generateCmdSetMessageInterval(uint8_t tsystem, uint8_t tcompo
 // -- Task handlers --
 
 // -- Handle incoming MAVLink messages, which are for the Gimbal --
-
 // -- Handle incoming MAVLink messages, which are for the Gimbal Manager --
-
 // -- Handle incoming MAVLink messages, which are for the Camera --
-
 // -- Handle incoming MAVLink messages, which are for the Autopilot --
-
 // -- Handle incoming MAVLink messages, which are for QShots --
-
 
 // -- Main handler for incoming MAVLink messages --
 
@@ -444,7 +439,7 @@ void MavlinkTelem::doTask(void)
 }
 
 // -- Wakeup call from OpenTx --
-// this is the single and main entry point
+// this is the main entry point
 
 uint32_t _mavlinkTelemAvailable(void)
 {
@@ -463,7 +458,6 @@ bool _mavlinkTelemPutBuf(const uint8_t *buf, const uint16_t count)
   if (g_eeGeneral.auxSerialMode == UART_MODE_MAVLINK) return mavlinkTelemPutBuf(buf, count);
   return mavlinkTelem2PutBuf(buf, count);
 }
-
 
 void MavlinkTelem::wakeup()
 {

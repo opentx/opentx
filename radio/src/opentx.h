@@ -90,7 +90,7 @@ perMain() in main.cpp, where GPS is:
   56700 bps => 288 bytes per 50 ms
 => TASK_FUNCTION(mixerTask), where also BLUETOOTH, telemetryWakeup() is
   it is very fast
-  something like a 1ms task would be great ...
+  something like a 10ms task would be great ...
 => per10ms() in opentx,cpp, where also telemetryInterrupt10ms(), outputTelemetryBuffer.per10ms() is
   let's try this
 
@@ -130,11 +130,9 @@ mixerTask -> bluetooth.wakeup();
 menusTask -> perMain() -> gpsWakeup();
 per10ms() ->  outputTelemetryBuffer.per10ms();
 
-LEN_AUX_SERIAL_MODES
 STR_AUX_SERIAL_MODES
 INTERNAL_GPS
-TELEMETRY_MAVLINK_AUX
-
+TELEMETRY_MAVLINK
 
 failsafeMode
 TR_EMERGENCY_MODE              "EMERGENCY MODE"

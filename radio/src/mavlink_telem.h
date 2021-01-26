@@ -33,8 +33,8 @@
 #define MAVLINK_TELEM_MY_SYSID        254 //MissionPlanner is 255, QGroundControl is 255
 #define MAVLINK_TELEM_MY_COMPID       (MAV_COMP_ID_MISSIONPLANNER + 4) //191 is companion, 194 is free
 
-// wakeup() is currently called every 10 ms
-// if one is changing this, timing needs to be adapted
+// tick10ms() is currently called every 10 ms
+// if this is been changed, timing needs to be adapted
 #define MAVLINK_TELEM_RECEIVING_TIMEOUT                 330 // 3.3 secs
 #define MAVLINK_TELEM_RADIO_RECEIVING_TIMEOUT           330 // 3.3 secs
 #define MAVLINK_TELEM_GIMBALMANAGER_RECEIVING_TIMEOUT   330 // 3.3 secs ATTENTION: a GM may emit at slow rate
@@ -144,7 +144,7 @@ class MavlinkTelem
     // FIXME: we need something better here!!!
     // use two COMM'S ??!?!??!?
     // 16 is sufficient for a rate of 43 msg/s or 1350 bytes/s, 8 was NOT!
-    //Fifo<mavlink_message_t, 2> msgRxFifo;  // HUGE!
+    //Fifo<mavlink_message_t, 32> msgRxFifo;  // HUGE!
     //bool msgFifo_enabled = false;
 
     // MAVSDK GENERAL
