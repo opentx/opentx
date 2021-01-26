@@ -56,6 +56,7 @@ class MavlinkTelem
     };
 
     void wakeup();
+    void tick10ms();
 
     // SOME MAVLINK stuff
 

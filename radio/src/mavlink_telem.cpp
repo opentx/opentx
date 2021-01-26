@@ -500,7 +500,35 @@ void MavlinkTelem::wakeup()
     }
   }
 
-  // receiving timeouts
+  // do tasks
+  doTask();
+
+  // send out any pending messages
+  if (_txcount) {
+    if (_mavlinkTelemPutBuf(_txbuf, _txcount)) {
+      _txcount = 0;
+    }
+  }
+}
+
+// -- 10 ms tick --
+
+void MavlinkTelem::tick10ms()
+{
+  #define check(x,y) if(x){ (x)--; if(!(x)){ (y); }}
+
+  check(_is_receiving, _reset());
+
+  check(radio.is_receiving, _resetRadio());
+  check(radio.is_receiving65, _resetRadio65());
+  check(radio.is_receiving35, _resetRadio35());
+
+  check(autopilot.is_receiving, _resetAutopilot());
+  check(gimbal.is_receiving, _resetGimbalAndGimbalClient());
+  check(gimbalmanager.is_receiving, _resetGimbalClient());
+  check(camera.is_receiving, _resetCamera());
+
+/*  // receiving timeouts
   if (_is_receiving) {
     _is_receiving--;
     if (!_is_receiving) _reset(); //this also resets is_receiving of all other components
@@ -525,16 +553,7 @@ void MavlinkTelem::wakeup()
     camera.is_receiving--;
     if (!camera.is_receiving) _resetCamera();
   }
-
-  // do tasks
-  doTask();
-
-  // send out any pending messages
-  if (_txcount) {
-    if (_mavlinkTelemPutBuf(_txbuf, _txcount)) {
-      _txcount = 0;
-    }
-  }
+*/
 }
 
 // -- Resets --
