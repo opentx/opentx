@@ -32,16 +32,6 @@ RTOS_DEFINE_STACK(audioStack, AUDIO_STACK_SIZE);
 RTOS_MUTEX_HANDLE audioMutex;
 RTOS_MUTEX_HANDLE mixerMutex;
 
-enum TaskIndex {
-  MENU_TASK_INDEX,
-  MIXER_TASK_INDEX,
-  AUDIO_TASK_INDEX,
-  CLI_TASK_INDEX,
-  BLUETOOTH_TASK_INDEX,
-  TASK_INDEX_COUNT,
-  MAIN_TASK_INDEX = 255
-};
-
 void stackPaint()
 {
   menusStack.paint();
