@@ -527,33 +527,6 @@ void MavlinkTelem::tick10ms()
   check(gimbal.is_receiving, _resetGimbalAndGimbalClient());
   check(gimbalmanager.is_receiving, _resetGimbalClient());
   check(camera.is_receiving, _resetCamera());
-
-/*  // receiving timeouts
-  if (_is_receiving) {
-    _is_receiving--;
-    if (!_is_receiving) _reset(); //this also resets is_receiving of all other components
-  }
-  if (radio.is_receiving) {
-    radio.is_receiving--;
-    if (!radio.is_receiving) _resetRadio();
-  }
-  if (autopilot.is_receiving) {
-    autopilot.is_receiving--;
-    if (!autopilot.is_receiving) _resetAutopilot();
-  }
-  if (gimbal.is_receiving) {
-    gimbal.is_receiving--;
-    if (!gimbal.is_receiving) _resetGimbalAndGimbalClient();
-  }
-  if (gimbalmanager.is_receiving) {
-    gimbalmanager.is_receiving--;
-    if (!gimbalmanager.is_receiving) _resetGimbalClient();
-  }
-  if (camera.is_receiving) {
-    camera.is_receiving--;
-    if (!camera.is_receiving) _resetCamera();
-  }
-*/
 }
 
 // -- Resets --
