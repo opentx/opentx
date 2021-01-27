@@ -186,6 +186,7 @@ TEST(FrSkySPORT, FrSkyDCells)
   MODEL_RESET();
   TELEMETRY_RESET();
   telemetryStreaming = TELEMETRY_TIMEOUT10ms;
+  modelTelemetryStreaming = TELEMETRY_TIMEOUT10ms;
   telemetryData.telemetryValid = 0x07;
   allowNewSensors = true;
 
@@ -216,6 +217,7 @@ TEST(FrSkySPORT, frskySetCellVoltage)
   MODEL_RESET();
   TELEMETRY_RESET();
   telemetryStreaming = TELEMETRY_TIMEOUT10ms;
+  modelTelemetryStreaming = TELEMETRY_TIMEOUT10ms;
   telemetryData.telemetryValid = 0x07;
   allowNewSensors = true;
 
@@ -309,6 +311,7 @@ TEST(FrSkySPORT, StrangeCellsBug)
   MODEL_RESET();
   TELEMETRY_RESET();
   telemetryStreaming = TELEMETRY_TIMEOUT10ms;
+  modelTelemetryStreaming = TELEMETRY_TIMEOUT10ms;
   telemetryData.telemetryValid = 0x07;
   allowNewSensors = true;
 
@@ -327,6 +330,7 @@ TEST(FrSkySPORT, frskySetCellVoltageTwoSensors)
   MODEL_RESET();
   TELEMETRY_RESET();
   telemetryStreaming = TELEMETRY_TIMEOUT10ms;
+  modelTelemetryStreaming = TELEMETRY_TIMEOUT10ms;
   telemetryData.telemetryValid = 0x07;
   allowNewSensors = true;
 
@@ -400,6 +404,7 @@ TEST(FrSkySPORT, frskyVfas)
   MODEL_RESET();
   TELEMETRY_RESET();
   telemetryStreaming = TELEMETRY_TIMEOUT10ms;
+  modelTelemetryStreaming = TELEMETRY_TIMEOUT10ms;
   telemetryData.telemetryValid = 0x07;
   allowNewSensors = true;
 
