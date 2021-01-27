@@ -599,7 +599,7 @@ void MavlinkTelem::handleMessageAutopilot(void)
     case MAVLINK_MSG_ID_RC_CHANNELS: { //#65
       mavlink_rc_channels_t payload;
       mavlink_msg_rc_channels_decode(&_msg, &payload);
-      radio.rssi65 = 65; //payload.rssi;
+      radio.rssi65 = payload.rssi;
       radio.is_receiving65 = MAVLINK_TELEM_RADIO_RECEIVING_TIMEOUT;
       clear_request(TASK_AUTOPILOT, TASK_SENDREQUESTDATASTREAM_RC_CHANNELS);
       if (!radio.is_receiving) {
