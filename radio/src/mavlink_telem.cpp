@@ -289,7 +289,7 @@ void MavlinkTelem::handleMessage(void)
     radio.remnoise = payload.remnoise;
     radio.is_receiving = MAVLINK_TELEM_RADIO_RECEIVING_TIMEOUT;
     if (g_model.mavlinkMimicSensors) {
-      int32_t r = (payload.rssi == UINT8_MAX) ? 0 : payload.rssi;
+      int32_t r = (radio.rssi == UINT8_MAX) ? 0 : radio.rssi;
       setTelemetryValue(PROTOCOL_TELEMETRY_FRSKY_SPORT, RSSI_ID, 0, 1, r, UNIT_DB, 0);
       //#if defined(MULTIMODULE)
       //{ TX_RSSI_ID, TX_RSSI_ID, 0, ZSTR_TX_RSSI   , UNIT_DB , 0 },
@@ -568,6 +568,18 @@ void MavlinkTelem::_resetRadio(void)
   radio.remnoise = 0;
 }
 
+void MavlinkTelem::_resetRadio65(void)
+{
+  radio.is_receiving65 = 0;
+  radio.rssi65 = UINT8_MAX;
+}
+
+void MavlinkTelem::_resetRadio35(void)
+{
+  radio.is_receiving35 = 0;
+  radio.rssi35 = UINT8_MAX;
+}
+
 void MavlinkTelem::_reset(void)
 {
   mavlink_reset_channel_status(MAVLINK_COMM_0);
@@ -594,6 +606,8 @@ void MavlinkTelem::_reset(void)
   for (uint16_t i = 0; i < REQUESTLIST_MAX; i++) _requestList[i].task = 0;
 
   _resetRadio();
+  _resetRadio65();
+  _resetRadio35();
   _resetAutopilot();
   _resetGimbalAndGimbalClient();
   _resetCamera();

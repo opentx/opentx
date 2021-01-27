@@ -160,11 +160,15 @@ class MavlinkTelem
     uint8_t flightmode = 0;
 
     struct Radio {
-      uint16_t is_receiving;
+      uint16_t is_receiving; //RADIO_STATUS has priority
       uint8_t rssi;
       uint8_t remrssi;
       uint8_t noise;
       uint8_t remnoise;
+      uint16_t is_receiving65; //msg 65 has priority over 35
+      uint8_t rssi65;
+      uint16_t is_receiving35; //msg 35 is last resort
+      uint8_t rssi35;
     };
     struct Radio radio;
 
@@ -180,6 +184,7 @@ class MavlinkTelem
       bool prearm_ok;
       uint8_t updated;
       //for initializing, if it expects some required messages to be received
+      //requests_waiting_mask is used to determine if component is initialized
       uint8_t requests_triggered;
       uint8_t requests_waiting_mask;
       bool is_initialized;
@@ -539,6 +544,8 @@ class MavlinkTelem
 
     void _reset(void);
     void _resetRadio(void);
+    void _resetRadio65(void);
+    void _resetRadio35(void);
     void _resetAutopilot(void);
     void _resetCamera(void);
     void _resetGimbalAndGimbalClient(void);

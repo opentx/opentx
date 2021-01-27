@@ -520,7 +520,17 @@ static int luaMavsdkIsArmed(lua_State *L)
 
 static int luaMavsdkGetRadioRssi(lua_State *L)
 {
-  lua_pushinteger(L, mavlinkTelem.radio.rssi);
+  uint8_t rssi = UINT8_MAX;
+  if (mavlinkTelem.radio.is_receiving) {
+    rssi = mavlinkTelem.radio.rssi;
+  }
+  else if (mavlinkTelem.radio.is_receiving65) {
+    rssi = mavlinkTelem.radio.rssi65;
+  }
+  else if (mavlinkTelem.radio.is_receiving35) {
+    rssi = mavlinkTelem.radio.rssi35;
+  }
+  lua_pushinteger(L, rssi);
   return 1;
 }
 
