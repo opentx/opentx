@@ -565,7 +565,6 @@ void MavlinkTelem::handleMessageAutopilot(void)
     case MAVLINK_MSG_ID_STATUSTEXT: {
       mavlink_statustext_t payload;
       mavlink_msg_statustext_decode(&_msg, &payload);
-      payload.text[49] = '\0'; //terminate it properly, never mind losing the last char
       statustext.fifo.push(payload);
       INCU8(statustext.updated);
       break;
