@@ -28,7 +28,7 @@
 #include "opentx_helpers.h"
 
 //OW
-#define OWVERSIONSTR  "olliw-v21rc04"
+#define OWVERSIONSTR  "olliw-v21rc05"
 //OWEND
 
 /*
@@ -97,6 +97,12 @@ perMain() in main.cpp, where GPS is:
 idea:
 support LEFT, RIGHT CENTER also for drawFilledRectangle, drawRectangle, or better LEFT,RIGHT,XCENTER,TOP,BOTTOM,YCENTER
 
+
+STR_AUX_SERIAL_MODES
+INTERNAL_GPS
+TELEMETRY_MAVLINK
+
+
 struct
 opentxLib -> lauxlib.h, limit.c
 opentxConstants -> limit.c, lrotable.h
@@ -130,9 +136,6 @@ mixerTask -> bluetooth.wakeup();
 menusTask -> perMain() -> gpsWakeup();
 per10ms() ->  outputTelemetryBuffer.per10ms();
 
-STR_AUX_SERIAL_MODES
-INTERNAL_GPS
-TELEMETRY_MAVLINK
 
 failsafeMode
 TR_EMERGENCY_MODE              "EMERGENCY MODE"
