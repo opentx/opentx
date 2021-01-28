@@ -28,10 +28,12 @@ extern Fifo<uint8_t, 32> trainerSbusFifo;
 //OW
 #if defined(TELEMETRY_MAVLINK)
 #if defined(AUX_SERIAL)
-  Fifo<uint8_t, 512> auxSerialRxFifo_4MavlinkTelem;
+  MAVLINK_SECTION Fifo<uint8_t, 512> auxSerialTxFifo;
+  MAVLINK_SECTION Fifo<uint8_t, 512> auxSerialRxFifo_4MavlinkTelem;
 #endif
 #if defined(AUX2_SERIAL)
-  Fifo<uint8_t, 512> aux2SerialRxFifo_4MavlinkTelem;
+  MAVLINK_SECTION Fifo<uint8_t, 512> aux2SerialTxFifo;
+  MAVLINK_SECTION Fifo<uint8_t, 512> aux2SerialRxFifo_4MavlinkTelem;
 #endif
 
 uint32_t _cvtMavlinkBaud(uint16_t baud)
@@ -49,7 +51,12 @@ uint32_t _cvtMavlinkBaud(uint16_t baud)
 
 #if defined(AUX_SERIAL)
 uint8_t auxSerialMode = UART_MODE_COUNT;  // Prevent debug output before port is setup
+//OW
+//Fifo<uint8_t, 512> auxSerialTxFifo;
+#if !defined(TELEMETRY_MAVLINK)
 Fifo<uint8_t, 512> auxSerialTxFifo;
+#endif
+//OWEND
 AuxSerialRxFifo auxSerialRxFifo __DMA (AUX_SERIAL_DMA_Stream_RX);
 
 void auxSerialSetup(unsigned int baudrate, bool dma, uint16_t lenght = USART_WordLength_8b, uint16_t parity = USART_Parity_No, uint16_t stop = USART_StopBits_1)
@@ -277,7 +284,12 @@ extern "C" void AUX_SERIAL_USART_IRQHandler(void)
 
 #if defined(AUX2_SERIAL)
 uint8_t aux2SerialMode = UART_MODE_COUNT;  // Prevent debug output before port is setup
+//OW
+//Fifo<uint8_t, 512> aux2SerialTxFifo;
+#if !defined(TELEMETRY_MAVLINK)
 Fifo<uint8_t, 512> aux2SerialTxFifo;
+#endif
+//OWEND
 AuxSerialRxFifo aux2SerialRxFifo __DMA (AUX2_SERIAL_DMA_Stream_RX);
 
 void aux2SerialSetup(unsigned int baudrate, bool dma, uint16_t lenght = USART_WordLength_8b, uint16_t parity = USART_Parity_No, uint16_t stop = USART_StopBits_1)

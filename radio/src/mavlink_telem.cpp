@@ -23,7 +23,32 @@
 
 #include "opentx.h"
 
-MavlinkTelem mavlinkTelem;
+MAVLINK_SECTION MavlinkTelem mavlinkTelem;
+
+RTOS_TASK_HANDLE mavlinkTaskId;
+RTOS_DEFINE_STACK(mavlinkStack, MAVLINK_STACK_SIZE);
+
+#define MAVLINK_TASK_PERIOD_TICKS  (10 / RTOS_MS_PER_TICK) // 10ms
+
+void mavlinkTask(void * pdata)
+{
+  while (true) {
+    uint32_t start = (uint32_t)RTOS_GET_TIME();
+
+    mavlinkTelem.wakeup();
+
+    // if run-time was longer than a tick, then reduce wait, but leave 2 ticks to give lower-prio threads a chance
+    uint32_t runtime = ((uint32_t)RTOS_GET_TIME() - start);
+    int32_t waittime = MAVLINK_TASK_PERIOD_TICKS - runtime;
+    if (waittime < 2) waittime = 2;
+    RTOS_WAIT_TICKS(waittime);
+  }
+}
+
+void mavlinkStart()
+{
+  RTOS_CREATE_TASK(mavlinkTaskId, mavlinkTask, "mavlink", mavlinkStack, MAVLINK_STACK_SIZE, MAVLINK_TASK_PRIO);
+}
 
 // -- TASK handlers --
 // tasks can be set directly with SETTASK()

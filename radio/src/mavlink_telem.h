@@ -21,6 +21,8 @@
  * (c) www.olliw.eu, OlliW, OlliW42
  */
 
+#define MAVLINK_SECTION __attribute__((section (".ram")))
+
 
 #define MAVLINK_COMM_NUM_BUFFERS      1 // 4
 #define MAVLINK_MAX_SIGNING_STREAMS   1 // 16
@@ -715,3 +717,5 @@ class MavlinkTelem
 };
 
 extern MavlinkTelem mavlinkTelem;
+
+void mavlinkStart();
