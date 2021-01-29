@@ -40,27 +40,20 @@ uint16_t mavlinkTaskLoad(void);
 #define MAVLINK_TELEM_MY_SYSID        254 //MissionPlanner is 255, QGroundControl is 255
 #define MAVLINK_TELEM_MY_COMPID       (MAV_COMP_ID_MISSIONPLANNER + 4) //191 is companion, 194 is free
 
-// tick10ms() is currently called every 10 ms
-// if this is been changed, timing needs to be adapted
+// tick10ms() is called every 10 ms from 10ms ISR
+// if this is changed, timing needs to be adapted !!
 #define MAVLINK_TELEM_RECEIVING_TIMEOUT                 330 // 3.3 secs
 #define MAVLINK_TELEM_RADIO_RECEIVING_TIMEOUT           330 // 3.3 secs
 #define MAVLINK_TELEM_GIMBALMANAGER_RECEIVING_TIMEOUT   330 // 3.3 secs ATTENTION: a GM may emit at slow rate
 
 //COMMENT:
-//  except of where noted functions/structs use units of the MAVLink message
-//  the mavsdk caller/setter functions however use native units, and deg whenever possible
+//  except of where noted, functions/structs use units of the MAVLink message
+//  the mavsdk caller/setter functions however use native units, and deg, whenever possible
 
 class MavlinkTelem
 {
   public:
     MavlinkTelem() { _reset(); } // constructor
-
-    enum ConfigUartEnum {
-      CONFIG_UART_A_115200 = 0,
-      CONFIG_UART_A_57600 = 1,
-      CONFIG_UART_A_38400 = 2,
-      CONFIG_UART_A_19200 = 3
-    };
 
     void wakeup();
     void tick10ms();
