@@ -25,21 +25,53 @@
 
 MAVLINK_SECTION MavlinkTelem mavlinkTelem;
 
+// -- CoOS RTOS mavlink task handlers --
+
 RTOS_TASK_HANDLE mavlinkTaskId;
 RTOS_DEFINE_STACK(mavlinkStack, MAVLINK_STACK_SIZE);
 
 #define MAVLINK_TASK_PERIOD_TICKS  (10 / RTOS_MS_PER_TICK) // 10ms
 
+struct MavlinkTaskStat {
+  uint16_t start = 0;
+  uint16_t last = 0;
+  uint16_t max = 0;
+  uint16_t load = 0;
+};
+struct MavlinkTaskStat mavlinkTaskStat;
+
+uint16_t mavlinkTaskRunTime(void)
+{
+  return mavlinkTaskStat.start/2;
+}
+
+uint16_t mavlinkTaskRunTimeMax(void)
+{
+  return mavlinkTaskStat.max/2;
+}
+
+uint16_t mavlinkTaskLoad(void)
+{
+  return mavlinkTaskStat.load;
+}
+
 void mavlinkTask(void * pdata)
 {
   while (true) {
-    uint32_t start = (uint32_t)RTOS_GET_TIME();
+    int32_t start = (int32_t)RTOS_GET_TIME();
+
+    uint16_t start_last = mavlinkTaskStat.start;
+    mavlinkTaskStat.start = getTmr2MHz();
 
     mavlinkTelem.wakeup();
 
+    mavlinkTaskStat.last = getTmr2MHz() - mavlinkTaskStat.start;
+    if (mavlinkTaskStat.last > mavlinkTaskStat.max) mavlinkTaskStat.max = mavlinkTaskStat.last;
+    mavlinkTaskStat.load = mavlinkTaskStat.last / (mavlinkTaskStat.start - start_last);
+
     // if run-time was longer than a tick, then reduce wait, but leave 2 ticks to give lower-prio threads a chance
-    uint32_t runtime = ((uint32_t)RTOS_GET_TIME() - start);
-    int32_t waittime = MAVLINK_TASK_PERIOD_TICKS - runtime;
+    int32_t runtime = (int32_t)RTOS_GET_TIME() - start;
+    int32_t waittime = (int32_t)MAVLINK_TASK_PERIOD_TICKS - runtime;
     if (waittime < 2) waittime = 2;
     RTOS_WAIT_TICKS(waittime);
   }

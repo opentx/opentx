@@ -23,6 +23,11 @@
 
 #define MAVLINK_SECTION __attribute__((section (".ram")))
 
+uint16_t mavlinkTaskRunTime(void);
+uint16_t mavlinkTaskRunTimeMax(void);
+uint16_t mavlinkTaskLoad(void);
+
+// -- main Mavlink stuff
 
 #define MAVLINK_COMM_NUM_BUFFERS      1 // 4
 #define MAVLINK_MAX_SIGNING_STREAMS   1 // 16
