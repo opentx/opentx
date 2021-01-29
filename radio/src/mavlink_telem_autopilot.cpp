@@ -610,6 +610,15 @@ void MavlinkTelem::handleMessageAutopilot(void)
       break;
     }
 
+    case MAVLINK_MSG_ID_RANGEFINDER: {
+      mavlink_rangefinder_t payload;
+      mavlink_msg_rangefinder_decode(&_msg, &payload);
+      //we don't really need the other fields
+      rangefinder.distance = payload.distance;
+      INCU8(rangefinder.updated);
+      break;
+    }
+
     case MAVLINK_MSG_ID_PARAM_VALUE: {
       mavlink_param_value_t payload;
       mavlink_msg_param_value_decode(&_msg, &payload);
@@ -736,6 +745,9 @@ void MavlinkTelem::_resetAutopilot(void)
 
   ekf.flags = 0;
   ekf.updated = 0;
+
+  rangefinder.distance = 0.0f;
+  rangefinder.updated = 0;
 
   param.number = -1;
   param.BATT_CAPACITY = -1;

@@ -284,6 +284,13 @@ class MavlinkTelem
     };
     struct Ekf ekf;
 
+    // AP specific
+    struct Rangefinder {
+      float distance;
+      uint8_t updated;
+    };
+    struct Rangefinder rangefinder;
+
     // this is very flight stack dependent
     struct Parameters {
       int16_t number;     //we use -1 to indicate it wasn't obtained

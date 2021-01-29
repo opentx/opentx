@@ -1141,6 +1141,12 @@ static int luaMavsdkApCopterFlyPause(lua_State *L)
   return 0;
 }
 
+static int luaMavsdkApGetRangefinder(lua_State *L)
+{
+  lua_pushnumber(L, mavlinkTelem.rangefinder.distance);
+  return 1;
+}
+
 // -- MAVSDK STATUSTEXT --
 
 static int luaMavsdkIsStatusTextAvailable(lua_State *L)
@@ -1314,6 +1320,9 @@ const luaL_Reg mavsdkLib[] = {
   { "apCopterFlyClick", luaMavsdkApCopterFlyClick },
   { "apCopterFlyHold", luaMavsdkApCopterFlyHold },
   { "apCopterFlyPause", luaMavsdkApCopterFlyPause },
+  { "apGetRangefinder", luaMavsdkApGetRangefinder },
+
+  { "getTaskStats", luaMavsdkGetTaskStats },
 
   { NULL, NULL }  /* sentinel */
 };
