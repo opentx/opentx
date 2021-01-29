@@ -71,10 +71,13 @@ class AutoLineEdit: public QLineEdit
       lock = false;
     }
 
+  signals:
+    void currentDataChanged();
+
   protected slots:
     void onEdited()
     {
-      if (lock)
+      if ((panel && panel->lock) || lock)
         return;
 
       if (field)
@@ -86,6 +89,8 @@ class AutoLineEdit: public QLineEdit
 
       if (panel)
         emit panel->modified();
+
+      emit currentDataChanged();
     }
 
   protected:

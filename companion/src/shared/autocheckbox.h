@@ -45,6 +45,11 @@ class AutoCheckBox: public QCheckBox
       updateValue();
     }
 
+    void setEnabled(bool enabled)
+    {
+      QCheckBox::setEnabled(enabled);
+    }
+
     void updateValue()
     {
       lock = true;

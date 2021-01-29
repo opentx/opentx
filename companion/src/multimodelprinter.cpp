@@ -836,7 +836,7 @@ QString MultiModelPrinter::printSensors()
       columns.appendCellStart(20, true);
       COMPARE(model->sensorData[i].nameToString(i));
       columns.appendCellEnd(true);
-      COMPARECELLWIDTH(model->sensorData[i].isAvailable() ? SensorData::typeToString(model->sensorData[i].type) : "", 15);
+      COMPARECELLWIDTH(model->sensorData[i].isAvailable() ? model->sensorData[i].typeToString() : "", 15);
       COMPARECELLWIDTH(model->sensorData[i].paramsToString(model), 65);
       columns.appendRowEnd();
     }

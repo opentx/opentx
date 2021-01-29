@@ -40,7 +40,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QLineEdit" name="name">
+    <widget class="AutoLineEdit" name="name">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -59,23 +59,13 @@
     </widget>
    </item>
    <item>
-    <widget class="QComboBox" name="type">
+    <widget class="AutoComboBox" name="type">
      <property name="sizePolicy">
       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <item>
-      <property name="text">
-       <string>Custom</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Calculated</string>
-      </property>
-     </item>
     </widget>
    </item>
    <item>
@@ -147,7 +137,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QLineEdit" name="origin">
+    <widget class="AutoLineEdit" name="origin">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -175,58 +165,13 @@
     </widget>
    </item>
    <item>
-    <widget class="QComboBox" name="formula">
+    <widget class="AutoComboBox" name="formula">
      <property name="sizePolicy">
       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <item>
-      <property name="text">
-       <string>Add</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Average</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Min</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Max</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Multiply</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Totalize</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Cell</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Consumption</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Dist</string>
-      </property>
-     </item>
     </widget>
    </item>
    <item>
@@ -412,138 +357,13 @@
     </widget>
    </item>
    <item>
-    <widget class="QComboBox" name="unit">
+    <widget class="AutoComboBox" name="unit">
      <property name="sizePolicy">
       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <item>
-      <property name="text">
-       <string>Raw (-)</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>V</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>A</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>mA</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>kt</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>m/s</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>ft/s</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>km/h</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>mph</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>m</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>ft</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>°C</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>°F</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>%</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>mAh</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>W</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>mW</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>dBm</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>RPM</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>g</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>°</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Rad</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>mL</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>US fl.Oz.</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>ml/min</string>
-      </property>
-     </item>
     </widget>
    </item>
    <item>
@@ -560,7 +380,7 @@
     </widget>
    </item>
    <item>
-    <widget class="AutoPrecisionComboBox" name="prec"/>
+    <widget class="AutoComboBox" name="prec"/>
    </item>
    <item>
     <widget class="QLabel" name="ratioLabel">
@@ -720,9 +540,9 @@
    <header>autohexspinbox.h</header>
   </customwidget>
   <customwidget>
-   <class>AutoPrecisionComboBox</class>
-   <extends>QComboBox</extends>
-   <header>autoprecisioncombobox.h</header>
+   <class>AutoLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>autolineedit.h</header>
   </customwidget>
  </customwidgets>
  <resources/>
