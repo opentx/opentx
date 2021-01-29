@@ -57,6 +57,11 @@ bool SensorData::isEmpty() const
   return (!isAvailable() && type == 0 && id == 0 && subid == 0 && instance == 0 && rxIdx == 0 && moduleIdx == 0 && unit == 0 && ratio == 0 && prec == 0 && offset == 0 && autoOffset == 0 && filter == 0 && onlyPositive == 0 && logs == 0);
 }
 
+QString SensorData::idToString() const
+{
+  return idToString(id);
+}
+
 QString SensorData::typeToString() const
 {
   return typeToString(type);
@@ -126,16 +131,16 @@ QString SensorData::paramsToString(const ModelData * model) const
   int mask = getMask();
 
   if (type == TELEM_TYPE_CALCULATED) {
-    str.append(QString(FMT_LABEL_VALUE).arg(tr("Formula")).arg(formulaToString(formula)));
+    str.append(QString(FMT_LABEL_VALUE).arg(tr("Formula")).arg(formulaToString()));
   }
   else {
-    str.append(QString(FMT_LABEL_VALUE).arg(tr("Id")).arg(QString::number(id, 16).toUpper()));
+    str.append(QString(FMT_LABEL_VALUE).arg(tr("Id")).arg(idToString()));
     str.append(QString(FMT_LABEL_VALUE).arg(tr("Instance")).arg(instance));
   }
 
   if (mask & SENSOR_HAS_CELLS) {
     str.append(QString(FMT_LABEL_VALUE).arg(tr("Sensor")).arg(sourceToString(model, source)));
-    str.append(QString(FMT_VALUE).arg(cellIndexToString(index)));
+    str.append(QString(FMT_VALUE).arg(cellIndexToString()));
   }
 
   if (mask & SENSOR_HAS_SOURCES_12) {
@@ -156,10 +161,10 @@ QString SensorData::paramsToString(const ModelData * model) const
   }
 
   if (mask & SENSOR_ISCONFIGURABLE)
-    str.append(QString(FMT_LABEL_VALUE).arg(tr("Unit")).arg(unitToString(unit)));
+    str.append(QString(FMT_LABEL_VALUE).arg(tr("Unit")).arg(unitToString()));
 
   if (mask & SENSOR_HAS_PRECISION)
-    str.append(QString(FMT_LABEL_VALUE).arg(tr("Precision")).arg(precToString(prec)));
+    str.append(QString(FMT_LABEL_VALUE).arg(tr("Precision")).arg(precToString()));
 
   if (mask & SENSOR_HAS_RATIO) {
     if (unit != UNIT_RPMS) {
@@ -170,7 +175,7 @@ QString SensorData::paramsToString(const ModelData * model) const
     }
     else {
       str.append(QString(FMT_LABEL_VALUE).arg(tr("Blades")).arg(ratio)); //  TODO refactor to dedicated RPMS field
-      str.append(QString(FMT_LABEL_VALUE).arg(tr("Multi")).arg(offset)); //  TODO refactor to dedicated RPMS field
+      str.append(QString(FMT_LABEL_VALUE).arg(tr("Multiplier")).arg(offset)); //  TODO refactor to dedicated RPMS field
     }
   }
 
@@ -250,6 +255,12 @@ void SensorData::unitChanged()
 {
   if (unit == UNIT_FAHRENHEIT)
     prec = 0;
+}
+
+//  static
+QString SensorData::idToString(const int value)
+{
+  return QString::number(value, 16).toUpper();
 }
 
 //  static

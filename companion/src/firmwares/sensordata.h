@@ -185,6 +185,7 @@ class SensorData {
     QString getOrigin(const ModelData* model) const;
     void clear() { memset(this, 0, sizeof(SensorData)); }
     bool isEmpty() const;
+    QString idToString() const;
     QString typeToString() const;
     QString formulaToString() const;
     QString cellIndexToString() const;
@@ -199,6 +200,7 @@ class SensorData {
 
     static QString sourceToString(const ModelData * model, const int index, const bool sign = false);
     static bool isSourceAvailable(const ModelData * model, const int index);
+    static QString idToString(const int value);
     static QString typeToString(const int value);
     static QString formulaToString(const int value);
     static QString cellIndexToString(const int value);
