@@ -80,6 +80,7 @@ class MavlinkTelem
     void generateSetPositionTargetGlobalInt(uint8_t tsystem, uint8_t tcomponent, uint8_t frame, uint16_t type_mask, int32_t lat, int32_t lon, float alt, float vx, float vy, float vz, float yaw_rad, float yaw_rad_rate);
     void generateCmdConditionYaw(uint8_t tsystem, uint8_t tcomponent, float yaw_deg, float yaw_deg_rate, int8_t dir, bool rel);
     void generateRcChannelsOverride(uint8_t sysid, uint8_t tsystem, uint8_t tcomponent, uint16_t* chan_raw);
+    void generateMissionRequestList(uint8_t tsystem, uint8_t tcomponent, uint8_t mission_type);
     void generateMissionRequestInt(uint8_t tsystem, uint8_t tcomponent, uint16_t seq, uint8_t mission_type);
     // camera
     void generateCmdRequestCameraInformation(uint8_t tsystem, uint8_t tcomponent);
@@ -374,9 +375,9 @@ class MavlinkTelem
       strncpy(_prr_param_id, pname, 16);
       SETTASK(TASK_AUTOPILOT, TASK_SENDMSG_PARAM_REQUEST_READ);
     }
-    void requestMissionRequestInt(uint16_t seq, uint16_t mission_type)
+    void requestMissionRequestInt(uint16_t seq)
     {
-      _tmri_seq = seq; _tmri_missiontype = mission_type;
+      _tmri_seq = seq; _tmri_missiontype = MAV_MISSION_TYPE_MISSION;
       set_request(TASK_AUTOPILOT, TASK_SENDMSG_MISSION_REQUEST_INT, 10, 473);
     }
 
@@ -634,15 +635,16 @@ class MavlinkTelem
       TASK_SENDCMD_REQUEST_GLOBAL_POSITION_INT    = 0x00000200,
       TASK_SENDMSG_PARAM_REQUEST_LIST             = 0x00001000,
       TASK_SENDMSG_PARAM_REQUEST_READ             = 0x00002000,
-      TASK_SENDMSG_MISSION_REQUEST_INT            = 0x00004000,
+      TASK_SENDMSG_MISSION_REQUEST_LIST           = 0x00004000,
+      TASK_SENDMSG_MISSION_REQUEST_INT            = 0x00008000,
 
-      TASK_SENDCMD_DO_SET_MODE                    = 0x00010000,
-      TASK_SENDCMD_NAV_TAKEOFF                    = 0x00020000, // simple_takeoff()
-      TASK_SENDCMD_DO_CHANGE_SPEED                = 0x00040000, // groundspeed(), airspeed()
-      TASK_SENDMSG_MISSION_ITEM_INT               = 0x00080000, // simple_goto()
-      TASK_SENDMSG_SET_POSITION_TARGET_GLOBAL_INT = 0x00100000,
-      TASK_SENDCMD_CONDITION_YAW                  = 0x00200000,
-      TASK_SENDMSG_RC_CHANNELS_OVERRIDE           = 0x00400000,
+      TASK_SENDCMD_DO_SET_MODE                    = 0x00100000,
+      TASK_SENDCMD_NAV_TAKEOFF                    = 0x00200000, // simple_takeoff()
+      TASK_SENDCMD_DO_CHANGE_SPEED                = 0x00400000, // groundspeed(), airspeed()
+      TASK_SENDMSG_MISSION_ITEM_INT               = 0x00800000, // simple_goto()
+      TASK_SENDMSG_SET_POSITION_TARGET_GLOBAL_INT = 0x01000000,
+      TASK_SENDCMD_CONDITION_YAW                  = 0x02000000,
+      TASK_SENDMSG_RC_CHANNELS_OVERRIDE           = 0x04000000,
       // ap
       TASK_AP_REQUESTBANNER                       = 0x00000001,
       TASK_AP_ARM                                 = 0x00000002,

@@ -104,6 +104,17 @@ void MavlinkTelem::generateRcChannelsOverride(uint8_t sysid, uint8_t tsystem, ui
   _txcount = mavlink_msg_to_send_buffer(_txbuf, &_msg_out);
 }
 
+void MavlinkTelem::generateMissionRequestList(uint8_t tsystem, uint8_t tcomponent, uint8_t mission_type)
+{
+  setOutVersionV2();
+  mavlink_msg_mission_request_list_pack(
+      _my_sysid, _my_compid, &_msg_out,
+      tsystem, tcomponent,
+      mission_type
+      );
+  _txcount = mavlink_msg_to_send_buffer(_txbuf, &_msg_out);
+}
+
 void MavlinkTelem::generateMissionRequestInt(uint8_t tsystem, uint8_t tcomponent, uint16_t seq, uint8_t mission_type)
 {
   setOutVersionV2();
@@ -281,6 +292,11 @@ bool MavlinkTelem::doTaskAutopilotLowPriority(void)
   if (_task[TASK_AUTOPILOT] & TASK_SENDMSG_PARAM_REQUEST_LIST) {
     RESETTASK(TASK_AUTOPILOT,TASK_SENDMSG_PARAM_REQUEST_LIST);
     generateParamRequestList(_sysid, autopilot.compid);
+    return true; //do only one per loop
+  }
+  if (_task[TASK_AUTOPILOT] & TASK_SENDMSG_MISSION_REQUEST_LIST) {
+    RESETTASK(TASK_AUTOPILOT,TASK_SENDMSG_MISSION_REQUEST_LIST);
+    generateMissionRequestList(_sysid, autopilot.compid, MAV_MISSION_TYPE_MISSION);
     return true; //do only one per loop
   }
   if (_task[TASK_AUTOPILOT] & TASK_SENDMSG_MISSION_REQUEST_INT) {
@@ -652,6 +668,7 @@ void MavlinkTelem::handleMessageAutopilot(void)
       if (payload.mission_type != MAV_MISSION_TYPE_MISSION) break; //not a MISSION item
       mission.count = payload.count;
       INCU8(mission.updated);
+      clear_request(TASK_AUTOPILOT, TASK_SENDMSG_MISSION_REQUEST_LIST);
       break;
     }
 
@@ -662,7 +679,7 @@ void MavlinkTelem::handleMessageAutopilot(void)
       mission.seq_current = payload.seq;
       INCU8(mission.updated);
       // if the current has changed, then trigger a new MISSION_REQUEST_INT
-      if (has_changed) requestMissionRequestInt(mission.seq_current, MAV_MISSION_TYPE_MISSION);
+      if (has_changed) requestMissionRequestInt(mission.seq_current);
       break;
     }
 
@@ -889,6 +906,8 @@ void MavlinkTelem::setAutopilotStartupRequests(void)
     // yields: MAVLINK_MSG_ID_GLOBAL_POSITION_INT
     // cleared by MAVLINK_MSG_ID_GLOBAL_POSITION_INT
     set_request(TASK_AUTOPILOT, TASK_SENDCMD_REQUEST_GLOBAL_POSITION_INT, 100, 200+7);
+
+    set_request(TASK_AUTOPILOT, TASK_SENDMSG_MISSION_REQUEST_LIST, 10, 341);
 
     set_request(TASK_AP, TASK_AP_REQUESTPARAM_BATT_CAPACITY, 10, 200+25);
     set_request(TASK_AP, TASK_AP_REQUESTPARAM_BATT2_CAPACITY, 10, 200+28);
