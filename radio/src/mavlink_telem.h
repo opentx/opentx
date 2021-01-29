@@ -80,6 +80,7 @@ class MavlinkTelem
     void generateSetPositionTargetGlobalInt(uint8_t tsystem, uint8_t tcomponent, uint8_t frame, uint16_t type_mask, int32_t lat, int32_t lon, float alt, float vx, float vy, float vz, float yaw_rad, float yaw_rad_rate);
     void generateCmdConditionYaw(uint8_t tsystem, uint8_t tcomponent, float yaw_deg, float yaw_deg_rate, int8_t dir, bool rel);
     void generateRcChannelsOverride(uint8_t sysid, uint8_t tsystem, uint8_t tcomponent, uint16_t* chan_raw);
+    void generateMissionRequestInt(uint8_t tsystem, uint8_t tcomponent, uint16_t seq, uint8_t mission_type);
     // camera
     void generateCmdRequestCameraInformation(uint8_t tsystem, uint8_t tcomponent);
     void generateCmdRequestCameraSettings(uint8_t tsystem, uint8_t tcomponent);
@@ -284,6 +285,34 @@ class MavlinkTelem
     };
     struct Ekf ekf;
 
+    struct NavControllerOutput {
+      //comment: we don't really need the other fields
+      int16_t nav_bearing; // Current desired heading in degrees
+      int16_t target_bearing; // Bearing to current MISSION/target in degrees
+      uint16_t wp_dist; // Distance to active MISSION in meters
+      uint8_t updated;
+    };
+    struct NavControllerOutput navControllerOutput;
+
+    struct Mission {
+      uint16_t count; // from MISSION_COUNT
+      uint16_t seq_current; // from MISSION_CURRENT
+      uint8_t updated;
+    };
+    struct Mission mission;
+
+    struct MissionItem { //the INT version of it
+      //comment: we don't really need the other fields
+      uint16_t seq; // Waypoint ID (sequence number). Starts at zero. Increases monotonically for each waypoint, no gaps in the sequence (0,1,2,3,4).
+      uint8_t frame; // The coordinate system of the waypoint.
+      uint16_t command; // The scheduled action for the waypnt.
+      int32_t x; // PARAM5 / local: x position in meters * 1e4, global: latitude in degrees * 10^7
+      int32_t y; // PARAM6 / y position: local: x position in meters * 1e4, global: longitude in degrees *10^7
+      float z; // PARAM7 / z position: global: altitude in meters (relative or absolute, depending on frame.
+      uint8_t updated;
+    };
+    struct MissionItem missionItem;
+
     // AP specific
     struct Rangefinder {
       float distance;
@@ -333,6 +362,7 @@ class MavlinkTelem
     float _tact_takeoff_alt_m;
     float _tacf_takeoff_alt_m;
     uint16_t _tovr_chan_raw[18];
+    uint16_t _tmri_seq, _tmri_missiontype;
 
     //convenience task wrapper
     void setTaskParamRequestList(void)
@@ -343,6 +373,11 @@ class MavlinkTelem
     {
       strncpy(_prr_param_id, pname, 16);
       SETTASK(TASK_AUTOPILOT, TASK_SENDMSG_PARAM_REQUEST_READ);
+    }
+    void requestMissionRequestInt(uint16_t seq, uint16_t mission_type)
+    {
+      _tmri_seq = seq; _tmri_missiontype = mission_type;
+      set_request(TASK_AUTOPILOT, TASK_SENDMSG_MISSION_REQUEST_INT, 10, 473);
     }
 
     void apSetFlightMode(uint32_t ap_flight_mode);
@@ -599,6 +634,7 @@ class MavlinkTelem
       TASK_SENDCMD_REQUEST_GLOBAL_POSITION_INT    = 0x00000200,
       TASK_SENDMSG_PARAM_REQUEST_LIST             = 0x00001000,
       TASK_SENDMSG_PARAM_REQUEST_READ             = 0x00002000,
+      TASK_SENDMSG_MISSION_REQUEST_INT            = 0x00004000,
 
       TASK_SENDCMD_DO_SET_MODE                    = 0x00010000,
       TASK_SENDCMD_NAV_TAKEOFF                    = 0x00020000, // simple_takeoff()

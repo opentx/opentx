@@ -104,6 +104,17 @@ void MavlinkTelem::generateRcChannelsOverride(uint8_t sysid, uint8_t tsystem, ui
   _txcount = mavlink_msg_to_send_buffer(_txbuf, &_msg_out);
 }
 
+void MavlinkTelem::generateMissionRequestInt(uint8_t tsystem, uint8_t tcomponent, uint16_t seq, uint8_t mission_type)
+{
+  setOutVersionV2();
+  mavlink_msg_mission_request_int_pack(
+      _my_sysid, _my_compid, &_msg_out,
+      tsystem, tcomponent,
+      seq, mission_type
+      );
+  _txcount = mavlink_msg_to_send_buffer(_txbuf, &_msg_out);
+}
+
 // -- Mavsdk Convenience Task Wrapper --
 // to make it easy for api_mavsdk to call functions
 
@@ -270,6 +281,11 @@ bool MavlinkTelem::doTaskAutopilotLowPriority(void)
   if (_task[TASK_AUTOPILOT] & TASK_SENDMSG_PARAM_REQUEST_LIST) {
     RESETTASK(TASK_AUTOPILOT,TASK_SENDMSG_PARAM_REQUEST_LIST);
     generateParamRequestList(_sysid, autopilot.compid);
+    return true; //do only one per loop
+  }
+  if (_task[TASK_AUTOPILOT] & TASK_SENDMSG_MISSION_REQUEST_INT) {
+    RESETTASK(TASK_AUTOPILOT,TASK_SENDMSG_MISSION_REQUEST_INT);
+    generateMissionRequestInt(_sysid, autopilot.compid, _tmri_seq, _tmri_missiontype);
     return true; //do only one per loop
   }
 
@@ -619,6 +635,52 @@ void MavlinkTelem::handleMessageAutopilot(void)
       break;
     }
 
+    case MAVLINK_MSG_ID_NAV_CONTROLLER_OUTPUT: {
+      mavlink_nav_controller_output_t payload;
+      mavlink_msg_nav_controller_output_decode(&_msg, &payload);
+      //we don't really need the other fields
+      navControllerOutput.nav_bearing = payload.nav_bearing;
+      navControllerOutput.target_bearing = payload.target_bearing;
+      navControllerOutput.wp_dist = payload.wp_dist;
+      INCU8(navControllerOutput.updated);
+      break;
+    }
+
+    case MAVLINK_MSG_ID_MISSION_COUNT: {
+      mavlink_mission_count_t payload;
+      mavlink_msg_mission_count_decode(&_msg, &payload);
+      if (payload.mission_type != MAV_MISSION_TYPE_MISSION) break; //not a MISSION item
+      mission.count = payload.count;
+      INCU8(mission.updated);
+      break;
+    }
+
+    case MAVLINK_MSG_ID_MISSION_CURRENT: {
+      mavlink_mission_current_t payload;
+      mavlink_msg_mission_current_decode(&_msg, &payload);
+      bool has_changed = (mission.seq_current != payload.seq);
+      mission.seq_current = payload.seq;
+      INCU8(mission.updated);
+      // if the current has changed, then trigger a new MISSION_REQUEST_INT
+      if (has_changed) requestMissionRequestInt(mission.seq_current, MAV_MISSION_TYPE_MISSION);
+      break;
+    }
+
+    case MAVLINK_MSG_ID_MISSION_ITEM_INT: {
+      mavlink_mission_item_int_t payload;
+      mavlink_msg_mission_item_int_decode(&_msg, &payload);
+      if (payload.mission_type != MAV_MISSION_TYPE_MISSION) break; //not a MISSION item
+      missionItem.seq = payload.seq;
+      missionItem.frame = payload.frame;
+      missionItem.command = payload.command;
+      missionItem.x = payload.x;
+      missionItem.y = payload.y;
+      missionItem.z = payload.z;
+      INCU8(missionItem.updated);
+      clear_request(TASK_AUTOPILOT, TASK_SENDMSG_MISSION_REQUEST_INT);
+      break;
+    }
+
     case MAVLINK_MSG_ID_PARAM_VALUE: {
       mavlink_param_value_t payload;
       mavlink_msg_param_value_decode(&_msg, &payload);
@@ -749,6 +811,23 @@ void MavlinkTelem::_resetAutopilot(void)
   rangefinder.distance = 0.0f;
   rangefinder.updated = 0;
 
+  navControllerOutput.nav_bearing = 0; // Current desired heading in degrees
+  navControllerOutput.target_bearing = 0; // Bearing to current MISSION/target in degrees
+  navControllerOutput.wp_dist = 0; // Distance to active MISSION in meters
+  navControllerOutput.updated = 0;
+
+  mission.count = 0;
+  mission.seq_current = UINT16_MAX; //to enforce a request at first incoming MISSION_CURRENT
+  mission.updated = 0;
+
+  missionItem.seq = 0; // Waypoint ID (sequence number). Starts at zero. Increases monotonically for each waypoint, no gaps in the sequence (0,1,2,3,4).
+  missionItem.frame = 0; // The coordinate system of the waypoint.
+  missionItem.command = 0; // The scheduled action for the waypnt.
+  missionItem.x = 0; // PARAM5 / local: x position in meters * 1e4, global: latitude in degrees * 10^7
+  missionItem.y = 0; // PARAM6 / y position: local: x position in meters * 1e4, global: longitude in degrees *10^7
+  missionItem.z = 0.0f; // PARAM7 / z position: global: altitude in meters (relative or absolute, depending on frame.
+  missionItem.updated = 0;
+
   param.number = -1;
   param.BATT_CAPACITY = -1;
   param.BATT2_CAPACITY = -1;
@@ -771,6 +850,8 @@ void MavlinkTelem::setAutopilotStartupRequests(void)
     // yields: MAVLINK_MSG_ID_GPS_RAW_INT
     //         MAVLINK_MSG_ID_GPS2_RAW
     //         MAVLINK_MSG_ID_SYS_STATUS
+    //         MSG_NAV_CONTROLLER_OUTPUT,
+    //         MSG_CURRENT_WAYPOINT, // MISSION_CURRENT
     // cleared by MAVLINK_MSG_ID_GPS_RAW_INT (is send even when both GPS are 0, so we can use it to clear)
     set_request(TASK_AUTOPILOT, TASK_SENDREQUESTDATASTREAM_EXTENDED_STATUS, 100, 200-4);
 

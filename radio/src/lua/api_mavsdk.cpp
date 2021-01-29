@@ -1172,6 +1172,53 @@ static int luaMavsdkGetStatusText(lua_State *L)
   return 2;
 }
 
+// -- MAVSDK MISSION --
+
+static int luaMavsdkGetNavControllerOutput(lua_State *L)
+{
+  lua_newtable(L);
+  lua_pushtablenumber(L, "nav_bearing", (float)mavlinkTelem.navControllerOutput.nav_bearing);
+  lua_pushtablenumber(L, "target_bearing", (float)mavlinkTelem.navControllerOutput.target_bearing);
+  lua_pushtablenumber(L, "wp_dist", (float)mavlinkTelem.navControllerOutput.wp_dist);
+  return 1;
+}
+
+static int luaMavsdkGetMission(lua_State *L)
+{
+  lua_newtable(L);
+  lua_pushtableinteger(L, "count", mavlinkTelem.mission.count);
+  lua_pushtableinteger(L, "current_seq", mavlinkTelem.mission.seq_current);
+  return 1;
+}
+
+static int luaMavsdkGetMissionItem(lua_State *L)
+{
+  lua_newtable(L);
+  lua_pushtableinteger(L, "seq", mavlinkTelem.missionItem.seq);
+  lua_pushtableinteger(L, "command", mavlinkTelem.missionItem.command);
+  lua_pushtableinteger(L, "frame", mavlinkTelem.missionItem.frame);
+  lua_pushtableinteger(L, "x", mavlinkTelem.missionItem.x);
+  lua_pushtableinteger(L, "y", mavlinkTelem.missionItem.y);
+  lua_pushtablenumber(L, "z", mavlinkTelem.missionItem.z);
+/*
+  lua_pushtablenumber(L, "lat", mavlinkTelem.missionItem.x);
+  lua_pushtablenumber(L, "lon", mavlinkTelem.missionItem.y);
+  lua_pushtablenumber(L, "alt", mavlinkTelem.missionItem.z);
+*/
+  return 1;
+}
+
+// -- MAVSDK MAVLINKTASK STAT --
+
+static int luaMavsdkGetTaskStats(lua_State *L)
+{
+  lua_newtable(L);
+  lua_pushtableinteger(L, "time", mavlinkTaskRunTime());
+  lua_pushtableinteger(L, "max", mavlinkTaskRunTimeMax());
+  lua_pushtableinteger(L, "lod", mavlinkTaskLoad());
+  return 1;
+}
+
 // I believe the names can't be longer than 32 chars
 const luaL_Reg mavsdkLib[] = {
   { "mavtelemIsEnabled", luaMavsdkMavTelemIsEnabled },
@@ -1302,6 +1349,10 @@ const luaL_Reg mavsdkLib[] = {
 
   { "isStatusTextAvailable", luaMavsdkIsStatusTextAvailable },
   { "getStatusText", luaMavsdkGetStatusText },
+
+  { "getNavController", luaMavsdkGetNavControllerOutput },
+  { "getMission", luaMavsdkGetMission },
+  { "getMissionItem", luaMavsdkGetMissionItem },
 
   { "apIsFlying", luaMavsdkApIsFlying },
   { "apIsFailsafe", luaMavsdkApIsFailsafe },
