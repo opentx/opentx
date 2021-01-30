@@ -1197,14 +1197,34 @@ static int luaMavsdkGetMissionItem(lua_State *L)
   lua_pushtableinteger(L, "seq", mavlinkTelem.missionItem.seq);
   lua_pushtableinteger(L, "command", mavlinkTelem.missionItem.command);
   lua_pushtableinteger(L, "frame", mavlinkTelem.missionItem.frame);
-  lua_pushtableinteger(L, "x", mavlinkTelem.missionItem.x);
-  lua_pushtableinteger(L, "y", mavlinkTelem.missionItem.y);
-  lua_pushtablenumber(L, "z", mavlinkTelem.missionItem.z);
-/*
-  lua_pushtablenumber(L, "lat", mavlinkTelem.missionItem.x);
-  lua_pushtablenumber(L, "lon", mavlinkTelem.missionItem.y);
-  lua_pushtablenumber(L, "alt", mavlinkTelem.missionItem.z);
-*/
+  bool is_global = false;
+  switch (mavlinkTelem.missionItem.frame) {
+    case MAV_FRAME_GLOBAL_INT:
+    case MAV_FRAME_GLOBAL_RELATIVE_ALT_INT:
+    case MAV_FRAME_GLOBAL_TERRAIN_ALT_INT:
+    //these should not occur, but play it safe and handle them anyway
+    case MAV_FRAME_GLOBAL:
+    case MAV_FRAME_GLOBAL_RELATIVE_ALT:
+    case MAV_FRAME_GLOBAL_TERRAIN_ALT:
+      is_global = true;
+      break;
+  }
+  if (is_global) {
+    lua_pushtablenil(L, "x");
+    lua_pushtablenil(L, "y");
+    lua_pushtablenil(L, "z");
+    lua_pushtableinteger(L, "lat", mavlinkTelem.missionItem.x);
+    lua_pushtableinteger(L, "lon", mavlinkTelem.missionItem.y);
+    lua_pushtablenumber(L, "alt", mavlinkTelem.missionItem.z);
+  }
+  else {
+    lua_pushtablenumber(L, "x", mavlinkTelem.missionItem.x * 0.0001f);
+    lua_pushtablenumber(L, "y", mavlinkTelem.missionItem.y * 0.0001f);
+    lua_pushtablenumber(L, "z", mavlinkTelem.missionItem.z);
+    lua_pushtablenil(L, "lat");
+    lua_pushtablenil(L, "lon");
+    lua_pushtablenil(L, "alt");
+  }
   return 1;
 }
 
@@ -1215,7 +1235,10 @@ static int luaMavsdkGetTaskStats(lua_State *L)
   lua_newtable(L);
   lua_pushtableinteger(L, "time", mavlinkTaskRunTime());
   lua_pushtableinteger(L, "max", mavlinkTaskRunTimeMax());
-  lua_pushtableinteger(L, "lod", mavlinkTaskLoad());
+  lua_pushtableinteger(L, "load", mavlinkTaskLoad());
+  return 1;
+}
+
 // -- Fake RSSI --
 
 static int luaMavsdkOptionIsRssiEnabled(lua_State *L)

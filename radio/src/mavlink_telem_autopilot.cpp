@@ -675,6 +675,7 @@ void MavlinkTelem::handleMessageAutopilot(void)
       mavlink_mission_item_int_t payload;
       mavlink_msg_mission_item_int_decode(&_msg, &payload);
       if (payload.mission_type != MAV_MISSION_TYPE_MISSION) break; //not a MISSION item
+      if (payload.frame == MAV_FRAME_MISSION) break; //not a coordinate frame, indicates a mission command
       missionItem.seq = payload.seq;
       missionItem.frame = payload.frame;
       missionItem.command = payload.command;
