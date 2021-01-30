@@ -142,7 +142,8 @@ PACK(struct ModuleState {
   uint8_t protocol:4;
   uint8_t mode:4;
   uint8_t paused:1;
-  uint8_t spare:7;
+  uint8_t racingMode:1;
+  uint8_t spare:6;
   uint16_t counter;
   union
   {

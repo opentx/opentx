@@ -29,7 +29,7 @@
 
 #define PXX2_LOWSPEED_BAUDRATE             230400
 #define PXX2_HIGHSPEED_BAUDRATE            450000
-#define PXX2_PERIOD                        4 // 4ms
+#define PXX2_PERIOD                        50 // 4ms
 #define PXX2_TOOLS_PERIOD                  1 // 1ms
 #define PXX2_FRAME_MAXLENGTH               64
 

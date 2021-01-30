@@ -184,6 +184,14 @@ inline uint8_t MODULE_CHANNELS_ROWS(int moduleIdx)
   }
 }
 
+inline bool isRacingModeAllowed()
+{
+  if (isModulePXX2(INTERNAL_MODULE) && 0 == g_model.moduleData[INTERNAL_MODULE].channelsCount)
+    return true;
+  else
+    return false;
+}
+
 #if defined(MULTIMODULE)
 inline uint8_t MULTI_DISABLE_CHAN_MAP_ROW(uint8_t moduleIdx)
 {
