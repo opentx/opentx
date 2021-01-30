@@ -18,8 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _AUTOLINEEDIT_H_
-#define _AUTOLINEEDIT_H_
+#pragma once
 
 #include <QLineEdit>
 #include <QRegExpValidator>
@@ -99,5 +98,3 @@ class AutoLineEdit: public QLineEdit
     GenericPanel * panel;
     bool lock;
 };
-
-#endif // _AUTOLINEEDIT_H_

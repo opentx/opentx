@@ -18,8 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#ifndef SENSORDATA_H
-#define SENSORDATA_H
+#pragma once
 
 #include "helpersdata.h"
 
@@ -214,5 +213,3 @@ class SensorData {
     static AbstractStaticItemModel * unitItemModel();
     static PrecisionItemModel * precisionItemModel();
 };
-
-#endif // SENSORDATA_H

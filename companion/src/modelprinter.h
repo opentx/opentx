@@ -18,8 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _MODELPRINTER_H_
-#define _MODELPRINTER_H_
+#pragma once
 
 #include <QString>
 #include <QStringList>
@@ -132,5 +131,3 @@ class ModelPrinter: public QObject
     const ModelData & model;
 
 };
-
-#endif // _MODELPRINTER_H_

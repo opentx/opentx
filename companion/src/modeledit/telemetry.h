@@ -18,8 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _TELEMETRY_H_
-#define _TELEMETRY_H_
+#pragma once
 
 #include "modeledit.h"
 #include "eeprominterface.h"
@@ -180,5 +179,3 @@ class TelemetryPanel : public ModelPanel
     void connectItemModelEvents(const int id);
     inline bool isLocked() { return lock; }
 };
-
-#endif // _TELEMETRY_H_

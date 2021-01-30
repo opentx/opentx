@@ -18,8 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _HELPERS_DATA_H_
-#define _HELPERS_DATA_H_
+#pragma once
 
 #include <QtCore>
 
@@ -49,5 +48,3 @@ class FieldRange
     QString prefix;
     QString unit;
 };
-
-#endif // _HELPERS_DATA_H_

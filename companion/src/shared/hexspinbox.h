@@ -18,8 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _HEXSPINBOX_H_
-#define _HEXSPINBOX_H_
+#pragma once
 
 #include <QSpinBox>
 
@@ -40,5 +39,3 @@ class HexSpinBox : public QSpinBox
   private:
     QRegExpValidator *validator;
 };
-
-#endif // _HEXSPINBOX_H_
