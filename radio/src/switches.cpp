@@ -514,6 +514,7 @@ void evalLogicalSwitches(bool isCurrentFlightmode)
 }
 
 swarnstate_t switches_states = 0;
+trimstate_t trims_states = 0;
 swsrc_t getMovedSwitch()
 {
   static tmr10ms_t s_move_last_time = 0;
@@ -530,6 +531,16 @@ swsrc_t getMovedSwitch()
         switches_states = (switches_states & (~mask)) | ((swarnstate_t) next << (i * 2));
         result = 1 + (3 * i) + next;
       }
+    }
+  }
+  // Trim switches
+  for (int i = 0; i < NUM_TRIMS_KEYS; i++) {
+    trimstate_t mask = ((trimstate_t) 0x01 << i);
+    uint8_t prev = (trims_states & mask) >> i;
+    uint8_t next = getSwitch(SWSRC_FIRST_TRIM + i);
+    if (prev != next) {
+      trims_states = (trims_states & (~mask)) | ((trimstate_t) next << i);
+      result = SWSRC_FIRST_TRIM + i;
     }
   }
   // Multipos

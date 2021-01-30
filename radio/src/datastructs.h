@@ -502,6 +502,11 @@ PACK(struct ModelHeader {
   MODEL_HEADER_BITMAP_FIELD
 });
 
+#if NUM_TRIMS_KEYS <= 8
+typedef uint8_t trimstate_t;
+#else
+typedef uint16_t trimstate_t;
+#endif
 #if defined(COLORLCD)
 typedef uint32_t swconfig_t;
 typedef uint32_t swarnstate_t;
