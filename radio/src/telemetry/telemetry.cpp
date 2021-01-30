@@ -201,7 +201,14 @@ void telemetryWakeup()
     }
 #endif
 
+//OW
+//    if (!g_model.rssiAlarms.disabled) {
+#if defined(TELEMETRY_MAVLINK)
+    if (!g_model.rssiAlarms.disabled && (g_model.mavlinkRssi || !g_model.mavlinkMimicSensors)) {
+#else
     if (!g_model.rssiAlarms.disabled) {
+#endif
+//OWEND
       if (TELEMETRY_STREAMING()) {
         if (TELEMETRY_RSSI() < g_model.rssiAlarms.getCriticalRssi() ) {
           AUDIO_RSSI_RED();

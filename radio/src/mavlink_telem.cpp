@@ -93,7 +93,7 @@ void mavlinkSetTelemetryValue(uint16_t id, uint8_t subId, uint8_t instance, int3
 {
   if (g_model.mavlinkMimicSensors) {
     setTelemetryValue(PROTOCOL_TELEMETRY_FRSKY_SPORT, id, subId, instance, value, unit, prec);
-    //telemetryStreaming = MAVLINK_RSSI_TIMEOUT(); //telemetry values don't need that
+    telemetryStreaming = MAVLINK_RSSI_TIMEOUT();
   }
 }
 
@@ -107,7 +107,7 @@ void mavlinkSetTelemetryRssiValue(uint8_t rssi)
   }
   if (g_model.mavlinkMimicSensors) {
     setTelemetryValue(PROTOCOL_TELEMETRY_FRSKY_SPORT, RSSI_ID, 0, 1, value, UNIT_DB, 0);
-    //telemetryStreaming = MAVLINK_RSSI_TIMEOUT(); //telemetry values don't need that
+    telemetryStreaming = MAVLINK_RSSI_TIMEOUT();
   }
   //#if defined(MULTIMODULE)
   //{ TX_RSSI_ID, TX_RSSI_ID, 0, ZSTR_TX_RSSI   , UNIT_DB , 0 },
