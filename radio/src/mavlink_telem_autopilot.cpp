@@ -556,7 +556,13 @@ void MavlinkTelem::handleMessageAutopilot(void)
       for (uint8_t i=0; i<10; i++) {
         if (payload.voltages[i] != UINT16_MAX) {
           voltage += payload.voltages[i]; //uint16_t mV, UINT16_MAX if not known
-          if (payload.voltages[i] > 5000) validcellcount = false;
+          if (payload.voltages[i] == UINT16_MAX-1) validcellcount = false;
+          cellcount++;
+        }
+      }
+      for (uint8_t i=0; i<4; i++) { //we assume this never is relevant if validcellcount = false
+        if (payload.voltages_ext[i] != 0) {
+          voltage += payload.voltages_ext[i]; //uint16_t mV, 0 if not known
           cellcount++;
         }
       }
