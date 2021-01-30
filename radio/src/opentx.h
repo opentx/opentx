@@ -78,7 +78,6 @@ added files in radio/src/
 
 
 TODO:
-- consistent use of MAVLINK_TELEM define
 - mavlink api
 
 COMMENTS:
@@ -98,10 +97,22 @@ idea:
 support LEFT, RIGHT CENTER also for drawFilledRectangle, drawRectangle, or better LEFT,RIGHT,XCENTER,TOP,BOTTOM,YCENTER
 
 
+----
+
 STR_AUX_SERIAL_MODES
 INTERNAL_GPS
-TELEMETRY_MAVLINK
+TELEMETRY_MAVLINK  double
 
+rssi
+telemetryData.rssi
+telemetryData.clear()
+class TelemetryData
+TelemetryFilterDecorator
+TELEMETRY_STREAMING()
+TELEMETRY_RSSI()
+telemetryWakeup()
+telemetryItems[index].setValue(g_model.telemetrySensors[index], value, unit, prec);
+sportProcessTelemetryPacket
 
 struct
 opentxLib -> lauxlib.h, limit.c

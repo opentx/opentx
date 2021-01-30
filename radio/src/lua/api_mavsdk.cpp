@@ -1159,7 +1159,7 @@ static int luaMavsdkGetStatusText(lua_State *L)
 {
   char text[MAVLINK_MSG_STATUSTEXT_FIELD_TEXT_LEN+1]; //mavlink string is not necessarily \0 terminated
   mavlink_statustext_t payload;
-  if (!mavlinkTelem.statustext.fifo.pop(payload)) { 
+  if (!mavlinkTelem.statustext.fifo.pop(payload)) { //should not happen, use isStatusTextAvailable() to check beforehand
     text[0] = '\0';
     payload.severity = MAV_SEVERITY_INFO;
   }

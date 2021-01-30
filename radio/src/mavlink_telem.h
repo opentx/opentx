@@ -23,6 +23,7 @@
 
 #define MAVLINK_SECTION __attribute__((section (".ram")))
 
+void mavlinkStart();
 uint16_t mavlinkTaskRunTime(void);
 uint16_t mavlinkTaskRunTimeMax(void);
 uint16_t mavlinkTaskLoad(void);
@@ -766,5 +767,3 @@ class MavlinkTelem
 };
 
 extern MavlinkTelem mavlinkTelem;
-
-void mavlinkStart();
