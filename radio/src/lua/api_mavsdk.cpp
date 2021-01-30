@@ -1216,7 +1216,27 @@ static int luaMavsdkGetTaskStats(lua_State *L)
   lua_pushtableinteger(L, "time", mavlinkTaskRunTime());
   lua_pushtableinteger(L, "max", mavlinkTaskRunTimeMax());
   lua_pushtableinteger(L, "lod", mavlinkTaskLoad());
+// -- Fake RSSI --
+
+static int luaMavsdkOptionIsRssiEnabled(lua_State *L)
+{
+  lua_pushboolean(L, g_model.mavlinkRssi);
   return 1;
+}
+
+static int luaMavsdkOptionSetRssi(lua_State *L)
+{
+  bool enable = luaL_checkinteger(L, 1);
+  g_model.mavlinkRssi = (enable) ? 1 : 0;
+  return 0;
+}
+
+static int luaMavsdkSetOpentTxRssi(lua_State *L)
+{
+  int32_t value = luaL_checkinteger(L, 1);
+  telemetryData.rssi.set(value);
+  telemetryStreaming = MAVLINK_RSSI_TIMEOUT();
+  return 0;
 }
 
 // I believe the names can't be longer than 32 chars
@@ -1372,6 +1392,10 @@ const luaL_Reg mavsdkLib[] = {
   { "apCopterFlyHold", luaMavsdkApCopterFlyHold },
   { "apCopterFlyPause", luaMavsdkApCopterFlyPause },
   { "apGetRangefinder", luaMavsdkApGetRangefinder },
+
+  { "optionIsRssiEnabled", luaMavsdkOptionIsRssiEnabled },
+  { "optionSetRssi", luaMavsdkOptionSetRssi },
+  { "setOpentTxRssi", luaMavsdkSetOpentTxRssi },
 
   { "getTaskStats", luaMavsdkGetTaskStats },
 

@@ -82,6 +82,43 @@ void mavlinkStart()
   RTOS_CREATE_TASK(mavlinkTaskId, mavlinkTask, "mavlink", mavlinkStack, MAVLINK_STACK_SIZE, MAVLINK_TASK_PRIO);
 }
 
+// -- Miscellaneous stuff --
+
+uint8_t MAVLINK_RSSI_TIMEOUT(void)
+{
+  return (MAVLINK_TELEM_RADIO_RECEIVING_TIMEOUT > 255) ? 255 : MAVLINK_TELEM_RADIO_RECEIVING_TIMEOUT; //2 * TELEMETRY_TIMEOUT10ms; // 2 seconds
+}
+
+void mavlinkSetTelemetryValue(uint16_t id, uint8_t subId, uint8_t instance, int32_t value, uint32_t unit, uint32_t prec)
+{
+  if (g_model.mavlinkMimicSensors) {
+    setTelemetryValue(PROTOCOL_TELEMETRY_FRSKY_SPORT, id, subId, instance, value, unit, prec);
+    //telemetryStreaming = MAVLINK_RSSI_TIMEOUT(); //telemetry values don't need that
+  }
+}
+
+// only for MAVLINK_MSG_ID_RADIO_STATUS, MAVLINK_MSG_ID_RC_CHANNELS, MAVLINK_MSG_ID_RC_CHANNELS_RAW
+void mavlinkSetTelemetryRssiValue(uint8_t rssi)
+{
+  int32_t value = (rssi == UINT8_MAX) ? 0 : rssi;
+  if (g_model.mavlinkRssi) {
+    telemetryData.rssi.set(value);
+    telemetryStreaming = MAVLINK_RSSI_TIMEOUT();
+  }
+  if (g_model.mavlinkMimicSensors) {
+    setTelemetryValue(PROTOCOL_TELEMETRY_FRSKY_SPORT, RSSI_ID, 0, 1, value, UNIT_DB, 0);
+    //telemetryStreaming = MAVLINK_RSSI_TIMEOUT(); //telemetry values don't need that
+  }
+  //#if defined(MULTIMODULE)
+  //{ TX_RSSI_ID, TX_RSSI_ID, 0, ZSTR_TX_RSSI   , UNIT_DB , 0 },
+  //{ TX_LQI_ID , TX_LQI_ID,  0, ZSTR_TX_QUALITY, UNIT_RAW, 0 },
+}
+
+void mavlinkResetTelemetryRssiValue(void)
+{
+  if (g_model.mavlinkRssi) telemetryData.rssi.reset();
+}
+
 // -- TASK handlers --
 // tasks can be set directly with SETTASK()
 // some tasks don't need immediate execution, or need reliable request
@@ -345,13 +382,7 @@ void MavlinkTelem::handleMessage(void)
     radio.noise = payload.noise;
     radio.remnoise = payload.remnoise;
     radio.is_receiving = MAVLINK_TELEM_RADIO_RECEIVING_TIMEOUT;
-    if (g_model.mavlinkMimicSensors) {
-      int32_t r = (radio.rssi == UINT8_MAX) ? 0 : radio.rssi;
-      setTelemetryValue(PROTOCOL_TELEMETRY_FRSKY_SPORT, RSSI_ID, 0, 1, r, UNIT_DB, 0);
-      //#if defined(MULTIMODULE)
-      //{ TX_RSSI_ID, TX_RSSI_ID, 0, ZSTR_TX_RSSI   , UNIT_DB , 0 },
-      //{ TX_LQI_ID , TX_LQI_ID,  0, ZSTR_TX_QUALITY, UNIT_RAW, 0 },
-    }
+    mavlinkSetTelemetryRssiValue(radio.rssi);
     return;
   }
 
@@ -553,7 +584,6 @@ void MavlinkTelem::wakeup()
       handleMessage();
       msg_rx_count++;
       _msg_rx_persec_cnt++;
-      if (g_model.mavlinkMimicSensors) telemetryStreaming = 2*TELEMETRY_TIMEOUT10ms; // 2 seconds
     }
   }
 
@@ -596,18 +626,24 @@ void MavlinkTelem::_resetRadio(void)
   radio.remrssi = UINT8_MAX;
   radio.noise = 0;
   radio.remnoise = 0;
+
+  if (!radio.is_receiving && !radio.is_receiving65 && radio.is_receiving35) mavlinkResetTelemetryRssiValue();
 }
 
 void MavlinkTelem::_resetRadio65(void)
 {
   radio.is_receiving65 = 0;
   radio.rssi65 = UINT8_MAX;
+
+  if (!radio.is_receiving && !radio.is_receiving65 && radio.is_receiving35) mavlinkResetTelemetryRssiValue();
 }
 
 void MavlinkTelem::_resetRadio35(void)
 {
   radio.is_receiving35 = 0;
   radio.rssi35 = UINT8_MAX;
+
+  if (!radio.is_receiving && !radio.is_receiving65 && radio.is_receiving35) mavlinkResetTelemetryRssiValue();
 }
 
 void MavlinkTelem::_reset(void)

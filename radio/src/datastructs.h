@@ -630,7 +630,8 @@ PACK(struct ModelData {
 //OW
 #if defined(TELEMETRY_MAVLINK)
   uint16_t _mavlinkEnabled:1; // not currently used
-  uint16_t _mavlinkConfig:3; // not currently used
+  uint16_t mavlinkRssi:1;
+  uint16_t _mavlinkDummy:2; // not currently used
   uint16_t mavlinkMimicSensors:3; // currently just off/on, but allow e.g. FrSky, CF, FrSky passthrough.
   uint16_t mavlinkRcOverride:1;
   uint16_t _mavlinkLogging:1; // not currently used

@@ -135,6 +135,7 @@ enum MenuModelSetupItems {
 //OW
 #if defined(TELEMETRY_MAVLINK)
   ITEM_MODEL_SETUP_MAVLINK_LABEL,
+  ITEM_MODEL_SETUP_MAVLINK_RSSI,
   ITEM_MODEL_SETUP_MAVLINK_MIMICSENSORS,
   ITEM_MODEL_SETUP_MAVLINK_RCOVERRIDE,
 #endif
@@ -660,7 +661,7 @@ bool menuModelSetup(event_t event)
          TRAINER_ROWS,
 //OW
 #if defined(TELEMETRY_MAVLINK)
-         LABEL(Mavlink), 0, 0
+         LABEL(Mavlink), 0, 0, 0
 #endif
 //OWEND
        });
@@ -1365,6 +1366,12 @@ bool menuModelSetup(event_t event)
       case ITEM_MODEL_SETUP_MAVLINK_LABEL:
         lcdDrawText(MENUS_MARGIN_LEFT, y, "MAVLink");
         break;
+
+      case ITEM_MODEL_SETUP_MAVLINK_RSSI: {
+        lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, "Rssi");
+        g_model.mavlinkRssi = editCheckBox(g_model.mavlinkRssi, MODEL_SETUP_2ND_COLUMN, y, attr, event);
+        break;
+      }
 
       case ITEM_MODEL_SETUP_MAVLINK_MIMICSENSORS: {
         lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, "Sensors");
