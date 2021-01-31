@@ -212,23 +212,23 @@ static int luaMavsdkGimbalClientGetStatus(lua_State *L)
 
 static int luaMavsdkGimbalClientSetRetract(lua_State *L)
 {
-  bool enable = luaL_checkinteger(L, 1);
+  bool enable = (luaL_checkinteger(L, 1) > 0);
   mavlinkTelem.setStorm32GimbalClientRetract(enable);
   return 0;
 }
 
 static int luaMavsdkGimbalClientSetNeutral(lua_State *L)
 {
-  bool enable = luaL_checkinteger(L, 1);
+  bool enable = (luaL_checkinteger(L, 1) > 0);
   mavlinkTelem.setStorm32GimbalClientNeutral(enable);
   return 0;
 }
 
 static int luaMavsdkGimbalClientSetLock(lua_State *L)
 {
-  bool roll_lock = luaL_checkinteger(L, 1);
-  bool pitch_lock = luaL_checkinteger(L, 1);
-  bool yaw_lock = luaL_checkinteger(L, 1);
+  bool roll_lock = (luaL_checkinteger(L, 1) > 0);
+  bool pitch_lock = (luaL_checkinteger(L, 1) > 0);
+  bool yaw_lock = (luaL_checkinteger(L, 1) > 0);
   mavlinkTelem.setStorm32GimbalClientLock(roll_lock, pitch_lock, yaw_lock);
   return 0;
 }
@@ -1244,7 +1244,7 @@ static int luaMavsdkOptionIsRssiEnabled(lua_State *L)
 
 static int luaMavsdkOptionSetRssi(lua_State *L)
 {
-  bool enable = luaL_checkinteger(L, 1);
+  bool enable = (luaL_checkinteger(L, 1) > 0);
   g_model.mavlinkRssi = (enable) ? 1 : 0;
   return 0;
 }
