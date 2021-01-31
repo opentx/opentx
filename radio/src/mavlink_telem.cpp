@@ -528,6 +528,16 @@ void MavlinkTelem::doTask(void)
 
 // -- Wakeup call from OpenTx --
 // this is the main entry point
+#if !defined(AUX_SERIAL)
+uint32_t mavlinkTelemAvailable(void){ return 0; }
+uint8_t mavlinkTelemGetc(uint8_t *c){ return 0; }
+bool mavlinkTelemPutBuf(const uint8_t *buf, const uint16_t count){ return false; }
+#endif
+#if !defined(AUX2_SERIAL)
+uint32_t mavlinkTelem2Available(void){ return 0; }
+uint8_t mavlinkTelem2Getc(uint8_t *c){ return 0; }
+bool mavlinkTelem2PutBuf(const uint8_t *buf, const uint16_t count){ return false; }
+#endif
 
 uint32_t _mavlinkTelemAvailable(void)
 {

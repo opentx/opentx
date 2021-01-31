@@ -526,6 +526,7 @@ uint32_t mavlinkTelemAvailable(void)
   return auxSerialRxFifo_4MavlinkTelem.size();
 }
 
+// call only after check with mavlinkTelem2Available()
 uint8_t mavlinkTelemGetc(uint8_t *c)
 {
   return auxSerialRxFifo_4MavlinkTelem.pop(*c);
@@ -544,10 +545,6 @@ bool mavlinkTelemPutBuf(const uint8_t *buf, const uint16_t count)
   return true;
 }
 
-#else
-uint32_t mavlinkTelemAvailable(void){ return 0; }
-uint8_t mavlinkTelemGetc(uint8_t *c){ return 0; }
-bool mavlinkTelemPutBuf(const uint8_t *buf, const uint16_t count){ return false; }
 #endif
 
 #if defined(AUX2_SERIAL)
@@ -558,6 +555,7 @@ uint32_t mavlinkTelem2Available(void)
   return aux2SerialRxFifo_4MavlinkTelem.size();
 }
 
+// call only after check with mavlinkTelem2Available()
 uint8_t mavlinkTelem2Getc(uint8_t *c)
 {
   return aux2SerialRxFifo_4MavlinkTelem.pop(*c);
@@ -576,10 +574,6 @@ bool mavlinkTelem2PutBuf(const uint8_t *buf, const uint16_t count)
   return true;
 }
 
-#else
-uint32_t mavlinkTelem2Available(void){ return 0; }
-uint8_t mavlinkTelem2Getc(uint8_t *c){ return 0; }
-bool mavlinkTelem2PutBuf(const uint8_t *buf, const uint16_t count){ return false; }
 #endif
-#endif
+#endif // TELEMETRY_MAVLINK
 //OWEND
