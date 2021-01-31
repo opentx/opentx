@@ -1209,10 +1209,8 @@ static int luaMavsdkGetMissionItem(lua_State *L)
       is_global = true;
       break;
   }
+  lua_pushtableboolean(L, "is_global", is_global);
   if (is_global) {
-    lua_pushtablenil(L, "x");
-    lua_pushtablenil(L, "y");
-    lua_pushtablenil(L, "z");
     lua_pushtableinteger(L, "lat", mavlinkTelem.missionItem.x);
     lua_pushtableinteger(L, "lon", mavlinkTelem.missionItem.y);
     lua_pushtablenumber(L, "alt", mavlinkTelem.missionItem.z);
@@ -1221,9 +1219,6 @@ static int luaMavsdkGetMissionItem(lua_State *L)
     lua_pushtablenumber(L, "x", mavlinkTelem.missionItem.x * 0.0001f);
     lua_pushtablenumber(L, "y", mavlinkTelem.missionItem.y * 0.0001f);
     lua_pushtablenumber(L, "z", mavlinkTelem.missionItem.z);
-    lua_pushtablenil(L, "lat");
-    lua_pushtablenil(L, "lon");
-    lua_pushtablenil(L, "alt");
   }
   return 1;
 }
