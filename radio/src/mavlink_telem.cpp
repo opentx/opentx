@@ -637,7 +637,7 @@ void MavlinkTelem::_resetRadio(void)
   radio.noise = 0;
   radio.remnoise = 0;
 
-  if (!radio.is_receiving && !radio.is_receiving65 && radio.is_receiving35) mavlinkResetTelemetryRssiValue();
+  if (!radio.is_receiving && !radio.is_receiving65 && !radio.is_receiving35) mavlinkResetTelemetryRssiValue();
 }
 
 void MavlinkTelem::_resetRadio65(void)
@@ -645,7 +645,7 @@ void MavlinkTelem::_resetRadio65(void)
   radio.is_receiving65 = 0;
   radio.rssi65 = UINT8_MAX;
 
-  if (!radio.is_receiving && !radio.is_receiving65 && radio.is_receiving35) mavlinkResetTelemetryRssiValue();
+  if (!radio.is_receiving && !radio.is_receiving65 && !radio.is_receiving35) mavlinkResetTelemetryRssiValue();
 }
 
 void MavlinkTelem::_resetRadio35(void)
@@ -653,7 +653,7 @@ void MavlinkTelem::_resetRadio35(void)
   radio.is_receiving35 = 0;
   radio.rssi35 = UINT8_MAX;
 
-  if (!radio.is_receiving && !radio.is_receiving65 && radio.is_receiving35) mavlinkResetTelemetryRssiValue();
+  if (!radio.is_receiving && !radio.is_receiving65 && !radio.is_receiving35) mavlinkResetTelemetryRssiValue();
 }
 
 void MavlinkTelem::_reset(void)
