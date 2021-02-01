@@ -484,6 +484,10 @@ bool setupPulsesInternalModule()
 {
   uint8_t protocol = getRequiredProtocol(INTERNAL_MODULE);
 
+  if(protocol != PROTOCOL_CHANNELS_NONE) {
+    INTERNAL_MODULE_ON();
+  }
+
   heartbeat |= (HEART_TIMER_PULSES << INTERNAL_MODULE);
 
   if (moduleState[INTERNAL_MODULE].protocol != protocol) {
@@ -501,6 +505,10 @@ bool setupPulsesInternalModule()
 bool setupPulsesExternalModule()
 {
   uint8_t protocol = getRequiredProtocol(EXTERNAL_MODULE);
+
+  if(protocol != PROTOCOL_CHANNELS_NONE) {
+    EXTERNAL_MODULE_ON();
+  }
 
   heartbeat |= (HEART_TIMER_PULSES << EXTERNAL_MODULE);
 

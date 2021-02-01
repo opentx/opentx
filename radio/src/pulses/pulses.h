@@ -353,7 +353,9 @@ inline void startPulses()
   setupPulsesInternalModule();
 #endif
 
+#if defined(HARDWARE_EXTERNAL_MODULE)
   setupPulsesExternalModule();
+#endif
 
 #if defined(HARDWARE_EXTRA_MODULE)
   extramodulePpmStart();
