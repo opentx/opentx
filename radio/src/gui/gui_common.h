@@ -186,10 +186,12 @@ inline uint8_t MODULE_CHANNELS_ROWS(int moduleIdx)
 
 inline bool isRacingModeAllowed()
 {
-  if (isModulePXX2(INTERNAL_MODULE) && 0 == g_model.moduleData[INTERNAL_MODULE].channelsCount && moduleState[INTERNAL_MODULE].racingMode)
-    return true;
-  else
-    return false;
+  return isModulePXX2(INTERNAL_MODULE) && g_model.moduleData[INTERNAL_MODULE].getChannelsCount() == 8;
+}
+
+inline bool isRacingModeEnabled()
+{
+  return isRacingModeAllowed() && g_model.moduleData[INTERNAL_MODULE].pxx2.racingMode;
 }
 
 inline uint8_t IF_ALLOW_RACING_MODE(int moduleIdx)
@@ -197,9 +199,8 @@ inline uint8_t IF_ALLOW_RACING_MODE(int moduleIdx)
   if (!IS_MODULE_ENABLED(moduleIdx)) {
     return HIDDEN_ROW;
   }
-  else if (isModulePXX2(moduleIdx)) {
-    if (0 == g_model.moduleData[moduleIdx].channelsCount)
-      return 1;
+  else if (isRacingModeAllowed()) {
+    return 0;
   }
   return HIDDEN_ROW;
 }

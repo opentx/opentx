@@ -1236,8 +1236,8 @@ void menuModelSetup(event_t event)
       case ITEM_MODEL_SETUP_INTERNAL_MODULE_RACING_MODE:
       {
         ModuleData & moduleData = g_model.moduleData[moduleIdx];
-        lcdDrawTextAlignedLeft(y, STR_RACING_MODE);
-        moduleState[moduleIdx].racingMode = editCheckBox(moduleState[moduleIdx].racingMode, MODEL_SETUP_2ND_COLUMN, y, "", attr, event);
+        lcdDrawText(INDENT_WIDTH, y, STR_RACING_MODE);
+        moduleData.pxx2.racingMode = editCheckBox(moduleData.pxx2.racingMode, MODEL_SETUP_2ND_COLUMN, y, "", attr, event);
         break;
       }
 #endif
@@ -1522,7 +1522,6 @@ void menuModelSetup(event_t event)
               if (event == EVT_KEY_LONG(KEY_ENTER)) {
                 killEvents(event);
                 setCustomFailsafe(moduleIdx);
-                storageDirty(EE_MODEL);
                 AUDIO_WARNING1();
                 SEND_FAILSAFE_NOW(moduleIdx);
               }

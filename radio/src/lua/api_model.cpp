@@ -135,7 +135,7 @@ static int luaModelGetModule(lua_State *L)
     lua_pushtableinteger(L, "subType", module.subType);
     lua_pushtableinteger(L, "modelId", g_model.header.modelId[idx]);
     lua_pushtableinteger(L, "firstChannel", module.channelsStart);
-    lua_pushtableinteger(L, "channelsCount", module.channelsCount + 8);
+    lua_pushtableinteger(L, "channelsCount", module.getChannelsCount());
     lua_pushtableinteger(L, "Type", module.type);
 #if defined(MULTIMODULE)
     if (module.type == MODULE_TYPE_MULTIMODULE) {

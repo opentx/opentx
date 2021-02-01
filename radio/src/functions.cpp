@@ -381,7 +381,7 @@ void evalFunctions(const CustomFunctionData * functions, CustomFunctionsContext 
             break;
 
           case FUNC_RACING_MODE:
-            if (isRacingModeAllowed()) {
+            if (isRacingModeEnabled()) {
               newActiveFunctions |= (1u << FUNCTION_RACING_MODE);
             }
             break;
