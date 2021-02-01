@@ -158,10 +158,6 @@ class MavlinkTelem
       return (_is_receiving > 0);
     }
 
-    uint8_t autopilottype = MAV_AUTOPILOT_GENERIC;
-    uint8_t vehicletype = MAV_TYPE_GENERIC;
-    uint8_t flightmode = 0;
-
     struct Radio {
       uint16_t is_receiving; //RADIO_STATUS has priority
       uint8_t rssi;
@@ -203,6 +199,10 @@ class MavlinkTelem
     struct Comp gimbalmanager; //it's not exactly a component, can be the autopilot or the companion or the gimbal
 
     // MAVSDK AUTOPILOT
+
+    uint8_t autopilottype = MAV_AUTOPILOT_GENERIC;
+    uint8_t vehicletype = MAV_TYPE_GENERIC;
+    uint8_t flightmode = 0;
 
     struct Att {
       float roll_rad; // rad
