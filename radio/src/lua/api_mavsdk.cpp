@@ -1252,8 +1252,7 @@ static int luaMavsdkOptionSetRssi(lua_State *L)
 static int luaMavsdkSetOpentTxRssi(lua_State *L)
 {
   int32_t value = luaL_checkinteger(L, 1);
-  telemetryData.rssi.set(value);
-  telemetryStreaming = MAVLINK_RSSI_TIMEOUT();
+  mavlinkTelem.telemetrySetRssiValue(value, true);
   return 0;
 }
 

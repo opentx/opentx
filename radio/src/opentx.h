@@ -108,8 +108,9 @@ telemetryData.rssi
 telemetryData.clear()
 class TelemetryData
 TelemetryFilterDecorator
-TELEMETRY_STREAMING()
 TELEMETRY_RSSI()
+TELEMETRY_STREAMING()
+MODEL_TELEMETRY_STREAMING()
 telemetryWakeup()
 telemetryItems[index].setValue(g_model.telemetrySensors[index], value, unit, prec);
 sportProcessTelemetryPacket

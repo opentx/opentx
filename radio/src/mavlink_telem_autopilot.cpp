@@ -477,9 +477,9 @@ void MavlinkTelem::handleMessageAutopilot(void)
       gps_instancemask |= 0x01;
       clear_request(TASK_AUTOPILOT, TASK_SENDREQUESTDATASTREAM_EXTENDED_STATUS);
       autopilot.requests_waiting_mask &=~ AUTOPILOT_REQUESTWAITING_GPS_RAW_INT;
-      mavlinkSetTelemetryValue(GPS_ALT_FIRST_ID, 0, 10, (int32_t)(payload.alt), UNIT_METERS, 3);
+      telemetrySetValue(GPS_ALT_FIRST_ID, 0, 10, (int32_t)(payload.alt), UNIT_METERS, 3);
       if (payload.vel != UINT16_MAX) {
-        mavlinkSetTelemetryValue(GPS_SPEED_FIRST_ID, 0, 11, (int32_t)(payload.vel), UNIT_METERS, 2);
+        telemetrySetValue(GPS_SPEED_FIRST_ID, 0, 11, (int32_t)(payload.vel), UNIT_METERS, 2);
       }
       break;
     }
@@ -530,10 +530,10 @@ void MavlinkTelem::handleMessageAutopilot(void)
       INCU8(vfr.updated);
       clear_request(TASK_AUTOPILOT, TASK_SENDREQUESTDATASTREAM_EXTRA2);
       autopilot.requests_waiting_mask &=~ AUTOPILOT_REQUESTWAITING_VFR_HUD;
-      mavlinkSetTelemetryValue(ALT_FIRST_ID, 0, 13, (int32_t)(payload.alt * 100.0f), UNIT_METERS, 2);
-      mavlinkSetTelemetryValue(VARIO_FIRST_ID, 0, 14, (int32_t)(payload.climb * 100.0f), UNIT_METERS_PER_SECOND, 2);
-      mavlinkSetTelemetryValue(AIR_SPEED_FIRST_ID, 0, 15, (int32_t)(payload.airspeed * 100.0f), UNIT_METERS_PER_SECOND, 2);
-      mavlinkSetTelemetryValue(GPS_COURS_FIRST_ID, 0, 16, (int32_t)payload.heading * 10, UNIT_DEGREE, 1);
+      telemetrySetValue(ALT_FIRST_ID, 0, 13, (int32_t)(payload.alt * 100.0f), UNIT_METERS, 2);
+      telemetrySetValue(VARIO_FIRST_ID, 0, 14, (int32_t)(payload.climb * 100.0f), UNIT_METERS_PER_SECOND, 2);
+      telemetrySetValue(AIR_SPEED_FIRST_ID, 0, 15, (int32_t)(payload.airspeed * 100.0f), UNIT_METERS_PER_SECOND, 2);
+      telemetrySetValue(GPS_COURS_FIRST_ID, 0, 16, (int32_t)payload.heading * 10, UNIT_DEGREE, 1);
       break;
     }
 
@@ -588,9 +588,9 @@ void MavlinkTelem::handleMessageAutopilot(void)
         INCU8(bat2.updated);
       }
       if (payload.id < 8) bat_instancemask |= (1 << payload.id);
-      mavlinkSetTelemetryValue(BATT_ID, 0, 17, voltage/100, UNIT_VOLTS, 1);
-      mavlinkSetTelemetryValue(VFAS_FIRST_ID, 0, 18, voltage/10, UNIT_VOLTS, 2);
-      mavlinkSetTelemetryValue(CURR_FIRST_ID, 0, 19, payload.current_battery/10, UNIT_AMPS, 1);
+      telemetrySetValue(BATT_ID, 0, 17, voltage/100, UNIT_VOLTS, 1);
+      telemetrySetValue(VFAS_FIRST_ID, 0, 18, voltage/10, UNIT_VOLTS, 2);
+      telemetrySetValue(CURR_FIRST_ID, 0, 19, payload.current_battery/10, UNIT_AMPS, 1);
       break;
     }
 
@@ -619,7 +619,7 @@ void MavlinkTelem::handleMessageAutopilot(void)
       radio.rssi35 = payload.rssi;
       radio.is_receiving35 = MAVLINK_TELEM_RADIO_RECEIVING_TIMEOUT;
       if (!radio.is_receiving && !radio.is_receiving65) {
-        mavlinkSetTelemetryRssiValue(radio.rssi35);
+        telemetrySetRssiValue(radio.rssi35, false);
       }
       break;
     }
@@ -631,7 +631,7 @@ void MavlinkTelem::handleMessageAutopilot(void)
       radio.is_receiving65 = MAVLINK_TELEM_RADIO_RECEIVING_TIMEOUT;
       clear_request(TASK_AUTOPILOT, TASK_SENDREQUESTDATASTREAM_RC_CHANNELS);
       if (!radio.is_receiving) {
-        mavlinkSetTelemetryRssiValue(radio.rssi65);
+        telemetrySetRssiValue(radio.rssi65, false);
       }
       break;
     }

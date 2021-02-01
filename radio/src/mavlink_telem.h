@@ -28,12 +28,6 @@ uint16_t mavlinkTaskRunTime(void);
 uint16_t mavlinkTaskRunTimeMax(void);
 uint16_t mavlinkTaskLoad(void);
 
-// -- Miscellaneous stuff --
-
-uint8_t MAVLINK_RSSI_TIMEOUT();
-void mavlinkSetTelemetryValue(uint16_t id, uint8_t subId, uint8_t instance, int32_t value, uint32_t unit, uint32_t prec);
-void mavlinkSetTelemetryRssiValue(uint8_t rssi);
-
 // -- main Mavlink stuff
 
 #define MAVLINK_COMM_NUM_BUFFERS      1 // 4
@@ -178,8 +172,13 @@ class MavlinkTelem
       uint8_t rssi65;
       uint16_t is_receiving35; //msg 35 is last resort
       uint8_t rssi35;
+      uint16_t is_receivingLua; //rssi set via lua
     };
     struct Radio radio;
+
+    void telemetrySetValue(uint16_t id, uint8_t subId, uint8_t instance, int32_t value, uint32_t unit, uint32_t prec);
+    void telemetrySetRssiValue(uint8_t rssi, bool is_lua);
+    void telemetryResetRssiValue(void);
 
     struct Comp { // not all fields are relevant for/used by all components
       uint8_t compid;
