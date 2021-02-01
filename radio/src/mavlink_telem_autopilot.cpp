@@ -574,6 +574,9 @@ void MavlinkTelem::handleMessageAutopilot(void)
         bat1.voltage_mV = voltage; // mV
         bat1.current_cA = payload.current_battery; // 10*mA, -1 if not known
         bat1.remaining_pct = payload.battery_remaining; //(0%: 0, 100%: 100), -1 if not knwon
+        bat1.time_remaining = payload.time_remaining; // 0 if not knwon
+        bat1.charge_state = payload.charge_state; // 0 if not knwon
+        bat1.fault_bitmask = payload.fault_bitmask;
         bat1.cellcount = cellcount;
         INCU8(bat1.updated);
       }
@@ -584,6 +587,9 @@ void MavlinkTelem::handleMessageAutopilot(void)
         bat2.voltage_mV = voltage; // mV
         bat2.current_cA = payload.current_battery; // 10*mA, -1 if not known
         bat2.remaining_pct = payload.battery_remaining; //(0%: 0, 100%: 100), -1 if not knwon
+        bat2.time_remaining = payload.time_remaining; // 0 if not knwon
+        bat2.charge_state = payload.charge_state; // 0 if not knwon
+        bat2.fault_bitmask = payload.fault_bitmask;
         bat2.cellcount = cellcount;
         INCU8(bat2.updated);
       }
@@ -800,6 +806,9 @@ void MavlinkTelem::_resetAutopilot(void)
   bat1.voltage_mV = 0;
   bat1.current_cA = -1;
   bat1.remaining_pct = -1;
+  bat1.time_remaining = 0;
+  bat1.charge_state = 0;
+  bat1.fault_bitmask = 0;
   bat1.cellcount = -1;
   bat1.updated = 0;
 
@@ -809,6 +818,9 @@ void MavlinkTelem::_resetAutopilot(void)
   bat2.voltage_mV = 0;
   bat2.current_cA = -1;
   bat2.remaining_pct = -1;
+  bat2.time_remaining = 0;
+  bat2.charge_state = 0;
+  bat2.fault_bitmask = 0;
   bat2.cellcount = -1;
   bat2.updated = 0;
 

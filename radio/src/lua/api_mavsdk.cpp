@@ -845,7 +845,7 @@ static int luaMavsdkGetVfrThrottle(lua_State *L)
 
 static int luaMavsdkGetBat1ChargeConsumed(lua_State *L)
 {
-  if (mavlinkTelem.bat1.charge_consumed_mAh >= 0) {
+  if (mavlinkTelem.bat1.charge_consumed_mAh != -1) {
     lua_pushnumber(L, mavlinkTelem.bat1.charge_consumed_mAh);
   } 
   else {
@@ -856,7 +856,7 @@ static int luaMavsdkGetBat1ChargeConsumed(lua_State *L)
 
 static int luaMavsdkGetBat1EnergyConsumed(lua_State *L)
 {
-  if (mavlinkTelem.bat1.energy_consumed_hJ >= 0) {
+  if (mavlinkTelem.bat1.energy_consumed_hJ != -1) {
     lua_pushnumber(L, mavlinkTelem.bat1.energy_consumed_hJ * 100.0f);
   } 
   else {
@@ -884,7 +884,7 @@ static int luaMavsdkGetBat1Voltage(lua_State *L)
 
 static int luaMavsdkGetBat1Current(lua_State *L)
 {
-  if (mavlinkTelem.bat1.current_cA >= 0) {
+  if (mavlinkTelem.bat1.current_cA != -1) {
     lua_pushnumber(L, mavlinkTelem.bat1.current_cA * 0.01f);
   } 
   else {
@@ -895,9 +895,43 @@ static int luaMavsdkGetBat1Current(lua_State *L)
 
 static int luaMavsdkGetBat1Remaining(lua_State *L)
 {
-  if (mavlinkTelem.bat1.remaining_pct >= 0) {
+  if (mavlinkTelem.bat1.remaining_pct != -1) {
     lua_pushinteger(L, mavlinkTelem.bat1.remaining_pct);
   } 
+  else {
+    lua_pushnil(L);
+  }
+  return 1;
+}
+
+static int luaMavsdkGetBat1TimeRemaining(lua_State *L)
+{
+  if (mavlinkTelem.bat1.time_remaining != -1) {
+    lua_pushinteger(L, mavlinkTelem.bat1.time_remaining);
+  }
+  else {
+    lua_pushnil(L);
+  }
+  return 1;
+}
+
+static int luaMavsdkGetBat1ChargeState(lua_State *L)
+{
+  if (mavlinkTelem.bat1.charge_state != MAV_BATTERY_CHARGE_STATE_UNDEFINED) {
+    lua_pushinteger(L, mavlinkTelem.bat1.charge_state);
+  }
+  else {
+    lua_pushnil(L);
+  }
+  return 1;
+}
+
+static int luaMavsdkGetBat1FaultBitMask(lua_State *L)
+{
+  if (mavlinkTelem.bat1.charge_state == MAV_BATTERY_CHARGE_STATE_FAILED ||
+      mavlinkTelem.bat1.charge_state == MAV_BATTERY_CHARGE_STATE_UNHEALTHY) {
+    lua_pushinteger(L, mavlinkTelem.bat1.fault_bitmask);
+  }
   else {
     lua_pushnil(L);
   }
@@ -917,7 +951,7 @@ static int luaMavsdkGetBat1CellCount(lua_State *L)
 
 static int luaMavsdkGetBat2ChargeConsumed(lua_State *L)
 {
-  if (mavlinkTelem.bat2.charge_consumed_mAh >= 0) {
+  if (mavlinkTelem.bat2.charge_consumed_mAh != -1) {
     lua_pushnumber(L, mavlinkTelem.bat2.charge_consumed_mAh);
   } 
   else {
@@ -928,7 +962,7 @@ static int luaMavsdkGetBat2ChargeConsumed(lua_State *L)
 
 static int luaMavsdkGetBat2EnergyConsumed(lua_State *L)
 {
-  if (mavlinkTelem.bat2.energy_consumed_hJ >= 0) {
+  if (mavlinkTelem.bat2.energy_consumed_hJ != -1) {
     lua_pushnumber(L, mavlinkTelem.bat2.energy_consumed_hJ * 100.0f);
   } 
   else {
@@ -956,7 +990,7 @@ static int luaMavsdkGetBat2Voltage(lua_State *L)
 
 static int luaMavsdkGetBat2Current(lua_State *L)
 {
-  if (mavlinkTelem.bat2.current_cA >= 0) {
+  if (mavlinkTelem.bat2.current_cA != -1) {
     lua_pushnumber(L, mavlinkTelem.bat2.current_cA * 0.01f);
   } 
   else {
@@ -967,9 +1001,43 @@ static int luaMavsdkGetBat2Current(lua_State *L)
 
 static int luaMavsdkGetBat2Remaining(lua_State *L)
 {
-  if (mavlinkTelem.bat2.remaining_pct >= 0) {
+  if (mavlinkTelem.bat2.remaining_pct != -1) {
     lua_pushinteger(L, mavlinkTelem.bat2.remaining_pct);
   } 
+  else {
+    lua_pushnil(L);
+  }
+  return 1;
+}
+
+static int luaMavsdkGetBat2TimeRemaining(lua_State *L)
+{
+  if (mavlinkTelem.bat2.time_remaining != -1) {
+    lua_pushinteger(L, mavlinkTelem.bat2.time_remaining);
+  }
+  else {
+    lua_pushnil(L);
+  }
+  return 1;
+}
+
+static int luaMavsdkGetBat2ChargeState(lua_State *L)
+{
+  if (mavlinkTelem.bat2.charge_state != MAV_BATTERY_CHARGE_STATE_UNDEFINED) {
+    lua_pushinteger(L, mavlinkTelem.bat2.charge_state);
+  }
+  else {
+    lua_pushnil(L);
+  }
+  return 1;
+}
+
+static int luaMavsdkGetBat2FaultBitMask(lua_State *L)
+{
+  if (mavlinkTelem.bat2.charge_state == MAV_BATTERY_CHARGE_STATE_FAILED ||
+      mavlinkTelem.bat2.charge_state == MAV_BATTERY_CHARGE_STATE_UNHEALTHY) {
+    lua_pushinteger(L, mavlinkTelem.bat2.fault_bitmask);
+  }
   else {
     lua_pushnil(L);
   }
@@ -1387,6 +1455,9 @@ const luaL_Reg mavsdkLib[] = {
   { "getBatVoltage", luaMavsdkGetBat1Voltage },
   { "getBatCurrent", luaMavsdkGetBat1Current },
   { "getBatRemaining", luaMavsdkGetBat1Remaining },
+  { "getBatTimeRemaining", luaMavsdkGetBat1TimeRemaining },
+  { "getBatChargeState", luaMavsdkGetBat1ChargeState },
+  { "getBatFaultBitMask", luaMavsdkGetBat1FaultBitMask },
   { "getBatCellCount", luaMavsdkGetBat1CellCount },
 
   { "getBat2ChargeConsumed", luaMavsdkGetBat2ChargeConsumed },
@@ -1395,6 +1466,9 @@ const luaL_Reg mavsdkLib[] = {
   { "getBat2Voltage", luaMavsdkGetBat2Voltage },
   { "getBat2Current", luaMavsdkGetBat2Current },
   { "getBat2Remaining", luaMavsdkGetBat2Remaining },
+  { "getBat2TimeRemaining", luaMavsdkGetBat2TimeRemaining },
+  { "getBat2ChargeState", luaMavsdkGetBat2ChargeState },
+  { "getBat2FaultBitMask", luaMavsdkGetBat2FaultBitMask },
   { "getBat2CellCount", luaMavsdkGetBat2CellCount },
 
   { "isBatAvailable", luaMavsdkIsBat1Available },

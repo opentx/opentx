@@ -259,6 +259,9 @@ class MavlinkTelem
       uint32_t voltage_mV; // mV
       int16_t current_cA; // 10*mA, -1 if not known
       int8_t remaining_pct; //(0%: 0, 100%: 100), -1 if not known
+      int32_t time_remaining; //0 if not known
+      uint8_t charge_state; //0 if not known
+      uint32_t fault_bitmask;
       int8_t cellcount; //-1 if not known
       uint8_t updated;
     };
