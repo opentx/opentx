@@ -530,25 +530,45 @@ static int luaMavsdkGetRadioRssi(lua_State *L)
   else if (mavlinkTelem.radio.is_receiving35) {
     rssi = mavlinkTelem.radio.rssi35;
   }
-  lua_pushinteger(L, rssi);
+  if (rssi != UINT8_MAX) {
+    lua_pushinteger(L, rssi);
+  }
+  else {
+    lua_pushnil(L);
+  }
   return 1;
 }
 
 static int luaMavsdkGetRadioRemoteRssi(lua_State *L)
 {
-  lua_pushinteger(L, mavlinkTelem.radio.remrssi);
+  if (mavlinkTelem.radio.is_receiving) {
+    lua_pushinteger(L, mavlinkTelem.radio.remrssi);
+  }
+  else {
+    lua_pushnil(L);
+  }
   return 1;
 }
 
 static int luaMavsdkGetRadioNoise(lua_State *L)
 {
-  lua_pushinteger(L, mavlinkTelem.radio.noise);
+  if (mavlinkTelem.radio.is_receiving) {
+    lua_pushinteger(L, mavlinkTelem.radio.noise);
+  }
+  else {
+    lua_pushnil(L);
+  }
   return 1;
 }
 
 static int luaMavsdkGetRadioRemoteNoise(lua_State *L)
 {
-  lua_pushinteger(L, mavlinkTelem.radio.remnoise);
+  if (mavlinkTelem.radio.is_receiving) {
+    lua_pushinteger(L, mavlinkTelem.radio.remnoise);
+  }
+  else {
+    lua_pushnil(L);
+  }
   return 1;
 }
 
