@@ -144,6 +144,16 @@ void MavlinkTelem::telemetryResetRssiValue(void)
     setTelemetryValue(PROTOCOL_TELEMETRY_FRSKY_SPORT, RSSI_ID, 0, 1, 0, UNIT_DB, 0);
 }
 
+bool MavlinkTelem::telemetryVoiceEnabled(void)
+{
+  if (!g_model.mavlinkRssi && !g_model.mavlinkMimicSensors) return true;
+
+  if (g_model.mavlinkRssi && !radio.rssi_voice_disabled) return true;
+
+  return false;
+  //return g_model.mavlinkRssi || !g_model.mavlinkMimicSensors;
+}
+
 // -- TASK handlers --
 // tasks can be set directly with SETTASK()
 // some tasks don't need immediate execution, or need reliable request
@@ -710,6 +720,8 @@ void MavlinkTelem::_reset(void)
   _resetRadio65();
   _resetRadio35();
   radio.rssi_scaled = 0;
+  radio.rssi_voice_disabled = false;
+
   _resetAutopilot();
   _resetGimbalAndGimbalClient();
   _resetCamera();

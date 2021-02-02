@@ -207,7 +207,7 @@ void telemetryWakeup()
 //OW
 //    if (!g_model.rssiAlarms.disabled) {
 #if defined(TELEMETRY_MAVLINK)
-    if (!g_model.rssiAlarms.disabled && (g_model.mavlinkRssi || !g_model.mavlinkMimicSensors)) {
+    if (!g_model.rssiAlarms.disabled && mavlinkTelem.telemetryVoiceEnabled()) {
 #else
     if (!g_model.rssiAlarms.disabled) {
 #endif

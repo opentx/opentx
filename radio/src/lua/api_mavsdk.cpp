@@ -1363,6 +1363,13 @@ static int luaMavsdkOptionSetRssiScale(lua_State *L)
   return 0;
 }
 
+static int luaMavsdkRadioDisableRssiVoice(lua_State *L)
+{
+  bool disable = (luaL_checkinteger(L, 1) > 0);
+  mavlinkTelem.radio.rssi_voice_disabled = disable;
+  return 0;
+}
+
 // I believe the names can't be longer than 32 chars
 const luaL_Reg mavsdkLib[] = {
   { "mavtelemIsEnabled", luaMavsdkMavTelemIsEnabled },
@@ -1528,6 +1535,7 @@ const luaL_Reg mavsdkLib[] = {
   { "optionEnableRssi", luaMavsdkOptionEnableRssi },
   { "optionGetRssiScale", luaMavsdkOptionGetRssiScale },
   { "optionSetRssiScale", luaMavsdkOptionSetRssiScale },
+  { "radioDisableRssiVoice", luaMavsdkRadioDisableRssiVoice },
 
   { "getTaskStats", luaMavsdkGetTaskStats },
 
