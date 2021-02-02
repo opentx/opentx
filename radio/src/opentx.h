@@ -29,6 +29,7 @@
 
 //OW
 #define OWVERSIONSTR  "olliw-v21rc09"
+#define OWVERSIONONLYSTR    "v21rc10"
 //OWEND
 
 /*

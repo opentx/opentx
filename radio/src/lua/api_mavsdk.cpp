@@ -415,6 +415,12 @@ static int luaMavsdkMavTelemIsEnabled(lua_State *L)
   return 1;
 }
 
+static int luaMavsdkMavTelemVersion(lua_State *L)
+{
+  lua_pushstring(L, OWVERSIONONLYSTR);
+  return 1;
+}
+
 static int luaMavsdkIsReceiving(lua_State *L)
 {
   bool flag = mavlinkTelem.isReceiving();
@@ -1373,8 +1379,9 @@ static int luaMavsdkRadioDisableRssiVoice(lua_State *L)
 // I believe the names can't be longer than 32 chars
 const luaL_Reg mavsdkLib[] = {
   { "mavtelemIsEnabled", luaMavsdkMavTelemIsEnabled },
-  { "isReceiving", luaMavsdkIsReceiving },
+  { "getVersion", luaMavsdkMavTelemVersion },
 
+  { "isReceiving", luaMavsdkIsReceiving },
   { "isInitialized", luaMavsdkIsInitialized },
   { "getAutopilotType", luaMavsdkGetAutopilotType },
   { "getVehicleType", luaMavsdkGetVehicleType },
