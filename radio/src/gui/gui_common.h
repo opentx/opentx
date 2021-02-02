@@ -205,6 +205,11 @@ inline uint8_t IF_ALLOW_RACING_MODE(int moduleIdx)
   }
   return HIDDEN_ROW;
 }
+#else
+inline uint8_t IF_ALLOW_RACING_MODE(int)
+{
+  return HIDDEN_ROW;
+}
 #endif
 
 #if defined(MULTIMODULE)
