@@ -1255,7 +1255,7 @@ bool menuModelSetup(event_t event)
       {
         ModuleData & moduleData = g_model.moduleData[moduleIdx];
         lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, STR_RACING_MODE);
-        moduleData.pxx2.racingMode = editCheckBox(moduleData.pxx2.racingMode, MODEL_SETUP_2ND_COLUMN, y, "", attr, event);
+        moduleData.pxx2.racingMode = editCheckBox(moduleData.pxx2.racingMode, MODEL_SETUP_2ND_COLUMN, y, attr, event);
         break;
       }
 #endif
