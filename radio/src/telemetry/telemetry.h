@@ -40,11 +40,6 @@
 extern uint8_t telemetryStreaming; // >0 (true) == data is streaming in. 0 = no data detected for some time
 extern uint8_t modelTelemetryStreaming; // allows to differentiate between module telem and model telem
 
-inline bool TELEMETRY_STREAMING()
-{
-  return telemetryStreaming > 0;
-}
-
 inline bool MODEL_TELEMETRY_STREAMING()
 {
   return modelTelemetryStreaming > 0;

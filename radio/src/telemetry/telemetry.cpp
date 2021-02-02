@@ -244,11 +244,14 @@ void telemetryInterrupt10ms()
       if (sensor.type == TELEM_TYPE_CALCULATED) {
         telemetryItems[i].per10ms(sensor);
       }
-      if (tick160ms && telemetryItems[i].timeout > 0) {
-        telemetryItems[i].timeout--;
-      }
-      if (!MODEL_TELEMETRY_STREAMING() && tick160ms && telemetryItems[i].timeout < TELEMETRY_SENSOR_TIMEOUT_NO_MODEL_TELEM) {
-        telemetryItems[i].timeout = TELEMETRY_SENSOR_TIMEOUT_OLD;
+      if (tick160ms) {
+        auto & timeout = telemetryItems[i].timeout;
+        if (!MODEL_TELEMETRY_STREAMING() && timeout < TELEMETRY_SENSOR_TIMEOUT_NO_MODEL_TELEM) {
+          timeout = TELEMETRY_SENSOR_TIMEOUT_OLD;
+        }
+        else if (timeout > 0) {
+          timeout--;
+        }
       }
     }
     telemetryStreaming--;
