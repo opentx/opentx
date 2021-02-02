@@ -18,8 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _AUTOCHECKBOX_H_
-#define _AUTOCHECKBOX_H_
+#pragma once
 
 #include <QCheckBox>
 #include "modeledit/modeledit.h"
@@ -43,6 +42,11 @@ class AutoCheckBox: public QCheckBox
       this->field = &field;
       this->panel = panel;
       updateValue();
+    }
+
+    void setEnabled(bool enabled)
+    {
+      QCheckBox::setEnabled(enabled);
     }
 
     void updateValue()
@@ -70,5 +74,3 @@ class AutoCheckBox: public QCheckBox
     ModelPanel * panel;
     bool lock;
 };
-
-#endif // _AUTOCHECKBOX_H_

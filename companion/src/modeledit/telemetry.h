@@ -18,8 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _TELEMETRY_H_
-#define _TELEMETRY_H_
+#pragma once
 
 #include "modeledit.h"
 #include "eeprominterface.h"
@@ -94,11 +93,6 @@ class TelemetrySensorPanel: public ModelPanel
     void moveDownSensor(int index);
 
   protected slots:
-    void on_name_editingFinished();
-    void on_type_currentIndexChanged(int index);
-    void on_formula_currentIndexChanged(int index);
-    void on_unit_currentIndexChanged(int index);
-    void on_prec_valueChanged();
     void on_customContextMenuRequested(QPoint pos);
     bool hasClipboardData(QByteArray * data = nullptr) const;
     void cmCopy();
@@ -112,6 +106,10 @@ class TelemetrySensorPanel: public ModelPanel
     void cmMoveDown();
     void onItemModelAboutToBeUpdated();
     void onItemModelUpdateComplete();
+    void on_nameDataChanged();
+    void on_formulaDataChanged();
+    void on_unitDataChanged();
+    void on_precDataChanged();
 
   private:
     Ui::TelemetrySensor * ui;
@@ -181,5 +179,3 @@ class TelemetryPanel : public ModelPanel
     void connectItemModelEvents(const int id);
     inline bool isLocked() { return lock; }
 };
-
-#endif // _TELEMETRY_H_
