@@ -539,6 +539,17 @@ static int luaMavsdkGetRadioRssi(lua_State *L)
   return 1;
 }
 
+static int luaMavsdkGetRadioRssiScaled(lua_State *L)
+{
+  if (mavlinkTelem.radio.is_receiving || mavlinkTelem.radio.is_receiving65 || mavlinkTelem.radio.is_receiving35) {
+    lua_pushinteger(L, mavlinkTelem.radio.rssi_scaled);
+  }
+  else {
+    lua_pushnil(L);
+  }
+  return 1;
+}
+
 static int luaMavsdkGetRadioRemoteRssi(lua_State *L)
 {
   if (mavlinkTelem.radio.is_receiving) {
@@ -1337,6 +1348,21 @@ static int luaMavsdkOptionEnableRssi(lua_State *L)
   return 0;
 }
 
+static int luaMavsdkOptionGetRssiScale(lua_State *L)
+{
+  lua_pushinteger(L, g_model.mavlinkRssiScale);
+  return 1;
+}
+
+static int luaMavsdkOptionSetRssiScale(lua_State *L)
+{
+  int32_t scale = luaL_checkinteger(L, 1);
+  if (scale < 0) scale = 0;
+  if (scale > 255) scale = 255;
+  g_model.mavlinkRssiScale = scale;
+  return 0;
+}
+
 // I believe the names can't be longer than 32 chars
 const luaL_Reg mavsdkLib[] = {
   { "mavtelemIsEnabled", luaMavsdkMavTelemIsEnabled },
@@ -1400,6 +1426,7 @@ const luaL_Reg mavsdkLib[] = {
   { "getRadioRemoteRssi", luaMavsdkGetRadioRemoteRssi },
   { "getRadioNoise", luaMavsdkGetRadioNoise },
   { "getRadioRemoteNoise", luaMavsdkGetRadioRemoteNoise },
+  { "getRadioRssiScaled", luaMavsdkGetRadioRssiScaled },
 
   { "getAttRollDeg", luaMavsdkGetAttRollDeg },
   { "getAttPitchDeg", luaMavsdkGetAttPitchDeg },
@@ -1499,6 +1526,8 @@ const luaL_Reg mavsdkLib[] = {
 
   { "optionIsRssiEnabled", luaMavsdkOptionIsRssiEnabled },
   { "optionEnableRssi", luaMavsdkOptionEnableRssi },
+  { "optionGetRssiScale", luaMavsdkOptionGetRssiScale },
+  { "optionSetRssiScale", luaMavsdkOptionSetRssiScale },
 
   { "getTaskStats", luaMavsdkGetTaskStats },
 

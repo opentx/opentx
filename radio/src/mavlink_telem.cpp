@@ -97,13 +97,24 @@ void MavlinkTelem::telemetrySetValue(uint16_t id, uint8_t subId, uint8_t instanc
 }
 
 // only for MAVLINK_MSG_ID_RADIO_STATUS, MAVLINK_MSG_ID_RC_CHANNELS, MAVLINK_MSG_ID_RC_CHANNELS_RAW
-void MavlinkTelem::telemetrySetRssiValue(uint8_t rssi, bool is_lua)
+void MavlinkTelem::telemetrySetRssiValue(uint8_t rssi)
 {
+  if (g_model.mavlinkRssiScale > 0) {
+    if (g_model.mavlinkRssiScale < 255) { //if not full range, respect  UINT8_MAX
+      if (rssi == UINT8_MAX) rssi = 0;
+    }
+    if (rssi > g_model.mavlinkRssiScale) rssi = g_model.mavlinkRssiScale; //constrain
+    rssi = (uint8_t)( ((uint16_t)rssi * 100) / g_model.mavlinkRssiScale); //scale to 0..99
+  }
+  else { //mavlink default
+    if (rssi == UINT8_MAX) rssi = 0;
+  }
+
+  radio.rssi_scaled = rssi;
+
   if (g_model.mavlinkRssi) {
     if (!radio.is_receiving && !radio.is_receiving65 && !radio.is_receiving35) return;
   }
-
-  if (rssi == UINT8_MAX) rssi = 0;
 
   if (g_model.mavlinkRssi) {
     telemetryData.rssi.set(rssi);
@@ -123,6 +134,8 @@ void MavlinkTelem::telemetrySetRssiValue(uint8_t rssi, bool is_lua)
 void MavlinkTelem::telemetryResetRssiValue(void)
 {
   if (radio.is_receiving || radio.is_receiving65 || radio.is_receiving35) return;
+
+  radio.rssi_scaled = 0;
 
   if (g_model.mavlinkRssi)
     telemetryData.rssi.reset();
@@ -696,6 +709,7 @@ void MavlinkTelem::_reset(void)
   _resetRadio();
   _resetRadio65();
   _resetRadio35();
+  radio.rssi_scaled = 0;
   _resetAutopilot();
   _resetGimbalAndGimbalClient();
   _resetCamera();

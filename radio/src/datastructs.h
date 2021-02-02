@@ -635,6 +635,8 @@ PACK(struct ModelData {
   uint16_t mavlinkMimicSensors:3; // currently just off/on, but allow e.g. FrSky, CF, FrSky passthrough.
   uint16_t mavlinkRcOverride:1;
   uint16_t _mavlinkLogging:1; // not currently used
+  uint8_t  mavlinkRssiScale;
+  uint8_t  _mavlinkDummy2; // not currently used
   // needs to adapt CHKSIZE below //if not all are use compiled optiomizes to lowest size, which may raise error
 #endif
 //OWEND
@@ -980,7 +982,7 @@ static inline void check_struct()
 //  CHKSIZE(ModelData, 9736);
 #if defined(TELEMETRY_MAVLINK)
   CHKSIZE(RadioData, 881+2);
-  CHKSIZE(ModelData, 9736+2);
+  CHKSIZE(ModelData, 9736+4);
 #else
   CHKSIZE(RadioData, 881);
   CHKSIZE(ModelData, 9736);

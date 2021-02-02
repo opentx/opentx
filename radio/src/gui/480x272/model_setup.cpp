@@ -136,6 +136,7 @@ enum MenuModelSetupItems {
 #if defined(TELEMETRY_MAVLINK)
   ITEM_MODEL_SETUP_MAVLINK_LABEL,
   ITEM_MODEL_SETUP_MAVLINK_RSSI,
+  ITEM_MODEL_SETUP_MAVLINK_RSSISCALE,
   ITEM_MODEL_SETUP_MAVLINK_MIMICSENSORS,
   ITEM_MODEL_SETUP_MAVLINK_RCOVERRIDE,
 #endif
@@ -661,7 +662,7 @@ bool menuModelSetup(event_t event)
          TRAINER_ROWS,
 //OW
 #if defined(TELEMETRY_MAVLINK)
-         LABEL(Mavlink), 0, 0, 0
+         LABEL(Mavlink), 0, 0, 0, 0
 #endif
 //OWEND
        });
@@ -1370,6 +1371,18 @@ bool menuModelSetup(event_t event)
       case ITEM_MODEL_SETUP_MAVLINK_RSSI: {
         lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, "Rssi");
         g_model.mavlinkRssi = editCheckBox(g_model.mavlinkRssi, MODEL_SETUP_2ND_COLUMN, y, attr, event);
+        break;
+      }
+
+      case ITEM_MODEL_SETUP_MAVLINK_RSSISCALE: {
+        lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, "Rssi scale");
+        //g_model.mavlinkRssi = editCheckBox(g_model.mavlinkRssi, MODEL_SETUP_2ND_COLUMN, y, attr, event);
+        lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, (int16_t)g_model.mavlinkRssiScale, attr | LEFT, 0, NULL, "");
+        if (attr) {
+          int16_t scale = g_model.mavlinkRssiScale;
+          CHECK_INCDEC_MODELVAR_ZERO(event, scale, 255);
+          g_model.mavlinkRssiScale = scale;
+        }
         break;
       }
 
