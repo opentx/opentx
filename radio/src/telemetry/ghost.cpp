@@ -84,18 +84,13 @@ const GhostSensor *getGhostSensor(uint8_t id)
 
 void processGhostTelemetryValue(uint8_t index, int32_t value)
 {
-  if (!TELEMETRY_STREAMING())
-    return;
-
   const GhostSensor * sensor = getGhostSensor(index);
   setTelemetryValue(PROTOCOL_TELEMETRY_GHOST, sensor->id, 0, 0, value, sensor->unit, sensor->precision);
 }
 
 void processGhostTelemetryValueString(const GhostSensor * sensor, const char * str)
 {
-  if (TELEMETRY_STREAMING()) {
     setTelemetryText(PROTOCOL_TELEMETRY_GHOST, sensor->id, 0, 0, str);
-  }
 }
 
 bool checkGhostTelemetryFrameCRC()
