@@ -625,7 +625,7 @@ void MavlinkTelem::handleMessageAutopilot(void)
       radio.rssi35 = payload.rssi;
       radio.is_receiving35 = MAVLINK_TELEM_RADIO_RECEIVING_TIMEOUT;
       if (!radio.is_receiving && !radio.is_receiving65) {
-        telemetrySetRssiValue(radio.rssi35, false);
+        telemetrySetRssiValue(radio.rssi35);
       }
       break;
     }
@@ -637,7 +637,7 @@ void MavlinkTelem::handleMessageAutopilot(void)
       radio.is_receiving65 = MAVLINK_TELEM_RADIO_RECEIVING_TIMEOUT;
       clear_request(TASK_AUTOPILOT, TASK_SENDREQUESTDATASTREAM_RC_CHANNELS);
       if (!radio.is_receiving) {
-        telemetrySetRssiValue(radio.rssi65, false);
+        telemetrySetRssiValue(radio.rssi65);
       }
       break;
     }

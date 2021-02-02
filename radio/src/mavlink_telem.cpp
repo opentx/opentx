@@ -394,7 +394,7 @@ void MavlinkTelem::handleMessage(void)
     radio.noise = payload.noise;
     radio.remnoise = payload.remnoise;
     radio.is_receiving = MAVLINK_TELEM_RADIO_RECEIVING_TIMEOUT;
-    telemetrySetRssiValue(radio.rssi, false);
+    telemetrySetRssiValue(radio.rssi);
     return;
   }
 
