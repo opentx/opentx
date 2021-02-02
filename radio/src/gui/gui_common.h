@@ -184,6 +184,7 @@ inline uint8_t MODULE_CHANNELS_ROWS(int moduleIdx)
   }
 }
 
+#if defined(PXX2)
 inline bool isRacingModeAllowed()
 {
   return isModulePXX2(INTERNAL_MODULE) && g_model.moduleData[INTERNAL_MODULE].getChannelsCount() == 8;
@@ -204,6 +205,7 @@ inline uint8_t IF_ALLOW_RACING_MODE(int moduleIdx)
   }
   return HIDDEN_ROW;
 }
+#endif
 
 #if defined(MULTIMODULE)
 inline uint8_t MULTI_DISABLE_CHAN_MAP_ROW(uint8_t moduleIdx)

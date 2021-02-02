@@ -380,11 +380,13 @@ void evalFunctions(const CustomFunctionData * functions, CustomFunctionsContext 
             }
             break;
 
+#if defined(PXX2)
           case FUNC_RACING_MODE:
             if (isRacingModeEnabled()) {
               newActiveFunctions |= (1u << FUNCTION_RACING_MODE);
             }
             break;
+#endif
 
 #if defined(DEBUG)
           case FUNC_TEST:
