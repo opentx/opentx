@@ -236,7 +236,7 @@ inline uint8_t MODULE_SUBTYPE_ROWS(int moduleIdx)
 }
 
 #define POT_WARN_ROWS                  ((g_model.potsWarnMode) ? (uint8_t)(NUM_POTS+NUM_SLIDERS) : (uint8_t)0)
-#define TIMER_ROWS(x)                  2, 0, 0, 0, g_model.timers[x].countdownBeep != COUNTDOWN_SILENT ? (uint8_t) 1 : (uint8_t)0
+#define TIMER_ROWS(x)                  2, 0, 0, 0, g_model.timers[x].countdownBeep != COUNTDOWN_SILENT ? (uint8_t)1 : (uint8_t)0
 #define TIMERS_ROWS                    TIMER_ROWS(0), TIMER_ROWS(1), TIMER_ROWS(2)
 
 #if defined(PCBSKY9X)
@@ -316,7 +316,7 @@ void editTimerCountdown(int timerIdx, coord_t y, LcdFlags attr, event_t event)
     lcdDrawNumber(MODEL_SETUP_2ND_COLUMN + 6 * FW, y, TIMER_COUNTDOWN_START(timerIdx), (menuHorizontalPosition == 1 ? attr : 0) | LEFT);
     lcdDrawChar(lcdLastRightPos, y, 's');
   }
-  if (attr && s_editMode>0) {
+  if (attr && s_editMode > 0) {
     switch (menuHorizontalPosition) {
       case 0:
         CHECK_INCDEC_MODELVAR(event, timer.countdownBeep, COUNTDOWN_SILENT, COUNTDOWN_COUNT - 1);
@@ -509,7 +509,7 @@ void menuModelSetup(event_t event)
     }
 
     uint8_t moduleIdx = CURRENT_MODULE_EDITED(k);
-    LcdFlags blink = ((s_editMode>0) ? BLINK|INVERS : INVERS);
+    LcdFlags blink = ((s_editMode > 0) ? BLINK|INVERS : INVERS);
     LcdFlags attr = (sub == k ? blink : 0);
 
     switch (k) {
@@ -540,7 +540,7 @@ void menuModelSetup(event_t event)
                 timerMode += TMRMODE_COUNT-1;
               timer->mode = timerMode;
 #if defined(AUTOSWITCH)
-              if (s_editMode>0) {
+              if (s_editMode > 0) {
                 int8_t val = timer->mode - (TMRMODE_COUNT-1);
                 int8_t switchVal = checkIncDecMovedSwitch(val);
                 if (val != switchVal) {
