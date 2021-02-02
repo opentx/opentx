@@ -168,7 +168,6 @@ class MavlinkTelem
       uint8_t rssi65;
       uint16_t is_receiving35; //msg 35 is last resort
       uint8_t rssi35;
-      uint16_t is_receivingLua; //rssi set via lua
     };
     struct Radio radio;
 

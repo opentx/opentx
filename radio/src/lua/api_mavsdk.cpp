@@ -1330,17 +1330,10 @@ static int luaMavsdkOptionIsRssiEnabled(lua_State *L)
   return 1;
 }
 
-static int luaMavsdkOptionSetRssi(lua_State *L)
+static int luaMavsdkOptionEnableRssi(lua_State *L)
 {
   bool enable = (luaL_checkinteger(L, 1) > 0);
   g_model.mavlinkRssi = (enable) ? 1 : 0;
-  return 0;
-}
-
-static int luaMavsdkSetOpentTxRssi(lua_State *L)
-{
-  int32_t value = luaL_checkinteger(L, 1);
-  mavlinkTelem.telemetrySetRssiValue(value, true);
   return 0;
 }
 
@@ -1505,8 +1498,7 @@ const luaL_Reg mavsdkLib[] = {
   { "apGetRangefinder", luaMavsdkApGetRangefinder },
 
   { "optionIsRssiEnabled", luaMavsdkOptionIsRssiEnabled },
-  { "optionSetRssi", luaMavsdkOptionSetRssi },
-  { "setOpentTxRssi", luaMavsdkSetOpentTxRssi },
+  { "optionEnableRssi", luaMavsdkOptionEnableRssi },
 
   { "getTaskStats", luaMavsdkGetTaskStats },
 

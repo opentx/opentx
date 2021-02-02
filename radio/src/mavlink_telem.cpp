@@ -86,24 +86,24 @@ void mavlinkStart()
 
 void MavlinkTelem::telemetrySetValue(uint16_t id, uint8_t subId, uint8_t instance, int32_t value, uint32_t unit, uint32_t prec)
 {
+  if (g_model.mavlinkRssi) {
+    if (!radio.is_receiving && !radio.is_receiving65 && !radio.is_receiving35) return;
+  }
+
   if (g_model.mavlinkMimicSensors) {
     setTelemetryValue(PROTOCOL_TELEMETRY_FRSKY_SPORT, id, subId, instance, value, unit, prec);
     telemetryStreaming = MAVLINK_TELEM_RADIO_RECEIVING_TIMEOUT; //2 * TELEMETRY_TIMEOUT10ms; // 2 seconds
   }
 }
 
-// only for MAVLINK_MSG_ID_RADIO_STATUS, MAVLINK_MSG_ID_RC_CHANNELS, MAVLINK_MSG_ID_RC_CHANNELS_RAW, and Lua
+// only for MAVLINK_MSG_ID_RADIO_STATUS, MAVLINK_MSG_ID_RC_CHANNELS, MAVLINK_MSG_ID_RC_CHANNELS_RAW
 void MavlinkTelem::telemetrySetRssiValue(uint8_t rssi, bool is_lua)
 {
-  if (!g_model.mavlinkRssi && !g_model.mavlinkMimicSensors) return;
+  if (g_model.mavlinkRssi) {
+    if (!radio.is_receiving && !radio.is_receiving65 && !radio.is_receiving35) return;
+  }
 
-  if (is_lua) {
-    radio.is_receivingLua = 100; // 1 second, we can be strict here
-  }
-  else {
-    if (radio.is_receivingLua) return; //don't use mavlink rssi if lua is in use
-    if (rssi == UINT8_MAX) rssi = 0;
-  }
+  if (rssi == UINT8_MAX) rssi = 0;
 
   if (g_model.mavlinkRssi) {
     telemetryData.rssi.set(rssi);
@@ -122,7 +122,7 @@ void MavlinkTelem::telemetrySetRssiValue(uint8_t rssi, bool is_lua)
 // is probably not needed, aren't they reset by telementryStreaming timeout?
 void MavlinkTelem::telemetryResetRssiValue(void)
 {
-  if (radio.is_receiving || radio.is_receiving65 || radio.is_receiving35 || radio.is_receivingLua) return;
+  if (radio.is_receiving || radio.is_receiving65 || radio.is_receiving35) return;
 
   if (g_model.mavlinkRssi)
     telemetryData.rssi.reset();
@@ -631,7 +631,6 @@ void MavlinkTelem::tick10ms()
   check(radio.is_receiving, _resetRadio());
   check(radio.is_receiving65, _resetRadio65());
   check(radio.is_receiving35, _resetRadio35());
-  check(radio.is_receivingLua, telemetryResetRssiValue()); // Lua rssi needs a special handling
 
   check(autopilot.is_receiving, _resetAutopilot());
   check(gimbal.is_receiving, _resetGimbalAndGimbalClient());
@@ -697,7 +696,6 @@ void MavlinkTelem::_reset(void)
   _resetRadio();
   _resetRadio65();
   _resetRadio35();
-  radio.is_receivingLua = 0;
   _resetAutopilot();
   _resetGimbalAndGimbalClient();
   _resetCamera();
