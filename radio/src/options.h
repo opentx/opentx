@@ -100,7 +100,7 @@ static const char * const options[] = {
 #endif
 //OW
 #if defined(TELEMETRY_MAVLINK)
- "mavlink",
+  "mavlink",
 #endif
   OWVERSIONSTR, //FIXME: JUST FOR NOW, WILL HAVE TO BE REMOVED
 //OWEND
