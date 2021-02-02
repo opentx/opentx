@@ -47,11 +47,7 @@ inline bool TELEMETRY_STREAMING()
 
 inline bool MODEL_TELEMETRY_STREAMING()
 {
-  if ( g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_GHOST) {
-    return modelTelemetryStreaming;
-  }
-
-  return TELEMETRY_STREAMING() && modelTelemetryStreaming > 0;
+  return modelTelemetryStreaming > 0;
 }
 
 enum TelemetryStates {
