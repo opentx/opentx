@@ -20,22 +20,31 @@
 
 #pragma once
 
-#include <QSpinBox>
+#include <QtCore>
 
-class QRegExpValidator;
-
-class HexSpinBox : public QSpinBox
+class FieldRange
 {
-  Q_OBJECT
+  Q_DECLARE_TR_FUNCTIONS(FieldRange)
 
   public:
-    HexSpinBox(QWidget *parent = 0);
+    FieldRange():
+      decimals(0),
+      min(0.0),
+      max(0.0),
+      step(1.0),
+      offset(0.0),
+      prefix(""),
+      unit("")
+    {
+    }
 
-  protected:
-    QValidator::State validate(QString &text, int &pos) const;
-    int valueFromText(const QString &text) const;
-    QString textFromValue(int value) const;
+    float getValue(int value) { return float(value) * step; }
 
-  private:
-    QRegExpValidator *validator;
+    int decimals;
+    double min;
+    double max;
+    double step;
+    double offset;
+    QString prefix;
+    QString unit;
 };

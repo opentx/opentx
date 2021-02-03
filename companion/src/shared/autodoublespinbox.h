@@ -18,8 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _AUTODOUBLESPINBOX_H_
-#define _AUTODOUBLESPINBOX_H_
+#pragma once
 
 #include <QDoubleSpinBox>
 #include "modeledit/modeledit.h"
@@ -97,5 +96,3 @@ class AutoDoubleSpinBox: public QDoubleSpinBox
     ModelPanel * panel;
     bool lock;
 };
-
-#endif // _AUTODOUBLESPINBOX_H_

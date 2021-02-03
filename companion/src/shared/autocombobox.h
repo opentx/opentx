@@ -18,8 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _AUTOCOMBOBOX_H_
-#define _AUTOCOMBOBOX_H_
+#pragma once
 
 #include <QComboBox>
 #include "genericpanel.h"
@@ -137,5 +136,3 @@ class AutoComboBox: public QComboBox
     bool lock = false;
     bool hasModel = false;
 };
-
-#endif // _AUTOCOMBOBOX_H_

@@ -18,8 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _VERTICALSCROLLAREA_H_
-#define _VERTICALSCROLLAREA_H_
+#pragma once
 
 #include <QScrollArea>
 
@@ -36,6 +35,3 @@ class VerticalScrollArea : public QScrollArea
   private:
     GenericPanel * panel;
 };
-
-#endif // _VERTICALSCROLLAREA_H_
-

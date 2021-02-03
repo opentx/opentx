@@ -73,13 +73,20 @@ TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, Ge
   ui->persistent->addItem(tr("Not persistent"), 0);
   ui->persistent->addItem(tr("Persistent (flight)"), 1);
   ui->persistent->addItem(tr("Persistent (manual reset)"), 2);
+  
+  ui->countdownStart->setField(timer.countdownStart, this);
+  ui->countdownStart->addItem("5s", 1);
+  ui->countdownStart->addItem("10s", 0);
+  ui->countdownStart->addItem("20s", -1);
+  ui->countdownStart->addItem("30s", -2);
 
   disableMouseScrolling();
   QWidget::setTabOrder(prevFocus, ui->name);
   QWidget::setTabOrder(ui->name, ui->value);
   QWidget::setTabOrder(ui->value, ui->mode);
   QWidget::setTabOrder(ui->mode, ui->countdownBeep);
-  QWidget::setTabOrder(ui->countdownBeep, ui->minuteBeep);
+  QWidget::setTabOrder(ui->countdownBeep, ui->countdownStart);
+  QWidget::setTabOrder(ui->countdownStart, ui->minuteBeep);
   QWidget::setTabOrder(ui->minuteBeep, ui->persistent);
 
   update();
@@ -121,12 +128,21 @@ void TimerPanel::update()
   ui->countdownBeep->updateValue();
   ui->minuteBeep->setChecked(timer.minuteBeep);
   ui->persistent->updateValue();
+  ui->countdownStart->updateValue();
   lock = false;
 }
 
 QWidget * TimerPanel::getLastFocus()
 {
   return ui->persistent;
+}
+
+void TimerPanel::on_countdownBeep_currentIndexChanged(int index)
+{
+  if(index == TimerData::COUNTDOWN_SILENT)
+    ui->countdownStart->hide();
+  else
+    ui->countdownStart->show();
 }
 
 void TimerPanel::on_value_editingFinished()

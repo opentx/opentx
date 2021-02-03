@@ -18,8 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _AUTOLINEEDIT_H_
-#define _AUTOLINEEDIT_H_
+#pragma once
 
 #include <QLineEdit>
 #include <QRegExpValidator>
@@ -71,10 +70,13 @@ class AutoLineEdit: public QLineEdit
       lock = false;
     }
 
+  signals:
+    void currentDataChanged();
+
   protected slots:
     void onEdited()
     {
-      if (lock)
+      if ((panel && panel->lock) || lock)
         return;
 
       if (field)
@@ -86,6 +88,8 @@ class AutoLineEdit: public QLineEdit
 
       if (panel)
         emit panel->modified();
+
+      emit currentDataChanged();
     }
 
   protected:
@@ -94,5 +98,3 @@ class AutoLineEdit: public QLineEdit
     GenericPanel * panel;
     bool lock;
 };
-
-#endif // _AUTOLINEEDIT_H_

@@ -51,6 +51,7 @@ class TimerPanel : public ModelPanel
     void onModeChanged(int index);
     void on_value_editingFinished();
     void on_minuteBeep_toggled(bool checked);
+    void on_countdownBeep_currentIndexChanged(int index);
     void on_name_editingFinished();
     void onItemModelAboutToBeUpdated();
     void onItemModelUpdateComplete();

@@ -18,19 +18,32 @@
  * GNU General Public License for more details.
  */
 
-#ifndef SENSORDATA_H
-#define SENSORDATA_H
+#pragma once
+
+#include "helpersdata.h"
 
 #include <QtCore>
 
-constexpr int CPN_MAX_SENSORS = 60;
-constexpr int SENSOR_LABEL_LEN = 4;
+constexpr int CPN_MAX_SENSORS  { 60 };
+constexpr int SENSOR_LABEL_LEN { 4 };
+
+constexpr int SENSOR_ISCONFIGURABLE   { 1 << 1 };
+constexpr int SENSOR_HAS_GPS          { 1 << 2 };
+constexpr int SENSOR_HAS_CELLS        { 1 << 3 };
+constexpr int SENSOR_HAS_CONSUMPTION  { 1 << 4 };
+constexpr int SENSOR_HAS_RATIO        { 1 << 5 };
+constexpr int SENSOR_HAS_TOTALIZE     { 1 << 6 };
+constexpr int SENSOR_HAS_SOURCES_12   { 1 << 7 };
+constexpr int SENSOR_HAS_SOURCES_34   { 1 << 8 };
+constexpr int SENSOR_HAS_POSITIVE     { 1 << 9 };
+constexpr int SENSOR_HAS_PRECISION    { 1 << 10 };
 
 class ModelData;
 class AbstractStaticItemModel;
 class PrecisionItemModel;
 
 class SensorData {
+
   Q_DECLARE_TR_FUNCTIONS(SensorData)
 
   public:
@@ -167,19 +180,32 @@ class SensorData {
 
     bool isAvailable() const { return strlen(label) > 0; }
     void updateUnit();
-    QString unitString() const;
     QString nameToString(int index) const;
     QString getOrigin(const ModelData* model) const;
     void clear() { memset(this, 0, sizeof(SensorData)); }
     bool isEmpty() const;
+    QString idToString() const;
+    QString typeToString() const;
+    QString formulaToString() const;
+    QString cellIndexToString() const;
+    QString unitToString() const;
+    QString precToString() const;
+    int getMask() const;
+    QString paramsToString(const ModelData * model) const;
+    FieldRange getRatioRange() const;
+    FieldRange getOffsetRange() const;
+    void formulaChanged();
+    void unitChanged();
 
     static QString sourceToString(const ModelData * model, const int index, const bool sign = false);
     static bool isSourceAvailable(const ModelData * model, const int index);
+    static QString idToString(const int value);
     static QString typeToString(const int value);
     static QString formulaToString(const int value);
     static QString cellIndexToString(const int value);
     static QString unitToString(const int value);
-    static QString precisionToString(const int value);
+    static QString precToString(const int value);
+    static QString boolToString(const bool value) { return value ? tr("Y") : tr("N"); }
 
     static AbstractStaticItemModel * typeItemModel();
     static AbstractStaticItemModel * formulaItemModel();
@@ -187,5 +213,3 @@ class SensorData {
     static AbstractStaticItemModel * unitItemModel();
     static PrecisionItemModel * precisionItemModel();
 };
-
-#endif // SENSORDATA_H

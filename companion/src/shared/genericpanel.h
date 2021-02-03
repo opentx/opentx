@@ -18,8 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _GENERICPANEL_H_
-#define _GENERICPANEL_H_
+#pragma once
 
 #include <QWidget>
 
@@ -65,5 +64,3 @@ class GenericPanel : public QWidget
     void setFocusFilter(QWidget * w);
     void disableMouseScrolling();
 };
-
-#endif // _GENERICPANEL_H_

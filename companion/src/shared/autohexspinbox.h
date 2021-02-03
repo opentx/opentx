@@ -18,8 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _AUTOHEXSPINBOX_H_
-#define _AUTOHEXSPINBOX_H_
+#pragma once
 
 #include "hexspinbox.h"
 #include "modeledit/modeledit.h"
@@ -68,5 +67,3 @@ class AutoHexSpinBox: public HexSpinBox
     ModelPanel * panel;
     bool lock;
 };
-
-#endif // _AUTOHEXSPINBOX_H_
