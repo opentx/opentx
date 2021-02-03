@@ -53,11 +53,13 @@ void preModelLoad()
   }
   pauseMixerCalculations();
 
+#if !defined(SIMU)
 #if defined(HARDWARE_INTERNAL_MODULE)
   stopPulsesInternalModule();
 #endif
 #if defined(HARDWARE_EXTERNAL_MODULE)
   stopPulsesExternalModule();
+#endif
 #endif
 
   stopTrainer();
