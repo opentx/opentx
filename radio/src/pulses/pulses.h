@@ -315,8 +315,12 @@ extern TrainerPulsesData trainerPulsesData;
 
 #if defined(HARDWARE_INTERNAL_MODULE)
 bool setupPulsesInternalModule();
+void stopPulsesInternalModule();
 #endif
+#if defined(HARDWARE_EXTERNAL_MODULE)
 bool setupPulsesExternalModule();
+void stopPulsesExternalModule();
+#endif
 void setupPulsesDSM2();
 void setupPulsesCrossfire();
 void setupPulsesGhost();

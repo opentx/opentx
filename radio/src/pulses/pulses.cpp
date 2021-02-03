@@ -480,13 +480,15 @@ bool setupPulsesInternalModule(uint8_t protocol)
   }
 }
 
+void stopPulsesInternalModule()
+{
+  intmoduleStop();
+  moduleState[INTERNAL_MODULE].protocol = PROTOCOL_CHANNELS_NONE;
+}
+
 bool setupPulsesInternalModule()
 {
   uint8_t protocol = getRequiredProtocol(INTERNAL_MODULE);
-
-  if(protocol != PROTOCOL_CHANNELS_NONE) {
-    INTERNAL_MODULE_ON();
-  }
 
   heartbeat |= (HEART_TIMER_PULSES << INTERNAL_MODULE);
 
@@ -502,13 +504,15 @@ bool setupPulsesInternalModule()
 }
 #endif
 
+void stopPulsesExternalModule()
+{
+  extmoduleStop();
+  moduleState[EXTERNAL_MODULE].protocol = PROTOCOL_CHANNELS_NONE;
+}
+
 bool setupPulsesExternalModule()
 {
   uint8_t protocol = getRequiredProtocol(EXTERNAL_MODULE);
-
-  if(protocol != PROTOCOL_CHANNELS_NONE) {
-    EXTERNAL_MODULE_ON();
-  }
 
   heartbeat |= (HEART_TIMER_PULSES << EXTERNAL_MODULE);
 
