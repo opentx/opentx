@@ -49,7 +49,7 @@ MixerDialog::MixerDialog(QWidget *parent, ModelData & model, MixData * mixdata, 
   this->setWindowTitle(tr("DEST -> %1").arg(RawSource(SOURCE_TYPE_CH, md->destCh - 1).toString(&model, &generalSettings)));
 
   id = dialogFilteredItemModels->registerItemModel(new FilteredItemModel(sharedItemModels->getItemModel(AbstractItemModel::IMID_RawSource),
-                                                         ((RawSource::InputSourceGroups | RawSource::ScriptsGroup) & ~ RawSource::NoneGroup)),
+                                                         (RawSource::InputSourceGroups & ~RawSource::NoneGroup) | RawSource::ScriptsGroup),
                                                    "RawSource");
   ui->sourceCB->setModel(dialogFilteredItemModels->getItemModel(id));
   ui->sourceCB->setCurrentIndex(ui->sourceCB->findData(md->srcRaw.toValue()));
