@@ -483,7 +483,9 @@ bool setupPulsesInternalModule(uint8_t protocol)
 void stopPulsesInternalModule()
 {
   intmoduleStop();
-  moduleState[INTERNAL_MODULE].protocol = PROTOCOL_CHANNELS_NONE;
+  if (pulsesStarted()) {
+    moduleState[INTERNAL_MODULE].protocol = PROTOCOL_CHANNELS_NONE;
+  }
 }
 
 bool setupPulsesInternalModule()
