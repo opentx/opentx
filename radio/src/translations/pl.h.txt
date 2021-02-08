@@ -104,6 +104,8 @@
 #define LEN_VDISPLAYTRIMS      "\006"
 #define TR_VDISPLAYTRIMS       "Nie\0  ""Zmień\0""Tak\0"
 
+#define LEN_VBEEPCOUNTDOWN             TR("\014", "\017")
+#define TR_VBEEPCOUNTDOWN              TR("Cichy\0      ""Pik\0        ""Dźwięk\0     ""Wibrac\0     ""Wibrac&Dźwię","Cichy\0         ""Pik\0           ""Dźwięk\0        ""Wibrac\0        ""Wibrac & Dźwięk")
 #define LEN_VBEEPCOUNTDOWN     "\006"
 #define TR_VBEEPCOUNTDOWN      "Cichy ""Pik  \0""Dźwięk""Wibrac"
 

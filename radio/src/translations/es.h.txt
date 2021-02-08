@@ -103,8 +103,8 @@
 #define LEN_VDISPLAYTRIMS      "\007"
 #define TR_VDISPLAYTRIMS       "No\0    ""Cambiar""Si\0    "
 
-#define LEN_VBEEPCOUNTDOWN     "\010"
-#define TR_VBEEPCOUNTDOWN      "Silencio""Beeps\0  ""Voz\0    ""Haptic\0  "
+#define LEN_VBEEPCOUNTDOWN             TR("\012", "\014")
+#define TR_VBEEPCOUNTDOWN              TR("Silencio\0 ""Beeps\0    ""Voz\0      ""Haptic\0   ""Haptic&Voz","Silencio\0   ""Beeps\0      ""Voz\0        ""Haptic\0     ""Haptic & Voz")
 
 #define LEN_COUNTDOWNVALUES    "\003"
 #define TR_COUNTDOWNVALUES     "5s\0""10s""20s""30s"

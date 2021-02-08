@@ -102,8 +102,8 @@
 #define LEN_VDISPLAYTRIMS              "\006"
 #define TR_VDISPLAYTRIMS               "Ne\0   ""Změna\0""Ano\0  "
 
-#define LEN_VBEEPCOUNTDOWN             "\007"
-#define TR_VBEEPCOUNTDOWN              "Ne\0    ""Zvuk\0  ""Hlas\0  ""Vibrace"
+#define LEN_VBEEPCOUNTDOWN             TR("\013", "\016")
+#define TR_VBEEPCOUNTDOWN              TR("Ne\0        ""Zvuk\0      ""Hlas\0      ""Vibrace\0   ""Vibrac&Hlas","Ne\0           ""Zvuc\0         ""Hlas\0         ""Vibrace\0      ""Vibrace & Hlas")
 
 #define LEN_COUNTDOWNVALUES            "\003"
 #define TR_COUNTDOWNVALUES             "5s\0""10s""20s""30s"

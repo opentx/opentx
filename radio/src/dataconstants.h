@@ -882,6 +882,7 @@ enum CountDownModes {
   COUNTDOWN_VOICE,
 #if defined(HAPTIC)
   COUNTDOWN_HAPTIC,
+  COUNTDOWN_HAPTIC_VOICE,
 #endif
   COUNTDOWN_COUNT
 };

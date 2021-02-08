@@ -104,8 +104,8 @@
 #define LEN_VDISPLAYTRIMS      "\006"
 #define TR_VDISPLAYTRIMS       "Nee\0  ""Kort\0 ""Ja\0   "
 
-#define LEN_VBEEPCOUNTDOWN     "\006"
-#define TR_VBEEPCOUNTDOWN      "Stilte""Beeps\0""Spraak""Tril\0 "
+#define LEN_VBEEPCOUNTDOWN             TR("\013", "\015")
+#define TR_VBEEPCOUNTDOWN              TR("Stilte\0    ""Beeps\0     ""Spraak\0    ""Tril\0      ""Tril&Spraak","Stilte\0      ""Beeps\0       ""Spraak\0      ""Tril/0        ""Tril & Spraak")
 
 #define LEN_COUNTDOWNVALUES    "\003"
 #define TR_COUNTDOWNVALUES     "5s\0""10s""20s""30s"

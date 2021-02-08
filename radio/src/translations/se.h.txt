@@ -109,8 +109,8 @@
 #define LEN_VDISPLAYTRIMS      "\005"
 #define TR_VDISPLAYTRIMS       "Nej\0 ""Ändra""Ja\0  "
 
-#define LEN_VBEEPCOUNTDOWN     "\007"
-#define TR_VBEEPCOUNTDOWN      "Tyst\0  ""Pip\0   ""Röst\0  ""Vibrera"
+#define LEN_VBEEPCOUNTDOWN             TR("\014", "\016")
+#define TR_VBEEPCOUNTDOWN              TR("Tyst\0       ""Pip\0        ""Röst\0       ""Vibrera\0    ""Vibrera&Röst","Tyst\0        ""Pip\0          ""Röst\0         ""Vibrera\0      ""Vibrera & Röst")
 
 #define LEN_VVARIOCENTER       "\004"
 #define TR_VVARIOCENTER        "Pip\0""Tyst"

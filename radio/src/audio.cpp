@@ -1008,7 +1008,11 @@ void audioTrimPress(int value)
 
 void audioTimerCountdown(uint8_t timer, int value)
 {
+#if defined(HAPTIC)
+  if (g_model.timers[timer].countdownBeep == COUNTDOWN_VOICE || g_model.timers[timer].countdownBeep == COUNTDOWN_HAPTIC_VOICE) {
+#else
   if (g_model.timers[timer].countdownBeep == COUNTDOWN_VOICE) {
+#endif
     if (value >= 0 && value <= TIMER_COUNTDOWN_START(timer)) {
       playNumber(value, 0, 0, 0);
     }
@@ -1034,7 +1038,7 @@ void audioTimerCountdown(uint8_t timer, int value)
     }
   }
 #if defined(HAPTIC)
-  else if (g_model.timers[timer].countdownBeep == COUNTDOWN_HAPTIC) {
+  if (g_model.timers[timer].countdownBeep == COUNTDOWN_HAPTIC || g_model.timers[timer].countdownBeep == COUNTDOWN_HAPTIC_VOICE) {
     if (value == 0) {
       haptic.play(15, 3, PLAY_NOW);
     }
