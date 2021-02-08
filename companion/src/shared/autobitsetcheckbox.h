@@ -18,8 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#ifndef AUTOBITSETCHECKBOX_H
-#define AUTOBITSETCHECKBOX_H
+#pragma once
 
 #include <QCheckBox>
 #include "genericpanel.h"
@@ -174,5 +173,3 @@ class AutoBitsetCheckBox: public QCheckBox
     bool m_lock = false;
     GenericPanel * m_panel = nullptr;
 };
-
-#endif // AUTOBITSETCHECKBOX_H

@@ -284,7 +284,7 @@ enum {
   #define TX_CAPACITY_MEASUREMENT_ROWS
 #endif
 
-#if (defined(CROSSFIRE) || defined(GHOST)) && SPORT_MAX_BAUDRATE < 400000
+#if (defined(CROSSFIRE) || defined(GHOST)) && (SPORT_MAX_BAUDRATE < 400000 || defined(DEBUG))
   #define MAX_BAUD_ROWS                  0,
 #else
   #define MAX_BAUD_ROWS

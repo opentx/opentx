@@ -20,7 +20,16 @@
    <property name="spacing">
     <number>6</number>
    </property>
-   <property name="margin">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
     <number>0</number>
    </property>
    <item>
@@ -58,6 +67,9 @@
    </item>
    <item>
     <widget class="AutoComboBox" name="countdownBeep"/>
+   </item>
+   <item>
+    <widget class="AutoComboBox" name="countdownStart"/>
    </item>
    <item>
     <widget class="QCheckBox" name="minuteBeep">

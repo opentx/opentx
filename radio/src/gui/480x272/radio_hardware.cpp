@@ -126,7 +126,7 @@ void onHardwareAntennaSwitchConfirm(const char * result)
 #define EXTERNAL_ANTENNA_ROW
 #endif
 
-#if (defined(CROSSFIRE) || defined(GHOST))
+#if (defined(CROSSFIRE) || defined(GHOST)) && (SPORT_MAX_BAUDRATE < 400000 || defined(DEBUG))
   #define MAX_BAUDRATE_ROW          0
 #else
   #define MAX_BAUDRATE_ROW          HIDDEN_ROW

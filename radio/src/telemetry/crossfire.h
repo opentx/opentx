@@ -102,7 +102,7 @@ const uint8_t CROSSFIRE_PERIODS[] = {
   4,
   16,
 };
-#if SPORT_MAX_BAUDRATE < 400000
+#if SPORT_MAX_BAUDRATE < 400000 || defined(DEBUG)
 #define CROSSFIRE_BAUDRATE    CROSSFIRE_BAUDRATES[g_eeGeneral.telemetryBaudrate]
 #define CROSSFIRE_PERIOD      CROSSFIRE_PERIODS[g_eeGeneral.telemetryBaudrate]
 #else
