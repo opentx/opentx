@@ -239,6 +239,12 @@ inline uint8_t MODULE_SUBTYPE_ROWS(int moduleIdx)
 #define TIMER_ROWS(x)                  2, 0, 0, 0, g_model.timers[x].countdownBeep != COUNTDOWN_SILENT ? (uint8_t)1 : (uint8_t)0
 #define TIMERS_ROWS                    TIMER_ROWS(0), TIMER_ROWS(1), TIMER_ROWS(2)
 
+#if defined(PCBSKY9X) && defined(REVX)
+  #define EXTERNAL_MODULE_OUTPUT_ROW  0, // Output type (OpenDrain / PushPull)
+#else
+  #define EXTERNAL_MODULE_OUTPUT_ROW
+#endif
+
 #if defined(PCBSKY9X)
   #define EXTRA_MODULE_ROWS             LABEL(ExtraModule), 1, 2,
 #else
@@ -447,9 +453,9 @@ void menuModelSetup(event_t event)
     0, // Global functions
 
     EXTERNAL_MODULE_ROWS
-#if defined(PCBSKY9X) && defined(REVX)
-    0, // Output type (OpenDrain / PushPull)
-#endif
+
+    EXTERNAL_MODULE_OUTPUT_ROW
+
     EXTRA_MODULE_ROWS
 
     TRAINER_ROWS
