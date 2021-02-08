@@ -61,7 +61,8 @@ class TimerData {
       COUNTDOWN_SILENT,
       COUNTDOWN_BEEPS,
       COUNTDOWN_VOICE,
-      COUNTDOWN_HAPTIC
+      COUNTDOWN_HAPTIC,
+      COUNTDOWN_HAPTIC_VOICE
     };
     TimerData() { clear(); }
     RawSwitch    mode;

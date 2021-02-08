@@ -66,6 +66,7 @@ TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, Ge
   ui->countdownBeep->addItem(tr("Beeps"), TimerData::COUNTDOWN_BEEPS);
   ui->countdownBeep->addItem(tr("Voice"), TimerData::COUNTDOWN_VOICE);
   ui->countdownBeep->addItem(tr("Haptic"), TimerData::COUNTDOWN_HAPTIC);
+  ui->countdownBeep->addItem(tr("Haptic & Voice"), TimerData::COUNTDOWN_HAPTIC_VOICE);
 
   ui->value->setMaximumTime(firmware->getMaxTimerStart());
 

@@ -949,6 +949,8 @@ QString ModelPrinter::printTimerCountdownBeep(unsigned int countdownBeep)
       return tr("Voice");
     case TimerData::COUNTDOWN_HAPTIC:
       return tr("Haptic");
+    case TimerData::COUNTDOWN_HAPTIC_VOICE:
+      return tr("Haptic & Voice");
     default:
       return CPN_STR_UNKNOWN_ITEM;
   }
