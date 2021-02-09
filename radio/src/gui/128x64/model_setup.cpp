@@ -211,8 +211,8 @@ enum MenuModelSetupItems {
 #endif
 
 #if defined(PCBSKY9X) && defined(REVX)
-  #define OUTPUT_TYPE_ROW              (isModulePPM(EXTERNAL_MODULE) ? (uint8_t)0 : HIDDEN_ROW),
-#elif defined(PCBSKY9X)
+  #define OUTPUT_TYPE_ROW              (isModulePPM(EXTERNAL_MODULE) ? (uint8_t)0 : HIDDEN_ROW), // Output type (OpenDrain / PushPull)
+#else
   #define OUTPUT_TYPE_ROW
 #endif
 
@@ -238,12 +238,6 @@ inline uint8_t MODULE_SUBTYPE_ROWS(int moduleIdx)
 #define POT_WARN_ROWS                  ((g_model.potsWarnMode) ? (uint8_t)(NUM_POTS+NUM_SLIDERS) : (uint8_t)0)
 #define TIMER_ROWS(x)                  2, 0, 0, 0, g_model.timers[x].countdownBeep != COUNTDOWN_SILENT ? (uint8_t)1 : (uint8_t)0
 #define TIMERS_ROWS                    TIMER_ROWS(0), TIMER_ROWS(1), TIMER_ROWS(2)
-
-#if defined(PCBSKY9X) && defined(REVX)
-  #define EXTERNAL_MODULE_OUTPUT_ROW  0, // Output type (OpenDrain / PushPull)
-#else
-  #define EXTERNAL_MODULE_OUTPUT_ROW
-#endif
 
 #if defined(PCBSKY9X)
   #define EXTRA_MODULE_ROWS             LABEL(ExtraModule), 1, 2,
@@ -393,12 +387,22 @@ void editTimerCountdown(int timerIdx, coord_t y, LcdFlags attr, event_t event)
   #define EXTERNAL_MODULE_ROWS
 #endif
 
+#if defined(PCBTARANIS)
+  #define WARN_ROWS \
+    SW_WARN_ROWS, /* Switch warning */ \
+    POT_WARN_ROWS, /* Pot warning */
+#else
+  #define WARN_ROWS \
+    NUM_SWITCHES - 1, /* Switch warning */
+#endif
+
 void menuModelSetup(event_t event)
 {
   int8_t old_editMode = s_editMode;
 
 #if defined(PCBTARANIS)
   int8_t old_posHorz = menuHorizontalPosition;
+#endif
 
   MENU_TAB({
     HEADER_LINE_COLUMNS
@@ -416,8 +420,7 @@ void menuModelSetup(event_t event)
     LABEL(PreflightCheck),
       0, // Checklist
       0, // Throttle warning
-      SW_WARN_ROWS, // Switch warning
-      POT_WARN_ROWS, // Pot warning
+      WARN_ROWS
 
     NUM_STICKS + NUM_POTS + NUM_SLIDERS - 1, // Center beeps
     0, // Global functions
@@ -428,39 +431,12 @@ void menuModelSetup(event_t event)
 
     EXTERNAL_MODULE_ROWS
 
-    TRAINER_ROWS
-  });
-#else
-  MENU_TAB({
-    HEADER_LINE_COLUMNS
-    0,
-    TIMERS_ROWS,
-    0, // Extended limits
-    1, // Extended trims
-    0, // Show trims
-    0, // Trims step
-    0, // Throttle reverse
-    0, // Throttle trace source
-    0, // Throttle trim
-    0, // Throttle trim switch
-
-    LABEL(PreflightCheck),
-      0,  // Checklist
-      0, // Throttle warning
-      NUM_SWITCHES-1, // Switch warning
-
-    NUM_STICKS + NUM_POTS + NUM_SLIDERS - 1, // Center beeps
-    0, // Global functions
-
-    EXTERNAL_MODULE_ROWS
-
-    EXTERNAL_MODULE_OUTPUT_ROW
+    OUTPUT_TYPE_ROW
 
     EXTRA_MODULE_ROWS
 
     TRAINER_ROWS
   });
-#endif
 
   MENU_CHECK(menuTabModel, MENU_MODEL_SETUP, HEADER_LINE + ITEM_MODEL_SETUP_LINES_COUNT);
   title(STR_MENUSETUP);
