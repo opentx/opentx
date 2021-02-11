@@ -129,9 +129,6 @@ enum MenuModelSetupItems {
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_CHANNELS,
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_NOT_ACCESS_RXNUM_BIND_RANGE,
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_PXX2_MODEL_NUM,
-#if defined(PCBSKY9X) && defined(REVX)
-  ITEM_MODEL_SETUP_EXTERNAL_MODULE_OUTPUT_TYPE,
-#endif
 #if defined(AFHDS3)
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_AFHDS3_RX_FREQ,
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_AFHDS3_ACTUAL_POWER,
@@ -151,6 +148,9 @@ enum MenuModelSetupItems {
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_PXX2_RECEIVER_2,
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_PXX2_RECEIVER_3,
 
+#if defined(PCBSKY9X) && defined(REVX)
+  ITEM_MODEL_SETUP_EXTERNAL_MODULE_OUTPUT_TYPE,
+#endif
 #if defined(PCBSKY9X)
   ITEM_MODEL_SETUP_EXTRA_MODULE_LABEL,
   ITEM_MODEL_SETUP_EXTRA_MODULE_CHANNELS,
@@ -211,8 +211,8 @@ enum MenuModelSetupItems {
 #endif
 
 #if defined(PCBSKY9X) && defined(REVX)
-  #define OUTPUT_TYPE_ROW              (isModulePPM(EXTERNAL_MODULE) ? (uint8_t)0 : HIDDEN_ROW),
-#elif defined(PCBSKY9X)
+  #define OUTPUT_TYPE_ROW              (isModulePPM(EXTERNAL_MODULE) ? (uint8_t)0 : HIDDEN_ROW), // Output type (OpenDrain / PushPull)
+#else
   #define OUTPUT_TYPE_ROW
 #endif
 
@@ -387,12 +387,22 @@ void editTimerCountdown(int timerIdx, coord_t y, LcdFlags attr, event_t event)
   #define EXTERNAL_MODULE_ROWS
 #endif
 
+#if defined(PCBTARANIS)
+  #define WARN_ROWS \
+    SW_WARN_ROWS, /* Switch warning */ \
+    POT_WARN_ROWS, /* Pot warning */
+#else
+  #define WARN_ROWS \
+    NUM_SWITCHES - 1, /* Switch warning */
+#endif
+
 void menuModelSetup(event_t event)
 {
   int8_t old_editMode = s_editMode;
 
 #if defined(PCBTARANIS)
   int8_t old_posHorz = menuHorizontalPosition;
+#endif
 
   MENU_TAB({
     HEADER_LINE_COLUMNS
@@ -410,8 +420,7 @@ void menuModelSetup(event_t event)
     LABEL(PreflightCheck),
       0, // Checklist
       0, // Throttle warning
-      SW_WARN_ROWS, // Switch warning
-      POT_WARN_ROWS, // Pot warning
+      WARN_ROWS
 
     NUM_STICKS + NUM_POTS + NUM_SLIDERS - 1, // Center beeps
     0, // Global functions
@@ -422,54 +431,12 @@ void menuModelSetup(event_t event)
 
     EXTERNAL_MODULE_ROWS
 
-    TRAINER_ROWS
-  });
-#else
-  MENU_TAB({
-    HEADER_LINE_COLUMNS
-    0,
-    TIMERS_ROWS,
-    0, // Extended limits
-    1, // Extended trims
-    0, // Show trims
-    0, // Trims step
-    0, // Throttle reverse
-    0, // Throttle trace source
-    0, // Throttle trim
-    0, // Throttle trim switch
-
-    LABEL(PreflightCheck),
-      0,  // Checklist
-      0, // Throttle warning
-      NUM_SWITCHES-1, // Switch warning
-
-    NUM_STICKS+NUM_POTS+NUM_SLIDERS-1, // Center beeps
-    0, // Global functions
-
-    LABEL(ExternalModule),
-      MODULE_TYPE_ROWS(EXTERNAL_MODULE),
-      MULTIMODULE_TYPE_ROWS(EXTERNAL_MODULE)
-      MULTIMODULE_SUBTYPE_ROWS(EXTERNAL_MODULE)
-      MULTIMODULE_STATUS_ROWS(EXTERNAL_MODULE)
-
-      MODULE_CHANNELS_ROWS(EXTERNAL_MODULE),
-      IF_NOT_ACCESS_MODULE_RF(EXTERNAL_MODULE, MODULE_BIND_ROWS(EXTERNAL_MODULE)),      // line reused for PPM: PPM settings
-      IF_ACCESS_MODULE_RF(EXTERNAL_MODULE, 0),                    // RxNum
-      0, // Output type (OpenDrain / PushPull)
-      MODULE_POWER_ROW(EXTERNAL_MODULE),
-      IF_NOT_PXX2_MODULE(EXTERNAL_MODULE, MODULE_OPTION_ROW(EXTERNAL_MODULE)),
-      MULTIMODULE_MODULE_ROWS(EXTERNAL_MODULE)
-      FAILSAFE_ROWS(EXTERNAL_MODULE),
-      IF_ACCESS_MODULE_RF(EXTERNAL_MODULE, 1),                     // Range check and Register buttons
-      IF_PXX2_MODULE(EXTERNAL_MODULE, 0),                          // Module options
-      IF_ACCESS_MODULE_RF(EXTERNAL_MODULE, 0),                     // Receiver 1
-      IF_ACCESS_MODULE_RF(EXTERNAL_MODULE, 0),                     // Receiver 2
-      IF_ACCESS_MODULE_RF(EXTERNAL_MODULE, 0),                     // Receiver 3
+    OUTPUT_TYPE_ROW
 
     EXTRA_MODULE_ROWS
+
     TRAINER_ROWS
   });
-#endif
 
   MENU_CHECK(menuTabModel, MENU_MODEL_SETUP, HEADER_LINE + ITEM_MODEL_SETUP_LINES_COUNT);
   title(STR_MENUSETUP);
