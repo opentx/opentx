@@ -1388,3 +1388,4 @@
 #define ZSTR_SERVO_TEMPERATURE         "SrvT"
 #define ZSTR_SERVO_STATUS              "SrvS"
 #define ZSTR_LOSS                      "Loss"
+#define ZSTR_SPEED                     "Spd "

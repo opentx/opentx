@@ -28,6 +28,7 @@ const MLinkSensor mlinkSensors[] = {
   {MLINK_VOLTAGE,         ZSTR_VFAS,              UNIT_VOLTS,             1},
   {MLINK_CURRENT,         ZSTR_CURR,              UNIT_AMPS,              1},
   {MLINK_VARIO,           ZSTR_VSPD,              UNIT_METERS_PER_SECOND, 1},
+  {MLINK_SPEED,           ZSTR_SPEED,             UNIT_KMH,               1},
   {MLINK_RPM,             ZSTR_RPM,               UNIT_RPMS,              0},
   {MLINK_TEMP,            ZSTR_TEMP1,             UNIT_CELSIUS,           1},
   {MLINK_HEADING,         ZSTR_HDG,               UNIT_DEGREE,            1},
@@ -102,7 +103,7 @@ void processMLinkPacket(const uint8_t * packet)
           setTelemetryValue(PROTOCOL_TELEMETRY_MLINK, MLINK_LIQUIDS, 0, adress, val, UNIT_MILLILITERS, 0);
           break;
         case MLINK_DISTANCE:
-          setTelemetryValue(PROTOCOL_TELEMETRY_MLINK, MLINK_DISTANCE, 0, adress, val * 1000, UNIT_METERS, 0);
+          setTelemetryValue(PROTOCOL_TELEMETRY_MLINK, MLINK_DISTANCE, 0, adress, val * 100, UNIT_METERS, 0);
           break;
         case MLINK_LQI:
           uint8_t mlinkRssi = data[i + 1] >> 1;
