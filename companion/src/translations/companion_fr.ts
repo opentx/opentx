@@ -10638,93 +10638,93 @@ E</translation>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="134"/>
         <source>Formula</source>
-        <translation type="unfinished"></translation>
+        <translation>Formule</translation>
     </message>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="137"/>
         <source>Id</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="138"/>
         <source>Instance</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="142"/>
         <location filename="../firmwares/sensordata.cpp" line="156"/>
         <source>Sensor</source>
-        <translation type="unfinished">Capteur</translation>
+        <translation>Capteur</translation>
     </message>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="147"/>
         <source>Sources</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="159"/>
         <source>GPS</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="160"/>
         <source>Alt</source>
-        <translation type="unfinished">Altitude</translation>
+        <translation>Altitude</translation>
     </message>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="164"/>
         <source>Unit</source>
-        <translation type="unfinished">Unité</translation>
+        <translation>Unité</translation>
     </message>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="167"/>
         <source>Precision</source>
-        <translation type="unfinished">Précision</translation>
+        <translation>Précision</translation>
     </message>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="172"/>
         <source>Ratio</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="173"/>
         <source>Offset</source>
-        <translation type="unfinished">Décalage</translation>
+        <translation>Décalage</translation>
     </message>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="174"/>
         <source>Auto Offset</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="177"/>
         <source>Blades</source>
-        <translation type="unfinished">Pales</translation>
+        <translation>Pales</translation>
     </message>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="178"/>
         <source>Multiplier</source>
-        <translation type="unfinished">Multiplicateur</translation>
+        <translation>Multiplicateur</translation>
     </message>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="183"/>
         <source>Filter</source>
-        <translation type="unfinished">Filtre</translation>
+        <translation>Filtre</translation>
     </message>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="186"/>
         <source>Persist</source>
-        <translation type="unfinished">Persistant</translation>
+        <translation>Persistant</translation>
     </message>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="189"/>
         <source>Positive</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="191"/>
         <source>Log</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="271"/>
@@ -10804,12 +10804,12 @@ E</translation>
     <message>
         <location filename="../firmwares/sensordata.h" line="208"/>
         <source>Y</source>
-        <translation type="unfinished">O</translation>
+        <translation>O</translation>
     </message>
     <message>
         <location filename="../firmwares/sensordata.h" line="208"/>
         <source>N</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
