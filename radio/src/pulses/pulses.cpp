@@ -482,8 +482,8 @@ bool setupPulsesInternalModule(uint8_t protocol)
 
 void stopPulsesInternalModule()
 {
-  intmoduleStop();
-  if (pulsesStarted()) {
+  if (moduleState[INTERNAL_MODULE].protocol != PROTOCOL_CHANNELS_UNINITIALIZED) {
+    intmoduleStop();
     moduleState[INTERNAL_MODULE].protocol = PROTOCOL_CHANNELS_NONE;
   }
 }
@@ -508,8 +508,10 @@ bool setupPulsesInternalModule()
 
 void stopPulsesExternalModule()
 {
-  extmoduleStop();
-  moduleState[EXTERNAL_MODULE].protocol = PROTOCOL_CHANNELS_NONE;
+  if (moduleState[EXTERNAL_MODULE].protocol != PROTOCOL_CHANNELS_UNINITIALIZED)) {
+    extmoduleStop();
+    moduleState[EXTERNAL_MODULE].protocol = PROTOCOL_CHANNELS_NONE;
+  }
 }
 
 bool setupPulsesExternalModule()
