@@ -33,6 +33,7 @@
   #include "hitec.h"
   #include "hott.h"
   #include "multi.h"
+  #include "m-link.h"
 #endif
 #if defined(MULTIMODULE) || defined(AFHDS3)
   #include "flysky_ibus.h"
