@@ -451,7 +451,7 @@ bool setupPulsesInternalModule(uint8_t protocol)
       }
       else {
 #if defined(INTMODULE_HEARTBEAT)
-        scheduleNextMixerCalculation(INTERNAL_MODULE, PXX2_PERIOD + 1 /* backup */);
+        scheduleNextMixerCalculation(INTERNAL_MODULE, PXX2_PERIOD + 2 /* backup */);
 #else
         scheduleNextMixerCalculation(INTERNAL_MODULE, PXX2_PERIOD);
 #endif
