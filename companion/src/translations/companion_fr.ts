@@ -743,58 +743,58 @@ Manche Droit:  Profondeur, Direction
 <context>
     <name>Boards</name>
     <message>
-        <location filename="../firmwares/boards.cpp" line="439"/>
+        <location filename="../firmwares/boards.cpp" line="437"/>
         <source>Left Horizontal</source>
         <translation>Gauche Horizontal</translation>
     </message>
     <message>
-        <location filename="../firmwares/boards.cpp" line="440"/>
+        <location filename="../firmwares/boards.cpp" line="438"/>
         <source>Left Vertical</source>
         <translation>Gauche Vertical</translation>
     </message>
     <message>
-        <location filename="../firmwares/boards.cpp" line="441"/>
+        <location filename="../firmwares/boards.cpp" line="439"/>
         <source>Right Vertical</source>
         <translation>Droit Vertical</translation>
     </message>
     <message>
-        <location filename="../firmwares/boards.cpp" line="442"/>
+        <location filename="../firmwares/boards.cpp" line="440"/>
         <source>Right Horizontal</source>
         <translation>Droit Horizontal</translation>
     </message>
     <message>
-        <location filename="../firmwares/boards.cpp" line="443"/>
+        <location filename="../firmwares/boards.cpp" line="441"/>
         <source>Aux. 1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/boards.cpp" line="444"/>
+        <location filename="../firmwares/boards.cpp" line="442"/>
         <source>Aux. 2</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/boards.cpp" line="449"/>
-        <location filename="../firmwares/boards.cpp" line="600"/>
+        <location filename="../firmwares/boards.cpp" line="447"/>
+        <location filename="../firmwares/boards.cpp" line="598"/>
         <source>Unknown</source>
         <translation>Inconnu</translation>
     </message>
     <message>
-        <location filename="../firmwares/boards.cpp" line="459"/>
+        <location filename="../firmwares/boards.cpp" line="457"/>
         <source>Rud</source>
         <translation>Dir</translation>
     </message>
     <message>
-        <location filename="../firmwares/boards.cpp" line="460"/>
+        <location filename="../firmwares/boards.cpp" line="458"/>
         <source>Ele</source>
         <translation>Prf</translation>
     </message>
     <message>
-        <location filename="../firmwares/boards.cpp" line="461"/>
+        <location filename="../firmwares/boards.cpp" line="459"/>
         <source>Thr</source>
         <translation>Gaz</translation>
     </message>
     <message>
-        <location filename="../firmwares/boards.cpp" line="462"/>
+        <location filename="../firmwares/boards.cpp" line="460"/>
         <source>Ail</source>
         <translation></translation>
     </message>
@@ -8400,11 +8400,6 @@ Mixage actif par défaut si non-renseigné.</translation>
         <translation>Alerte(%1)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="1278"/>
-        <source>Offset</source>
-        <translation>Décalage</translation>
-    </message>
-    <message>
         <location filename="../modelprinter.cpp" line="509"/>
         <source>Flight modes</source>
         <translation>Phases de vol</translation>
@@ -8557,8 +8552,8 @@ Mixage actif par défaut si non-renseigné.</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="1022"/>
-        <location filename="../modelprinter.cpp" line="1322"/>
-        <location filename="../modelprinter.cpp" line="1332"/>
+        <location filename="../modelprinter.cpp" line="1173"/>
+        <location filename="../modelprinter.cpp" line="1183"/>
         <source>Source</source>
         <translation></translation>
     </message>
@@ -8598,252 +8593,89 @@ Mixage actif par défaut si non-renseigné.</translation>
         <translation>FrSky D (câble)</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="1089"/>
+        <location filename="../modelprinter.cpp" line="1078"/>
         <source>Alti</source>
         <translation>Alt</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="1091"/>
+        <location filename="../modelprinter.cpp" line="1080"/>
         <source>Alti+</source>
         <translation>Alt+</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="1093"/>
+        <location filename="../modelprinter.cpp" line="1082"/>
         <source>VSpeed</source>
         <translation>Vitesse verticale</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="1095"/>
-        <location filename="../modelprinter.cpp" line="1112"/>
-        <location filename="../modelprinter.cpp" line="1134"/>
+        <location filename="../modelprinter.cpp" line="1084"/>
+        <location filename="../modelprinter.cpp" line="1101"/>
+        <location filename="../modelprinter.cpp" line="1123"/>
         <source>A1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="1097"/>
-        <location filename="../modelprinter.cpp" line="1114"/>
-        <location filename="../modelprinter.cpp" line="1136"/>
+        <location filename="../modelprinter.cpp" line="1086"/>
+        <location filename="../modelprinter.cpp" line="1103"/>
+        <location filename="../modelprinter.cpp" line="1125"/>
         <source>A2</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="1116"/>
-        <location filename="../modelprinter.cpp" line="1138"/>
+        <location filename="../modelprinter.cpp" line="1105"/>
+        <location filename="../modelprinter.cpp" line="1127"/>
         <source>A3</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="1118"/>
-        <location filename="../modelprinter.cpp" line="1140"/>
+        <location filename="../modelprinter.cpp" line="1107"/>
+        <location filename="../modelprinter.cpp" line="1129"/>
         <source>A4</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="1120"/>
-        <location filename="../modelprinter.cpp" line="1142"/>
+        <location filename="../modelprinter.cpp" line="1109"/>
+        <location filename="../modelprinter.cpp" line="1131"/>
         <source>FAS</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="1122"/>
+        <location filename="../modelprinter.cpp" line="1111"/>
         <source>Cells</source>
         <translation>Velm</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="1164"/>
-        <source>Calculated</source>
-        <translation>Calculé</translation>
-    </message>
-    <message>
-        <location filename="../modelprinter.cpp" line="1174"/>
-        <source>Add</source>
-        <translation>Addition</translation>
-    </message>
-    <message>
-        <location filename="../modelprinter.cpp" line="1176"/>
-        <source>Average</source>
-        <translation>Moyenne</translation>
-    </message>
-    <message>
-        <location filename="../modelprinter.cpp" line="1178"/>
-        <location filename="../modelprinter.cpp" line="1332"/>
+        <location filename="../modelprinter.cpp" line="1183"/>
         <source>Min</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="1180"/>
-        <location filename="../modelprinter.cpp" line="1332"/>
+        <location filename="../modelprinter.cpp" line="1183"/>
         <source>Max</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="1182"/>
-        <source>Multiply</source>
-        <translation>Multiplication</translation>
-    </message>
-    <message>
-        <location filename="../modelprinter.cpp" line="1184"/>
-        <source>Totalise</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../modelprinter.cpp" line="1186"/>
-        <source>Cell</source>
-        <translation>Element LiPo</translation>
-    </message>
-    <message>
-        <location filename="../modelprinter.cpp" line="1188"/>
-        <source>Consumption</source>
-        <translation>Consommation</translation>
-    </message>
-    <message>
-        <location filename="../modelprinter.cpp" line="1190"/>
-        <source>Distance</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../modelprinter.cpp" line="1200"/>
-        <source>Lowest</source>
-        <translation>Min</translation>
-    </message>
-    <message>
-        <location filename="../modelprinter.cpp" line="1202"/>
-        <source>Cell %1</source>
-        <translation>Elém. %1</translation>
-    </message>
-    <message>
-        <location filename="../modelprinter.cpp" line="1203"/>
-        <source>Highest</source>
-        <translation>Max</translation>
-    </message>
-    <message>
-        <location filename="../modelprinter.cpp" line="1203"/>
-        <source>Delta</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../modelprinter.cpp" line="1286"/>
-        <source>Auto Offset</source>
-        <translation>Offset Auto</translation>
-    </message>
-    <message>
-        <location filename="../modelprinter.cpp" line="1381"/>
-        <source>0.</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../modelprinter.cpp" line="1383"/>
-        <source>0.0</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../modelprinter.cpp" line="1385"/>
-        <source>0.00</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../modelprinter.cpp" line="1248"/>
-        <source>Id</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../modelprinter.cpp" line="1252"/>
-        <location filename="../modelprinter.cpp" line="1264"/>
-        <source>Sensor</source>
-        <translation>Capteur</translation>
-    </message>
-    <message>
-        <location filename="../modelprinter.cpp" line="1261"/>
-        <source>Sources</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../modelprinter.cpp" line="1266"/>
-        <source>GPS</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../modelprinter.cpp" line="1281"/>
-        <source>Blades</source>
-        <translation>Pales</translation>
-    </message>
-    <message>
-        <location filename="../modelprinter.cpp" line="1242"/>
-        <source>F</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../modelprinter.cpp" line="1249"/>
-        <source>Inst</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../modelprinter.cpp" line="1267"/>
-        <source>Alt</source>
-        <translation>Altitude</translation>
-    </message>
-    <message>
-        <location filename="../modelprinter.cpp" line="1271"/>
-        <source>Unit</source>
-        <translation>Unité</translation>
-    </message>
-    <message>
-        <location filename="../modelprinter.cpp" line="1273"/>
-        <source>Prec</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../modelprinter.cpp" line="1277"/>
-        <source>Ratio</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../modelprinter.cpp" line="1282"/>
-        <source>Multi</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../modelprinter.cpp" line="1288"/>
-        <source>Filter</source>
-        <translation>Filtre</translation>
-    </message>
-    <message>
-        <location filename="../modelprinter.cpp" line="1290"/>
-        <source>Persist</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../modelprinter.cpp" line="1291"/>
-        <source>Positive</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../modelprinter.cpp" line="1292"/>
-        <source>Log</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../modelprinter.cpp" line="1302"/>
+        <location filename="../modelprinter.cpp" line="1153"/>
         <source>Numbers</source>
         <translation>Chiffres</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="1304"/>
+        <location filename="../modelprinter.cpp" line="1155"/>
         <source>Bars</source>
         <translation>Barres</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="1306"/>
+        <location filename="../modelprinter.cpp" line="1157"/>
         <source>Script</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="1353"/>
+        <location filename="../modelprinter.cpp" line="1204"/>
         <source>Filename</source>
         <translation>Nom de fichier</translation>
     </message>
     <message>
-        <location filename="../modelprinter.cpp" line="1363"/>
+        <location filename="../modelprinter.cpp" line="1214"/>
         <source>Error: Unable to open or read file!</source>
         <translation>Erreur: Impossible d&apos;ouvrir ou de lire le fichier!</translation>
     </message>
@@ -8861,9 +8693,8 @@ Mixage actif par défaut si non-renseigné.</translation>
         <location filename="../modelprinter.cpp" line="298"/>
         <location filename="../modelprinter.cpp" line="521"/>
         <location filename="../modelprinter.cpp" line="863"/>
-        <location filename="../modelprinter.cpp" line="1076"/>
-        <location filename="../modelprinter.cpp" line="1132"/>
-        <location filename="../modelprinter.cpp" line="1300"/>
+        <location filename="../modelprinter.cpp" line="1121"/>
+        <location filename="../modelprinter.cpp" line="1151"/>
         <source>None</source>
         <translation>Aucun</translation>
     </message>
@@ -8939,7 +8770,6 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../modelprinter.cpp" line="692"/>
         <location filename="../modelprinter.cpp" line="931"/>
-        <location filename="../modelprinter.cpp" line="1162"/>
         <source>Custom</source>
         <translation>Prédéfini</translation>
     </message>
@@ -9353,42 +9183,42 @@ Mixage actif par défaut si non-renseigné.</translation>
 <context>
     <name>ModulePanel</name>
     <message>
-        <location filename="../modeledit/setup.cpp" line="353"/>
+        <location filename="../modeledit/setup.cpp" line="369"/>
         <source>Value</source>
         <translation>Valeur</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.cpp" line="354"/>
+        <location filename="../modeledit/setup.cpp" line="370"/>
         <source>Hold</source>
         <translation>Maintien</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.cpp" line="355"/>
+        <location filename="../modeledit/setup.cpp" line="371"/>
         <source>No Pulse</source>
         <translation>Pas d&apos;impulsion</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.cpp" line="533"/>
+        <location filename="../modeledit/setup.cpp" line="549"/>
         <source>Ask</source>
         <translation>Demander</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.cpp" line="534"/>
+        <location filename="../modeledit/setup.cpp" line="550"/>
         <source>Internal</source>
         <translation>Interne</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.cpp" line="535"/>
+        <location filename="../modeledit/setup.cpp" line="551"/>
         <source>Internal + External</source>
         <translation>Interne + Externe</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.cpp" line="535"/>
+        <location filename="../modeledit/setup.cpp" line="551"/>
         <source>External</source>
         <translation>Externe</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.cpp" line="596"/>
+        <location filename="../modeledit/setup.cpp" line="612"/>
         <source>Bind on channel</source>
         <translation>Bind avec VOIE</translation>
     </message>
@@ -10660,225 +10490,326 @@ E</translation>
 <context>
     <name>SensorData</name>
     <message>
-        <location filename="../firmwares/sensordata.cpp" line="47"/>
+        <location filename="../firmwares/sensordata.cpp" line="351"/>
         <source>Raw (-)</source>
         <translation>Chiffres bruts (-)</translation>
     </message>
     <message>
-        <location filename="../firmwares/sensordata.cpp" line="49"/>
-        <location filename="../firmwares/sensordata.cpp" line="95"/>
+        <location filename="../firmwares/sensordata.cpp" line="353"/>
+        <location filename="../firmwares/sensordata.cpp" line="399"/>
         <source>V</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/sensordata.cpp" line="51"/>
+        <location filename="../firmwares/sensordata.cpp" line="355"/>
         <source>A</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/sensordata.cpp" line="53"/>
+        <location filename="../firmwares/sensordata.cpp" line="357"/>
         <source>mA</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/sensordata.cpp" line="55"/>
+        <location filename="../firmwares/sensordata.cpp" line="359"/>
         <source>kts</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/sensordata.cpp" line="57"/>
+        <location filename="../firmwares/sensordata.cpp" line="361"/>
         <source>m/s</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/sensordata.cpp" line="59"/>
+        <location filename="../firmwares/sensordata.cpp" line="363"/>
         <source>km/h</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/sensordata.cpp" line="61"/>
+        <location filename="../firmwares/sensordata.cpp" line="365"/>
         <source>mph</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/sensordata.cpp" line="63"/>
+        <location filename="../firmwares/sensordata.cpp" line="367"/>
         <source>m</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/sensordata.cpp" line="65"/>
+        <location filename="../firmwares/sensordata.cpp" line="369"/>
         <source>f</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/sensordata.cpp" line="67"/>
+        <location filename="../firmwares/sensordata.cpp" line="371"/>
         <source>°C</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/sensordata.cpp" line="69"/>
+        <location filename="../firmwares/sensordata.cpp" line="373"/>
         <source>°F</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/sensordata.cpp" line="71"/>
+        <location filename="../firmwares/sensordata.cpp" line="375"/>
         <source>%</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/sensordata.cpp" line="73"/>
+        <location filename="../firmwares/sensordata.cpp" line="377"/>
         <source>mAh</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/sensordata.cpp" line="75"/>
+        <location filename="../firmwares/sensordata.cpp" line="379"/>
         <source>W</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/sensordata.cpp" line="77"/>
+        <location filename="../firmwares/sensordata.cpp" line="381"/>
         <source>mW</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/sensordata.cpp" line="79"/>
+        <location filename="../firmwares/sensordata.cpp" line="383"/>
         <source>dB</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/sensordata.cpp" line="81"/>
+        <location filename="../firmwares/sensordata.cpp" line="385"/>
         <source>rpms</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/sensordata.cpp" line="83"/>
+        <location filename="../firmwares/sensordata.cpp" line="387"/>
         <source>g</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/sensordata.cpp" line="85"/>
+        <location filename="../firmwares/sensordata.cpp" line="389"/>
         <source>°</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/sensordata.cpp" line="87"/>
+        <location filename="../firmwares/sensordata.cpp" line="391"/>
         <source>Rad</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/sensordata.cpp" line="89"/>
+        <location filename="../firmwares/sensordata.cpp" line="393"/>
         <source>hours</source>
         <translation>heures</translation>
     </message>
     <message>
-        <location filename="../firmwares/sensordata.cpp" line="91"/>
+        <location filename="../firmwares/sensordata.cpp" line="395"/>
         <source>minutes</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/sensordata.cpp" line="93"/>
+        <location filename="../firmwares/sensordata.cpp" line="397"/>
         <source>seconds</source>
         <translation>secondes</translation>
     </message>
     <message>
-        <location filename="../firmwares/sensordata.cpp" line="97"/>
+        <location filename="../firmwares/sensordata.cpp" line="401"/>
         <source>ml/minute</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/sensordata.cpp" line="99"/>
+        <location filename="../firmwares/sensordata.cpp" line="403"/>
         <source>Hertz</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/sensordata.cpp" line="101"/>
+        <location filename="../firmwares/sensordata.cpp" line="405"/>
         <source>mS</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/sensordata.cpp" line="103"/>
+        <location filename="../firmwares/sensordata.cpp" line="407"/>
         <source>uS</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/sensordata.cpp" line="111"/>
+        <location filename="../firmwares/sensordata.cpp" line="38"/>
         <source>TELE</source>
         <translation></translation>
     </message>
     <message>
+        <location filename="../firmwares/sensordata.cpp" line="134"/>
+        <source>Formula</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../firmwares/sensordata.cpp" line="137"/>
+        <source>Id</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../firmwares/sensordata.cpp" line="138"/>
+        <source>Instance</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../firmwares/sensordata.cpp" line="142"/>
+        <location filename="../firmwares/sensordata.cpp" line="156"/>
+        <source>Sensor</source>
+        <translation type="unfinished">Capteur</translation>
+    </message>
+    <message>
+        <location filename="../firmwares/sensordata.cpp" line="147"/>
+        <source>Sources</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../firmwares/sensordata.cpp" line="159"/>
+        <source>GPS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../firmwares/sensordata.cpp" line="160"/>
+        <source>Alt</source>
+        <translation type="unfinished">Altitude</translation>
+    </message>
+    <message>
+        <location filename="../firmwares/sensordata.cpp" line="164"/>
+        <source>Unit</source>
+        <translation type="unfinished">Unité</translation>
+    </message>
+    <message>
+        <location filename="../firmwares/sensordata.cpp" line="167"/>
+        <source>Precision</source>
+        <translation type="unfinished">Précision</translation>
+    </message>
+    <message>
+        <location filename="../firmwares/sensordata.cpp" line="172"/>
+        <source>Ratio</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../firmwares/sensordata.cpp" line="173"/>
+        <source>Offset</source>
+        <translation type="unfinished">Décalage</translation>
+    </message>
+    <message>
+        <location filename="../firmwares/sensordata.cpp" line="174"/>
+        <source>Auto Offset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../firmwares/sensordata.cpp" line="177"/>
+        <source>Blades</source>
+        <translation type="unfinished">Pales</translation>
+    </message>
+    <message>
+        <location filename="../firmwares/sensordata.cpp" line="178"/>
+        <source>Multiplier</source>
+        <translation type="unfinished">Multiplicateur</translation>
+    </message>
+    <message>
+        <location filename="../firmwares/sensordata.cpp" line="183"/>
+        <source>Filter</source>
+        <translation type="unfinished">Filtre</translation>
+    </message>
+    <message>
+        <location filename="../firmwares/sensordata.cpp" line="186"/>
+        <source>Persist</source>
+        <translation type="unfinished">Persistant</translation>
+    </message>
+    <message>
+        <location filename="../firmwares/sensordata.cpp" line="189"/>
+        <source>Positive</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../firmwares/sensordata.cpp" line="191"/>
+        <source>Log</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../firmwares/sensordata.cpp" line="271"/>
         <source>Custom</source>
         <translation>Prédéfini</translation>
     </message>
     <message>
-        <location filename="../firmwares/sensordata.cpp" line="140"/>
+        <location filename="../firmwares/sensordata.cpp" line="273"/>
         <source>Calculated</source>
         <translation>Calculé</translation>
     </message>
     <message>
-        <location filename="../firmwares/sensordata.cpp" line="151"/>
+        <location filename="../firmwares/sensordata.cpp" line="284"/>
         <source>Add</source>
         <translation>Addition</translation>
     </message>
     <message>
-        <location filename="../firmwares/sensordata.cpp" line="153"/>
+        <location filename="../firmwares/sensordata.cpp" line="286"/>
         <source>Average</source>
         <translation>Moyenne</translation>
     </message>
     <message>
-        <location filename="../firmwares/sensordata.cpp" line="155"/>
+        <location filename="../firmwares/sensordata.cpp" line="288"/>
         <source>Minimum</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/sensordata.cpp" line="157"/>
+        <location filename="../firmwares/sensordata.cpp" line="290"/>
         <source>Maximum</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/sensordata.cpp" line="159"/>
+        <location filename="../firmwares/sensordata.cpp" line="292"/>
         <source>Multiply</source>
         <translation>Multiplication</translation>
     </message>
     <message>
-        <location filename="../firmwares/sensordata.cpp" line="161"/>
+        <location filename="../firmwares/sensordata.cpp" line="294"/>
         <source>Totalize</source>
         <translation>Totalisation</translation>
     </message>
     <message>
-        <location filename="../firmwares/sensordata.cpp" line="163"/>
+        <location filename="../firmwares/sensordata.cpp" line="296"/>
         <source>Cell</source>
         <translation>Element LiPo</translation>
     </message>
     <message>
-        <location filename="../firmwares/sensordata.cpp" line="165"/>
+        <location filename="../firmwares/sensordata.cpp" line="298"/>
         <source>Consumption</source>
         <translation>Consommation</translation>
     </message>
     <message>
-        <location filename="../firmwares/sensordata.cpp" line="167"/>
+        <location filename="../firmwares/sensordata.cpp" line="300"/>
         <source>Distance</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../firmwares/sensordata.cpp" line="177"/>
+        <location filename="../firmwares/sensordata.cpp" line="310"/>
         <source>Lowest</source>
         <translation>Min</translation>
     </message>
     <message>
-        <location filename="../firmwares/sensordata.cpp" line="179"/>
+        <location filename="../firmwares/sensordata.cpp" line="312"/>
         <source>Cell %1</source>
         <translation>Elément %1</translation>
     </message>
     <message>
-        <location filename="../firmwares/sensordata.cpp" line="181"/>
+        <location filename="../firmwares/sensordata.cpp" line="314"/>
         <source>Highest</source>
         <translation>Max</translation>
     </message>
     <message>
-        <location filename="../firmwares/sensordata.cpp" line="183"/>
+        <location filename="../firmwares/sensordata.cpp" line="316"/>
         <source>Delta</source>
         <translation></translation>
+    </message>
+    <message>
+        <location filename="../firmwares/sensordata.h" line="208"/>
+        <source>Y</source>
+        <translation type="unfinished">O</translation>
+    </message>
+    <message>
+        <location filename="../firmwares/sensordata.h" line="208"/>
+        <source>N</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -11063,92 +10994,92 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
 <context>
     <name>SetupPanel</name>
     <message>
-        <location filename="../modeledit/setup.cpp" line="1108"/>
+        <location filename="../modeledit/setup.cpp" line="1124"/>
         <source>Popup menu available</source>
         <translation>Menu contextuel disponible</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.cpp" line="1124"/>
+        <location filename="../modeledit/setup.cpp" line="1140"/>
         <source>Timer %1</source>
         <translation>Chrono %1</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.cpp" line="1369"/>
+        <location filename="../modeledit/setup.cpp" line="1385"/>
         <source>THR</source>
         <translation>GAZ</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.cpp" line="1597"/>
+        <location filename="../modeledit/setup.cpp" line="1613"/>
         <source>Profile Settings</source>
         <translation>Paramètres du profil</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.cpp" line="1597"/>
+        <location filename="../modeledit/setup.cpp" line="1613"/>
         <source>SD structure path not specified or invalid</source>
         <translation>Chemin de la structure SD non spécifié ou invalide</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.cpp" line="1612"/>
+        <location filename="../modeledit/setup.cpp" line="1628"/>
         <source>Copy</source>
         <translation>Copier</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.cpp" line="1613"/>
+        <location filename="../modeledit/setup.cpp" line="1629"/>
         <source>Cut</source>
         <translation>Couper</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.cpp" line="1614"/>
+        <location filename="../modeledit/setup.cpp" line="1630"/>
         <source>Paste</source>
         <translation>Coller</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.cpp" line="1615"/>
+        <location filename="../modeledit/setup.cpp" line="1631"/>
         <source>Clear</source>
         <translation>Effacer</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.cpp" line="1617"/>
+        <location filename="../modeledit/setup.cpp" line="1633"/>
         <source>Insert</source>
         <translation>Insérer</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.cpp" line="1618"/>
+        <location filename="../modeledit/setup.cpp" line="1634"/>
         <source>Delete</source>
         <translation>Supprimer</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.cpp" line="1619"/>
+        <location filename="../modeledit/setup.cpp" line="1635"/>
         <source>Move Up</source>
         <translation>Monter</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.cpp" line="1620"/>
+        <location filename="../modeledit/setup.cpp" line="1636"/>
         <source>Move Down</source>
         <translation>Descendre</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.cpp" line="1622"/>
+        <location filename="../modeledit/setup.cpp" line="1638"/>
         <source>Clear All</source>
         <translation>Effacer Tout</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.cpp" line="1657"/>
+        <location filename="../modeledit/setup.cpp" line="1673"/>
         <source>Clear Timer. Are you sure?</source>
         <translation>Effacer le Chrono. Êtes-vous sûr?</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.cpp" line="1669"/>
+        <location filename="../modeledit/setup.cpp" line="1685"/>
         <source>Clear all Timers. Are you sure?</source>
         <translation>Effacer tous les Chronos. Êtes-vous sûr?</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.cpp" line="1691"/>
+        <location filename="../modeledit/setup.cpp" line="1707"/>
         <source>Cut Timer. Are you sure?</source>
         <translation>Couper le Chrono. Êtes-vous sûr?</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup.cpp" line="1699"/>
+        <location filename="../modeledit/setup.cpp" line="1715"/>
         <source>Delete Timer. Are you sure?</source>
         <translation>Supprimer le Chrono. Êtes-vous sûr?</translation>
     </message>
@@ -12625,52 +12556,52 @@ Trop d&apos;erreurs, abandon.</translation>
 <context>
     <name>TelemetryPanel</name>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="856"/>
+        <location filename="../modeledit/telemetry.cpp" line="806"/>
         <source>FrSky S.PORT</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="857"/>
+        <location filename="../modeledit/telemetry.cpp" line="807"/>
         <source>FrSky D</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="860"/>
+        <location filename="../modeledit/telemetry.cpp" line="810"/>
         <source>FrSky D (cable)</source>
         <translation>FrSky D (câble)</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="805"/>
+        <location filename="../modeledit/telemetry.cpp" line="755"/>
         <source>Telemetry screen %1</source>
         <translation>Ecran de télémesure %1</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="870"/>
+        <location filename="../modeledit/telemetry.cpp" line="820"/>
         <source>Source</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="877"/>
+        <location filename="../modeledit/telemetry.cpp" line="827"/>
         <source>Low Alarm</source>
         <translation>Alarme basse</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="878"/>
+        <location filename="../modeledit/telemetry.cpp" line="828"/>
         <source>Critical Alarm</source>
         <translation>Alarme critique</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="910"/>
+        <location filename="../modeledit/telemetry.cpp" line="860"/>
         <source>Winged Shadow How High</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="913"/>
+        <location filename="../modeledit/telemetry.cpp" line="863"/>
         <source>Winged Shadow How High (not supported)</source>
         <translation>Winged Shadow How High (non supporté)</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="1051"/>
+        <location filename="../modeledit/telemetry.cpp" line="1001"/>
         <source>Delete Sensor. Are you sure?</source>
         <translation>Supprimer le Capteur. Êtes-vous sûr?</translation>
     </message>
@@ -12688,279 +12619,99 @@ Trop d&apos;erreurs, abandon.</translation>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="71"/>
-        <source>Custom</source>
-        <translation>Prédéfini</translation>
-    </message>
-    <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="76"/>
-        <source>Calculated</source>
-        <translation>Calculé</translation>
-    </message>
-    <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="90"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="80"/>
         <source>Id</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="119"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="109"/>
         <source>Instance</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="145"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="135"/>
         <source>Rx</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="187"/>
-        <source>Add</source>
-        <translation>Addition</translation>
-    </message>
-    <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="192"/>
-        <source>Average</source>
-        <translation>Moyenne</translation>
-    </message>
-    <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="197"/>
-        <source>Min</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="202"/>
-        <source>Max</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="207"/>
-        <source>Multiply</source>
-        <translation>Multiplication</translation>
-    </message>
-    <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="212"/>
-        <source>Totalize</source>
-        <translation>Totalisation</translation>
-    </message>
-    <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="217"/>
-        <source>Cell</source>
-        <translation>Element LiPo</translation>
-    </message>
-    <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="222"/>
-        <source>Consumption</source>
-        <translation>Consommation</translation>
-    </message>
-    <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="227"/>
-        <source>Dist</source>
-        <translation>Distance</translation>
-    </message>
-    <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="241"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="186"/>
         <source>Cells Sensor :</source>
         <translation>Capteur d&apos;éléments:</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="255"/>
-        <location filename="../modeledit/telemetry_sensor.ui" line="293"/>
-        <location filename="../modeledit/telemetry_sensor.ui" line="321"/>
-        <location filename="../modeledit/telemetry_sensor.ui" line="349"/>
-        <location filename="../modeledit/telemetry_sensor.ui" line="364"/>
-        <location filename="../modeledit/telemetry_sensor.ui" line="379"/>
-        <location filename="../modeledit/telemetry_sensor.ui" line="394"/>
-        <location filename="../modeledit/telemetry_sensor.ui" line="409"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="200"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="238"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="266"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="294"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="309"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="324"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="339"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="354"/>
         <source>---</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="279"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="224"/>
         <source>GPS Sensor :</source>
         <translation>Capteur GPS:</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="307"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="252"/>
         <source>Alt. Sensor :</source>
         <translation>Capteur d&apos;altitude:</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="335"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="280"/>
         <source>Sensor :</source>
         <translation>Capteur:</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="429"/>
-        <source>V</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="434"/>
-        <source>A</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="439"/>
-        <source>mA</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="444"/>
-        <source>kt</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="449"/>
-        <source>m/s</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="454"/>
-        <source>ft/s</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="459"/>
-        <source>km/h</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="464"/>
-        <source>mph</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="469"/>
-        <source>m</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="474"/>
-        <source>ft</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="479"/>
-        <source>°C</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="484"/>
-        <source>°F</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="489"/>
-        <source>%</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="494"/>
-        <source>mAh</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="499"/>
-        <source>W</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="504"/>
-        <source>mW</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="509"/>
-        <source>dBm</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="519"/>
-        <source>g</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="524"/>
-        <source>°</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="529"/>
-        <source>Rad</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="534"/>
-        <source>mL</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="539"/>
-        <source>US fl.Oz.</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="424"/>
-        <source>Raw (-)</source>
-        <translation>Chiffres bruts (-)</translation>
-    </message>
-    <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="514"/>
-        <source>RPM</source>
-        <translation>Tours/minute</translation>
-    </message>
-    <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="544"/>
-        <source>ml/min</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="558"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="378"/>
         <source>Precision</source>
         <translation>Précision</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="574"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="394"/>
         <source>Ratio</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="581"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="401"/>
         <source>Blades</source>
         <translation>Pales</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="616"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="436"/>
         <source>Offset</source>
         <translation>Décalage</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="623"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="443"/>
         <source>Multiplier</source>
         <translation>Multiplicateur</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="655"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="475"/>
         <source>Auto Offset</source>
         <translation>Offset auto</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="665"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="485"/>
         <source>Filter</source>
         <translation>Filtre</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="675"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="495"/>
         <source>Persistent</source>
         <translation>Persistant</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="685"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="505"/>
         <source>Positive</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry_sensor.ui" line="695"/>
+        <location filename="../modeledit/telemetry_sensor.ui" line="515"/>
         <source>Logs</source>
         <translation></translation>
     </message>
@@ -12968,72 +12719,72 @@ Trop d&apos;erreurs, abandon.</translation>
 <context>
     <name>TelemetrySensorPanel</name>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="349"/>
+        <location filename="../modeledit/telemetry.cpp" line="346"/>
         <source>TELE%1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="358"/>
+        <location filename="../modeledit/telemetry.cpp" line="355"/>
         <source>Popup menu available</source>
         <translation>Menu contextuel disponible</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="591"/>
+        <location filename="../modeledit/telemetry.cpp" line="541"/>
         <source>Copy</source>
         <translation>Copier</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="592"/>
+        <location filename="../modeledit/telemetry.cpp" line="542"/>
         <source>Cut</source>
         <translation>Couper</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="593"/>
+        <location filename="../modeledit/telemetry.cpp" line="543"/>
         <source>Paste</source>
         <translation>Coller</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="594"/>
+        <location filename="../modeledit/telemetry.cpp" line="544"/>
         <source>Clear</source>
         <translation>Effacer</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="596"/>
+        <location filename="../modeledit/telemetry.cpp" line="546"/>
         <source>Insert</source>
         <translation>Insérer</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="597"/>
+        <location filename="../modeledit/telemetry.cpp" line="547"/>
         <source>Delete</source>
         <translation>Supprimer</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="598"/>
+        <location filename="../modeledit/telemetry.cpp" line="548"/>
         <source>Move Up</source>
         <translation>Monter</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="599"/>
+        <location filename="../modeledit/telemetry.cpp" line="549"/>
         <source>Move Down</source>
         <translation>Descendre</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="601"/>
+        <location filename="../modeledit/telemetry.cpp" line="551"/>
         <source>Clear All</source>
         <translation>Effacer Tout</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="644"/>
+        <location filename="../modeledit/telemetry.cpp" line="594"/>
         <source>Cut Telemetry Sensor. Are you sure?</source>
         <translation>Couper le capteur de télémétrie. Êtes-vous sûr?</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="663"/>
+        <location filename="../modeledit/telemetry.cpp" line="613"/>
         <source>Clear Telemetry Sensor. Are you sure?</source>
         <translation>Effacer le capteur de télémétrie. Êtes-vous sûr?</translation>
     </message>
     <message>
-        <location filename="../modeledit/telemetry.cpp" line="674"/>
+        <location filename="../modeledit/telemetry.cpp" line="624"/>
         <source>Clear all Telemetry Sensors. Are you sure?</source>
         <translation>Effacez tous les capteurs de télémétrie. Êtes-vous sûr?</translation>
     </message>
@@ -13403,12 +13154,12 @@ hh:mm:ss</translation>
 <context>
     <name>Timer</name>
     <message>
-        <location filename="../modeledit/setup_timer.ui" line="55"/>
+        <location filename="../modeledit/setup_timer.ui" line="64"/>
         <source>Countdown</source>
         <translation>Compte à rebours</translation>
     </message>
     <message>
-        <location filename="../modeledit/setup_timer.ui" line="65"/>
+        <location filename="../modeledit/setup_timer.ui" line="77"/>
         <source>Minute Call</source>
         <translation>Annonces minutes</translation>
     </message>
