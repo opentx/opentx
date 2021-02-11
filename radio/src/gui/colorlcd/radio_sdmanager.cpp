@@ -91,9 +91,9 @@ template <class T>
 class FlashDialog: public FullScreenDialog
 {
   public:
-    explicit FlashDialog(ModuleIndex module):
+    explicit FlashDialog(const T & device):
       FullScreenDialog(WARNING_TYPE_INFO, "Flash device"),
-      device(module),
+      device(device),
       progress(this, {LCD_W / 2 - 50, LCD_H / 2, 100, 15})
     {
     }
@@ -121,17 +121,6 @@ class FlashDialog: public FullScreenDialog
   protected:
     T device;
     Progress progress;
-};
-
-template <class T>
-class MultiFlashDialog: public FlashDialog<T>
-{
-  public:
-    explicit MultiFlashDialog(ModuleIndex module,  MultiModuleType type):
-      FlashDialog<T>(module)
-    {
-      FlashDialog<T>::device.setType(type);
-    }
 };
 
 void RadioSdManagerPage::build(FormWindow * window)
@@ -203,7 +192,8 @@ void RadioSdManagerPage::build(FormWindow * window)
                 });
 #endif
                 menu->addLine(STR_FLASH_EXTERNAL_MULTI, [=]() {
-                    auto dialog = new MultiFlashDialog<MultiDeviceFirmwareUpdate>(EXTERNAL_MODULE, MULTI_TYPE_MULTIMODULE);
+                    MultiDeviceFirmwareUpdate deviceFirmwareUpdate(EXTERNAL_MODULE, MULTI_TYPE_MULTIMODULE);
+                    auto dialog = new FlashDialog<MultiDeviceFirmwareUpdate>(deviceFirmwareUpdate);
                     dialog->flash(getFullPath(name));
                 });
               }
@@ -211,7 +201,8 @@ void RadioSdManagerPage::build(FormWindow * window)
 #endif
             else if (!READ_ONLY() && !strcasecmp(ext, ELRS_FIRMWARE_EXT)) {
               menu->addLine(STR_FLASH_EXTERNAL_ELRS, [=]() {
-                  auto dialog = new MultiFlashDialog<MultiDeviceFirmwareUpdate>(EXTERNAL_MODULE, MULTI_TYPE_ELRS);
+                  MultiDeviceFirmwareUpdate deviceFirmwareUpdate(EXTERNAL_MODULE, MULTI_TYPE_ELRS);
+                  auto dialog = new FlashDialog<MultiDeviceFirmwareUpdate>(deviceFirmwareUpdate);
                   dialog->flash(getFullPath(name));
               });
             }
@@ -226,7 +217,8 @@ void RadioSdManagerPage::build(FormWindow * window)
             if (!READ_ONLY() && !strcasecmp(ext, FIRMWARE_EXT)) {
               if (isBootloader(name.data())) {
                 menu->addLine(STR_FLASH_BOOTLOADER, [=]() {
-                    auto dialog = new FlashDialog<BootloaderDeviceFirmwareUpdate>(BOOTLOADER_MODULE);
+                    BootloaderFirmwareUpdate bootloaderFirmwareUpdate;
+                    auto dialog = new FlashDialog<BootloaderFirmwareUpdate>(bootloaderFirmwareUpdate);
                     dialog->flash(getFullPath(name));
                 });
               }
@@ -234,16 +226,19 @@ void RadioSdManagerPage::build(FormWindow * window)
             else if (!READ_ONLY() && !strcasecmp(ext, SPORT_FIRMWARE_EXT)) {
               if (HAS_SPORT_UPDATE_CONNECTOR()) {
                 menu->addLine(STR_FLASH_EXTERNAL_DEVICE, [=]() {
-                    auto dialog = new FlashDialog<FrskyDeviceFirmwareUpdate>(SPORT_MODULE);
+                    FrskyDeviceFirmwareUpdate deviceFirmwareUpdate(SPORT_MODULE);
+                    auto dialog = new FlashDialog<FrskyDeviceFirmwareUpdate>(deviceFirmwareUpdate);
                     dialog->flash(getFullPath(name));
                 });
               }
               menu->addLine(STR_FLASH_INTERNAL_MODULE, [=]() {
-                  auto dialog = new FlashDialog<FrskyDeviceFirmwareUpdate>(INTERNAL_MODULE);
+                  FrskyDeviceFirmwareUpdate deviceFirmwareUpdate(INTERNAL_MODULE);
+                  auto dialog = new FlashDialog<FrskyDeviceFirmwareUpdate>(deviceFirmwareUpdate);
                   dialog->flash(getFullPath(name));
               });
               menu->addLine(STR_FLASH_EXTERNAL_MODULE, [=]() {
-                  auto dialog = new FlashDialog<FrskyDeviceFirmwareUpdate>(EXTERNAL_MODULE);
+                  FrskyDeviceFirmwareUpdate deviceFirmwareUpdate(EXTERNAL_MODULE);
+                  auto dialog = new FlashDialog<FrskyDeviceFirmwareUpdate>(deviceFirmwareUpdate);
                   dialog->flash(getFullPath(name));
               });
             }

@@ -35,7 +35,7 @@ bool isBootloader(const char * filename)
   return isBootloaderStart(buffer);
 }
 
-void BootloaderDeviceFirmwareUpdate::flashFirmware(const char *filename, ProgressHandler progressHandler)
+void BootloaderFirmwareUpdate::flashFirmware(const char * filename, ProgressHandler progressHandler)
 {
   FIL file;
   uint8_t buffer[1024];

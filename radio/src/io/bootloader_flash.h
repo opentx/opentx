@@ -18,23 +18,12 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _BOOTLOADER_FLASH_H_
-#define _BOOTLOADER_FLASH_H_
+#pragma once
 
 bool isBootloader(const char * filename);
 
-class BootloaderDeviceFirmwareUpdate
+class BootloaderFirmwareUpdate
 {
   public:
-    explicit BootloaderDeviceFirmwareUpdate(ModuleIndex module):
-      module(module)
-    {
-    }
-
     void flashFirmware(const char * filename, ProgressHandler progressHandler);
-
-  protected:
-    ModuleIndex module;
 };
-
-#endif // _BOOTLOADER_FLASH_H_

@@ -34,15 +34,18 @@
    For example: REM multi-stm-bcsid-01020176
 */
 
-class MultiFirmwareInformation {
+class MultiFirmwareInformation
+{
   public:
-    enum MultiFirmwareBoardType {
+    enum MultiFirmwareBoardType
+    {
       FIRMWARE_MULTI_AVR = 0,
       FIRMWARE_MULTI_STM,
       FIRMWARE_MULTI_ORX,
     };
 
-    enum MultiFirmwareTelemetryType {
+    enum MultiFirmwareTelemetryType
+    {
       FIRMWARE_MULTI_TELEM_NONE = 0,
       FIRMWARE_MULTI_TELEM_MULTI_STATUS,    // erSkyTX
       FIRMWARE_MULTI_TELEM_MULTI_TELEMETRY, // OpenTX
@@ -70,12 +73,12 @@ class MultiFirmwareInformation {
 
     bool isMultiInternalFirmware() const
     {
-      return (boardType == FIRMWARE_MULTI_STM && optibootSupport == true && bootloaderCheck == true && telemetryType == FIRMWARE_MULTI_TELEM_MULTI_TELEMETRY);
+      return (boardType == FIRMWARE_MULTI_STM && optibootSupport && bootloaderCheck && telemetryType == FIRMWARE_MULTI_TELEM_MULTI_TELEMETRY);
     }
 
     bool isMultiExternalFirmware() const
     {
-      return ((telemetryInversion == true || boardType == FIRMWARE_MULTI_STM ) && optibootSupport == true && bootloaderCheck == true && telemetryType == FIRMWARE_MULTI_TELEM_MULTI_TELEMETRY);
+      return ((telemetryInversion || boardType == FIRMWARE_MULTI_STM ) && optibootSupport && bootloaderCheck && telemetryType == FIRMWARE_MULTI_TELEM_MULTI_TELEMETRY);
     }
 
     const char * readMultiFirmwareInformation(const char * filename);
@@ -100,21 +103,19 @@ class MultiFirmwareInformation {
     const char * readV2Signature(const char * buffer);
 };
 
-enum MultiModuleType {
+enum MultiModuleType
+{
   MULTI_TYPE_MULTIMODULE = 0,
   MULTI_TYPE_ELRS,
 };
 
-class MultiDeviceFirmwareUpdate {
+class MultiDeviceFirmwareUpdate
+{
   public:
-    explicit MultiDeviceFirmwareUpdate(ModuleIndex module):
-      module(module)
+    explicit MultiDeviceFirmwareUpdate(ModuleIndex module, MultiModuleType type):
+      module(module),
+      type(type)
     {
-    }
-
-    void setType(MultiModuleType value)
-    {
-      type = value;
     }
 
     bool flashFirmware(const char * filename, ProgressHandler progressHandler);
