@@ -37,6 +37,7 @@ const MLinkSensor mlinkSensors[] = {
   {MLINK_LIQUIDS,         ZSTR_GASSUIT_RES_VOL,   UNIT_MILLILITERS,       0},
   {MLINK_DISTANCE,        ZSTR_DIST,              UNIT_METERS,            0},
   {MLINK_LQI,             ZSTR_RSSI,              UNIT_RAW,               0},
+  {MLINK_LOSS,            ZSTR_RSSI,              UNIT_RAW,               0},
 };
 
 const MLinkSensor * getMLinkSensor(uint16_t id)
@@ -52,7 +53,7 @@ const MLinkSensor * getMLinkSensor(uint16_t id)
 void processMLinkPacket(const uint8_t * packet)
 {
   const uint8_t * data = packet + 2;
-  if (data[0] == 0x13) {  // RX-9 DR
+  if (data[0] == 0x13) {  // Telemetry type RX-9
     for (uint8_t i = 1; i < 5; i += 3) {  //2 sensors per packet
       int32_t val = (data[i + 2] << 8 | data[i + 1]);
       val = val >> 1; // remove alarm flag
@@ -113,8 +114,14 @@ void processMLinkPacket(const uint8_t * packet)
       }
     }
   }
-  else if (packet[2] == 0x03) {
-    TRACE("RX5 type telemetry");
+  else if (packet[2] == 0x03) {  // Telemetry type RX-5
+    uint8_t mlinkRssi = packet[4] >> 1;
+    setTelemetryValue(PROTOCOL_TELEMETRY_MLINK, MLINK_LQI, 0, 0, mlinkRssi, UNIT_RAW, 0);
+    telemetryData.rssi.set(mlinkRssi);
+    if (mlinkRssi > 0) {
+      telemetryStreaming = TELEMETRY_TIMEOUT10ms;
+    }
+    setTelemetryValue(PROTOCOL_TELEMETRY_MLINK, MLINK_LOSS, 0, 0, packet[7], UNIT_RAW, 0);
   }
 }
 void mlinkSetDefault(int index, uint16_t id, uint8_t subId, uint8_t instance)
