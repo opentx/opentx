@@ -55,7 +55,7 @@ void processMLinkPacket(const uint8_t * packet)
   const uint8_t * data = packet + 2;
   if (data[0] == 0x13) {  // Telemetry type RX-9
     for (uint8_t i = 1; i < 5; i += 3) {  //2 sensors per packet
-      int32_t val = (data[i + 2] << 8 | data[i + 1]);
+      int32_t val = (int16_t )(data[i + 2] << 8 | data[i + 1]);
       val = val >> 1; // remove alarm flag
       uint8_t adress = (data[i] & 0xF0) >> 4;
       switch (data[i] & 0x0F) {
@@ -78,7 +78,7 @@ void processMLinkPacket(const uint8_t * packet)
           break;
         case MLINK_RPM:
           if (val < 0)
-            val = abs(val) * 10;
+            val = -val * 10;
           else
             val = val * 100;
           setTelemetryValue(PROTOCOL_TELEMETRY_MLINK, MLINK_RPM, 0, adress, val, UNIT_RPMS, 0);
