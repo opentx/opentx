@@ -508,7 +508,7 @@ bool setupPulsesInternalModule()
 
 void stopPulsesExternalModule()
 {
-  if (moduleState[EXTERNAL_MODULE].protocol != PROTOCOL_CHANNELS_UNINITIALIZED)) {
+  if (moduleState[EXTERNAL_MODULE].protocol != PROTOCOL_CHANNELS_UNINITIALIZED) {
     extmoduleStop();
     moduleState[EXTERNAL_MODULE].protocol = PROTOCOL_CHANNELS_NONE;
   }
