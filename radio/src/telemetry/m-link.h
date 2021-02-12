@@ -32,7 +32,7 @@ enum {
   MLINK_FUEL = 9,
   MLINK_LQI = 10,
   MLINK_CAPACITY = 11,
-  MLINK_LIQUIDS = 12,
+  MLINK_FLOW = 12,
   MLINK_DISTANCE = 13,
   MLINK_RX_VOLTAGE = 16,   // out of range ID for specific RxBt treatment
   MLINK_LOSS = 17          // out of range ID for handling number of loss

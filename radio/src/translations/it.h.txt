@@ -1403,3 +1403,4 @@
 #define ZSTR_SERVO_STATUS              "SrvS"
 #define ZSTR_LOSS                      "Loss"
 #define ZSTR_SPEED                     "Spd "
+#define ZSTR_FLOW                      "Flow"

@@ -35,7 +35,7 @@ const MLinkSensor mlinkSensors[] = {
   {MLINK_ALT,             ZSTR_ALT ,              UNIT_METERS,            0},
   {MLINK_FUEL,            ZSTR_FUEL,              UNIT_PERCENT,           0},
   {MLINK_CAPACITY,        ZSTR_CAPACITY,          UNIT_MAH,               0},
-  {MLINK_LIQUIDS,         ZSTR_GASSUIT_RES_VOL,   UNIT_MILLILITERS,       0},
+  {MLINK_FLOW,            ZSTR_FLOW,              UNIT_MILLILITERS,       0},
   {MLINK_DISTANCE,        ZSTR_DIST,              UNIT_METERS,            0},
   {MLINK_LQI,             ZSTR_RSSI,              UNIT_RAW,               0},
   {MLINK_LOSS,            ZSTR_RSSI,              UNIT_RAW,               0},
@@ -99,8 +99,8 @@ void processMLinkPacket(const uint8_t * packet)
         case MLINK_CAPACITY:
           setTelemetryValue(PROTOCOL_TELEMETRY_MLINK, MLINK_CAPACITY, 0, adress, val, UNIT_MAH, 0);
           break;
-        case MLINK_LIQUIDS:
-          setTelemetryValue(PROTOCOL_TELEMETRY_MLINK, MLINK_LIQUIDS, 0, adress, val, UNIT_MILLILITERS, 0);
+        case MLINK_FLOW:
+          setTelemetryValue(PROTOCOL_TELEMETRY_MLINK, MLINK_FLOW, 0, adress, val, UNIT_MILLILITERS, 0);
           break;
         case MLINK_DISTANCE:
           setTelemetryValue(PROTOCOL_TELEMETRY_MLINK, MLINK_DISTANCE, 0, adress, val * 100, UNIT_METERS, 0);
