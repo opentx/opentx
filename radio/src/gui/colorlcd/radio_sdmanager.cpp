@@ -187,7 +187,8 @@ void RadioSdManagerPage::build(FormWindow * window)
               if (information.readMultiFirmwareInformation(name.data()) == nullptr) {
 #if defined(INTERNAL_MODULE_MULTI)
                 menu->addLine(STR_FLASH_INTERNAL_MULTI, [=]() {
-                    auto dialog = new MultiFlashDialog<MultiDeviceFirmwareUpdate>(INTERNAL_MODULE, MULTI_TYPE_MULTIMODULE);
+                    MultiDeviceFirmwareUpdate deviceFirmwareUpdate(INTERNAL_MODULE, MULTI_TYPE_MULTIMODULE);
+                    auto dialog = new FlashDialog<MultiDeviceFirmwareUpdate>(deviceFirmwareUpdate);
                     dialog->flash(getFullPath(name));
                 });
 #endif
