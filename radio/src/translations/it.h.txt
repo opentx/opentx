@@ -462,7 +462,7 @@
 #define TR_TTRIM               TR("Trim Mot.", INDENT "Trim Motore")
 #define TR_TTRIM_SW            TR("T-Trim-Sw", INDENT "Trim switch")
 #define TR_BEEPCTR             TR("Beep al c.", "Beep al centro")
-#define TR_USE_GLOBAL_FUNCS    "Usa Funz. Globali"
+#define TR_USE_GLOBAL_FUNCS    TR("Funz. Glob.", "Usa Funz. Globali")
 #if defined(PCBSKY9X) && defined(REVX)
   #define TR_OUTPUT_TYPE       INDENT "Uscita"
 #endif
@@ -883,7 +883,7 @@
 #define TR_MORE_OPTIONS_AVAILABLE      "Altre opzioni assenti"
 #define TR_NO_MODULE_INFORMATION       "Nessuna info del modulo"
 #define TR_EXTERNALRF          "Modulo esterno"
-#define TR_FAILSAFE            "Modo failsafe"
+#define TR_FAILSAFE                     TR("Modo Fsafe", "Modo failsafe")
 #define TR_FAILSAFESET         TR(INDENT "FAILSAFE", INDENT "IMPOSTAZIONI FAILSAFE")
 #define TR_REG_ID                      "Reg. ID"
 #define TR_OWNER_ID                    "Owner ID"
