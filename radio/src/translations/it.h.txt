@@ -871,28 +871,28 @@
 #define TR_FLASH_EXTERNAL_MODULE       TR("Prog. modulo est.", "Programma modulo esterno")
 #define TR_FLASH_INTERNAL_MULTI        TR("Prog. MULTI int.", "Programma MULTI interno")
 #define TR_FLASH_EXTERNAL_MULTI        TR("Prog. MULTI est.", "Programma MULTI esterno")
-#define TR_FIRMWARE_UPDATE_ERROR TR(INDENT "Errore agg. FW",INDENT "Errore aggiornamento firmware")
+#define TR_FIRMWARE_UPDATE_ERROR       TR(INDENT "Errore agg. FW",INDENT "Errore aggiornamento firmware")
 #define TR_FIRMWARE_UPDATE_SUCCESS     "Aggiornamento" BREAKSPACE "riuscito"
-#define TR_WRITING             "Scrittura..."
-#define TR_CONFIRM_FORMAT      "Confermi formattazione?"
-#define TR_INTERNALRF          "Modulo interno"
+#define TR_WRITING                     "Scrittura..."
+#define TR_CONFIRM_FORMAT              "Confermi formattazione?"
+#define TR_INTERNALRF                  "Modulo interno"
 #define TR_INTERNAL_MODULE             TR("Modulo int.", "Modulo interno")
 #define TR_EXTERNAL_MODULE             TR("Modulo est.", "Modulo esterno")
 #define TR_OPENTX_UPGRADE_REQUIRED     "OpenTX richiede aggiornamento"
 #define TR_TELEMETRY_DISABLED          TR("Telem. off", "Telem. disabilitata")
 #define TR_MORE_OPTIONS_AVAILABLE      "Altre opzioni assenti"
 #define TR_NO_MODULE_INFORMATION       "Nessuna info del modulo"
-#define TR_EXTERNALRF          "Modulo esterno"
-#define TR_FAILSAFE                     TR("Modo Fsafe", "Modo failsafe")
-#define TR_FAILSAFESET         TR(INDENT "FAILSAFE", INDENT "IMPOSTAZIONI FAILSAFE")
+#define TR_EXTERNALRF                  "Modulo esterno"
+#define TR_FAILSAFE                     TR(INDENT "Failsafe", "Modo failsafe")
+#define TR_FAILSAFESET                  TR(INDENT "FAILSAFE", INDENT "IMPOSTAZIONI FAILSAFE")
 #define TR_REG_ID                      "Reg. ID"
 #define TR_OWNER_ID                    "Owner ID"
 #define TR_PINMAPSET                   "PINMAP"
-#define TR_HOLD                "Hold"
+#define TR_HOLD                        "Hold"
 #define TR_HOLD_UPPERCASE              "HOLD"
-#define TR_NONE                "None"
+#define TR_NONE                        "None"
 #define TR_NONE_UPPERCASE              "NONE"
-#define TR_MENUSENSOR          "SENSORE"
+#define TR_MENUSENSOR                  "SENSORE"
 #define TR_POWERMETER_PEAK             "Picco"
 #define TR_POWERMETER_POWER            "Potenza"
 #define TR_POWERMETER_ATTN             "Att."
@@ -934,7 +934,7 @@
 #define TR_SPEAKER             INDENT "Speaker"
 #define TR_BUZZER              INDENT "Buzzer"
 #define TR_BYTES               "Bytes"
-#define TR_MODULE_BIND         "[Bind]"
+#define TR_MODULE_BIND         TR("[Bnd]","[Bind]")
 #define TR_POWERMETER_ATTN_NEEDED      "Attenuatore necessario"
 #define TR_PXX2_SELECT_RX              "Seleziona RX..."
 #define TR_PXX2_DEFAULT                "<default>"
@@ -946,8 +946,8 @@
 #define TR_RECEIVER_RESET              "Resetto RX?"
 #define TR_SHARE                       "Condividere"
 #define TR_BIND                        "Bind"
-#define TR_REGISTER             TR("Reg", "Registrare")
-#define TR_MODULE_RANGE        "[Range]"
+#define TR_REGISTER                    TR("Reg", "Registrare")
+#define TR_MODULE_RANGE                TR("[Rng]","[Range]")
 #define TR_RECEIVER_OPTIONS            TR("OPZIONI RX", "OPZIONI RICEVENTE")
 #define TR_DEL_BUTTON                  BUTTON(TR("Canc.", "Cancella"))
 #define TR_RESET_BTN           "[Reset]"
@@ -970,7 +970,7 @@
 #define TR_TOPLCDTIMER         "Timer LCD Sup."
 #define TR_UNIT                "Unita"
 #define TR_TELEMETRY_NEWSENSOR INDENT "Aggiungi nuovo sensore"
-#define TR_CHANNELRANGE        INDENT "Numero Canali"
+#define TR_CHANNELRANGE        TR(INDENT "Num Canali", INDENT "Numero Canali")
 #define TR_AFHDS3_RX_FREQ              TR("Freq. RX", "Frequenza RX")
 #define TR_AFHDS3_ONE_TO_ONE_TELEMETRY TR("Unicast/Tel.", "Unicast/Telemetria")
 #define TR_AFHDS3_ONE_TO_MANY          "Multicast"
