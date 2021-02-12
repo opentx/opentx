@@ -50,7 +50,6 @@ const MLinkSensor * getMLinkSensor(uint16_t id)
   return nullptr;
 }
 
-
 void processMLinkPacket(const uint8_t * packet)
 {
   const uint8_t * data = packet + 2;
@@ -78,10 +77,12 @@ void processMLinkPacket(const uint8_t * packet)
           setTelemetryValue(PROTOCOL_TELEMETRY_MLINK, MLINK_SPEED, 0, adress, val, UNIT_KMH, 1);
           break;
         case MLINK_RPM:
-          if (val < 0)
+          if (val < 0) {
             val = -val * 10;
-          else
+          }
+          else {
             val = val * 100;
+          }
           setTelemetryValue(PROTOCOL_TELEMETRY_MLINK, MLINK_RPM, 0, adress, val, UNIT_RPMS, 0);
           break;
         case MLINK_TEMP:
@@ -109,8 +110,9 @@ void processMLinkPacket(const uint8_t * packet)
           uint8_t mlinkRssi = data[i + 1] >> 1;
           setTelemetryValue(PROTOCOL_TELEMETRY_MLINK, MLINK_LQI, 0, 0, mlinkRssi, UNIT_RAW, 0);
           telemetryData.rssi.set(mlinkRssi);
-          if (mlinkRssi > 0)
+          if (mlinkRssi > 0) {
             telemetryStreaming = TELEMETRY_TIMEOUT10ms;
+          }
           break;
       }
     }
@@ -125,6 +127,7 @@ void processMLinkPacket(const uint8_t * packet)
     setTelemetryValue(PROTOCOL_TELEMETRY_MLINK, MLINK_LOSS, 0, 0, packet[7], UNIT_RAW, 0);
   }
 }
+
 void mlinkSetDefault(int index, uint16_t id, uint8_t subId, uint8_t instance)
 {
   TelemetrySensor &telemetrySensor = g_model.telemetrySensors[index];
