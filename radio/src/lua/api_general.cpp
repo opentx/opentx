@@ -2036,6 +2036,7 @@ const luaR_value_entry opentxConstants[] = {
   {"UNIT_KMH", UNIT_KMH },
   {"UNIT_MPH", UNIT_MPH },
   {"UNIT_METERS", UNIT_METERS },
+  {"UNIT_KM", UNIT_KM },
   {"UNIT_FEET", UNIT_FEET },
   {"UNIT_CELSIUS", UNIT_CELSIUS },
   {"UNIT_FAHRENHEIT", UNIT_FAHRENHEIT },
