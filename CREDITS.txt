@@ -2137,3 +2137,6 @@ Hans-Reinhard Mette
 Alejandro Casals Oliver
 David Homewood
 John Dunning
+Konrad Helbach
+Bernard Delpy
+Raymond Ellsworth
