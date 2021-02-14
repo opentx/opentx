@@ -54,6 +54,8 @@
   #include "lua/lua_exports_xlites.inc"
 #elif defined(PCBXLITE)
   #include "lua/lua_exports_xlite.inc"
+#elif defined(RADIO_X9DP2019)
+  #include "lua/lua_exports_x9d+2019.inc"
 #elif defined(PCBTARANIS)
   #include "lua/lua_exports_x9d.inc"
 #endif
