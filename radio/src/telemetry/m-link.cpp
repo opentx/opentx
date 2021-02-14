@@ -57,8 +57,8 @@ void processMLinkPacket(const uint8_t * packet)
   const uint8_t * data = packet + 2;
 
   // Multi telem
-  setTelemetryValue(PROTOCOL_TELEMETRY_MLINK, MLINK_TX_RSSI, 0, 0, packet[0], UNIT_RAW, 0);
-  setTelemetryValue(PROTOCOL_TELEMETRY_MLINK, MLINK_TX_LQI, 0, 0, (packet[1] * 100) / 31, UNIT_RAW, 0);
+  setTelemetryValue(PROTOCOL_TELEMETRY_MLINK, MLINK_TX_RSSI, 0, 0, (packet[0] * 100) / 31, UNIT_RAW, 0);
+  setTelemetryValue(PROTOCOL_TELEMETRY_MLINK, MLINK_TX_LQI, 0, 0, packet[1], UNIT_RAW, 0);
 
   // M-Link telem
   if (data[0] == 0x13) {  // Telemetry type RX-9
