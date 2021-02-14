@@ -35,7 +35,9 @@ enum {
   MLINK_FLOW = 12,
   MLINK_DISTANCE = 13,
   MLINK_RX_VOLTAGE = 16,   // out of range ID for specific RxBt treatment
-  MLINK_LOSS = 17          // out of range ID for handling number of loss
+  MLINK_LOSS = 17,         // out of range ID for handling number of loss
+  MLINK_TX_RSSI = 18,      // out of range ID for handling Telemetry RSSi reported by multi
+  MLINK_TX_LQI = 19,       // out of range ID for handling Telemetry LQI reported by multi
 };
 
 void processMLinkTelemetryData(uint8_t data, uint8_t* rxBuffer, uint8_t& rxBufferCount);

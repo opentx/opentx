@@ -38,7 +38,9 @@ const MLinkSensor mlinkSensors[] = {
   {MLINK_FLOW,            ZSTR_FLOW,              UNIT_MILLILITERS,       0},
   {MLINK_DISTANCE,        ZSTR_DIST,              UNIT_KM,                1},
   {MLINK_LQI,             ZSTR_RSSI,              UNIT_RAW,               0},
-  {MLINK_LOSS,            ZSTR_RSSI,              UNIT_RAW,               0},
+  {MLINK_LOSS,            ZSTR_LOSS,              UNIT_RAW,               0},
+  {MLINK_TX_RSSI,         ZSTR_TX_RSSI,           UNIT_RAW,               0},  // Pseudo id outside 1 byte range of Hitec sensors
+  {MLINK_TX_LQI,          ZSTR_TX_QUALITY,        UNIT_RAW,               0},
 };
 
 const MLinkSensor * getMLinkSensor(uint16_t id)
@@ -53,6 +55,12 @@ const MLinkSensor * getMLinkSensor(uint16_t id)
 void processMLinkPacket(const uint8_t * packet)
 {
   const uint8_t * data = packet + 2;
+
+  // Multi telem
+  setTelemetryValue(PROTOCOL_TELEMETRY_MLINK, MLINK_TX_RSSI, 0, 0, packet[0], UNIT_RAW, 0);
+  setTelemetryValue(PROTOCOL_TELEMETRY_MLINK, MLINK_TX_LQI, 0, 0, (packet[1] * 100) / 31, UNIT_RAW, 0);
+
+  // M-Link telem
   if (data[0] == 0x13) {  // Telemetry type RX-9
     for (uint8_t i = 1; i < 5; i += 3) {  //2 sensors per packet
       int32_t val = (int16_t )(data[i + 2] << 8 | data[i + 1]);
@@ -118,7 +126,7 @@ void processMLinkPacket(const uint8_t * packet)
     }
   }
   else if (packet[2] == 0x03) {  // Telemetry type RX-5
-    uint8_t mlinkRssi = packet[4] >> 1;
+    uint16_t mlinkRssi = (packet[4] * 100) / 35;
     setTelemetryValue(PROTOCOL_TELEMETRY_MLINK, MLINK_LQI, 0, 0, mlinkRssi, UNIT_RAW, 0);
     telemetryData.rssi.set(mlinkRssi);
     if (mlinkRssi > 0) {
