@@ -39,7 +39,7 @@ const MLinkSensor mlinkSensors[] = {
   {MLINK_DISTANCE,        ZSTR_DIST,              UNIT_KM,                1},
   {MLINK_LQI,             ZSTR_RSSI,              UNIT_RAW,               0},
   {MLINK_LOSS,            ZSTR_LOSS,              UNIT_RAW,               0},
-  {MLINK_TX_RSSI,         ZSTR_TX_RSSI,           UNIT_RAW,               0},  // Pseudo id outside 1 byte range of Hitec sensors
+  {MLINK_TX_RSSI,         ZSTR_TX_RSSI,           UNIT_RAW,               0},
   {MLINK_TX_LQI,          ZSTR_TX_QUALITY,        UNIT_RAW,               0},
 };
 
