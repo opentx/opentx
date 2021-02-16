@@ -108,15 +108,15 @@ static void sendFailsafeChannels(uint8_t moduleIdx)
     int16_t failsafeValue = g_model.failsafeChannels[i];
     int pulseValue;
 
-    if (g_model.moduleData[moduleIdx].failsafeMode == FAILSAFE_HOLD) {
+    if (g_model.moduleData[moduleIdx].failsafeMode == FAILSAFE_HOLD || failsafeValue == FAILSAFE_CHANNEL_HOLD) {
       pulseValue = 2047;
     }
-    else if (g_model.moduleData[moduleIdx].failsafeMode == FAILSAFE_NOPULSES) {
+    else if (g_model.moduleData[moduleIdx].failsafeMode == FAILSAFE_NOPULSES || failsafeValue == FAILSAFE_CHANNEL_NOPULSE) {
       pulseValue = 0;
     }
     else {
       failsafeValue += 2 * PPM_CH_CENTER(g_model.moduleData[moduleIdx].channelsStart + i) - 2 * PPM_CENTER;
-      pulseValue = limit(1, (failsafeValue * 800 / 1000) + 1024, 2047);
+      pulseValue = limit(1, (failsafeValue * 800 / 1000) + 1024, 2046);
     }
 
     bits |= pulseValue << bitsavailable;

@@ -91,11 +91,9 @@ uint32_t Boards::getFourCC(Type board)
       return 0x4178746F;
     case BOARD_RADIOMASTER_T8:
       return 0x4378746F;
-    case BOARD_UNKNOWN:
-      break;
+    default:
+      return 0;
   }
-
-  return 0;
 }
 
 int Boards::getEEpromSize(Board::Type board)
@@ -130,9 +128,9 @@ int Boards::getEEpromSize(Board::Type board)
     case BOARD_JUMPER_T18:
     case BOARD_RADIOMASTER_TX16S:
       return 0;
+    default:
+      return 0;
   }
-
-  return 0;
 }
 
 int Boards::getFlashSize(Type board)

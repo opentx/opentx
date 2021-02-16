@@ -533,6 +533,14 @@ bool setupPulsesInternalModule(uint8_t protocol)
   }
 }
 
+void stopPulsesInternalModule()
+{
+  if (moduleState[INTERNAL_MODULE].protocol != PROTOCOL_CHANNELS_UNINITIALIZED) {
+    intmoduleStop();
+    moduleState[INTERNAL_MODULE].protocol = PROTOCOL_CHANNELS_NONE;
+  }
+}
+
 bool setupPulsesInternalModule()
 {
   uint8_t protocol = getRequiredProtocol(INTERNAL_MODULE);
@@ -550,6 +558,14 @@ bool setupPulsesInternalModule()
   }
 }
 #endif
+
+void stopPulsesExternalModule()
+{
+  if (moduleState[EXTERNAL_MODULE].protocol != PROTOCOL_CHANNELS_UNINITIALIZED) {
+    extmoduleStop();
+    moduleState[EXTERNAL_MODULE].protocol = PROTOCOL_CHANNELS_NONE;
+  }
+}
 
 bool setupPulsesExternalModule()
 {

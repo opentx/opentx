@@ -1307,7 +1307,7 @@ void registerOpenTxFirmwares()
   firmware->addOption("lua", Firmware::tr("Enable Lua custom scripts screen"));
   addOpenTxFontOptions(firmware);
   registerOpenTxFirmware(firmware);
-  addOpenTxRfOptions(firmware, FLEX + AFHDS3);
+  addOpenTxRfOptions(firmware, FLEX);
 
   /* Jumper T16 board */
   firmware = new OpenTxFirmware("opentx-t16", Firmware::tr("Jumper T16 / T16+ / T16 Pro"), BOARD_JUMPER_T16);

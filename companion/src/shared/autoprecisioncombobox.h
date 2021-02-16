@@ -18,8 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _AUTOPRECISIONCOMBOBOX_H_
-#define _AUTOPRECISIONCOMBOBOX_H_
+#pragma once
 
 #include "genericpanel.h"
 
@@ -253,5 +252,3 @@ class AutoPrecisionComboBox: public QComboBox
     QString m_suffix = "";
     bool m_lock = false;
 };
-
-#endif // _AUTOPRECISIONCOMBOBOX_H_
