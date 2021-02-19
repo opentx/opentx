@@ -42,6 +42,8 @@ struct mm_options_strings {
   static const char* options[];
 };
 
+const uint8_t getMaxMultiOptions();
+
 struct mm_protocol_definition {
   uint8_t protocol;
   uint8_t maxSubtype;

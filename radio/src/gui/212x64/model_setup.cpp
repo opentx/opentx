@@ -1299,6 +1299,9 @@ void menuModelSetup(event_t event)
          MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
          const uint8_t multi_proto = g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol();
          if (status.isValid()) {
+           if (status.optionDisp >= getMaxMultiOptions()) {
+             status.optionDisp = 1; // Unknown options are defaulted to type 1 (basic option)
+           }
            lcdDrawText(INDENT_WIDTH, y, mm_options_strings::options[status.optionDisp]);
            if (attr && status.optionDisp == 2) {
              lcdDrawText(MODEL_SETUP_3RD_COLUMN+22, y, "RSSI(", LEFT);

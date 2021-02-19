@@ -997,6 +997,11 @@ const char* mm_options_strings::options[] = {
   STR_MULTI_RFPOWER
 };
 
+const uint8_t getMaxMultiOptions()
+{
+  return DIM(mm_options_strings::options);
+}
+
 const mm_protocol_definition multi_protocols[] = {
 // Protocol as defined in pulses\modules_constants.h, number of sub_protocols - 1, Failsafe supported, Disable channel mapping supported, Subtype string, Option type
   {MODULE_SUBTYPE_MULTI_FLYSKY,     4, false, true,   STR_SUBTYPE_FLYSKY,    nullptr},
