@@ -1096,3 +1096,22 @@ void editStickHardwareSettings(coord_t x, coord_t y, int idx, event_t event, Lcd
   else
     lcdDrawMMM(x, y, flags);
 }
+
+#if defined(MULTIMODULE)
+const char* getMultiOptionTitle(uint8_t moduleIdx)
+{
+  MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
+
+  if (status.isValid()) {
+    if (status.optionDisp >= getMaxMultiOptions()) {
+      status.optionDisp = 1; // Unknown options are defaulted to type 1 (basic option)
+    }
+    return mm_options_strings::options[status.optionDisp];
+  }
+  else {
+    const uint8_t multi_proto = g_model.moduleData[moduleIdx].getMultiProtocol();
+    const mm_protocol_definition * pdef = getMultiProtocolDefinition(multi_proto);
+    return pdef->optionsstr;
+  }
+}
+#endif
