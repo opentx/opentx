@@ -50,6 +50,7 @@ class LimitsGroup
     GVarGroup *gvarGroup;
     int &value;
     double displayStep;
+    QCheckBox *gv;
 };
 
 class ChannelsPanel : public ModelPanel

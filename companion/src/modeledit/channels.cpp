@@ -57,7 +57,7 @@ LimitsGroup::LimitsGroup(Firmware * firmware, TableLayout * tableLayout, int row
   spinbox->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
 
   QHBoxLayout *horizontalLayout = new QHBoxLayout();
-  QCheckBox *gv = new QCheckBox(tr("GV"));
+  gv = new QCheckBox(tr("GV"));
   gv->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
   horizontalLayout->addWidget(gv);
   QComboBox *cb = new QComboBox();
@@ -84,14 +84,14 @@ void LimitsGroup::updateMinMax(int max)
   if (spinbox->maximum() == 0) {
     spinbox->setMinimum(-max * displayStep);
     gvarGroup->setMinimum(-max);
-    if (value < -max) {
+    if (!gv->isChecked() && value < -max) {
       value = -max;
     }
   }
   if (spinbox->minimum() == 0) {
     spinbox->setMaximum(max * displayStep);
     gvarGroup->setMaximum(max);
-    if (value > max) {
+    if (!gv->isChecked() && value > max) {
       value = max;
     }
   }
