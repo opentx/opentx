@@ -136,6 +136,9 @@
 #define LEN_MULTI_POWER                "\005"
 #define TR_MULTI_POWER                 "1.6mW""2.0mW""2.5mW""3.2mW""4.0mW""5.0mW""6.3mW""7.9mW""10mW\0""13mW\0""16mW\0""20mW\0""25mW\0""32mW\0""40mW\0""50mW\0"
 
+#define LEN_MULTI_WBUS_MODE            "\004"
+#define TR_MULTI_WBUS_MODE             "WBUS""PPM\0"
+
 #define LEN_MULTI_TELEMETRY_MODE        "\007"
 #define TR_MULTI_TELEMETRY_MODE        "Off\0   ""On\0    ""Off+Aux""On+Aux\0"
 

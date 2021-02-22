@@ -1554,12 +1554,19 @@ void menuModelSetup(event_t event)
 
           if (title == STR_MULTI_RFPOWER) {
             lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_MULTI_POWER, optionValue, LEFT | attr);
+            min = 0;
+            max = 15;
           }
           else if (title == STR_MULTI_TELEMETRY) {
             lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_MULTI_TELEMETRY_MODE, optionValue, LEFT | attr);
           }
           else if (multi_proto == MODULE_SUBTYPE_MULTI_FS_AFHDS2A) {
             lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, 50 + 5 * optionValue, LEFT | attr);
+          }
+          else if (title == STR_MULTI_WBUS) {
+            lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_MULTI_WBUS_MODE, optionValue, LEFT | attr);
+            min = 0;
+            max = 1;
           }
           else if (multi_proto == MODULE_SUBTYPE_MULTI_DSM2) {
             optionValue = optionValue & 0x01;

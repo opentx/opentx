@@ -994,7 +994,8 @@ const char* mm_options_strings::options[] = {
   STR_MULTI_SERVOFREQ,
   STR_MULTI_MAX_THROW,
   STR_MULTI_RFCHAN,
-  STR_MULTI_RFPOWER
+  STR_MULTI_RFPOWER,
+  STR_MULTI_WBUS
 };
 
 const uint8_t getMaxMultiOptions()
