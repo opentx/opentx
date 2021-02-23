@@ -28,6 +28,8 @@
 
 typedef uint16_t pixel_t;
 
+constexpr uint32_t SLIDE_SPEED_REDUCTION = 3;
+
 constexpr uint32_t MENU_HEADER_BUTTON_WIDTH =      33;
 constexpr uint32_t MENU_HEADER_BUTTONS_LEFT =      47;
 
@@ -40,10 +42,6 @@ constexpr uint32_t MENU_FOOTER_HEIGHT =            0;
 constexpr uint32_t MENU_FOOTER_TOP =               LCD_H - MENU_FOOTER_HEIGHT;
 constexpr uint32_t MENU_BODY_HEIGHT =              MENU_FOOTER_TOP - MENU_BODY_TOP;
 constexpr uint32_t MENUS_MARGIN_LEFT =             6;
-
-constexpr uint32_t DEFAULT_SCROLLBAR_X =           LCD_W - 10;
-constexpr uint32_t DEFAULT_SCROLLBAR_Y =           MENU_CONTENT_TOP;
-constexpr uint32_t DEFAULT_SCROLLBAR_H =           MENU_FOOTER_TOP - DEFAULT_SCROLLBAR_Y - 6;
 
 constexpr coord_t PAGE_PADDING =                   6;
 constexpr uint32_t PAGE_LINE_HEIGHT =              20;
