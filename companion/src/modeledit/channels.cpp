@@ -25,39 +25,30 @@
 LimitsGroup::LimitsGroup(Firmware * firmware, TableLayout * tableLayout, int row, int col, int & value, const ModelData & model, int min, int max, int deflt, ModelPanel * panel):
   firmware(firmware),
   spinbox(new QDoubleSpinBox()),
-  value(value),
-  displayStep(0.1)
+  value(value)
 {
   Board::Type board = firmware->getBoard();
   bool allowGVars = IS_HORUS_OR_TARANIS(board);
-  int internalStep = 1;
 
   spinbox->setProperty("index", row);
   spinbox->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
   spinbox->setAccelerated(true);
+  spinbox->setDecimals(1);
 
   if (firmware->getCapability(PPMUnitMicroseconds)) {
     displayStep = 0.512;
-    spinbox->setDecimals(1);
     spinbox->setSuffix("us");
   }
   else {
-    spinbox->setDecimals(0);
+    displayStep = 0.1;
     spinbox->setSuffix("%");
   }
 
-  if (deflt == 0 /*it's the offset*/) {
-    spinbox->setDecimals(1);
-  }
-  else {
-    internalStep *= 10;
-  }
-
-  spinbox->setSingleStep(displayStep * internalStep);
+  spinbox->setSingleStep(displayStep);
   spinbox->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
 
   QHBoxLayout *horizontalLayout = new QHBoxLayout();
-  QCheckBox *gv = new QCheckBox(tr("GV"));
+  gv = new QCheckBox(tr("GV"));
   gv->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
   horizontalLayout->addWidget(gv);
   QComboBox *cb = new QComboBox();
@@ -84,14 +75,14 @@ void LimitsGroup::updateMinMax(int max)
   if (spinbox->maximum() == 0) {
     spinbox->setMinimum(-max * displayStep);
     gvarGroup->setMinimum(-max);
-    if (value < -max) {
+    if (!gv->isChecked() && value < -max) {
       value = -max;
     }
   }
   if (spinbox->minimum() == 0) {
     spinbox->setMaximum(max * displayStep);
     gvarGroup->setMaximum(max);
-    if (value > max) {
+    if (!gv->isChecked() && value > max) {
       value = max;
     }
   }
@@ -241,12 +232,11 @@ void ChannelsPanel::nameEdited()
 
 void ChannelsPanel::refreshExtendedLimits()
 {
-  int channelMax = model->getChannelsMax();
+  int channelMax = model->getChannelsMax() * 10;
 
   for (int i = 0 ; i < CPN_MAX_CHNOUT; i++) {
-    chnOffset[i]->updateMinMax(10 * channelMax);
-    chnMin[i]->updateMinMax(10 * channelMax);
-    chnMax[i]->updateMinMax(10 * channelMax);
+    chnMin[i]->updateMinMax(channelMax);
+    chnMax[i]->updateMinMax(channelMax);
   }
   emit modified();
 }
