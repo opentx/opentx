@@ -241,12 +241,11 @@ void ChannelsPanel::nameEdited()
 
 void ChannelsPanel::refreshExtendedLimits()
 {
-  int channelMax = model->getChannelsMax();
+  int channelMax = model->getChannelsMax() * 10;
 
   for (int i = 0 ; i < CPN_MAX_CHNOUT; i++) {
-    chnOffset[i]->updateMinMax(10 * channelMax);
-    chnMin[i]->updateMinMax(10 * channelMax);
-    chnMax[i]->updateMinMax(10 * channelMax);
+    chnMin[i]->updateMinMax(channelMax);
+    chnMax[i]->updateMinMax(channelMax);
   }
   emit modified();
 }
