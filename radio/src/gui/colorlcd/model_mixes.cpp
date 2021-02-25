@@ -131,11 +131,11 @@ class MixEditWindow : public Page {
           grid.nextLine();
         new TextButton(window, grid.getFieldSlot(4, i % 4), fm,
                        [=]() -> uint8_t {
-                         BFBIT_FLIP(mix->flightModes, bfBit<uint8_t >(i));
-                         SET_DIRTY();
-                         return !(bfSingleBitGet(mix->flightModes, i));
+                           BFBIT_FLIP(mix->flightModes, bfBit<uint8_t>(i));
+                           SET_DIRTY();
+                           return !(bfSingleBitGet(mix->flightModes, i));
                        },
-                       bfSingleBitGet(mix->flightModes, i) ? 0 : BUTTON_CHECKED);
+                       OPAQUE | (bfSingleBitGet(mix->flightModes, i) ? 0 : BUTTON_CHECKED));
       }
       grid.nextLine();
 

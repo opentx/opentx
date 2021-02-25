@@ -134,7 +134,7 @@ void RadioCalibrationPage::buildBody(FormWindow * window)
                     [=]() -> uint8_t {
                         nextStep();
                         return 0;
-                    }, BUTTON_BACKGROUND | NO_FOCUS);
+                    }, BUTTON_BACKGROUND | OPAQUE | NO_FOCUS);
 #endif
 }
 

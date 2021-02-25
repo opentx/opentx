@@ -343,7 +343,8 @@ void BindWaitDialog::checkEvents()
   Dialog::checkEvents();
 }
 
-class ReceiverButton: public TextButton {
+class ReceiverButton: public TextButton
+{
   public:
     ReceiverButton(FormGroup * parent, rect_t rect, uint8_t moduleIdx, uint8_t receiverIdx):
       TextButton(parent, rect, STR_BIND, [=]() {
@@ -1153,7 +1154,7 @@ void ModelSetupPage::build(FormWindow * window)
         if (j > 0 && (j % 3) == 0)
           switchesGrid.nextLine();
         auto button = new TextButton(group, switchesGrid.getSlot(3, j % 3), switchWarninglabel(i), nullptr,
-                                     (bfGet(g_model.switchWarningState, 3 * i, 3) == 0 ? 0 : BUTTON_CHECKED));
+                                     OPAQUE | (bfGet(g_model.switchWarningState, 3 * i, 3) == 0 ? 0 : BUTTON_CHECKED));
         button->setPressHandler([button, i] {
             swarnstate_t newstate = bfGet(g_model.switchWarningState, 3 * i, 3);
             if (newstate == 1 && SWITCH_CONFIG(i) != SWITCH_3POS)
@@ -1188,7 +1189,7 @@ void ModelSetupPage::build(FormWindow * window)
                            SET_DIRTY();
                            return bfSingleBitGet<BeepANACenter>(g_model.beepANACenter, i);
                        },
-                       bfSingleBitGet(g_model.beepANACenter, i) ? BUTTON_CHECKED : 0);
+                       OPAQUE | (bfSingleBitGet(g_model.beepANACenter, i) ? BUTTON_CHECKED : 0));
         j++;
       }
     }

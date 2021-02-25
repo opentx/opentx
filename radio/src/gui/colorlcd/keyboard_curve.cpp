@@ -34,42 +34,42 @@ CurveKeyboard::CurveKeyboard() :
                  [=]() -> uint8_t {
                      putEvent(EVT_VIRTUAL_KEY_UP);
                      return 0;
-                 }, BUTTON_BACKGROUND | NO_FOCUS);
+                 }, BUTTON_BACKGROUND | OPAQUE | NO_FOCUS);
 
   // down
   new TextButton(this, {LCD_W / 2 - 20, 65, 40, 40}, "\201",
                  [=]() -> uint8_t {
                      putEvent(EVT_VIRTUAL_KEY_DOWN);
                      return 0;
-                 }, BUTTON_BACKGROUND | NO_FOCUS);
+                 }, BUTTON_BACKGROUND | OPAQUE | NO_FOCUS);
 
   // left
   left = new TextButton(this, {LCD_W / 2 - 70, 35, 40, 40}, "\177",
                         [=]() -> uint8_t {
                             putEvent(EVT_VIRTUAL_KEY_LEFT);
                             return 0;
-                        }, BUTTON_BACKGROUND | NO_FOCUS);
+                        }, BUTTON_BACKGROUND | OPAQUE | NO_FOCUS);
 
   // right
   right = new TextButton(this, {LCD_W / 2 + 30, 35, 40, 40}, "\176",
                          [=]() -> uint8_t {
                              putEvent(EVT_VIRTUAL_KEY_RIGHT);
                              return 0;
-                         }, BUTTON_BACKGROUND | NO_FOCUS);
+                         }, BUTTON_BACKGROUND | OPAQUE | NO_FOCUS);
 
   // next
   new TextButton(this, {LCD_W / 2 + 80, 35, 60, 40}, "Next",
                  [=]() -> uint8_t {
                      putEvent(EVT_VIRTUAL_KEY_NEXT);
                      return 0;
-                 }, BUTTON_BACKGROUND | NO_FOCUS);
+                 }, BUTTON_BACKGROUND | OPAQUE | NO_FOCUS);
 
   // previous
   new TextButton(this, {LCD_W / 2 - 140, 35, 60, 40}, "Prev",
                  [=]() -> uint8_t {
                      putEvent(EVT_VIRTUAL_KEY_PREVIOUS);
                      return 0;
-                 }, BUTTON_BACKGROUND | NO_FOCUS);
+                 }, BUTTON_BACKGROUND | OPAQUE | NO_FOCUS);
 
 }
 

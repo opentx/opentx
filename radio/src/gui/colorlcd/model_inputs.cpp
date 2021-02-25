@@ -278,12 +278,12 @@ class InputEditWindow: public Page
         if (i > 0 && (i % 4) == 0)
           grid.nextLine();
         new TextButton(window, grid.getFieldSlot(4, i % 4), fm,
-                                    [=]() -> uint8_t {
-                                        BFBIT_FLIP(line->flightModes, bfBit<uint32_t>(i));
-                                        SET_DIRTY();
-                                        return !(bfSingleBitGet(line->flightModes, i));
-                                    },
-                                    bfSingleBitGet(line->flightModes, i) ? 0 : BUTTON_CHECKED);
+                       [=]() -> uint8_t {
+                           BFBIT_FLIP(line->flightModes, bfBit<uint32_t>(i));
+                           SET_DIRTY();
+                           return !(bfSingleBitGet(line->flightModes, i));
+                       },
+                       OPAQUE | (bfSingleBitGet(line->flightModes, i) ? 0 : BUTTON_CHECKED));
       }
       grid.nextLine();
 
