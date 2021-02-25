@@ -52,7 +52,7 @@ const MLinkSensor * getMLinkSensor(uint16_t id)
   return nullptr;
 }
 
-void processMLinkPacket(const uint8_t * packet)
+void processMLinkPacket(const uint8_t * packet, uint8_t module)
 {
   const uint8_t * data = packet + 2;
 
@@ -65,7 +65,7 @@ void processMLinkPacket(const uint8_t * packet)
     for (uint8_t i = 1; i < 5; i += 3) {  //2 sensors per packet
       int32_t val = (int16_t )(data[i + 2] << 8 | data[i + 1]);
       val = val >> 1; // remove alarm flag
-      uint8_t adress = (data[i] & 0xF0) >> 4;
+      uint8_t adress = ((data[i] & 0xF0) >> 4) + (module << 7);
       switch (data[i] & 0x0F) {
         case MLINK_VOLTAGE:
           if ((data[i] & 0xF0) == 0x00){
@@ -116,7 +116,7 @@ void processMLinkPacket(const uint8_t * packet)
           break;
         case MLINK_LQI:
           uint8_t mlinkRssi = data[i + 1] >> 1;
-          setTelemetryValue(PROTOCOL_TELEMETRY_MLINK, MLINK_LQI, 0, 0, mlinkRssi, UNIT_RAW, 0);
+          setTelemetryValue(PROTOCOL_TELEMETRY_MLINK, MLINK_LQI , 0, module << 7, mlinkRssi, UNIT_RAW, 0);
           telemetryData.rssi.set(mlinkRssi);
           if (mlinkRssi > 0) {
             telemetryStreaming = TELEMETRY_TIMEOUT10ms;

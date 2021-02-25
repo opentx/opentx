@@ -44,4 +44,4 @@ void processMLinkTelemetryData(uint8_t data, uint8_t* rxBuffer, uint8_t& rxBuffe
 void mlinkSetDefault(int index, uint16_t id, uint8_t subId, uint8_t instance);
 
 // Used by multi protocol
-void processMLinkPacket(const uint8_t *packet);
+void processMLinkPacket(const uint8_t *packet, uint8_t module);
