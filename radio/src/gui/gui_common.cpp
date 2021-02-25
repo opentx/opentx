@@ -1099,7 +1099,7 @@ void editStickHardwareSettings(coord_t x, coord_t y, int idx, event_t event, Lcd
 }
 
 #if defined(MULTIMODULE)
-const char* getMultiOptionTitle(uint8_t moduleIdx)
+const char * getMultiOptionTitle(uint8_t moduleIdx)
 {
   MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
 
