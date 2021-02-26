@@ -22,14 +22,12 @@
 #include "helpers.h"
 #include "filtereditemmodels.h"
 
-LimitsGroup::LimitsGroup(Firmware * firmware, TableLayout * tableLayout, int row, int col, int & value, const ModelData & model, int min, int max, int deflt, ModelPanel * panel):
+LimitsGroup::LimitsGroup(Firmware * firmware, TableLayout * tableLayout, int row, int col, int & value, const ModelData & model,
+                         int min, int max, int deflt, FilteredItemModel * gvarModel, ModelPanel * panel):
   firmware(firmware),
   spinbox(new QDoubleSpinBox()),
   value(value)
 {
-  Board::Type board = firmware->getBoard();
-  bool allowGVars = IS_HORUS_OR_TARANIS(board);
-
   spinbox->setProperty("index", row);
   spinbox->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
   spinbox->setAccelerated(true);
@@ -56,7 +54,7 @@ LimitsGroup::LimitsGroup(Firmware * firmware, TableLayout * tableLayout, int row
   horizontalLayout->addWidget(cb);
   horizontalLayout->addWidget(spinbox);
   tableLayout->addLayout(row, col, horizontalLayout);
-  gvarGroup = new GVarGroup(gv, spinbox, cb, value, model, deflt, min, max, displayStep, allowGVars);
+  gvarGroup = new GVarGroup(gv, spinbox, cb, value, model, deflt, min, max, displayStep, gvarModel);
   QObject::connect(gvarGroup, &GVarGroup::valueChanged, panel, &ModelPanel::modified);
 }
 
@@ -87,6 +85,7 @@ void LimitsGroup::updateMinMax(int max)
     }
   }
 }
+
 ChannelsPanel::ChannelsPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, CompoundItemModelFactory * sharedItemModels):
   ModelPanel(parent, model, generalSettings, firmware),
   sharedItemModels(sharedItemModels)
@@ -94,8 +93,12 @@ ChannelsPanel::ChannelsPanel(QWidget * parent, ModelData & model, GeneralSetting
   chnCapability = firmware->getCapability(Outputs);
   int channelNameMaxLen = firmware->getCapability(ChannelsName);
 
-  curveFilteredModel = new FilteredItemModel(sharedItemModels->getItemModel(AbstractItemModel::IMID_Curve));
-  connectItemModelEvents(curveFilteredModel);
+  dialogFilteredItemModels = new FilteredItemModelFactory();
+
+  int crvid = dialogFilteredItemModels->registerItemModel(new FilteredItemModel(sharedItemModels->getItemModel(AbstractItemModel::IMID_Curve)), "Curve");
+  connectItemModelEvents(dialogFilteredItemModels->getItemModel(crvid));
+
+  int gvid = dialogFilteredItemModels->registerItemModel(new FilteredItemModel(sharedItemModels->getItemModel(AbstractItemModel::IMID_GVarRef)), "GVarRef");
 
   QStringList headerLabels;
   headerLabels << "#";
@@ -137,13 +140,13 @@ ChannelsPanel::ChannelsPanel(QWidget * parent, ModelData & model, GeneralSetting
     }
 
     // Channel offset
-    chnOffset[i] = new LimitsGroup(firmware, tableLayout, i, col++, model.limitData[i].offset, model, -1000, 1000, 0, this);
+    chnOffset[i] = new LimitsGroup(firmware, tableLayout, i, col++, model.limitData[i].offset, model, -1000, 1000, 0, dialogFilteredItemModels->getItemModel(gvid), this);
 
     // Channel min
-    chnMin[i] = new LimitsGroup(firmware, tableLayout, i, col++, model.limitData[i].min, model, -model.getChannelsMax() * 10, 0, -1000, this);
+    chnMin[i] = new LimitsGroup(firmware, tableLayout, i, col++, model.limitData[i].min, model, -model.getChannelsMax() * 10, 0, -1000, dialogFilteredItemModels->getItemModel(gvid), this);
 
     // Channel max
-    chnMax[i] = new LimitsGroup(firmware, tableLayout, i, col++, model.limitData[i].max, model, 0, model.getChannelsMax() * 10, 1000, this);
+    chnMax[i] = new LimitsGroup(firmware, tableLayout, i, col++, model.limitData[i].max, model, 0, model.getChannelsMax() * 10, 1000, dialogFilteredItemModels->getItemModel(gvid), this);
 
     // Channel inversion
     invCB[i] = new QComboBox(this);
@@ -156,7 +159,7 @@ ChannelsPanel::ChannelsPanel(QWidget * parent, ModelData & model, GeneralSetting
     if (IS_HORUS_OR_TARANIS(firmware->getBoard())) {
       curveCB[i] = new QComboBox(this);
       curveCB[i]->setProperty("index", i);
-      curveCB[i]->setModel(curveFilteredModel);
+      curveCB[i]->setModel(dialogFilteredItemModels->getItemModel(crvid));
       connect(curveCB[i], SIGNAL(currentIndexChanged(int)), this, SLOT(curveEdited()));
       tableLayout->addWidget(i, col++, curveCB[i]);
     }
@@ -204,7 +207,7 @@ ChannelsPanel::~ChannelsPanel()
     delete centerSB[i];
     delete symlimitsChk[i];
   }
-  delete curveFilteredModel;
+  delete dialogFilteredItemModels;
 }
 
 void ChannelsPanel::symlimitsEdited()
