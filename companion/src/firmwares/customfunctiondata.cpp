@@ -22,6 +22,7 @@
 #include "eeprominterface.h"
 #include "radiodata.h"
 #include "radiodataconversionstate.h"
+#include "compounditemmodels.h"
 
 void CustomFunctionData::clear()
 {
@@ -200,7 +201,7 @@ QString CustomFunctionData::paramToString(const ModelData * model) const
   else if (func >= FuncAdjustGV1 && func < FuncCount) {
     switch (adjustMode) {
       case FUNC_ADJUST_GVAR_CONSTANT:
-        return tr("Value ") + QString("%1").arg(param);
+        return tr("Value") + QString(" %1").arg(param);
       case FUNC_ADJUST_GVAR_SOURCE:
       case FUNC_ADJUST_GVAR_GVAR:
         return RawSource(param).toString();
@@ -209,7 +210,7 @@ QString CustomFunctionData::paramToString(const ModelData * model) const
         QString unit;
         val = param * model->gvarData[func - FuncAdjustGV1].multiplierGet();
         unit = model->gvarData[func - FuncAdjustGV1].unitToString();
-        return QString("Increment: %1%2").arg(val).arg(unit);
+        return tr("Increment") + QString(": %1%2").arg(val).arg(unit);
     }
   }
   return "";
@@ -217,15 +218,20 @@ QString CustomFunctionData::paramToString(const ModelData * model) const
 
 QString CustomFunctionData::repeatToString() const
 {
-  if (repeatParam == -1) {
-    return tr("played once, not during startup");
+  return repeatToString(repeatParam);
+}
+
+//  static
+QString CustomFunctionData::repeatToString(int value) const
+{
+  if (value == -1) {
+    return tr("Played once, not during startup");
   }
-  else if (repeatParam == 0) {
-    return "";
+  else if (value == 0) {
+    return tr("No repeat");
   }
   else {
-    unsigned int step = 1;
-    return tr("repeat(%1s)").arg(step * repeatParam);
+    return tr("Repeat(%1s)").arg(value);
   }
 }
 
@@ -312,3 +318,69 @@ void CustomFunctionData::convert(RadioDataConversionState & cstate)
     param = RawSource(param).convert(cstate.withComponentField("PARAM")).toValue();
   }
 }
+
+//  static
+QString CustomFunctionData::harpicToString(int value)
+{
+  return QString("%1").arg(value);
+}
+
+//  static
+QStringList CustomFunctionData::playsoundStringList()
+{
+  return QStringList("Beep 1" "Beep 2" "Beep 3" "Warn 1" "Warn 2" "Cheep" "Ratata" "Tick"
+                     "Siren" "Ring" "SciFi" "Robot" "Chirp" "Tada" "Crickt"  "AlmClk");
+}
+
+//  static
+QString CustomFunctionData::playsoundToString(int value)
+{
+  QStringList strl = playsoundStringList();
+  if (value < strl.count())
+    return strl.at(value);
+  else
+    return CPN_STR_UNKNOWN_ITEM;
+}
+
+//  static
+AbstractStaticItemModel * CustomFunctionData::repeatItemModel()
+{
+  AbstractStaticItemModel * mdl = new AbstractStaticItemModel();
+  mdl->setName("customfunctiondata.repeat");
+
+  for (int i = -1; i <= 60; i++) {
+    mdl->appendToItemList(repeatToString(i), i);
+  }
+
+  mdl->loadItemList();
+  return mdl;
+}
+
+//  static
+AbstractStaticItemModel * CustomFunctionData::playSoundsItemModel()
+{
+  AbstractStaticItemModel * mdl = new AbstractStaticItemModel();
+  mdl->setName("customfunctiondata.playsounds");
+
+  for (int i = 0; i <= 60; i++) {
+    mdl->appendToItemList(playsoundsToString(i), i);
+  }
+
+  mdl->loadItemList();
+  return mdl;
+}
+
+//  static
+AbstractStaticItemModel * CustomFunctionData::harpicItemModel()
+{
+  AbstractStaticItemModel * mdl = new AbstractStaticItemModel();
+  mdl->setName("customfunctiondata.harpic");
+
+  for (int i = 0; i <= 3; i++) {
+    mdl->appendToItemList(harpicToString(i), i);
+  }
+
+  mdl->loadItemList();
+  return mdl;
+}
+

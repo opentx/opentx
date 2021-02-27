@@ -27,6 +27,7 @@
 #include <QMediaPlayer>
 
 class CompoundItemModelFactory;
+class FilteredItemModelFactory;
 class FilteredItemModel;
 class TimerEdit;
 
@@ -87,7 +88,6 @@ class CustomFunctionsPanel : public GenericPanel
     void onItemModelUpdateComplete();
 
   private:
-    void populateFuncCB(QComboBox *b, unsigned int value);
     void populateGVmodeCB(QComboBox *b, unsigned int value);
     void populateFuncParamCB(QComboBox *b, uint function, unsigned int value, unsigned int adjustmode=0);
     bool hasClipboardData(QByteArray * data = nullptr) const;
@@ -96,12 +96,15 @@ class CustomFunctionsPanel : public GenericPanel
     bool moveUpAllowed() const;
     void swapData(int idx1, int idx2);
     void resetCBsAndRefresh(int idx);
-    void connectItemModelEvents(const FilteredItemModel * itemModel);
+    void connectItemModelEvents(FilteredItemModel * itemModel);
 
-    FilteredItemModel * rawSwitchFilteredModel;
-    FilteredItemModel * rawSourceAllModel;
-    FilteredItemModel * rawSourceInputsModel;
-    FilteredItemModel * rawSourceGVarsModel;
+    FilteredItemModelFactory * dlgFilterFactory;
+    int funcActionsId;
+    int funcResetParamId;
+    int rawSwitchId;
+    int rawSourceAllId;
+    int rawSourceInputsId;
+    int rawSourceGVarsId;
 
     QSet<QString> tracksSet;
     QSet<QString> scriptsSet;

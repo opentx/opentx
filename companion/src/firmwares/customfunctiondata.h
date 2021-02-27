@@ -18,8 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#ifndef CUSTOMFUNCTIONDATA_H
-#define CUSTOMFUNCTIONDATA_H
+#pragma once
 
 #include "boards.h"
 #include "constants.h"
@@ -32,6 +31,7 @@ class Firmware;
 class ModelData;
 class GeneralSettings;
 class RadioDataConversionState;
+class AbstractStaticItemModel;
 
 enum AssignFunc {
   FuncOverrideCH1 = 0,
@@ -109,6 +109,8 @@ class CustomFunctionData {
     QString paramToString(const ModelData * model) const;
     QString repeatToString() const;
     QString enabledToString() const;
+    QString playsoundsToString() const;
+    QString harpicToString() const;
 
     static void populateResetParams(const ModelData * model, QComboBox * b, unsigned int value);
     static void populatePlaySoundParams(QStringList & qs);
@@ -120,7 +122,11 @@ class CustomFunctionData {
 
     void convert(RadioDataConversionState & cstate);
 
+    static QString repeatToString(int value);
+    static QStringList playsoundStringList();
+    static QString playsoundsToString(int value);
+    static QString harpicToString(int value);
+    static AbstractStaticItemModel * repeatItemModel();
+    static AbstractStaticItemModel * playsoundsItemModel();
+    static AbstractStaticItemModel * harpicItemModel();
 };
-
-
-#endif // CUSTOMFUNCTIONDATA_H
