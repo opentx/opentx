@@ -19,6 +19,7 @@
  */
 
 #include "customfunctions.h"
+#include "compounditemmodels.h"
 #include "filtereditemmodels.h"
 #include "helpers.h"
 #include "appdata.h"
@@ -77,35 +78,39 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
   lock = true;
   fswCapability = model ? firmware->getCapability(CustomFunctions) : firmware->getCapability(GlobalFunctions);
 
-  dlgFilterFactory = new FilteredItemModelFactory();
+  tabModelFactory = new CompoundItemModelFactory(&generalSettings, model);
+  playSoundId = tabModelFactory->registerItemModel(CustomFunctionData::playSoundItemModel());
+  harpicId = tabModelFactory->registerItemModel(CustomFunctionData::harpicItemModel());
 
-  funcActionsId = dlgFilterFactory->registerItemModel(new FilteredItemModel(sharedItemModels->getItemModel(AbstractItemModel::IMID_CustomFuncAction),
+  tabFilterFactory = new FilteredItemModelFactory();
+
+  funcActionsId = tabFilterFactory->registerItemModel(new FilteredItemModel(sharedItemModels->getItemModel(AbstractItemModel::IMID_CustomFuncAction),
                                                       model ? CustomFunctionData::AllFunctionContexts : CustomFunctionData::GlobalFunctionsContext),
                                                       "Function Actions");
-  connectItemModelEvents(dlgFilterFactory->getItemModel(funcActionsId));
+  connectItemModelEvents(tabFilterFactory->getItemModel(funcActionsId));
 
-  funcResetParamId = dlgFilterFactory->registerItemModel(new FilteredItemModel(sharedItemModels->getItemModel(AbstractItemModel::IMID_CustomFuncResetParam)),
+  funcResetParamId = tabFilterFactory->registerItemModel(new FilteredItemModel(sharedItemModels->getItemModel(AbstractItemModel::IMID_CustomFuncResetParam)),
                                                          "Reset Params");
-  connectItemModelEvents(dlgFilterFactory->getItemModel(funcResetParamId));
+  connectItemModelEvents(tabFilterFactory->getItemModel(funcResetParamId));
 
-  rawSwitchId = dlgFilterFactory->registerItemModel(new FilteredItemModel(sharedItemModels->getItemModel(AbstractItemModel::IMID_RawSwitch),
+  rawSwitchId = tabFilterFactory->registerItemModel(new FilteredItemModel(sharedItemModels->getItemModel(AbstractItemModel::IMID_RawSwitch),
                                                                           model ? RawSwitch::SpecialFunctionsContext : RawSwitch::GlobalFunctionsContext),
                                                     "RawSwitch");
-  connectItemModelEvents(dlgFilterFactory->getItemModel(rawSwitchId));
+  connectItemModelEvents(tabFilterFactory->getItemModel(rawSwitchId));
 
-  rawSourceAllId = dlgFilterFactory->registerItemModel(new FilteredItemModel(sharedItemModels->getItemModel(AbstractItemModel::IMID_RawSource)),
+  rawSourceAllId = tabFilterFactory->registerItemModel(new FilteredItemModel(sharedItemModels->getItemModel(AbstractItemModel::IMID_RawSource)),
                                                        "RawSource All");
-  connectItemModelEvents(dlgFilterFactory->getItemModel(rawSourceAllId));
+  connectItemModelEvents(tabFilterFactory->getItemModel(rawSourceAllId));
 
-  rawSourceInputsId = dlgFilterFactory->registerItemModel(new FilteredItemModel(sharedItemModels->getItemModel(AbstractItemModel::IMID_RawSource),
+  rawSourceInputsId = tabFilterFactory->registerItemModel(new FilteredItemModel(sharedItemModels->getItemModel(AbstractItemModel::IMID_RawSource),
                                                                                 RawSource::InputSourceGroups),
                                                           "RawSource Inputs");
-  connectItemModelEvents(dlgFilterFactory->getItemModel(rawSourceInputsId));
+  connectItemModelEvents(tabFilterFactory->getItemModel(rawSourceInputsId));
 
-  rawSourceGVarsId = dlgFilterFactory->registerItemModel(new FilteredItemModel(sharedItemModels->getItemModel(AbstractItemModel::IMID_RawSource),
+  rawSourceGVarsId = tabFilterFactory->registerItemModel(new FilteredItemModel(sharedItemModels->getItemModel(AbstractItemModel::IMID_RawSource),
                                                                                RawSource::GVarsGroup),
                                                          "RawSource GVars");
-  connectItemModelEvents(dlgFilterFactory->getItemModel(rawSourceGVarsId));
+  connectItemModelEvents(tabFilterFactory->getItemModel(rawSourceGVarsId));
 
   if (!firmware->getCapability(VoicesAsNumbers)) {
     tracksSet = getFilesSet(getSoundsPath(generalSettings), QStringList() << "*.wav" << "*.WAV", firmware->getCapability(VoicesMaxLength));
@@ -155,7 +160,7 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
 
     // The switch
     fswtchSwtch[i] = new QComboBox(this);
-    fswtchSwtch[i]->setModel(dlgFilterFactory->getItemModel(rawSwitchId));
+    fswtchSwtch[i]->setModel(tabFilterFactory->getItemModel(rawSwitchId));
     fswtchSwtch[i]->setCurrentIndex(fswtchSwtch[i]->findData(functions[i].swtch.toValue()));
     fswtchSwtch[i]->setProperty("index", i);
     fswtchSwtch[i]->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Minimum);
@@ -165,7 +170,7 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
 
     // The function
     fswtchFunc[i] = new QComboBox(this);
-    fswtchFunc[i]->setModel(dlgFilterFactory->getItemModel(funcActionsId));
+    fswtchFunc[i]->setModel(tabFilterFactory->getItemModel(funcActionsId));
     fswtchFunc[i]->setCurrentIndex(fswtchFunc[i]->findData(functions[i].func));
     fswtchFunc[i]->setProperty("index", i);
     connect(fswtchFunc[i], SIGNAL(currentIndexChanged(int)), this, SLOT(functionEdited()));
@@ -259,7 +264,8 @@ CustomFunctionsPanel::~CustomFunctionsPanel()
 {
   if (mediaPlayer)
     stopSound(mediaPlayerCurrent);
-  delete dlgFilterFactory;
+  delete tabModelFactory;
+  delete tabFilterFactory;
 }
 
 void CustomFunctionsPanel::onMediaPlayerStateChanged(QMediaPlayer::State state)
@@ -674,37 +680,35 @@ void CustomFunctionsPanel::populateFuncParamCB(QComboBox *b, uint function, unsi
   QStringList qs;
   b->setModel(new QStandardItemModel(b));  // clear combo box but not any shared item model
   if (function == FuncPlaySound) {
-    CustomFunctionData::populatePlaySoundParams(qs);
-    b->addItems(qs);
-    b->setCurrentIndex(value);
+    b->setModel(tabModelFactory->getItemModel(playSoundId));
+    b->setCurrentIndex(b->findData(value));
   }
   else if (function == FuncPlayHaptic) {
-    CustomFunctionData::populateHapticParams(qs);
-    b->addItems(qs);
-    b->setCurrentIndex(value);
+    b->setModel(tabModelFactory->getItemModel(harpicId));
+    b->setCurrentIndex(b->findData(value));
   }
   else if (function == FuncReset) {
-    b->setModel(dlgFilterFactory->getItemModel(funcResetParamId));
+    b->setModel(tabFilterFactory->getItemModel(funcResetParamId));
     b->setCurrentIndex(b->findData(value));
   }
   else if (function == FuncVolume || function == FuncBacklight) {
-    b->setModel(dlgFilterFactory->getItemModel(rawSourceInputsId));
+    b->setModel(tabFilterFactory->getItemModel(rawSourceInputsId));
     b->setCurrentIndex(b->findData(value));
   }
   else if (function == FuncPlayValue) {
-    b->setModel(dlgFilterFactory->getItemModel(rawSourceAllId));
+    b->setModel(tabFilterFactory->getItemModel(rawSourceAllId));
     b->setCurrentIndex(b->findData(value));
   }
   else if (function >= FuncAdjustGV1 && function <= FuncAdjustGVLast) {
     switch (adjustmode) {
       case 1:
-        b->setModel(dlgFilterFactory->getItemModel(rawSourceInputsId));
+        b->setModel(tabFilterFactory->getItemModel(rawSourceInputsId));
         b->setCurrentIndex(b->findData(value));
         if (b->currentIndex() < 0)
           b->setCurrentIndex(0);
         break;
       case 2:
-        b->setModel(dlgFilterFactory->getItemModel(rawSourceGVarsId));
+        b->setModel(tabFilterFactory->getItemModel(rawSourceGVarsId));
         b->setCurrentIndex(b->findData(value));
         if (b->currentIndex() < 0)
           b->setCurrentIndex(0);

@@ -24,6 +24,16 @@
 #include "radiodataconversionstate.h"
 #include "compounditemmodels.h"
 
+void CustomFunctionData::convert(RadioDataConversionState & cstate)
+{
+  cstate.setComponent(tr("CFN"), 8);
+  cstate.setSubComp(nameToString(cstate.subCompIdx, (cstate.toModel() ? false : true)));
+  swtch.convert(cstate);
+  if (func == FuncVolume || func == FuncBacklight || func == FuncPlayValue || (func >= FuncAdjustGV1 && func <= FuncAdjustGVLast && adjustMode == 1)) {
+    param = RawSource(param).convert(cstate.withComponentField("PARAM")).toValue();
+  }
+}
+
 void CustomFunctionData::clear()
 {
   memset(reinterpret_cast<void *>(this), 0, sizeof(CustomFunctionData));
@@ -95,9 +105,9 @@ QString CustomFunctionData::funcToString(const ModelData * model) const
   else if (func == FuncSetFailsafe)
     return tr("Set Failsafe");
   else if (func == FuncRangeCheckInternalModule)
-    return tr("RangeCheck Int. Module");
+    return tr("Range Check Int. Module");
   else if (func == FuncRangeCheckExternalModule)
-    return tr("RangeCheck Ext. Module");
+    return tr("Range Check Ext. Module");
   else if (func == FuncBindInternalModule)
     return tr("Bind Int. Module");
   else if (func == FuncBindExternalModule)
@@ -143,17 +153,6 @@ void CustomFunctionData::populateResetParams(const ModelData * model, QComboBox 
   b->setCurrentIndex(b->findData(value));
 }
 
-void CustomFunctionData::populatePlaySoundParams(QStringList & qs)
-{
-  qs <<"Beep 1" << "Beep 2" << "Beep 3" << "Warn1" << "Warn2" << "Cheep" << "Ratata" << "Tick" << "Siren" << "Ring" ;
-  qs << "SciFi" << "Robot" << "Chirp" << "Tada" << "Crickt"  << "AlmClk"  ;
-}
-
-void CustomFunctionData::populateHapticParams(QStringList & qs)
-{
-  qs << "0" << "1" << "2" << "3";
-}
-
 QString CustomFunctionData::paramToString(const ModelData * model) const
 {
   QStringList qs;
@@ -164,18 +163,10 @@ QString CustomFunctionData::paramToString(const ModelData * model) const
     return QString("%1").arg(param / 10.0) + tr("s");
   }
   else if (func == FuncPlaySound) {
-    CustomFunctionData::populatePlaySoundParams(qs);
-    if (param >= 0 && param < (int)qs.count())
-      return qs.at(param);
-    else
-      return tr("<font color=red><b>Inconsistent parameter</b></font>");
+    return playSoundToString(param);
   }
   else if (func == FuncPlayHaptic) {
-    CustomFunctionData::populateHapticParams(qs);
-    if (param >= 0 && param < (int)qs.count())
-      return qs.at(param);
-    else
-      return tr("<font color=red><b>Inconsistent parameter</b></font>");
+    return harpicToString(param);
   }
   else if (func == FuncReset) {
     QComboBox cb;
@@ -184,7 +175,7 @@ QString CustomFunctionData::paramToString(const ModelData * model) const
     if (pos >= 0)
       return cb.itemText(pos);
     else
-      return tr("<font color=red><b>Inconsistent parameter</b></font>");
+      return QString(CPN_STR_UNKNOWN_ITEM);
   }
   else if (func == FuncVolume || func == FuncPlayValue || func == FuncBacklight) {
     RawSource item(param);
@@ -222,7 +213,7 @@ QString CustomFunctionData::repeatToString() const
 }
 
 //  static
-QString CustomFunctionData::repeatToString(int value) const
+QString CustomFunctionData::repeatToString(int value)
 {
   if (value == -1) {
     return tr("Played once, not during startup");
@@ -309,14 +300,9 @@ bool CustomFunctionData::isResetParamAvailable(const ModelData * model, int inde
   return false;
 }
 
-void CustomFunctionData::convert(RadioDataConversionState & cstate)
+QString CustomFunctionData::harpicToString() const
 {
-  cstate.setComponent(tr("CFN"), 8);
-  cstate.setSubComp(nameToString(cstate.subCompIdx, (cstate.toModel() ? false : true)));
-  swtch.convert(cstate);
-  if (func == FuncVolume || func == FuncBacklight || func == FuncPlayValue || (func >= FuncAdjustGV1 && func <= FuncAdjustGVLast && adjustMode == 1)) {
-    param = RawSource(param).convert(cstate.withComponentField("PARAM")).toValue();
-  }
+  return harpicToString(param);
 }
 
 //  static
@@ -326,20 +312,27 @@ QString CustomFunctionData::harpicToString(int value)
 }
 
 //  static
-QStringList CustomFunctionData::playsoundStringList()
+QStringList CustomFunctionData::playSoundStringList()
 {
-  return QStringList("Beep 1" "Beep 2" "Beep 3" "Warn 1" "Warn 2" "Cheep" "Ratata" "Tick"
-                     "Siren" "Ring" "SciFi" "Robot" "Chirp" "Tada" "Crickt"  "AlmClk");
+  QStringList strl;
+  strl << tr("Beep 1") << tr("Beep 2") << tr("Beep 3") << tr("Warn 1") << tr("Warn 2") << tr("Cheep") << tr("Ratata") << tr("Tick")
+          << tr("Siren") << tr("Ring") << tr("Sci Fi") << tr("Robot") << tr("Chirp") << tr("Tada") << tr("Cricket") << tr("Alarm Clock");
+  return strl;
+}
+
+QString CustomFunctionData::playSoundToString() const
+{
+  return playSoundToString(param);
 }
 
 //  static
-QString CustomFunctionData::playsoundToString(int value)
+QString CustomFunctionData::playSoundToString(int value)
 {
-  QStringList strl = playsoundStringList();
+  QStringList strl = playSoundStringList();
   if (value < strl.count())
     return strl.at(value);
   else
-    return CPN_STR_UNKNOWN_ITEM;
+    return QString(CPN_STR_UNKNOWN_ITEM);
 }
 
 //  static
@@ -357,13 +350,13 @@ AbstractStaticItemModel * CustomFunctionData::repeatItemModel()
 }
 
 //  static
-AbstractStaticItemModel * CustomFunctionData::playSoundsItemModel()
+AbstractStaticItemModel * CustomFunctionData::playSoundItemModel()
 {
   AbstractStaticItemModel * mdl = new AbstractStaticItemModel();
   mdl->setName("customfunctiondata.playsounds");
 
-  for (int i = 0; i <= 60; i++) {
-    mdl->appendToItemList(playsoundsToString(i), i);
+  for (int i = 0; i < playSoundStringList().count(); i++) {
+    mdl->appendToItemList(playSoundToString(i), i);
   }
 
   mdl->loadItemList();

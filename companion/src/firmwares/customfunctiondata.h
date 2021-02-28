@@ -102,6 +102,8 @@ class CustomFunctionData {
     unsigned int adjustMode;
     int repeatParam;
 
+    void convert(RadioDataConversionState & cstate);
+
     void clear();
     bool isEmpty() const;
     QString nameToString(int index, bool globalContext = false) const;
@@ -109,24 +111,20 @@ class CustomFunctionData {
     QString paramToString(const ModelData * model) const;
     QString repeatToString() const;
     QString enabledToString() const;
-    QString playsoundsToString() const;
+    QString playSoundToString() const;
     QString harpicToString() const;
 
     static void populateResetParams(const ModelData * model, QComboBox * b, unsigned int value);
-    static void populatePlaySoundParams(QStringList & qs);
-    static void populateHapticParams(QStringList & qs);
     static bool isFuncAvailable(int index);
     static int funcContext(int index);
     static int resetParamCount(const ModelData * model);
     static bool isResetParamAvailable(const ModelData * model, int index);
 
-    void convert(RadioDataConversionState & cstate);
-
     static QString repeatToString(int value);
-    static QStringList playsoundStringList();
-    static QString playsoundsToString(int value);
+    static QStringList playSoundStringList();
+    static QString playSoundToString(int value);
     static QString harpicToString(int value);
     static AbstractStaticItemModel * repeatItemModel();
-    static AbstractStaticItemModel * playsoundsItemModel();
+    static AbstractStaticItemModel * playSoundItemModel();
     static AbstractStaticItemModel * harpicItemModel();
 };

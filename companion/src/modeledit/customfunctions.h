@@ -98,13 +98,16 @@ class CustomFunctionsPanel : public GenericPanel
     void resetCBsAndRefresh(int idx);
     void connectItemModelEvents(FilteredItemModel * itemModel);
 
-    FilteredItemModelFactory * dlgFilterFactory;
+    CompoundItemModelFactory * tabModelFactory;
+    FilteredItemModelFactory * tabFilterFactory;
     int funcActionsId;
     int funcResetParamId;
     int rawSwitchId;
     int rawSourceAllId;
     int rawSourceInputsId;
     int rawSourceGVarsId;
+    int playSoundId;
+    int harpicId;
 
     QSet<QString> tracksSet;
     QSet<QString> scriptsSet;
