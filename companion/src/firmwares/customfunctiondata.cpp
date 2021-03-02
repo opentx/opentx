@@ -178,8 +178,7 @@ QString CustomFunctionData::paramToString(const ModelData * model) const
       return QString(CPN_STR_UNKNOWN_ITEM);
   }
   else if (func == FuncVolume || func == FuncPlayValue || func == FuncBacklight) {
-    RawSource item(param);
-    return item.toString(model);
+    return RawSource(param).toString(model);
   }
   else if (func == FuncPlayPrompt || func == FuncPlayBoth) {
     if ( getCurrentFirmware()->getCapability(VoicesAsNumbers)) {
@@ -192,16 +191,14 @@ QString CustomFunctionData::paramToString(const ModelData * model) const
   else if (func >= FuncAdjustGV1 && func < FuncCount) {
     switch (adjustMode) {
       case FUNC_ADJUST_GVAR_CONSTANT:
-        return tr("Value") + QString(" %1").arg(param);
+        return gvarAdjustModeToString(adjustMode) + QString(" %1").arg(param);
       case FUNC_ADJUST_GVAR_SOURCE:
       case FUNC_ADJUST_GVAR_GVAR:
         return RawSource(param).toString();
       case FUNC_ADJUST_GVAR_INCDEC:
-        float val;
-        QString unit;
-        val = param * model->gvarData[func - FuncAdjustGV1].multiplierGet();
-        unit = model->gvarData[func - FuncAdjustGV1].unitToString();
-        return tr("Increment") + QString(": %1%2").arg(val).arg(unit);
+        const float val = param * model->gvarData[func - FuncAdjustGV1].multiplierGet();
+        const QString unit = model->gvarData[func - FuncAdjustGV1].unitToString();
+        return gvarAdjustModeToString(adjustMode) + QString(": %1%2").arg(val).arg(unit);
     }
   }
   return "";
@@ -347,7 +344,7 @@ QString CustomFunctionData::gvarAdjustModeToString(int value)
     case FUNC_ADJUST_GVAR_SOURCE:
       return tr("Source");
     case FUNC_ADJUST_GVAR_GVAR:
-      return tr("GVAR");
+      return tr("Global Variable");
     case FUNC_ADJUST_GVAR_INCDEC:
       return tr("Increment");
     default:
