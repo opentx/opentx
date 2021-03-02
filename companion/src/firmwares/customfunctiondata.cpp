@@ -222,7 +222,7 @@ QString CustomFunctionData::repeatToString(int value)
     return tr("No repeat");
   }
   else {
-    return tr("Repeat(%1s)").arg(value);
+    return tr("Repeat %1s").arg(value);
   }
 }
 

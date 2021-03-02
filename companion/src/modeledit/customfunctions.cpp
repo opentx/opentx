@@ -19,53 +19,10 @@
  */
 
 #include "customfunctions.h"
-#include "compounditemmodels.h"
-#include "filtereditemmodels.h"
 #include "helpers.h"
 #include "appdata.h"
 
 #include <TimerEdit>
-
-RepeatComboBox::RepeatComboBox(QWidget *parent, int & repeatParam):
-  QComboBox(parent),
-  repeatParam(repeatParam)
-{
-  unsigned int step = 1;
-  int value = repeatParam / step;
-
-  setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Fixed);
-
-  if (step == 1) {
-    addItem(tr("Played once, not during startup"), -1);
-    value++;
-  }
-
-  addItem(tr("No repeat"), 0);
-
-  for (unsigned int i = step; i <= 60; i += step) {
-    addItem(tr("%1s").arg(i), i);
-  }
-
-  setCurrentIndex(value);
-
-  connect(this, SIGNAL(currentIndexChanged(int)), this, SLOT(onIndexChanged(int)));
-}
-
-void RepeatComboBox::onIndexChanged(int index)
-{
-  repeatParam = itemData(index).toInt();
-  emit modified();
-}
-
-void RepeatComboBox::update()
-{
-  unsigned int step = 1;
-  int value = repeatParam / step;
-  if (step == 1) {
-    value++;
-  }
-  setCurrentIndex(value);
-}
 
 CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, GeneralSettings & generalSettings, Firmware * firmware,
                                            CompoundItemModelFactory * sharedItemModels):
@@ -81,6 +38,7 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
   tabModelFactory = new CompoundItemModelFactory(&generalSettings, model);
   playSoundId = tabModelFactory->registerItemModel(CustomFunctionData::playSoundItemModel());
   harpicId = tabModelFactory->registerItemModel(CustomFunctionData::harpicItemModel());
+  repeatId = tabModelFactory->registerItemModel(CustomFunctionData::repeatItemModel());
 
   tabFilterFactory = new FilteredItemModelFactory();
 
@@ -239,9 +197,12 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
 
     QHBoxLayout * repeatLayout = new QHBoxLayout();
     tableLayout->addLayout(i, 4, repeatLayout);
-    fswtchRepeat[i] = new RepeatComboBox(this, functions[i].repeatParam);
+    fswtchRepeat[i] = new QComboBox(this);
+    fswtchRepeat[i]->setProperty("index", i);
+    fswtchRepeat[i]->setModel(tabModelFactory->getItemModel(repeatId));
+    fswtchRepeat[i]->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Fixed);
     repeatLayout->addWidget(fswtchRepeat[i], i + 1);
-    connect(fswtchRepeat[i], SIGNAL(modified()), this, SLOT(onRepeatModified()));
+    connect(fswtchRepeat[i], SIGNAL(currentIndexChanged(int)), this, SLOT(customFunctionEdited()));
 
     fswtchEnable[i] = new QCheckBox(this);
     fswtchEnable[i]->setProperty("index", i);
@@ -375,11 +336,6 @@ void CustomFunctionsPanel::functionEdited()
   }
 }
 
-void CustomFunctionsPanel::onRepeatModified()
-{
-  emit modified();
-}
-
 void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
 {
   CustomFunctionData & cfn = functions[i];
@@ -480,8 +436,10 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
     }
     else if (func == FuncPlaySound || func == FuncPlayHaptic || func == FuncPlayValue || func == FuncPlayPrompt || func == FuncPlayBoth || func == FuncBackgroundMusic) {
       if (func != FuncBackgroundMusic) {
+        if (modified)
+          cfn.repeatParam = fswtchRepeat[i]->currentData().toInt();
         widgetsMask |= CUSTOM_FUNCTION_REPEAT;
-        fswtchRepeat[i]->update();
+        fswtchRepeat[i]->setCurrentIndex(fswtchRepeat[i]->findData(cfn.repeatParam));
       }
       if (func == FuncPlayValue) {
         if (modified)
@@ -505,7 +463,7 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
           if (modified) {
             if (fswtchParamGV[i]->isChecked()) {
               fswtchParam[i]->setMinimum(1);
-              cfn.param = std::min(fswtchParam[i]->value(),5.0)+(fswtchParamGV[i]->isChecked() ? 250 : 0);
+              cfn.param = std::min(fswtchParam[i]->value(), 5.0) + (fswtchParamGV[i]->isChecked() ? 250 : 0);
             }
             else {
               cfn.param = fswtchParam[i]->value();

@@ -18,38 +18,18 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _CUSTOMFUNCTIONS_H_
-#define _CUSTOMFUNCTIONS_H_
+#pragma once
 
 #include "modeledit.h"
 #include "eeprominterface.h"
+#include "compounditemmodels.h"
+#include "filtereditemmodels.h"
 
 #include <QMediaPlayer>
 
-class CompoundItemModelFactory;
-class FilteredItemModelFactory;
-class FilteredItemModel;
 class TimerEdit;
 
 constexpr char MIMETYPE_CUSTOM_FUNCTION[] = "application/x-companion-custom-function";
-
-class RepeatComboBox: public QComboBox
-{
-    Q_OBJECT
-
-  public:
-    RepeatComboBox(QWidget * parent, int & repeatParam);
-    void update();
-
-  signals:
-    void modified();
-
-  private slots:
-    void onIndexChanged(int);
-
-  protected:
-    int & repeatParam;
-};
 
 class CustomFunctionsPanel : public GenericPanel
 {
@@ -69,7 +49,6 @@ class CustomFunctionsPanel : public GenericPanel
     void functionEdited();
     void onCustomContextMenuRequested(QPoint pos);
     void refreshCustomFunction(int index, bool modified=false);
-    void onRepeatModified();
     bool playSound(int index);
     void stopSound(int index);
     void toggleSound(bool play);
@@ -108,6 +87,7 @@ class CustomFunctionsPanel : public GenericPanel
     int rawSourceGVarsId;
     int playSoundId;
     int harpicId;
+    int repeatId;
 
     QSet<QString> tracksSet;
     QSet<QString> scriptsSet;
@@ -121,7 +101,7 @@ class CustomFunctionsPanel : public GenericPanel
     QComboBox * fswtchParamT[CPN_MAX_SPECIAL_FUNCTIONS];
     QComboBox * fswtchParamArmT[CPN_MAX_SPECIAL_FUNCTIONS];
     QCheckBox * fswtchEnable[CPN_MAX_SPECIAL_FUNCTIONS];
-    RepeatComboBox * fswtchRepeat[CPN_MAX_SPECIAL_FUNCTIONS];
+    QComboBox * fswtchRepeat[CPN_MAX_SPECIAL_FUNCTIONS];
     QComboBox * fswtchGVmode[CPN_MAX_SPECIAL_FUNCTIONS];
     QSlider * fswtchBLcolor[CPN_MAX_SPECIAL_FUNCTIONS];
     QMediaPlayer * mediaPlayer;
@@ -130,5 +110,3 @@ class CustomFunctionsPanel : public GenericPanel
     int fswCapability;
     int modelsUpdateCnt;
 };
-
-#endif // _CUSTOMFUNCTIONS_H_
