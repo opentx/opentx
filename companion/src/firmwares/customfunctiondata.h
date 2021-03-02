@@ -116,10 +116,10 @@ class CustomFunctionData {
     QString harpicToString() const;
     QString gvarAdjustModeToString() const;
 
-    static void populateResetParams(const ModelData * model, QComboBox * b, unsigned int value);
     static bool isFuncAvailable(int index);
     static int funcContext(int index);
-    static int resetParamCount(const ModelData * model);
+    static QString resetToString(const ModelData * model, int value);
+    static int resetParamCount();
     static bool isResetParamAvailable(const ModelData * model, int index);
     static QString repeatToString(int value);
     static QStringList playSoundStringList();

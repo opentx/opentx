@@ -117,42 +117,6 @@ QString CustomFunctionData::funcToString(const ModelData * model) const
   }
 }
 
-void CustomFunctionData::populateResetParams(const ModelData * model, QComboBox * b, unsigned int value = 0)
-{
-  int val = 0;
-  Firmware * firmware = Firmware::getCurrentVariant();
-
-  for (int i = 0; i < CPN_MAX_TIMERS; i++, val++) {
-    if (i < firmware->getCapability(Timers)) {
-      RawSource item = RawSource(SOURCE_TYPE_SPECIAL, i + SOURCE_TYPE_SPECIAL_TIMER1_IDX);
-      b->addItem(item.toString(model), val);
-    }
-  }
-
-  b->addItem(tr("Flight"), val++);
-  b->addItem(tr("Telemetry"), val++);
-
-  int reCount = firmware->getCapability(RotaryEncoders);
-  if (reCount == 1) {
-    b->addItem(tr("Rotary Encoder"), val++);
-  }
-  else if (reCount == 2) {
-    b->addItem(tr("REa"), val++);
-    b->addItem(tr("REb"), val++);
-  }
-
-  if (model) {
-    for (int i = 0; i < firmware->getCapability(Sensors); ++i) {
-      if (model->sensorData[i].isAvailable()) {
-        RawSource item = RawSource(SOURCE_TYPE_TELEMETRY, 3 * i);
-        b->addItem(item.toString(model), val + i);
-      }
-    }
-  }
-
-  b->setCurrentIndex(b->findData(value));
-}
-
 QString CustomFunctionData::paramToString(const ModelData * model) const
 {
   QStringList qs;
@@ -169,13 +133,7 @@ QString CustomFunctionData::paramToString(const ModelData * model) const
     return harpicToString(param);
   }
   else if (func == FuncReset) {
-    QComboBox cb;
-    CustomFunctionData::populateResetParams(model, &cb);
-    int pos = cb.findData(param);
-    if (pos >= 0)
-      return cb.itemText(pos);
-    else
-      return QString(CPN_STR_UNKNOWN_ITEM);
+    return resetToString(model, param);
   }
   else if (func == FuncVolume || func == FuncPlayValue || func == FuncBacklight) {
     return RawSource(param).toString(model);
@@ -270,12 +228,54 @@ int CustomFunctionData::funcContext(int index)
 
   return ret;
 }
+
 //  static
-int CustomFunctionData::resetParamCount(const ModelData * model)
+QString CustomFunctionData::resetToString(const ModelData * model, int value)
 {
-  QComboBox cb;
-  CustomFunctionData::populateResetParams(model, &cb);
-  return cb.count();
+  Firmware * firmware = getCurrentFirmware();
+  int step = CPN_MAX_TIMERS;
+
+  if (value < step) {
+    if (value < firmware->getCapability(Timers))
+      return RawSource(SOURCE_TYPE_SPECIAL, value + SOURCE_TYPE_SPECIAL_TIMER1_IDX).toString(model);
+    else
+      return QString(CPN_STR_UNKNOWN_ITEM);
+  }
+
+  if (value < ++step)
+    return tr("Flight");
+
+  if (value < ++step)
+    return tr("Telemetry");
+
+  int reCount = firmware->getCapability(RotaryEncoders);
+
+  if (reCount > 0 && value < step + reCount) {
+    if (reCount == 1 && value < step + 1)
+      return tr("Rotary Encoder");
+    else if (reCount == 2) {
+      if (value < step + 1)
+        return tr("REa");
+      else
+        return tr("REb");
+    }
+    else
+      return QString(CPN_STR_UNKNOWN_ITEM);
+  }
+  step += reCount;
+
+  if (value < step + firmware->getCapability(Sensors))
+    return RawSource(SOURCE_TYPE_TELEMETRY, 3 * (value - step)).toString(model);
+
+  return QString(CPN_STR_UNKNOWN_ITEM);
+}
+
+//  static
+int CustomFunctionData::resetParamCount()
+{
+  Firmware * firmware = getCurrentFirmware();
+
+  return CPN_MAX_TIMERS + 2 + firmware->getCapability(RotaryEncoders) + firmware->getCapability(Sensors);
 }
 
 //  static

@@ -447,7 +447,7 @@ CustomFuncResetParamItemModel::CustomFuncResetParamItemModel(const GeneralSettin
   setId(IMID_CustomFuncResetParam);
   setUpdateMask(IMUE_TeleSensors);
 
-  for (int i = 0; i < CustomFunctionData::resetParamCount(modelData); i++) {
+  for (int i = 0; i < CustomFunctionData::resetParamCount(); i++) {
     QStandardItem * modelItem = new QStandardItem();
     modelItem->setData(i, IMDR_Id);
     setDynamicItemData(modelItem, i);
@@ -459,7 +459,7 @@ void CustomFuncResetParamItemModel::setDynamicItemData(QStandardItem * item, con
 {
   CustomFunctionData cfd = CustomFunctionData(AssignFunc::FuncReset);
   cfd.param = value;
-  item->setText(cfd.paramToString(modelData));
+  item->setText(CustomFunctionData::resetToString(modelData));
   item->setData(CustomFunctionData::isResetParamAvailable(modelData, value), IMDR_Available);
 }
 
