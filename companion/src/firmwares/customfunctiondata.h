@@ -78,7 +78,8 @@ enum GVarAdjustModes
   FUNC_ADJUST_GVAR_CONSTANT,
   FUNC_ADJUST_GVAR_SOURCE,
   FUNC_ADJUST_GVAR_GVAR,
-  FUNC_ADJUST_GVAR_INCDEC
+  FUNC_ADJUST_GVAR_INCDEC,
+  FUNC_ADJUST_GVAR_COUNT
 };
 
 class CustomFunctionData {
@@ -113,18 +114,21 @@ class CustomFunctionData {
     QString enabledToString() const;
     QString playSoundToString() const;
     QString harpicToString() const;
+    QString gvarAdjustModeToString() const;
 
     static void populateResetParams(const ModelData * model, QComboBox * b, unsigned int value);
     static bool isFuncAvailable(int index);
     static int funcContext(int index);
     static int resetParamCount(const ModelData * model);
     static bool isResetParamAvailable(const ModelData * model, int index);
-
     static QString repeatToString(int value);
     static QStringList playSoundStringList();
     static QString playSoundToString(int value);
     static QString harpicToString(int value);
+    static QStringList gvarAdjustModeStringList();
+    static QString gvarAdjustModeToString(int value);
     static AbstractStaticItemModel * repeatItemModel();
     static AbstractStaticItemModel * playSoundItemModel();
     static AbstractStaticItemModel * harpicItemModel();
+    static AbstractStaticItemModel * gvarAdjustModeItemModel();
 };

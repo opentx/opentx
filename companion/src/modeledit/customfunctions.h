@@ -67,7 +67,6 @@ class CustomFunctionsPanel : public GenericPanel
     void onItemModelUpdateComplete();
 
   private:
-    void populateGVmodeCB(QComboBox *b, unsigned int value);
     void populateFuncParamCB(QComboBox *b, uint function, unsigned int value, unsigned int adjustmode=0);
     bool hasClipboardData(QByteArray * data = nullptr) const;
     bool insertAllowed() const;
@@ -88,6 +87,7 @@ class CustomFunctionsPanel : public GenericPanel
     int playSoundId;
     int harpicId;
     int repeatId;
+    int gvarAdjustModeId;
 
     QSet<QString> tracksSet;
     QSet<QString> scriptsSet;

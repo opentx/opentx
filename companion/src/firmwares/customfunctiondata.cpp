@@ -314,10 +314,8 @@ QString CustomFunctionData::harpicToString(int value)
 //  static
 QStringList CustomFunctionData::playSoundStringList()
 {
-  QStringList strl;
-  strl << tr("Beep 1") << tr("Beep 2") << tr("Beep 3") << tr("Warn 1") << tr("Warn 2") << tr("Cheep") << tr("Ratata") << tr("Tick")
-          << tr("Siren") << tr("Ring") << tr("Sci Fi") << tr("Robot") << tr("Chirp") << tr("Tada") << tr("Cricket") << tr("Alarm Clock");
-  return strl;
+  return QStringList({ tr("Beep 1"), tr("Beep 2"), tr("Beep 3"), tr("Warn 1"), tr("Warn 2"), tr("Cheep"), tr("Ratata"), tr("Tick"),
+                       tr("Siren"), tr("Ring"), tr("Sci Fi"), tr("Robot"), tr("Chirp"), tr("Tada"), tr("Cricket"), tr("Alarm Clock") });
 }
 
 QString CustomFunctionData::playSoundToString() const
@@ -328,11 +326,33 @@ QString CustomFunctionData::playSoundToString() const
 //  static
 QString CustomFunctionData::playSoundToString(int value)
 {
-  QStringList strl = playSoundStringList();
+  const QStringList strl = playSoundStringList();
   if (value < strl.count())
     return strl.at(value);
   else
     return QString(CPN_STR_UNKNOWN_ITEM);
+}
+
+QString CustomFunctionData::gvarAdjustModeToString() const
+{
+  return gvarAdjustModeToString(adjustMode);
+}
+
+//  static
+QString CustomFunctionData::gvarAdjustModeToString(int value)
+{
+  switch (value) {
+    case FUNC_ADJUST_GVAR_CONSTANT:
+      return tr("Value");
+    case FUNC_ADJUST_GVAR_SOURCE:
+      return tr("Source");
+    case FUNC_ADJUST_GVAR_GVAR:
+      return tr("GVAR");
+    case FUNC_ADJUST_GVAR_INCDEC:
+      return tr("Increment");
+    default:
+      return QString(CPN_STR_UNKNOWN_ITEM);
+  }
 }
 
 //  static
@@ -353,7 +373,7 @@ AbstractStaticItemModel * CustomFunctionData::repeatItemModel()
 AbstractStaticItemModel * CustomFunctionData::playSoundItemModel()
 {
   AbstractStaticItemModel * mdl = new AbstractStaticItemModel();
-  mdl->setName("customfunctiondata.playsounds");
+  mdl->setName("customfunctiondata.playsound");
 
   for (int i = 0; i < playSoundStringList().count(); i++) {
     mdl->appendToItemList(playSoundToString(i), i);
@@ -377,3 +397,16 @@ AbstractStaticItemModel * CustomFunctionData::harpicItemModel()
   return mdl;
 }
 
+//  static
+AbstractStaticItemModel * CustomFunctionData::gvarAdjustModeItemModel()
+{
+  AbstractStaticItemModel * mdl = new AbstractStaticItemModel();
+  mdl->setName("customfunctiondata.gvaradjustmode");
+
+  for (int i = 0; i < FUNC_ADJUST_GVAR_COUNT; i++) {
+    mdl->appendToItemList(gvarAdjustModeToString(i), i);
+  }
+
+  mdl->loadItemList();
+  return mdl;
+}

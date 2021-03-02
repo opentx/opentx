@@ -39,6 +39,7 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
   playSoundId = tabModelFactory->registerItemModel(CustomFunctionData::playSoundItemModel());
   harpicId = tabModelFactory->registerItemModel(CustomFunctionData::harpicItemModel());
   repeatId = tabModelFactory->registerItemModel(CustomFunctionData::repeatItemModel());
+  gvarAdjustModeId = tabModelFactory->registerItemModel(CustomFunctionData::gvarAdjustModeItemModel());
 
   tabFilterFactory = new FilteredItemModelFactory();
 
@@ -140,7 +141,7 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
 
     fswtchGVmode[i] = new QComboBox(this);
     fswtchGVmode[i]->setProperty("index", i);
-    populateGVmodeCB(fswtchGVmode[i], functions[i].adjustMode);
+    fswtchGVmode[i]->setModel(tabModelFactory->getItemModel(gvarAdjustModeId));
     fswtchGVmode[i]->setSizeAdjustPolicy(QComboBox::AdjustToContents);
     connect(fswtchGVmode[i], SIGNAL(currentIndexChanged(int)), this, SLOT(customFunctionEdited()));
     paramLayout->addWidget(fswtchGVmode[i]);
@@ -382,8 +383,8 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
     else if (func >= FuncAdjustGV1 && func <= FuncAdjustGVLast) {
       int gvidx = func - FuncAdjustGV1;
       if (modified)
-        cfn.adjustMode = fswtchGVmode[i]->currentIndex();
-      fswtchGVmode[i]->setCurrentIndex(cfn.adjustMode);
+        cfn.adjustMode = fswtchGVmode[i]->currentData().toInt();
+      fswtchGVmode[i]->setCurrentIndex(fswtchGVmode[i]->findData(cfn.adjustMode));
       widgetsMask |= CUSTOM_FUNCTION_GV_MODE | CUSTOM_FUNCTION_ENABLE;
       if (cfn.adjustMode == FUNC_ADJUST_GVAR_CONSTANT || cfn.adjustMode == FUNC_ADJUST_GVAR_INCDEC) {
         if (modified)
@@ -621,16 +622,6 @@ void CustomFunctionsPanel::onCustomContextMenuRequested(QPoint pos)
   contextMenu.addAction(CompanionIcon("clear.png"), tr("Clear All"),this,SLOT(cmClearAll()));
 
   contextMenu.exec(globalPos);
-}
-
-void CustomFunctionsPanel::populateGVmodeCB(QComboBox *b, unsigned int value)
-{
-  b->clear();
-  b->addItem(tr("Value"));
-  b->addItem(tr("Source"));
-  b->addItem(tr("GVAR"));
-  b->addItem(tr("Increment"));
-  b->setCurrentIndex(value);
 }
 
 void CustomFunctionsPanel::populateFuncParamCB(QComboBox *b, uint function, unsigned int value, unsigned int adjustmode)
