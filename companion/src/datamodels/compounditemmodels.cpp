@@ -457,9 +457,7 @@ CustomFuncResetParamItemModel::CustomFuncResetParamItemModel(const GeneralSettin
 
 void CustomFuncResetParamItemModel::setDynamicItemData(QStandardItem * item, const int value) const
 {
-  CustomFunctionData cfd = CustomFunctionData(AssignFunc::FuncReset);
-  cfd.param = value;
-  item->setText(CustomFunctionData::resetToString(modelData));
+  item->setText(CustomFunctionData::resetToString(modelData, value));
   item->setData(CustomFunctionData::isResetParamAvailable(modelData, value), IMDR_Available);
 }
 

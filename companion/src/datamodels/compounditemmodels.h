@@ -18,8 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#ifndef COMPOUNDITEMMODELS_H
-#define COMPOUNDITEMMODELS_H
+#pragma once
 
 #include "rawsource.h"
 #include "rawswitch.h"
@@ -361,5 +360,3 @@ class CompoundItemModelFactory
   private:
     void setSourceId(AbstractItemModel * itemModel);
 };
-
-#endif // COMPOUNDITEMMODELS_H

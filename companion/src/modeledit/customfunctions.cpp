@@ -99,7 +99,7 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
   playIcon.addImage("stop.png", QIcon::Normal, QIcon::On);
 
   QStringList headerLabels;
-  headerLabels << "#" << tr("Switch") << tr("Action") << tr("Parameters") << tr("Enable");
+  headerLabels << "#" << tr("Switch") << tr("Action") << tr("Parameters") << "";
   TableLayout * tableLayout = new TableLayout(this, fswCapability, headerLabels);
 
   for (int i = 0; i < fswCapability; i++) {
@@ -119,19 +119,21 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
 
     // The switch
     fswtchSwtch[i] = new QComboBox(this);
+    fswtchSwtch[i]->setProperty("index", i);
     fswtchSwtch[i]->setModel(tabFilterFactory->getItemModel(rawSwitchId));
     fswtchSwtch[i]->setCurrentIndex(fswtchSwtch[i]->findData(functions[i].swtch.toValue()));
-    fswtchSwtch[i]->setProperty("index", i);
     fswtchSwtch[i]->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Minimum);
+    fswtchSwtch[i]->setSizeAdjustPolicy(QComboBox::AdjustToContents);
     fswtchSwtch[i]->setMaxVisibleItems(10);
     connect(fswtchSwtch[i], SIGNAL(currentIndexChanged(int)), this, SLOT(customFunctionEdited()));
     tableLayout->addWidget(i, 1, fswtchSwtch[i]);
 
     // The function
     fswtchFunc[i] = new QComboBox(this);
+    fswtchFunc[i]->setProperty("index", i);
     fswtchFunc[i]->setModel(tabFilterFactory->getItemModel(funcActionsId));
     fswtchFunc[i]->setCurrentIndex(fswtchFunc[i]->findData(functions[i].func));
-    fswtchFunc[i]->setProperty("index", i);
+    fswtchFunc[i]->setSizeAdjustPolicy(QComboBox::AdjustToContents);
     connect(fswtchFunc[i], SIGNAL(currentIndexChanged(int)), this, SLOT(functionEdited()));
     tableLayout->addWidget(i, 2, fswtchFunc[i]);
 
@@ -148,8 +150,8 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
 
     fswtchParamGV[i] = new QCheckBox(this);
     fswtchParamGV[i]->setProperty("index", i);
-    fswtchParamGV[i]->setText("GV");
-    fswtchParamGV[i]->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
+    fswtchParamGV[i]->setText(tr("GV"));
+    fswtchParamGV[i]->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
     connect(fswtchParamGV[i], SIGNAL(stateChanged(int)), this, SLOT(customFunctionEdited()));
     paramLayout->addWidget(fswtchParamGV[i]);
 
@@ -202,6 +204,7 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
     fswtchRepeat[i]->setProperty("index", i);
     fswtchRepeat[i]->setModel(tabModelFactory->getItemModel(repeatId));
     fswtchRepeat[i]->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Fixed);
+    fswtchRepeat[i]->setSizeAdjustPolicy(QComboBox::AdjustToContents);
     repeatLayout->addWidget(fswtchRepeat[i], i + 1);
     connect(fswtchRepeat[i], SIGNAL(currentIndexChanged(int)), this, SLOT(customFunctionEdited()));
 

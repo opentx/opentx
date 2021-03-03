@@ -262,6 +262,7 @@ QString CustomFunctionData::resetToString(const ModelData * model, int value)
     else
       return QString(CPN_STR_UNKNOWN_ITEM);
   }
+
   step += reCount;
 
   if (value < step + firmware->getCapability(Sensors))
@@ -291,8 +292,8 @@ bool CustomFunctionData::isResetParamAvailable(const ModelData * model, int inde
   }
   else if (index < CPN_MAX_TIMERS + firmware->getCapability(RotaryEncoders))
     return true;
-  else if (model && index < CPN_MAX_TIMERS + firmware->getCapability(RotaryEncoders) + firmware->getCapability(Sensors))
-    return model->sensorData[index - CPN_MAX_TIMERS - firmware->getCapability(RotaryEncoders)].isAvailable();
+  else if (model && index < resetParamCount())
+    return model->sensorData[index - (CPN_MAX_TIMERS + 2 + firmware->getCapability(RotaryEncoders))].isAvailable();
 
   return false;
 }
