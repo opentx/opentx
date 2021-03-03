@@ -94,7 +94,7 @@ QString CustomFunctionData::funcToString(const AssignFunc func, const ModelData 
   else if (func == FuncPlayValue)
     return tr("Play Value");
   else if (func == FuncPlayScript)
-    return tr("Play Script");
+    return tr("Lua Script");
   else if (func == FuncLogs)
     return tr("SD Logs");
   else if (func == FuncVolume)
@@ -354,7 +354,7 @@ QString CustomFunctionData::gvarAdjustModeToString(const int value)
     case FUNC_ADJUST_GVAR_GVAR:
       return tr("Global Variable");
     case FUNC_ADJUST_GVAR_INCDEC:
-      return tr("Increment");
+      return tr("Inc/Decrement");
     default:
       return QString(CPN_STR_UNKNOWN_ITEM);
   }
