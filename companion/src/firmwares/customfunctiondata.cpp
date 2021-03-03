@@ -255,23 +255,6 @@ QString CustomFunctionData::resetToString(const int value, const ModelData * mod
   if (value < ++step)
     return tr("Telemetry");
 
-  int reCount = firmware->getCapability(RotaryEncoders);
-
-  if (reCount > 0 && value < step + reCount) {
-    if (reCount == 1 && value < step + 1)
-      return tr("Rotary Encoder");
-    else if (reCount == 2) {
-      if (value < step + 1)
-        return tr("REa");
-      else
-        return tr("REb");
-    }
-    else
-      return QString(CPN_STR_UNKNOWN_ITEM);
-  }
-
-  step += reCount;
-
   if (value < step + firmware->getCapability(Sensors))
     return RawSource(SOURCE_TYPE_TELEMETRY, 3 * (value - step)).toString(model);
 
@@ -283,7 +266,7 @@ int CustomFunctionData::resetParamCount()
 {
   Firmware * firmware = getCurrentFirmware();
 
-  return CPN_MAX_TIMERS + 2 + firmware->getCapability(RotaryEncoders) + firmware->getCapability(Sensors);
+  return CPN_MAX_TIMERS + 2 + firmware->getCapability(Sensors);
 }
 
 //  static
@@ -297,10 +280,10 @@ bool CustomFunctionData::isResetParamAvailable(const int index, const ModelData 
     else
       return false;
   }
-  else if (index < CPN_MAX_TIMERS + firmware->getCapability(RotaryEncoders))
+  else if (index < CPN_MAX_TIMERS + 2)
     return true;
   else if (model && index < resetParamCount())
-    return model->sensorData[index - (CPN_MAX_TIMERS + 2 + firmware->getCapability(RotaryEncoders))].isAvailable();
+    return model->sensorData[index - (CPN_MAX_TIMERS + 2)].isAvailable();
 
   return false;
 }
