@@ -420,7 +420,7 @@ CustomFuncActionItemModel::CustomFuncActionItemModel(const GeneralSettings * con
 
 void CustomFuncActionItemModel::setDynamicItemData(QStandardItem * item, const int value) const
 {
-  item->setText(CustomFunctionData(AssignFunc(value)).funcToString(modelData));
+  item->setText(CustomFunctionData::funcToString((AssignFunc)value, modelData));
   item->setData(CustomFunctionData::isFuncAvailable(value), IMDR_Available);
 }
 
@@ -457,8 +457,8 @@ CustomFuncResetParamItemModel::CustomFuncResetParamItemModel(const GeneralSettin
 
 void CustomFuncResetParamItemModel::setDynamicItemData(QStandardItem * item, const int value) const
 {
-  item->setText(CustomFunctionData::resetToString(modelData, value));
-  item->setData(CustomFunctionData::isResetParamAvailable(modelData, value), IMDR_Available);
+  item->setText(CustomFunctionData::resetToString(value, modelData));
+  item->setData(CustomFunctionData::isResetParamAvailable(value, modelData), IMDR_Available);
 }
 
 void CustomFuncResetParamItemModel::update(const int event)

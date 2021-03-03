@@ -107,26 +107,27 @@ class CustomFunctionData {
 
     void clear();
     bool isEmpty() const;
-    QString nameToString(int index, bool globalContext = false) const;
     QString funcToString(const ModelData * model = nullptr) const;
-    QString paramToString(const ModelData * model) const;
+    QString paramToString(const ModelData * model = nullptr) const;
     QString repeatToString() const;
     QString enabledToString() const;
     QString playSoundToString() const;
     QString harpicToString() const;
     QString gvarAdjustModeToString() const;
 
-    static bool isFuncAvailable(int index);
-    static int funcContext(int index);
-    static QString resetToString(const ModelData * model, int value);
+    static QString nameToString(const int index, const bool globalContext = false);
+    static QString funcToString(const AssignFunc func, const ModelData * model = nullptr);
+    static bool isFuncAvailable(const int index);
+    static int funcContext(const int index);
+    static QString resetToString(const int value, const ModelData * model = nullptr);
     static int resetParamCount();
-    static bool isResetParamAvailable(const ModelData * model, int index);
-    static QString repeatToString(int value);
+    static bool isResetParamAvailable(const int index, const ModelData * model = nullptr);
+    static QString repeatToString(const int value);
     static QStringList playSoundStringList();
-    static QString playSoundToString(int value);
-    static QString harpicToString(int value);
+    static QString playSoundToString(const int value);
+    static QString harpicToString(const int value);
     static QStringList gvarAdjustModeStringList();
-    static QString gvarAdjustModeToString(int value);
+    static QString gvarAdjustModeToString(const int value);
     static AbstractStaticItemModel * repeatItemModel();
     static AbstractStaticItemModel * playSoundItemModel();
     static AbstractStaticItemModel * harpicItemModel();

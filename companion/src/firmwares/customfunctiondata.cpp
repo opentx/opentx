@@ -47,12 +47,19 @@ bool CustomFunctionData::isEmpty() const
   return (swtch.type == SWITCH_TYPE_NONE);
 }
 
-QString CustomFunctionData::nameToString(int index, bool globalContext) const
+//  static
+QString CustomFunctionData::nameToString(const int index, const bool globalContext)
 {
   return RadioData::getElementName((globalContext ? tr("GF") : tr("SF")), index + 1, 0, true);
 }
 
 QString CustomFunctionData::funcToString(const ModelData * model) const
+{
+  return funcToString(func, model);
+}
+
+//  static
+QString CustomFunctionData::funcToString(const AssignFunc func, const ModelData * model)
 {
   if (func >= FuncOverrideCH1 && func <= FuncOverrideCHLast)
     return tr("Override %1").arg(RawSource(SOURCE_TYPE_CH, func).toString(model));
@@ -133,7 +140,7 @@ QString CustomFunctionData::paramToString(const ModelData * model) const
     return harpicToString(param);
   }
   else if (func == FuncReset) {
-    return resetToString(model, param);
+    return resetToString(param, model);
   }
   else if (func == FuncVolume || func == FuncPlayValue || func == FuncBacklight) {
     return RawSource(param).toString(model);
@@ -168,7 +175,7 @@ QString CustomFunctionData::repeatToString() const
 }
 
 //  static
-QString CustomFunctionData::repeatToString(int value)
+QString CustomFunctionData::repeatToString(const int value)
 {
   if (value == -1) {
     return tr("Played once, not during startup");
@@ -198,7 +205,7 @@ QString CustomFunctionData::enabledToString() const
 }
 
 //  static
-bool CustomFunctionData::isFuncAvailable(int index)
+bool CustomFunctionData::isFuncAvailable(const int index)
 {
   Firmware * fw = getCurrentFirmware();
 
@@ -217,7 +224,7 @@ bool CustomFunctionData::isFuncAvailable(int index)
 }
 
 //  static
-int CustomFunctionData::funcContext(int index)
+int CustomFunctionData::funcContext(const int index)
 {
   int ret = AllFunctionContexts;
 
@@ -230,7 +237,7 @@ int CustomFunctionData::funcContext(int index)
 }
 
 //  static
-QString CustomFunctionData::resetToString(const ModelData * model, int value)
+QString CustomFunctionData::resetToString(const int value, const ModelData * model)
 {
   Firmware * firmware = getCurrentFirmware();
   int step = CPN_MAX_TIMERS;
@@ -280,7 +287,7 @@ int CustomFunctionData::resetParamCount()
 }
 
 //  static
-bool CustomFunctionData::isResetParamAvailable(const ModelData * model, int index)
+bool CustomFunctionData::isResetParamAvailable(const int index, const ModelData * model)
 {
   Firmware * firmware = getCurrentFirmware();
 
@@ -304,7 +311,7 @@ QString CustomFunctionData::harpicToString() const
 }
 
 //  static
-QString CustomFunctionData::harpicToString(int value)
+QString CustomFunctionData::harpicToString(const int value)
 {
   return QString("%1").arg(value);
 }
@@ -322,7 +329,7 @@ QString CustomFunctionData::playSoundToString() const
 }
 
 //  static
-QString CustomFunctionData::playSoundToString(int value)
+QString CustomFunctionData::playSoundToString(const int value)
 {
   const QStringList strl = playSoundStringList();
   if (value < strl.count())
@@ -337,7 +344,7 @@ QString CustomFunctionData::gvarAdjustModeToString() const
 }
 
 //  static
-QString CustomFunctionData::gvarAdjustModeToString(int value)
+QString CustomFunctionData::gvarAdjustModeToString(const int value)
 {
   switch (value) {
     case FUNC_ADJUST_GVAR_CONSTANT:
