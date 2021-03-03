@@ -103,7 +103,6 @@ class CustomFunctionsPanel : public GenericPanel
     QCheckBox * fswtchEnable[CPN_MAX_SPECIAL_FUNCTIONS];
     QComboBox * fswtchRepeat[CPN_MAX_SPECIAL_FUNCTIONS];
     QComboBox * fswtchGVmode[CPN_MAX_SPECIAL_FUNCTIONS];
-    QSlider * fswtchBLcolor[CPN_MAX_SPECIAL_FUNCTIONS];
     QMediaPlayer * mediaPlayer;
 
     int selectedIndex;

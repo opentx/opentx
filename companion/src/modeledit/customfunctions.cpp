@@ -182,15 +182,6 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
     connect(fswtchParamArmT[i], SIGNAL(currentIndexChanged(int)), this, SLOT(customFunctionEdited()));
     connect(fswtchParamArmT[i], SIGNAL(editTextChanged ( const QString)), this, SLOT(customFunctionEdited()));
 
-    fswtchBLcolor[i] = new QSlider(this);
-    fswtchBLcolor[i]->setProperty("index", i);
-    fswtchBLcolor[i]->setMinimum(0);
-    fswtchBLcolor[i]->setMaximum(100);
-    fswtchBLcolor[i]->setSingleStep(1);
-    fswtchBLcolor[i]->setOrientation(Qt::Horizontal);
-    paramLayout->addWidget(fswtchBLcolor[i]);
-    connect(fswtchBLcolor[i], SIGNAL(sliderReleased()), this, SLOT(customFunctionEdited()));
-
     playBT[i] = new QToolButton(this);
     playBT[i]->setProperty("index", i);
     playBT[i]->setIcon(playIcon);
@@ -310,7 +301,6 @@ void CustomFunctionsPanel::toggleSound(bool play)
 #define CUSTOM_FUNCTION_ENABLE         (1<<6)
 #define CUSTOM_FUNCTION_REPEAT         (1<<7)
 #define CUSTOM_FUNCTION_PLAY           (1<<8)
-#define CUSTOM_FUNCTION_BL_COLOR       (1<<9)
 #define CUSTOM_FUNCTION_SHOW_FUNC      (1<<10)
 
 
@@ -551,7 +541,6 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
     fswtchEnable[i]->setChecked(false);
   fswtchRepeat[i]->setVisible(widgetsMask & CUSTOM_FUNCTION_REPEAT);
   fswtchGVmode[i]->setVisible(widgetsMask & CUSTOM_FUNCTION_GV_MODE);
-  fswtchBLcolor[i]->setVisible(widgetsMask & CUSTOM_FUNCTION_BL_COLOR);
   playBT[i]->setVisible(widgetsMask & CUSTOM_FUNCTION_PLAY);
 }
 
