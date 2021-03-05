@@ -148,17 +148,47 @@ CurvesPanel::CurvesPanel(QWidget * parent, ModelData & model, GeneralSettings & 
     // The edit curve button
     QPushButton * edit = new QPushButton(this);
     edit->setProperty("index", i);
-    QPalette palette;
-    palette.setBrush(QPalette::Active, QPalette::Button, QBrush(colors[i]));
-    palette.setBrush(QPalette::Active, QPalette::ButtonText, QBrush(Qt::white));
+    /*
+    From https://doc.qt.io/qt-5/qwidget.html#palette-prop
+
+    The current style, which is used to render the content of all standard Qt widgets, is free to choose colors and brushes
+    from the widget palette, or in some cases, to ignore the palette (partially, or completely).
+    In particular, certain styles like GTK style, Mac style, and Windows Vista style, depend on third party APIs to render
+    the content of widgets, and these styles typically do not follow the palette. Because of this, assigning roles to a widget's palette
+    is not guaranteed to change the appearance of the widget. Instead, you may choose to apply a styleSheet.
+
+    Warning: Do not use this function in conjunction with Qt Style Sheets.
+    When using style sheets, the palette of a widget can be customized using the "color", "background-color",
+    "selection-color", "selection-background-color" and "alternate-background-color".
+    */
+
+    //  can only assume there have been some OS version specific display issues so the stylesheet was added
+    //  to ensure control remove use of QPalette
+    //QPalette palette;
+    //palette.setBrush(QPalette::Active, QPalette::Button, QBrush(colors[i]));
+    //palette.setBrush(QPalette::Active, QPalette::ButtonText, QBrush(Qt::white));
+
+/*   rework see below
 #ifdef __APPLE__
-    edit->setStyleSheet(QString("color: %1;").arg(colors[i].name()));
+    //  this sets text color to background color !!!!
+    //edit->setStyleSheet(QString("color: %1;").arg(colors[i].name()));
 #elif defined WIN32 || !defined __GNUC__
     edit->setStyleSheet(QString("background-color: %1; color: white;").arg(colors[i].name()));
 #else
-    edit->setStyleSheet(QString("background-color: %1; color: white; padding: 2px 3px; border-style: outset; border-width: 1px; border-radius: 2px; border-color: inherit;").arg(colors[i].name()));
+    //  creates more compact buttons
+    edit->setStyleSheet(QString("background-color: %1; color: white; padding: 2px 3px; border-style: outset; border-width: 1px;
+                                border-radius: 2px; border-color: inherit;").arg(colors[i].name()));
 #endif
-    edit->setPalette(palette);
+*/
+
+#ifdef __GNUC__
+    //  creates more compact and likely consistent buttons across OS flavors
+    edit->setStyleSheet(QString("background-color: %1; color: white; padding: 2px 3px; border-style: outset; border-width: 1px; border-radius: 2px; border-color: inherit;").arg(colors[i].name()));
+#else
+    edit->setStyleSheet(QString("background-color: %1; color: white;").arg(colors[i].name()));
+#endif
+
+    //edit->setPalette(palette);
     edit->setText(tr("Curve %1").arg(i + 1));
     edit->setContextMenuPolicy(Qt::CustomContextMenu);
     edit->setToolTip(tr("Popup menu available"));
@@ -173,7 +203,8 @@ CurvesPanel::CurvesPanel(QWidget * parent, ModelData & model, GeneralSettings & 
     // The curve plot checkbox
     QCheckBox * plot = new QCheckBox(this);
     plot->setProperty("index", i);
-    plot->setPalette(palette);
+    //  this has no effect on the checkbox so remove
+    //plot->setPalette(palette);
     connect(plot, SIGNAL(toggled(bool)), this, SLOT(plotCurve(bool)));
     if (i < limit) {
       ui->curvesLayout->addWidget(plot, i, 2, 1, 1);
