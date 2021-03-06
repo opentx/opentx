@@ -18,120 +18,16 @@
  * GNU General Public License for more details.
  */
 
-#include "io_data.h"
-
-#include "radiodata.h"  // for RadioData::getElementName
+#include "flightmodedata.h"
+#include "radiodata.h"
 #include "radiodataconversionstate.h"
 
-/*
- * ExpoData
- */
-
-void ExpoData::convert(RadioDataConversionState & cstate)
+void FlightModeData::convert(RadioDataConversionState & cstate)
 {
-  cstate.setComponent(tr("INP"), 3);
-  cstate.setSubComp(RawSource(SOURCE_TYPE_VIRTUAL_INPUT, chn).toString(cstate.fromModel(), cstate.fromGS(), cstate.fromType) % tr(" (@%1)").arg(cstate.subCompIdx));
-  srcRaw.convert(cstate);
+  cstate.setComponent("FMD", 2);
+  cstate.setSubComp(nameToString(cstate.subCompIdx));
   swtch.convert(cstate);
 }
-
-bool ExpoData::isEmpty() const
-{
-  return (chn == 0 && mode == INPUT_MODE_NONE);
-}
-
-/*
- * MixData
- */
-
-void MixData::convert(RadioDataConversionState & cstate)
-{
-  cstate.setComponent(tr("MIX"), 4);
-  cstate.setSubComp(RawSource(SOURCE_TYPE_CH, destCh-1).toString(cstate.fromModel(), cstate.fromGS(), cstate.fromType) % tr(" (@%1)").arg(cstate.subCompIdx));
-  srcRaw.convert(cstate);
-  swtch.convert(cstate);
-}
-
-bool MixData::isEmpty() const
-{
-  return (destCh == 0);
-}
-
-/*
- * LimitData
- */
-
-QString LimitData::minToString() const
-{
-  return QString::number((qreal)min/10);
-}
-
-QString LimitData::maxToString() const
-{
-  return QString::number((qreal)max/10);
-}
-
-QString LimitData::revertToString() const
-{
-  return revert ? tr("INV") : tr("NOR");
-}
-
-QString LimitData::nameToString(int index) const
-{
-  return RadioData::getElementName(tr("CH"), index + 1, name);
-}
-
-QString LimitData::offsetToString() const
-{
-  return QString::number((qreal)offset/10, 'f', 1);
-}
-
-void LimitData::clear()
-{
-  memset(reinterpret_cast<void *>(this), 0, sizeof(LimitData));
-  min = -1000;
-  max = +1000;
-}
-
-bool LimitData::isEmpty() const
-{
-  return (min == -1000 && max == 1000 && !revert && !offset && !ppmCenter && !symetrical && name[0] == '\0' && !curve.isSet());
-}
-
-/*
- * CurveData
- */
-
-CurveData::CurveData()
-{
-  clear();
-}
-
-void CurveData::clear(int count)
-{
-  memset(this, 0, sizeof(CurveData));
-  this->count = count;
-}
-
-bool CurveData::isEmpty() const
-{
-  for (int i=0; i<count; i++) {
-    if (points[i].y != 0) {
-      return false;
-    }
-  }
-  return true;
-}
-
-QString CurveData::nameToString(const int idx) const
-{
-  return RadioData::getElementName(tr("CV"), idx + 1, name);
-}
-
-
-/*
- * FlightModeData
- */
 
 void FlightModeData::clear(const int phaseIdx)
 {
@@ -147,13 +43,6 @@ void FlightModeData::clear(const int phaseIdx)
 QString FlightModeData::nameToString(int phaseIdx) const
 {
   return RadioData::getElementName(tr("FM"), phaseIdx, name);  // names are zero-based, FM0, FM1, etc
-}
-
-void FlightModeData::convert(RadioDataConversionState & cstate)
-{
-  cstate.setComponent("FMD", 2);
-  cstate.setSubComp(nameToString(cstate.subCompIdx));
-  swtch.convert(cstate);
 }
 
 bool FlightModeData::isEmpty(int phaseIdx) const
