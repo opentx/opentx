@@ -420,9 +420,9 @@
   #define AUX_SERIAL_USART_IRQn               USART3_IRQn
   #define AUX_SERIAL_DMA_Stream_RX            DMA1_Stream1
   #define AUX_SERIAL_DMA_Channel_RX           DMA_Channel_4
+#if defined(RADIO_TX16S)
   #define AUX_SERIAL_PWR_GPIO                 GPIOA
   #define AUX_SERIAL_PWR_GPIO_PIN             GPIO_Pin_15  // PB.00
-#if defined(RADIO_TX16S)
   #define TRAINER_BATTERY_COMPARTMENT         // allows serial port TTL trainer
 #endif
 #else
