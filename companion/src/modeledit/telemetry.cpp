@@ -35,6 +35,7 @@ constexpr char FIM_SENSORFORMULA[]   {"Sensor.Formula"};
 constexpr char FIM_SENSORCELLINDEX[] {"Sensor.CellIndex"};
 constexpr char FIM_SENSORUNIT[]      {"Sensor.Unit"};
 constexpr char FIM_SENSORPRECISION[] {"Sensor.Precision"};
+constexpr char FIM_RSSISOURCE[]      {"Rssi Source"};
 
 TelemetryCustomScreen::TelemetryCustomScreen(QWidget *parent, ModelData & model, FrSkyScreenData & screen, GeneralSettings & generalSettings,
                                              Firmware * firmware, const bool & parentLock, FilteredItemModelFactory * panelFilteredItemModels):
@@ -696,6 +697,11 @@ TelemetryPanel::TelemetryPanel(QWidget *parent, ModelData & model, GeneralSettin
                                                   FIM_TELEPOSSRC);
   connectItemModelEvents(id);
 
+
+  id = panelFilteredItemModels->registerItemModel(new FilteredItemModel(sharedItemModels->getItemModel(AbstractItemModel::IMID_RssiSource)),
+                                                  FIM_RSSISOURCE);
+  connectItemModelEvents(id);
+
   id = panelItemModels->registerItemModel(SensorData::typeItemModel());
   panelFilteredItemModels->registerItemModel(new FilteredItemModel(panelItemModels->getItemModel(id)), FIM_SENSORTYPE);
 
@@ -818,7 +824,7 @@ void TelemetryPanel::setup()
 
   ui->rssiSourceLabel->show();
   ui->rssiSourceLabel->setText(tr("Source"));
-  ui->rssiSourceCB->setModel(panelFilteredItemModels->getItemModel(FIM_TELEPOSSRC));
+  ui->rssiSourceCB->setModel(panelFilteredItemModels->getItemModel(FIM_RSSISOURCE));
   ui->rssiSourceCB->setField(model->rssiSource, this);
   ui->rssiSourceCB->show();
 

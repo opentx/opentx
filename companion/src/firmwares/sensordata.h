@@ -206,6 +206,8 @@ class SensorData {
     static QString unitToString(const int value);
     static QString precToString(const int value);
     static QString boolToString(const bool value) { return value ? tr("Y") : tr("N"); }
+    static bool isRssiSensorAvailable(const ModelData * model, const int value);
+    static QString rssiSensorToString(const ModelData * model, const int value);
 
     static AbstractStaticItemModel * typeItemModel();
     static AbstractStaticItemModel * formulaItemModel();

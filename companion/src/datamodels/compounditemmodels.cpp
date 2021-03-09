@@ -488,7 +488,7 @@ TelemetrySourceItemModel::TelemetrySourceItemModel(const GeneralSettings * const
   if (!modelData)
     return;
 
-  setUpdateMask(IMUE_TeleSensors);
+  setUpdateMask(IMUE_TeleSensors | IMUE_Modules);
   const int count = firmware->getCapability(Sensors);
 
   for (int i = -count; i <= count; ++i) {
@@ -507,6 +507,49 @@ void TelemetrySourceItemModel::setDynamicItemData(QStandardItem * item, const in
 }
 
 void TelemetrySourceItemModel::update(const int event)
+{
+  if (doUpdate(event)) {
+    emit aboutToBeUpdated();
+
+    for (int i = 0; i < rowCount(); ++i) {
+      setDynamicItemData(item(i), item(i)->data(IMDR_Id).toInt());
+    }
+
+    emit updateComplete();
+  }
+}
+
+//
+// RssiSourceItemModel
+//
+
+RssiSourceItemModel::RssiSourceItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData,
+                                                   Firmware * firmware, const Boards * const board, const Board::Type boardType) :
+    AbstractDynamicItemModel(generalSettings, modelData, firmware, board, boardType)
+{
+  setId(IMID_RssiSource);
+
+  if (!modelData)
+    return;
+
+  setUpdateMask(IMUE_TeleSensors | IMUE_Modules);
+
+  for (int i = 0; i <= firmware->getCapability(Sensors); ++i) {
+    QStandardItem * modelItem = new QStandardItem();
+    modelItem->setData(i, IMDR_Id);
+    modelItem->setData(i < 0 ? IMDG_Negative : i > 0 ? IMDG_Positive : IMDG_None, IMDR_Flags);
+    setDynamicItemData(modelItem, i);
+    appendRow(modelItem);
+  }
+}
+
+void RssiSourceItemModel::setDynamicItemData(QStandardItem * item, const int value) const
+{
+  item->setText(SensorData::rssiSensorToString(modelData, value));
+  item->setData(SensorData::isRssiSensorAvailable(modelData, value), IMDR_Available);
+}
+
+void RssiSourceItemModel::update(const int event)
 {
   if (doUpdate(event)) {
     emit aboutToBeUpdated();
@@ -623,6 +666,9 @@ void CompoundItemModelFactory::addItemModel(const int id)
       break;
     case AbstractItemModel::IMID_TeleSource:
       registerItemModel(new TelemetrySourceItemModel(generalSettings, modelData, firmware, board, boardType));
+      break;
+    case AbstractItemModel::IMID_RssiSource:
+      registerItemModel(new RssiSourceItemModel(generalSettings, modelData, firmware, board, boardType));
       break;
     case AbstractItemModel::IMID_CurveRefType:
       registerItemModel(new CurveRefTypeItemModel(generalSettings, modelData, firmware, board, boardType));
