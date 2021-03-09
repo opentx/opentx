@@ -355,7 +355,8 @@ void MixesPanel::mixersDuplicate()
 void MixesPanel::mixerOpen()
 {
   QListWidgetItem *item = mixersListWidget->currentItem();
-  if (item == nullptr) return;
+  if (item == nullptr) 
+    return;
 
   int idx = item->data(Qt::UserRole).toByteArray().at(0);
   if(idx < 0) {
@@ -375,7 +376,8 @@ void MixesPanel::mixerOpen()
 void MixesPanel::mixerHighlight()
 {
   QListWidgetItem *item = mixersListWidget->currentItem();
-  if (item == nullptr) return;
+  if (item == nullptr) 
+    return;
 
   int idx = item->data(Qt::UserRole).toByteArray().at(0);
   int dest;

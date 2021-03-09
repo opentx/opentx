@@ -351,7 +351,8 @@ void InputsPanel::expoOpen(QListWidgetItem *item)
   if (!item)
     item = ExposlistWidget->currentItem();
 
-  if (item == nullptr) return;
+  if (item == nullptr) 
+    return;
 
   int idx = item->data(Qt::UserRole).toByteArray().at(0);
   if (idx < 0) {
@@ -371,7 +372,8 @@ void InputsPanel::expoOpen(QListWidgetItem *item)
 void InputsPanel::expoAdd()
 {
   QListWidgetItem *item = ExposlistWidget->currentItem();
-  if (item == nullptr) return;
+  if (item == nullptr) 
+    return;
 
   int index = item->data(Qt::UserRole).toByteArray().at(0);
 
