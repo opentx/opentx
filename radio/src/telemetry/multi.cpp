@@ -42,6 +42,7 @@ enum MultiPacketTypes : uint8_t
   FlyskyIBusTelemetryAC,
   MultiRxChannels,
   HottTelemetry,
+  MLinkTelemetry
 };
 
 enum MultiBufferState : uint8_t
@@ -377,6 +378,13 @@ static void processMultiTelemetryPaket(const uint8_t * packet, uint8_t module)
         processHottPacket(data);
       else
         TRACE("[MP] Received HoTT telemetry len %d < 14", len);
+      break;
+
+    case MLinkTelemetry:
+      if (len > 6)
+        processMLinkPacket(data);
+      else
+        TRACE("[MP] Received M-Link telemetry len %d < 6", len);
       break;
 
     case FrSkyHubTelemetry:
