@@ -43,14 +43,14 @@ enum
   GHOST_ID_TOTAL_LATENCY = 0x0007,      // Tx-side total latency
   GHOST_ID_VTX_FREQ = 0x0008,           // Vtx Frequency (in MHz)
   GHOST_ID_VTX_POWER = 0x0009,          // Vtx Power (in mW)
-  GHOST_ID_VTX_CHAN = 0x000a,           // Vtx Channel
-  GHOST_ID_VTX_BAND = 0x000b,           // Vtx Band
+  GHOST_ID_VTX_CHAN = 0x000A,           // Vtx Channel
+  GHOST_ID_VTX_BAND = 0x000B,           // Vtx Band
 
-  GHOST_ID_PACK_VOLTS = 0x000c,         // Battery Pack Voltage
-  GHOST_ID_PACK_AMPS = 0x000d,          // Battery Pack Current
-  GHOST_ID_PACK_MAH = 0x000e,           // Battery Pack mAh consumed
+  GHOST_ID_PACK_VOLTS = 0x000C,         // Battery Pack Voltage
+  GHOST_ID_PACK_AMPS = 0x000D,          // Battery Pack Current
+  GHOST_ID_PACK_MAH = 0x000E,           // Battery Pack mAh consumed
 
-  GHOST_ID_GPS_LAT = 0x000f,            // GPS Latitude
+  GHOST_ID_GPS_LAT = 0x000F,            // GPS Latitude
   GHOST_ID_GPS_LONG = 0x0010,           // GPS Longitude
   GHOST_ID_GPS_ALT = 0x0011,            // GPS Altitude
   GHOST_ID_GPS_HDG = 0x0012,            // GPS Heading
