@@ -46,6 +46,8 @@ QString AbstractItemModel::idToString(const int value)
       return "CustomFuncResetParam";
     case IMID_TeleSource:
       return "TeleSource";
+    case IMID_RssiSource:
+      return "RssiSource";
     case IMID_CurveRefType:
       return "CurveRefType";
     case IMID_CurveRefFunc:
