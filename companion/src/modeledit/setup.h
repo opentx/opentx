@@ -81,6 +81,7 @@ class ModulePanel : public ModelPanel
   signals:
     void channelsRangeChanged();
     void failsafeModified(unsigned index);
+    void updateItemModels();
 
   private slots:
     void setupFailsafes();
@@ -175,6 +176,7 @@ class SetupPanel : public ModelPanel
     void onTimerNameChanged();
     void onItemModelAboutToBeUpdated();
     void onItemModelUpdateComplete();
+    void onModuleUpdateItemModels();
 
   private:
     Ui::Setup *ui;
