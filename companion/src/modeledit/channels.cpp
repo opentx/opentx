@@ -22,42 +22,31 @@
 #include "helpers.h"
 #include "filtereditemmodels.h"
 
-LimitsGroup::LimitsGroup(Firmware * firmware, TableLayout * tableLayout, int row, int col, int & value, const ModelData & model, int min, int max, int deflt, ModelPanel * panel):
+LimitsGroup::LimitsGroup(Firmware * firmware, TableLayout * tableLayout, int row, int col, int & value, const ModelData & model,
+                         int min, int max, int deflt, FilteredItemModel * gvarModel, ModelPanel * panel):
   firmware(firmware),
   spinbox(new QDoubleSpinBox()),
-  value(value),
-  displayStep(0.1)
+  value(value)
 {
-  Board::Type board = firmware->getBoard();
-  bool allowGVars = IS_HORUS_OR_TARANIS(board);
-  int internalStep = 1;
-
   spinbox->setProperty("index", row);
   spinbox->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
   spinbox->setAccelerated(true);
+  spinbox->setDecimals(1);
 
   if (firmware->getCapability(PPMUnitMicroseconds)) {
     displayStep = 0.512;
-    spinbox->setDecimals(1);
     spinbox->setSuffix("us");
   }
   else {
-    spinbox->setDecimals(0);
+    displayStep = 0.1;
     spinbox->setSuffix("%");
   }
 
-  if (deflt == 0 /*it's the offset*/) {
-    spinbox->setDecimals(1);
-  }
-  else {
-    internalStep *= 10;
-  }
-
-  spinbox->setSingleStep(displayStep * internalStep);
+  spinbox->setSingleStep(displayStep);
   spinbox->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
 
   QHBoxLayout *horizontalLayout = new QHBoxLayout();
-  QCheckBox *gv = new QCheckBox(tr("GV"));
+  gv = new QCheckBox(tr("GV"));
   gv->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
   horizontalLayout->addWidget(gv);
   QComboBox *cb = new QComboBox();
@@ -65,7 +54,7 @@ LimitsGroup::LimitsGroup(Firmware * firmware, TableLayout * tableLayout, int row
   horizontalLayout->addWidget(cb);
   horizontalLayout->addWidget(spinbox);
   tableLayout->addLayout(row, col, horizontalLayout);
-  gvarGroup = new GVarGroup(gv, spinbox, cb, value, model, deflt, min, max, displayStep, allowGVars);
+  gvarGroup = new GVarGroup(gv, spinbox, cb, value, model, deflt, min, max, displayStep, gvarModel);
   QObject::connect(gvarGroup, &GVarGroup::valueChanged, panel, &ModelPanel::modified);
 }
 
@@ -84,18 +73,19 @@ void LimitsGroup::updateMinMax(int max)
   if (spinbox->maximum() == 0) {
     spinbox->setMinimum(-max * displayStep);
     gvarGroup->setMinimum(-max);
-    if (value < -max) {
+    if (!gv->isChecked() && value < -max) {
       value = -max;
     }
   }
   if (spinbox->minimum() == 0) {
     spinbox->setMaximum(max * displayStep);
     gvarGroup->setMaximum(max);
-    if (value > max) {
+    if (!gv->isChecked() && value > max) {
       value = max;
     }
   }
 }
+
 ChannelsPanel::ChannelsPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, CompoundItemModelFactory * sharedItemModels):
   ModelPanel(parent, model, generalSettings, firmware),
   sharedItemModels(sharedItemModels)
@@ -103,8 +93,12 @@ ChannelsPanel::ChannelsPanel(QWidget * parent, ModelData & model, GeneralSetting
   chnCapability = firmware->getCapability(Outputs);
   int channelNameMaxLen = firmware->getCapability(ChannelsName);
 
-  curveFilteredModel = new FilteredItemModel(sharedItemModels->getItemModel(AbstractItemModel::IMID_Curve));
-  connectItemModelEvents(curveFilteredModel);
+  dialogFilteredItemModels = new FilteredItemModelFactory();
+
+  int crvid = dialogFilteredItemModels->registerItemModel(new FilteredItemModel(sharedItemModels->getItemModel(AbstractItemModel::IMID_Curve)), "Curve");
+  connectItemModelEvents(dialogFilteredItemModels->getItemModel(crvid));
+
+  int gvid = dialogFilteredItemModels->registerItemModel(new FilteredItemModel(sharedItemModels->getItemModel(AbstractItemModel::IMID_GVarRef)), "GVarRef");
 
   QStringList headerLabels;
   headerLabels << "#";
@@ -146,13 +140,13 @@ ChannelsPanel::ChannelsPanel(QWidget * parent, ModelData & model, GeneralSetting
     }
 
     // Channel offset
-    chnOffset[i] = new LimitsGroup(firmware, tableLayout, i, col++, model.limitData[i].offset, model, -1000, 1000, 0, this);
+    chnOffset[i] = new LimitsGroup(firmware, tableLayout, i, col++, model.limitData[i].offset, model, -1000, 1000, 0, dialogFilteredItemModels->getItemModel(gvid), this);
 
     // Channel min
-    chnMin[i] = new LimitsGroup(firmware, tableLayout, i, col++, model.limitData[i].min, model, -model.getChannelsMax() * 10, 0, -1000, this);
+    chnMin[i] = new LimitsGroup(firmware, tableLayout, i, col++, model.limitData[i].min, model, -model.getChannelsMax() * 10, 0, -1000, dialogFilteredItemModels->getItemModel(gvid), this);
 
     // Channel max
-    chnMax[i] = new LimitsGroup(firmware, tableLayout, i, col++, model.limitData[i].max, model, 0, model.getChannelsMax() * 10, 1000, this);
+    chnMax[i] = new LimitsGroup(firmware, tableLayout, i, col++, model.limitData[i].max, model, 0, model.getChannelsMax() * 10, 1000, dialogFilteredItemModels->getItemModel(gvid), this);
 
     // Channel inversion
     invCB[i] = new QComboBox(this);
@@ -165,7 +159,7 @@ ChannelsPanel::ChannelsPanel(QWidget * parent, ModelData & model, GeneralSetting
     if (IS_HORUS_OR_TARANIS(firmware->getBoard())) {
       curveCB[i] = new QComboBox(this);
       curveCB[i]->setProperty("index", i);
-      curveCB[i]->setModel(curveFilteredModel);
+      curveCB[i]->setModel(dialogFilteredItemModels->getItemModel(crvid));
       connect(curveCB[i], SIGNAL(currentIndexChanged(int)), this, SLOT(curveEdited()));
       tableLayout->addWidget(i, col++, curveCB[i]);
     }
@@ -213,7 +207,7 @@ ChannelsPanel::~ChannelsPanel()
     delete centerSB[i];
     delete symlimitsChk[i];
   }
-  delete curveFilteredModel;
+  delete dialogFilteredItemModels;
 }
 
 void ChannelsPanel::symlimitsEdited()
@@ -241,12 +235,11 @@ void ChannelsPanel::nameEdited()
 
 void ChannelsPanel::refreshExtendedLimits()
 {
-  int channelMax = model->getChannelsMax();
+  int channelMax = model->getChannelsMax() * 10;
 
   for (int i = 0 ; i < CPN_MAX_CHNOUT; i++) {
-    chnOffset[i]->updateMinMax(10 * channelMax);
-    chnMin[i]->updateMinMax(10 * channelMax);
-    chnMax[i]->updateMinMax(10 * channelMax);
+    chnMin[i]->updateMinMax(channelMax);
+    chnMax[i]->updateMinMax(channelMax);
   }
   emit modified();
 }

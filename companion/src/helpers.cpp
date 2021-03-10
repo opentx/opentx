@@ -32,6 +32,7 @@
 #include "simulatorinterface.h"
 #include "simulatormainwindow.h"
 #include "storage/sdcard.h"
+#include "filtereditemmodels.h"
 
 #include <QFileDialog>
 #include <QLabel>
@@ -117,7 +118,8 @@ void CompanionIcon::addImage(const QString & baseimage, Mode mode, State state)
  * GVarGroup
 */
 
-GVarGroup::GVarGroup(QCheckBox * weightGV, QAbstractSpinBox * weightSB, QComboBox * weightCB, int & weight, const ModelData & model, const int deflt, const int mini, const int maxi, const double step, bool allowGvars):
+GVarGroup::GVarGroup(QCheckBox * weightGV, QAbstractSpinBox * weightSB, QComboBox * weightCB, int & weight, const ModelData & model,
+                     const int deflt, const int mini, const int maxi, const double step, FilteredItemModel * gvarModel):
   QObject(),
   weightGV(weightGV),
   weightSB(weightSB),
@@ -131,8 +133,8 @@ GVarGroup::GVarGroup(QCheckBox * weightGV, QAbstractSpinBox * weightSB, QComboBo
   step(step),
   lock(true)
 {
-  if (allowGvars && getCurrentFirmware()->getCapability(Gvars)) {
-    Helpers::populateGVCB(*weightCB, weight, model);
+  if (gvarModel && gvarModel->rowCount() > 0) {
+    weightCB->setModel(gvarModel);
     connect(weightGV, SIGNAL(stateChanged(int)), this, SLOT(gvarCBChanged(int)));
     connect(weightCB, SIGNAL(currentIndexChanged(int)), this, SLOT(valuesChanged()));
   }
@@ -152,12 +154,19 @@ GVarGroup::GVarGroup(QCheckBox * weightGV, QAbstractSpinBox * weightSB, QComboBo
 
 void GVarGroup::gvarCBChanged(int state)
 {
-  weightCB->setVisible(state);
-  if (weightSB)
+  if (!lock) {
+    weightCB->setVisible(state);
+    if (weightGV->isChecked()) {
+      //  set CB to +GV1
+      int cnt = getCurrentFirmware()->getCapability(Gvars);
+      if (weightCB->count() > cnt)
+        weightCB->setCurrentIndex(cnt);
+      else
+        weightCB->setCurrentIndex(0);
+    }
     weightSB->setVisible(!state);
-  else
-    weightSB->setVisible(!state);
-  valuesChanged();
+    valuesChanged();
+  }
 }
 
 void GVarGroup::valuesChanged()
@@ -168,7 +177,7 @@ void GVarGroup::valuesChanged()
     else if (sb)
       weight = sb->value();
     else
-      weight = round(dsb->value()/step);
+      weight = round(dsb->value() / step);
 
     emit valueChanged();
   }
@@ -180,7 +189,7 @@ void GVarGroup::setWeight(int val)
 
   int tval;
 
-  if (val>maxi || val<mini) {
+  if (val > maxi || val < mini) {
     tval = deflt;
     weightGV->setChecked(true);
     weightSB->hide();
@@ -213,27 +222,6 @@ void GVarGroup::setWeight(int val)
 /*
  * Helpers namespace functions
 */
-
-void Helpers::populateGVCB(QComboBox & b, int value, const ModelData & model)
-{
-  int count = getCurrentFirmware()->getCapability(Gvars);
-
-  b.clear();
-
-  for (int i=-count; i<=-1; i++) {
-    int16_t gval = (int16_t)(-10000+i);
-    b.addItem("-" + RawSource(SOURCE_TYPE_GVAR, abs(i)-1).toString(&model), gval);
-  }
-
-  for (int i=1; i<=count; i++) {
-    int16_t gval = (int16_t)(10000+i);
-    b.addItem(RawSource(SOURCE_TYPE_GVAR, i-1).toString(&model), gval);
-  }
-
-  b.setCurrentIndex(b.findData(value));
-  if (b.currentIndex() == -1)
-    b.setCurrentIndex(count);
-}
 
 // TODO: Move lookup to GVarData class (w/out combobox)
 void Helpers::populateGvarUseCB(QComboBox * b, unsigned int phase)
