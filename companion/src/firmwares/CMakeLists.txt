@@ -2,16 +2,21 @@
 set(firmwares_SRCS
   adjustmentreference.cpp
   boards.cpp
+  curvedata.cpp
   curvereference.cpp
   customfunctiondata.cpp
   eeprominterface.cpp
   generalsettings.cpp
   gvardata.cpp
-  io_data.cpp
+  input_data.cpp
+  flightmodedata.cpp
+  heli_data.cpp
   logicalswitchdata.cpp
+  mixdata.cpp
   modeldata.cpp
   moduledata.cpp
   multiprotocols.cpp
+  output_data.cpp
   radiodata.cpp
   radiodataconversionstate.cpp
   rawsource.cpp
