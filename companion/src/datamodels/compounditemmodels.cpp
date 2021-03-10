@@ -111,7 +111,6 @@ RawSourceItemModel::RawSourceItemModel(const GeneralSettings * const generalSett
     addItems(SOURCE_TYPE_LUA_OUTPUT,   RawSource::ScriptsGroup,  firmware->getCapability(LuaOutputsPerScript), i * 16);
   addItems(SOURCE_TYPE_VIRTUAL_INPUT,  RawSource::InputsGroup,   firmware->getCapability(VirtualInputs));
   addItems(SOURCE_TYPE_STICK,          RawSource::SourcesGroup,  board->getCapability(Board::MaxAnalogs));
-  addItems(SOURCE_TYPE_ROTARY_ENCODER, RawSource::SourcesGroup,  firmware->getCapability(RotaryEncoders));
   addItems(SOURCE_TYPE_TRIM,           RawSource::TrimsGroup,    board->getCapability(Board::NumTrims));
   addItems(SOURCE_TYPE_MAX,            RawSource::SourcesGroup,  1);
   addItems(SOURCE_TYPE_SWITCH,         RawSource::SwitchesGroup, board->getCapability(Board::Switches));
@@ -172,7 +171,6 @@ RawSwitchItemModel::RawSwitchItemModel(const GeneralSettings * const generalSett
   addItems(SWITCH_TYPE_TELEMETRY,      -1);
   addItems(SWITCH_TYPE_FLIGHT_MODE,    -firmware->getCapability(FlightModes));
   addItems(SWITCH_TYPE_VIRTUAL,        -firmware->getCapability(LogicalSwitches));
-  addItems(SWITCH_TYPE_ROTARY_ENCODER, -firmware->getCapability(RotaryEncoders));
   addItems(SWITCH_TYPE_TRIM,           -board->getCapability(Board::NumTrimSwitches));
   addItems(SWITCH_TYPE_MULTIPOS_POT,   -(board->getCapability(Board::MultiposPots) * board->getCapability(Board::MultiposPotsPositions)));
   addItems(SWITCH_TYPE_SWITCH,         -board->getCapability(Board::SwitchPositions));
@@ -183,7 +181,6 @@ RawSwitchItemModel::RawSwitchItemModel(const GeneralSettings * const generalSett
   addItems(SWITCH_TYPE_SWITCH,         board->getCapability(Board::SwitchPositions));
   addItems(SWITCH_TYPE_MULTIPOS_POT,   board->getCapability(Board::MultiposPots) * board->getCapability(Board::MultiposPotsPositions));
   addItems(SWITCH_TYPE_TRIM,           board->getCapability(Board::NumTrimSwitches));
-  addItems(SWITCH_TYPE_ROTARY_ENCODER, firmware->getCapability(RotaryEncoders));
   addItems(SWITCH_TYPE_VIRTUAL,        firmware->getCapability(LogicalSwitches));
   addItems(SWITCH_TYPE_FLIGHT_MODE,    firmware->getCapability(FlightModes));
   addItems(SWITCH_TYPE_TELEMETRY,      1);
@@ -422,7 +419,7 @@ CustomFuncActionItemModel::CustomFuncActionItemModel(const GeneralSettings * con
 
 void CustomFuncActionItemModel::setDynamicItemData(QStandardItem * item, const int value) const
 {
-  item->setText(CustomFunctionData(AssignFunc(value)).funcToString(modelData));
+  item->setText(CustomFunctionData::funcToString((AssignFunc)value, modelData));
   item->setData(CustomFunctionData::isFuncAvailable(value), IMDR_Available);
 }
 
@@ -449,7 +446,7 @@ CustomFuncResetParamItemModel::CustomFuncResetParamItemModel(const GeneralSettin
   setId(IMID_CustomFuncResetParam);
   setUpdateMask(IMUE_TeleSensors);
 
-  for (int i = 0; i < CustomFunctionData::resetParamCount(modelData); i++) {
+  for (int i = 0; i < CustomFunctionData::resetParamCount(); i++) {
     QStandardItem * modelItem = new QStandardItem();
     modelItem->setData(i, IMDR_Id);
     setDynamicItemData(modelItem, i);
@@ -459,10 +456,8 @@ CustomFuncResetParamItemModel::CustomFuncResetParamItemModel(const GeneralSettin
 
 void CustomFuncResetParamItemModel::setDynamicItemData(QStandardItem * item, const int value) const
 {
-  CustomFunctionData cfd = CustomFunctionData(AssignFunc::FuncReset);
-  cfd.param = value;
-  item->setText(cfd.paramToString(modelData));
-  item->setData(CustomFunctionData::isResetParamAvailable(modelData, value), IMDR_Available);
+  item->setText(CustomFunctionData::resetToString(value, modelData));
+  item->setData(CustomFunctionData::isResetParamAvailable(value, modelData), IMDR_Available);
 }
 
 void CustomFuncResetParamItemModel::update(const int event)
