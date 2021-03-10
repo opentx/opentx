@@ -103,8 +103,9 @@ void processGhostTelemetryValue(uint8_t index, int32_t value)
 
   const GhostSensor * sensor = getGhostSensor(index);
   uint16_t id = sensor->id;
-  if(id == GHOST_ID_GPS_LONG)
+  if (id == GHOST_ID_GPS_LONG) {
     id = GHOST_ID_GPS_LAT; 
+  }
   setTelemetryValue(PROTOCOL_TELEMETRY_GHOST, id, 0, 0, value, sensor->unit, sensor->precision);
 }
 
@@ -242,8 +243,8 @@ void processGhostTelemetryFrame()
     case GHST_DL_PACK_STAT: {
 #if defined(BLUETOOTH)
       if (g_eeGeneral.bluetoothMode == BLUETOOTH_TELEMETRY && bluetooth.state == BLUETOOTH_STATE_CONNECTED) {
-          bluetooth.write(telemetryRxBuffer, telemetryRxBufferCount);
-        }
+        bluetooth.write(telemetryRxBuffer, telemetryRxBufferCount);
+      }
 #endif
       processGhostTelemetryValue(GHOST_ID_PACK_VOLTS, getTelemetryValue_u16le(3));
       processGhostTelemetryValue(GHOST_ID_PACK_AMPS, getTelemetryValue_u16le(5));
@@ -254,8 +255,8 @@ void processGhostTelemetryFrame()
     case GHST_DL_GPS_PRIMARY: {
 #if defined(BLUETOOTH)
       if (g_eeGeneral.bluetoothMode == BLUETOOTH_TELEMETRY && bluetooth.state == BLUETOOTH_STATE_CONNECTED) {
-          bluetooth.write(telemetryRxBuffer, telemetryRxBufferCount);
-        }
+        bluetooth.write(telemetryRxBuffer, telemetryRxBufferCount);
+      }
 #endif
       processGhostTelemetryValue(GHOST_ID_GPS_LAT, getTelemetryValue_s32le(3) / 10);  
       processGhostTelemetryValue(GHOST_ID_GPS_LONG, getTelemetryValue_s32le(7) / 10);
@@ -266,8 +267,8 @@ void processGhostTelemetryFrame()
     case GHST_DL_GPS_SECONDARY: {
 #if defined(BLUETOOTH)
       if (g_eeGeneral.bluetoothMode == BLUETOOTH_TELEMETRY && bluetooth.state == BLUETOOTH_STATE_CONNECTED) {
-          bluetooth.write(telemetryRxBuffer, telemetryRxBufferCount);
-        }
+        bluetooth.write(telemetryRxBuffer, telemetryRxBufferCount);
+      }
 #endif
       processGhostTelemetryValue(GHOST_ID_GPS_HDG, getTelemetryValue_u16le(5) / 10);   
 
@@ -326,8 +327,9 @@ void ghostSetDefault(int index, uint8_t id, uint8_t subId)
   const GhostSensor * sensor = getGhostSensor(id);
   if (sensor) {
     TelemetryUnit unit = sensor->unit;
-    if (unit == UNIT_GPS_LATITUDE || unit == UNIT_GPS_LONGITUDE)
+    if (unit == UNIT_GPS_LATITUDE || unit == UNIT_GPS_LONGITUDE) {
       unit = UNIT_GPS;
+    }
     uint8_t prec = min<uint8_t>(2, sensor->precision);
     telemetrySensor.init(sensor->name, unit, prec);
   }
