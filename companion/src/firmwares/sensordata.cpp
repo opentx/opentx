@@ -19,8 +19,6 @@
  */
 
 #include "sensordata.h"
-
-#include "radiodata.h"
 #include "modeldata.h"
 #include "eeprominterface.h"
 #include "compounditemmodels.h"
@@ -35,7 +33,7 @@ void SensorData::updateUnit()
 
 QString SensorData::nameToString(int index) const
 {
-  return RadioData::getElementName(tr("TELE"), index + 1, label);
+  return DataHelpers::getElementName(tr("TELE"), index + 1, label);
 }
 
 QString SensorData::getOrigin(const ModelData * model) const

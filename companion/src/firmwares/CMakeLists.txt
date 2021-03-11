@@ -23,11 +23,13 @@ set(firmwares_SRCS
   rawswitch.cpp
   sensordata.cpp
   telem_data.cpp
+  timerdata.cpp
   afhds3.cpp
   ersky9x/ersky9xeeprom.cpp
   ersky9x/ersky9xinterface.cpp
   opentx/opentxeeprom.cpp
   opentx/opentxinterface.cpp
+  datahelpers.cpp
   )
 
 string(REPLACE ".cpp" ".h" firmwares_HDRS "${firmwares_SRCS}")
@@ -35,7 +37,6 @@ string(REPLACE ".cpp" ".h" firmwares_HDRS "${firmwares_SRCS}")
 list(APPEND firmwares_HDRS
   eepromimportexport.h
   moduledata.h
-  helpersdata.h
   )
 
 set(firmwares_QT

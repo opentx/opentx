@@ -22,23 +22,6 @@
 #include "radiodataconversionstate.h"
 #include "eeprominterface.h"
 
-// static
-QString RadioData::getElementName(const QString & prefix, unsigned int index, const char * name, bool padding)
-{
-  QString result = prefix;
-  if (padding)
-    result += QString("%1").arg(index, 2, 10, QChar('0'));
-  else
-    result += QString("%1").arg(index);
-  if (name) {
-    QString trimmed = QString(name).trimmed();
-    if (trimmed.length() > 0) {
-      result += ":" + QString(name).trimmed();
-    }
-  }
-  return result;
-}
-
 RadioData::RadioData()
 {
   models.resize(getCurrentFirmware()->getCapability(Models));

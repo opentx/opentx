@@ -24,8 +24,6 @@
 
 class FieldRange
 {
-  Q_DECLARE_TR_FUNCTIONS(FieldRange)
-
   public:
     FieldRange():
       decimals(0),
@@ -48,3 +46,9 @@ class FieldRange
     QString prefix;
     QString unit;
 };
+
+namespace DataHelpers
+{
+  QString getElementName(const QString & prefix, const unsigned int index, const char * name = 0, const bool padding = false);
+
+}
