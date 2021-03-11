@@ -20,11 +20,11 @@
 
 #include "opentx.h"
 
-#define HAS_TOPBAR()      (persistentData->options[0].boolValue == true)
-#define HAS_FM()          (persistentData->options[1].boolValue == true)
-#define HAS_SLIDERS()     (persistentData->options[2].boolValue == true)
-#define HAS_TRIMS()       (persistentData->options[3].boolValue == true)
-#define IS_MIRRORED()     (persistentData->options[4].boolValue == true)
+#define HAS_TOPBAR()      (OPTION_VALUE_BOOL(persistentData->options[0].boolValue) == true)
+#define HAS_FM()          (OPTION_VALUE_BOOL(persistentData->options[1].boolValue) == true)
+#define HAS_SLIDERS()     (OPTION_VALUE_BOOL(persistentData->options[2].boolValue) == true)
+#define HAS_TRIMS()       (OPTION_VALUE_BOOL(persistentData->options[3].boolValue) == true)
+#define IS_MIRRORED()     (OPTION_VALUE_BOOL(persistentData->options[4].boolValue) == true)
 
 const uint8_t LBM_LAYOUT_4P2[] = {
 #include "mask_layout4+2.lbm"
