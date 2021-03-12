@@ -169,7 +169,7 @@ QString SensorData::paramsToString(const ModelData * model) const
       int precsn = prec == 0 ? 1 : pow(10, prec);
       str.append(QString(FMT_LABEL_VALUE).arg(tr("Ratio")).arg((float)ratio / 10));
       str.append(QString(FMT_LABEL_VALUE).arg(tr("Offset")).arg(QString::number((float)offset / precsn, 'f', prec)));
-      str.append(QString(FMT_LABEL_VALUE).arg(tr("Auto Offset")).arg(boolToString(autoOffset)));
+      str.append(QString(FMT_LABEL_VALUE).arg(tr("Auto Offset")).arg(DataHelpers::boolToString(autoOffset, DataHelpers::BOOL_FMT_YN)));
     }
     else {
       str.append(QString(FMT_LABEL_VALUE).arg(tr("Blades")).arg(ratio)); //  TODO refactor to dedicated RPMS field
@@ -178,15 +178,15 @@ QString SensorData::paramsToString(const ModelData * model) const
   }
 
   if (mask & SENSOR_ISCONFIGURABLE)
-    str.append(QString(FMT_LABEL_VALUE).arg(tr("Filter")).arg(boolToString(filter)));
+    str.append(QString(FMT_LABEL_VALUE).arg(tr("Filter")).arg(DataHelpers::boolToString(filter, DataHelpers::BOOL_FMT_YN)));
 
   if (type == TELEM_TYPE_CALCULATED)
-    str.append(QString(FMT_LABEL_VALUE).arg(tr("Persist")).arg(boolToString(persistent)));
+    str.append(QString(FMT_LABEL_VALUE).arg(tr("Persist")).arg(DataHelpers::boolToString(persistent, DataHelpers::BOOL_FMT_YN)));
 
   if (mask & SENSOR_HAS_POSITIVE)
-    str.append(QString(FMT_LABEL_VALUE).arg(tr("Positive")).arg(boolToString(onlyPositive)));
+    str.append(QString(FMT_LABEL_VALUE).arg(tr("Positive")).arg(DataHelpers::boolToString(onlyPositive, DataHelpers::BOOL_FMT_YN)));
 
-  str.append(QString(FMT_LABEL_VALUE).arg(tr("Log")).arg(boolToString(logs)));
+  str.append(QString(FMT_LABEL_VALUE).arg(tr("Log")).arg(DataHelpers::boolToString(logs, DataHelpers::BOOL_FMT_YN)));
 
   return str;
 }

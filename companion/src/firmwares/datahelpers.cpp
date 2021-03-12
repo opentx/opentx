@@ -20,6 +20,24 @@
 
 #include "datahelpers.h"
 
+QString DataHelpers::boolToString(const bool value, const BoolFormat format)
+{
+  static const char *strings[] = {
+      QT_TRANSLATE_NOOP("DataHelpers", "Disabled"),
+      QT_TRANSLATE_NOOP("DataHelpers", "Enabled"),
+      QT_TRANSLATE_NOOP("DataHelpers", "OFF"),
+      QT_TRANSLATE_NOOP("DataHelpers", "ON"),
+      QT_TRANSLATE_NOOP("DataHelpers", "False"),
+      QT_TRANSLATE_NOOP("DataHelpers", "True"),
+      QT_TRANSLATE_NOOP("DataHelpers", "N"),
+      QT_TRANSLATE_NOOP("DataHelpers", "Y"),
+      QT_TRANSLATE_NOOP("DataHelpers", "No"),
+      QT_TRANSLATE_NOOP("DataHelpers", "Yes")
+  };
+
+  return QCoreApplication::translate("DataHelpers", strings[format * 2 + value]);
+}
+
 QString DataHelpers::getElementName(const QString & prefix, const unsigned int index, const char * name, const bool padding)
 {
   QString result = prefix;
