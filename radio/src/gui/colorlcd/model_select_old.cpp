@@ -230,7 +230,7 @@ void onDeleteModelConfirm(const char * result)
       int modelIndex = MODEL_INDEX();
       modelslist.removeModel(currentCategory, currentModel);
       s_copyMode = 0;
-      putEvent(EVT_REFRESH);
+      pushEvent(EVT_REFRESH);
       if (modelIndex > 0) {
         modelIndex--;
       }
@@ -467,7 +467,7 @@ bool menuModelSelect(event_t event)
         if (s_editMode == 0 || event == EVT_KEY_BREAK(KEY_EXIT)) {
           modelslist.save();
           selectMode = MODE_SELECT_MODEL;
-          putEvent(EVT_REFRESH);
+          pushEvent(EVT_REFRESH);
         }
       }
       else {
@@ -503,7 +503,7 @@ bool menuModelSelect(event_t event)
     if (selectMode == MODE_SELECT_MODEL) {
       if (navigate(event, index, 4, 2) != 0) {
         setCurrentModel(MODEL_INDEX());
-        putEvent(EVT_REFRESH);
+        pushEvent(EVT_REFRESH);
       }
     }
     else if (selectMode == MODE_MOVE_MODEL) {
@@ -511,7 +511,7 @@ bool menuModelSelect(event_t event)
       if (direction) {
         modelslist.moveModel(currentCategory, currentModel, direction);
         setCurrentModel(MODEL_INDEX());
-        putEvent(EVT_REFRESH);
+        pushEvent(EVT_REFRESH);
       }
     }
   }

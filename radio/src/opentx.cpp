@@ -180,7 +180,7 @@ void per10ms()
       bool new_cw = (scrollRE < 0) ? false : true;
       if ((g_tmr10ms - lastEvent >= 10) || (cw == new_cw)) { // 100ms
 
-        putEvent(new_cw ? EVT_ROTARY_RIGHT : EVT_ROTARY_LEFT);
+        pushEvent(new_cw ? EVT_ROTARY_RIGHT : EVT_ROTARY_LEFT);
 
         // rotary encoder navigation speed (acceleration) detection/calculation
         static uint32_t delay = 2*ROTENC_DELAY_MIDSPEED;

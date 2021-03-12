@@ -55,7 +55,7 @@ int checkIncDecSelection = 0;
 void repeatLastCursorMove(event_t event)
 {
   if (CURSOR_MOVED_LEFT(event) || CURSOR_MOVED_RIGHT(event)) {
-    putEvent(event);
+    pushEvent(event);
   }
   else {
     menuHorizontalPosition = 0;

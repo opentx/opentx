@@ -120,7 +120,7 @@ void processRegisterFrame(uint8_t module, const uint8_t * frame)
         reusableBuffer.moduleSetup.pxx2.registerLoopIndex = frame[12];
         reusableBuffer.moduleSetup.pxx2.registerStep = REGISTER_RX_NAME_RECEIVED;
 #if defined(COLORLCD)
-        putEvent(EVT_REFRESH);
+        pushEvent(EVT_REFRESH);
 #endif
       }
       break;

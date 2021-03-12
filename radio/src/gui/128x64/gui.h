@@ -248,7 +248,7 @@ void menuChannelsViewCommon(event_t event);
   #define IS_ROTARY_LONG(evt)          (evt == EVT_ROTARY_LONG)
   #define IS_ROTARY_EVENT(evt)         (EVT_KEY_MASK(evt) >= 0x0e)
   void repeatLastCursorMove(event_t event);
-  #define REPEAT_LAST_CURSOR_MOVE()    { if (EVT_KEY_MASK(event) >= 0x0e) putEvent(event); else repeatLastCursorMove(event); }
+  #define REPEAT_LAST_CURSOR_MOVE()    { if (EVT_KEY_MASK(event) >= 0x0e) pushEvent(event); else repeatLastCursorMove(event); }
 #else
   #define IS_ROTARY_LEFT(evt)          (0)
   #define IS_ROTARY_RIGHT(evt)         (0)

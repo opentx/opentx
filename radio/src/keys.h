@@ -169,7 +169,7 @@ class Key
 extern Key keys[NUM_KEYS];
 extern event_t s_evt;
 
-inline void putEvent(event_t evt)
+inline void pushEvent(event_t evt)
 {
   s_evt = evt;
 }
