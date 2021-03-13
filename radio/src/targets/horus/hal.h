@@ -422,7 +422,7 @@
   #define AUX_SERIAL_DMA_Channel_RX           DMA_Channel_4
 #if defined(RADIO_TX16S)
   #define AUX_SERIAL_PWR_GPIO                 GPIOA
-  #define AUX_SERIAL_PWR_GPIO_PIN             GPIO_Pin_15  // PB.00
+  #define AUX_SERIAL_PWR_GPIO_PIN             GPIO_Pin_15  // PA.15
   #define TRAINER_BATTERY_COMPARTMENT         // allows serial port TTL trainer
 #endif
 #else
