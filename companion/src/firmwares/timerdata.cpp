@@ -48,3 +48,109 @@ QString TimerData::nameToString(int index) const
 {
   return DataHelpers::getElementName(tr("TMR", "as in Timer"), index + 1, name);
 }
+
+QString TimerData::countdownBeepToString() const
+{
+  return countdownBeepToString(countdownBeep);
+}
+
+QString TimerData::countdownStartToString() const
+{
+  return countdownStartToString(countdownStart);
+}
+
+QString TimerData::persistentToString() const
+{
+  return persistentToString(persistent);
+}
+
+//  static
+QString TimerData::countdownBeepToString(const int value)
+{
+  switch(value) {
+    case COUNTDOWNBEEP_SILENT:
+      return tr("Silent");
+    case COUNTDOWNBEEP_BEEPS:
+      return tr("Beeps");
+    case COUNTDOWNBEEP_VOICE:
+      return tr("Voice");
+    case COUNTDOWNBEEP_HAPTIC:
+      return tr("Haptic");
+    default:
+      return CPN_STR_UNKNOWN_ITEM;
+  }
+}
+
+//  static
+QString TimerData::countdownStartToString(const int value)
+{
+  switch(value) {
+    case COUNTDOWNSTART_5:
+      return tr("5s");
+    case COUNTDOWNSTART_10:
+      return tr("10s");
+    case COUNTDOWNSTART_20:
+      return tr("20s");
+    case COUNTDOWNSTART_30:
+      return tr("30s");
+    default:
+      return CPN_STR_UNKNOWN_ITEM;
+  }
+}
+
+//  static
+QString TimerData::persistentToString(const int value)
+{
+  switch(value) {
+    case PERSISTENT_NOT:
+      return tr("Not persistent");
+    case PERSISTENT_FLIGHT:
+      return tr("Persistent (flight)");
+    case PERSISTENT_MANUALRESET:
+      return tr("Persistent (manual reset)");
+    default:
+      return CPN_STR_UNKNOWN_ITEM;
+  }
+}
+
+//  static
+AbstractStaticItemModel * TimerData::countdownBeepItemModel()
+{
+  AbstractStaticItemModel * mdl = new AbstractStaticItemModel();
+  mdl->setName("timerdata.countdownBeep");
+
+  for (int i = 0; i < COUNTDOWNBEEP_COUNT; i++) {
+    QString str = countdownBeepToString(i);
+  }
+
+  mdl->loadItemList();
+  return mdl;
+}
+
+//  static
+AbstractStaticItemModel * TimerData::countdownStartItemModel()
+{
+  AbstractStaticItemModel * mdl = new AbstractStaticItemModel();
+  mdl->setName("timerdata.countdownStart");
+
+  for (int i = COUNTDOWNSTART_LAST - 1; i >= COUNTDOWNSTART_FIRST; i--) {
+    QString str = countdownStartToString(i);
+  }
+
+  mdl->loadItemList();
+  return mdl;
+}
+
+//  static
+AbstractStaticItemModel * TimerData::persistentItemModel()
+{
+  AbstractStaticItemModel * mdl = new AbstractStaticItemModel();
+  mdl->setName("timerdata.persistent");
+
+  for (int i = 0; i < PERSISTENT_COUNT; i++) {
+    QString str = persistentToString(i);
+  }
+
+  mdl->loadItemList();
+  return mdl;
+}

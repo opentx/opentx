@@ -33,12 +33,28 @@ class TimerData {
   Q_DECLARE_TR_FUNCTIONS(TimerData)
 
   public:
-    enum CountDownMode {
-      COUNTDOWN_SILENT,
-      COUNTDOWN_BEEPS,
-      COUNTDOWN_VOICE,
-      COUNTDOWN_HAPTIC,
-      COUNTDOWN_COUNT
+    enum CountDownBeepType {
+      COUNTDOWNBEEP_SILENT,
+      COUNTDOWNBEEP_BEEPS,
+      COUNTDOWNBEEP_VOICE,
+      COUNTDOWNBEEP_HAPTIC,
+      COUNTDOWNBEEP_COUNT
+    };
+
+    enum CountDownStart {
+      COUNTDOWNSTART_30 = -2,
+      COUNTDOWNSTART_FIRST = COUNTDOWNSTART_30,
+      COUNTDOWNSTART_20,
+      COUNTDOWNSTART_10,
+      COUNTDOWNSTART_5,
+      COUNTDOWNSTART_LAST = COUNTDOWNSTART_5
+    };
+
+    enum PersistentType {
+      PERSISTENT_NOT,
+      PERSISTENT_FLIGHT,
+      PERSISTENT_MANUALRESET,
+      PERSISTENT_COUNT
     };
 
     TimerData() { clear(); }
@@ -58,4 +74,15 @@ class TimerData {
     bool isEmpty();
     bool isModeOff();
     QString nameToString(int index) const;
+    QString countdownBeepToString();
+    QString countdownStartToString();
+    QString persistentToString();
+
+    static QString countdownBeepToString(const int value);
+    static QString countdownStartToString(const int value);
+    static QString persistentToString(const int value);
+    static AbstractStaticItemModel * countdownBeepItemModel();
+    static AbstractStaticItemModel * countdownStartItemModel();
+    static AbstractStaticItemModel * persistentItemModel();
+
 };
