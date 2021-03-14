@@ -2182,3 +2182,5 @@ Anthony Challis
 Gerard Falaise
 George McGinnis
 Antoine Soulie
+Tjeerd Jager
+Bertold Van den Bergh
