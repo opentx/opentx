@@ -73,7 +73,7 @@ TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, Ge
   ui->persistent->addItem(tr("Not persistent"), 0);
   ui->persistent->addItem(tr("Persistent (flight)"), 1);
   ui->persistent->addItem(tr("Persistent (manual reset)"), 2);
-  
+
   ui->countdownStart->setField(timer.countdownStart, this);
   ui->countdownStart->addItem("5s", 1);
   ui->countdownStart->addItem("10s", 0);
@@ -701,6 +701,7 @@ void ModulePanel::onProtocolChanged(int index)
     module.protocol = ui->protocol->itemData(index).toInt();
     module.channelsCount = module.getMaxChannelCount();
     update();
+    emit updateItemModels();
     emit modified();
   }
 }
@@ -801,6 +802,7 @@ void ModulePanel::onMultiProtocolChanged(int index)
     module.subType = std::min(module.subType, maxSubTypes - 1);
     module.channelsCount = module.getMaxChannelCount();
     update();
+    emit updateItemModels();
     emit modified();
     lock = false;
   }
@@ -1251,6 +1253,7 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
     modules[i] = new ModulePanel(this, model, model.moduleData[i], generalSettings, firmware, i);
     ui->modulesLayout->addWidget(modules[i]);
     connect(modules[i], &ModulePanel::modified, this, &SetupPanel::modified);
+    connect(modules[i], &ModulePanel::updateItemModels, this, &SetupPanel::onModuleUpdateItemModels);
     connect(this, &SetupPanel::extendedLimitsToggled, modules[i], &ModulePanel::onExtendedLimitsToggled);
   }
 
@@ -1797,4 +1800,9 @@ void SetupPanel::onItemModelUpdateComplete()
 void SetupPanel::updateItemModels()
 {
   sharedItemModels->update(AbstractItemModel::IMUE_Timers);
+}
+
+void SetupPanel::onModuleUpdateItemModels()
+{
+  sharedItemModels->update(AbstractItemModel::IMUE_Modules);
 }

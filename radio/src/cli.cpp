@@ -699,11 +699,11 @@ int cliTrace(const char ** argv)
 
 int cliStackInfo(const char ** argv)
 {
-  serialPrint("[MAIN] %d available / %d", stackAvailable(), stackSize());
-  serialPrint("[MENUS] %d available / %d", menusStack.available(), menusStack.size());
-  serialPrint("[MIXER] %d available / %d", mixerStack.available(), mixerStack.size());
-  serialPrint("[AUDIO] %d available / %d", audioStack.available(), audioStack.size());
-  serialPrint("[CLI] %d available / %d", cliStack.available(), cliStack.size());
+  serialPrint("[MAIN] %d available / %d bytes", stackAvailable()*4, stackSize()*4);
+  serialPrint("[MENUS] %d available / %d bytes", menusStack.available()*4, menusStack.size());
+  serialPrint("[MIXER] %d available / %d bytes", mixerStack.available()*4, mixerStack.size());
+  serialPrint("[AUDIO] %d available / %d bytes", audioStack.available()*4, audioStack.size());
+  serialPrint("[CLI] %d available / %d bytes", cliStack.available()*4, cliStack.size());
   return 0;
 }
 

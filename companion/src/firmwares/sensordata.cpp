@@ -427,6 +427,28 @@ bool SensorData::isSourceAvailable(const ModelData * model, const int index)
   return false;
 }
 
+#define RSSI_ID                   0xF101
+
+//  static
+bool SensorData::isRssiSensorAvailable(const ModelData * model, const int value)
+{
+  if (value == 0)
+    return true;
+  else {
+    const SensorData &sensor = model->sensorData[abs(value) - 1];
+    return (sensor.isAvailable() && sensor.id == RSSI_ID);
+  }
+}
+
+//  static
+QString SensorData::rssiSensorToString(const ModelData * model, const int value)
+{
+  if (value == 0)
+    return tr("(default)");
+  else
+    return sourceToString(model, value);
+}
+
 //  static
 AbstractStaticItemModel * SensorData::typeItemModel()
 {

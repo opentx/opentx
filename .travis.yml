@@ -16,6 +16,8 @@ addons:
       - libmpc3
       - libfox-1.6-dev
       - libgtest-dev
+      - lib32stdc++6
+      - libclang-common-6.0-dev
       - clang-6.0
       - python3-pip
 

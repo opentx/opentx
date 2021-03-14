@@ -18,15 +18,19 @@
  * GNU General Public License for more details.
  */
 
-#ifndef MODELDATA_H
-#define MODELDATA_H
+#pragma once
 
 #include "constants.h"
+#include "curvedata.h"
 #include "customfunctiondata.h"
 #include "gvardata.h"
-#include "io_data.h"
+#include "flightmodedata.h"
+#include "heli_data.h"
+#include "input_data.h"
 #include "logicalswitchdata.h"
+#include "mixdata.h"
 #include "moduledata.h"
+#include "output_data.h"
 #include "sensordata.h"
 #include "telem_data.h"
 
@@ -346,5 +350,3 @@ class ModelData {
     void sortMixes();
     void updateResetParam(CustomFunctionData * cfd);
 };
-
-#endif // MODELDATA_H
