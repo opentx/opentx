@@ -47,3 +47,24 @@ QString DataHelpers::getElementName(const QString & prefix, const unsigned int i
 
   return result;
 }
+
+QString DataHelpers::timeToString(const int value, const unsigned int mask)
+{
+  bool negative = value < 0 ? true : false;
+  int val = abs(value);
+
+  QString result = QString("%1").arg(negative ? "-" : ((mask & TIMESTR_MASK_PADSIGN) ? " " : ""));
+
+  if (mask & TIMESTR_MASK_HRSMINS) {
+    int hours = val / 3600;
+    if (hours > 0 || (mask & TIMESTR_MASK_ZEROHRS)) {
+      val -= hours * 3600;
+      result.append(QString("%1:").arg(hours, 2, 10, QLatin1Char('0')));
+    }
+  }
+
+  int minutes = val / 60;
+  int seconds = val % 60;
+  result.append(QString("%1:%2").arg(minutes, 2, 10, QLatin1Char('0')).arg(seconds, 2, 10, QLatin1Char('0')));
+  return result;
+}

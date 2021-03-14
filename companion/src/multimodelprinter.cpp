@@ -341,11 +341,11 @@ QString MultiModelPrinter::printTimers()
     columns.appendCellStart(20, true);
     COMPARE(modelPrinter->printTimerName(i));
     columns.appendCellEnd(true);
-    COMPARECELLWIDTH(modelPrinter->printTimerTimeValue(model->timers[i].val), 15);
+    COMPARECELLWIDTH(DataHelpers::timeToString(model->timers[i].val, TIMESTR_MASK_HRSMINS), 15);
     COMPARECELLWIDTH(model->timers[i].mode.toString(), 15);
-    COMPARECELLWIDTH(modelPrinter->printTimerCountdownBeep(model->timers[i].countdownBeep), 15);
-    COMPARECELLWIDTH(modelPrinter->printTimerMinuteBeep(model->timers[i].minuteBeep), 15);
-    COMPARECELLWIDTH(modelPrinter->printTimerPersistent(model->timers[i].persistent), 20);
+    COMPARECELLWIDTH(model->timers[i].countdownBeepToString(), 15);
+    COMPARECELLWIDTH(DataHelpers::boolToString(model->timers[i].minuteBeep, DataHelpers::BOOL_FMT_YESNO), 15);
+    COMPARECELLWIDTH(model->timers[i].persistentToString(false), 20);
     columns.appendRowEnd();
   }
   columns.appendTableEnd();

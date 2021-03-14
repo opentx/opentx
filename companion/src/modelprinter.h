@@ -104,13 +104,9 @@ class ModelPrinter: public QObject
     QString printFailsafe(int idx);
     QString printFailsafeMode(unsigned int fsmode);
     QString printFailsafeValue(int val);
-    QString printTimerCountdownBeep(unsigned int countdownBeep);
-    QString printTimerPersistent(unsigned int persistent);
     QString printPPMFrameLength(int ppmFL);
     QString printTimerName(int idx);
     QString printTimeValue(const int value, const unsigned int mask);
-    QString printTimerMinuteBeep(bool mb);
-    QString printTimerTimeValue(unsigned int val);
     QString printTelemetryProtocol(unsigned int val);
     QString printLabelValue(const QString & lbl, const QString & val, const bool sep = false);
     QString printLabelValues(const QString & lbl, const QStringList & vals, const bool sep = false);

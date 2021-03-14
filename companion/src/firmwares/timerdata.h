@@ -26,8 +26,13 @@
 #include <QtCore>
 
 class RadioDataConversionState;
+class AbstractStaticItemModel;
 
-#define TIMER_NAME_LEN 8
+constexpr char AIM_TIMER_COUNTDOWNBEEP[]  {"timerdata.countdownBeep"};
+constexpr char AIM_TIMER_COUNTDOWNSTART[] {"timerdata.countdownStart"};
+constexpr char AIM_TIMER_PERSISTENT[]     {"timerdata.persistent"};
+
+constexpr int TIMER_NAME_LEN {8};
 
 class TimerData {
   Q_DECLARE_TR_FUNCTIONS(TimerData)
@@ -74,13 +79,15 @@ class TimerData {
     bool isEmpty();
     bool isModeOff();
     QString nameToString(int index) const;
-    QString countdownBeepToString();
-    QString countdownStartToString();
-    QString persistentToString();
+    QString countdownBeepToString() const;
+    QString countdownStartToString() const;
+    QString persistentToString(const bool verbose = true) const;
+    QString pvalueToString() const;
 
     static QString countdownBeepToString(const int value);
     static QString countdownStartToString(const int value);
-    static QString persistentToString(const int value);
+    static QString persistentToString(const int value, const bool verbose = true);
+    static QString pvalueToString(const int value);
     static AbstractStaticItemModel * countdownBeepItemModel();
     static AbstractStaticItemModel * countdownStartItemModel();
     static AbstractStaticItemModel * persistentItemModel();

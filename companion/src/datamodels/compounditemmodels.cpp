@@ -717,6 +717,16 @@ AbstractItemModel * CompoundItemModelFactory::getItemModel(const int id) const
   return nullptr;
 }
 
+AbstractItemModel * CompoundItemModelFactory::getItemModel(const QString name) const
+{
+  foreach (AbstractItemModel * itemModel, registeredItemModels) {
+    if (itemModel->getName() == name)
+      return itemModel;
+  }
+
+  return nullptr;
+}
+
 bool CompoundItemModelFactory::isItemModelRegistered(const int id) const
 {
   foreach (AbstractItemModel * itemModel, registeredItemModels) {

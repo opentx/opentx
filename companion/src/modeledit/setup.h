@@ -18,16 +18,14 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _SETUP_H_
-#define _SETUP_H_
+#pragma once
 
 #include "modeledit.h"
 #include "eeprominterface.h"
+#include "compounditemmodels.h"
+#include "filtereditemmodels.h"
 
 constexpr char MIMETYPE_TIMER[] = "application/x-companion-timer";
-
-class CompoundItemModelFactory;
-class FilteredItemModel;
 
 namespace Ui {
   class Setup;
@@ -41,7 +39,7 @@ class TimerPanel : public ModelPanel
 
   public:
     TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, GeneralSettings & generalSettings, Firmware * firmware,
-               QWidget *prevFocus, FilteredItemModel * switchModel);
+               QWidget *prevFocus, FilteredItemModelFactory * panelFilteredModels, CompoundItemModelFactory * panelItemModels);
     virtual ~TimerPanel();
 
     virtual void update();
@@ -55,6 +53,7 @@ class TimerPanel : public ModelPanel
     void on_name_editingFinished();
     void onItemModelAboutToBeUpdated();
     void onItemModelUpdateComplete();
+    void on_countdownStart_currentIndexChanged(int index);
 
   signals:
     void nameChanged();
@@ -63,6 +62,7 @@ class TimerPanel : public ModelPanel
     TimerData & timer;
     Ui::Timer * ui;
     void connectItemModelEvents(const FilteredItemModel * itemModel);
+    int modelsUpdateCnt;
 };
 
 class ModulePanel : public ModelPanel
@@ -184,7 +184,7 @@ class SetupPanel : public ModelPanel
     QVector<QCheckBox *> startupSwitchesCheckboxes;
     QVector<QCheckBox *> potWarningCheckboxes;
     QVector<QCheckBox *> centerBeepCheckboxes;
-    ModulePanel * modules[CPN_MAX_MODULES+1];
+    ModulePanel * modules[CPN_MAX_MODULES + 1];
     TimerPanel * timers[CPN_MAX_TIMERS];
     void updateStartupSwitches();
     void updatePotWarnings();
@@ -199,10 +199,8 @@ class SetupPanel : public ModelPanel
     bool moveTimerUpAllowed() const;
     void swapTimerData(int idx1, int idx2);
     CompoundItemModelFactory * sharedItemModels;
-    FilteredItemModel * rawSwitchFilteredModel;
-    FilteredItemModel * thrSourceFilteredModel;
     void updateItemModels();
     void connectItemModelEvents(const FilteredItemModel * itemModel);
+    CompoundItemModelFactory * panelItemModels;
+    FilteredItemModelFactory * panelFilteredModels;
 };
-
-#endif // _SETUP_H_

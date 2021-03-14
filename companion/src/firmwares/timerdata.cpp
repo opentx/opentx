@@ -20,6 +20,7 @@
 
 #include "timerdata.h"
 #include "radiodataconversionstate.h"
+#include "compounditemmodels.h"
 
 void TimerData::convert(RadioDataConversionState & cstate)
 {
@@ -36,7 +37,7 @@ void TimerData::clear()
 
 bool TimerData::isEmpty()
 {
-  return (mode == RawSwitch(SWITCH_TYPE_TIMER_MODE, 0) && name[0] == '\0' && minuteBeep == 0 && countdownBeep == COUNTDOWN_SILENT && val == 0 && persistent == 0 /*&& pvalue == 0*/);
+  return (mode == RawSwitch(SWITCH_TYPE_TIMER_MODE, 0) && name[0] == '\0' && minuteBeep == 0 && countdownBeep == COUNTDOWNBEEP_SILENT && val == 0 && persistent == 0 /*&& pvalue == 0*/);
 }
 
 bool TimerData::isModeOff()
@@ -59,9 +60,14 @@ QString TimerData::countdownStartToString() const
   return countdownStartToString(countdownStart);
 }
 
-QString TimerData::persistentToString() const
+QString TimerData::persistentToString(const bool verbose) const
 {
-  return persistentToString(persistent);
+  return persistentToString(persistent, verbose);
+}
+
+QString TimerData::pvalueToString() const
+{
+  return pvalueToString(pvalue);
 }
 
 //  static
@@ -99,25 +105,31 @@ QString TimerData::countdownStartToString(const int value)
 }
 
 //  static
-QString TimerData::persistentToString(const int value)
+QString TimerData::persistentToString(const int value, const bool verbose)
 {
   switch(value) {
     case PERSISTENT_NOT:
-      return tr("Not persistent");
+      return verbose ? tr("Not persistent") : tr("NOT");
     case PERSISTENT_FLIGHT:
-      return tr("Persistent (flight)");
+      return verbose ? tr("Persistent (flight)") : tr("Flight");
     case PERSISTENT_MANUALRESET:
-      return tr("Persistent (manual reset)");
+      return verbose ? tr("Persistent (manual reset)") : tr("Manual reset");
     default:
       return CPN_STR_UNKNOWN_ITEM;
   }
 }
 
 //  static
+QString TimerData::pvalueToString(const int value)
+{
+  return DataHelpers::timeToString(value, TIMESTR_MASK_HRSMINS);
+}
+
+//  static
 AbstractStaticItemModel * TimerData::countdownBeepItemModel()
 {
   AbstractStaticItemModel * mdl = new AbstractStaticItemModel();
-  mdl->setName("timerdata.countdownBeep");
+  mdl->setName(AIM_TIMER_COUNTDOWNBEEP);
 
   for (int i = 0; i < COUNTDOWNBEEP_COUNT; i++) {
     QString str = countdownBeepToString(i);
@@ -131,7 +143,7 @@ AbstractStaticItemModel * TimerData::countdownBeepItemModel()
 AbstractStaticItemModel * TimerData::countdownStartItemModel()
 {
   AbstractStaticItemModel * mdl = new AbstractStaticItemModel();
-  mdl->setName("timerdata.countdownStart");
+  mdl->setName(AIM_TIMER_COUNTDOWNSTART);
 
   for (int i = COUNTDOWNSTART_LAST - 1; i >= COUNTDOWNSTART_FIRST; i--) {
     QString str = countdownStartToString(i);
@@ -145,7 +157,7 @@ AbstractStaticItemModel * TimerData::countdownStartItemModel()
 AbstractStaticItemModel * TimerData::persistentItemModel()
 {
   AbstractStaticItemModel * mdl = new AbstractStaticItemModel();
-  mdl->setName("timerdata.persistent");
+  mdl->setName(AIM_TIMER_PERSISTENT);
 
   for (int i = 0; i < PERSISTENT_COUNT; i++) {
     QString str = persistentToString(i);

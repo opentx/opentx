@@ -938,36 +938,6 @@ QString ModelPrinter::printFailsafeMode(unsigned int fsmode)
   }
 }
 
-QString ModelPrinter::printTimerCountdownBeep(unsigned int countdownBeep)
-{
-  switch (countdownBeep) {
-    case TimerData::COUNTDOWN_SILENT:
-      return tr("Silent");
-    case TimerData::COUNTDOWN_BEEPS:
-      return tr("Beeps");
-    case TimerData::COUNTDOWN_VOICE:
-      return tr("Voice");
-    case TimerData::COUNTDOWN_HAPTIC:
-      return tr("Haptic");
-    default:
-      return CPN_STR_UNKNOWN_ITEM;
-  }
-}
-
-QString ModelPrinter::printTimerPersistent(unsigned int persistent)
-{
-  switch (persistent) {
-    case 0:
-      return tr("OFF");
-    case 1:
-      return tr("Flight");
-    case 2:
-      return tr("Manual reset");
-    default:
-      return CPN_STR_UNKNOWN_ITEM;
-  }
-}
-
 QString ModelPrinter::printSettingsTrim()
 {
   QStringList str;
@@ -1040,16 +1010,6 @@ QString ModelPrinter::printTimerName(int idx)
     result.append(":" + QString(model.timers[idx].name));
 
   return result;
-}
-
-QString ModelPrinter::printTimerTimeValue(unsigned int val)
-{
-  return printTimeValue(val, MASK_TIMEVALUE_HRSMINS | MASK_TIMEVALUE_ZEROHRS);
-}
-
-QString ModelPrinter::printTimerMinuteBeep(bool mb)
-{
-  return printBoolean(mb, BOOLEAN_YESNO);
 }
 
 QString ModelPrinter::printTelemetryProtocol(unsigned int val)

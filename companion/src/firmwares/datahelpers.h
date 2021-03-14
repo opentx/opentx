@@ -47,6 +47,11 @@ class FieldRange
     QString unit;
 };
 
+
+constexpr unsigned int TIMESTR_MASK_HRSMINS   { 1 << 1 };
+constexpr unsigned int TIMESTR_MASK_ZEROHRS   { 1 << 2 };
+constexpr unsigned int TIMESTR_MASK_PADSIGN   { 1 << 3 };
+
 namespace DataHelpers
 {
   enum BoolFormat {
@@ -59,5 +64,6 @@ namespace DataHelpers
 
   QString boolToString(const bool value, const BoolFormat format);
   QString getElementName(const QString & prefix, const unsigned int index, const char * name = 0, const bool padding = false);
+  QString timeToString(const int value, const unsigned int mask);
 
 }
