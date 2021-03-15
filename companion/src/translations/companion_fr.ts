@@ -1706,117 +1706,117 @@ Si vous avez un fichier de sauvegarde des paramètres, vous pouvez l&apos;import
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="97"/>
         <source>Lua Script</source>
-        <translation type="unfinished"></translation>
+        <translation>Script Lua</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="115"/>
         <source>Range Check Int. Module</source>
-        <translation type="unfinished"></translation>
+        <translation>Test Portée Module Int.</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="117"/>
         <source>Range Check Ext. Module</source>
-        <translation type="unfinished"></translation>
+        <translation>Test Portée Module Ext.</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="305"/>
         <source>Beep 1</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="305"/>
         <source>Beep 2</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="305"/>
         <source>Beep 3</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="305"/>
         <source>Warn 1</source>
-        <translation type="unfinished"></translation>
+        <translation>Alerte 1</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="305"/>
         <source>Warn 2</source>
-        <translation type="unfinished"></translation>
+        <translation>Alerte 2</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="305"/>
         <source>Cheep</source>
-        <translation type="unfinished"></translation>
+        <translation>Piauler</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="305"/>
         <source>Ratata</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="305"/>
         <source>Tick</source>
-        <translation type="unfinished"></translation>
+        <translation>Tic-tac</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="306"/>
         <source>Siren</source>
-        <translation type="unfinished"></translation>
+        <translation>Sirène</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="306"/>
         <source>Ring</source>
-        <translation type="unfinished">Plateau</translation>
+        <translation>Sonner</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="306"/>
         <source>Sci Fi</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="306"/>
         <source>Robot</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="306"/>
         <source>Chirp</source>
-        <translation type="unfinished"></translation>
+        <translation>Gazouiller</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="306"/>
         <source>Tada</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="306"/>
         <source>Cricket</source>
-        <translation type="unfinished"></translation>
+        <translation>Criquet</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="306"/>
         <source>Alarm Clock</source>
-        <translation type="unfinished"></translation>
+        <translation>Réveil</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="334"/>
         <source>Value</source>
-        <translation type="unfinished">Valeur</translation>
+        <translation>Valeur</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="336"/>
         <source>Source</source>
-        <translation type="unfinished">Source</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="338"/>
         <source>Global Variable</source>
-        <translation type="unfinished"></translation>
+        <translation>Variable Globale</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="340"/>
         <source>Inc/Decrement</source>
-        <translation type="unfinished"></translation>
+        <translation>Inc/Décrémenter</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="99"/>
@@ -1871,17 +1871,17 @@ Si vous avez un fichier de sauvegarde des paramètres, vous pouvez l&apos;import
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="181"/>
         <source>Played once, not during startup</source>
-        <translation type="unfinished">1x Lu une fois, mais pas à la mise en route</translation>
+        <translation>Lu une fois, mais pas à la mise en route</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="184"/>
         <source>No repeat</source>
-        <translation type="unfinished">1x Lu une fois</translation>
+        <translation>Lu une fois</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="187"/>
         <source>Repeat %1s</source>
-        <translation type="unfinished"></translation>
+        <translation>Répéter %1s</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="253"/>
@@ -1944,7 +1944,7 @@ Si vous avez un fichier de sauvegarde des paramètres, vous pouvez l&apos;import
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="153"/>
         <source>GV</source>
-        <translation type="unfinished">VG</translation>
+        <translation>VG</translation>
     </message>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="204"/>
@@ -4765,10 +4765,10 @@ Mode 4:
 This is the threashhold where the battery warning sounds.
 
 Acceptable values are 3v..12v</source>
-        <translation type="unfinished">Tension d&apos;alerte de batterie.
+        <translation>Tension d&apos;alerte de batterie.
 Seuil auquel se déclenche l&apos;alarme de batterie.
 
-Plage de valeurs: 5v...10v {3v?} {12v?}</translation>
+Plage de valeurs: 3v...12v</translation>
     </message>
     <message>
         <location filename="../generaledit/generalsetup.ui" line="2451"/>
@@ -10844,7 +10844,7 @@ E</translation>
     <message>
         <location filename="../firmwares/sensordata.cpp" line="447"/>
         <source>(default)</source>
-        <translation type="unfinished"></translation>
+        <translation>(défaut)</translation>
     </message>
     <message>
         <location filename="../firmwares/sensordata.h" line="208"/>
