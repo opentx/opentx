@@ -54,6 +54,7 @@ class TimerPanel : public ModelPanel
     void onItemModelAboutToBeUpdated();
     void onItemModelUpdateComplete();
     void on_countdownStart_currentIndexChanged(int index);
+    void on_persistent_currentIndexChanged(int index);
 
   signals:
     void nameChanged();

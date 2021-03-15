@@ -57,7 +57,10 @@ QString TimerData::countdownBeepToString() const
 
 QString TimerData::countdownStartToString() const
 {
-  return countdownStartToString(countdownStart);
+  if (countdownBeep == COUNTDOWNBEEP_SILENT)
+    return "";
+  else
+    return countdownStartToString(countdownStart);
 }
 
 QString TimerData::persistentToString(const bool verbose) const
@@ -68,6 +71,18 @@ QString TimerData::persistentToString(const bool verbose) const
 QString TimerData::pvalueToString() const
 {
   return pvalueToString(pvalue);
+}
+
+QString TimerData::valToString() const
+{
+  return valToString(val);
+}
+
+void TimerData::setCountdownBeep(const unsigned int value)
+{
+  countdownBeep = value;
+  if (value == COUNTDOWNBEEP_SILENT)
+    countdownStart = 0;
 }
 
 //  static
@@ -122,7 +137,13 @@ QString TimerData::persistentToString(const int value, const bool verbose)
 //  static
 QString TimerData::pvalueToString(const int value)
 {
-  return DataHelpers::timeToString(value, TIMESTR_MASK_HRSMINS);
+  return DataHelpers::timeToString(value, TIMESTR_MASK_HRSMINS | TIMESTR_MASK_HRSMINS);
+}
+
+//  static
+QString TimerData::valToString(const int value)
+{
+  return DataHelpers::timeToString(value, TIMESTR_MASK_HRSMINS | TIMESTR_MASK_ZEROHRS);
 }
 
 //  static
@@ -132,7 +153,7 @@ AbstractStaticItemModel * TimerData::countdownBeepItemModel()
   mdl->setName(AIM_TIMER_COUNTDOWNBEEP);
 
   for (int i = 0; i < COUNTDOWNBEEP_COUNT; i++) {
-    QString str = countdownBeepToString(i);
+    mdl->appendToItemList(countdownBeepToString(i), i);
   }
 
   mdl->loadItemList();
@@ -146,7 +167,7 @@ AbstractStaticItemModel * TimerData::countdownStartItemModel()
   mdl->setName(AIM_TIMER_COUNTDOWNSTART);
 
   for (int i = COUNTDOWNSTART_LAST - 1; i >= COUNTDOWNSTART_FIRST; i--) {
-    QString str = countdownStartToString(i);
+    mdl->appendToItemList(countdownStartToString(i), i);
   }
 
   mdl->loadItemList();
@@ -160,7 +181,7 @@ AbstractStaticItemModel * TimerData::persistentItemModel()
   mdl->setName(AIM_TIMER_PERSISTENT);
 
   for (int i = 0; i < PERSISTENT_COUNT; i++) {
-    QString str = persistentToString(i);
+    mdl->appendToItemList(persistentToString(i), i);
   }
 
   mdl->loadItemList();

@@ -67,8 +67,6 @@ class ModelPrinter: public QObject
     QString printTrim(int flightModeIndex, int stickIndex);
     QString printGlobalVar(int flightModeIndex, int gvarIndex);
     QString printRotaryEncoder(int flightModeIndex, int reIndex);
-    QString printTimer(int idx);
-    QString printTimer(const TimerData & timer);
     QString printInputName(int idx);
     QString printInputLine(int idx);
     QString printInputLine(const ExpoData & ed);
@@ -105,7 +103,6 @@ class ModelPrinter: public QObject
     QString printFailsafeMode(unsigned int fsmode);
     QString printFailsafeValue(int val);
     QString printPPMFrameLength(int ppmFL);
-    QString printTimerName(int idx);
     QString printTimeValue(const int value, const unsigned int mask);
     QString printTelemetryProtocol(unsigned int val);
     QString printLabelValue(const QString & lbl, const QString & val, const bool sep = false);

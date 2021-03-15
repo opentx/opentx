@@ -298,27 +298,6 @@ QString ModelPrinter::printCenterBeep()
   return (strl.isEmpty() ? tr("None") : strl.join(" "));
 }
 
-QString ModelPrinter::printTimer(int idx)
-{
-  return printTimer(model.timers[idx]);
-}
-
-QString ModelPrinter::printTimer(const TimerData & timer)
-{
-  QStringList result;
-  if (firmware->getCapability(TimersName) && timer.name[0])
-    result += tr("Name") + QString("(%1)").arg(timer.name);
-  result += printTimeValue(timer.val, MASK_TIMEVALUE_HRSMINS | MASK_TIMEVALUE_ZEROHRS);
-  result += timer.mode.toString();
-  if (timer.countdownBeep)
-    result += tr("Countdown") + QString("(%1)").arg(printTimerCountdownBeep(timer.countdownBeep));
-  if (timer.minuteBeep)
-    result += tr("Minute call");
-  if (timer.persistent)
-    result += tr("Persistent") + QString("(%1)").arg(printTimerPersistent(timer.persistent));
-  return result.join(", ");
-}
-
 QString ModelPrinter::printTrim(int flightModeIndex, int stickIndex)
 {
   const FlightModeData & fm = model.flightModeData[flightModeIndex];
@@ -1000,16 +979,6 @@ QString ModelPrinter::printPPMFrameLength(int ppmFL)
 {
   double result = (((double)ppmFL * 5) + 225) / 10;
   return QString::number(result);
-}
-
-QString ModelPrinter::printTimerName(int idx)
-{
-  QString result;
-  result = tr("Tmr") + QString("%1").arg(idx+1);
-  if (firmware->getCapability(TimersName) && model.timers[idx].name[0])
-    result.append(":" + QString(model.timers[idx].name));
-
-  return result;
 }
 
 QString ModelPrinter::printTelemetryProtocol(unsigned int val)

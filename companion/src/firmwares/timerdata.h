@@ -83,11 +83,14 @@ class TimerData {
     QString countdownStartToString() const;
     QString persistentToString(const bool verbose = true) const;
     QString pvalueToString() const;
+    QString valToString() const;
+    void setCountdownBeep(const unsigned int value);
 
     static QString countdownBeepToString(const int value);
     static QString countdownStartToString(const int value);
     static QString persistentToString(const int value, const bool verbose = true);
     static QString pvalueToString(const int value);
+    static QString valToString(const int value);
     static AbstractStaticItemModel * countdownBeepItemModel();
     static AbstractStaticItemModel * countdownStartItemModel();
     static AbstractStaticItemModel * persistentItemModel();
