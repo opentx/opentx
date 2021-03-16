@@ -34,7 +34,8 @@ class AutoBitsetCheckBox: public QCheckBox
     Q_PROPERTY(int toggleMask READ toggleMask WRITE setToggleMask)
 
   public:
-    explicit AutoBitsetCheckBox(QWidget *parent = nullptr)                      : AutoBitsetCheckBox(QString(), parent) {}
+    explicit AutoBitsetCheckBox(QWidget *parent = nullptr) :
+      AutoBitsetCheckBox(QString(), parent) {}
     explicit AutoBitsetCheckBox(const QString &text, QWidget *parent = nullptr) :
       QCheckBox(text, parent)
     {
@@ -42,26 +43,32 @@ class AutoBitsetCheckBox: public QCheckBox
     }
 
     // int field constructors
-    explicit AutoBitsetCheckBox(int & field, int bitmask, const QString &text = QString(), QWidget *parent = nullptr)              : AutoBitsetCheckBox(field, bitmask, false, text, parent) {}
-    explicit AutoBitsetCheckBox(int & field, int bitmask, bool invert, const QString &text = QString(), QWidget *parent = nullptr) : QCheckBox(text, parent)
+    explicit AutoBitsetCheckBox(int & field, int bitmask, const QString &text = QString(), QWidget *parent = nullptr) :
+      AutoBitsetCheckBox(field, bitmask, false, text, parent) {}
+    explicit AutoBitsetCheckBox(int & field, int bitmask, bool invert, const QString &text = QString(), QWidget *parent = nullptr) :
+      QCheckBox(text, parent)
     {
       setField(field, bitmask, invert);
       init();
     }
-    explicit AutoBitsetCheckBox(int & field, int bitmask, int toggleMask, const QString &text = QString(), QWidget *parent = nullptr) : QCheckBox(text, parent)
+    explicit AutoBitsetCheckBox(int & field, int bitmask, int toggleMask, const QString &text = QString(), QWidget *parent = nullptr) :
+      QCheckBox(text, parent)
     {
       setField(field, bitmask, false, toggleMask);
       init();
     }
 
     // unsigned field constructors
-    explicit AutoBitsetCheckBox(unsigned & field, int bitmask, const QString &text = QString(), QWidget *parent = nullptr)              : AutoBitsetCheckBox(field, bitmask, false, text, parent) {}
-    explicit AutoBitsetCheckBox(unsigned & field, int bitmask, bool invert, const QString &text = QString(), QWidget *parent = nullptr) : QCheckBox(text, parent)
+    explicit AutoBitsetCheckBox(unsigned & field, int bitmask, const QString &text = QString(), QWidget *parent = nullptr) :
+      AutoBitsetCheckBox(field, bitmask, false, text, parent) {}
+    explicit AutoBitsetCheckBox(unsigned & field, int bitmask, bool invert, const QString &text = QString(), QWidget *parent = nullptr) :
+      QCheckBox(text, parent)
     {
       setField(field, bitmask, invert);
       init();
     }
-    explicit AutoBitsetCheckBox(unsigned & field, int bitmask, int toggleMask, const QString &text = QString(), QWidget *parent = nullptr) : QCheckBox(text, parent)
+    explicit AutoBitsetCheckBox(unsigned & field, int bitmask, int toggleMask, const QString &text = QString(), QWidget *parent = nullptr) :
+      QCheckBox(text, parent)
     {
       setField(field, bitmask, false, toggleMask);
       init();
@@ -104,6 +111,8 @@ class AutoBitsetCheckBox: public QCheckBox
 
     void updateValue()
     {
+      if (m_panel && m_panel->lock)
+        return;
       if (!m_field)
         return;
       const bool oldLock = setLocked(true);
