@@ -38,8 +38,8 @@ class TimerPanel : public ModelPanel
     Q_OBJECT
 
   public:
-    TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, GeneralSettings & generalSettings, Firmware * firmware,
-               QWidget *prevFocus, FilteredItemModelFactory * panelFilteredModels, CompoundItemModelFactory * panelItemModels);
+    TimerPanel(QWidget * parent, ModelData & model, TimerData & timer, GeneralSettings & generalSettings, Firmware * firmware,
+               QWidget * prevFocus, FilteredItemModelFactory * panelFilteredModels, CompoundItemModelFactory * panelItemModels);
     virtual ~TimerPanel();
 
     virtual void update();
@@ -50,6 +50,7 @@ class TimerPanel : public ModelPanel
     void on_value_editingFinished();
     void onItemModelAboutToBeUpdated();
     void onItemModelUpdateComplete();
+    void onCountdownBeepDataChanged(int index);
 
   signals:
     void nameChanged();

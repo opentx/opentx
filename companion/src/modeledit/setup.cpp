@@ -33,7 +33,7 @@
 constexpr char FIM_TIMERSWITCH[] {"Timer Switch"};
 constexpr char FIM_THRSOURCE[]   {"Throttle Source"};
 
-TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, GeneralSettings & generalSettings, Firmware * firmware,
+TimerPanel::TimerPanel(QWidget * parent, ModelData & model, TimerData & timer, GeneralSettings & generalSettings, Firmware * firmware,
                        QWidget * prevFocus, FilteredItemModelFactory * panelFilteredModels, CompoundItemModelFactory * panelItemModels):
   ModelPanel(parent, model, generalSettings, firmware),
   timer(timer),
@@ -58,18 +58,19 @@ TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, Ge
 
   ui->countdownBeep->setModel(panelItemModels->getItemModel(AIM_TIMER_COUNTDOWNBEEP));
   ui->countdownBeep->setField(timer.countdownBeep, this);
+  connect(ui->countdownBeep, SIGNAL(currentDataChanged(int)), this, SLOT(onCountdownBeepDataChanged(int)));
 
   ui->value->setMaximumTime(firmware->getMaxTimerStart());
 
   ui->minuteBeep->setField(timer.minuteBeep, this);
 
-  if (!firmware->getCapability(PermTimers)) {
-    ui->persistent->hide();
-    ui->persistentValue->hide();
-  }
-  else {
+  if (firmware->getCapability(PermTimers)) {
     ui->persistent->setModel(panelItemModels->getItemModel(AIM_TIMER_PERSISTENT));
     ui->persistent->setField(timer.persistent, this);
+  }
+  else {
+    ui->persistent->hide();
+    ui->persistentValue->hide();
   }
 
   ui->countdownStart->setModel(panelItemModels->getItemModel(AIM_TIMER_COUNTDOWNSTART));
@@ -107,18 +108,18 @@ void TimerPanel::update()
 
   ui->countdownBeep->updateValue();
   ui->minuteBeep->updateValue();
-  if (firmware->getCapability(PermTimers)) {
-    ui->persistent->updateValue();
-    ui->persistentValue->setText(timer.pvalueToString());
-  }
   ui->countdownStart->updateValue();
-  if(timer.countdownBeep == TimerData::COUNTDOWNBEEP_SILENT) {
+  if (timer.countdownBeep == TimerData::COUNTDOWNBEEP_SILENT) {
     ui->countdownStartLabel->setEnabled(false);
     ui->countdownStart->setEnabled(false);
   }
   else {
     ui->countdownStartLabel->setEnabled(true);
     ui->countdownStart->setEnabled(true);
+  }
+  if (firmware->getCapability(PermTimers)) {
+    ui->persistent->updateValue();
+    ui->persistentValue->setText(timer.pvalueToString());
   }
   lock = false;
 }
@@ -170,6 +171,12 @@ void TimerPanel::onItemModelUpdateComplete()
     update();
     lock = false;
   }
+}
+
+void TimerPanel::onCountdownBeepDataChanged(int index)
+{
+  timer.countdownBeepChanged();
+  update();
 }
 
 /******************************************************************************/

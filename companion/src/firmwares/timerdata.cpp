@@ -78,10 +78,9 @@ QString TimerData::valToString() const
   return valToString(val);
 }
 
-void TimerData::setCountdownBeep(const unsigned int value)
+void TimerData::countdownBeepChanged()
 {
-  countdownBeep = value;
-  if (value == COUNTDOWNBEEP_SILENT)
+  if (countdownBeep == COUNTDOWNBEEP_SILENT)
     countdownStart = 0;
 }
 
@@ -166,7 +165,7 @@ AbstractStaticItemModel * TimerData::countdownStartItemModel()
   AbstractStaticItemModel * mdl = new AbstractStaticItemModel();
   mdl->setName(AIM_TIMER_COUNTDOWNSTART);
 
-  for (int i = COUNTDOWNSTART_LAST - 1; i >= COUNTDOWNSTART_FIRST; i--) {
+  for (int i = COUNTDOWNSTART_LAST; i >= COUNTDOWNSTART_FIRST; i--) {
     mdl->appendToItemList(countdownStartToString(i), i);
   }
 
