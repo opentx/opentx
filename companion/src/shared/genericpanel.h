@@ -40,6 +40,7 @@ class GenericPanel : public QWidget
   friend class GVarGroup;
   friend class AutoPrecisionComboBox;
   friend class AutoBitsetCheckBox;
+  friend class AutoTimeEdit;
 
   public:
     GenericPanel(QWidget *parent, ModelData * model, GeneralSettings & generalSettings, Firmware * firmware);
