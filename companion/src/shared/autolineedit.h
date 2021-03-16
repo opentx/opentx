@@ -29,11 +29,11 @@ class AutoLineEdit: public QLineEdit
   Q_OBJECT
 
   public:
-    explicit AutoLineEdit(QWidget *parent = nullptr, bool updateOnChange = false):
+    explicit AutoLineEdit(QWidget * parent = nullptr, bool updateOnChange = false):
       QLineEdit(parent),
       field(NULL),
-      strField(NULL),
-      panel(NULL),
+      strField(nullptr),
+      panel(nullptr),
       lock(false)
     {
       if (updateOnChange)
@@ -86,15 +86,15 @@ class AutoLineEdit: public QLineEdit
       else
         return;
 
+      emit currentDataChanged();
+
       if (panel)
         emit panel->modified();
-
-      emit currentDataChanged();
     }
 
   protected:
     char * field;
-    QString * strField;
-    GenericPanel * panel;
-    bool lock;
+    QString * strField = nullptr;
+    GenericPanel * panel = nullptr;
+    bool lock = false;
 };

@@ -51,11 +51,11 @@ class AutoCheckBox: public QCheckBox
 
     void updateValue()
     {
-      if (!field)
-        return;
-      lock = true;
-      setChecked(*field);
-      lock = false;
+      if (field) {
+        lock = true;
+        setChecked(*field);
+        lock = false;
+      }
     }
 
   signals:
