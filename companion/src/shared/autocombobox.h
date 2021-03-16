@@ -28,8 +28,13 @@ class AutoComboBox: public QComboBox
   Q_OBJECT
 
   public:
-    explicit AutoComboBox(QWidget *parent = nullptr):
-      QComboBox(parent)
+    explicit AutoComboBox(QWidget * parent = nullptr):
+      QComboBox(parent),
+      field(nullptr),
+      panel(nullptr),
+      next(0),
+      lock(false),
+      hasModel(false)
     {
       connect(this, SIGNAL(currentIndexChanged(int)), this, SLOT(onCurrentIndexChanged(int)));
     }
@@ -69,14 +74,14 @@ class AutoComboBox: public QComboBox
       }
     }
 
-    void setField(unsigned int & field, GenericPanel * panel=nullptr)
+    void setField(unsigned int & field, GenericPanel * panel = nullptr)
     {
       this->field = (int *)&field;
       this->panel = panel;
       updateValue();
     }
 
-    void setField(int & field, GenericPanel * panel=nullptr)
+    void setField(int & field, GenericPanel * panel = nullptr)
     {
       this->field = &field;
       this->panel = panel;
@@ -122,16 +127,16 @@ class AutoComboBox: public QComboBox
         const int val = itemData(index).toInt();
         if (field && !lock) {
           *field = val;
+          emit currentDataChanged(val);
           if (panel)
             emit panel->modified();
         }
-        emit currentDataChanged(val);
       }
     }
 
   protected:
-    int * field = nullptr;
-    GenericPanel * panel = nullptr;
+    int *field = nullptr;
+    GenericPanel *panel = nullptr;
     int next = 0;
     bool lock = false;
     bool hasModel = false;

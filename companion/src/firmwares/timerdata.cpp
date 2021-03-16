@@ -137,7 +137,7 @@ QString TimerData::persistentToString(const int value, const bool verbose)
 //  static
 QString TimerData::pvalueToString(const int value)
 {
-  return DataHelpers::timeToString(value, TIMESTR_MASK_HRSMINS | TIMESTR_MASK_HRSMINS);
+  return DataHelpers::timeToString(value, TIMESTR_MASK_HRSMINS | TIMESTR_MASK_ZEROHRS);
 }
 
 //  static

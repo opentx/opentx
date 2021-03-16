@@ -112,27 +112,20 @@ void TimerPanel::update()
     ui->persistentValue->setText(timer.pvalueToString());
   }
   ui->countdownStart->updateValue();
-  if(timer.countdownBeep == TimerData::COUNTDOWNBEEP_SILENT)
+  if(timer.countdownBeep == TimerData::COUNTDOWNBEEP_SILENT) {
+    ui->countdownStartLabel->setEnabled(false);
     ui->countdownStart->setEnabled(false);
-  else
+  }
+  else {
+    ui->countdownStartLabel->setEnabled(true);
     ui->countdownStart->setEnabled(true);
+  }
   lock = false;
 }
 
 QWidget * TimerPanel::getLastFocus()
 {
   return ui->persistent;
-}
-
-void TimerPanel::on_countdownBeep_currentIndexChanged(int index)
-{
-  if (!lock) {
-    const unsigned int val = ui->countdownStart->itemData(index).toUInt();
-    if (val != timer.countdownBeep) {
-      timer.setCountdownBeep(val);
-      emit modified();
-    }
-  }
 }
 
 void TimerPanel::on_value_editingFinished()
@@ -158,26 +151,6 @@ void TimerPanel::onModeChanged(int index)
   }
 }
 
-void TimerPanel::on_minuteBeep_toggled(bool checked)
-{
-  if (!lock) {
-    timer.minuteBeep = checked;
-    emit modified();
-  }
-}
-
-void TimerPanel::on_name_editingFinished()
-{
-  if (!lock) {
-    if (QString(timer.name) != ui->name->text()) {
-      int length = ui->name->maxLength();
-      strncpy(timer.name, ui->name->text().toLatin1(), length);
-      emit nameChanged();
-      emit modified();
-    }
-  }
-}
-
 void TimerPanel::connectItemModelEvents(const FilteredItemModel * itemModel)
 {
   connect(itemModel, &FilteredItemModel::aboutToBeUpdated, this, &TimerPanel::onItemModelAboutToBeUpdated);
@@ -196,28 +169,6 @@ void TimerPanel::onItemModelUpdateComplete()
   if (modelsUpdateCnt < 1) {
     update();
     lock = false;
-  }
-}
-
-void TimerPanel::on_countdownStart_currentIndexChanged(int index)
-{
-  if (!lock) {
-    const int val = ui->countdownStart->itemData(index).toInt();
-    if (val != timer.countdownStart) {
-      timer.countdownStart = val;
-      emit modified();
-    }
-  }
-}
-
-void TimerPanel::on_persistent_currentIndexChanged(int index)
-{
-  if (!lock) {
-    const unsigned int val = ui->persistent->itemData(index).toUInt();
-    if (val != timer.persistent) {
-      timer.persistent = val;
-      emit modified();
-    }
   }
 }
 
