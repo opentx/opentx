@@ -61,7 +61,7 @@ TimerPanel::TimerPanel(QWidget * parent, ModelData & model, TimerData & timer, G
 
   ui->countdownBeep->setModel(panelItemModels->getItemModel(AIM_TIMER_COUNTDOWNBEEP));
   ui->countdownBeep->setField(timer.countdownBeep, this);
-  connect(ui->countdownBeep, SIGNAL(currentDataChanged(int)), this, SLOT(onCountdownBeepDataChanged(int)));
+  connect(ui->countdownBeep, SIGNAL(currentDataChanged(int)), this, SLOT(onCountdownBeepChanged(int)));
 
   ui->minuteBeep->setField(timer.minuteBeep, this);
 
@@ -102,10 +102,10 @@ void TimerPanel::update()
   ui->name->updateValue();
   ui->mode->updateValue();
   ui->value->updateValue();
-
   ui->countdownBeep->updateValue();
   ui->minuteBeep->updateValue();
   ui->countdownStart->updateValue();
+
   if (timer.countdownBeep == TimerData::COUNTDOWNBEEP_SILENT) {
     ui->countdownStartLabel->setEnabled(false);
     ui->countdownStart->setEnabled(false);
@@ -114,10 +114,12 @@ void TimerPanel::update()
     ui->countdownStartLabel->setEnabled(true);
     ui->countdownStart->setEnabled(true);
   }
+
   if (firmware->getCapability(PermTimers)) {
     ui->persistent->updateValue();
     ui->persistentValue->setText(timer.pvalueToString());
   }
+
   lock = false;
 }
 
@@ -152,7 +154,7 @@ void TimerPanel::onNameChanged()
   emit nameChanged();
 }
 
-void TimerPanel::onCountdownBeepDataChanged(int index)
+void TimerPanel::onCountdownBeepChanged(int index)
 {
   timer.countdownBeepChanged();
   update();
