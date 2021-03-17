@@ -444,7 +444,7 @@ CustomFuncResetParamItemModel::CustomFuncResetParamItemModel(const GeneralSettin
     AbstractDynamicItemModel(generalSettings, modelData, firmware, board, boardType)
 {
   setId(IMID_CustomFuncResetParam);
-  setUpdateMask(IMUE_TeleSensors);
+  setUpdateMask(IMUE_TeleSensors | IMUE_Timers);
 
   for (int i = 0; i < CustomFunctionData::resetParamCount(); i++) {
     QStandardItem * modelItem = new QStandardItem();
