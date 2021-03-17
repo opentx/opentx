@@ -47,7 +47,7 @@ class TimerPanel : public ModelPanel
 
   private slots:
     void onModeChanged(int index);
-    void on_value_editingFinished();
+    void onNameChanged();
     void onItemModelAboutToBeUpdated();
     void onItemModelUpdateComplete();
     void onCountdownBeepDataChanged(int index);

@@ -37,21 +37,21 @@ class AutoTimeEdit: public QTimeEdit
       connect(this, SIGNAL(timeChanged(QTime)), this, SLOT(onTimeChanged(QTime)));
     }
 
-    void setField(int & field, GenericPanel * panel = nullptr)
+    void setField(unsigned int & field, GenericPanel * panel = nullptr)
     {
       this->field = &field;
       this->panel = panel;
       updateValue();
     }
 
-    void setMinimumTime(QTime time)
+    void setMinimumTime(const QTime time)
     {
-      QTimeEdit::setMinimumTime(QTime time);
+      QTimeEdit::setMinimumTime(time);
     }
 
-    void setMaximumTime(QTime time)
+    void setMaximumTime(const QTime time)
     {
-      QTimeEdit::setMaximumTime(QTime time);
+      QTimeEdit::setMaximumTime(time);
     }
 
     void setEnabled(bool enabled)
@@ -90,7 +90,7 @@ class AutoTimeEdit: public QTimeEdit
     }
 
   protected:
-    int *field = nullptr;
+    unsigned int *field = nullptr;
     GenericPanel *panel = nullptr;
     bool lock = false;
 };

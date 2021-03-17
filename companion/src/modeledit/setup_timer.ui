@@ -43,7 +43,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QTimeEdit" name="value">
+    <widget class="AutoTimeEdit" name="value">
      <property name="accelerated">
       <bool>true</bool>
      </property>
@@ -125,6 +125,11 @@
    <class>AutoCheckBox</class>
    <extends>QCheckBox</extends>
    <header>autocheckbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>AutoTimeEdit</class>
+   <extends>QTimeEdit</extends>
+   <header>autotimeedit.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

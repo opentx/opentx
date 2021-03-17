@@ -48,8 +48,13 @@ TimerPanel::TimerPanel(QWidget * parent, ModelData & model, TimerData & timer, G
   int length = firmware->getCapability(TimersName);
   if (length == 0)
     ui->name->hide();
-  else
+  else {
     ui->name->setField(timer.name, length, this);
+    connect(ui->name, SIGNAL(currentDataChanged()), this, SLOT(onNameChanged()));
+  }
+
+  ui->value->setField(timer.val, this);
+  ui->value->setMaximumTime(firmware->getMaxTimerStart());
 
   // Mode
   ui->mode->setModel(panelFilteredModels->getItemModel(FIM_TIMERSWITCH));
@@ -59,8 +64,6 @@ TimerPanel::TimerPanel(QWidget * parent, ModelData & model, TimerData & timer, G
   ui->countdownBeep->setModel(panelItemModels->getItemModel(AIM_TIMER_COUNTDOWNBEEP));
   ui->countdownBeep->setField(timer.countdownBeep, this);
   connect(ui->countdownBeep, SIGNAL(currentDataChanged(int)), this, SLOT(onCountdownBeepDataChanged(int)));
-
-  ui->value->setMaximumTime(firmware->getMaxTimerStart());
 
   ui->minuteBeep->setField(timer.minuteBeep, this);
 
@@ -100,11 +103,7 @@ void TimerPanel::update()
 
   ui->name->updateValue();
   ui->mode->setCurrentIndex(ui->mode->findData(timer.mode.toValue()));
-
-  int hour = timer.val / 3600;
-  int min = (timer.val - (hour * 3600)) / 60;
-  int sec = (timer.val - (hour * 3600)) % 60;
-  ui->value->setTime(QTime(hour, min, sec));
+  ui->value->updateValue();
 
   ui->countdownBeep->updateValue();
   ui->minuteBeep->updateValue();
@@ -127,17 +126,6 @@ void TimerPanel::update()
 QWidget * TimerPanel::getLastFocus()
 {
   return ui->persistent;
-}
-
-void TimerPanel::on_value_editingFinished()
-{
-  if (!lock) {
-    unsigned val = ui->value->time().hour() * 3600 + ui->value->time().minute() * 60 + ui->value->time().second();
-    if (timer.val != val) {
-      timer.val = val;
-      emit modified();
-    }
-  }
 }
 
 void TimerPanel::onModeChanged(int index)
@@ -171,6 +159,11 @@ void TimerPanel::onItemModelUpdateComplete()
     update();
     lock = false;
   }
+}
+
+void TimerPanel::onNameChanged()
+{
+  emit nameChanged();
 }
 
 void TimerPanel::onCountdownBeepDataChanged(int index)
