@@ -46,7 +46,6 @@ class TimerPanel : public ModelPanel
     QWidget * getLastFocus();
 
   private slots:
-    void onModeChanged(int index);
     void onNameChanged();
     void onItemModelAboutToBeUpdated();
     void onItemModelUpdateComplete();

@@ -56,10 +56,8 @@ TimerPanel::TimerPanel(QWidget * parent, ModelData & model, TimerData & timer, G
   ui->value->setField(timer.val, this);
   ui->value->setMaximumTime(firmware->getMaxTimerStart());
 
-  // Mode
   ui->mode->setModel(panelFilteredModels->getItemModel(FIM_TIMERSWITCH));
-  ui->mode->setCurrentIndex(ui->mode->findData(timer.mode.toValue()));
-  connect(ui->mode, SIGNAL(activated(int)), this, SLOT(onModeChanged(int)));
+  ui->mode->setField(timer.mode, this);
 
   ui->countdownBeep->setModel(panelItemModels->getItemModel(AIM_TIMER_COUNTDOWNBEEP));
   ui->countdownBeep->setField(timer.countdownBeep, this);
@@ -102,7 +100,7 @@ void TimerPanel::update()
   lock = true;
 
   ui->name->updateValue();
-  ui->mode->setCurrentIndex(ui->mode->findData(timer.mode.toValue()));
+  ui->mode->updateValue();
   ui->value->updateValue();
 
   ui->countdownBeep->updateValue();
@@ -126,18 +124,6 @@ void TimerPanel::update()
 QWidget * TimerPanel::getLastFocus()
 {
   return ui->persistent;
-}
-
-void TimerPanel::onModeChanged(int index)
-{
-  if (!lock) {
-    bool ok;
-    const RawSwitch rs(ui->mode->itemData(index).toInt(&ok));
-    if (ok && timer.mode.toValue() != rs.toValue()) {
-      timer.mode = rs;
-      emit modified();
-    }
-  }
 }
 
 void TimerPanel::connectItemModelEvents(const FilteredItemModel * itemModel)
