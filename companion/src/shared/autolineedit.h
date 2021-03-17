@@ -76,7 +76,9 @@ class AutoLineEdit: public QLineEdit
   protected slots:
     void onEdited()
     {
-      if ((panel && panel->lock) || lock)
+      if (panel && panel->lock)
+        return;
+      if (lock)
         return;
 
       if (field)

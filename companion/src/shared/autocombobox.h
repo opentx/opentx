@@ -22,6 +22,8 @@
 
 #include <QComboBox>
 #include "genericpanel.h"
+#include "rawsource.h"
+#include "rawswitch.h"
 
 class AutoComboBox: public QComboBox
 {
@@ -34,7 +36,9 @@ class AutoComboBox: public QComboBox
       panel(nullptr),
       next(0),
       lock(false),
-      hasModel(false)
+      hasModel(false),
+      rawSource(nullptr),
+      rawSwitch(nullptr)
     {
       connect(this, SIGNAL(currentIndexChanged(int)), this, SLOT(onCurrentIndexChanged(int)));
     }
@@ -77,6 +81,8 @@ class AutoComboBox: public QComboBox
     void setField(unsigned int & field, GenericPanel * panel = nullptr)
     {
       this->field = (int *)&field;
+      this->rawSource = nullptr;
+      this->rawSwitch = nullptr;
       this->panel = panel;
       updateValue();
     }
@@ -84,6 +90,26 @@ class AutoComboBox: public QComboBox
     void setField(int & field, GenericPanel * panel = nullptr)
     {
       this->field = &field;
+      this->rawSource = nullptr;
+      this->rawSwitch = nullptr;
+      this->panel = panel;
+      updateValue();
+    }
+
+    void setField(RawSource & field, GenericPanel * panel = nullptr)
+    {
+      this->rawSource = &field;
+      this->rawSwitch = nullptr;
+      this->field = nullptr;
+      this->panel = panel;
+      updateValue();
+    }
+
+    void setField(RawSwitch & field, GenericPanel * panel = nullptr)
+    {
+      this->rawSwitch = &field;
+      this->rawSource = nullptr;
+      this->field = nullptr;
       this->panel = panel;
       updateValue();
     }
@@ -108,10 +134,18 @@ class AutoComboBox: public QComboBox
 
     void updateValue()
     {
-      if (!field)
+      if (!field && !rawSource && !rawSwitch)
         return;
+
       lock = true;
-      setCurrentIndex(findData(*field));
+
+      if (field)
+        setCurrentIndex(findData(*field));
+      else if (rawSource)
+        setCurrentIndex(findData(rawSource->toValue()));
+      else if (rawSwitch)
+        setCurrentIndex(findData(rawSwitch->toValue()));
+
       lock = false;
     }
 
@@ -123,15 +157,29 @@ class AutoComboBox: public QComboBox
     {
       if (panel && panel->lock)
         return;
-      if (index > -1) {
-        const int val = itemData(index).toInt();
-        if (field && !lock) {
-          *field = val;
-          emit currentDataChanged(val);
-          if (panel)
-            emit panel->modified();
-        }
+      if (lock || index < 0)
+        return;
+
+      bool ok;
+      const int val = itemData(index).toInt(&ok);
+      if (!ok)
+        return;
+
+      if (field && *field != val) {
+        *field = val;
       }
+      else if (rawSource && rawSource->toValue() != val) {
+        *rawSource = RawSource(val);
+      }
+      else if (rawSwitch && rawSwitch->toValue() != val) {
+        *rawSwitch = RawSwitch(val);
+      }
+      else
+        return;
+
+      emit currentDataChanged(val);
+      if (panel)
+        emit panel->modified();
     }
 
   protected:
@@ -140,4 +188,6 @@ class AutoComboBox: public QComboBox
     int next = 0;
     bool lock = false;
     bool hasModel = false;
+    RawSource *rawSource = nullptr;
+    RawSwitch *rawSwitch = nullptr;
 };

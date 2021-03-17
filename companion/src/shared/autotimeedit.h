@@ -77,7 +77,9 @@ class AutoTimeEdit: public QTimeEdit
   protected slots:
     void onTimeChanged(QTime time)
     {
-      if ((panel && panel->lock) || !field || lock)
+      if (panel && panel->lock)
+        return;
+      if (!field || lock)
         return;
 
       unsigned int val = time.hour() * 3600 + time.minute() * 60 + time.second();
