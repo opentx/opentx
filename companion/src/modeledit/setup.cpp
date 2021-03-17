@@ -1113,6 +1113,9 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
     ui->toplcdTimer->hide();
   }
 
+  ui->throttleSource->setModel(panelFilteredModels->getItemModel(FIM_THRSOURCE));
+  ui->throttleSource->setField(model.thrTraceSrc, this);
+
   if (!firmware->getCapability(HasDisplayText)) {
     ui->displayText->hide();
     ui->editText->hide();
@@ -1279,14 +1282,6 @@ void SetupPanel::on_trimIncrement_currentIndexChanged(int index)
   emit modified();
 }
 
-void SetupPanel::on_throttleSource_currentIndexChanged(int index)
-{
-  if (!lock) {
-    model->thrTraceSrc = ui->throttleSource->currentData().toUInt();
-    emit modified();
-  }
-}
-
 void SetupPanel::on_throttleTrimSwitch_currentIndexChanged(int index)
 {
   if (!lock) {
@@ -1345,28 +1340,6 @@ void SetupPanel::on_image_currentIndexChanged(int index)
   }
 }
 
-void SetupPanel::populateThrottleSourceCB()
-{
-  Board::Type board = firmware->getBoard();
-  lock = true;
-  ui->throttleSource->clear();
-  ui->throttleSource->addItem(tr("THR"), 0);
-
-  int idx = 1;
-  for (int i = 0; i < getBoardCapability(board, Board::Pots) + getBoardCapability(board, Board::Sliders); i++, idx++) {
-    if (RawSource(SOURCE_TYPE_STICK, 4 + i).isAvailable(model, &generalSettings, board)) {
-      ui->throttleSource->addItem(firmware->getAnalogInputName(4 + i), idx);
-    }
-  }
-  for (int i = 0; i < firmware->getCapability(Outputs); i++, idx++) {
-    ui->throttleSource->addItem(RawSource(SOURCE_TYPE_CH, i).toString(model, &generalSettings), idx);
-  }
-
-  int thrTraceSrcIdx = ui->throttleSource->findData(model->thrTraceSrc);
-  ui->throttleSource->setCurrentIndex(thrTraceSrcIdx);
-  lock = false;
-}
-
 void SetupPanel::populateThrottleTrimSwitchCB()
 {
   Board::Type board = firmware->getBoard();
@@ -1394,7 +1367,7 @@ void SetupPanel::update()
 {
   ui->name->setText(model->name);
   ui->throttleReverse->setChecked(model->throttleReversed);
-  populateThrottleSourceCB();
+  ui->throttleSource->updateValue();
   populateThrottleTrimSwitchCB();
   ui->throttleWarning->setChecked(!model->disableThrottleWarning);
   ui->trimIncrement->setCurrentIndex(model->trimInc+2);
