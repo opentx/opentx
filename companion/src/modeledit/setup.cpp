@@ -1738,6 +1738,7 @@ void SetupPanel::onItemModelUpdateComplete()
 void SetupPanel::updateItemModels()
 {
   sharedItemModels->update(AbstractItemModel::IMUE_Timers);
+  emit updated();
 }
 
 void SetupPanel::onModuleUpdateItemModels()
