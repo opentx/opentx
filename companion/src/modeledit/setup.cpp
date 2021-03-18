@@ -37,7 +37,8 @@ TimerPanel::TimerPanel(QWidget * parent, ModelData & model, TimerData & timer, G
                        QWidget * prevFocus, FilteredItemModelFactory * panelFilteredModels, CompoundItemModelFactory * panelItemModels):
   ModelPanel(parent, model, generalSettings, firmware),
   timer(timer),
-  ui(new Ui::Timer)
+  ui(new Ui::Timer),
+  modelsUpdateCnt(0)
 {
   ui->setupUi(this);
   connectItemModelEvents(panelFilteredModels->getItemModel(FIM_TIMERSWITCH));
