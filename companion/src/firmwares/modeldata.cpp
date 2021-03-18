@@ -1405,8 +1405,6 @@ void ModelData::updateResetParam(CustomFunctionData * cfd)
       return;
   }
 
-  qDebug() << "index1" << updRefInfo.index1 << "shift:" << updRefInfo.shift << "cfd->param:" << cfd->param << "idxAdj:" << idxAdj;
-
   switch (updRefInfo.action)
   {
     case REF_UPD_ACT_CLEAR:
