@@ -42,6 +42,7 @@ static void sendD16BindOption(uint8_t moduleIdx);
 #if defined(LUA)
 static void sendSport(uint8_t moduleIdx);
 static void sendHott(uint8_t moduleIdx);
+static void sendConfig(uint8_t moduleIdx);
 static void sendDSM(uint8_t moduleIdx);
 #endif
 
@@ -190,10 +191,13 @@ void setupPulsesMulti(uint8_t moduleIdx)
 #if defined(LUA)
       // SPort send
       if (IS_D16_MULTI(moduleIdx) && outputTelemetryBuffer.destination == TELEMETRY_ENDPOINT_SPORT && outputTelemetryBuffer.size) {
-        sendSport(moduleIdx);        //8 bytes of additional data
+        sendSport(moduleIdx);       //8 bytes of additional data
       }
       else if (IS_HOTT_MULTI(moduleIdx)) {
         sendHott(moduleIdx);        //1 byte of additional data
+      }
+      else if (IS_CONFIG_MULTI(moduleIdx)) {
+        sendConfig(moduleIdx);      //7 bytes of additional data
       }
       else if (IS_DSM_MULTI(moduleIdx)) {
         sendDSM(moduleIdx);         //7 bytes of additional data
@@ -403,6 +407,23 @@ void sendHott(uint8_t moduleIdx)
   if (Multi_Buffer && memcmp(Multi_Buffer, "HoTT", 4) == 0 && (Multi_Buffer[5] & 0x80) && (Multi_Buffer[5] & 0x0F) >= 0x07) {
     // HoTT Lua script is running
     sendMulti(moduleIdx, Multi_Buffer[5]);
+  }
+}
+
+void sendConfig(uint8_t moduleIdx)
+{
+  // Multi_Buffer[0..3]=="Conf" -> Lua script is running
+  // Multi_Buffer[4]==0x01 -> TX to Module data ready to be sent
+  // Multi_Buffer[4]==0xFF -> Clear buffer data
+  // Multi_Buffer[5..11]=7 bytes of TX to Module data
+  // Multi_Buffer[12] -> Current page
+  // Multi_Buffer[13..172]=8*20=160 bytes of Module to TX data
+  if (Multi_Buffer && memcmp(Multi_Buffer, "Conf", 4) == 0 && Multi_Buffer[4]==0x01) {
+    // Config Lua script is running and sending
+    for(uint8_t i = 0; i < 7; i++) {
+        sendMulti(moduleIdx, Multi_Buffer[5+i]);
+    }
+    Multi_Buffer[4]=0x00;   // Send data only once
   }
 }
 
