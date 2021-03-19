@@ -143,7 +143,7 @@ local function Config_Draw_Edit( event )
       lcd.clear()
     end
     for i = 1, Menu[Focus].field_len, 1 do
-      if i==Edit_pos and Blink < 15 then
+      if i==Edit_pos and (Edit ~= 1 or Blink > 15) then
         attrib = INVERS
       else
         attrib = 0
