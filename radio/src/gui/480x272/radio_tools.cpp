@@ -123,7 +123,7 @@ bool menuRadioTools(event_t event)
 #elif defined(INTERNAL_MODULE_MULTI)
   addRadioModuleTool(index++, STR_SPECTRUM_ANALYSER_INT, menuRadioSpectrumAnalyser, INTERNAL_MODULE);
 #endif
-#if defined(PXX2)|| defined(MULTIMODULE)
+#if defined(PXX2) || defined(MULTIMODULE)
   if (isPXX2ModuleOptionAvailable(reusableBuffer.hardwareAndSettings.modules[EXTERNAL_MODULE].information.modelID, MODULE_OPTION_SPECTRUM_ANALYSER) || isModuleMultimodule(EXTERNAL_MODULE))
     addRadioModuleTool(index++, STR_SPECTRUM_ANALYSER_EXT, menuRadioSpectrumAnalyser, EXTERNAL_MODULE);
 #endif
