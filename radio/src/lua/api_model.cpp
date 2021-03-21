@@ -207,8 +207,7 @@ static int luaModelSetModule(lua_State *L)
       }
 #if defined(MULTIMODULE)
       if (!strcmp(key, "otxProtocol")) {
-        uint8_t protocol = luaL_checkinteger(L, -1);
-        g_model.moduleData[idx].setMultiProtocol(protocol);
+        g_model.moduleData[idx].setMultiProtocol(luaL_checkinteger(L, -1));
       }
       if (!strcmp(key, "otxSubProtocol")) {
         g_model.moduleData[idx].subType = luaL_checkinteger(L, -1);
