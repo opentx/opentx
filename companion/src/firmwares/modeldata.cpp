@@ -1537,11 +1537,11 @@ void ModelData::limitsMove(const int index, const int offset)
 
   for (int i = 1; i <= cnt; i++) {
     idx2 = idx1 + direction;
-    LimitData chntmp = limitData[idx2];
-    LimitData *chn1 = &limitData[idx1];
-    LimitData *chn2 = &limitData[idx2];
-    memcpy(chn2, chn1, sizeof(LimitData));
-    memcpy(chn1, &chntmp, sizeof(LimitData));
+    LimitData tmp = limitData[idx2];
+    LimitData *d1 = &limitData[idx1];
+    LimitData *d2 = &limitData[idx2];
+    memcpy(d2, d1, sizeof(LimitData));
+    memcpy(d1, &tmp, sizeof(LimitData));
     updateAllReferences(REF_UPD_TYPE_CHANNEL, REF_UPD_ACT_SWAP, idx1, idx2);
     idx1 += direction;
   }
