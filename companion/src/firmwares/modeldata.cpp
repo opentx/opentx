@@ -1478,3 +1478,79 @@ bool ModelData::isThrTraceSrcAvailable(const GeneralSettings * generalSettings, 
   else
     return true;
 }
+
+void ModelData::limitsClear(const int index)
+{
+  if (index < 0 || index >= CPN_MAX_CHNOUT)
+    return;
+
+  if (!limitData[index].isEmpty()) {
+    limitData[index].clear();
+    updateAllReferences(REF_UPD_TYPE_CHANNEL, REF_UPD_ACT_CLEAR, index);
+  }
+}
+
+void ModelData::limitsClearAll()
+{
+  for (int i = 0; i < CPN_MAX_CHNOUT; i++) {
+    limitsClear(i);
+  }
+}
+
+void ModelData::limitsDelete(const int index)
+{
+  if (index < 0 || index >= CPN_MAX_CHNOUT)
+    return;
+
+  memmove(&limitData[index], &limitData[index + 1], (CPN_MAX_CHNOUT - (index + 1)) * sizeof(LimitData));
+  limitData[CPN_MAX_CHNOUT - 1].clear();
+  updateAllReferences(REF_UPD_TYPE_CHANNEL, REF_UPD_ACT_SHIFT, index, 0, -1);
+}
+
+void ModelData::limitsGet(const int index, QByteArray & data)
+{
+  if (index < 0 || index >= CPN_MAX_CHNOUT)
+    return;
+
+  data.append((char*)&limitData[index], sizeof(LimitData));
+}
+
+void ModelData::limitsInsert(const int index)
+{
+  if (index < 0 || index >= CPN_MAX_CHNOUT)
+    return;
+
+  memmove(&limitData[index + 1], &limitData[index], (CPN_MAX_CHNOUT - (index + 1)) * sizeof(LimitData));
+  limitData[index].clear();
+  updateAllReferences(REF_UPD_TYPE_CHANNEL, REF_UPD_ACT_SHIFT, index, 0, 1);
+}
+
+void ModelData::limitsMove(const int index, const int offset)
+{
+  if (index + offset < 0 || index + offset >= CPN_MAX_CHNOUT)
+    return;
+
+  int idx1 = index;
+  int idx2;
+  const int direction = offset < 0 ? -1 : 1;
+  const int cnt = abs(offset);
+
+  for (int i = 1; i <= cnt; i++) {
+    idx2 = idx1 + direction;
+    LimitData chntmp = limitData[idx2];
+    LimitData *chn1 = &limitData[idx1];
+    LimitData *chn2 = &limitData[idx2];
+    memcpy(chn2, chn1, sizeof(LimitData));
+    memcpy(chn1, &chntmp, sizeof(LimitData));
+    updateAllReferences(REF_UPD_TYPE_CHANNEL, REF_UPD_ACT_SWAP, idx1, idx2);
+    idx1 += direction;
+  }
+}
+
+void ModelData::limitsSet(const int index, const QByteArray & data)
+{
+  if (index < 0 || index >= CPN_MAX_CHNOUT || data.size() < (int)sizeof(LimitData))
+    return;
+
+  memcpy(&limitData[index], data.constData(), sizeof(LimitData));
+}
