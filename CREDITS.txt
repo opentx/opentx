@@ -2207,3 +2207,6 @@ Bob Brown
 Claude Lawyer
 Peter Fithern
 Michael Hoffman
+Tim Smith
+OpenSki Institute
+Simon Melov
