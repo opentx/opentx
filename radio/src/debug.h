@@ -51,7 +51,9 @@ uint8_t aux2SerialTracesEnabled();
 #elif defined(DEBUG)
   #define debugPrintf(...) do { serialPrintf(__VA_ARGS__); } while(0)
 #else
-  #define debugPrintf(...)
+  inline void debugPrintf(const char *, ...)
+  {
+  }
 #endif
 
 #define TRACE_TIME_FORMAT     "%0.2f "
