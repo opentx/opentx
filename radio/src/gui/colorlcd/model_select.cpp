@@ -211,17 +211,23 @@ class ModelSelectFooter: public Window {
       dc->drawSolidFilledRect(0, 0, width(), height(), DISABLE_COLOR);
       uint32_t size = sdGetSize() / 100;
       coord_t x = 7;
-      dc->drawMask(7, 4, modelselSdFreeBitmap, DEFAULT_COLOR);
-      x += modelselSdFreeBitmap->width() + 3;
+      if (modelselSdFreeBitmap) {
+        dc->drawMask(7, 4, modelselSdFreeBitmap, DEFAULT_COLOR);
+        x += modelselSdFreeBitmap->width() + 3;
+      }
       x = dc->drawNumber(x, 3, size, PREC1|FONT(XS), 0, nullptr, "GB");
       x += 20;
-      dc->drawMask(x, 4, modelselModelQtyBitmap, DEFAULT_COLOR);
-      x += modelselModelQtyBitmap->width() + 3;
+      if (modelselModelQtyBitmap) {
+        dc->drawMask(x, 4, modelselModelQtyBitmap, DEFAULT_COLOR);
+        x += modelselModelQtyBitmap->width() + 3;
+      }
       x = dc->drawNumber(x, 3, modelslist.getModelsCount(), FONT(XS));
       if (currentModel) {
         x += 20;
-        dc->drawMask(x, 4, modelselModelNameBitmap, DEFAULT_COLOR);
-        x += modelselModelNameBitmap->width() + 3;
+        if (modelselModelNameBitmap) {
+          dc->drawMask(x, 4, modelselModelNameBitmap, DEFAULT_COLOR);
+          x += modelselModelNameBitmap->width() + 3;
+        }
         dc->drawText(x, 3, currentModel->modelFilename, FONT(XS) | DEFAULT_COLOR);
       }
     }
@@ -275,8 +281,7 @@ class ModelCategoryPageBody: public FormWindow {
                     loadModel(g_eeGeneral.currModelFilename, false);
                     storageDirty(EE_GENERAL);
                     storageCheck(true);
-                    // chainMenu(menuMainView);
-                    postModelLoad(true);
+
                     modelslist.setCurrentModel(model);
                     update(); // modelslist.getModelIndex(modelCell));
                 });
@@ -368,6 +373,7 @@ ModelSelectMenu::ModelSelectMenu():
 {
   modelslist.load();
 
+  TRACE("TabsGroup: %p", this);
   for (auto category: modelslist.getCategories()) {
     addTab(new ModelCategoryPage(category));
   }

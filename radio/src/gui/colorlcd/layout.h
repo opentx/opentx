@@ -123,6 +123,11 @@ class BaseLayoutFactory: public LayoutFactory
 };
 
 Layout * loadLayout(const char * name, Layout::PersistentData * persistentData);
+
+// intented for new models
+void loadDefaultLayout();
+
+// intended for existing models
 void loadCustomScreens();
 
 void drawTrimsAndSliders(Layout::PersistentData * persistentData);

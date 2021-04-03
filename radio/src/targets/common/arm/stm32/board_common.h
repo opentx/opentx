@@ -136,7 +136,7 @@ static inline bool isVBatBridgeEnabled()
 extern "C" {
 #endif
 
-inline uint32_t ticksNow()
+static inline uint32_t ticksNow()
 {
 #if defined(SIMU)
   return 0;

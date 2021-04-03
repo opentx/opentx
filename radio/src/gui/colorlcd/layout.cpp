@@ -37,7 +37,7 @@ void registerLayout(const LayoutFactory * factory)
 
 const LayoutFactory * getLayoutFactory(const char * name)
 {
-  std::list<const LayoutFactory *>::const_iterator it = getRegisteredLayouts().cbegin();
+  auto it = getRegisteredLayouts().cbegin();
   for (; it != getRegisteredLayouts().cend(); ++it) {
     if (!strcmp(name, (*it)->getId())) {
       return (*it);
@@ -55,21 +55,48 @@ Layout * loadLayout(const char * name, Layout::PersistentData * persistentData)
   return nullptr;
 }
 
+void deleteCustomScreens()
+{
+  for (unsigned int i = 0; i < MAX_CUSTOM_SCREENS; i++) {
+    auto& screen = customScreens[i];
+    if (screen) {
+      screen->detach();
+      delete screen;
+      screen = nullptr;
+    }
+  }
+}
+
+extern const LayoutFactory * defaultLayout;
+
+void loadDefaultLayout()
+{
+  auto& screen = customScreens[0];
+  auto& screenData = g_model.screenData[0];
+
+  if (screen == nullptr && defaultLayout != nullptr) {
+    strcpy(screenData.layoutName, defaultLayout->getName());
+    screen = defaultLayout->create(&screenData.layoutData);
+    if (screen) {
+      screen->attach(ViewMain::instance);
+    }
+  }
+}
+
 void loadCustomScreens()
 {
   for (unsigned int i = 0; i < MAX_CUSTOM_SCREENS; i++) {
-    delete customScreens[i];
-    char name[LAYOUT_NAME_LEN + 1];
-    memset(name, 0, sizeof(name));
-    strncpy(name, g_model.screenData[i].layoutName, LAYOUT_NAME_LEN);
-    customScreens[i] = loadLayout(name, &g_model.screenData[i].layoutData);
+
+    auto& screen = customScreens[i];
+    screen = loadLayout(g_model.screenData[i].layoutName,
+                        &g_model.screenData[i].layoutData);
+
+    if (screen) {
+      screen->attach(ViewMain::instance);
+    }
   }
 
-  if (customScreens[0] == nullptr && getRegisteredLayouts().size()) {
-    customScreens[0] = getRegisteredLayouts().front()->create(&g_model.screenData[0].layoutData);
-  }
-
-  customScreens[g_model.view]->attach(ViewMain::instance);
+  //customScreens[g_model.view]->attach(ViewMain::instance);
 }
 
 void Layout::decorate(bool topbar, bool sliders, bool trims, bool flightMode)
