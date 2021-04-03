@@ -139,7 +139,7 @@ void ViewMain::openMenu()
   menu->addLine(STR_MONITOR_SCREENS, []() {
       new ChannelsViewMenu();
   });
-  menu->addLine(STR_RESET_SUBMENU, [menu, this]() {
+  menu->addLine(STR_RESET_SUBMENU, [this]() {
       Menu * resetMenu = new Menu(this);
       resetMenu->addLine(STR_RESET_FLIGHT, []() {
           flightReset();

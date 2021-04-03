@@ -511,12 +511,8 @@ void modelDefault(uint8_t id)
   strAppendUnsigned(strAppend(g_model.header.name, STR_MODEL), id + 1, 2);
 
 #if defined(COLORLCD)
-  extern const LayoutFactory * defaultLayout;
-  delete customScreens[0];
-  customScreens[0] = defaultLayout->create(&g_model.screenData[0].layoutData);
-  strcpy(g_model.screenData[0].layoutName, "Layout2P1");
-//  extern const WidgetFactory * defaultWidget;
-//  customScreens[0]->createWidget(0, defaultWidget);
+  loadDefaultLayout();
+
   // enable switch warnings
   for (int i = 0; i < NUM_SWITCHES; i++) {
     g_model.switchWarningState |= (1 << (3*i));
