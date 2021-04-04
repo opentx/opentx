@@ -155,23 +155,21 @@ class SetupWidgetsPageSlot: public Button
       screen(screen),
       slotIndex(slotIndex)
     {
+      widget = screen->getWidget(slotIndex);
       setPressHandler([=](){
           Menu * menu = new Menu(this);
           menu->addLine("Select a widget", [=]() {
             Menu * menu = new Menu(this);
             for (auto factory: getRegisteredWidgets()) {
               menu->addLine(factory->getName(), [=]() {
-                if (widget) {
-                  widget->deleteLater();
-                }
-                // widget = factory->create(this, {1, 1, width() - 2, height() - 2}, &g_model.screenData[pageIndex].layoutData.zones[slotIndex].widgetData, true);
-                screen->createWidget(slotIndex, factory);
+                if (widget) widget->deleteLater();
+                widget = screen->createWidget(slotIndex, factory);
                 return 0;
               });
             }
             return 0;
           });
-          if (widget /*g_model.screenData[pageIndex].layoutData.zones[slotIndex].widgetName[0]*/) {
+          if (widget) {
             menu->addLine(STR_DELETE, [=]() {
               widget->deleteLater();
               widget = nullptr;
@@ -190,12 +188,14 @@ class SetupWidgetsPageSlot: public Button
       else {
         dc->drawRect(0, 0, width(), height(), 1, DOTTED, DEFAULT_COLOR);
       }
+      if (widget)
+        widget->paint(dc);
     }
 
   protected:
     Layout * screen;
     uint8_t slotIndex;
-    Window * widget = nullptr;
+    Widget * widget = nullptr;
 };
 
 class SetupWidgetsPage: public FormWindow

@@ -71,6 +71,16 @@ class Widget : public FormField
       return &persistentData->options[index].value;
     }
 
+    inline PersistentData * getPersistentData()
+    {
+      return persistentData;
+    }
+    
+    void paint(BitmapBuffer * dc) override
+    {
+      FormField::paint(dc);
+    }
+  
     virtual void background()
     {
     }

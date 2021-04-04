@@ -30,7 +30,8 @@ class WidgetsContainerInterface
   public:
     virtual unsigned int getZonesCount() const = 0;
     virtual rect_t getZone(unsigned int index) const = 0;
-    virtual void createWidget(unsigned int index, const WidgetFactory * factory) = 0;
+    virtual Widget * createWidget(unsigned int index, const WidgetFactory * factory) = 0;
+    virtual Widget * getWidget(unsigned int index) = 0;
 };
 
 #define WIDGET_NAME_LEN   10
@@ -55,16 +56,25 @@ class WidgetsContainer: public FormGroup, public WidgetsContainerInterface
     {
     }
 
-    void createWidget(unsigned int index, const WidgetFactory * factory) override
+    Widget * createWidget(unsigned int index, const WidgetFactory * factory) override
     {
+      Widget * widget = nullptr;
       memset(persistentData->zones[index].widgetName, 0, sizeof(persistentData->zones[index].widgetName));
       if (factory) {
         strncpy(persistentData->zones[index].widgetName, factory->getName(), sizeof(persistentData->zones[index].widgetName));
-        widgets[index] = factory->create(this, getZone(index), &persistentData->zones[index].widgetData);
+        widget = factory->create(this, getZone(index), &persistentData->zones[index].widgetData);
       }
-      else {
-        widgets[index] = nullptr;
-      }
+      widgets[index] = widget;
+
+      return widget;
+    }
+
+    Widget * getWidget(unsigned int index) override
+    {
+      if (index < N)
+        return widgets[index];
+
+      return nullptr;
     }
 
     virtual void create()
