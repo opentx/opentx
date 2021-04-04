@@ -20,25 +20,46 @@
 
 #include "confirm_dialog.h"
 #include "static.h"
+#include "gridlayout.h"
 
 ConfirmDialog::ConfirmDialog(Window * parent, const char * title, const char * message, std::function<void(void)> confirmHandler) :
   Dialog(parent, title, {50, 73, LCD_W - 100, LCD_H - 146}),
   confirmHandler(std::move(confirmHandler))
 {
-  new StaticText(this, {0, height() / 2, width(), PAGE_LINE_HEIGHT}, message, CENTERED);
+  auto form = &content->form;
+  FormGridLayout grid(content->form.width());
+  form->clear();
+  
+  new StaticText(form, grid.getCenteredSlot(), message);
+  grid.nextLine();
+
+  auto noButton = new TextButton(form, grid.getSlot(2, 0), "NO",
+                                 [=]() -> int8_t {
+                                   this->deleteLater();
+                                   return 0;
+                                 });
+
+  new TextButton(form, grid.getSlot(2, 1), "YES",
+                 [=]() -> int8_t {
+                   this->deleteLater();
+                   this->confirmHandler();
+                   return 0;
+                 });
+
+  noButton->setFocus(SET_FOCUS_DEFAULT);
 }
 
-#if defined(HARDWARE_KEYS)
-void ConfirmDialog::onEvent(event_t event)
-{
-  TRACE_WINDOWS("%s received event 0x%X", getWindowDebugString().c_str(), event);
+// #if defined(HARDWARE_KEYS)
+// void ConfirmDialog::onEvent(event_t event)
+// {
+//   TRACE_WINDOWS("%s received event 0x%X", getWindowDebugString().c_str(), event);
 
-  if (event == EVT_KEY_BREAK(KEY_ENTER)) {
-    deleteLater(); // this restore the focus (it can be changed then in confirmHandler)
-    confirmHandler();
-  }
-  else if (event == EVT_KEY_BREAK(KEY_EXIT)) {
-    deleteLater();
-  }
-}
-#endif
+//   if (event == EVT_KEY_BREAK(KEY_ENTER)) {
+//     deleteLater(); // this restore the focus (it can be changed then in confirmHandler)
+//     confirmHandler();
+//   }
+//   else if (event == EVT_KEY_BREAK(KEY_EXIT)) {
+//     deleteLater();
+//   }
+// }
+// #endif
