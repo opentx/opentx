@@ -188,8 +188,6 @@ class SetupWidgetsPageSlot: public Button
       else {
         dc->drawRect(0, 0, width(), height(), 1, DOTTED, DEFAULT_COLOR);
       }
-      if (widget)
-        widget->paint(dc);
     }
 
   protected:
@@ -203,11 +201,15 @@ class SetupWidgetsPage: public FormWindow
   public:
     SetupWidgetsPage(Layout * screen):
       FormWindow(MainWindow::instance(), {0, 0, LCD_W, LCD_H}, OPAQUE | FORM_FORWARD_FOCUS),
-      screen(screen)
+      screen(screen),
+      oldParent(screen->getParent())
     {
       Layer::push(this);
       clearFocus();
 
+      // attach this custom screen here so we can display it 
+      screen->attach(this);
+      
       for (unsigned i = 0; i < screen->getZonesCount(); i++) {
         auto rect = screen->getZone(i);
         new SetupWidgetsPageSlot(this, {rect.x - 1, rect.y - 1, rect.w + 2, rect.h + 2}, screen, i);
@@ -221,8 +223,10 @@ class SetupWidgetsPage: public FormWindow
 #if defined(HARDWARE_TOUCH)
       Keyboard::hide();
 #endif
+      // give it back to its old parent before it gets deleted
+      screen->attach(oldParent);
 
-      Window::deleteLater(detach, trash);
+      FormWindow::deleteLater(detach, trash);
     }
 
 #if defined(HARDWARE_KEYS)
@@ -238,13 +242,15 @@ class SetupWidgetsPage: public FormWindow
     }
 #endif
 
+  protected:
+    Layout* screen;
+    Window* oldParent;
+
     void paint(BitmapBuffer * dc) override
     {
       dc->clear(DEFAULT_BGCOLOR);
     }
 
-  protected:
-    Layout* screen;
 };
 
 void ScreenSetupPage::build(FormWindow * window)
