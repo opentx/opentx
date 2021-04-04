@@ -118,7 +118,9 @@ TASK_FUNCTION(mixerTask)
   s_pulses_paused = true;
 
   mixerSchedulerInit();
+#if !defined(PCBSKY9X)
   mixerSchedulerStart();
+#endif
 
   while (true) {
 #if defined(SBUS_TRAINER)
@@ -142,8 +144,10 @@ TASK_FUNCTION(mixerTask)
     GPIO_ResetBits(EXTMODULE_TX_GPIO, EXTMODULE_TX_GPIO_PIN);
 #endif
 
+#if !defined(PCBSKY9X)
     // re-enable trigger
     mixerSchedulerEnableTrigger();
+#endif
 
 #if defined(SIMU)
     if (pwrCheck() == e_power_off) {
@@ -164,7 +168,11 @@ TASK_FUNCTION(mixerTask)
       doMixerCalculations();
 
       // TODO: fix runMask
+#if defined(PCBSKY9X)
+      sendSynchronousPulses(1 << EXTERNAL_MODULE);
+#else
       sendSynchronousPulses((1 << INTERNAL_MODULE) | (1 << EXTERNAL_MODULE));
+#endif
 
       doMixerPeriodicUpdates();
 
@@ -200,12 +208,32 @@ TASK_FUNCTION(mixerTask)
       // TODO:
       // - check the cause of timeouts when switching
       //    between protocols with multi-proto RF
+#if defined(DEBUG)
       if (timeout)
         serialPrint("mix sched timeout!");
+#endif
     }
   }
 }
 
+void scheduleNextMixerCalculation(uint8_t module, uint32_t period_ms)
+{
+  // Schedule next mixer calculation time,
+
+  if (isModuleSynchronous(module)) {
+    nextMixerTime[module] += period_ms / RTOS_MS_PER_TICK;
+    if (nextMixerTime[module] < RTOS_GET_TIME()) {
+      // we are late ... let's add some small delay
+      nextMixerTime[module] = (uint32_t) RTOS_GET_TIME() + (period_ms / RTOS_MS_PER_TICK);
+    }
+  }
+  else {
+    // for now assume mixer calculation takes 2 ms.
+    nextMixerTime[module] = (uint32_t) RTOS_GET_TIME() + (period_ms / RTOS_MS_PER_TICK);
+  }
+
+  DEBUG_TIMER_STOP(debugTimerMixerCalcToUsage);
+}
 
 #define MENU_TASK_PERIOD_TICKS         (50 / RTOS_MS_PER_TICK)    // 50ms
 

@@ -252,8 +252,9 @@ static void processMultiSyncPacket(const uint8_t * data, uint8_t module)
   //   inputLag -= refreshRate;
 
   status.update(refreshRate, inputLag);
-
+#if defined(DEBUG)
   serialPrint("MP ADJ: R %d, L %04d", refreshRate, inputLag);
+#endif
 }
 
 #if defined(PCBTARANIS) || defined(PCBHORUS)

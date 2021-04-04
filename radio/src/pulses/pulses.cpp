@@ -241,8 +241,12 @@ void enablePulsesExternalModule(uint8_t protocol)
     case PROTOCOL_CHANNELS_DSM2_LP45:
     case PROTOCOL_CHANNELS_DSM2_DSM2:
     case PROTOCOL_CHANNELS_DSM2_DSMX:
+#if defined(PCBSKY9X)
+      extmoduleSerialStart(DSM2_BAUDRATE, DSM2_PERIOD * 2000, false);
+#else
       extmoduleSerialStart();
       mixerSchedulerSetPeriod(EXTERNAL_MODULE, DSM2_PERIOD);
+#endif
       break;
 #endif
 
@@ -274,15 +278,23 @@ void enablePulsesExternalModule(uint8_t protocol)
 
 #if defined(MULTIMODULE)
     case PROTOCOL_CHANNELS_MULTIMODULE:
+#if defined(PCBSKY9X)
+      extmoduleSerialStart(MULTIMODULE_BAUDRATE, MULTIMODULE_PERIOD * 2000, true);
+#else
       extmoduleSerialStart();
       mixerSchedulerSetPeriod(EXTERNAL_MODULE, MULTIMODULE_PERIOD);
+#endif
       break;
 #endif
 
 #if defined(SBUS)
     case PROTOCOL_CHANNELS_SBUS:
+#if defined(PCBSKY9X)
+      extmoduleSerialStart(SBUS_BAUDRATE, SBUS_PERIOD_HALF_US, false);
+#else
       extmoduleSerialStart();
       mixerSchedulerSetPeriod(EXTERNAL_MODULE, SBUS_PERIOD);
+#endif
       break;
 #endif
 
@@ -314,12 +326,18 @@ bool setupPulsesExternalModule(uint8_t protocol)
 #if defined(PXX1)
     case PROTOCOL_CHANNELS_PXX1_PULSES:
       extmodulePulsesData.pxx.setupFrame(EXTERNAL_MODULE);
+#if defined(PCBSKY9X)
+      scheduleNextMixerCalculation(EXTERNAL_MODULE, PXX_PULSES_PERIOD);
+#endif
       return true;
 #endif
 
 #if defined(PXX1) && defined(HARDWARE_EXTERNAL_MODULE_SIZE_SML)
     case PROTOCOL_CHANNELS_PXX1_SERIAL:
       extmodulePulsesData.pxx_uart.setupFrame(EXTERNAL_MODULE);
+#if defined(PCBSKY9X)
+      scheduleNextMixerCalculation(EXTERNAL_MODULE, EXTMODULE_PXX1_SERIAL_PERIOD);
+#endif
       return true;
 #endif
 
@@ -327,13 +345,18 @@ bool setupPulsesExternalModule(uint8_t protocol)
     case PROTOCOL_CHANNELS_PXX2_HIGHSPEED:
     case PROTOCOL_CHANNELS_PXX2_LOWSPEED:
       extmodulePulsesData.pxx2.setupFrame(EXTERNAL_MODULE);
+#if defined(PCBSKY9X)
+      sheduleNextMixerCalculation(EXTERNAL_MODULE, PXX2_PERIOD);
+#endif
       return true;
 #endif
 
 #if defined(SBUS)
     case PROTOCOL_CHANNELS_SBUS:
       setupPulsesSbus();
-
+#if defined(PCBSKY9X)
+      scheduleNextMixerCalculation(EXTERNAL_MODULE, SBUS_PERIOD);
+#endif
       // SBUS_PERIOD is not a constant! It can be set from UI
       mixerSchedulerSetPeriod(EXTERNAL_MODULE, SBUS_PERIOD);
       return true;
@@ -344,6 +367,9 @@ bool setupPulsesExternalModule(uint8_t protocol)
     case PROTOCOL_CHANNELS_DSM2_DSM2:
     case PROTOCOL_CHANNELS_DSM2_DSMX:
       setupPulsesDSM2();
+#if defined(PCBSKY9X)
+      scheduleNextMixerCalculation(EXTERNAL_MODULE, DSM2_PERIOD);
+#endif
       return true;
 #endif
 
@@ -356,6 +382,9 @@ bool setupPulsesExternalModule(uint8_t protocol)
       else
         mixerSchedulerSetPeriod(EXTERNAL_MODULE, CROSSFIRE_PERIOD);
       setupPulsesCrossfire();
+#if defined(PCBSKY9X)
+      scheduleNextMixerCalculation(EXTERNAL_MODULE, CROSSFIRE_PERIOD);
+#endif
       return true;
     }
 #endif
@@ -369,6 +398,9 @@ bool setupPulsesExternalModule(uint8_t protocol)
       else
         mixerSchedulerSetPeriod(EXTERNAL_MODULE, GHOST_PERIOD);
       setupPulsesGhost();
+#if defined(PCBSKPCBSKY9X)
+      scheduleNextMixerCalculation(EXTERNAL_MODULE, GHOST_PERIOD);
+#endif
       return true;
     }
 #endif
@@ -382,6 +414,9 @@ bool setupPulsesExternalModule(uint8_t protocol)
       else
         mixerSchedulerSetPeriod(EXTERNAL_MODULE, MULTIMODULE_PERIOD);
       setupPulsesMultiExternalModule();
+#if defined(PCBSKY9X)
+      scheduleNextMixerCalculation(EXTERNAL_MODULE, MULTIMODULE_PERIOD);
+#endif
       return true;
     }
 #endif
@@ -389,12 +424,18 @@ bool setupPulsesExternalModule(uint8_t protocol)
 #if defined(PPM)
     case PROTOCOL_CHANNELS_PPM:
       setupPulsesPPMExternalModule();
+#if defined(PCBSKY9X)
+      scheduleNextMixerCalculation(EXTERNAL_MODULE, PPM_PERIOD(EXTERNAL_MODULE));
+#endif
       return true;
 #endif
 
 #if defined(AFHDS3)
     case PROTOCOL_CHANNELS_AFHDS3:
       extmodulePulsesData.afhds3.setupFrame();
+#if defined(PCBSKY9X)
+      scheduleNextMixerCalculation(EXTERNAL_MODULE, AFHDS3_COMMAND_TIMEOUT);
+#endif
       return true;
 #endif
 
