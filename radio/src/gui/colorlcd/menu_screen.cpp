@@ -34,7 +34,14 @@ void ScreenMenu::updateTabs()
 
   for (int index = 0; index < MAX_CUSTOM_SCREENS; index++) {
     if (customScreens[index]) {
-      addTab(new ScreenSetupPage(this, index));
+
+      auto tab = new ScreenSetupPage(this, customScreens[index], g_model.screenData[index]);
+      std::string title(STR_MAIN_VIEW_X);
+      title.back() = index + '1';
+      tab->setTitle(title);
+      tab->setIcon(ICON_THEME_VIEW1 + index);
+
+      addTab(tab);
     }
     else {
       addTab(new ScreenAddPage(this, index));

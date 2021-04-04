@@ -21,6 +21,8 @@
 // No include guards here, this file may be included many times in different namespaces
 // i.e. BACKUP RAM Backup/Restore functions
 
+#pragma once
+
 #include <inttypes.h>
 #include "board.h"
 #include "dataconstants.h"

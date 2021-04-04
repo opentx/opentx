@@ -32,6 +32,11 @@ class PageTab {
   friend class TabsGroup;
 
   public:
+    PageTab():
+      icon(0)
+    {
+    }
+
     PageTab(std::string title, unsigned icon):
       title(std::move(title)),
       icon(icon)
@@ -62,6 +67,11 @@ class PageTab {
     void setTitle(std::string value)
     {
       title = std::move(value);
+    }
+
+    void setIcon(unsigned icon)
+    {
+      this->icon = icon;
     }
 
     unsigned getIcon() const

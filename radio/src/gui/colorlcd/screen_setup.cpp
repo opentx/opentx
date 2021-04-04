@@ -26,23 +26,38 @@
 #define SET_DIRTY()     storageDirty(EE_MODEL)
 
 ScreenAddPage::ScreenAddPage(ScreenMenu * menu, uint8_t pageIndex):
-  PageTab("", ICON_THEME_ADD_VIEW),
+  PageTab(),
   menu(menu),
   pageIndex(pageIndex)
 {
   setTitle(STR_ADD_MAIN_VIEW);
+  setIcon(ICON_THEME_ADD_VIEW);
 }
 
 void ScreenAddPage::build(FormWindow * window)
 {
-  auto button = new TextButton(window, {LCD_W / 2 - 100, (window->height() - 24) / 2, 200, 24}, STR_ADD_MAIN_VIEW);
+  rect_t buttonRect = {LCD_W / 2 - 100, (window->height() - 24) / 2, 200, 24};
+  auto button = new TextButton(window, buttonRect, STR_ADD_MAIN_VIEW);
   button->setPressHandler([=]() {
+
+      auto& screen     = customScreens[pageIndex];
+      auto& screenData = g_model.screenData[pageIndex];
+
       const LayoutFactory * factory = getRegisteredLayouts().front();
-      customScreens[pageIndex] = factory->create(&g_model.screenData[pageIndex].layoutData);
-      strncpy(g_model.screenData[pageIndex].layoutName, factory->getId(), sizeof(g_model.screenData[pageIndex].layoutName));
+
+      screen = factory->create(&screenData.layoutData);
+      strncpy(screenData.layoutName, factory->getId(), sizeof(screenData.layoutName));
+
+      auto tab = new ScreenSetupPage(menu, screen, screenData);
+      std::string title(STR_MAIN_VIEW_X);
+      title.back() = pageIndex + '0';      
+      tab->setTitle(title);
+      tab->setIcon(ICON_THEME_VIEW1 + pageIndex);
+      
       menu->removeTab(pageIndex);
-      menu->addTab(new ScreenSetupPage(menu, pageIndex));
+      menu->addTab(tab);
       menu->setCurrentTab(pageIndex);
+
       if (pageIndex < MAX_CUSTOM_SCREENS - 1) {
         menu->addTab(new ScreenAddPage(menu, pageIndex + 1));
       }
@@ -124,22 +139,20 @@ class LayoutChoice: public FormField {
     std::function<void(const LayoutFactory *)> setValue;
 };
 
-ScreenSetupPage::ScreenSetupPage(ScreenMenu * menu, uint8_t pageIndex):
-  PageTab("", ICON_THEME_VIEW1 + pageIndex),
+ScreenSetupPage::ScreenSetupPage(ScreenMenu * menu, Layout*& screen, CustomScreenData& screenData):
+  PageTab(),
   menu(menu),
-  pageIndex(pageIndex)
+  screen(screen),
+  screenData(screenData)
 {
-  char title[] = "Main view X";
-  title[sizeof(title) - 2] = '1' + pageIndex;
-  setTitle(title);
 }
 
 class SetupWidgetsPageSlot: public Button
 {
   public:
-    SetupWidgetsPageSlot(FormGroup * parent, const rect_t & rect, uint8_t pageIndex, uint8_t slotIndex):
+    SetupWidgetsPageSlot(FormGroup * parent, const rect_t & rect, Layout* screen, uint8_t slotIndex):
       Button(parent, rect),
-      pageIndex(pageIndex),
+      screen(screen),
       slotIndex(slotIndex)
     {
       setPressHandler([=](){
@@ -152,7 +165,7 @@ class SetupWidgetsPageSlot: public Button
                   widget->deleteLater();
                 }
                 // widget = factory->create(this, {1, 1, width() - 2, height() - 2}, &g_model.screenData[pageIndex].layoutData.zones[slotIndex].widgetData, true);
-                customScreens[pageIndex]->createWidget(slotIndex, factory);
+                screen->createWidget(slotIndex, factory);
                 return 0;
               });
             }
@@ -180,7 +193,7 @@ class SetupWidgetsPageSlot: public Button
     }
 
   protected:
-    uint8_t pageIndex;
+    Layout * screen;
     uint8_t slotIndex;
     Window * widget = nullptr;
 };
@@ -188,18 +201,16 @@ class SetupWidgetsPageSlot: public Button
 class SetupWidgetsPage: public FormWindow
 {
   public:
-    SetupWidgetsPage(uint8_t pageIndex):
+    SetupWidgetsPage(Layout * screen):
       FormWindow(MainWindow::instance(), {0, 0, LCD_W, LCD_H}, OPAQUE | FORM_FORWARD_FOCUS),
-      pageIndex(pageIndex)
+      screen(screen)
     {
       Layer::push(this);
       clearFocus();
 
-      auto & customScreen = customScreens[pageIndex];
-
-      for (unsigned i = 0; i < customScreen->getZonesCount(); i++) {
-        auto rect = customScreen->getZone(i);
-        new SetupWidgetsPageSlot(this, {rect.x - 1, rect.y - 1, rect.w + 2, rect.h + 2}, pageIndex, i);
+      for (unsigned i = 0; i < screen->getZonesCount(); i++) {
+        auto rect = screen->getZone(i);
+        new SetupWidgetsPageSlot(this, {rect.x - 1, rect.y - 1, rect.w + 2, rect.h + 2}, screen, i);
       }
     }
 
@@ -233,7 +244,7 @@ class SetupWidgetsPage: public FormWindow
     }
 
   protected:
-    uint8_t pageIndex;
+    Layout* screen;
 };
 
 void ScreenSetupPage::build(FormWindow * window)
@@ -245,10 +256,10 @@ void ScreenSetupPage::build(FormWindow * window)
   new StaticText(window, grid.getLabelSlot(false), STR_LAYOUT);
   auto layoutSlot = grid.getFieldSlot();
   layoutSlot.h = 2 * PAGE_LINE_HEIGHT - 1;
-  layoutChoice = new LayoutChoice(window, layoutSlot, GET_VALUE(customScreens[pageIndex]->getFactory()), [=](const LayoutFactory *factory) {
-      delete customScreens[pageIndex];
-      customScreens[pageIndex] = factory->create(&g_model.screenData[pageIndex].layoutData);
-      strncpy(g_model.screenData[pageIndex].layoutName, factory->getId(), sizeof(g_model.screenData[pageIndex].layoutName));
+  layoutChoice = new LayoutChoice(window, layoutSlot, GET_VALUE(screen->getFactory()), [=](const LayoutFactory *factory) {
+      delete screen;
+      screen = factory->create(&screenData.layoutData);
+      strncpy(screenData.layoutName, factory->getId(), sizeof(CustomScreenData::layoutName));
       SET_DIRTY();
       updateLayoutOptions();
   });
@@ -257,7 +268,7 @@ void ScreenSetupPage::build(FormWindow * window)
   // Setup widgets button...
   setupWidgetsButton = new TextButton(window, grid.getFieldSlot(), STR_SETUP_WIDGETS);
   setupWidgetsButton->setPressHandler([=]() {
-      new SetupWidgetsPage(pageIndex);
+      new SetupWidgetsPage(screen);
       return 0;
   });
   grid.nextLine();
@@ -272,8 +283,6 @@ void ScreenSetupPage::updateLayoutOptions()
 {
   FormGridLayout grid;
   optionsWindow->clear();
-
-  auto screen = customScreens[pageIndex];
 
   // Layout options...
   int index = 0;
@@ -299,19 +308,20 @@ void ScreenSetupPage::updateLayoutOptions()
     grid.nextLine();
   }
 
-  if (pageIndex > 0 || customScreens[1]) {
+  //if (pageIndex > 0 || customScreens[1]) {
     auto button = new TextButton(optionsWindow, grid.getFieldSlot(), STR_REMOVE_SCREEN);
     button->setPressHandler([=]() {
-        if (pageIndex < MAX_CUSTOM_SCREENS - 1) {
-          memmove(&g_model.screenData[pageIndex], &g_model.screenData[pageIndex + 1], sizeof(CustomScreenData) * (MAX_CUSTOM_SCREENS - pageIndex - 1));
-        }
-        memset(&g_model.screenData[MAX_CUSTOM_SCREENS - 1], 0, sizeof(CustomScreenData));
+        // if (pageIndex < MAX_CUSTOM_SCREENS - 1) {
+        //   memmove(&g_model.screenData[pageIndex], &g_model.screenData[pageIndex + 1], sizeof(CustomScreenData) * (MAX_CUSTOM_SCREENS - pageIndex - 1));
+        // }
+        // memset(&g_model.screenData[MAX_CUSTOM_SCREENS - 1], 0, sizeof(CustomScreenData));
+        memset(&screenData, 0, sizeof(CustomScreenData));
         loadCustomScreens();
         menu->updateTabs();
         storageDirty(EE_MODEL);
         return 0;
     });
-  }
+    //}
 
   optionsWindow->adjustHeight();
   optionsWindow->getParent()->adjustInnerHeight();
