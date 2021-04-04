@@ -52,7 +52,7 @@ class FilePreview : public Window
     }
 
 #if defined(DEBUG_WINDOWS)
-    virtual std::string getName()
+    std::string getName() const override
     {
       return "FilePreview";
     }
