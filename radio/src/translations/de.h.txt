@@ -428,6 +428,8 @@
 #endif
 
 #define TR_FREE                        "frei"
+#define TR_YES                         "Yes"
+#define TR_NO                          "No"
 #define TR_DELETEMODEL                 "Modell löschen?"
 #define TR_COPYINGMODEL                "Kopiere Modell"
 #define TR_MOVINGMODEL                 "Schiebe Modell"

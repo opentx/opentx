@@ -427,6 +427,8 @@
 #endif
 
 #define TR_FREE                "vrij"
+#define TR_YES                         "Yes"
+#define TR_NO                          "No"
 #define TR_DELETEMODEL         "WIS" BREAKSPACE "MODEL"
 #define TR_COPYINGMODEL        "Kopieer Model"
 #define TR_MOVINGMODEL         "Verplaats Model"

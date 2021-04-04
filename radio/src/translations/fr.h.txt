@@ -446,6 +446,8 @@
 
 #define TR_MENUWHENDONE                CENTER "\006" TR_ENTER " QUAND PRET"
 #define TR_FREE                        "disp"
+#define TR_YES                         "Yes"
+#define TR_NO                          "No"
 #define TR_DELETEMODEL                 "SUPPRIMER" BREAKSPACE "MODELE"
 #define TR_COPYINGMODEL                "Copie..."
 #define TR_MOVINGMODEL                 "Déplacement..."
