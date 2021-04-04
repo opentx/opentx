@@ -43,7 +43,7 @@ const WidgetFactory * getWidgetFactory(const char * name)
   return nullptr;
 }
 
-Widget * loadWidget(const char * name, Window * parent, const rect_t & rect, Widget::PersistentData * persistentData)
+Widget * loadWidget(const char * name, FormGroup * parent, const rect_t & rect, Widget::PersistentData * persistentData)
 {
   const WidgetFactory * factory = getWidgetFactory(name);
   if (factory) {

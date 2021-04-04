@@ -21,6 +21,7 @@
 #include <algorithm>
 #include "screen_setup.h"
 #include "opentx.h"
+#include "view_main.h"
 
 #define SET_DIRTY()     storageDirty(EE_MODEL)
 
@@ -133,6 +134,108 @@ ScreenSetupPage::ScreenSetupPage(ScreenMenu * menu, uint8_t pageIndex):
   setTitle(title);
 }
 
+class SetupWidgetsPageSlot: public Button
+{
+  public:
+    SetupWidgetsPageSlot(FormGroup * parent, const rect_t & rect, uint8_t pageIndex, uint8_t slotIndex):
+      Button(parent, rect),
+      pageIndex(pageIndex),
+      slotIndex(slotIndex)
+    {
+      setPressHandler([=](){
+          Menu * menu = new Menu(this);
+          menu->addLine("Select a widget", [=]() {
+            Menu * menu = new Menu(this);
+            for (auto factory: getRegisteredWidgets()) {
+              menu->addLine(factory->getName(), [=]() {
+                if (widget) {
+                  widget->deleteLater();
+                }
+                // widget = factory->create(this, {1, 1, width() - 2, height() - 2}, &g_model.screenData[pageIndex].layoutData.zones[slotIndex].widgetData, true);
+                customScreens[pageIndex]->createWidget(slotIndex, factory);
+                return 0;
+              });
+            }
+            return 0;
+          });
+          if (widget /*g_model.screenData[pageIndex].layoutData.zones[slotIndex].widgetName[0]*/) {
+            menu->addLine(STR_DELETE, [=]() {
+              widget->deleteLater();
+              widget = nullptr;
+              return 0;
+            });
+          }
+          return 0;
+      });
+    }
+
+    void paint(BitmapBuffer * dc) override
+    {
+      if (hasFocus()) {
+        dc->drawSolidRect(0, 0, width(), height(), 1, DEFAULT_COLOR);
+      }
+      else {
+        dc->drawRect(0, 0, width(), height(), 1, DOTTED, DEFAULT_COLOR);
+      }
+    }
+
+  protected:
+    uint8_t pageIndex;
+    uint8_t slotIndex;
+    Window * widget = nullptr;
+};
+
+class SetupWidgetsPage: public FormWindow
+{
+  public:
+    SetupWidgetsPage(uint8_t pageIndex):
+      FormWindow(MainWindow::instance(), {0, 0, LCD_W, LCD_H}, OPAQUE | FORM_FORWARD_FOCUS),
+      pageIndex(pageIndex)
+    {
+      Layer::push(this);
+      clearFocus();
+
+      auto & customScreen = customScreens[pageIndex];
+
+      for (unsigned i = 0; i < customScreen->getZonesCount(); i++) {
+        auto rect = customScreen->getZone(i);
+        new SetupWidgetsPageSlot(this, {rect.x - 1, rect.y - 1, rect.w + 2, rect.h + 2}, pageIndex, i);
+      }
+    }
+
+    void deleteLater(bool detach = true, bool trash = true) override
+    {
+      Layer::pop(this);
+
+#if defined(HARDWARE_TOUCH)
+      Keyboard::hide();
+#endif
+
+      Window::deleteLater(detach, trash);
+    }
+
+#if defined(HARDWARE_KEYS)
+    void onEvent(event_t event) override
+    {
+      TRACE_WINDOWS("%s received event 0x%X", getWindowDebugString().c_str(), event);
+
+      if (event == EVT_KEY_LONG(KEY_EXIT) || event == EVT_KEY_BREAK(KEY_EXIT)) {
+        killEvents(event);
+        deleteLater();
+        SET_DIRTY();
+      }
+    }
+#endif
+
+    void paint(BitmapBuffer * dc) override
+    {
+      dc->clear(DEFAULT_BGCOLOR);
+    }
+
+  protected:
+    uint8_t pageIndex;
+};
+
 void ScreenSetupPage::build(FormWindow * window)
 {
   FormGridLayout grid;
@@ -154,10 +257,7 @@ void ScreenSetupPage::build(FormWindow * window)
   // Setup widgets button...
   setupWidgetsButton = new TextButton(window, grid.getFieldSlot(), STR_SETUP_WIDGETS);
   setupWidgetsButton->setPressHandler([=]() {
-//      auto setupWidgetsPage = new SetupWidgetsPage();
-//      setupWidgetsPage->setCloseHandler([=]() {
-//          setupWidgetsButton->setFocus();
-//      });
+      new SetupWidgetsPage(pageIndex);
       return 0;
   });
   grid.nextLine();

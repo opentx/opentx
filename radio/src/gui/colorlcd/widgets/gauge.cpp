@@ -23,7 +23,7 @@
 class GaugeWidget: public Widget
 {
   public:
-    GaugeWidget(const WidgetFactory * factory, Window * parent, const rect_t & rect, Widget::PersistentData * persistentData):
+    GaugeWidget(const WidgetFactory * factory, FormGroup * parent, const rect_t & rect, Widget::PersistentData * persistentData):
       Widget(factory, parent, rect, persistentData)
     {
     }
@@ -55,14 +55,25 @@ class GaugeWidget: public Widget
       dc->drawSolidFilledRect(0, 16, width(), 16, FOCUS_COLOR);
       dc->drawNumber(0+width()/2, 17, percent, FONT(XS) | CUSTOM_COLOR | CENTERED, 0, nullptr, "%");
       dc->invertRect(w, 16, width() - w, 16, CUSTOM_COLOR);
+
+      if (hasFocus()) {
+        dc->clear(HIGHLIGHT_COLOR);
+      }
     }
 
     void checkEvents() override
     {
+      Widget::checkEvents();
+
       auto newValue = getValue(persistentData->options[0].value.unsignedValue);
       if (lastValue != newValue) {
         lastValue = newValue;
         invalidate();
+      }
+
+      if (!hasFocus() && g_tmr10ms < 100) {
+        TRACE("ICI");
+        setFocus(SET_FOCUS_FIRST);
       }
     }
 

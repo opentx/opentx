@@ -130,6 +130,4 @@ void loadDefaultLayout();
 // intended for existing models
 void loadCustomScreens();
 
-void drawTrimsAndSliders(Layout::PersistentData * persistentData);
-
 std::list<const LayoutFactory *> & getRegisteredLayouts();

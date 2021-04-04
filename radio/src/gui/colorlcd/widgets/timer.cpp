@@ -23,7 +23,7 @@
 class TimerWidget: public Widget
 {
   public:
-    TimerWidget(const WidgetFactory * factory, Window * parent, const rect_t & rect, Widget::PersistentData * persistentData):
+    TimerWidget(const WidgetFactory * factory, FormGroup * parent, const rect_t & rect, Widget::PersistentData * persistentData):
       Widget(factory, parent, rect, persistentData)
     {
     }
@@ -88,6 +88,7 @@ class TimerWidget: public Widget
 
     void checkEvents() override
     {
+      Widget::checkEvents();
       auto newValue = timersStates[persistentData->options[0].value.unsignedValue].val;
       if (lastValue != newValue) {
         lastValue = newValue;

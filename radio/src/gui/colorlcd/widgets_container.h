@@ -29,29 +29,14 @@ class WidgetsContainerInterface
 {
   public:
     virtual unsigned int getZonesCount() const = 0;
-
     virtual rect_t getZone(unsigned int index) const = 0;
-
-    inline Widget * getWidget(unsigned int index)
-    {
-      return widgets[index];
-    }
-
-    inline void setWidget(unsigned int index, Widget * widget)
-    {
-      widgets[index] = widget;
-    }
-
     virtual void createWidget(unsigned int index, const WidgetFactory * factory) = 0;
-
-  protected:
-    Widget ** widgets;
 };
 
 #define WIDGET_NAME_LEN   10
 
 template<int N, int O>
-class WidgetsContainer: public Window, public WidgetsContainerInterface
+class WidgetsContainer: public FormGroup, public WidgetsContainerInterface
 {
   public:
     struct ZonePersistentData {
@@ -65,7 +50,7 @@ class WidgetsContainer: public Window, public WidgetsContainerInterface
     };
 
     WidgetsContainer(const rect_t & rect, PersistentData * persistentData):
-      Window(nullptr, rect),
+      FormGroup(nullptr, rect, FORM_FORWARD_FOCUS),
       persistentData(persistentData)
     {
     }
@@ -96,7 +81,7 @@ class WidgetsContainer: public Window, public WidgetsContainerInterface
           char name[WIDGET_NAME_LEN + 1];
           memset(name, 0, sizeof(name));
           strncpy(name, persistentData->zones[i].widgetName, WIDGET_NAME_LEN);
-          // TODO widgets[i] = loadWidget(name, getZone(i), &persistentData->zones[i].widgetData);
+          widgets[i] = loadWidget(name, this, getZone(i), &persistentData->zones[i].widgetData);
         }
         else {
           widgets[i] = nullptr;
@@ -115,11 +100,9 @@ class WidgetsContainer: public Window, public WidgetsContainerInterface
 
     virtual void background()
     {
-      if (widgets) {
-        for (int i = 0; i < N; i++) {
-          if (widgets[i]) {
-            widgets[i]->background();
-          }
+      for (int i = 0; i < N; i++) {
+        if (widgets[i]) {
+          widgets[i]->background();
         }
       }
     }

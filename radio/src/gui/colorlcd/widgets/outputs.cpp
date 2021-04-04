@@ -28,7 +28,7 @@
 class OutputsWidget: public Widget
 {
   public:
-    OutputsWidget(const WidgetFactory * factory, Window * parent, const rect_t & rect, Widget::PersistentData * persistentData):
+    OutputsWidget(const WidgetFactory * factory, FormGroup * parent, const rect_t & rect, Widget::PersistentData * persistentData):
       Widget(factory, parent, rect, persistentData)
     {
     }
@@ -99,6 +99,7 @@ class OutputsWidget: public Widget
 
     void checkEvents() override
     {
+      Widget::checkEvents();
       invalidate();
     }
 
