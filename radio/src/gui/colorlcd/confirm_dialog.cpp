@@ -50,18 +50,3 @@ ConfirmDialog::ConfirmDialog(Window * parent, const char * title, const char * m
 
   noButton->setFocus(SET_FOCUS_DEFAULT);
 }
-
-// #if defined(HARDWARE_KEYS)
-// void ConfirmDialog::onEvent(event_t event)
-// {
-//   TRACE_WINDOWS("%s received event 0x%X", getWindowDebugString().c_str(), event);
-
-//   if (event == EVT_KEY_BREAK(KEY_ENTER)) {
-//     deleteLater(); // this restore the focus (it can be changed then in confirmHandler)
-//     confirmHandler();
-//   }
-//   else if (event == EVT_KEY_BREAK(KEY_EXIT)) {
-//     deleteLater();
-//   }
-// }
-// #endif
