@@ -378,7 +378,7 @@ enum Analogs {
   SLIDER_LAST = SLIDER_FIRST + NUM_SLIDERS - 1,
   TX_VOLTAGE,
 #if defined(PCBX12S)
-  MOUSE1, // TODO why after voltage?
+  MOUSE1, // after voltage because previous ones come from SPI on X12S
   MOUSE2,
 #endif
   NUM_ANALOGS
