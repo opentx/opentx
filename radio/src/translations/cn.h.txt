@@ -1126,7 +1126,6 @@
 #define TR_USER_INTERFACE              "用户界面"
 #define TR_THEME                       "主题"
 #define TR_SETUP                       "设置"
-#define TR_MAINVIEWX                   "Main view X"
 #define TR_LAYOUT                      "布局"
 #define TR_ADD_MAIN_VIEW               "添加主视图"
 #define TR_BACKGROUND_COLOR            "背景颜色"

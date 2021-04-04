@@ -1254,7 +1254,6 @@
 #define TR_USER_INTERFACE      "Interfaccia utente"
 #define TR_THEME               "Tema"
 #define TR_SETUP               "Imposta"
-#define TR_MAINVIEWX           "Vista princ. X"
 #define TR_LAYOUT              "Layout"
 #define TR_ADD_MAIN_VIEW         "Aggiungi vista princ."
 #define TR_BACKGROUND_COLOR    "Colore background"

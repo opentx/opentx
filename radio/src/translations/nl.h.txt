@@ -1240,7 +1240,6 @@
 #define TR_USER_INTERFACE      "User interface"
 #define TR_THEME               "Theme"
 #define TR_SETUP               "Setup"
-#define TR_MAINVIEWX           "Main view X"
 #define TR_LAYOUT              "Layout"
 #define TR_ADD_MAIN_VIEW         "Add main view"
 #define TR_BACKGROUND_COLOR    "Background color"

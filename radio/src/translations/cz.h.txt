@@ -1226,7 +1226,6 @@
 #define TR_USER_INTERFACE              "Uživatelké rozhraní"
 #define TR_THEME                       "Téma"
 #define TR_SETUP                       "Nastavení"
-#define TR_MAINVIEWX                   "Hlavní panel X"
 #define TR_LAYOUT                      "Rozložení"
 #define TR_ADD_MAIN_VIEW                 "Přidat hlavní panel"
 #define TR_BACKGROUND_COLOR            "Barva pozadí"
