@@ -164,7 +164,6 @@ TASK_FUNCTION(mixerTask)
 
       doMixerCalculations();
 
-      // TODO: fix runMask
 #if defined(PCBSKY9X)
       sendSynchronousPulses(1 << EXTERNAL_MODULE);
 #else
