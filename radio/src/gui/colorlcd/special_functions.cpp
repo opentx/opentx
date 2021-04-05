@@ -82,11 +82,20 @@ class SpecialFunctionEditPage : public Page {
           grid.nextLine();
           break;
 
-        case FUNC_TRAINER:
-          new StaticText(specialFunctionOneWindow, grid.getLabelSlot(), STR_TIMER);
-          new SourceChoice(specialFunctionOneWindow, grid.getFieldSlot(), 0, 4, GET_SET_DEFAULT(CFN_TIMER_INDEX(cfn)));
+        case FUNC_TRAINER: {
+          new StaticText(specialFunctionOneWindow, grid.getLabelSlot(), STR_VALUE);
+          auto choice = new Choice(specialFunctionOneWindow, grid.getFieldSlot(), 0,NUM_STICKS + 1,GET_SET_DEFAULT(CFN_PARAM(cfn)));
+          choice->setTextHandler([=](int32_t value) {
+              if (value == 0)
+                return std::string(STR_STICKS);
+              else if (value == NUM_STICKS + 1)
+                return std::string(STR_CHANS);
+              else
+                return TEXT_AT_INDEX(STR_VSRCRAW, value);;
+          });
           grid.nextLine();
           break;
+        }
 
         case FUNC_RESET:
           if (CFN_PARAM(cfn) < FUNC_RESET_PARAM_FIRST_TELEM) {
