@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>675</width>
+    <width>874</width>
     <height>33</height>
    </rect>
   </property>
@@ -33,7 +33,7 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QLineEdit" name="name">
+    <widget class="AutoLineEdit" name="name">
      <property name="minimumSize">
       <size>
        <width>80</width>
@@ -43,7 +43,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QTimeEdit" name="value">
+    <widget class="AutoTimeEdit" name="value">
      <property name="accelerated">
       <bool>true</bool>
      </property>
@@ -56,7 +56,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QComboBox" name="mode"/>
+    <widget class="AutoComboBox" name="mode"/>
    </item>
    <item>
     <widget class="QLabel" name="countdownBeepLabel">
@@ -69,10 +69,17 @@
     <widget class="AutoComboBox" name="countdownBeep"/>
    </item>
    <item>
+    <widget class="QLabel" name="countdownStartLabel">
+     <property name="text">
+      <string>Start</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <widget class="AutoComboBox" name="countdownStart"/>
    </item>
    <item>
-    <widget class="QCheckBox" name="minuteBeep">
+    <widget class="AutoCheckBox" name="minuteBeep">
      <property name="text">
       <string>Minute Call</string>
      </property>
@@ -108,6 +115,21 @@
    <class>AutoComboBox</class>
    <extends>QComboBox</extends>
    <header>autocombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>AutoLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>autolineedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>AutoCheckBox</class>
+   <extends>QCheckBox</extends>
+   <header>autocheckbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>AutoTimeEdit</class>
+   <extends>QTimeEdit</extends>
+   <header>autotimeedit.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

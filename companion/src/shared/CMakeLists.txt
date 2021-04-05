@@ -16,6 +16,7 @@ set(shared_HDRS
   genericpanel.h
   hexspinbox.h
   autoprecisioncombobox.h
+  autotimeedit.h
 )
 
 qt5_wrap_cpp(shared_SRCS ${shared_HDRS})

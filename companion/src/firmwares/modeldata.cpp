@@ -27,31 +27,6 @@
 #include "helpers.h"
 #include "adjustmentreference.h"
 
-/*
- * TimerData
- */
-
-void TimerData::convert(RadioDataConversionState & cstate)
-{
-  cstate.setComponent(tr("TMR"), 1);
-  cstate.setSubComp(tr("Timer %1").arg(cstate.subCompIdx + 1));
-  mode.convert(cstate);
-}
-
-bool TimerData::isEmpty()
-{
-  return (mode == RawSwitch(SWITCH_TYPE_TIMER_MODE, 0) && name[0] == '\0' && minuteBeep == 0 && countdownBeep == COUNTDOWN_SILENT && val == 0 && persistent == 0 /*&& pvalue == 0*/);
-}
-
-QString TimerData::nameToString(int index) const
-{
-  return RadioData::getElementName(tr("TMR", "as in Timer"), index + 1, name);
-}
-
-/*
- * ModelData
- */
-
 ModelData::ModelData()
 {
   clear();
@@ -1381,7 +1356,6 @@ void ModelData::sortMixes()
 
 void ModelData::updateResetParam(CustomFunctionData * cfd)
 {
-
   if (cfd->func != FuncReset)
     return;
 
@@ -1392,6 +1366,11 @@ void ModelData::updateResetParam(CustomFunctionData * cfd)
 
   switch (updRefInfo.type)
   {
+    case REF_UPD_TYPE_TIMER:
+      if (cfd->param < 0 || cfd->param > 2)
+        return;
+      idxAdj = -2;   //  reverse earlier offset required for rawsource
+      break;
     case REF_UPD_TYPE_SENSOR:
       idxAdj = 5/*3 Timers + Flight + Telemetery*/ + firmware->getCapability(RotaryEncoders);
       if (cfd->param < idxAdj || cfd->param > (idxAdj + firmware->getCapability(Sensors)))
