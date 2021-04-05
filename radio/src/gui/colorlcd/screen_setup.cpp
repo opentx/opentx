@@ -22,6 +22,7 @@
 #include "screen_setup.h"
 #include "opentx.h"
 #include "view_main.h"
+#include "widget_settings.h"
 
 #define SET_DIRTY()     storageDirty(EE_MODEL)
 
@@ -158,7 +159,7 @@ class SetupWidgetsPageSlot: public Button
       widget = screen->getWidget(slotIndex);
       setPressHandler([=](){
           Menu * menu = new Menu(this);
-          menu->addLine("Select a widget", [=]() {
+          menu->addLine(TR_SELECT_WIDGET, [=]() {
             Menu * menu = new Menu(this);
             for (auto factory: getRegisteredWidgets()) {
               menu->addLine(factory->getName(), [=]() {
@@ -170,7 +171,15 @@ class SetupWidgetsPageSlot: public Button
             return 0;
           });
           if (widget) {
-            menu->addLine(STR_DELETE, [=]() {
+            menu->addLine(TR_WIDGET_SETTINGS, [=]() {
+                new WidgetSettings(this, widget, [=]() {
+                  TRACE("WidgetSettings confirmed");
+                  deleteLater();
+                  return;
+                });
+            });
+
+            menu->addLine(STR_REMOVE_WIDGET, [=]() {
               widget->deleteLater();
               widget = nullptr;
               return 0;

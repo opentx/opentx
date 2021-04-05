@@ -71,6 +71,11 @@ class Widget : public FormField
       return &persistentData->options[index].value;
     }
 
+    inline void setOptionValue(unsigned int index, const ZoneOptionValue& value)
+    {
+      persistentData->options[index].value = value;
+    }
+
     inline PersistentData * getPersistentData()
     {
       return persistentData;
