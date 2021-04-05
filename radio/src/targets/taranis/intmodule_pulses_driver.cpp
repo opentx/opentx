@@ -42,14 +42,6 @@ void intmoduleSendNextFrame()
 #if defined(PXX1)
     case PROTOCOL_CHANNELS_PXX1_PULSES:
     {
-      // uint32_t last = intmodulePulsesData.pxx.getLast();
-      // if (heartbeatCapture.valid) {
-      //   if (getTmr2MHz() - heartbeatCapture.timestamp > HEARBEAT_OFFSET)
-      //     last -= 21;
-      //   else
-      //     last += 19;
-      //   intmodulePulsesData.pxx.setLast(last);
-      // }
       if (INTMODULE_DMA_STREAM->CR & DMA_SxCR_EN)
         return;
 

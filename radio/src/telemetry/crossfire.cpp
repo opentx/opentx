@@ -203,7 +203,6 @@ void processCrossfireTelemetryFrame()
       }
       break;
 
-
 #if defined(LUA)
     default:
       if (luaInputTelemetryFifo && luaInputTelemetryFifo->hasSpace(telemetryRxBufferCount-2) ) {

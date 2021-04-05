@@ -378,23 +378,19 @@ Fifo<uint8_t, LUA_TELEMETRY_INPUT_FIFO_SIZE> * luaInputTelemetryFifo = NULL;
 #endif
 
 #if defined(HARDWARE_INTERNAL_MODULE)
-
 static ModuleSyncStatus moduleSyncStatus[NUM_MODULES];
 
 ModuleSyncStatus &getModuleSyncStatus(uint8_t moduleIdx)
 {
   return moduleSyncStatus[moduleIdx];
 }
-
 #else
-
 static ModuleSyncStatus moduleSyncStatus;
 
 ModuleSyncStatus &getModuleSyncStatus(uint8_t moduleIdx)
 {
   return moduleSyncStatus;
 }
-
 #endif
 
 ModuleSyncStatus::ModuleSyncStatus()

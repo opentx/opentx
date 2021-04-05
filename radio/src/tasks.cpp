@@ -67,7 +67,6 @@ bool isForcePowerOffRequested()
 bool isModuleSynchronous(uint8_t moduleIdx)
 {
   switch(moduleState[moduleIdx].protocol) {
-
     case PROTOCOL_CHANNELS_PXX2_HIGHSPEED:
     case PROTOCOL_CHANNELS_PXX2_LOWSPEED:
     case PROTOCOL_CHANNELS_CROSSFIRE:
@@ -108,8 +107,6 @@ void sendSynchronousPulses(uint8_t runMask)
       extmoduleSendNextFrame();
   }
 }
-
-//#define DEBUG_MIXER_SCHEDULER
 
 uint32_t nextMixerTime[NUM_MODULES];
 
@@ -181,7 +178,6 @@ TASK_FUNCTION(mixerTask)
       RTOS_UNLOCK_MUTEX(mixerMutex);
       DEBUG_TIMER_STOP(debugTimerMixer);
 
-  
 #if defined(STM32) && !defined(SIMU)
       if (getSelectedUsbMode() == USB_JOYSTICK_MODE) {
         usbJoystickUpdate();

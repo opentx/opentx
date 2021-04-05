@@ -248,9 +248,6 @@ static void processMultiSyncPacket(const uint8_t * data, uint8_t module)
   uint16_t refreshRate = data[0] << 8 | data[1];
   int16_t  inputLag    = data[2] << 8 | data[3];
 
-  // if (inputLag > refreshRate/2)
-  //   inputLag -= refreshRate;
-
   status.update(refreshRate, inputLag);
 #if defined(DEBUG)
   serialPrint("MP ADJ: R %d, L %04d", refreshRate, inputLag);

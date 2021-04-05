@@ -58,32 +58,32 @@ COMMON_OPTIONS+=${EXTRA_OPTIONS}
 mkdir build || true
 cd build
 
-#if [[ " SKY9X ARM9X ALL " =~ \ ${FLAVOR}\  ]] ; then
-#  # OpenTX on Sky9x
-#  rm -rf ./*
-#  cmake "${COMMON_OPTIONS}" -DPCB=SKY9X -DHELI=YES DLUA=YES -DTELEMETRY=FRSKY -DPPM_LIMITS_SYMETRICAL=YES -DVARIO=YES -DAUTOSWITCH=YES -DAUTOSOURCE=YES -DAUDIO=YES -DGPS=YES -DPPM_CENTER_ADJUSTABLE=YES -DFLIGHT_MODES=YES -DOVERRIDE_CHANNEL_FUNCTION=YES -DFRSKY_STICKS=YES -DGVARS=YES "${SRCDIR}"
-#  make -j"${CORES}" ${FIRMARE_TARGET}
-#  make -j"${CORES}" libsimulator
-#  make -j"${CORES}" tests-radio
-#fi
-#
-#if [[ " AR9X ARM9X ALL " =~ \ ${FLAVOR}\  ]] ; then
-#  # OpenTX on AR9X
-#  rm -rf ./*
-#  cmake "${COMMON_OPTIONS}" -DPCB=AR9X -DHELI=YES -DGVARS=YES "${SRCDIR}"
-#  make -j"${CORES}" ${FIRMARE_TARGET}
-#  make -j"${CORES}" libsimulator
-#  make -j"${CORES}" tests-radio
-#fi
-#
-#if [[ " 9XRPRO ARM9X ALL " =~ \ ${FLAVOR}\  ]] ; then
-#  # OpenTX on Sky9x
-#  rm -rf ./*
-#  cmake "${COMMON_OPTIONS}" -DPCB=9XRPRO -DHELI=YES -DGVARS=YES "${SRCDIR}"
-#  make -j"${CORES}" ${FIRMARE_TARGET}
-#  make -j"${CORES}" libsimulator
-#  make -j"${CORES}" tests-radio
-#fi
+if [[ " SKY9X ARM9X ALL " =~ \ ${FLAVOR}\  ]] ; then
+  # OpenTX on Sky9x
+  rm -rf ./*
+  cmake "${COMMON_OPTIONS}" -DPCB=SKY9X -DHELI=YES DLUA=YES -DTELEMETRY=FRSKY -DPPM_LIMITS_SYMETRICAL=YES -DVARIO=YES -DAUTOSWITCH=YES -DAUTOSOURCE=YES -DAUDIO=YES -DGPS=YES -DPPM_CENTER_ADJUSTABLE=YES -DFLIGHT_MODES=YES -DOVERRIDE_CHANNEL_FUNCTION=YES -DFRSKY_STICKS=YES -DGVARS=YES "${SRCDIR}"
+  make -j"${CORES}" ${FIRMARE_TARGET}
+  make -j"${CORES}" libsimulator
+  make -j"${CORES}" tests-radio
+fi
+
+if [[ " AR9X ARM9X ALL " =~ \ ${FLAVOR}\  ]] ; then
+  # OpenTX on AR9X
+  rm -rf ./*
+  cmake "${COMMON_OPTIONS}" -DPCB=AR9X -DHELI=YES -DGVARS=YES "${SRCDIR}"
+  make -j"${CORES}" ${FIRMARE_TARGET}
+  make -j"${CORES}" libsimulator
+  make -j"${CORES}" tests-radio
+fi
+
+if [[ " 9XRPRO ARM9X ALL " =~ \ ${FLAVOR}\  ]] ; then
+  # OpenTX on Sky9x
+  rm -rf ./*
+  cmake "${COMMON_OPTIONS}" -DPCB=9XRPRO -DHELI=YES -DGVARS=YES "${SRCDIR}"
+  make -j"${CORES}" ${FIRMARE_TARGET}
+  make -j"${CORES}" libsimulator
+  make -j"${CORES}" tests-radio
+fi
 
 if [[ " X9LITE ALL " =~ \ ${FLAVOR}\  ]] ; then
   # OpenTX on X9LITE
