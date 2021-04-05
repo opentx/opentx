@@ -245,3 +245,35 @@ void Layout::decorate(bool topbar, bool sliders, bool trims, bool flightMode)
     );
   }
 }
+
+rect_t Layout::getMainZone(rect_t zone) const
+{
+  bool hasTopbar  = getOptionValue(OPTION_TOPBAR)->boolValue;
+  bool hasFM      = getOptionValue(OPTION_FM)->boolValue;
+  bool hasSliders = getOptionValue(OPTION_SLIDERS)->boolValue;
+  bool hasTrims   = getOptionValue(OPTION_TRIMS)->boolValue;
+
+  if (hasTopbar) {
+    zone.y += MENU_HEADER_HEIGHT;
+    zone.h -= MENU_HEADER_HEIGHT;
+  }
+
+  if (hasFM || hasTrims) {
+    zone.h -= TRIM_SQUARE_SIZE;
+  }
+
+  if (hasSliders) {
+#if NUM_SLIDERS + NUM_POTS > 2
+    zone.h -= TRIM_SQUARE_SIZE;
+#endif
+    zone.w -= 2 * TRIM_SQUARE_SIZE;
+    zone.x += TRIM_SQUARE_SIZE;
+  }
+
+  if (hasTrims) {
+    zone.w -= 2 * TRIM_SQUARE_SIZE;
+    zone.x += TRIM_SQUARE_SIZE;
+  }
+
+  return zone;
+}    

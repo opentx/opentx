@@ -74,33 +74,6 @@ class Layout1x1: public Layout
       return 1;
     }
 
-    rect_t getMainZone(rect_t zone) const
-    {
-      if (HAS_TOPBAR()) {
-        zone.y += MENU_HEADER_HEIGHT;
-        zone.h -= MENU_HEADER_HEIGHT;
-      }
-
-      if (HAS_FM() || HAS_TRIMS()) {
-        zone.h -= TRIM_SQUARE_SIZE;
-      }
-
-      if (HAS_SLIDERS()) {
-#if NUM_SLIDERS + NUM_POTS > 2
-        zone.h -= TRIM_SQUARE_SIZE;
-#endif
-        zone.w -= 2 * TRIM_SQUARE_SIZE;
-        zone.x += TRIM_SQUARE_SIZE;
-      }
-
-      if (HAS_TRIMS()) {
-        zone.w -= 2 * TRIM_SQUARE_SIZE;
-        zone.x += TRIM_SQUARE_SIZE;
-      }
-
-      return zone;
-    }
-
     rect_t getZone(unsigned int index) const override
     {
       rect_t zone = getMainZone({border, border, LCD_W - 2 * border, LCD_H - 2 * border});
