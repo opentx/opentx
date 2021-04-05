@@ -356,10 +356,11 @@ bool setupPulsesExternalModule(uint8_t protocol)
       setupPulsesSbus();
 #if defined(PCBSKY9X)
       scheduleNextMixerCalculation(EXTERNAL_MODULE, SBUS_PERIOD);
-#endif
+#else
       // SBUS_PERIOD is not a constant! It can be set from UI
       mixerSchedulerSetPeriod(EXTERNAL_MODULE, SBUS_PERIOD);
       return true;
+#endif
 #endif
 
 #if defined(DSM2)

@@ -42,7 +42,7 @@ uint16_t getMixerSchedulerPeriod()
     return mixerSchedules[INTERNAL_MODULE].period;
   }
 #endif
-#if 1 //defined(HARDWARE_EXTERNAL_MODULE)
+#if defined(HARDWARE_EXTERNAL_MODULE)
   if (mixerSchedules[EXTERNAL_MODULE].period) {
     return mixerSchedules[EXTERNAL_MODULE].period;
   }
@@ -58,10 +58,10 @@ void mixerSchedulerInit()
 
 void mixerSchedulerSetPeriod(uint8_t moduleIdx, uint16_t periodUs)
 {
-  if ((periodUs > 0) && (periodUs < MIN_REFRESH_RATE)) {
+  if (periodUs > 0 && periodUs < MIN_REFRESH_RATE) {
     periodUs = MIN_REFRESH_RATE;
   }
-  else if ((periodUs > 0) && (periodUs > MAX_REFRESH_RATE)) {
+  else if (periodUs > 0 && periodUs > MAX_REFRESH_RATE) {
     periodUs = MAX_REFRESH_RATE;
   }
 
