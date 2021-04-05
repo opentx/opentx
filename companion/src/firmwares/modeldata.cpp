@@ -653,29 +653,43 @@ int ModelData::updateReference()
     LogicalSwitchData *lsd = &logicalSw[i];
     if (!lsd->isEmpty()) {
       bool clearlsd = false;
+      int oldval1;
+      int oldval2;
       CSFunctionFamily family = lsd->getFunctionFamily();
       switch(family) {
         case LS_FAMILY_VOFS:
-          updateSourceIntRef(lsd->val1);
-          if (lsd->val1 == 0)
-            clearlsd = true;
+          if (lsd->val1 != 0) {
+            updateSourceIntRef(lsd->val1);
+            if (lsd->val1 == 0)
+              clearlsd = true;
+          }
           break;
         case LS_FAMILY_STICKY:
         case LS_FAMILY_VBOOL:
-          updateSwitchIntRef(lsd->val1);
-          updateSwitchIntRef(lsd->val2);
-          if (lsd->val1 == 0 && lsd->val2 == 0)
+          oldval1 = lsd->val1;
+          oldval2 = lsd->val2;
+          if (lsd->val1 != 0)
+            updateSwitchIntRef(lsd->val1);
+          if (lsd->val2 != 0)
+            updateSwitchIntRef(lsd->val2);
+          if (lsd->val1 == 0 && lsd->val2 == 0 && ((lsd->val1 != oldval1 && oldval2 == 0) || (lsd->val2 != oldval2 && oldval1 == 0)))
             clearlsd = true;
           break;
         case LS_FAMILY_EDGE:
-          updateSwitchIntRef(lsd->val1);
-          if (lsd->val1 == 0)
-            clearlsd = true;
+          if (lsd->val1 != 0) {
+            updateSwitchIntRef(lsd->val1);
+            if (lsd->val1 == 0)
+              clearlsd = true;
+          }
           break;
         case LS_FAMILY_VCOMP:
-          updateSourceIntRef(lsd->val1);
-          updateSourceIntRef(lsd->val2);
-          if (lsd->val1 == 0 && lsd->val2 == 0)
+          oldval1 = lsd->val1;
+          oldval2 = lsd->val2;
+          if (lsd->val1 != 0)
+            updateSourceIntRef(lsd->val1);
+          if (lsd->val2 != 0)
+            updateSourceIntRef(lsd->val2);
+          if (lsd->val1 == 0 && lsd->val2 == 0 && ((lsd->val1 != oldval1 && oldval2 == 0) || (lsd->val2 != oldval2 && oldval1 == 0)))
             clearlsd = true;
           break;
         default:
@@ -685,7 +699,7 @@ int ModelData::updateReference()
         lsd->clear();
         appendUpdateReferenceParams(REF_UPD_TYPE_LOGICAL_SWITCH, REF_UPD_ACT_CLEAR, i);
       }
-      else {
+      else if (lsd->andsw != 0) {
         updateSwitchIntRef(lsd->andsw);
       }
     }
