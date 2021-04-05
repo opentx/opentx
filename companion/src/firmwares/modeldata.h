@@ -294,6 +294,14 @@ class ModelData {
     int thrTraceSrcCount() const;
     bool isThrTraceSrcAvailable(const GeneralSettings * generalSettings, const int index) const;
 
+    void limitsClear(const int index);
+    void limitsClearAll();
+    void limitsDelete(const int index);
+    void limitsGet(const int index, QByteArray & data);
+    void limitsInsert(const int index);
+    void limitsMove(const int index, const int offset);
+    void limitsSet(const int index, const QByteArray & data);
+
   protected:
     void removeGlobalVar(int & var);
 

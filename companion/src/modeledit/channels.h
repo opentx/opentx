@@ -91,7 +91,6 @@ class ChannelsPanel : public ModelPanel
     bool insertAllowed() const;
     bool moveDownAllowed() const;
     bool moveUpAllowed() const;
-    void swapData(int idx1, int idx2);
     QLineEdit *name[CPN_MAX_CHNOUT];
     LimitsGroup *chnOffset[CPN_MAX_CHNOUT];
     LimitsGroup *chnMin[CPN_MAX_CHNOUT];

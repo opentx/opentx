@@ -312,10 +312,9 @@ void ChannelsPanel::cmPaste()
 {
   QByteArray data;
   if (hasClipboardData(&data)) {
-    memcpy(&model->limitData[selectedIndex], data.constData(), sizeof(LimitData));
+    model->limitsSet(selectedIndex, data);
     updateLine(selectedIndex);
     updateItemModels();
-    emit modified();
   }
 }
 
@@ -324,22 +323,18 @@ void ChannelsPanel::cmDelete()
   if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Delete Channel. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
     return;
 
-  memmove(&model->limitData[selectedIndex], &model->limitData[selectedIndex + 1], (CPN_MAX_CHNOUT - (selectedIndex + 1)) * sizeof(LimitData));
-  model->limitData[chnCapability - 1].clear();
-  model->updateAllReferences(ModelData::REF_UPD_TYPE_CHANNEL, ModelData::REF_UPD_ACT_SHIFT, selectedIndex, 0, -1);
-
+  model->limitsDelete(selectedIndex);
   for (int i = selectedIndex; i < chnCapability; i++) {
     updateLine(i);
   }
 
   updateItemModels();
-  emit modified();
 }
 
 void ChannelsPanel::cmCopy()
 {
   QByteArray data;
-  data.append((char*)&model->limitData[selectedIndex], sizeof(LimitData));
+  model->limitsGet(selectedIndex, data);
   QMimeData *mimeData = new QMimeData;
   mimeData->setData(MIMETYPE_CHANNEL, data);
   QApplication::clipboard()->setMimeData(mimeData,QClipboard::Clipboard);
@@ -405,12 +400,18 @@ bool ChannelsPanel::moveUpAllowed() const
 
 void ChannelsPanel::cmMoveUp()
 {
-  swapData(selectedIndex, selectedIndex - 1);
+  model->limitsMove(selectedIndex, -1);
+  updateLine(selectedIndex - 1);
+  updateLine(selectedIndex);
+  updateItemModels();
 }
 
 void ChannelsPanel::cmMoveDown()
 {
-  swapData(selectedIndex, selectedIndex + 1);
+  model->limitsMove(selectedIndex, 1);
+  updateLine(selectedIndex);
+  updateLine(selectedIndex + 1);
+  updateItemModels();
 }
 
 void ChannelsPanel::cmClear(bool prompt)
@@ -420,11 +421,9 @@ void ChannelsPanel::cmClear(bool prompt)
       return;
   }
 
-  model->limitData[selectedIndex].clear();
-  model->updateAllReferences(ModelData::REF_UPD_TYPE_CHANNEL, ModelData::REF_UPD_ACT_CLEAR, selectedIndex);
+  model->limitsClear(selectedIndex);
   updateLine(selectedIndex);
   updateItemModels();
-  emit modified();
 }
 
 void ChannelsPanel::cmClearAll()
@@ -432,39 +431,19 @@ void ChannelsPanel::cmClearAll()
   if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Clear all Channels. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
     return;
 
-  for (int i = 0; i < chnCapability; i++) {
-    model->limitData[i].clear();
-    model->updateAllReferences(ModelData::REF_UPD_TYPE_CHANNEL, ModelData::REF_UPD_ACT_CLEAR, i);
-    updateLine(i);
-  }
+  model->limitsClearAll();
+  update();
   updateItemModels();
-  emit modified();
 }
 
 void ChannelsPanel::cmInsert()
 {
-  memmove(&model->limitData[selectedIndex + 1], &model->limitData[selectedIndex], (CPN_MAX_CHNOUT - (selectedIndex + 1)) * sizeof(LimitData));
-  model->limitData[selectedIndex].clear();
-  model->updateAllReferences(ModelData::REF_UPD_TYPE_CHANNEL, ModelData::REF_UPD_ACT_SHIFT, selectedIndex, 0, 1);
-  update();
-  updateItemModels();
-  emit modified();
-}
-
-void ChannelsPanel::swapData(int idx1, int idx2)
-{
-  if ((idx1 != idx2) && (!model->limitData[idx1].isEmpty() || !model->limitData[idx2].isEmpty())) {
-    LimitData chntmp = model->limitData[idx2];
-    LimitData *chn1 = &model->limitData[idx1];
-    LimitData *chn2 = &model->limitData[idx2];
-    memcpy(chn2, chn1, sizeof(LimitData));
-    memcpy(chn1, &chntmp, sizeof(LimitData));
-    model->updateAllReferences(ModelData::REF_UPD_TYPE_CHANNEL, ModelData::REF_UPD_ACT_SWAP, idx1, idx2);
-    updateLine(idx1);
-    updateLine(idx2);
-    updateItemModels();
-    emit modified();
+  model->limitsInsert(selectedIndex);
+  for (int i = selectedIndex; i < chnCapability; i++) {
+    updateLine(i);
   }
+
+  updateItemModels();
 }
 
 void ChannelsPanel::connectItemModelEvents(const FilteredItemModel * itemModel)
@@ -487,4 +466,5 @@ void ChannelsPanel::onItemModelUpdateComplete()
 void ChannelsPanel::updateItemModels()
 {
   sharedItemModels->update(AbstractItemModel::IMUE_Channels);
+  emit modified();
 }
