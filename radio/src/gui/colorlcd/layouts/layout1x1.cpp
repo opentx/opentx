@@ -34,12 +34,8 @@ const uint8_t LBM_LAYOUT_1x1[] = {
 };
 
 const ZoneOption OPTIONS_LAYOUT_1x1[] = {
-  { STR_TOP_BAR, ZoneOption::Bool },
-  { STR_FLIGHT_MODE, ZoneOption::Bool },
-  { STR_SLIDERS, ZoneOption::Bool },
-  { STR_TRIMS, ZoneOption::Bool },
-  { STR_MIRROR, ZoneOption::Bool },
-  { nullptr, ZoneOption::Bool }
+  LAYOUT_COMMON_OPTIONS,
+  LAYOUT_OPTIONS_END
 };
 
 class Layout1x1: public Layout
@@ -48,26 +44,22 @@ class Layout1x1: public Layout
     Layout1x1(const LayoutFactory * factory, Layout::PersistentData * persistentData):
       Layout(factory, persistentData)
     {
-      decorate();
     }
 
     void create() override
     {
       Layout::create();
+      // TODO: make this common to all layouts as well
       persistentData->options[0].value.boolValue = true;
       persistentData->options[1].value.boolValue = true;
       persistentData->options[2].value.boolValue = true;
       persistentData->options[3].value.boolValue = true;
       persistentData->options[4].value.boolValue = false;
       persistentData->options[5].value.boolValue = false;
+
+      // TODO: really needed?
       decorate();
     }
-
-    void decorate()
-    {
-      Layout::decorate(HAS_TOPBAR(), HAS_SLIDERS(), HAS_TRIMS(), HAS_FM());
-    }
-
 
     unsigned int getZonesCount() const override
     {
@@ -80,14 +72,6 @@ class Layout1x1: public Layout
 
       return zone;
     }
-
-    void checkEvents() override
-    {
-      Layout::checkEvents();
-      decorate();
-    }
-  protected:
-    uint8_t value = 0;
 };
 
 BaseLayoutFactory<Layout1x1> layout1x1("Layout1x1", "Fullscreen", LBM_LAYOUT_1x1, OPTIONS_LAYOUT_1x1);

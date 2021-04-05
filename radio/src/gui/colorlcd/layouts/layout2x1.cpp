@@ -33,12 +33,8 @@ const uint8_t LBM_LAYOUT_2x1[] = {
 };
 
 const ZoneOption OPTIONS_LAYOUT_2x1[] =  {
-  { STR_TOP_BAR, ZoneOption::Bool },
-  { STR_FLIGHT_MODE, ZoneOption::Bool },
-  { STR_SLIDERS, ZoneOption::Bool },
-  { STR_TRIMS, ZoneOption::Bool },
-  { STR_MIRROR, ZoneOption::Bool },
-  { nullptr, ZoneOption::Bool }
+  LAYOUT_COMMON_OPTIONS,
+  LAYOUT_OPTIONS_END
 };
 
 class Layout2x1: public Layout
@@ -47,7 +43,6 @@ class Layout2x1: public Layout
     Layout2x1(const LayoutFactory * factory, Layout::PersistentData * persistentData):
       Layout(factory, persistentData)
     {
-      decorate();
     }
 
     void create() override
@@ -61,12 +56,6 @@ class Layout2x1: public Layout
       persistentData->options[5].value.boolValue = false;
       decorate();
     }
-
-    void decorate()
-    {
-      Layout::decorate(HAS_TOPBAR(), HAS_SLIDERS(), HAS_TRIMS(), HAS_FM());
-    }
-
 
     unsigned int getZonesCount() const override
     {
@@ -88,14 +77,6 @@ class Layout2x1: public Layout
       }
       return zone;
     }
-
-    void checkEvents() override
-    {
-      Layout::checkEvents();
-      decorate();
-    }
-  protected:
-    uint8_t value = 0;
 };
 
 BaseLayoutFactory<Layout2x1> Layout2x1("Layout2x1", "2 x 1", LBM_LAYOUT_2x1, OPTIONS_LAYOUT_2x1);
