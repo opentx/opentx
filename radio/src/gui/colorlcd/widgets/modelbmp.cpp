@@ -26,13 +26,31 @@ class ModelBitmapWidget: public Widget
     ModelBitmapWidget(const WidgetFactory * factory, FormGroup * parent, const rect_t & rect, Widget::PersistentData * persistentData):
       Widget(factory, parent, rect, persistentData)
     {
-      loadBitmap();
     }
 
     void paint(BitmapBuffer * dc) override
     {
-      if (buffer)
-        dc->drawBitmap(0, 0, buffer.get());
+      // big space to draw
+      if (rect.h >= 96 && rect.w >= 120) {
+
+        dc->drawFilledRect(0, 0, rect.w, rect.h, SOLID, MAINVIEW_PANES_COLOR | OPACITY(5));
+      
+        auto iconMask = theme->getIconMask(ICON_MODEL);
+        if (iconMask) {
+          dc->drawMask(6, 4, iconMask, MAINVIEW_GRAPHICS_COLOR);
+        }
+
+        dc->drawSizedText(45, 10, g_model.header.name, LEN_MODEL_NAME, FONT(XS));
+        dc->drawSolidFilledRect(39, 27, rect.w - 48, 2, MAINVIEW_GRAPHICS_COLOR);
+
+        if (buffer) {
+          dc->drawScaledBitmap(buffer.get(), 0, 38, rect.w, rect.h - 38);
+        }
+      }
+      // smaller space to draw
+      else if (buffer) {
+        dc->drawScaledBitmap(buffer.get(), 0, 0, rect.w, rect.h);
+      }
     }
 
     void checkEvents() override
@@ -55,36 +73,13 @@ class ModelBitmapWidget: public Widget
 
     void loadBitmap()
     {
-      buffer.reset(new BitmapBuffer(BMP_RGB565, rect.w, rect.h));
-      buffer->clear(MAINVIEW_PANES_COLOR);
-
       std::string filename = std::string(g_model.header.bitmap);
       std::string fullpath = std::string(BITMAPS_PATH PATH_SEPARATOR) + filename;
 
-      auto bitmap = std::unique_ptr<BitmapBuffer>(BitmapBuffer::loadBitmap(fullpath.c_str()));
-      if (!bitmap) {
+      buffer.reset(BitmapBuffer::loadBitmap(fullpath.c_str()));
+      if (!buffer) {
         TRACE("could not load bitmap '%s'", filename.c_str());
         return;
-      }
-
-      // big space to draw
-      if (rect.h >= 96 && rect.w >= 120) {
-
-        auto iconMask = theme->getIconMask(ICON_MODEL);
-        if (iconMask) {
-          buffer->drawMask(6, 4, iconMask, MAINVIEW_GRAPHICS_COLOR);
-        }
-
-        buffer->drawSizedText(45, 10, g_model.header.name, LEN_MODEL_NAME, FONT(XS));
-        buffer->drawSolidFilledRect(39, 27, rect.w - 48, 2, MAINVIEW_GRAPHICS_COLOR);
-
-        if (bitmap) {
-          buffer->drawScaledBitmap(bitmap.get(), 0, 38, rect.w, rect.h - 38);
-        }
-      }
-      // smaller space to draw
-      else if (bitmap) {
-        buffer->drawScaledBitmap(bitmap.get(), 0, 0, rect.w, rect.h);
       }
     }
 };
