@@ -35,7 +35,7 @@ WidgetSettings::WidgetSettings(Window * parent, Widget * widget) :
 
   auto form = &content->form;
   FormGridLayout grid(content->form.width());
-  grid.setLabelWidth(width() / 5);
+  grid.setLabelWidth(width() / 3);
   form->clear();
 
   uint8_t optIdx = 0;
@@ -49,35 +49,31 @@ WidgetSettings::WidgetSettings(Window * parent, Widget * widget) :
     switch (option.type) {
 
       case ZoneOption::Integer:
-        new NumberEdit(form, grid.getFieldSlot(),
-                       option.min.signedValue, // Minimum
-                       option.max.signedValue, // Maximum
-                       [=]() -> int {          // getValue
+        new NumberEdit(form, grid.getFieldSlot(), option.min.signedValue, option.max.signedValue,
+                       [=]() -> int {
                            return widget->getOptionValue(optIdx)->signedValue;
                        },
-                       [=](int32_t newValue) { // setValue
+                       [=](int32_t newValue) {
                            widget->setOptionValue(optIdx, OPTION_VALUE_SIGNED(newValue));
                        });
         break;
 
       case ZoneOption::Source:
-        new SourceChoice(form, grid.getFieldSlot(),
-                         option.min.unsignedValue, // min
-                         option.max.unsignedValue, // max
-                         [=]() -> int16_t {        // getValue
+        new SourceChoice(form, grid.getFieldSlot(), 0, MIXSRC_LAST_TELEM,
+                         [=]() -> int16_t {
                              return (int16_t) widget->getOptionValue(optIdx)->unsignedValue;
                          },
-                         [=](int16_t newValue) {   // setValue
+                         [=](int16_t newValue) {
                              widget->setOptionValue(optIdx, OPTION_VALUE_UNSIGNED((uint32_t) newValue));
                          });
         break;
 
       case ZoneOption::Bool:
         new CheckBox(form, grid.getFieldSlot(),
-                     [=]() -> uint8_t {      // getValue
+                     [=]() -> uint8_t {
                          return (uint8_t) widget->getOptionValue(optIdx)->boolValue;
                      },
-                     [=](int8_t newValue) {  // setValue
+                     [=](int8_t newValue) {
                          widget->setOptionValue(optIdx, OPTION_VALUE_BOOL((uint32_t) newValue));
                      });
         break;
@@ -93,8 +89,7 @@ WidgetSettings::WidgetSettings(Window * parent, Widget * widget) :
 
       case ZoneOption::Timer: // Unsigned
       {
-        auto tmChoice = new Choice(form, grid.getFieldSlot(),
-                                   0, TIMERS - 1,
+        auto tmChoice = new Choice(form, grid.getFieldSlot(), 0, TIMERS - 1,
                                    [=]() -> int {        // getValue
                                        return (int) widget->getOptionValue(optIdx)->unsignedValue;
                                    },
@@ -138,6 +133,7 @@ WidgetSettings::WidgetSettings(Window * parent, Widget * widget) :
 
 
 #if defined(HARDWARE_KEYS)
+
 void WidgetSettings::onEvent(event_t event)
 {
   TRACE_WINDOWS("%s received event 0x%X", getWindowDebugString().c_str(), event);
@@ -146,4 +142,5 @@ void WidgetSettings::onEvent(event_t event)
     deleteLater();
   }
 }
+
 #endif
