@@ -28,10 +28,11 @@ static const rect_t widgetSettingsDialogRect = {
   LCD_H - 2 * LCD_H / 4   // height
 };
 
-WidgetSettings::WidgetSettings(Window * parent, Widget * widget, std::function<void(void)> confirmHandler) :
-  Dialog(parent, TR_WIDGET_SETTINGS, widgetSettingsDialogRect),
-  confirmHandler(std::move(confirmHandler))
+WidgetSettings::WidgetSettings(Window * parent, Widget * widget) :
+  Dialog(parent, TR_WIDGET_SETTINGS, widgetSettingsDialogRect)
 {
+  setCloseWhenClickOutside(true);
+
   auto form = &content->form;
   FormGridLayout grid(content->form.width());
   grid.setLabelWidth(width() / 5);
@@ -134,3 +135,15 @@ WidgetSettings::WidgetSettings(Window * parent, Widget * widget, std::function<v
     grid.nextLine();
   }
 }
+
+
+#if defined(HARDWARE_KEYS)
+void WidgetSettings::onEvent(event_t event)
+{
+  TRACE_WINDOWS("%s received event 0x%X", getWindowDebugString().c_str(), event);
+
+  if (event == EVT_KEY_LONG(KEY_EXIT) || event == EVT_KEY_BREAK(KEY_EXIT)) {
+    deleteLater();
+  }
+}
+#endif

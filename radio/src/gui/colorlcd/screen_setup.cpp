@@ -39,7 +39,7 @@ void ScreenAddPage::build(FormWindow * window)
 {
   rect_t buttonRect = {LCD_W / 2 - 100, (window->height() - 24) / 2, 200, 24};
   auto button = new TextButton(window, buttonRect, STR_ADD_MAIN_VIEW);
-  button->setPressHandler([=]() {
+  button->setPressHandler([=]() -> uint8_t {
 
       auto& screen     = customScreens[pageIndex];
       auto& screenData = g_model.screenData[pageIndex];
@@ -157,7 +157,7 @@ class SetupWidgetsPageSlot: public Button
       slotIndex(slotIndex)
     {
       widget = screen->getWidget(slotIndex);
-      setPressHandler([=](){
+      setPressHandler([=]() -> uint8_t {
           Menu * menu = new Menu(this);
           menu->addLine(TR_SELECT_WIDGET, [=]() {
             Menu * menu = new Menu(this);
@@ -165,24 +165,17 @@ class SetupWidgetsPageSlot: public Button
               menu->addLine(factory->getName(), [=]() {
                 if (widget) widget->deleteLater();
                 widget = screen->createWidget(slotIndex, factory);
-                return 0;
               });
             }
-            return 0;
           });
           if (widget) {
             menu->addLine(TR_WIDGET_SETTINGS, [=]() {
-                new WidgetSettings(this, widget, [=]() {
-                  TRACE("WidgetSettings confirmed");
-                  deleteLater();
-                  return;
-                });
+                new WidgetSettings(this, widget);
             });
 
             menu->addLine(STR_REMOVE_WIDGET, [=]() {
               widget->deleteLater();
               widget = nullptr;
-              return 0;
             });
           }
           return 0;
@@ -282,7 +275,7 @@ void ScreenSetupPage::build(FormWindow * window)
 
   // Setup widgets button...
   setupWidgetsButton = new TextButton(window, grid.getFieldSlot(), STR_SETUP_WIDGETS);
-  setupWidgetsButton->setPressHandler([=]() {
+  setupWidgetsButton->setPressHandler([=]() -> uint8_t {
       new SetupWidgetsPage(screen);
       return 0;
   });
@@ -325,7 +318,7 @@ void ScreenSetupPage::updateLayoutOptions()
 
   //if (pageIndex > 0 || customScreens[1]) {
     auto button = new TextButton(optionsWindow, grid.getFieldSlot(), STR_REMOVE_SCREEN);
-    button->setPressHandler([=]() {
+    button->setPressHandler([=]() -> uint8_t {
         // if (pageIndex < MAX_CUSTOM_SCREENS - 1) {
         //   memmove(&g_model.screenData[pageIndex], &g_model.screenData[pageIndex + 1], sizeof(CustomScreenData) * (MAX_CUSTOM_SCREENS - pageIndex - 1));
         // }
