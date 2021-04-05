@@ -25,15 +25,12 @@ const uint8_t LBM_LAYOUT_2x4[] = {
 };
 
 const ZoneOption OPTIONS_LAYOUT_2x4[] = {
-  { "Top bar", ZoneOption::Bool },
-  { "Flight mode", ZoneOption::Bool },
-  { "Sliders", ZoneOption::Bool },
-  { "Trims", ZoneOption::Bool },
+  LAYOUT_COMMON_OPTIONS,
   { "Panel1 background", ZoneOption::Bool },
   { "  Color", ZoneOption::Color },
   { "Panel2 background", ZoneOption::Bool },
   { "  Color", ZoneOption::Color },
-  { nullptr, ZoneOption::Bool }
+  LAYOUT_OPTIONS_END
 };
 
 class Layout2x4: public Layout

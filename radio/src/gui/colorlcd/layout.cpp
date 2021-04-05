@@ -97,14 +97,14 @@ void loadCustomScreens()
   }
 }
 
-void Layout::decorate(bool topbar, bool sliders, bool trims, bool flightMode)
+void Layout::decorate()
 {
   // check if deco setting are still up-to-date
   uint8_t checkSettings =
-    (topbar ? 1 << 0 : 0) |
-    (sliders ? 1 << 1 : 0) |
-    (trims ? 1 << 2 : 0) |
-    (flightMode ? 1 << 3 : 0);
+    (hasTopbar() ? 1 << 0 : 0) |
+    (hasSliders() ? 1 << 1 : 0) |
+    (hasTrims() ? 1 << 2 : 0) |
+    (hasFlightMode() ? 1 << 3 : 0);
 
   if (checkSettings == decorationSettings) {
     // everything ok, exit!
@@ -123,16 +123,16 @@ void Layout::decorate(bool topbar, bool sliders, bool trims, bool flightMode)
 
   // save settings
   decorationSettings = checkSettings;
-  
-  if (topbar) {
+
+  if (hasTopbar()) {
     topBar = new TopBar(this);
     topBar->load();
     decorations.push_back(topBar);
   }
 
-  if (sliders) {
+  if (hasSliders()) {
 #if defined(HARDWARE_EXT1) || defined(HARDWARE_EXT2)
-    coord_t yOffset = (trims ? - TRIM_SQUARE_SIZE : 0) + (topbar ? TOPBAR_HEIGHT / 2 : 0);
+    coord_t yOffset = (hasTrims() ? - TRIM_SQUARE_SIZE : 0) + (hasTopbar() ? TOPBAR_HEIGHT / 2 : 0);
 #endif
 
     decorations.push_back(
@@ -163,17 +163,17 @@ void Layout::decorate(bool topbar, bool sliders, bool trims, bool flightMode)
 #if defined(HARDWARE_EXT1)
     if (IS_POT_SLIDER_AVAILABLE(EXT1)) {
       decorations.push_back(
-        new MainViewVerticalSlider(this, {HMARGIN, LCD_H / 2 - VERTICAL_SLIDERS_HEIGHT(topbar) / 2 + yOffset, TRIM_SQUARE_SIZE, VERTICAL_SLIDERS_HEIGHT(topbar) / 2},
+        new MainViewVerticalSlider(this, {HMARGIN, LCD_H / 2 - VERTICAL_SLIDERS_HEIGHT(hasTopbar()) / 2 + yOffset, TRIM_SQUARE_SIZE, VERTICAL_SLIDERS_HEIGHT(hasTopbar()) / 2},
                                    [=] { return calibratedAnalogs[CALIBRATED_SLIDER_REAR_LEFT]; })
       );
       decorations.push_back(
-        new MainViewVerticalSlider(this, {HMARGIN, LCD_H / 2 + yOffset, TRIM_SQUARE_SIZE, VERTICAL_SLIDERS_HEIGHT(topbar) / 2},
+        new MainViewVerticalSlider(this, {HMARGIN, LCD_H / 2 + yOffset, TRIM_SQUARE_SIZE, VERTICAL_SLIDERS_HEIGHT(hasTopbar()) / 2},
                                    [=] { return calibratedAnalogs[CALIBRATED_POT_EXT1]; })
       );
     }
     else {
       decorations.push_back(
-        new MainViewVerticalSlider(this, {HMARGIN, LCD_H / 2 - VERTICAL_SLIDERS_HEIGHT(topbar) / 2 + yOffset, TRIM_SQUARE_SIZE, VERTICAL_SLIDERS_HEIGHT(topbar)},
+        new MainViewVerticalSlider(this, {HMARGIN, LCD_H / 2 - VERTICAL_SLIDERS_HEIGHT(hasTopbar()) / 2 + yOffset, TRIM_SQUARE_SIZE, VERTICAL_SLIDERS_HEIGHT(hasTopbar())},
                                    [=] { return calibratedAnalogs[CALIBRATED_SLIDER_REAR_LEFT]; })
       );
     }
@@ -182,33 +182,33 @@ void Layout::decorate(bool topbar, bool sliders, bool trims, bool flightMode)
 #if defined(HARDWARE_EXT2)
     if (IS_POT_SLIDER_AVAILABLE(EXT2)) {
       decorations.push_back(
-        new MainViewVerticalSlider(this, {LCD_W - HMARGIN - TRIM_SQUARE_SIZE, LCD_H / 2 - VERTICAL_SLIDERS_HEIGHT(topbar) / 2 + yOffset, TRIM_SQUARE_SIZE,
-                                        VERTICAL_SLIDERS_HEIGHT(topbar) / 2},
+        new MainViewVerticalSlider(this, {LCD_W - HMARGIN - TRIM_SQUARE_SIZE, LCD_H / 2 - VERTICAL_SLIDERS_HEIGHT(hasTopbar()) / 2 + yOffset, TRIM_SQUARE_SIZE,
+                                        VERTICAL_SLIDERS_HEIGHT(hasTopbar()) / 2},
                                    [=] { return calibratedAnalogs[CALIBRATED_SLIDER_REAR_RIGHT]; })
       );
       decorations.push_back(
         new MainViewVerticalSlider(this, {LCD_W - HMARGIN - TRIM_SQUARE_SIZE, LCD_H / 2 + yOffset, TRIM_SQUARE_SIZE,
-                                        VERTICAL_SLIDERS_HEIGHT(topbar) / 2},
+                                        VERTICAL_SLIDERS_HEIGHT(hasTopbar()) / 2},
                                    [=] { return calibratedAnalogs[CALIBRATED_POT_EXT2]; })
       );
     }
     else {
       decorations.push_back(
-        new MainViewVerticalSlider(this, {LCD_W - HMARGIN - TRIM_SQUARE_SIZE, LCD_H / 2 - VERTICAL_SLIDERS_HEIGHT(topbar) / 2 + yOffset, TRIM_SQUARE_SIZE,
-                                        VERTICAL_SLIDERS_HEIGHT(topbar)},
+        new MainViewVerticalSlider(this, {LCD_W - HMARGIN - TRIM_SQUARE_SIZE, LCD_H / 2 - VERTICAL_SLIDERS_HEIGHT(hasTopbar()) / 2 + yOffset, TRIM_SQUARE_SIZE,
+                                        VERTICAL_SLIDERS_HEIGHT(hasTopbar())},
                                    [=] { return calibratedAnalogs[CALIBRATED_SLIDER_REAR_RIGHT]; })
       );
     }
 #endif
   }
 
-  if (trims) {
+  if (hasTrims()) {
 #if defined(HARDWARE_POT3) || defined(HARDWARE_EXT1)
-    coord_t xOffset = sliders? TRIM_SQUARE_SIZE : 0;
+    coord_t xOffset = hasSliders() ? TRIM_SQUARE_SIZE : 0;
 #else
     coord_t xOffset = 0;
 #endif
-    coord_t yOffset = (trims ? - TRIM_SQUARE_SIZE : 0);
+    coord_t yOffset = (hasTrims() ? - TRIM_SQUARE_SIZE : 0);
 
     // Trim order TRIM_LH, TRIM_LV, TRIM_RV, TRIM_RH
 
@@ -226,20 +226,20 @@ void Layout::decorate(bool topbar, bool sliders, bool trims, bool flightMode)
 
     // Left
     decorations.push_back(
-      new MainViewVerticalTrim(this, {HMARGIN + xOffset, LCD_H /2 - VERTICAL_SLIDERS_HEIGHT(topbar) / 2 + yOffset + (topbar ? TOPBAR_HEIGHT / 2 : 0), TRIM_SQUARE_SIZE, VERTICAL_SLIDERS_HEIGHT(topbar)},
+      new MainViewVerticalTrim(this, {HMARGIN + xOffset, LCD_H /2 - VERTICAL_SLIDERS_HEIGHT(hasTopbar()) / 2 + yOffset + (hasTopbar() ? TOPBAR_HEIGHT / 2 : 0), TRIM_SQUARE_SIZE, VERTICAL_SLIDERS_HEIGHT(hasTopbar())},
                                [=] { return getTrimValue(mixerCurrentFlightMode, 1); })
     );
 
     // Right
     decorations.push_back(
-      new MainViewVerticalTrim(this, {LCD_W - HMARGIN - TRIM_SQUARE_SIZE - xOffset, LCD_H /2 - VERTICAL_SLIDERS_HEIGHT(topbar) / 2 + yOffset + (topbar ? TOPBAR_HEIGHT / 2 : 0), TRIM_SQUARE_SIZE, VERTICAL_SLIDERS_HEIGHT(topbar)},
+      new MainViewVerticalTrim(this, {LCD_W - HMARGIN - TRIM_SQUARE_SIZE - xOffset, LCD_H /2 - VERTICAL_SLIDERS_HEIGHT(hasTopbar()) / 2 + yOffset + (hasTopbar() ? TOPBAR_HEIGHT / 2 : 0), TRIM_SQUARE_SIZE, VERTICAL_SLIDERS_HEIGHT(hasTopbar())},
                                [=] { return getTrimValue(mixerCurrentFlightMode, 2); })
     );
   }
 
-  if (flightMode) {
+  if (hasFlightMode()) {
     decorations.push_back(
-      new DynamicText(this, {50, LCD_H - 4 - (sliders? 2 * TRIM_SQUARE_SIZE: TRIM_SQUARE_SIZE), LCD_W - 100, 20}, [=] {
+      new DynamicText(this, {50, LCD_H - 4 - (hasSliders() ? 2 * TRIM_SQUARE_SIZE: TRIM_SQUARE_SIZE), LCD_W - 100, 20}, [=] {
         return g_model.flightModeData[mixerCurrentFlightMode].name;
       }, CENTERED)
     );
@@ -248,21 +248,16 @@ void Layout::decorate(bool topbar, bool sliders, bool trims, bool flightMode)
 
 rect_t Layout::getMainZone(rect_t zone) const
 {
-  bool hasTopbar  = getOptionValue(OPTION_TOPBAR)->boolValue;
-  bool hasFM      = getOptionValue(OPTION_FM)->boolValue;
-  bool hasSliders = getOptionValue(OPTION_SLIDERS)->boolValue;
-  bool hasTrims   = getOptionValue(OPTION_TRIMS)->boolValue;
-
-  if (hasTopbar) {
+  if (hasTopbar()) {
     zone.y += MENU_HEADER_HEIGHT;
     zone.h -= MENU_HEADER_HEIGHT;
   }
 
-  if (hasFM || hasTrims) {
+  if (hasFlightMode() || hasTrims()) {
     zone.h -= TRIM_SQUARE_SIZE;
   }
 
-  if (hasSliders) {
+  if (hasSliders()) {
 #if NUM_SLIDERS + NUM_POTS > 2
     zone.h -= TRIM_SQUARE_SIZE;
 #endif
@@ -270,7 +265,7 @@ rect_t Layout::getMainZone(rect_t zone) const
     zone.x += TRIM_SQUARE_SIZE;
   }
 
-  if (hasTrims) {
+  if (hasTrims()) {
     zone.w -= 2 * TRIM_SQUARE_SIZE;
     zone.x += TRIM_SQUARE_SIZE;
   }
