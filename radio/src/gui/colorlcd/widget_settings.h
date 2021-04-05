@@ -18,34 +18,19 @@
  * GNU General Public License for more details.
  */
 
-#include "opentx.h"
-#include "menu_screen.h"
-#include "screen_setup.h"
+#pragma once
 
-ScreenMenu::ScreenMenu():
-  TabsGroup(ICON_THEME)
+#include "dialog.h"
+#include "widget.h"
+
+class WidgetSettings: public Dialog
 {
-  updateTabs();
-}
+    std::function<void(void)> confirmHandler;
+    
+  public:
+    WidgetSettings(Window * parent, Widget * widget);
 
-void ScreenMenu::updateTabs()
-{
-  removeAllTabs();
-
-  for (int index = 0; index < MAX_CUSTOM_SCREENS; index++) {
-    if (customScreens[index]) {
-
-      auto tab = new ScreenSetupPage(this, customScreens[index], g_model.screenData[index]);
-      std::string title(STR_MAIN_VIEW_X);
-      title.back() = index + '1';
-      tab->setTitle(title);
-      tab->setIcon(ICON_THEME_VIEW1 + index);
-
-      addTab(tab);
-    }
-    else {
-      addTab(new ScreenAddPage(this, index));
-      break;
-    }
-  }
-}
+#if defined(HARDWARE_KEYS)
+    void onEvent(event_t event) override;
+#endif
+};

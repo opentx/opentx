@@ -446,6 +446,8 @@
 
 #define TR_MENUWHENDONE                CENTER "\006" TR_ENTER " QUAND PRET"
 #define TR_FREE                        "disp"
+#define TR_YES                         "Yes"
+#define TR_NO                          "No"
 #define TR_DELETEMODEL                 "SUPPRIMER" BREAKSPACE "MODELE"
 #define TR_COPYINGMODEL                "Copie..."
 #define TR_MOVINGMODEL                 "Déplacement..."
@@ -1263,7 +1265,6 @@
 #define TR_USER_INTERFACE              "Interface utilisateur"
 #define TR_THEME                       "Thème"
 #define TR_SETUP                       "Configuration"
-#define TR_MAINVIEWX                   "Vue principale X"
 #define TR_LAYOUT                      "Disposition"
 #define TR_ADD_MAIN_VIEW                 "Ajouter vue principale"
 #define TR_BACKGROUND_COLOR            "Couleur de fond"

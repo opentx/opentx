@@ -73,7 +73,6 @@ class Layout2P1: public Layout
       Layout::decorate(HAS_TOPBAR(), HAS_SLIDERS(), HAS_TRIMS(), HAS_FM());
     }
 
-
     unsigned int getZonesCount() const override
     {
       return DIM(ZONES_LAYOUT_2P1);
@@ -92,7 +91,6 @@ class Layout2P1: public Layout
       if (value != newValue) {
         value = newValue;
         // TODO call this from the Layout config window
-        this->clear();
         decorate();
       }
     }

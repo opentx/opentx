@@ -207,6 +207,8 @@ extern const char STR_NO_TELEMETRY_SCREENS[];
 #endif
 
 extern const char STR_FREE[];
+extern const char STR_YES[];
+extern const char STR_NO[];
 #define LEN_FREE PSIZE(TR_FREE)
 extern const char STR_DELETEMODEL[];
 extern const char STR_COPYINGMODEL[];

@@ -428,6 +428,8 @@
 #endif
 
 #define TR_FREE                        "frei"
+#define TR_YES                         "Yes"
+#define TR_NO                          "No"
 #define TR_DELETEMODEL                 "Modell löschen?"
 #define TR_COPYINGMODEL                "Kopiere Modell"
 #define TR_MOVINGMODEL                 "Schiebe Modell"
@@ -1233,7 +1235,6 @@
 #define TR_USER_INTERFACE              "User interface"
 #define TR_THEME                       "Theme"
 #define TR_SETUP                       "Setup"
-#define TR_MAINVIEWX                   "Ansicht X"
 #define TR_LAYOUT                      "Layout"
 #define TR_ADD_MAIN_VIEW                 "Ansicht hinzufügen"
 #define TR_BACKGROUND_COLOR            "Hintergrundfarbe"

@@ -447,6 +447,8 @@
 
 #define TR_MENUWHENDONE        CENTER "\006" TR_ENTER " > DALEJ"
 #define TR_FREE                "woln"
+#define TR_YES                         "Yes"
+#define TR_NO                          "No"
 #define TR_DELETEMODEL         "SKASUJ MODEL"
 #define TR_COPYINGMODEL        "Kopiuj model.."
 #define TR_MOVINGMODEL         "Przenieś model."
@@ -1248,7 +1250,6 @@
 #define TR_USER_INTERFACE      "User interface"
 #define TR_THEME               "Theme"
 #define TR_SETUP               "Setup"
-#define TR_MAINVIEWX           "Main view X"
 #define TR_LAYOUT              "Layout"
 #define TR_ADD_MAIN_VIEW         "Add main view"
 #define TR_BACKGROUND_COLOR    "Background color"

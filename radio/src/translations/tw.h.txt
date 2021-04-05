@@ -348,6 +348,8 @@
 #define TR_POPUPS_ENTER_EXIT            TR_ENTER "\010" TR_EXIT
 
 #define TR_FREE                         "空閒"
+#define TR_YES                         "Yes"
+#define TR_NO                          "No"
 #define TR_DELETEMODEL                  "刪除" BREAKSPACE "模型"
 #define TR_COPYINGMODEL                 "複製模型..."
 #define TR_MOVINGMODEL                  "移動模型..."
@@ -1132,7 +1134,6 @@
 #define TR_USER_INTERFACE              "用戶界面"
 #define TR_THEME                       "主題"
 #define TR_SETUP                       "設置"
-#define TR_MAINVIEWX                   "Main view X"
 #define TR_LAYOUT                      "佈局"
 #define TR_ADD_MAIN_VIEW               "添加主視圖"
 #define TR_BACKGROUND_COLOR            "背景顏色"

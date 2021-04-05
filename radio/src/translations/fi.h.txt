@@ -436,6 +436,8 @@
 
 #define TR_MENUWHENDONE        CENTER "\006" TR_ENTER " WHEN DONE"
 #define TR_FREE                "free"
+#define TR_YES                         "Yes"
+#define TR_NO                          "No"
 #define TR_DELETEMODEL         "DELETE MODEL"
 #define TR_COPYINGMODEL        "Copying model..."
 #define TR_MOVINGMODEL         "Moving model..."

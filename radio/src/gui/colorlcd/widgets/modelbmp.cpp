@@ -23,7 +23,7 @@
 class ModelBitmapWidget: public Widget
 {
   public:
-    ModelBitmapWidget(const WidgetFactory * factory, Window * parent, const rect_t & rect, Widget::PersistentData * persistentData):
+    ModelBitmapWidget(const WidgetFactory * factory, FormGroup * parent, const rect_t & rect, Widget::PersistentData * persistentData):
       Widget(factory, parent, rect, persistentData),
       buffer(nullptr),
       deps_hash(0)
@@ -65,6 +65,8 @@ class ModelBitmapWidget: public Widget
 
     void checkEvents() override
     {
+      Widget::checkEvents();
+      
       uint32_t new_hash = hash(g_model.header.bitmap, sizeof(g_model.header.bitmap));
       new_hash ^= hash(g_model.header.name, sizeof(g_model.header.name));
       new_hash ^= hash(g_eeGeneral.themeName, sizeof(g_eeGeneral.themeName));

@@ -19,6 +19,8 @@
  */
 
 #include "menu_screen.h"
+#include "layout.h"
+#include "datastructs.h"
 
 class ScreenAddPage: public PageTab {
   public:
@@ -33,13 +35,14 @@ class ScreenAddPage: public PageTab {
 
 class ScreenSetupPage: public PageTab {
   public:
-    ScreenSetupPage(ScreenMenu * menu, uint8_t pageIndex);
+    ScreenSetupPage(ScreenMenu * menu, Layout*& screen, CustomScreenData& screenData);
 
     void build(FormWindow * window) override;
 
   protected:
     ScreenMenu * menu;
-    uint8_t pageIndex;
+    Layout *& screen;
+    CustomScreenData& screenData;
     FormGroup * optionsWindow = nullptr;
     TextButton * setupWidgetsButton = nullptr;
     FormField * layoutChoice = nullptr;

@@ -25,7 +25,7 @@ const coord_t NUMBERS_PADDING = 4;
 class ValueWidget: public Widget
 {
   public:
-    ValueWidget(const WidgetFactory * factory, Window * parent, const rect_t & rect, Widget::PersistentData * persistentData):
+    ValueWidget(const WidgetFactory * factory, FormGroup * parent, const rect_t & rect, Widget::PersistentData * persistentData):
       Widget(factory, parent, rect, persistentData)
     {
     }
@@ -112,6 +112,8 @@ class ValueWidget: public Widget
 
     void checkEvents() override
     {
+      Widget::checkEvents();
+
       auto newValue = getValue(persistentData->options[0].value.unsignedValue);
       if (lastValue != newValue) {
         lastValue = newValue;

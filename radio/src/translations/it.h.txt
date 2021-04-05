@@ -451,6 +451,8 @@
 
 #define TR_MENUWHENDONE        CENTER "\007" TR_ENTER " Conferma"
 #define TR_FREE                "Disp."
+#define TR_YES                         "Yes"
+#define TR_NO                          "No"
 #define TR_DELETEMODEL         "CANCELLA" BREAKSPACE "MODELLO"
 #define TR_COPYINGMODEL        "Copia in corso.."
 #define TR_MOVINGMODEL         "Spostamento..."
@@ -1252,7 +1254,6 @@
 #define TR_USER_INTERFACE      "Interfaccia utente"
 #define TR_THEME               "Tema"
 #define TR_SETUP               "Imposta"
-#define TR_MAINVIEWX           "Vista princ. X"
 #define TR_LAYOUT              "Layout"
 #define TR_ADD_MAIN_VIEW         "Aggiungi vista princ."
 #define TR_BACKGROUND_COLOR    "Colore background"

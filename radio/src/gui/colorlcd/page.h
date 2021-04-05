@@ -31,7 +31,7 @@ class PageHeader: public FormGroup
     PageHeader(Page * parent, uint8_t icon);
 
 #if defined(HARDWARE_TOUCH)
-    void deleteLater(bool detach = true, bool trash = true)
+    void deleteLater(bool detach = true, bool trash = true) override
     {
       if (_deleted)
         return;

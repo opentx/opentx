@@ -18,27 +18,35 @@
  * GNU General Public License for more details.
  */
 
+#include "opentx.h"
 #include "confirm_dialog.h"
 #include "static.h"
+#include "gridlayout.h"
 
 ConfirmDialog::ConfirmDialog(Window * parent, const char * title, const char * message, std::function<void(void)> confirmHandler) :
-  Dialog(parent, title, {50, 73, LCD_W - 100, LCD_H - 146}),
+  Dialog(parent, title, {LCD_W / 10 , LCD_H / 4, LCD_W - 2 * LCD_W / 10, LCD_H - 2 * LCD_H / 4}),
   confirmHandler(std::move(confirmHandler))
 {
-  new StaticText(this, {0, height() / 2, width(), PAGE_LINE_HEIGHT}, message, CENTERED);
-}
+  auto form = &content->form;
+  FormGridLayout grid(content->form.width());
+  form->clear();
 
-#if defined(HARDWARE_KEYS)
-void ConfirmDialog::onEvent(event_t event)
-{
-  TRACE_WINDOWS("%s received event 0x%X", getWindowDebugString().c_str(), event);
+  new StaticText(form, grid.getCenteredSlot(), message);
+  grid.setLabelWidth(15);
+  grid.setMarginRight(15);
+  grid.nextLine();
+  grid.nextLine();
 
-  if (event == EVT_KEY_BREAK(KEY_ENTER)) {
-    deleteLater(); // this restore the focus (it can be changed then in confirmHandler)
-    confirmHandler();
-  }
-  else if (event == EVT_KEY_BREAK(KEY_EXIT)) {
-    deleteLater();
-  }
+  auto noButton = new TextButton(form, grid.getFieldSlot(2, 0), STR_NO, [=]() -> int8_t {
+      this->deleteLater();
+      return 0;
+  });
+
+  new TextButton(form, grid.getFieldSlot(2, 1), STR_YES, [=]() -> int8_t {
+      this->deleteLater();
+      this->confirmHandler();
+      return 0;
+  });
+
+  noButton->setFocus(SET_FOCUS_DEFAULT);
 }
-#endif
