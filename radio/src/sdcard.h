@@ -27,7 +27,8 @@
 
 #include "opentx.h"
 
-#define ROOT_PATH           "/"
+#define PATH_SEPARATOR      "/"
+#define ROOT_PATH           PATH_SEPARATOR
 #define MODELS_PATH         ROOT_PATH "MODELS24"      // no trailing slash = important //TODO Temporary while working on both 2.3 and 2.4
 #define RADIO_PATH          ROOT_PATH "RADIO24"       // no trailing slash = important
 #define LOGS_PATH           ROOT_PATH "LOGS"
@@ -37,27 +38,27 @@
 #define SYSTEM_SUBDIR       "SYSTEM"
 #define BITMAPS_PATH        ROOT_PATH "IMAGES"
 #define FIRMWARES_PATH      ROOT_PATH "FIRMWARE"
-#define AUTOUPDATE_FILENAME FIRMWARES_PATH "/autoupdate.frsk"
+#define AUTOUPDATE_FILENAME FIRMWARES_PATH PATH_SEPARATOR "autoupdate.frsk"
 #define EEPROMS_PATH        ROOT_PATH "EEPROM"
 #define SCRIPTS_PATH        ROOT_PATH "SCRIPTS"
-#define WIZARD_PATH         SCRIPTS_PATH "/WIZARD"
+#define WIZARD_PATH         SCRIPTS_PATH PATH_SEPARATOR "WIZARD"
 #define THEMES_PATH         ROOT_PATH "THEMES"
 #define LAYOUTS_PATH        ROOT_PATH "LAYOUTS"
 #define WIDGETS_PATH        ROOT_PATH "WIDGETS"
 #define WIZARD_NAME         "wizard.lua"
-#define SCRIPTS_MIXES_PATH  SCRIPTS_PATH "/MIXES"
-#define SCRIPTS_FUNCS_PATH  SCRIPTS_PATH "/FUNCTIONS"
-#define SCRIPTS_TELEM_PATH  SCRIPTS_PATH "/TELEMETRY"
-#define SCRIPTS_TOOLS_PATH  SCRIPTS_PATH "/TOOLS"
+#define SCRIPTS_MIXES_PATH  SCRIPTS_PATH PATH_SEPARATOR "MIXES"
+#define SCRIPTS_FUNCS_PATH  SCRIPTS_PATH PATH_SEPARATOR "FUNCTIONS"
+#define SCRIPTS_TELEM_PATH  SCRIPTS_PATH PATH_SEPARATOR "TELEMETRY"
+#define SCRIPTS_TOOLS_PATH  SCRIPTS_PATH PATH_SEPARATOR "TOOLS"
 
 #define LEN_FILE_PATH_MAX   (sizeof(SCRIPTS_TELEM_PATH)+1)  // longest + "/"
 
 #if defined(COLORLCD)
-const char RADIO_MODELSLIST_PATH[] = RADIO_PATH "/models.txt";
-const char RADIO_SETTINGS_PATH[] = RADIO_PATH "/radio.bin";
+const char RADIO_MODELSLIST_PATH[] = RADIO_PATH PATH_SEPARATOR "models.txt";
+const char RADIO_SETTINGS_PATH[] = RADIO_PATH PATH_SEPARATOR "radio.bin";
 #if defined(SDCARD_YAML)
-const char RADIO_MODELSLIST_YAML_PATH[] = RADIO_PATH "/models.yml";
-const char RADIO_SETTINGS_YAML_PATH[] = RADIO_PATH "/radio.yml";
+const char RADIO_MODELSLIST_YAML_PATH[] = RADIO_PATH PATH_SEPARATOR "models.yml";
+const char RADIO_SETTINGS_YAML_PATH[] = RADIO_PATH PATH_SEPARATOR "radio.yml";
 #endif
 #define    SPLASH_FILE             "splash.png"
 #endif
