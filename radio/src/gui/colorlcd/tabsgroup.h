@@ -32,8 +32,7 @@ class PageTab {
   friend class TabsGroup;
 
   public:
-    PageTab():
-      icon(0)
+    PageTab()
     {
     }
 
@@ -81,7 +80,7 @@ class PageTab {
 
   protected:
     std::string title;
-    unsigned icon;
+    unsigned icon = 0;
     std::function<void()> onPageDestroyed;
 };
 
