@@ -94,9 +94,6 @@ struct Data
 
   void reset()
   {
-#if !(defined(EXTMODULE_USART) && defined(EXTMODULE_TX_INVERT_GPIO))
-    total = 0;
-#endif
     pulsesSize = 0;
   }
 #if defined(EXTMODULE_USART) && defined(EXTMODULE_TX_INVERT_GPIO)
@@ -118,7 +115,6 @@ struct Data
       return;
     }
     pulses[pulsesSize++] = v;
-    total += v;
   }
   void sendByte(uint8_t b)
   {
@@ -149,14 +145,7 @@ struct Data
   //add remaining time of frame
   void flush()
   {
-    uint16_t diff = AFHDS3_FRAME_HALF_US - total;
-    pulses[pulsesSize - 1] += diff;
-    //ensure 2 ms break
-    if (pulses[pulsesSize - 1] < 4000)
-    {
-      pulses[pulsesSize - 1] = 4050;
-    }
-    total += diff;
+    pulses[pulsesSize - 1] = 60000;
   }
 
   const uint16_t* getData()

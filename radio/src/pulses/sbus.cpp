@@ -55,7 +55,6 @@ static void _send_level(uint8_t v)
 
   *extmodulePulsesData.dsm2.ptr++ = v - 1;
   extmodulePulsesData.dsm2.index+=1;
-  extmodulePulsesData.dsm2.rest -=v;
 }
 
 void sendByteSbus(uint8_t b) // max 11 changes 0 10 10 10 10 P 1
@@ -113,7 +112,6 @@ void setupPulsesSbus()
   extmodulePulsesData.dsm2.serialByte = 0;
   extmodulePulsesData.dsm2.serialBitCount = 0;
 #else
-  extmodulePulsesData.dsm2.rest = SBUS_PERIOD_HALF_US;
   extmodulePulsesData.dsm2.index = 0;
 #endif
 
