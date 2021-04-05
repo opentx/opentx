@@ -37,6 +37,16 @@ class Layout: public WidgetsContainer<MAX_LAYOUT_ZONES, MAX_LAYOUT_OPTIONS>
   friend class LayoutFactory;
 
   public:
+
+    // Common 'ZoneOptionValue's among all layouts
+    enum {
+      OPTION_TOPBAR = 0,
+      OPTION_FM,
+      OPTION_SLIDERS,
+      OPTION_TRIMS,
+      OPTION_MIRRORED
+    };
+  
     Layout(const LayoutFactory * factory, PersistentData * persistentData):
       WidgetsContainer<MAX_LAYOUT_ZONES, MAX_LAYOUT_OPTIONS>({0, 0, LCD_W, LCD_H}, persistentData),
       factory(factory)
@@ -55,6 +65,9 @@ class Layout: public WidgetsContainer<MAX_LAYOUT_ZONES, MAX_LAYOUT_OPTIONS>
     TopBar * topBar = nullptr;
     uint8_t  decorationSettings = 0;
     std::list<Window*> decorations;
+
+    // get the Zone rect without decoration
+    rect_t getMainZone(rect_t zone) const;
 };
 
 void registerLayout(const LayoutFactory * factory);
