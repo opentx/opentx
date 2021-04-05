@@ -830,6 +830,7 @@ void ModelData::updateTypeIndexRef(R & curRef, const T type, const int idxAdj, c
   newRef.index = abs(curRef.index);
 
   div_t idx = div(newRef.index, updRefInfo.occurences);
+  div_t newidx;
 
   switch (updRefInfo.action)
   {
@@ -847,9 +848,10 @@ void ModelData::updateTypeIndexRef(R & curRef, const T type, const int idxAdj, c
       if (idx.quot < (updRefInfo.index1 + idxAdj))
         return;
 
-      newRef.index += updRefInfo.shift;
+      newRef.index = ((idx.quot + updRefInfo.shift) * updRefInfo.occurences) + idx.rem;
+      newidx = div(newRef.index, updRefInfo.occurences);
 
-      if (idx.quot < (updRefInfo.index1 + idxAdj) || idx.quot > (updRefInfo.maxindex + idxAdj)) {
+      if (newidx.quot < (updRefInfo.index1 + idxAdj) || newidx.quot > (updRefInfo.maxindex + idxAdj)) {
         if (defClear)
           newRef.clear();
         else {
