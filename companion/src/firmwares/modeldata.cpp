@@ -695,12 +695,13 @@ int ModelData::updateReference()
         default:
           break;
       }
-      if (clearlsd) {
+
+      if (lsd->andsw != 0)
+        updateSwitchIntRef(lsd->andsw);
+
+      if (clearlsd && lsd->andsw == 0) {
         lsd->clear();
         appendUpdateReferenceParams(REF_UPD_TYPE_LOGICAL_SWITCH, REF_UPD_ACT_CLEAR, i);
-      }
-      else if (lsd->andsw != 0) {
-        updateSwitchIntRef(lsd->andsw);
       }
     }
   }
