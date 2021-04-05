@@ -1097,7 +1097,7 @@ void ModelData::updateFlightModeFlags(unsigned int & curRef)
   switch (updRefInfo.action)
   {
     case REF_UPD_ACT_CLEAR:
-      flag[updRefInfo.index1] = false;
+      flag[updRefInfo.index1] = true;
       break;
     case REF_UPD_ACT_SHIFT:
         if(updRefInfo.shift < 0) {
@@ -1105,7 +1105,7 @@ void ModelData::updateFlightModeFlags(unsigned int & curRef)
             if (i - updRefInfo.shift <= updRefInfo.maxindex)
               flag[i] = flag[i - updRefInfo.shift];
             else
-              flag[i] = false;
+              flag[i] = true;
           }
         }
         else {
@@ -1113,7 +1113,7 @@ void ModelData::updateFlightModeFlags(unsigned int & curRef)
             if (i - updRefInfo.shift >= updRefInfo.index1)
               flag[i] = flag[i - updRefInfo.shift];
             else
-              flag[i] = false;
+              flag[i] = true;
           }
         }
       break;
