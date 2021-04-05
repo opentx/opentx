@@ -159,10 +159,10 @@ extern "C" void INTMODULE_DMA_STREAM_IRQHandler()
   DMA_ClearITPendingBit(INTMODULE_DMA_STREAM, INTMODULE_DMA_FLAG_TC);
 
   switch (moduleState[INTERNAL_MODULE].protocol) {
-  case PROTOCOL_CHANNELS_PPM:
-    INTMODULE_TIMER->SR &= ~TIM_SR_CC2IF; // Clear flag
-    INTMODULE_TIMER->DIER |= TIM_DIER_CC2IE; // Enable this interrupt
-    break;
+    case PROTOCOL_CHANNELS_PPM:
+      INTMODULE_TIMER->SR &= ~TIM_SR_CC2IF; // Clear flag
+      INTMODULE_TIMER->DIER |= TIM_DIER_CC2IE; // Enable this interrupt
+      break;
   }
 }
 
