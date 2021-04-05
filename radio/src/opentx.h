@@ -320,7 +320,7 @@ void memswap(void * a, void * b, uint8_t size);
 #define MASK_CFN_TYPE  uint64_t  // current max = 64 function switches
 #define MASK_FUNC_TYPE uint32_t  // current max = 32 functions
 
-struct CustomFunctionContext {
+struct CustomFunctionsContext {
   MASK_FUNC_TYPE activeFunctions;
   MASK_CFN_TYPE  activeSwitches;
   tmr10ms_t lastFunctionTime[MAX_SPECIAL_FUNCTIONS];
@@ -334,7 +334,7 @@ struct CustomFunctionContext {
   {
     memclear(this, sizeof(*this));
   }
-} CustomFunctionsContext;
+};
 
 #include "strhelpers.h"
 #include "gui.h"
