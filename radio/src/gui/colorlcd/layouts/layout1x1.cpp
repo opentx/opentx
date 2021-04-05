@@ -27,6 +27,8 @@
 #define HAS_TRIMS()       (persistentData->options[3].value.boolValue == true)
 #define IS_MIRRORED()     (persistentData->options[4].value.boolValue == true)
 
+constexpr coord_t border = 10;
+
 const uint8_t LBM_LAYOUT_1x1[] = {
 #include "mask_layout1x1.lbm"
 };
@@ -74,16 +76,30 @@ class Layout1x1: public Layout
 
     rect_t getZone(unsigned int index) const override
     {
-      rect_t zone = { 10, 10, LCD_W - 2*10, LCD_H - 2*10 };
-      if (persistentData->options[0].value.boolValue) {
+      rect_t zone = {10, 10, LCD_W - 2 * border, LCD_H - 2 * border};
+
+      if (HAS_TOPBAR()) {
         zone.y += MENU_HEADER_HEIGHT;
         zone.h -= MENU_HEADER_HEIGHT;
       }
-      if (persistentData->options[1].value.boolValue) {
-        zone.x += 35;
-        zone.w -= 2*35;
-        zone.h -= 35;
+
+      if (HAS_FM() || HAS_TRIMS()) {
+        zone.h -= TRIM_SQUARE_SIZE;
       }
+
+      if (HAS_SLIDERS()) {
+#if NUM_SLIDERS + NUM_POTS > 2
+        zone.h -= TRIM_SQUARE_SIZE;
+#endif
+        zone.w -= 2 * TRIM_SQUARE_SIZE;
+        zone.x += TRIM_SQUARE_SIZE;
+      }
+
+      if (HAS_TRIMS()) {
+        zone.w -= 2 * TRIM_SQUARE_SIZE;
+        zone.x += TRIM_SQUARE_SIZE;
+      }
+
       return zone;
     }
 
