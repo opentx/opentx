@@ -74,10 +74,8 @@ class Layout1x1: public Layout
       return 1;
     }
 
-    rect_t getZone(unsigned int index) const override
+    rect_t getMainZone(rect_t zone) const
     {
-      rect_t zone = {10, 10, LCD_W - 2 * border, LCD_H - 2 * border};
-
       if (HAS_TOPBAR()) {
         zone.y += MENU_HEADER_HEIGHT;
         zone.h -= MENU_HEADER_HEIGHT;
@@ -99,6 +97,13 @@ class Layout1x1: public Layout
         zone.w -= 2 * TRIM_SQUARE_SIZE;
         zone.x += TRIM_SQUARE_SIZE;
       }
+
+      return zone;
+    }
+
+    rect_t getZone(unsigned int index) const override
+    {
+      rect_t zone = getMainZone({border, border, LCD_W - 2 * border, LCD_H - 2 * border});
 
       return zone;
     }
