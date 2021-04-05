@@ -94,15 +94,9 @@ class Layout2x2: public Layout
     void checkEvents() override
     {
       Layout::checkEvents();
-      uint8_t newValue = persistentData->options[4].value.boolValue << 4 | persistentData->options[3].value.boolValue << 3 | persistentData->options[2].value.boolValue << 2
-                         | persistentData->options[1].value.boolValue << 1 | persistentData->options[0].value.boolValue;
-      if (value != newValue) {
-        value = newValue;
-        // TODO call this from the Layout config window
-        this->clear();
-        decorate();
-      }
+      decorate();
     }
+
   protected:
     uint8_t value = 0;
 };

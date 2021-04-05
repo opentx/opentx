@@ -53,6 +53,8 @@ class Layout: public WidgetsContainer<MAX_LAYOUT_ZONES, MAX_LAYOUT_OPTIONS>
   protected:
     const LayoutFactory * factory;
     TopBar * topBar = nullptr;
+    uint8_t  decorationSettings = 0;
+    std::list<Window*> decorations;
 };
 
 void registerLayout(const LayoutFactory * factory);
