@@ -270,5 +270,11 @@ rect_t Layout::getMainZone(rect_t zone) const
     zone.x += TRIM_SQUARE_SIZE;
   }
 
+  if (zone.w % 2 != 0)
+    zone.w -= 1;
+
+  if (zone.h % 2 != 0)
+    zone.h -= 1;
+
   return zone;
 }    

@@ -28,6 +28,8 @@
 #define HAS_TRIMS()       (persistentData->options[3].value.boolValue == true)
 #define IS_MIRRORED()     (persistentData->options[4].value.boolValue == true)
 
+constexpr coord_t border = 10;
+
 const uint8_t LBM_LAYOUT_2P1[] = {
 #include "mask_layout2+1.lbm"
 };
@@ -35,12 +37,6 @@ const uint8_t LBM_LAYOUT_2P1[] = {
 const ZoneOption OPTIONS_LAYOUT_2P1[] = {
   LAYOUT_COMMON_OPTIONS,
   LAYOUT_OPTIONS_END
-};
-
-const rect_t ZONES_LAYOUT_2P1[3] = {
-  { 240, 60, 192, 152 },
-  { 48, 60, 180, 70 },
-  { 48, 142, 180, 70 }
 };
 
 class Layout2P1: public Layout
@@ -65,12 +61,27 @@ class Layout2P1: public Layout
 
     unsigned int getZonesCount() const override
     {
-      return DIM(ZONES_LAYOUT_2P1);
+      return 3;
     }
 
     rect_t getZone(unsigned int index) const override
     {
-      return ZONES_LAYOUT_2P1[index];
+      if (IS_MIRRORED())
+        index = 2 - index;
+
+      rect_t zone = getMainZone({border, border, LCD_W - 2 * border, LCD_H - 2 * border});
+
+      if (index == 0) {
+        return {zone.x, zone.y,zone.w / 2, zone.h};
+      }
+      else if (index == 1) {
+        return {zone.x + zone.w / 2, zone.y,zone.w / 2, zone.h / 2};
+      }
+      else {
+        return {zone.x + zone.w / 2, zone.y + zone.h / 2,zone.w / 2, zone.h / 2};
+      }
+
+      return zone;
     }
 };
 
