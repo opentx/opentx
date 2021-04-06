@@ -22,9 +22,9 @@
 #include "layout.h"
 #include "datastructs.h"
 
-class ScreenUserPage: public PageTab {
+class ScreenUserInterfacePage: public PageTab {
   public:
-    ScreenUserPage();
+    ScreenUserInterfacePage();
 
     void build(FormWindow * window) override;
 

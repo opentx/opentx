@@ -26,14 +26,26 @@
 
 #define SET_DIRTY()     storageDirty(EE_MODEL)
 
-ScreenUserPage::ScreenUserPage():
+ScreenUserInterfacePage::ScreenUserInterfacePage():
   PageTab(STR_USER_INTERFACE, ICON_THEME_SETUP)
 {
 }
 
-void ScreenUserPage::build(FormWindow * window)
+void ScreenUserInterfacePage::build(FormWindow * window)
 {
+  FormGridLayout grid;
 
+  // Theme choice
+  new StaticText(window, grid.getLabelSlot(), STR_THEME, 0, 0);
+  // TODO: Theme picklist
+  grid.nextLine();
+
+  // Theme options ?
+
+  // Top Bar
+  new StaticText(window, grid.getLabelSlot(), STR_TOP_BAR, 0, 0);
+  // TODO: enable settings topbar widgets
+  grid.nextLine();
 }
 
 ScreenAddPage::ScreenAddPage(ScreenMenu * menu, uint8_t pageIndex):
