@@ -56,38 +56,35 @@ int getMainViewsCount()
   return MAX_CUSTOM_SCREENS;
 }
 
-ViewMain * ViewMain::instance = nullptr;
+ViewMain * ViewMain::_instance = nullptr;
 
-ViewMain::ViewMain(bool icons):
+ViewMain::ViewMain():
   FormWindow(MainWindow::instance(), { 0, 0, LCD_W, LCD_H })
 {
-  instance = this;
 
 #if defined(HARDWARE_TOUCH) && !defined(HARDWARE_KEYS)
-  if (icons) {
-    new FabButton(this, 50, 100, ICON_MODEL,
-                      [=]() -> uint8_t {
-                          new ModelMenu();
-                          return 0;
-                      });
+  new FabButton(this, 50, 100, ICON_MODEL,
+                [=]() -> uint8_t {
+                  new ModelMenu();
+                  return 0;
+                });
 
-    new FabButton(this, LCD_W / 2, 100, ICON_RADIO,
-                      [=]() -> uint8_t {
-                          new RadioMenu();
-                          return 0;
-                      });
+  new FabButton(this, LCD_W / 2, 100, ICON_RADIO,
+                [=]() -> uint8_t {
+                  new RadioMenu();
+                  return 0;
+                });
 
-    new FabButton(this, LCD_W - 50, 100, ICON_THEME,
-                      [=]() -> uint8_t {
-                          new ScreenMenu();
-                          return 0;
-                      });
-  }
+  new FabButton(this, LCD_W - 50, 100, ICON_THEME,
+                [=]() -> uint8_t {
+                  new ScreenMenu();
+                  return 0;
+                });
 
   new IconButton(this, {0, 0, MENU_HEADER_BUTTON_WIDTH, MENU_HEADER_BUTTON_WIDTH}, ICON_BACK,
                  [=]() -> uint8_t {
-                     openMenu();
-                     return 0;
+                   openMenu();
+                   return 0;
                  }, NO_FOCUS);
 #endif
 

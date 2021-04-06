@@ -1896,10 +1896,7 @@ void opentxInit()
 {
   TRACE("opentxInit");
 
-#if defined(LIBOPENUI)
-  new MainWindow();
-  new ViewMain();
-#elif defined(GUI)
+#if defined(GUI) && !defined(LIBOPENUI)
   // TODO add a function for this (duplicated)
   menuHandlers[0] = menuMainView;
   #if MENUS_LOCK != 2/*no menus*/

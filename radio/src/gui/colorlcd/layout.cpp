@@ -78,7 +78,7 @@ void loadDefaultLayout()
     strcpy(screenData.layoutName, defaultLayout->getName());
     screen = defaultLayout->create(&screenData.layoutData);
     if (screen) {
-      screen->attach(ViewMain::instance);
+      screen->attach(ViewMain::instance());
     }
   }
 }
@@ -92,7 +92,7 @@ void loadCustomScreens()
                         &g_model.screenData[i].layoutData);
 
     if (screen) {
-      screen->attach(ViewMain::instance);
+      screen->attach(ViewMain::instance());
     }
   }
 }
