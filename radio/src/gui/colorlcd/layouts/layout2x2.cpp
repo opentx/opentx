@@ -60,9 +60,6 @@ class Layout2x2: public Layout
 
     rect_t getZone(unsigned int index) const override
     {
-      if (isMirrored())
-        index = 3 - index;
-
       rect_t zone = getMainZone({border, border, LCD_W - 2 * border, LCD_H - 2 * border});
 
       zone.w /= 2;
@@ -71,7 +68,7 @@ class Layout2x2: public Layout
       if (index == 1 || index == 3)
         zone.y += zone.h;
 
-      if (index > 1)
+      if ((!isMirrored() && index > 1)) || (isMirrored() && index < 2)
         zone.x += zone.w;
 
       return zone;
