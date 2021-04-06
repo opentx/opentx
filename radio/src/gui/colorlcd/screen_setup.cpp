@@ -158,25 +158,35 @@ class SetupWidgetsPageSlot: public Button
     {
       widget = screen->getWidget(slotIndex);
       setPressHandler([=]() -> uint8_t {
-          Menu * menu = new Menu(this);
-          menu->addLine(TR_SELECT_WIDGET, [=]() {
-            Menu * menu = new Menu(this);
-            for (auto factory: getRegisteredWidgets()) {
-              menu->addLine(factory->getName(), [=]() {
-                if (widget) widget->deleteLater();
-                widget = screen->createWidget(slotIndex, factory);
-              });
-            }
-          });
           if (widget) {
+            Menu * menu = new Menu(this);
+            menu->addLine(TR_SELECT_WIDGET, [=]() {
+                Menu * menu = new Menu(this);
+                for (auto factory: getRegisteredWidgets()) {
+                  menu->addLine(factory->getName(), [=]() {
+                      if (widget) widget->deleteLater();
+                      widget = screen->createWidget(slotIndex, factory);
+                  });
+                }
+            });
             menu->addLine(TR_WIDGET_SETTINGS, [=]() {
                 new WidgetSettings(this, widget);
             });
 
             menu->addLine(STR_REMOVE_WIDGET, [=]() {
-              widget->deleteLater();
-              widget = nullptr;
+                widget->deleteLater();
+                widget = nullptr;
             });
+            return 0;
+          }
+          else {
+            Menu * menu = new Menu(this);
+            for (auto factory: getRegisteredWidgets()) {
+              menu->addLine(factory->getName(), [=]() {
+                  if (widget) widget->deleteLater();
+                  widget = screen->createWidget(slotIndex, factory);
+              });
+            }
           }
           return 0;
       });
