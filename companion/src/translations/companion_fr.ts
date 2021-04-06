@@ -95,7 +95,7 @@
     <message>
         <location filename="../apppreferencesdialog.ui" line="20"/>
         <source>Edit Settings</source>
-        <translation>Éditer les paramètres</translation>
+        <translation>Éditer les préférences</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="52"/>
@@ -488,7 +488,7 @@ Manche Droit:  Profondeur, Direction
     <message>
         <location filename="../apppreferencesdialog.ui" line="1141"/>
         <source>Automatic Backup Folder</source>
-        <translation>Dossier de sauvegardes automatiques</translation>
+        <translation>Dossier des sauvegardes automatiques</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="1202"/>
@@ -2243,52 +2243,52 @@ Si vous avez un fichier de sauvegarde des paramètres, vous pouvez l&apos;import
     <message>
         <location filename="../firmwares/datahelpers.cpp" line="26"/>
         <source>Disabled</source>
-        <translation type="unfinished"></translation>
+        <translation>Désactivé</translation>
     </message>
     <message>
         <location filename="../firmwares/datahelpers.cpp" line="27"/>
         <source>Enabled</source>
-        <translation type="unfinished">Activé</translation>
+        <translation>Activé</translation>
     </message>
     <message>
         <location filename="../firmwares/datahelpers.cpp" line="28"/>
         <source>OFF</source>
-        <translation type="unfinished">Eteint</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/datahelpers.cpp" line="29"/>
         <source>ON</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/datahelpers.cpp" line="30"/>
         <source>False</source>
-        <translation type="unfinished">Faux</translation>
+        <translation>Faux</translation>
     </message>
     <message>
         <location filename="../firmwares/datahelpers.cpp" line="31"/>
         <source>True</source>
-        <translation type="unfinished">Vrai</translation>
+        <translation>Vrai</translation>
     </message>
     <message>
         <location filename="../firmwares/datahelpers.cpp" line="32"/>
         <source>N</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/datahelpers.cpp" line="33"/>
         <source>Y</source>
-        <translation type="unfinished">O</translation>
+        <translation>O</translation>
     </message>
     <message>
         <location filename="../firmwares/datahelpers.cpp" line="34"/>
         <source>No</source>
-        <translation type="unfinished">Non</translation>
+        <translation>Non</translation>
     </message>
     <message>
         <location filename="../firmwares/datahelpers.cpp" line="35"/>
         <source>Yes</source>
-        <translation type="unfinished">Oui</translation>
+        <translation>Oui</translation>
     </message>
 </context>
 <context>
@@ -2517,7 +2517,7 @@ Vérifier la sélection (M64/M128)</translation>
     <message>
         <location filename="../modeledit/expodialog.ui" line="36"/>
         <source>Flight modes</source>
-        <translation>Phases de vol</translation>
+        <translation>Phases de Vol</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="43"/>
@@ -5778,12 +5778,12 @@ Cette fonction ne peut pas être désactivée sur la radio.
     <message>
         <location filename="../modeledit/heli.ui" line="77"/>
         <source>Long. cyc</source>
-        <translation>Cyc. longitudinal</translation>
+        <translation>Cyclique longitudinal</translation>
     </message>
     <message>
         <location filename="../modeledit/heli.ui" line="166"/>
         <source>Lateral cyc</source>
-        <translation>Cyc. latéral</translation>
+        <translation>Cyclique latéral</translation>
     </message>
     <message>
         <location filename="../modeledit/heli.ui" line="231"/>
@@ -5998,12 +5998,12 @@ Cette fonction ne peut pas être désactivée sur la radio.
     <message>
         <location filename="../modeledit/inputs.cpp" line="583"/>
         <source>Clear all lines for the selected Input. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Effacer toutes les lignes Entrée sélectionnées. Êtes-vous sûr?</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="601"/>
         <source>Delete all lines for the selected Input. Are you sure?</source>
-        <translation type="unfinished"></translation>
+        <translation>Supprimer toutes les lignes Entrée sélectionnées. Êtes-vous sûr?</translation>
     </message>
 </context>
 <context>
@@ -7526,7 +7526,7 @@ Do you wish to continue?</source>
     <message>
         <location filename="../mdichild.cpp" line="377"/>
         <source>Edit Radio Settings</source>
-        <translation>Éditer paramètres radio</translation>
+        <translation>Éditer Paramètres Radio</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="378"/>
@@ -7541,7 +7541,7 @@ Do you wish to continue?</source>
     <message>
         <location filename="../mdichild.cpp" line="380"/>
         <source>Simulate Radio</source>
-        <translation>Simuler radio</translation>
+        <translation>Simuler Radio</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="382"/>
@@ -8022,7 +8022,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="404"/>
         <source>Flight modes</source>
-        <translation>Phases de vol</translation>
+        <translation>Phases de Vol</translation>
     </message>
     <message>
         <location filename="../modeledit/mixerdialog.ui" line="397"/>
@@ -8218,7 +8218,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../modeledit/modeledit.cpp" line="76"/>
         <source>Heli</source>
-        <translation>Paramètres hélico</translation>
+        <translation>Paramètres Hélico</translation>
     </message>
     <message>
         <location filename="../modeledit/modeledit.cpp" line="83"/>
@@ -8233,7 +8233,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../modeledit/modeledit.cpp" line="96"/>
         <source>Logical Switches</source>
-        <translation>Inters logiques</translation>
+        <translation>Inters Logiques</translation>
     </message>
     <message>
         <location filename="../modeledit/modeledit.cpp" line="72"/>
@@ -8253,7 +8253,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../modeledit/modeledit.cpp" line="80"/>
         <source>Flight Modes</source>
-        <translation>Phases de vol</translation>
+        <translation>Phases de Vol</translation>
     </message>
     <message>
         <location filename="../modeledit/modeledit.cpp" line="90"/>
@@ -8263,7 +8263,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../modeledit/modeledit.cpp" line="99"/>
         <source>Special Functions</source>
-        <translation>Fonctions spéciales</translation>
+        <translation>Fonctions Spéciales</translation>
     </message>
     <message>
         <location filename="../modeledit/modeledit.cpp" line="103"/>
@@ -8512,7 +8512,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../modelprinter.cpp" line="488"/>
         <source>Flight modes</source>
-        <translation>Phases de vol</translation>
+        <translation>Phases de Vol</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="488"/>
@@ -9293,12 +9293,12 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../multimodelprinter.cpp" line="399"/>
         <source>Long. cyc</source>
-        <translation>Cyc. longitudinal</translation>
+        <translation>Cyclique longitudinal</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="404"/>
         <source>Lateral cyc</source>
-        <translation>Cyc. latéral</translation>
+        <translation>Cyclique latéral</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="409"/>
@@ -9308,7 +9308,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../multimodelprinter.cpp" line="421"/>
         <source>Flight modes</source>
-        <translation>Phases de vol</translation>
+        <translation>Phases de Vol</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="426"/>
@@ -9470,7 +9470,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../multimodelprinter.cpp" line="337"/>
         <source>Start</source>
-        <translation type="unfinished"></translation>
+        <translation>Démarrer</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="371"/>
@@ -9551,7 +9551,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../multimodelprinter.cpp" line="716"/>
         <source>Logical Switches</source>
-        <translation>Inters logiques</translation>
+        <translation>Inters Logiques</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="738"/>
@@ -9561,7 +9561,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../multimodelprinter.cpp" line="745"/>
         <source>Special Functions</source>
-        <translation>Fonctions spéciales</translation>
+        <translation>Fonctions Spéciales</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="758"/>
@@ -13193,7 +13193,7 @@ hh:mm:ss</translation>
     <message>
         <location filename="../modeledit/setup_timer.ui" line="74"/>
         <source>Start</source>
-        <translation type="unfinished"></translation>
+        <translation>Démarrer</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_timer.ui" line="84"/>
@@ -13222,72 +13222,72 @@ hh:mm:ss</translation>
     <message>
         <location filename="../firmwares/timerdata.cpp" line="92"/>
         <source>Silent</source>
-        <translation type="unfinished">Aucun</translation>
+        <translation>Aucun</translation>
     </message>
     <message>
         <location filename="../firmwares/timerdata.cpp" line="94"/>
         <source>Beeps</source>
-        <translation type="unfinished">Bips</translation>
+        <translation>Bips</translation>
     </message>
     <message>
         <location filename="../firmwares/timerdata.cpp" line="96"/>
         <source>Voice</source>
-        <translation type="unfinished">Voix</translation>
+        <translation>Voix</translation>
     </message>
     <message>
         <location filename="../firmwares/timerdata.cpp" line="98"/>
         <source>Haptic</source>
-        <translation type="unfinished">Vibreur</translation>
+        <translation>Vibreur</translation>
     </message>
     <message>
         <location filename="../firmwares/timerdata.cpp" line="109"/>
         <source>5s</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/timerdata.cpp" line="111"/>
         <source>10s</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/timerdata.cpp" line="113"/>
         <source>20s</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/timerdata.cpp" line="115"/>
         <source>30s</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/timerdata.cpp" line="126"/>
         <source>Not persistent</source>
-        <translation type="unfinished">Non persistant</translation>
+        <translation>Non persistant</translation>
     </message>
     <message>
         <location filename="../firmwares/timerdata.cpp" line="126"/>
         <source>NOT</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/timerdata.cpp" line="128"/>
         <source>Persistent (flight)</source>
-        <translation type="unfinished">Persistant (vol)</translation>
+        <translation>Persistant (vol)</translation>
     </message>
     <message>
         <location filename="../firmwares/timerdata.cpp" line="128"/>
         <source>Flight</source>
-        <translation type="unfinished">Vol</translation>
+        <translation>Vol</translation>
     </message>
     <message>
         <location filename="../firmwares/timerdata.cpp" line="130"/>
         <source>Persistent (manual reset)</source>
-        <translation type="unfinished">Persistant (RAZ manuelle)</translation>
+        <translation>Persistant (RAZ manuelle)</translation>
     </message>
     <message>
         <location filename="../firmwares/timerdata.cpp" line="130"/>
         <source>Manual reset</source>
-        <translation type="unfinished">RAZ manuelle</translation>
+        <translation>RAZ manuelle</translation>
     </message>
 </context>
 <context>
