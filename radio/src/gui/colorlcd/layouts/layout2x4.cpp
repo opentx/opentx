@@ -20,12 +20,6 @@
 
 #include "opentx.h"
 
-#define HAS_TOPBAR()      (persistentData->options[0].value.boolValue == true)
-#define HAS_FM()          (persistentData->options[1].value.boolValue == true)
-#define HAS_SLIDERS()     (persistentData->options[2].value.boolValue == true)
-#define HAS_TRIMS()       (persistentData->options[3].value.boolValue == true)
-#define IS_MIRRORED()     (persistentData->options[4].value.boolValue == true)
-
 constexpr coord_t border = 10;
 
 const uint8_t LBM_LAYOUT_2x4[] = {
@@ -69,7 +63,7 @@ class Layout2x4: public Layout
 
     rect_t getZone(unsigned int index) const override
     {
-      if (IS_MIRRORED())
+      if (isMirrored())
         index = 7 - index;
 
       rect_t zone = getMainZone({border, border, LCD_W - 2 * border, LCD_H - 2 * border});

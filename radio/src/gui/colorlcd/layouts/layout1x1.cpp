@@ -21,12 +21,6 @@
 #include "opentx.h"
 #include "trims.h"
 
-#define HAS_TOPBAR()      (persistentData->options[0].value.boolValue == true)
-#define HAS_FM()          (persistentData->options[1].value.boolValue == true)
-#define HAS_SLIDERS()     (persistentData->options[2].value.boolValue == true)
-#define HAS_TRIMS()       (persistentData->options[3].value.boolValue == true)
-#define IS_MIRRORED()     (persistentData->options[4].value.boolValue == true)
-
 constexpr coord_t border = 10;
 
 const uint8_t LBM_LAYOUT_1x1[] = {
