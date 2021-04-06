@@ -19,6 +19,7 @@
  */
 
 #include "opentx.h"
+#include <memory>
 
 class ModelBitmapWidget: public Widget
 {
