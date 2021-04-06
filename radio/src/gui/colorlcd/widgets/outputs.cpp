@@ -79,12 +79,12 @@ class OutputsWidget: public Widget
 
     void twoColumns(BitmapBuffer * dc)
     {
-      uint8_t endColumn = drawChannels(dc, 0, 0, width() / 2, height(),
+      uint8_t endColumn = drawChannels(dc, 0, 0, (width() / 2) - 1, height(),
                                        persistentData->options[0].value.unsignedValue,
                                        persistentData->options[1].value.boolValue,
                                        persistentData->options[2].value.unsignedValue);
 
-      drawChannels(dc, width() / 2 + 2, 0, width() / 2, height(), endColumn + 1,
+      drawChannels(dc, width() / 2, 0, (width() / 2) - 1, height(), endColumn + 1,
                    persistentData->options[1].value.boolValue,
                    persistentData->options[2].value.unsignedValue);
     }
