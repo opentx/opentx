@@ -20,6 +20,14 @@
 
 #include "opentx.h"
 
+#define HAS_TOPBAR()      (persistentData->options[0].value.boolValue == true)
+#define HAS_FM()          (persistentData->options[1].value.boolValue == true)
+#define HAS_SLIDERS()     (persistentData->options[2].value.boolValue == true)
+#define HAS_TRIMS()       (persistentData->options[3].value.boolValue == true)
+#define IS_MIRRORED()     (persistentData->options[4].value.boolValue == true)
+
+constexpr coord_t border = 10;
+
 const uint8_t LBM_LAYOUT_2x4[] = {
 #include "mask_layout2x4.lbm"
 };
@@ -61,56 +69,21 @@ class Layout2x4: public Layout
 
     rect_t getZone(unsigned int index) const override
     {
-      rect_t zone;
-      zone.x = (index >= 4) ? 260 : 60;
-      zone.y = 56 + (index % 4) * 42;
-      zone.w = 160;
-      zone.h = 32;
+      if (IS_MIRRORED())
+        index = 7 - index;
+
+      rect_t zone = getMainZone({border, border, LCD_W - 2 * border, LCD_H - 2 * border});
+
+      zone.w /= 2;
+      zone.h /= 4;
+
+      if (index > 3)
+        zone.x += zone.w;
+
+      zone.y += (index % 4) * zone.h;
+
       return zone;
     }
-
-//    virtual void refresh();
 };
-
-//void Layout2x4::refresh()
-//{
-//  theme->drawBackground();
-//
-//  if (persistentData->options[0].value.boolValue) {
-//    drawTopBar();
-//  }
-//
-//  if (persistentData->options[1].value.boolValue) {
-//    // Flight mode
-//    lcdDrawSizedText(LCD_W / 2 - getTextWidth(g_model.flightModeData[mixerCurrentFlightMode].name,
-//                                              sizeof(g_model.flightModeData[mixerCurrentFlightMode].name),
-//                                              ZCHAR | FONT(XS)) / 2,
-//                     232,
-//                     g_model.flightModeData[mixerCurrentFlightMode].name,
-//                     sizeof(g_model.flightModeData[mixerCurrentFlightMode].name), ZCHAR | FONT(XS));
-//  }
-//
-//  if (persistentData->options[2].value.boolValue) {
-//    // Pots and rear sliders positions
-//    drawMainPots();
-//  }
-//
-//  if (persistentData->options[3].value.boolValue) {
-//    // Trims
-//    drawTrims(mixerCurrentFlightMode);
-//  }
-//
-//  if (persistentData->options[4].value.boolValue) {
-//    lcdSetColor(persistentData->options[5].value.unsignedValue);
-//    lcdDrawSolidFilledRect(50, 50, 180, 170, CUSTOM_COLOR);
-//  }
-//
-//  if (persistentData->options[6].value.boolValue) {
-//    lcdSetColor(persistentData->options[7].value.unsignedValue);
-//    lcdDrawSolidFilledRect(250, 50, 180, 170, CUSTOM_COLOR);
-//  }
-//
-//  Layout::refresh();
-//}
 
 BaseLayoutFactory<Layout2x4> layout2x4("Layout2x4", "2 x 4", LBM_LAYOUT_2x4, OPTIONS_LAYOUT_2x4);

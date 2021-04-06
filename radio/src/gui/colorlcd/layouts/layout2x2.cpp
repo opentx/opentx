@@ -28,6 +28,8 @@
 #define HAS_TRIMS()       (persistentData->options[3].value.boolValue == true)
 #define IS_MIRRORED()     (persistentData->options[4].value.boolValue == true)
 
+constexpr coord_t border = 10;
+
 const uint8_t LBM_LAYOUT_2x2[] = {
 #include "mask_layout2x2.lbm"
 };
@@ -64,20 +66,20 @@ class Layout2x2: public Layout
 
     rect_t getZone(unsigned int index) const override
     {
-      rect_t zone;
-      zone.w = (LCD_W-3*10) / 2;
-      zone.x = (index & 1) ? 20 + zone.w : 10;
-      if (persistentData->options[0].value.boolValue) {
-        zone.h = (LCD_H-MENU_HEADER_HEIGHT-3*10) / 2;
-        zone.y = MENU_HEADER_HEIGHT + 10;
-      }
-      else {
-        zone.h = (LCD_H-3*10) / 2;
-        zone.y = 10;
-      }
-      if (index >= 2) {
-        zone.y += 10 + zone.h;
-      }
+      if (IS_MIRRORED())
+        index = 3 - index;
+
+      rect_t zone = getMainZone({border, border, LCD_W - 2 * border, LCD_H - 2 * border});
+
+      zone.w /= 2;
+      zone.h /= 2;
+
+      if (index == 1 || index == 3)
+        zone.y += zone.h;
+
+      if (index > 1)
+        zone.x += zone.w;
+
       return zone;
     }
 };
