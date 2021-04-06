@@ -54,6 +54,8 @@
   #include "lua/lua_exports_xlites.inc"
 #elif defined(PCBXLITE)
   #include "lua/lua_exports_xlite.inc"
+#elif defined(RADIO_X9DP2019)
+  #include "lua/lua_exports_x9d+2019.inc"
 #elif defined(PCBTARANIS)
   #include "lua/lua_exports_x9d.inc"
 #endif
@@ -1409,7 +1411,10 @@ Get RSSI value as well as low and critical RSSI alarm levels (in dB)
 */
 static int luaGetRSSI(lua_State * L)
 {
-  lua_pushunsigned(L, min((uint8_t)99, TELEMETRY_RSSI()));
+  if (TELEMETRY_STREAMING())
+    lua_pushunsigned(L, min((uint8_t)99, TELEMETRY_RSSI()));
+  else
+    lua_pushunsigned(L, 0);
   lua_pushunsigned(L, g_model.rssiAlarms.getWarningRssi());
   lua_pushunsigned(L, g_model.rssiAlarms.getCriticalRssi());
   return 3;
@@ -2036,6 +2041,7 @@ const luaR_value_entry opentxConstants[] = {
   {"UNIT_KMH", UNIT_KMH },
   {"UNIT_MPH", UNIT_MPH },
   {"UNIT_METERS", UNIT_METERS },
+  {"UNIT_KM", UNIT_KM },
   {"UNIT_FEET", UNIT_FEET },
   {"UNIT_CELSIUS", UNIT_CELSIUS },
   {"UNIT_FAHRENHEIT", UNIT_FAHRENHEIT },

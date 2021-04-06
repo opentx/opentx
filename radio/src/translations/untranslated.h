@@ -134,7 +134,13 @@
 #define TR_MULTI_PROTOCOLS             "FlySky\0""Hubsan\0""FrSky\0 ""Hisky\0 ""V2x2\0  ""DSM\0   ""Devo\0  ""YD717\0 ""KN\0    ""SymaX\0 ""SLT\0   ""CX10\0  ""CG023\0 ""Bayang\0""ESky\0  ""MT99XX\0""MJXq\0  ""Shenqi\0""FY326\0 ""Futaba\0""J6 Pro\0""FQ777\0 ""Assan\0 ""Hontai\0""OpenLrs""FlSky2A""Q2x2\0  ""Walkera""Q303\0  ""GW008\0 ""DM002\0 ""Cabell\0""Esky150""H8 3D\0 ""Corona\0""CFlie\0 ""Hitec\0 ""WFly\0  ""Bugs\0  ""BugMini""Traxxas""NCC1701""E01X\0  ""V911S\0 ""GD00X\0 ""V761\0  ""KF606\0 ""Redpine""Potensi""ZSX\0   ""Height\0""Scanner""FrSkyRX""FS2A_RX""HoTT\0  ""FX816\0 ""BayanRX""Pelikan""Tiger\0 ""XK\0    ""XN297DU""FrSkyX2""FrSkyR9""Propel\0""FrSkyL\0""Skyartc""ESky-v2""DSM RX\0""JJRC345""Q90C\0  ""Kyosho\0""RadLink""ExpLRS\0""Realacc""OMP\0   ""M-Link\0""Wfly 2\0""E016Hv2"
 
 #define LEN_MULTI_POWER                "\005"
-#define TR_MULTI_POWER                 "10mW\0""25mW\0""50mW\0""100mW""200mW""300mW""500mW""1W\0  ""2W\0  "
+#define TR_MULTI_POWER                 "1.6mW""2.0mW""2.5mW""3.2mW""4.0mW""5.0mW""6.3mW""7.9mW""10mW\0""13mW\0""16mW\0""20mW\0""25mW\0""32mW\0""40mW\0""50mW\0"
+
+#define LEN_MULTI_WBUS_MODE            "\004"
+#define TR_MULTI_WBUS_MODE             "WBUS""PPM\0"
+
+#define LEN_MULTI_TELEMETRY_MODE        "\007"
+#define TR_MULTI_TELEMETRY_MODE        "Off\0   ""On\0    ""Off+Aux""On+Aux\0"
 
 #define LEN_AFHDS3_PROTOCOLS           "\x008"
 #define TR_AFHDS3_PROTOCOLS            "PWM/IBUS""PWM/SBUS""PPM/IBUS""PPM/SBUS"

@@ -20,31 +20,33 @@
 
 #pragma once
 
+#include "curvereference.h"
+
 #include <QtCore>
 
-class FieldRange
-{
-  Q_DECLARE_TR_FUNCTIONS(FieldRange)
+#define LIMITDATA_NAME_LEN  6
+
+class LimitData {
+  Q_DECLARE_TR_FUNCTIONS(LimitData)
 
   public:
-    FieldRange():
-      decimals(0),
-      min(0.0),
-      max(0.0),
-      step(1.0),
-      offset(0.0),
-      prefix(""),
-      unit("")
-    {
-    }
+    LimitData() { clear(); }
 
-    float getValue(int value) { return float(value) * step; }
+    int   min;
+    int   max;
+    bool  revert;
+    int   offset;
+    int   ppmCenter;
+    bool  symetrical;
+    int   failsafe;
+    char  name[LIMITDATA_NAME_LEN + 1];
+    CurveReference curve;
 
-    int decimals;
-    double min;
-    double max;
-    double step;
-    double offset;
-    QString prefix;
-    QString unit;
+    void clear();
+    bool isEmpty() const;
+    QString minToString() const;
+    QString maxToString() const;
+    QString offsetToString() const;
+    QString revertToString() const;
+    QString nameToString(int index) const;
 };

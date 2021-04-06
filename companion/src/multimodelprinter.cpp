@@ -334,18 +334,19 @@ QString MultiModelPrinter::printTimers()
   QString str;
   MultiColumns columns(modelPrinterMap.size());
   columns.appendSectionTableStart();
-  columns.appendRowHeader(QStringList() << tr("Timers") << tr("Time") << tr("Switch") << tr("Countdown") << tr("Min.call") << tr("Persist"));
+  columns.appendRowHeader(QStringList() << tr("Timers") << tr("Time") << tr("Switch") << tr("Countdown") << tr("Start") << tr("Min.call") << tr("Persist"));
 
   for (int i=0; i<firmware->getCapability(Timers); i++) {
     columns.appendRowStart();
     columns.appendCellStart(20, true);
-    COMPARE(modelPrinter->printTimerName(i));
+    COMPARE(model->timers[i].nameToString(i));
     columns.appendCellEnd(true);
-    COMPARECELLWIDTH(modelPrinter->printTimerTimeValue(model->timers[i].val), 15);
-    COMPARECELLWIDTH(model->timers[i].mode.toString(), 15);
-    COMPARECELLWIDTH(modelPrinter->printTimerCountdownBeep(model->timers[i].countdownBeep), 15);
-    COMPARECELLWIDTH(modelPrinter->printTimerMinuteBeep(model->timers[i].minuteBeep), 15);
-    COMPARECELLWIDTH(modelPrinter->printTimerPersistent(model->timers[i].persistent), 20);
+    COMPARECELLWIDTH(model->timers[i].valToString(), 10);
+    COMPARECELLWIDTH(model->timers[i].mode.toString(), 10);
+    COMPARECELLWIDTH(model->timers[i].countdownBeepToString(), 10);
+    COMPARECELLWIDTH(model->timers[i].countdownStartToString(), 10);
+    COMPARECELLWIDTH(DataHelpers::boolToString(model->timers[i].minuteBeep, DataHelpers::BOOL_FMT_YESNO), 10);
+    COMPARECELLWIDTH(model->timers[i].persistentToString(false), 15);
     columns.appendRowEnd();
   }
   columns.appendTableEnd();

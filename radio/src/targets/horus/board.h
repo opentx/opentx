@@ -180,14 +180,11 @@ void init_intmodule_heartbeat();
 void check_intmodule_heartbeat();
 
 void intmoduleSerialStart(uint32_t baudrate, uint8_t rxEnable, uint16_t parity, uint16_t stopBits, uint16_t wordLength);
-#if defined(INTERNAL_MODULE_MULTI)
-void intmoduleTimerStart(uint32_t periodMs);
-#endif
 void intmoduleSendByte(uint8_t byte);
 void intmoduleSendBuffer(const uint8_t * data, uint8_t size);
 void intmoduleSendNextFrame();
 
-void extmoduleSerialStart(uint32_t baudrate, uint32_t period_half_us, bool inverted);
+void extmoduleSerialStart();
 void extmoduleInvertedSerialStart(uint32_t baudrate);
 void extmoduleSendBuffer(const uint8_t * data, uint8_t size);
 void extmoduleSendNextFrame();
@@ -381,7 +378,7 @@ enum Analogs {
   SLIDER_LAST = SLIDER_FIRST + NUM_SLIDERS - 1,
   TX_VOLTAGE,
 #if defined(PCBX12S)
-  MOUSE1, // TODO why after voltage?
+  MOUSE1, // after voltage because previous ones come from SPI on X12S
   MOUSE2,
 #endif
   NUM_ANALOGS

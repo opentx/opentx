@@ -18,8 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#ifndef CUSTOMFUNCTIONDATA_H
-#define CUSTOMFUNCTIONDATA_H
+#pragma once
 
 #include "boards.h"
 #include "constants.h"
@@ -32,6 +31,7 @@ class Firmware;
 class ModelData;
 class GeneralSettings;
 class RadioDataConversionState;
+class AbstractStaticItemModel;
 
 enum AssignFunc {
   FuncOverrideCH1 = 0,
@@ -78,7 +78,8 @@ enum GVarAdjustModes
   FUNC_ADJUST_GVAR_CONSTANT,
   FUNC_ADJUST_GVAR_SOURCE,
   FUNC_ADJUST_GVAR_GVAR,
-  FUNC_ADJUST_GVAR_INCDEC
+  FUNC_ADJUST_GVAR_INCDEC,
+  FUNC_ADJUST_GVAR_COUNT
 };
 
 class CustomFunctionData {
@@ -102,25 +103,33 @@ class CustomFunctionData {
     unsigned int adjustMode;
     int repeatParam;
 
-    void clear();
-    bool isEmpty() const;
-    QString nameToString(int index, bool globalContext = false) const;
-    QString funcToString(const ModelData * model = nullptr) const;
-    QString paramToString(const ModelData * model) const;
-    QString repeatToString() const;
-    QString enabledToString() const;
-
-    static void populateResetParams(const ModelData * model, QComboBox * b, unsigned int value);
-    static void populatePlaySoundParams(QStringList & qs);
-    static void populateHapticParams(QStringList & qs);
-    static bool isFuncAvailable(int index);
-    static int funcContext(int index);
-    static int resetParamCount(const ModelData * model);
-    static bool isResetParamAvailable(const ModelData * model, int index);
-
     void convert(RadioDataConversionState & cstate);
 
+    void clear();
+    bool isEmpty() const;
+    QString funcToString(const ModelData * model = nullptr) const;
+    QString paramToString(const ModelData * model = nullptr) const;
+    QString repeatToString() const;
+    QString enabledToString() const;
+    QString playSoundToString() const;
+    QString harpicToString() const;
+    QString gvarAdjustModeToString() const;
+
+    static QString nameToString(const int index, const bool globalContext = false);
+    static QString funcToString(const AssignFunc func, const ModelData * model = nullptr);
+    static bool isFuncAvailable(const int index);
+    static int funcContext(const int index);
+    static QString resetToString(const int value, const ModelData * model = nullptr);
+    static int resetParamCount();
+    static bool isResetParamAvailable(const int index, const ModelData * model = nullptr);
+    static QString repeatToString(const int value);
+    static QStringList playSoundStringList();
+    static QString playSoundToString(const int value);
+    static QString harpicToString(const int value);
+    static QStringList gvarAdjustModeStringList();
+    static QString gvarAdjustModeToString(const int value);
+    static AbstractStaticItemModel * repeatItemModel();
+    static AbstractStaticItemModel * playSoundItemModel();
+    static AbstractStaticItemModel * harpicItemModel();
+    static AbstractStaticItemModel * gvarAdjustModeItemModel();
 };
-
-
-#endif // CUSTOMFUNCTIONDATA_H

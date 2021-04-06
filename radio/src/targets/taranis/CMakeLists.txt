@@ -63,6 +63,7 @@ elseif(PCB STREQUAL X9D+)
     option(INTERNAL_MODULE_PXX1 "Support for PXX1 internal module" OFF)
     option(INTERNAL_MODULE_PXX2 "Support for PXX2 internal module" ON)
     set(FLAVOUR x9d+2019)
+    set(LUA_EXPORT lua_export_x9d+2019)
     set(CPU_TYPE STM32F4)
     set(CPU_TYPE_FULL STM32F407xE)  # for size report
     set(LINKER_SCRIPT targets/taranis/stm32f4_flash.ld)
@@ -449,6 +450,7 @@ set(TARGET_SRC
   ../common/arm/stm32/audio_dac_driver.cpp
   ../common/arm/stm32/adc_driver.cpp
   ../common/arm/stm32/heartbeat_driver.cpp
+  ../common/arm/stm32/mixer_scheduler_driver.cpp
   )
 
 if(PCB STREQUAL XLITE OR PCB STREQUAL XLITES)

@@ -18,8 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _CHANNELS_H_
-#define _CHANNELS_H_
+#pragma once
 
 #include "helpers.h"
 #include "modeledit.h"
@@ -27,7 +26,7 @@
 #include <QtCore>
 
 class CompoundItemModelFactory;
-class FilteredItemModel;
+class FilteredItemModelFactory;
 
 constexpr char MIMETYPE_CHANNEL[] = "application/x-companion-channel";
 
@@ -38,7 +37,8 @@ class LimitsGroup
   Q_DECLARE_TR_FUNCTIONS(LimitsGroup)
 
   public:
-    LimitsGroup(Firmware * firmware, TableLayout * tableLayout, int row, int col, int & value, const ModelData & model, int min, int max, int deflt, ModelPanel * panel=NULL);
+    LimitsGroup(Firmware * firmware, TableLayout * tableLayout, int row, int col, int & value, const ModelData & model,
+                int min, int max, int deflt, FilteredItemModel * gvarModel, ModelPanel * panel = nullptr);
     ~LimitsGroup();
 
     void setValue(int val);
@@ -50,6 +50,7 @@ class LimitsGroup
     GVarGroup *gvarGroup;
     int &value;
     double displayStep;
+    QCheckBox *gv;
 };
 
 class ChannelsPanel : public ModelPanel
@@ -57,7 +58,8 @@ class ChannelsPanel : public ModelPanel
     Q_OBJECT
 
   public:
-    ChannelsPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, CompoundItemModelFactory * sharedItemModels);
+    ChannelsPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware,
+                  CompoundItemModelFactory * sharedItemModels);
     virtual ~ChannelsPanel();
 
   public slots:
@@ -89,7 +91,6 @@ class ChannelsPanel : public ModelPanel
     bool insertAllowed() const;
     bool moveDownAllowed() const;
     bool moveUpAllowed() const;
-    void swapData(int idx1, int idx2);
     QLineEdit *name[CPN_MAX_CHNOUT];
     LimitsGroup *chnOffset[CPN_MAX_CHNOUT];
     LimitsGroup *chnMin[CPN_MAX_CHNOUT];
@@ -101,9 +102,7 @@ class ChannelsPanel : public ModelPanel
     int selectedIndex;
     int chnCapability;
     CompoundItemModelFactory *sharedItemModels;
-    FilteredItemModel *curveFilteredModel;
     void updateItemModels();
     void connectItemModelEvents(const FilteredItemModel * itemModel);
+    FilteredItemModelFactory *dialogFilteredItemModels;
 };
-
-#endif // _CHANNELS_H_

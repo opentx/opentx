@@ -42,21 +42,23 @@ void intmoduleSendNextFrame()
 #if defined(PXX1)
     case PROTOCOL_CHANNELS_PXX1_PULSES:
     {
-      uint32_t last = intmodulePulsesData.pxx.getLast();
-      if (heartbeatCapture.valid) {
-        if (getTmr2MHz() - heartbeatCapture.timestamp > HEARBEAT_OFFSET)
-          last -= 21;
-        else
-          last += 19;
-        intmodulePulsesData.pxx.setLast(last);
-      }
-      INTMODULE_TIMER->CCR2 = last - 4000; // 2mS in advance
+      if (INTMODULE_DMA_STREAM->CR & DMA_SxCR_EN)
+        return;
+
+      //disable timer
+      INTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN;
+      
+      //INTMODULE_TIMER->CCR2 = last - 4000; // 2mS in advance
       INTMODULE_DMA_STREAM->CR &= ~DMA_SxCR_EN; // Disable DMA
       INTMODULE_DMA_STREAM->CR |= INTMODULE_DMA_CHANNEL | DMA_SxCR_DIR_0 | DMA_SxCR_MINC | DMA_SxCR_PSIZE_0 | DMA_SxCR_MSIZE_0 | DMA_SxCR_PL_0 | DMA_SxCR_PL_1;
       INTMODULE_DMA_STREAM->PAR = CONVERT_PTR_UINT(&INTMODULE_TIMER->ARR);
       INTMODULE_DMA_STREAM->M0AR = CONVERT_PTR_UINT(intmodulePulsesData.pxx.getData());
       INTMODULE_DMA_STREAM->NDTR = intmodulePulsesData.pxx.getSize();
       INTMODULE_DMA_STREAM->CR |= DMA_SxCR_EN | DMA_SxCR_TCIE; // Enable DMA
+
+      // re-init timer
+      INTMODULE_TIMER->EGR = 1;
+      INTMODULE_TIMER->CR1 |= TIM_CR1_CEN;
       break;
     }
 #endif
@@ -97,17 +99,16 @@ void intmodulePxx1PulsesStart()
 
   INTMODULE_TIMER->CR1 &= ~TIM_CR1_CEN;
   INTMODULE_TIMER->PSC = INTMODULE_TIMER_FREQ / 2000000 - 1; // 0.5uS (2Mhz)
-  INTMODULE_TIMER->ARR = 18000;
+
   INTMODULE_TIMER->CCER = TIM_CCER_CC3E | TIM_CCER_CC3NE;
   INTMODULE_TIMER->BDTR = TIM_BDTR_MOE; // Enable outputs
   INTMODULE_TIMER->CCR3 = 16;
   INTMODULE_TIMER->CCMR2 = TIM_CCMR2_OC3M_2 | TIM_CCMR2_OC3M_0; // Force O/P high
   INTMODULE_TIMER->EGR = 1; // Restart
-  INTMODULE_TIMER->DIER |= TIM_DIER_UDE; // Enable DMA on update
-  INTMODULE_TIMER->CCMR2 = TIM_CCMR2_OC3M_1 | TIM_CCMR2_OC3M_2;
+  INTMODULE_TIMER->CCMR2 = TIM_CCMR2_OC3M_1 | TIM_CCMR2_OC3M_2 | TIM_CCMR2_OC3PE;
+  INTMODULE_TIMER->ARR = 40000;
   INTMODULE_TIMER->SR &= ~TIM_SR_CC2IF; // Clear flag
-  INTMODULE_TIMER->CCR2 = 16000; // The first frame will be sent in 20ms
-  INTMODULE_TIMER->DIER |= TIM_DIER_CC2IE; // Enable this interrupt
+  INTMODULE_TIMER->DIER |= TIM_DIER_UDE; // Enable DMA on update
   INTMODULE_TIMER->CR1 |= TIM_CR1_CEN;
 
   NVIC_EnableIRQ(INTMODULE_DMA_STREAM_IRQn);
@@ -157,8 +158,12 @@ extern "C" void INTMODULE_DMA_STREAM_IRQHandler()
 
   DMA_ClearITPendingBit(INTMODULE_DMA_STREAM, INTMODULE_DMA_FLAG_TC);
 
-  INTMODULE_TIMER->SR &= ~TIM_SR_CC2IF; // Clear flag
-  INTMODULE_TIMER->DIER |= TIM_DIER_CC2IE; // Enable this interrupt
+  switch (moduleState[INTERNAL_MODULE].protocol) {
+    case PROTOCOL_CHANNELS_PPM:
+      INTMODULE_TIMER->SR &= ~TIM_SR_CC2IF; // Clear flag
+      INTMODULE_TIMER->DIER |= TIM_DIER_CC2IE; // Enable this interrupt
+      break;
+  }
 }
 
 extern "C" void INTMODULE_TIMER_CC_IRQHandler()

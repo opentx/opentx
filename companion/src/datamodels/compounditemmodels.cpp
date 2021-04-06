@@ -46,6 +46,8 @@ QString AbstractItemModel::idToString(const int value)
       return "CustomFuncResetParam";
     case IMID_TeleSource:
       return "TeleSource";
+    case IMID_RssiSource:
+      return "RssiSource";
     case IMID_CurveRefType:
       return "CurveRefType";
     case IMID_CurveRefFunc:
@@ -109,7 +111,6 @@ RawSourceItemModel::RawSourceItemModel(const GeneralSettings * const generalSett
     addItems(SOURCE_TYPE_LUA_OUTPUT,   RawSource::ScriptsGroup,  firmware->getCapability(LuaOutputsPerScript), i * 16);
   addItems(SOURCE_TYPE_VIRTUAL_INPUT,  RawSource::InputsGroup,   firmware->getCapability(VirtualInputs));
   addItems(SOURCE_TYPE_STICK,          RawSource::SourcesGroup,  board->getCapability(Board::MaxAnalogs));
-  addItems(SOURCE_TYPE_ROTARY_ENCODER, RawSource::SourcesGroup,  firmware->getCapability(RotaryEncoders));
   addItems(SOURCE_TYPE_TRIM,           RawSource::TrimsGroup,    board->getCapability(Board::NumTrims));
   addItems(SOURCE_TYPE_MAX,            RawSource::SourcesGroup,  1);
   addItems(SOURCE_TYPE_SWITCH,         RawSource::SwitchesGroup, board->getCapability(Board::Switches));
@@ -170,7 +171,6 @@ RawSwitchItemModel::RawSwitchItemModel(const GeneralSettings * const generalSett
   addItems(SWITCH_TYPE_TELEMETRY,      -1);
   addItems(SWITCH_TYPE_FLIGHT_MODE,    -firmware->getCapability(FlightModes));
   addItems(SWITCH_TYPE_VIRTUAL,        -firmware->getCapability(LogicalSwitches));
-  addItems(SWITCH_TYPE_ROTARY_ENCODER, -firmware->getCapability(RotaryEncoders));
   addItems(SWITCH_TYPE_TRIM,           -board->getCapability(Board::NumTrimSwitches));
   addItems(SWITCH_TYPE_MULTIPOS_POT,   -(board->getCapability(Board::MultiposPots) * board->getCapability(Board::MultiposPotsPositions)));
   addItems(SWITCH_TYPE_SWITCH,         -board->getCapability(Board::SwitchPositions));
@@ -181,7 +181,6 @@ RawSwitchItemModel::RawSwitchItemModel(const GeneralSettings * const generalSett
   addItems(SWITCH_TYPE_SWITCH,         board->getCapability(Board::SwitchPositions));
   addItems(SWITCH_TYPE_MULTIPOS_POT,   board->getCapability(Board::MultiposPots) * board->getCapability(Board::MultiposPotsPositions));
   addItems(SWITCH_TYPE_TRIM,           board->getCapability(Board::NumTrimSwitches));
-  addItems(SWITCH_TYPE_ROTARY_ENCODER, firmware->getCapability(RotaryEncoders));
   addItems(SWITCH_TYPE_VIRTUAL,        firmware->getCapability(LogicalSwitches));
   addItems(SWITCH_TYPE_FLIGHT_MODE,    firmware->getCapability(FlightModes));
   addItems(SWITCH_TYPE_TELEMETRY,      1);
@@ -420,7 +419,7 @@ CustomFuncActionItemModel::CustomFuncActionItemModel(const GeneralSettings * con
 
 void CustomFuncActionItemModel::setDynamicItemData(QStandardItem * item, const int value) const
 {
-  item->setText(CustomFunctionData(AssignFunc(value)).funcToString(modelData));
+  item->setText(CustomFunctionData::funcToString((AssignFunc)value, modelData));
   item->setData(CustomFunctionData::isFuncAvailable(value), IMDR_Available);
 }
 
@@ -445,9 +444,9 @@ CustomFuncResetParamItemModel::CustomFuncResetParamItemModel(const GeneralSettin
     AbstractDynamicItemModel(generalSettings, modelData, firmware, board, boardType)
 {
   setId(IMID_CustomFuncResetParam);
-  setUpdateMask(IMUE_TeleSensors);
+  setUpdateMask(IMUE_TeleSensors | IMUE_Timers);
 
-  for (int i = 0; i < CustomFunctionData::resetParamCount(modelData); i++) {
+  for (int i = 0; i < CustomFunctionData::resetParamCount(); i++) {
     QStandardItem * modelItem = new QStandardItem();
     modelItem->setData(i, IMDR_Id);
     setDynamicItemData(modelItem, i);
@@ -457,10 +456,8 @@ CustomFuncResetParamItemModel::CustomFuncResetParamItemModel(const GeneralSettin
 
 void CustomFuncResetParamItemModel::setDynamicItemData(QStandardItem * item, const int value) const
 {
-  CustomFunctionData cfd = CustomFunctionData(AssignFunc::FuncReset);
-  cfd.param = value;
-  item->setText(cfd.paramToString(modelData));
-  item->setData(CustomFunctionData::isResetParamAvailable(modelData, value), IMDR_Available);
+  item->setText(CustomFunctionData::resetToString(value, modelData));
+  item->setData(CustomFunctionData::isResetParamAvailable(value, modelData), IMDR_Available);
 }
 
 void CustomFuncResetParamItemModel::update(const int event)
@@ -488,7 +485,7 @@ TelemetrySourceItemModel::TelemetrySourceItemModel(const GeneralSettings * const
   if (!modelData)
     return;
 
-  setUpdateMask(IMUE_TeleSensors);
+  setUpdateMask(IMUE_TeleSensors | IMUE_Modules);
   const int count = firmware->getCapability(Sensors);
 
   for (int i = -count; i <= count; ++i) {
@@ -507,6 +504,49 @@ void TelemetrySourceItemModel::setDynamicItemData(QStandardItem * item, const in
 }
 
 void TelemetrySourceItemModel::update(const int event)
+{
+  if (doUpdate(event)) {
+    emit aboutToBeUpdated();
+
+    for (int i = 0; i < rowCount(); ++i) {
+      setDynamicItemData(item(i), item(i)->data(IMDR_Id).toInt());
+    }
+
+    emit updateComplete();
+  }
+}
+
+//
+// RssiSourceItemModel
+//
+
+RssiSourceItemModel::RssiSourceItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData,
+                                                   Firmware * firmware, const Boards * const board, const Board::Type boardType) :
+    AbstractDynamicItemModel(generalSettings, modelData, firmware, board, boardType)
+{
+  setId(IMID_RssiSource);
+
+  if (!modelData)
+    return;
+
+  setUpdateMask(IMUE_TeleSensors | IMUE_Modules);
+
+  for (int i = 0; i <= firmware->getCapability(Sensors); ++i) {
+    QStandardItem * modelItem = new QStandardItem();
+    modelItem->setData(i, IMDR_Id);
+    modelItem->setData(i < 0 ? IMDG_Negative : i > 0 ? IMDG_Positive : IMDG_None, IMDR_Flags);
+    setDynamicItemData(modelItem, i);
+    appendRow(modelItem);
+  }
+}
+
+void RssiSourceItemModel::setDynamicItemData(QStandardItem * item, const int value) const
+{
+  item->setText(SensorData::rssiSensorToString(modelData, value));
+  item->setData(SensorData::isRssiSensorAvailable(modelData, value), IMDR_Available);
+}
+
+void RssiSourceItemModel::update(const int event)
 {
   if (doUpdate(event)) {
     emit aboutToBeUpdated();
@@ -624,6 +664,9 @@ void CompoundItemModelFactory::addItemModel(const int id)
     case AbstractItemModel::IMID_TeleSource:
       registerItemModel(new TelemetrySourceItemModel(generalSettings, modelData, firmware, board, boardType));
       break;
+    case AbstractItemModel::IMID_RssiSource:
+      registerItemModel(new RssiSourceItemModel(generalSettings, modelData, firmware, board, boardType));
+      break;
     case AbstractItemModel::IMID_CurveRefType:
       registerItemModel(new CurveRefTypeItemModel(generalSettings, modelData, firmware, board, boardType));
       break;
@@ -668,6 +711,16 @@ AbstractItemModel * CompoundItemModelFactory::getItemModel(const int id) const
 {
   foreach (AbstractItemModel * itemModel, registeredItemModels) {
     if (itemModel->getId() == id)
+      return itemModel;
+  }
+
+  return nullptr;
+}
+
+AbstractItemModel * CompoundItemModelFactory::getItemModel(const QString name) const
+{
+  foreach (AbstractItemModel * itemModel, registeredItemModels) {
+    if (itemModel->getName() == name)
       return itemModel;
   }
 

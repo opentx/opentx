@@ -1527,7 +1527,7 @@ Mode 4:
         <string>Battery warning voltage.
 This is the threashhold where the battery warning sounds.
 
-Acceptable values are 5v..10v</string>
+Acceptable values are 3v..12v</string>
        </property>
        <property name="prefix">
         <string notr="true"/>
@@ -1539,7 +1539,7 @@ Acceptable values are 5v..10v</string>
         <number>1</number>
        </property>
        <property name="minimum">
-        <double>4.000000000000000</double>
+        <double>3.000000000000000</double>
        </property>
        <property name="maximum">
         <double>12.000000000000000</double>
@@ -1679,7 +1679,7 @@ Acceptable values are 5v..10v</string>
           <number>1</number>
          </property>
          <property name="minimum">
-          <double>4.000000000000000</double>
+          <double>3.000000000000000</double>
          </property>
          <property name="maximum">
           <double>16.000000000000000</double>
@@ -1708,7 +1708,7 @@ Acceptable values are 5v..10v</string>
           <number>1</number>
          </property>
          <property name="minimum">
-          <double>4.000000000000000</double>
+          <double>3.000000000000000</double>
          </property>
          <property name="maximum">
           <double>16.000000000000000</double>

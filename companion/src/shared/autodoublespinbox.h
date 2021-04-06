@@ -21,7 +21,7 @@
 #pragma once
 
 #include <QDoubleSpinBox>
-#include "modeledit/modeledit.h"
+#include "genericpanel.h"
 #if __GNUC__
   #include <math.h>
 #endif
@@ -31,23 +31,23 @@ class AutoDoubleSpinBox: public QDoubleSpinBox
   Q_OBJECT
 
   public:
-    explicit AutoDoubleSpinBox(QWidget *parent = 0):
+    explicit AutoDoubleSpinBox(QWidget * parent = nullptr):
       QDoubleSpinBox(parent),
-      field(NULL),
-      panel(NULL),
+      field(nullptr),
+      panel(nullptr),
       lock(false)
     {
       connect(this, SIGNAL(valueChanged(double)), this, SLOT(onValueChanged(double)));
     }
 
-    void setField(int & field, ModelPanel * panel=NULL)
+    void setField(int & field, GenericPanel * panel = nullptr)
     {
       this->field = &field;
       this->panel = panel;
       updateValue();
     }
 
-    void setField(unsigned int & field, ModelPanel * panel=NULL)
+    void setField(unsigned int & field, GenericPanel * panel = nullptr)
     {
       this->field = (int *)&field;
       this->panel = panel;
@@ -57,7 +57,9 @@ class AutoDoubleSpinBox: public QDoubleSpinBox
     void updateValue()
     {
       if (field) {
-        setValue(float(*field)/multiplier());
+        lock = true;
+        setValue(float(*field) / multiplier());
+        lock = false;
       }
     }
 
@@ -80,11 +82,17 @@ class AutoDoubleSpinBox: public QDoubleSpinBox
        }
      }
 
+  signals:
+    void currentDataChanged(double value);
+
   protected slots:
     void onValueChanged(double value)
     {
+      if (panel && panel->lock)
+        return;
       if (field && !lock) {
         *field = round(value * multiplier());
+        emit currentDataChanged(value);
         if (panel) {
           emit panel->modified();
         }
@@ -92,7 +100,7 @@ class AutoDoubleSpinBox: public QDoubleSpinBox
     }
 
   protected:
-    int * field;
-    ModelPanel * panel;
-    bool lock;
+    int * field = nullptr;
+    GenericPanel * panel = nullptr;
+    bool lock = false;
 };

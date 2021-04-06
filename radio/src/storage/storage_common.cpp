@@ -53,11 +53,11 @@ void preModelLoad()
   }
   pauseMixerCalculations();
 
-#if defined(INTMODULE_PWR_GPIO)
-  INTERNAL_MODULE_OFF();
+#if defined(HARDWARE_INTERNAL_MODULE)
+  stopPulsesInternalModule();
 #endif
-#if defined(EXTMODULE_PWR_GPIO)
-  EXTERNAL_MODULE_OFF();
+#if defined(HARDWARE_EXTERNAL_MODULE)
+  stopPulsesExternalModule();
 #endif
 
   stopTrainer();

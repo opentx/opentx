@@ -145,7 +145,7 @@ void editName(coord_t x, coord_t y, char * name, uint8_t size, event_t event, ui
           if (c <= 0) v = -v;
         }
         else {
-          v = checkIncDec(event, abs(v), '0', 'z', 0);
+          v = checkIncDec(event, abs(v), ' ', 'z', 0);
         }
       }
 

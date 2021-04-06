@@ -18,8 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#ifndef COMPOUNDITEMMODELS_H
-#define COMPOUNDITEMMODELS_H
+#pragma once
 
 #include "rawsource.h"
 #include "rawswitch.h"
@@ -44,6 +43,7 @@ class AbstractItemModel: public QStandardItemModel
       IMID_CustomFuncAction,
       IMID_CustomFuncResetParam,
       IMID_TeleSource,
+      IMID_RssiSource,
       IMID_CurveRefType,
       IMID_CurveRefFunc,
       IMID_ReservedCount,
@@ -78,8 +78,9 @@ class AbstractItemModel: public QStandardItemModel
       IMUE_Scripts         = 1 << 7,
       IMUE_TeleSensors     = 1 << 8,
       IMUE_Timers          = 1 << 9,
+      IMUE_Modules         = 1 << 10,
       IMUE_All             = IMUE_SystemRefresh | IMUE_Channels | IMUE_Curves | IMUE_FlightModes | IMUE_GVars | IMUE_Inputs |
-                             IMUE_LogicalSwitches | IMUE_Scripts | IMUE_TeleSensors | IMUE_Timers
+                             IMUE_LogicalSwitches | IMUE_Scripts | IMUE_TeleSensors | IMUE_Timers | IMUE_Modules
     };
     Q_ENUM(ItemModelUpdateEvent)
 
@@ -305,6 +306,21 @@ class TelemetrySourceItemModel: public AbstractDynamicItemModel
     virtual void setDynamicItemData(QStandardItem * item, const int value) const;
 };
 
+class RssiSourceItemModel: public AbstractDynamicItemModel
+{
+    Q_OBJECT
+  public:
+    explicit RssiSourceItemModel(const GeneralSettings * const generalSettings, const ModelData * const modelData,
+                                      Firmware * firmware, const Boards * const board, const Board::Type boardType);
+    virtual ~RssiSourceItemModel() {};
+
+  public slots:
+    virtual void update(const int event = IMUE_SystemRefresh) override;
+
+  protected:
+    virtual void setDynamicItemData(QStandardItem * item, const int value) const;
+};
+
 class CurveRefTypeItemModel : public AbstractStaticItemModel
 {
     Q_OBJECT
@@ -347,6 +363,7 @@ class CompoundItemModelFactory
     void unregisterItemModel(const int id);
     bool isItemModelRegistered(const int id) const;
     AbstractItemModel * getItemModel(const int id) const;
+    AbstractItemModel * getItemModel(const QString name) const;
     void update(const int event = AbstractItemModel::IMUE_SystemRefresh);
     void dumpAllItemModelContents() const;
 
@@ -361,5 +378,3 @@ class CompoundItemModelFactory
   private:
     void setSourceId(AbstractItemModel * itemModel);
 };
-
-#endif // COMPOUNDITEMMODELS_H

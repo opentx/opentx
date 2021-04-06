@@ -351,6 +351,9 @@ void InputsPanel::expoOpen(QListWidgetItem *item)
   if (!item)
     item = ExposlistWidget->currentItem();
 
+  if (item == nullptr)
+    return;
+
   int idx = item->data(Qt::UserRole).toByteArray().at(0);
   if (idx < 0) {
     int ch = -idx - 1;
@@ -368,7 +371,11 @@ void InputsPanel::expoOpen(QListWidgetItem *item)
 
 void InputsPanel::expoAdd()
 {
-  int index = ExposlistWidget->currentItem()->data(Qt::UserRole).toByteArray().at(0);
+  QListWidgetItem *item = ExposlistWidget->currentItem();
+  if (item == nullptr)
+    return;
+
+  int index = item->data(Qt::UserRole).toByteArray().at(0);
 
   if (index < 0) {  // if empty then return relevant index
     expoOpen();
@@ -573,13 +580,15 @@ bool InputsPanel::cmInputMoveUpAllowed() const
 
 void InputsPanel::cmInputClear()
 {
-  if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Clear all lines for the selected Inputs. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+  if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Clear all lines for the selected Input. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
     return;
 
   for (int i = CPN_MAX_EXPOS - 1; i >= 0; i--) {
     ExpoData *ed = &model->expoData[i];
-    if ((int)ed->chn == inputIdx)
-      model->removeInput(i);
+    if (!ed->isEmpty()) {
+      if ((int)ed->chn == inputIdx)
+        model->removeInput(i);
+    }
   }
   model->updateAllReferences(ModelData::REF_UPD_TYPE_INPUT, ModelData::REF_UPD_ACT_CLEAR, inputIdx);
   update();
@@ -589,15 +598,17 @@ void InputsPanel::cmInputClear()
 
 void InputsPanel::cmInputDelete()
 {
-  if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Delete all lines for the selected Inputs. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+  if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Delete all lines for the selected Input. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
     return;
 
-  for (int i = 0; i < CPN_MAX_EXPOS; i++) {
+  for (int i = CPN_MAX_EXPOS - 1; i >= 0; i--) {
     ExpoData *ed = &model->expoData[i];
-    if ((int)ed->chn == inputIdx)
-      model->removeInput(i);
-    else if ((int)ed->chn > inputIdx)
-      ed->chn--;
+    if (!ed->isEmpty()) {
+      if ((int)ed->chn == inputIdx)
+        model->removeInput(i);
+      else if ((int)ed->chn > inputIdx)
+        ed->chn--;
+    }
   }
 
   for (int i = inputIdx; i < inputsCount; i++) {

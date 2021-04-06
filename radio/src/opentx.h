@@ -320,7 +320,7 @@ void memswap(void * a, void * b, uint8_t size);
 #define MASK_CFN_TYPE  uint64_t  // current max = 64 function switches
 #define MASK_FUNC_TYPE uint32_t  // current max = 32 functions
 
-typedef struct {
+struct CustomFunctionsContext {
   MASK_FUNC_TYPE activeFunctions;
   MASK_CFN_TYPE  activeSwitches;
   tmr10ms_t lastFunctionTime[MAX_SPECIAL_FUNCTIONS];
@@ -334,7 +334,7 @@ typedef struct {
   {
     memclear(this, sizeof(*this));
   }
-} CustomFunctionsContext;
+};
 
 #include "strhelpers.h"
 #include "gui.h"
@@ -501,6 +501,7 @@ extern uint32_t nextMixerTime[NUM_MODULES];
 void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms);
 void evalMixes(uint8_t tick10ms);
 void doMixerCalculations();
+void doMixerPeriodicUpdates();
 void scheduleNextMixerCalculation(uint8_t module, uint32_t period_ms);
 
 void checkTrims();

@@ -18,16 +18,14 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _SETUP_H_
-#define _SETUP_H_
+#pragma once
 
 #include "modeledit.h"
 #include "eeprominterface.h"
+#include "compounditemmodels.h"
+#include "filtereditemmodels.h"
 
 constexpr char MIMETYPE_TIMER[] = "application/x-companion-timer";
-
-class CompoundItemModelFactory;
-class FilteredItemModel;
 
 namespace Ui {
   class Setup;
@@ -40,21 +38,18 @@ class TimerPanel : public ModelPanel
     Q_OBJECT
 
   public:
-    TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, GeneralSettings & generalSettings, Firmware * firmware,
-               QWidget *prevFocus, FilteredItemModel * switchModel);
+    TimerPanel(QWidget * parent, ModelData & model, TimerData & timer, GeneralSettings & generalSettings, Firmware * firmware,
+               QWidget * prevFocus, FilteredItemModelFactory * panelFilteredModels, CompoundItemModelFactory * panelItemModels);
     virtual ~TimerPanel();
 
     virtual void update();
     QWidget * getLastFocus();
 
   private slots:
-    void onModeChanged(int index);
-    void on_value_editingFinished();
-    void on_minuteBeep_toggled(bool checked);
-    void on_countdownBeep_currentIndexChanged(int index);
-    void on_name_editingFinished();
+    void onNameChanged();
     void onItemModelAboutToBeUpdated();
     void onItemModelUpdateComplete();
+    void onCountdownBeepChanged(int index);
 
   signals:
     void nameChanged();
@@ -63,6 +58,7 @@ class TimerPanel : public ModelPanel
     TimerData & timer;
     Ui::Timer * ui;
     void connectItemModelEvents(const FilteredItemModel * itemModel);
+    int modelsUpdateCnt;
 };
 
 class ModulePanel : public ModelPanel
@@ -81,6 +77,7 @@ class ModulePanel : public ModelPanel
   signals:
     void channelsRangeChanged();
     void failsafeModified(unsigned index);
+    void updateItemModels();
 
   private slots:
     void setupFailsafes();
@@ -146,7 +143,6 @@ class SetupPanel : public ModelPanel
 
   private slots:
     void on_name_editingFinished();
-    void on_throttleSource_currentIndexChanged(int index);
     void on_throttleTrimSwitch_currentIndexChanged(int index);
     void on_throttleTrim_toggled(bool checked);
     void on_extendedLimits_toggled(bool checked);
@@ -176,6 +172,7 @@ class SetupPanel : public ModelPanel
     void onTimerNameChanged();
     void onItemModelAboutToBeUpdated();
     void onItemModelUpdateComplete();
+    void onModuleUpdateItemModels();
 
   private:
     Ui::Setup *ui;
@@ -183,12 +180,11 @@ class SetupPanel : public ModelPanel
     QVector<QCheckBox *> startupSwitchesCheckboxes;
     QVector<QCheckBox *> potWarningCheckboxes;
     QVector<QCheckBox *> centerBeepCheckboxes;
-    ModulePanel * modules[CPN_MAX_MODULES+1];
+    ModulePanel * modules[CPN_MAX_MODULES + 1];
     TimerPanel * timers[CPN_MAX_TIMERS];
     void updateStartupSwitches();
     void updatePotWarnings();
     void updateBeepCenter();
-    void populateThrottleSourceCB();
     void populateThrottleTrimSwitchCB();
     int timersCount;
     int selectedTimerIndex;
@@ -198,10 +194,8 @@ class SetupPanel : public ModelPanel
     bool moveTimerUpAllowed() const;
     void swapTimerData(int idx1, int idx2);
     CompoundItemModelFactory * sharedItemModels;
-    FilteredItemModel * rawSwitchFilteredModel;
-    FilteredItemModel * thrSourceFilteredModel;
     void updateItemModels();
     void connectItemModelEvents(const FilteredItemModel * itemModel);
+    CompoundItemModelFactory * panelItemModels;
+    FilteredItemModelFactory * panelFilteredModels;
 };
-
-#endif // _SETUP_H_

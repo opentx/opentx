@@ -354,7 +354,11 @@ void MixesPanel::mixersDuplicate()
 
 void MixesPanel::mixerOpen()
 {
-  int idx = mixersListWidget->currentItem()->data(Qt::UserRole).toByteArray().at(0);
+  QListWidgetItem *item = mixersListWidget->currentItem();
+  if (item == nullptr) 
+    return;
+
+  int idx = item->data(Qt::UserRole).toByteArray().at(0);
   if(idx < 0) {
     int i = -idx;
     idx = getMixerIndex(i); //get mixer index to insert
@@ -371,7 +375,11 @@ void MixesPanel::mixerOpen()
 
 void MixesPanel::mixerHighlight()
 {
-  int idx = mixersListWidget->currentItem()->data(Qt::UserRole).toByteArray().at(0);
+  QListWidgetItem *item = mixersListWidget->currentItem();
+  if (item == nullptr) 
+    return;
+
+  int idx = item->data(Qt::UserRole).toByteArray().at(0);
   int dest;
   if (idx<0) {
     dest = -idx;

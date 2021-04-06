@@ -2,27 +2,34 @@
 set(firmwares_SRCS
   adjustmentreference.cpp
   boards.cpp
+  curvedata.cpp
   curvereference.cpp
   customfunctiondata.cpp
   eeprominterface.cpp
   generalsettings.cpp
   gvardata.cpp
-  io_data.cpp
+  input_data.cpp
+  flightmodedata.cpp
+  heli_data.cpp
   logicalswitchdata.cpp
+  mixdata.cpp
   modeldata.cpp
   moduledata.cpp
   multiprotocols.cpp
+  output_data.cpp
   radiodata.cpp
   radiodataconversionstate.cpp
   rawsource.cpp
   rawswitch.cpp
   sensordata.cpp
   telem_data.cpp
+  timerdata.cpp
   afhds3.cpp
   ersky9x/ersky9xeeprom.cpp
   ersky9x/ersky9xinterface.cpp
   opentx/opentxeeprom.cpp
   opentx/opentxinterface.cpp
+  datahelpers.cpp
   )
 
 string(REPLACE ".cpp" ".h" firmwares_HDRS "${firmwares_SRCS}")
@@ -30,7 +37,6 @@ string(REPLACE ".cpp" ".h" firmwares_HDRS "${firmwares_SRCS}")
 list(APPEND firmwares_HDRS
   eepromimportexport.h
   moduledata.h
-  helpersdata.h
   )
 
 set(firmwares_QT

@@ -35,6 +35,7 @@ constexpr char FIM_SENSORFORMULA[]   {"Sensor.Formula"};
 constexpr char FIM_SENSORCELLINDEX[] {"Sensor.CellIndex"};
 constexpr char FIM_SENSORUNIT[]      {"Sensor.Unit"};
 constexpr char FIM_SENSORPRECISION[] {"Sensor.Precision"};
+constexpr char FIM_RSSISOURCE[]      {"Rssi Source"};
 
 TelemetryCustomScreen::TelemetryCustomScreen(QWidget *parent, ModelData & model, FrSkyScreenData & screen, GeneralSettings & generalSettings,
                                              Firmware * firmware, const bool & parentLock, FilteredItemModelFactory * panelFilteredItemModels):
@@ -111,7 +112,7 @@ TelemetryCustomScreen::TelemetryCustomScreen(QWidget *parent, ModelData & model,
   lock = false;
 
   if (IS_TARANIS(firmware->getBoard())) {
-    QSet<QString> scriptsSet = getFilesSet(g.profile[g.id()].sdPath() + "/SCRIPTS/TELEMETRY", QStringList() << "*.lua", 8);
+    QSet<QString> scriptsSet = getFilesSet(g.profile[g.id()].sdPath() + "/SCRIPTS/TELEMETRY", QStringList() << "*.lua", 6);
     Helpers::populateFileComboBox(ui->scriptName, scriptsSet, screen.body.script.filename);
     connect(ui->scriptName, SIGNAL(currentIndexChanged(int)), this, SLOT(scriptNameEdited()));
     connect(ui->scriptName, SIGNAL(editTextChanged ( const QString)), this, SLOT(scriptNameEdited()));
@@ -696,6 +697,11 @@ TelemetryPanel::TelemetryPanel(QWidget *parent, ModelData & model, GeneralSettin
                                                   FIM_TELEPOSSRC);
   connectItemModelEvents(id);
 
+
+  id = panelFilteredItemModels->registerItemModel(new FilteredItemModel(sharedItemModels->getItemModel(AbstractItemModel::IMID_RssiSource)),
+                                                  FIM_RSSISOURCE);
+  connectItemModelEvents(id);
+
   id = panelItemModels->registerItemModel(SensorData::typeItemModel());
   panelFilteredItemModels->registerItemModel(new FilteredItemModel(panelItemModels->getItemModel(id)), FIM_SENSORTYPE);
 
@@ -813,12 +819,14 @@ void TelemetryPanel::setup()
   ui->ignoreSensorIds->setField(model->frsky.ignoreSensorIds, this);
   ui->disableTelemetryAlarms->setField(model->rssiAlarms.disabled);
 
+  ui->rssiAlarmWarningSB->setRange(45 - 30, 45 + 30);
   ui->rssiAlarmWarningSB->setValue(model->rssiAlarms.warning);
+  ui->rssiAlarmCriticalSB->setRange(42 - 30, 42 + 30);
   ui->rssiAlarmCriticalSB->setValue(model->rssiAlarms.critical);
 
   ui->rssiSourceLabel->show();
   ui->rssiSourceLabel->setText(tr("Source"));
-  ui->rssiSourceCB->setModel(panelFilteredItemModels->getItemModel(FIM_TELEPOSSRC));
+  ui->rssiSourceCB->setModel(panelFilteredItemModels->getItemModel(FIM_RSSISOURCE));
   ui->rssiSourceCB->setField(model->rssiSource, this);
   ui->rssiSourceCB->show();
 

@@ -420,9 +420,9 @@
   #define AUX_SERIAL_USART_IRQn               USART3_IRQn
   #define AUX_SERIAL_DMA_Stream_RX            DMA1_Stream1
   #define AUX_SERIAL_DMA_Channel_RX           DMA_Channel_4
-  #define AUX_SERIAL_PWR_GPIO                 GPIOA
-  #define AUX_SERIAL_PWR_GPIO_PIN             GPIO_Pin_15  // PB.00
 #if defined(RADIO_TX16S)
+  #define AUX_SERIAL_PWR_GPIO                 GPIOA
+  #define AUX_SERIAL_PWR_GPIO_PIN             GPIO_Pin_15  // PA.15
   #define TRAINER_BATTERY_COMPARTMENT         // allows serial port TTL trainer
 #endif
 #else
@@ -904,6 +904,13 @@
 // 2MHz Timer
 #define TIMER_2MHz_RCC_APB1Periph       RCC_APB1Periph_TIM7
 #define TIMER_2MHz_TIMER                TIM7
+
+// Mixer scheduler timer
+#define MIXER_SCHEDULER_TIMER_RCC_APB1Periph RCC_APB1Periph_TIM13
+#define MIXER_SCHEDULER_TIMER                TIM13
+#define MIXER_SCHEDULER_TIMER_FREQ           (PERI1_FREQUENCY * TIMER_MULT_APB1)
+#define MIXER_SCHEDULER_TIMER_IRQn           TIM8_UP_TIM13_IRQn
+#define MIXER_SCHEDULER_TIMER_IRQHandler     TIM8_UP_TIM13_IRQHandler
 
 // Bluetooth
 #define STORAGE_BLUETOOTH

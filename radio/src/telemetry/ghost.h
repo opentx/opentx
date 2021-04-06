@@ -44,6 +44,8 @@
 #define GHST_DL_VTX_STAT                0x22
 #define GHST_DL_PACK_STAT               0x23
 #define GHST_DL_MENU_DESC               0x24
+#define GHST_DL_GPS_PRIMARY             0x25
+#define GHST_DL_GPS_SECONDARY           0x26
 
 #define GHST_RC_CTR_VAL_12BIT		0x7C0   // 0x3e0 << 1
 #define GHST_RC_CTR_VAL_8BIT		0x7C
@@ -113,7 +115,7 @@ enum GhostTelemetryBaudrates
 };
 #endif
 #define GHOST_BAUDRATE       400000
-#define GHOST_PERIOD         4
+#define GHOST_PERIOD         4000 /* us */
 
 enum GhostLineFlags
 {

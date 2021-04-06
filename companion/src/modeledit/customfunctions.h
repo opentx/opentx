@@ -18,37 +18,18 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _CUSTOMFUNCTIONS_H_
-#define _CUSTOMFUNCTIONS_H_
+#pragma once
 
 #include "modeledit.h"
 #include "eeprominterface.h"
+#include "compounditemmodels.h"
+#include "filtereditemmodels.h"
 
 #include <QMediaPlayer>
 
-class CompoundItemModelFactory;
-class FilteredItemModel;
 class TimerEdit;
 
 constexpr char MIMETYPE_CUSTOM_FUNCTION[] = "application/x-companion-custom-function";
-
-class RepeatComboBox: public QComboBox
-{
-    Q_OBJECT
-
-  public:
-    RepeatComboBox(QWidget * parent, int & repeatParam);
-    void update();
-
-  signals:
-    void modified();
-
-  private slots:
-    void onIndexChanged(int);
-
-  protected:
-    int & repeatParam;
-};
 
 class CustomFunctionsPanel : public GenericPanel
 {
@@ -68,7 +49,6 @@ class CustomFunctionsPanel : public GenericPanel
     void functionEdited();
     void onCustomContextMenuRequested(QPoint pos);
     void refreshCustomFunction(int index, bool modified=false);
-    void onRepeatModified();
     bool playSound(int index);
     void stopSound(int index);
     void toggleSound(bool play);
@@ -87,8 +67,6 @@ class CustomFunctionsPanel : public GenericPanel
     void onItemModelUpdateComplete();
 
   private:
-    void populateFuncCB(QComboBox *b, unsigned int value);
-    void populateGVmodeCB(QComboBox *b, unsigned int value);
     void populateFuncParamCB(QComboBox *b, uint function, unsigned int value, unsigned int adjustmode=0);
     bool hasClipboardData(QByteArray * data = nullptr) const;
     bool insertAllowed() const;
@@ -96,12 +74,20 @@ class CustomFunctionsPanel : public GenericPanel
     bool moveUpAllowed() const;
     void swapData(int idx1, int idx2);
     void resetCBsAndRefresh(int idx);
-    void connectItemModelEvents(const FilteredItemModel * itemModel);
+    void connectItemModelEvents(FilteredItemModel * itemModel);
 
-    FilteredItemModel * rawSwitchFilteredModel;
-    FilteredItemModel * rawSourceAllModel;
-    FilteredItemModel * rawSourceInputsModel;
-    FilteredItemModel * rawSourceGVarsModel;
+    CompoundItemModelFactory * tabModelFactory;
+    FilteredItemModelFactory * tabFilterFactory;
+    int funcActionsId;
+    int funcResetParamId;
+    int rawSwitchId;
+    int rawSourceAllId;
+    int rawSourceInputsId;
+    int rawSourceGVarsId;
+    int playSoundId;
+    int harpicId;
+    int repeatId;
+    int gvarAdjustModeId;
 
     QSet<QString> tracksSet;
     QSet<QString> scriptsSet;
@@ -115,14 +101,11 @@ class CustomFunctionsPanel : public GenericPanel
     QComboBox * fswtchParamT[CPN_MAX_SPECIAL_FUNCTIONS];
     QComboBox * fswtchParamArmT[CPN_MAX_SPECIAL_FUNCTIONS];
     QCheckBox * fswtchEnable[CPN_MAX_SPECIAL_FUNCTIONS];
-    RepeatComboBox * fswtchRepeat[CPN_MAX_SPECIAL_FUNCTIONS];
+    QComboBox * fswtchRepeat[CPN_MAX_SPECIAL_FUNCTIONS];
     QComboBox * fswtchGVmode[CPN_MAX_SPECIAL_FUNCTIONS];
-    QSlider * fswtchBLcolor[CPN_MAX_SPECIAL_FUNCTIONS];
     QMediaPlayer * mediaPlayer;
 
     int selectedIndex;
     int fswCapability;
     int modelsUpdateCnt;
 };
-
-#endif // _CUSTOMFUNCTIONS_H_

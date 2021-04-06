@@ -161,6 +161,8 @@ extern const char STR_R9M_PXX2_RF_PROTOCOLS[];
 extern const char STR_DSM_PROTOCOLS[];
 extern const char STR_MULTI_PROTOCOLS[];
 extern const char STR_MULTI_POWER[];
+extern const char STR_MULTI_TELEMETRY_MODE[];
+extern const char STR_MULTI_WBUS_MODE[];
 extern const char STR_SPORT_MODES[];
 
 #if defined(AFHDS3)
@@ -403,6 +405,7 @@ extern const char STR_MULTI_OPTION[];
 extern const char STR_MULTI_VIDFREQ[];
 extern const char STR_MULTI_RFTUNE[];
 extern const char STR_MULTI_RFPOWER[];
+extern const char STR_MULTI_WBUS[];
 extern const char STR_MULTI_TELEMETRY[];
 extern const char STR_MULTI_AUTOBIND[];
 extern const char STR_DISABLE_CH_MAP[];

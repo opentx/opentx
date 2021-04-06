@@ -184,6 +184,25 @@ void processCrossfireTelemetryFrame()
       break;
     }
 
+    case RADIO_ID:
+      if (telemetryRxBuffer[3] == 0xEA    // radio address
+          && telemetryRxBuffer[5] == 0x10 // timing correction frame
+          ) {
+
+        uint32_t update_interval;
+        int32_t  offset;
+        if (getCrossfireTelemetryValue<4>(6, (int32_t&)update_interval) && getCrossfireTelemetryValue<4>(10, offset)) {
+
+          // values are in 10th of micro-seconds
+          update_interval /= 10;
+          offset /= 10;
+
+          TRACE("[XF] Rate: %d, Lag: %d", update_interval, offset);
+          getModuleSyncStatus(EXTERNAL_MODULE).update(update_interval, offset);
+        }
+      }
+      break;
+
 #if defined(LUA)
     default:
       if (luaInputTelemetryFifo && luaInputTelemetryFifo->hasSpace(telemetryRxBufferCount-2) ) {

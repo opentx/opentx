@@ -994,8 +994,14 @@ const char* mm_options_strings::options[] = {
   STR_MULTI_SERVOFREQ,
   STR_MULTI_MAX_THROW,
   STR_MULTI_RFCHAN,
-  STR_MULTI_RFPOWER
+  STR_MULTI_RFPOWER,
+  STR_MULTI_WBUS
 };
+
+const uint8_t getMaxMultiOptions()
+{
+  return DIM(mm_options_strings::options);
+}
 
 const mm_protocol_definition multi_protocols[] = {
 // Protocol as defined in pulses\modules_constants.h, number of sub_protocols - 1, Failsafe supported, Disable channel mapping supported, Subtype string, Option type
@@ -1091,3 +1097,22 @@ void editStickHardwareSettings(coord_t x, coord_t y, int idx, event_t event, Lcd
   else
     lcdDrawMMM(x, y, flags);
 }
+
+#if defined(MULTIMODULE)
+const char * getMultiOptionTitle(uint8_t moduleIdx)
+{
+  MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
+
+  if (status.isValid()) {
+    if (status.optionDisp >= getMaxMultiOptions()) {
+      status.optionDisp = 1; // Unknown options are defaulted to type 1 (basic option)
+    }
+    return mm_options_strings::options[status.optionDisp];
+  }
+  else {
+    const uint8_t multi_proto = g_model.moduleData[moduleIdx].getMultiProtocol();
+    const mm_protocol_definition * pdef = getMultiProtocolDefinition(multi_proto);
+    return pdef->optionsstr;
+  }
+}
+#endif
