@@ -653,40 +653,55 @@ int ModelData::updateReference()
     LogicalSwitchData *lsd = &logicalSw[i];
     if (!lsd->isEmpty()) {
       bool clearlsd = false;
+      int oldval1;
+      int oldval2;
       CSFunctionFamily family = lsd->getFunctionFamily();
       switch(family) {
         case LS_FAMILY_VOFS:
-          updateSourceIntRef(lsd->val1);
-          if (lsd->val1 == 0)
-            clearlsd = true;
+          if (lsd->val1 != 0) {
+            updateSourceIntRef(lsd->val1);
+            if (lsd->val1 == 0)
+              clearlsd = true;
+          }
           break;
         case LS_FAMILY_STICKY:
         case LS_FAMILY_VBOOL:
-          updateSwitchIntRef(lsd->val1);
-          updateSwitchIntRef(lsd->val2);
-          if (lsd->val1 == 0 && lsd->val2 == 0)
+          oldval1 = lsd->val1;
+          oldval2 = lsd->val2;
+          if (lsd->val1 != 0)
+            updateSwitchIntRef(lsd->val1);
+          if (lsd->val2 != 0)
+            updateSwitchIntRef(lsd->val2);
+          if (lsd->val1 == 0 && lsd->val2 == 0 && ((lsd->val1 != oldval1 && oldval2 == 0) || (lsd->val2 != oldval2 && oldval1 == 0)))
             clearlsd = true;
           break;
         case LS_FAMILY_EDGE:
-          updateSwitchIntRef(lsd->val1);
-          if (lsd->val1 == 0)
-            clearlsd = true;
+          if (lsd->val1 != 0) {
+            updateSwitchIntRef(lsd->val1);
+            if (lsd->val1 == 0)
+              clearlsd = true;
+          }
           break;
         case LS_FAMILY_VCOMP:
-          updateSourceIntRef(lsd->val1);
-          updateSourceIntRef(lsd->val2);
-          if (lsd->val1 == 0 && lsd->val2 == 0)
+          oldval1 = lsd->val1;
+          oldval2 = lsd->val2;
+          if (lsd->val1 != 0)
+            updateSourceIntRef(lsd->val1);
+          if (lsd->val2 != 0)
+            updateSourceIntRef(lsd->val2);
+          if (lsd->val1 == 0 && lsd->val2 == 0 && ((lsd->val1 != oldval1 && oldval2 == 0) || (lsd->val2 != oldval2 && oldval1 == 0)))
             clearlsd = true;
           break;
         default:
           break;
       }
-      if (clearlsd) {
+
+      if (lsd->andsw != 0)
+        updateSwitchIntRef(lsd->andsw);
+
+      if (clearlsd && lsd->andsw == 0) {
         lsd->clear();
         appendUpdateReferenceParams(REF_UPD_TYPE_LOGICAL_SWITCH, REF_UPD_ACT_CLEAR, i);
-      }
-      else {
-        updateSwitchIntRef(lsd->andsw);
       }
     }
   }
@@ -816,6 +831,7 @@ void ModelData::updateTypeIndexRef(R & curRef, const T type, const int idxAdj, c
   newRef.index = abs(curRef.index);
 
   div_t idx = div(newRef.index, updRefInfo.occurences);
+  div_t newidx;
 
   switch (updRefInfo.action)
   {
@@ -833,9 +849,10 @@ void ModelData::updateTypeIndexRef(R & curRef, const T type, const int idxAdj, c
       if (idx.quot < (updRefInfo.index1 + idxAdj))
         return;
 
-      newRef.index += updRefInfo.shift;
+      newRef.index = ((idx.quot + updRefInfo.shift) * updRefInfo.occurences) + idx.rem;
+      newidx = div(newRef.index, updRefInfo.occurences);
 
-      if (idx.quot < (updRefInfo.index1 + idxAdj) || idx.quot > (updRefInfo.maxindex + idxAdj)) {
+      if (newidx.quot < (updRefInfo.index1 + idxAdj) || newidx.quot > (updRefInfo.maxindex + idxAdj)) {
         if (defClear)
           newRef.clear();
         else {
@@ -1081,7 +1098,7 @@ void ModelData::updateFlightModeFlags(unsigned int & curRef)
   switch (updRefInfo.action)
   {
     case REF_UPD_ACT_CLEAR:
-      flag[updRefInfo.index1] = false;
+      flag[updRefInfo.index1] = true;
       break;
     case REF_UPD_ACT_SHIFT:
         if(updRefInfo.shift < 0) {
@@ -1089,7 +1106,7 @@ void ModelData::updateFlightModeFlags(unsigned int & curRef)
             if (i - updRefInfo.shift <= updRefInfo.maxindex)
               flag[i] = flag[i - updRefInfo.shift];
             else
-              flag[i] = false;
+              flag[i] = true;
           }
         }
         else {
@@ -1097,7 +1114,7 @@ void ModelData::updateFlightModeFlags(unsigned int & curRef)
             if (i - updRefInfo.shift >= updRefInfo.index1)
               flag[i] = flag[i - updRefInfo.shift];
             else
-              flag[i] = false;
+              flag[i] = true;
           }
         }
       break;
