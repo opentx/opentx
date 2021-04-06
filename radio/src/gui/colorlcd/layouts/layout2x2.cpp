@@ -68,7 +68,7 @@ class Layout2x2: public Layout
       if (index == 1 || index == 3)
         zone.y += zone.h;
 
-      if ((!isMirrored() && index > 1)) || (isMirrored() && index < 2)
+      if ((!isMirrored() && index > 1) || (isMirrored() && index < 2))
         zone.x += zone.w;
 
       return zone;
