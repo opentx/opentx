@@ -26,6 +26,16 @@
 
 #define SET_DIRTY()     storageDirty(EE_MODEL)
 
+ScreenUserPage::ScreenUserPage():
+  PageTab(STR_USER_INTERFACE, ICON_THEME_SETUP)
+{
+}
+
+void ScreenUserPage::build(FormWindow * window)
+{
+
+}
+
 ScreenAddPage::ScreenAddPage(ScreenMenu * menu, uint8_t pageIndex):
   PageTab(),
   menu(menu),

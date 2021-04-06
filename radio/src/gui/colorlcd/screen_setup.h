@@ -22,6 +22,15 @@
 #include "layout.h"
 #include "datastructs.h"
 
+class ScreenUserPage: public PageTab {
+  public:
+    ScreenUserPage();
+
+    void build(FormWindow * window) override;
+
+  protected:
+};
+
 class ScreenAddPage: public PageTab {
   public:
     ScreenAddPage(ScreenMenu * menu, uint8_t pageIndex);
