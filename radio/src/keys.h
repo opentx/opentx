@@ -155,9 +155,9 @@ inline bool IS_KEY_EVT(event_t evt, uint8_t key)
 class Key
 {
   private:
-    uint8_t m_vals;
-    uint8_t m_cnt;
-    uint8_t m_state;
+    uint8_t m_vals  = 0;
+    uint8_t m_cnt   = 0;
+    uint8_t m_state = 0;
   public:
     void input(bool val);
     bool state() const { return m_vals > 0; }
