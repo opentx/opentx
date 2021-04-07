@@ -40,21 +40,6 @@ class Layout1x1: public Layout
     {
     }
 
-    void create() override
-    {
-      Layout::create();
-      // TODO: make this common to all layouts as well
-      persistentData->options[0].value.boolValue = true;
-      persistentData->options[1].value.boolValue = true;
-      persistentData->options[2].value.boolValue = true;
-      persistentData->options[3].value.boolValue = true;
-      persistentData->options[4].value.boolValue = false;
-      persistentData->options[5].value.boolValue = false;
-
-      // TODO: really needed?
-      decorate();
-    }
-
     unsigned int getZonesCount() const override
     {
       return 1;

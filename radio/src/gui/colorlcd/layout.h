@@ -56,7 +56,9 @@ class Layout: public LayoutBase
       OPTION_FM,
       OPTION_SLIDERS,
       OPTION_TRIMS,
-      OPTION_MIRRORED
+      OPTION_MIRRORED,
+
+      OPTION_LAST_DEFAULT=OPTION_MIRRORED
     };
   
     Layout(const LayoutFactory * factory, PersistentData * persistentData):
@@ -66,6 +68,16 @@ class Layout: public LayoutBase
       decorate();
     }
 
+    void create() override
+    {
+      setOptionValue(OPTION_TOPBAR,   OPTION_VALUE_BOOL(true));
+      setOptionValue(OPTION_FM,       OPTION_VALUE_BOOL(true));
+      setOptionValue(OPTION_SLIDERS,  OPTION_VALUE_BOOL(true));
+      setOptionValue(OPTION_TRIMS,    OPTION_VALUE_BOOL(true));
+      setOptionValue(OPTION_MIRRORED, OPTION_VALUE_BOOL(false));
+      decorate();
+    }    
+  
     inline const LayoutFactory * getFactory() const
     {
       return factory;

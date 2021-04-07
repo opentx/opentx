@@ -38,6 +38,14 @@ const ZoneOption OPTIONS_LAYOUT_2x4[] = {
 class Layout2x4: public Layout
 {
   public:
+
+    enum {
+      OPTION_PANEL1_BACKGROUND = OPTION_LAST_DEFAULT + 1,
+      OPTION_PANEL1_COLOR,
+      OPTION_PANEL2_BACKGROUND,
+      OPTION_PANEL2_COLOR
+    };
+  
     Layout2x4(const LayoutFactory * factory, Layout::PersistentData * persistentData):
       Layout(factory, persistentData)
     {
@@ -46,14 +54,10 @@ class Layout2x4: public Layout
     void create() override
     {
       Layout::create();
-      persistentData->options[0] = ZoneOptionValueTyped { ZOV_Bool, OPTION_VALUE_BOOL(true) };
-      persistentData->options[1] = ZoneOptionValueTyped { ZOV_Bool, OPTION_VALUE_BOOL(true) };
-      persistentData->options[2] = ZoneOptionValueTyped { ZOV_Bool, OPTION_VALUE_BOOL(true) };
-      persistentData->options[3] = ZoneOptionValueTyped { ZOV_Bool, OPTION_VALUE_BOOL(true) };
-      persistentData->options[4] = ZoneOptionValueTyped { ZOV_Bool, OPTION_VALUE_BOOL(true) };
-      persistentData->options[5] = ZoneOptionValueTyped { ZOV_Unsigned, OPTION_VALUE_UNSIGNED( RGB(77,112,203)) };
-      persistentData->options[6] = ZoneOptionValueTyped { ZOV_Bool, OPTION_VALUE_BOOL(true) };
-      persistentData->options[7] = ZoneOptionValueTyped { ZOV_Unsigned, OPTION_VALUE_UNSIGNED( RGB(77,112,203)) };
+      setOptionValue(OPTION_PANEL1_BACKGROUND, OPTION_VALUE_BOOL(true));
+      setOptionValue(OPTION_PANEL1_COLOR, OPTION_VALUE_UNSIGNED( RGB(77,112,203)));
+      setOptionValue(OPTION_PANEL2_BACKGROUND, OPTION_VALUE_BOOL(true));
+      setOptionValue(OPTION_PANEL2_COLOR, OPTION_VALUE_UNSIGNED( RGB(77,112,203)));
     }
 
     unsigned int getZonesCount() const override

@@ -41,18 +41,6 @@ class Layout2x2: public Layout
     {
     }
 
-    void create() override
-    {
-      Layout::create();
-      persistentData->options[0].value.boolValue = true;
-      persistentData->options[1].value.boolValue = true;
-      persistentData->options[2].value.boolValue = true;
-      persistentData->options[3].value.boolValue = true;
-      persistentData->options[4].value.boolValue = false;
-      persistentData->options[5].value.boolValue = false;
-      decorate();
-    }
-
     unsigned int getZonesCount() const override
     {
       return 4;

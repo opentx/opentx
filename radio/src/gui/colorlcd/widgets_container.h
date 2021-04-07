@@ -104,6 +104,11 @@ class WidgetsContainer: public FormGroup, public WidgetsContainerInterface
       return &persistentData->options[index].value;
     }
 
+    inline void setOptionValue(unsigned int index, const ZoneOptionValue& value)
+    {
+      persistentData->options[index].value = value;
+    }
+
     unsigned int getZonesCount() const override = 0;
 
     rect_t getZone(unsigned int index) const override = 0;
