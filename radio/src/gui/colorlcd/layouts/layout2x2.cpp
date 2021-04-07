@@ -22,23 +22,15 @@
 #include "sliders.h"
 #include "trims.h"
 
-#define HAS_TOPBAR()      (persistentData->options[0].value.boolValue == true)
-#define HAS_FM()          (persistentData->options[1].value.boolValue == true)
-#define HAS_SLIDERS()     (persistentData->options[2].value.boolValue == true)
-#define HAS_TRIMS()       (persistentData->options[3].value.boolValue == true)
-#define IS_MIRRORED()     (persistentData->options[4].value.boolValue == true)
+constexpr coord_t border = 10;
 
 const uint8_t LBM_LAYOUT_2x2[] = {
 #include "mask_layout2x2.lbm"
 };
 
 const ZoneOption OPTIONS_LAYOUT_2x2[] = {
-  { STR_TOP_BAR, ZoneOption::Bool },
-  { STR_FLIGHT_MODE, ZoneOption::Bool },
-  { STR_SLIDERS, ZoneOption::Bool },
-  { STR_TRIMS, ZoneOption::Bool },
-  { STR_MIRROR, ZoneOption::Bool },
-  { nullptr, ZoneOption::Bool }
+  LAYOUT_COMMON_OPTIONS,
+  LAYOUT_OPTIONS_END
 };
 
 class Layout2x2: public Layout
@@ -47,24 +39,6 @@ class Layout2x2: public Layout
     Layout2x2(const LayoutFactory * factory, Layout::PersistentData * persistentData):
       Layout(factory, persistentData)
     {
-      decorate();
-    }
-
-    void create() override
-    {
-      Layout::create();
-      persistentData->options[0].value.boolValue = true;
-      persistentData->options[1].value.boolValue = true;
-      persistentData->options[2].value.boolValue = true;
-      persistentData->options[3].value.boolValue = true;
-      persistentData->options[4].value.boolValue = false;
-      persistentData->options[5].value.boolValue = false;
-      decorate();
-    }
-
-    void decorate()
-    {
-      Layout::decorate(HAS_TOPBAR(), HAS_SLIDERS(), HAS_TRIMS(), HAS_FM());
     }
 
     unsigned int getZonesCount() const override
@@ -74,31 +48,19 @@ class Layout2x2: public Layout
 
     rect_t getZone(unsigned int index) const override
     {
-      rect_t zone;
-      zone.w = (LCD_W-3*10) / 2;
-      zone.x = (index & 1) ? 20 + zone.w : 10;
-      if (persistentData->options[0].value.boolValue) {
-        zone.h = (LCD_H-MENU_HEADER_HEIGHT-3*10) / 2;
-        zone.y = MENU_HEADER_HEIGHT + 10;
-      }
-      else {
-        zone.h = (LCD_H-3*10) / 2;
-        zone.y = 10;
-      }
-      if (index >= 2) {
-        zone.y += 10 + zone.h;
-      }
+      rect_t zone = getMainZone({border, border, LCD_W - 2 * border, LCD_H - 2 * border});
+
+      zone.w /= 2;
+      zone.h /= 2;
+
+      if (index == 1 || index == 3)
+        zone.y += zone.h;
+
+      if ((!isMirrored() && index > 1) || (isMirrored() && index < 2))
+        zone.x += zone.w;
+
       return zone;
     }
-
-    void checkEvents() override
-    {
-      Layout::checkEvents();
-      decorate();
-    }
-
-  protected:
-    uint8_t value = 0;
 };
 
 BaseLayoutFactory<Layout2x2> layout2x2("Layout2x2", "2 x 2", LBM_LAYOUT_2x2, OPTIONS_LAYOUT_2x2);

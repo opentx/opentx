@@ -22,29 +22,15 @@
 #include "sliders.h"
 #include "trims.h"
 
-#define HAS_TOPBAR()      (persistentData->options[0].value.boolValue == true)
-#define HAS_FM()          (persistentData->options[1].value.boolValue == true)
-#define HAS_SLIDERS()     (persistentData->options[2].value.boolValue == true)
-#define HAS_TRIMS()       (persistentData->options[3].value.boolValue == true)
-#define IS_MIRRORED()     (persistentData->options[4].value.boolValue == true)
+constexpr coord_t border = 10;
 
 const uint8_t LBM_LAYOUT_2P1[] = {
 #include "mask_layout2+1.lbm"
 };
 
 const ZoneOption OPTIONS_LAYOUT_2P1[] = {
-  { STR_TOP_BAR, ZoneOption::Bool },
-  { STR_FLIGHT_MODE, ZoneOption::Bool },
-  { STR_SLIDERS, ZoneOption::Bool },
-  { STR_TRIMS, ZoneOption::Bool },
-  { STR_MIRROR, ZoneOption::Bool },
-  { nullptr, ZoneOption::Bool }
-};
-
-const rect_t ZONES_LAYOUT_2P1[3] = {
-  { 240, 60, 192, 152 },
-  { 48, 60, 180, 70 },
-  { 48, 142, 180, 70 }
+  LAYOUT_COMMON_OPTIONS,
+  LAYOUT_OPTIONS_END
 };
 
 class Layout2P1: public Layout
@@ -53,44 +39,29 @@ class Layout2P1: public Layout
     Layout2P1(const LayoutFactory * factory, Layout::PersistentData * persistentData):
       Layout(factory, persistentData)
     {
-      decorate();
-    }
-
-    void create() override
-    {
-      Layout::create();
-      persistentData->options[0].value.boolValue = true;
-      persistentData->options[1].value.boolValue = true;
-      persistentData->options[2].value.boolValue = true;
-      persistentData->options[3].value.boolValue = true;
-      persistentData->options[4].value.boolValue = false;
-      persistentData->options[5].value.boolValue = false;
-      decorate();
-    }
-
-    void decorate()
-    {
-      Layout::decorate(HAS_TOPBAR(), HAS_SLIDERS(), HAS_TRIMS(), HAS_FM());
     }
 
     unsigned int getZonesCount() const override
     {
-      return DIM(ZONES_LAYOUT_2P1);
+      return 3;
     }
 
     rect_t getZone(unsigned int index) const override
     {
-      return ZONES_LAYOUT_2P1[index];
-    }
+      rect_t zone = getMainZone({border, border, LCD_W - 2 * border, LCD_H - 2 * border});
 
-    void checkEvents() override
-    {
-      Layout::checkEvents();
-      // TODO call this from the Layout config window
-      decorate();
+      if (index == 0) {
+        return {isMirrored() ? zone.x : zone.x + zone.w / 2, zone.y,zone.w / 2, zone.h};
+      }
+      else if (index == 1) {
+        return {isMirrored() ? zone.x + zone.w / 2 : zone.x, zone.y,zone.w / 2, zone.h / 2};
+      }
+      else {
+        return {isMirrored() ? zone.x + zone.w / 2 : zone.x, zone.y + zone.h / 2,zone.w / 2, zone.h / 2};
+      }
+
+      return zone;
     }
-  protected:
-    uint8_t value = 0;
 };
 
 BaseLayoutFactory<Layout2P1> layout2P1("Layout2P1", "2 + 1", LBM_LAYOUT_2P1, OPTIONS_LAYOUT_2P1);

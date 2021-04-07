@@ -20,25 +20,32 @@
 
 #include "opentx.h"
 
+constexpr coord_t border = 10;
+
 const uint8_t LBM_LAYOUT_2x4[] = {
 #include "mask_layout2x4.lbm"
 };
 
 const ZoneOption OPTIONS_LAYOUT_2x4[] = {
-  { "Top bar", ZoneOption::Bool },
-  { "Flight mode", ZoneOption::Bool },
-  { "Sliders", ZoneOption::Bool },
-  { "Trims", ZoneOption::Bool },
+  LAYOUT_COMMON_OPTIONS,
   { "Panel1 background", ZoneOption::Bool },
   { "  Color", ZoneOption::Color },
   { "Panel2 background", ZoneOption::Bool },
   { "  Color", ZoneOption::Color },
-  { nullptr, ZoneOption::Bool }
+  LAYOUT_OPTIONS_END
 };
 
 class Layout2x4: public Layout
 {
   public:
+
+    enum {
+      OPTION_PANEL1_BACKGROUND = OPTION_LAST_DEFAULT + 1,
+      OPTION_PANEL1_COLOR,
+      OPTION_PANEL2_BACKGROUND,
+      OPTION_PANEL2_COLOR
+    };
+  
     Layout2x4(const LayoutFactory * factory, Layout::PersistentData * persistentData):
       Layout(factory, persistentData)
     {
@@ -47,14 +54,10 @@ class Layout2x4: public Layout
     void create() override
     {
       Layout::create();
-      persistentData->options[0] = ZoneOptionValueTyped { ZOV_Bool, OPTION_VALUE_BOOL(true) };
-      persistentData->options[1] = ZoneOptionValueTyped { ZOV_Bool, OPTION_VALUE_BOOL(true) };
-      persistentData->options[2] = ZoneOptionValueTyped { ZOV_Bool, OPTION_VALUE_BOOL(true) };
-      persistentData->options[3] = ZoneOptionValueTyped { ZOV_Bool, OPTION_VALUE_BOOL(true) };
-      persistentData->options[4] = ZoneOptionValueTyped { ZOV_Bool, OPTION_VALUE_BOOL(true) };
-      persistentData->options[5] = ZoneOptionValueTyped { ZOV_Unsigned, OPTION_VALUE_UNSIGNED( RGB(77,112,203)) };
-      persistentData->options[6] = ZoneOptionValueTyped { ZOV_Bool, OPTION_VALUE_BOOL(true) };
-      persistentData->options[7] = ZoneOptionValueTyped { ZOV_Unsigned, OPTION_VALUE_UNSIGNED( RGB(77,112,203)) };
+      setOptionValue(OPTION_PANEL1_BACKGROUND, OPTION_VALUE_BOOL(true));
+      setOptionValue(OPTION_PANEL1_COLOR, OPTION_VALUE_UNSIGNED( RGB(77,112,203)));
+      setOptionValue(OPTION_PANEL2_BACKGROUND, OPTION_VALUE_BOOL(true));
+      setOptionValue(OPTION_PANEL2_COLOR, OPTION_VALUE_UNSIGNED( RGB(77,112,203)));
     }
 
     unsigned int getZonesCount() const override
@@ -64,56 +67,19 @@ class Layout2x4: public Layout
 
     rect_t getZone(unsigned int index) const override
     {
-      rect_t zone;
-      zone.x = (index >= 4) ? 260 : 60;
-      zone.y = 56 + (index % 4) * 42;
-      zone.w = 160;
-      zone.h = 32;
+      rect_t zone = getMainZone({border, border, LCD_W - 2 * border, LCD_H - 2 * border});
+
+      zone.w /= 2;
+      zone.h /= 4;
+
+      if ((!isMirrored() && index > 3)  || (isMirrored() && index < 4)) {
+        zone.x += zone.w;
+      }
+
+      zone.y += (index % 4) * zone.h;
+
       return zone;
     }
-
-//    virtual void refresh();
 };
-
-//void Layout2x4::refresh()
-//{
-//  theme->drawBackground();
-//
-//  if (persistentData->options[0].value.boolValue) {
-//    drawTopBar();
-//  }
-//
-//  if (persistentData->options[1].value.boolValue) {
-//    // Flight mode
-//    lcdDrawSizedText(LCD_W / 2 - getTextWidth(g_model.flightModeData[mixerCurrentFlightMode].name,
-//                                              sizeof(g_model.flightModeData[mixerCurrentFlightMode].name),
-//                                              ZCHAR | FONT(XS)) / 2,
-//                     232,
-//                     g_model.flightModeData[mixerCurrentFlightMode].name,
-//                     sizeof(g_model.flightModeData[mixerCurrentFlightMode].name), ZCHAR | FONT(XS));
-//  }
-//
-//  if (persistentData->options[2].value.boolValue) {
-//    // Pots and rear sliders positions
-//    drawMainPots();
-//  }
-//
-//  if (persistentData->options[3].value.boolValue) {
-//    // Trims
-//    drawTrims(mixerCurrentFlightMode);
-//  }
-//
-//  if (persistentData->options[4].value.boolValue) {
-//    lcdSetColor(persistentData->options[5].value.unsignedValue);
-//    lcdDrawSolidFilledRect(50, 50, 180, 170, CUSTOM_COLOR);
-//  }
-//
-//  if (persistentData->options[6].value.boolValue) {
-//    lcdSetColor(persistentData->options[7].value.unsignedValue);
-//    lcdDrawSolidFilledRect(250, 50, 180, 170, CUSTOM_COLOR);
-//  }
-//
-//  Layout::refresh();
-//}
 
 BaseLayoutFactory<Layout2x4> layout2x4("Layout2x4", "2 x 4", LBM_LAYOUT_2x4, OPTIONS_LAYOUT_2x4);

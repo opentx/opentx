@@ -26,6 +26,28 @@
 
 #define SET_DIRTY()     storageDirty(EE_MODEL)
 
+ScreenUserInterfacePage::ScreenUserInterfacePage():
+  PageTab(STR_USER_INTERFACE, ICON_THEME_SETUP)
+{
+}
+
+void ScreenUserInterfacePage::build(FormWindow * window)
+{
+  FormGridLayout grid;
+
+  // Theme choice
+  new StaticText(window, grid.getLabelSlot(), STR_THEME, 0, 0);
+  // TODO: Theme picklist
+  grid.nextLine();
+
+  // Theme options ?
+
+  // Top Bar
+  new StaticText(window, grid.getLabelSlot(), STR_TOP_BAR, 0, 0);
+  // TODO: enable settings topbar widgets
+  grid.nextLine();
+}
+
 ScreenAddPage::ScreenAddPage(ScreenMenu * menu, uint8_t pageIndex):
   PageTab(),
   menu(menu),
@@ -158,25 +180,35 @@ class SetupWidgetsPageSlot: public Button
     {
       widget = screen->getWidget(slotIndex);
       setPressHandler([=]() -> uint8_t {
-          Menu * menu = new Menu(this);
-          menu->addLine(TR_SELECT_WIDGET, [=]() {
-            Menu * menu = new Menu(this);
-            for (auto factory: getRegisteredWidgets()) {
-              menu->addLine(factory->getName(), [=]() {
-                if (widget) widget->deleteLater();
-                widget = screen->createWidget(slotIndex, factory);
-              });
-            }
-          });
           if (widget) {
+            Menu * menu = new Menu(this);
+            menu->addLine(TR_SELECT_WIDGET, [=]() {
+                Menu * menu = new Menu(this);
+                for (auto factory: getRegisteredWidgets()) {
+                  menu->addLine(factory->getName(), [=]() {
+                      if (widget) widget->deleteLater();
+                      widget = screen->createWidget(slotIndex, factory);
+                  });
+                }
+            });
             menu->addLine(TR_WIDGET_SETTINGS, [=]() {
                 new WidgetSettings(this, widget);
             });
 
             menu->addLine(STR_REMOVE_WIDGET, [=]() {
-              widget->deleteLater();
-              widget = nullptr;
+                widget->deleteLater();
+                widget = nullptr;
             });
+            return 0;
+          }
+          else {
+            Menu * menu = new Menu(this);
+            for (auto factory: getRegisteredWidgets()) {
+              menu->addLine(factory->getName(), [=]() {
+                  if (widget) widget->deleteLater();
+                  widget = screen->createWidget(slotIndex, factory);
+              });
+            }
           }
           return 0;
       });

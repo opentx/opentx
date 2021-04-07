@@ -32,29 +32,94 @@ constexpr coord_t TRIM_SQUARE_SIZE = 17;
 
 class LayoutFactory;
 
-class Layout: public WidgetsContainer<MAX_LAYOUT_ZONES, MAX_LAYOUT_OPTIONS>
+#define LAYOUT_COMMON_OPTIONS \
+  { STR_TOP_BAR, ZoneOption::Bool },         \
+  { STR_FLIGHT_MODE, ZoneOption::Bool },     \
+  { STR_SLIDERS, ZoneOption::Bool },         \
+  { STR_TRIMS, ZoneOption::Bool },           \
+  { STR_MIRROR, ZoneOption::Bool }
+
+#define LAYOUT_OPTIONS_END \
+  { nullptr, ZoneOption::Bool }
+
+typedef WidgetsContainer<MAX_LAYOUT_ZONES, MAX_LAYOUT_OPTIONS> LayoutBase;
+
+class Layout: public LayoutBase
 {
   friend class LayoutFactory;
 
   public:
+
+    // Common 'ZoneOptionValue's among all layouts
+    enum {
+      OPTION_TOPBAR = 0,
+      OPTION_FM,
+      OPTION_SLIDERS,
+      OPTION_TRIMS,
+      OPTION_MIRRORED,
+
+      OPTION_LAST_DEFAULT=OPTION_MIRRORED
+    };
+  
     Layout(const LayoutFactory * factory, PersistentData * persistentData):
-      WidgetsContainer<MAX_LAYOUT_ZONES, MAX_LAYOUT_OPTIONS>({0, 0, LCD_W, LCD_H}, persistentData),
+      LayoutBase({0, 0, LCD_W, LCD_H}, persistentData),
       factory(factory)
     {
+      decorate();
     }
 
+    void create() override
+    {
+      setOptionValue(OPTION_TOPBAR,   OPTION_VALUE_BOOL(true));
+      setOptionValue(OPTION_FM,       OPTION_VALUE_BOOL(true));
+      setOptionValue(OPTION_SLIDERS,  OPTION_VALUE_BOOL(true));
+      setOptionValue(OPTION_TRIMS,    OPTION_VALUE_BOOL(true));
+      setOptionValue(OPTION_MIRRORED, OPTION_VALUE_BOOL(false));
+      decorate();
+    }    
+  
     inline const LayoutFactory * getFactory() const
     {
       return factory;
     }
 
-    void decorate(bool topbar, bool sliders, bool trims, bool flightMode);
+    void checkEvents() override
+    {
+      LayoutBase::checkEvents();
+      decorate();
+    }
+  
+    bool hasTopbar() const {
+      return getOptionValue(OPTION_TOPBAR)->boolValue;
+    }
+
+    bool hasFlightMode() const {
+      return getOptionValue(OPTION_FM)->boolValue;
+    }
+
+    bool hasSliders() const {
+      return getOptionValue(OPTION_SLIDERS)->boolValue;
+    }
+
+    bool hasTrims() const {
+      return getOptionValue(OPTION_TRIMS)->boolValue;
+    }
+
+    bool isMirrored() const {
+      return getOptionValue(OPTION_MIRRORED)->boolValue;
+    }
 
   protected:
     const LayoutFactory * factory;
     TopBar * topBar = nullptr;
     uint8_t  decorationSettings = 0;
     std::list<Window*> decorations;
+
+    // adds trims, sliders, pots, etc...
+    void decorate();
+
+    // get the Zone rect without decoration
+    rect_t getMainZone(rect_t zone) const;
 };
 
 void registerLayout(const LayoutFactory * factory);
