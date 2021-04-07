@@ -148,7 +148,7 @@ void FullScreenDialog::runForever()
     MainWindow::instance()->run(false);
   }
 
-  Window::deleteLater();
+  deleteLater();
 }
 
 void raiseAlert(const char * title, const char * msg, const char * action, uint8_t sound)
