@@ -18,8 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#ifndef PULSES_AFHDS3_H_
-#define PULSES_AFHDS3_H_
+#pragma once
 
 #include "libopenui/src/bitfield.h"
 #include "definitions.h"
@@ -95,7 +94,6 @@ struct Data
   void reset()
   {
     pulsesSize = 0;
-#endif
   }
 
 #if defined(EXTMODULE_USART) && defined(EXTMODULE_TX_INVERT_GPIO)
@@ -591,4 +589,4 @@ class PulsesData: public Data, CommandFifo
     ModuleVersion version;
 };
 } /* Namespace ahfds3 */
-#endif /* PULSES_AFHDS3_H_ */
+

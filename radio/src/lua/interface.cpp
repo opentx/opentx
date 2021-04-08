@@ -756,7 +756,7 @@ void displayLuaError(const char * title)
         lcdDrawSizedText(WARNING_LINE_X, WARNING_LINE_Y + 2 * FH, split + 2, 20, SMLSIZE);
         lcdDrawSizedText(WARNING_LINE_X, WARNING_LINE_Y + 3 * FH, split + 22, strlen(split + 22), SMLSIZE);
       }
-#else
+#elif LCD_W == 64
       lcdDrawSizedText(WARNING_LINE_X, WARNING_LINE_Y + FH + 3, lua_warning_info, split - lua_warning_info, SMLSIZE);
       lcdDrawSizedText(WARNING_LINE_X, WARNING_LINE_Y + 2 * FH + 2, split + 2, lua_warning_info + LUA_WARNING_INFO_LEN - split, SMLSIZE);
 #endif

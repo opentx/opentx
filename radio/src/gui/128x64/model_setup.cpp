@@ -409,7 +409,7 @@ void menuModelSetup(event_t event)
   MENU_TAB({
     HEADER_LINE_COLUMNS
     0,
-    TIMERS_ROWS,
+    TIMER_ROWS,
     0, // Extended limits
     1, // Extended trims
     0, // Show trims
@@ -1767,18 +1767,19 @@ void menuModelSetup(event_t event)
         getModuleStatusString(EXTERNAL_MODULE, reusableBuffer.moduleSetup.msg);
         lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, reusableBuffer.moduleSetup.msg);
         break;
-
+      }
 #if defined(HARDWARE_INTERNAL_MODULE)
       case ITEM_MODEL_SETUP_INTERNAL_MODULE_SYNCSTATUS:
 #endif
 #if defined(HARDWARE_EXTERNAL_MODULE)
       case ITEM_MODEL_SETUP_EXTERNAL_MODULE_SYNCSTATUS:
 #endif
-      {
-        lcdDrawTextAlignedLeft(y, STR_MODULE_SYNC);
-        getModuleSyncStatusString(moduleIdx, reusableBuffer.moduleSetup.msg);
-        lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, reusableBuffer.moduleSetup.msg);
-        break;
+        {
+          lcdDrawTextAlignedLeft(y, STR_MODULE_SYNC);
+          getModuleSyncStatusString(moduleIdx, reusableBuffer.moduleSetup.msg);
+          lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, reusableBuffer.moduleSetup.msg);
+          break;
+        }
 #endif
 
 #if defined(AFHDS3)

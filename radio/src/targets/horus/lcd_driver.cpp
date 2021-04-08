@@ -151,7 +151,7 @@ static void LCD_NRSTConfig(void)
   GPIO_Init(LCD_GPIO_NRST, &GPIO_InitStructure);
 }
 
-static void lcd_reset(void)
+static void lcdReset(void)
 {
 #if defined(RADIO_T18)     // T18 screen has issues if NRST is ever brought low
   NRST_HIGH();

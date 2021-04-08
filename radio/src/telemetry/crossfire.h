@@ -104,7 +104,7 @@ const uint8_t CROSSFIRE_FRAME_PERIODS[] = {
 };
 #if SPORT_MAX_BAUDRATE < 400000 || defined(DEBUG)
 #define CROSSFIRE_BAUDRATE    CROSSFIRE_BAUDRATES[g_eeGeneral.telemetryBaudrate]
-#define CROSSFIRE_PERIOD      (CROSSFIRE_PERIODS[g_eeGeneral.telemetryBaudrate] * 1000)
+#define CROSSFIRE_PERIOD      (CROSSFIRE_FRAME_PERIODS[g_eeGeneral.telemetryBaudrate] * 1000)
 #else
 #define CROSSFIRE_BAUDRATE       400000
 #define CROSSFIRE_PERIOD         4000 /* us; 250 Hz */

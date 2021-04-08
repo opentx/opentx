@@ -571,6 +571,7 @@
 #define TR_MULTI_CUSTOM                "自定義"
 #define TR_MULTI_RFTUNE                 TR("Freq tune", "頻率微調")
 #define TR_MULTI_RFPOWER                "發射功率"
+#define TR_MULTI_WBUS                   "Output"
 #define TR_MULTI_TELEMETRY              "回傳"
 #define TR_MULTI_VIDFREQ                TR("Vid. freq.", "Video frequency")
 #define TR_RF_POWER                     "發射功率"
@@ -599,6 +600,7 @@
 #define TR_BINDING_CH1_8_TELEM_OFF      "Ch1-8 關閉回傳"
 #define TR_BINDING_CH9_16_TELEM_ON      "Ch9-16 開啟回傳"
 #define TR_BINDING_CH9_16_TELEM_OFF     "Ch9-16 關閉回傳"
+#define TR_PROTOCOL                     "Protocol"
 #define TR_PROTOCOL_INVALID             TR("Prot. invalid", "無效協議")
 #define TR_MODULE_STATUS                TR(INDENT "Status", INDENT "多協議狀態")
 #define TR_MODULE_SYNC                  TR(INDENT "Sync", INDENT "協議同步狀態")
@@ -1317,3 +1319,6 @@
 #define ZSTR_SERVO_VOLTAGE             "SrvV"
 #define ZSTR_SERVO_TEMPERATURE         "SrvT"
 #define ZSTR_SERVO_STATUS              "SrvS"
+#define ZSTR_LOSS                      "Loss"
+#define ZSTR_SPEED                     "Spd "
+#define ZSTR_FLOW                      "Flow"
