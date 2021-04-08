@@ -43,9 +43,6 @@ void storageEraseAll(bool warn)
   static_cast<OpenTxTheme*>(theme)->load();
 #endif
 
-  generalDefault();
-  modelDefault(1);
-
   if (warn) {
     ALERT(STR_STORAGE_WARNING, STR_BAD_RADIO_DATA, AU_BAD_RADIODATA);
   }
@@ -54,6 +51,10 @@ void storageEraseAll(bool warn)
 
   storageFormat();
   storageDirty(EE_GENERAL|EE_MODEL);
+
+  generalDefault();
+  modelDefault(1);
+
   storageCheck(true);
 }
 
@@ -68,7 +69,7 @@ void storageCheck(bool immediately)
 {
   if (storageDirtyMsk & EE_GENERAL) {
     TRACE("eeprom write general");
-    storageDirtyMsk -= EE_GENERAL;
+    storageDirtyMsk &= ~EE_GENERAL;
     const char * error = writeGeneralSettings();
     if (error) {
       TRACE("writeGeneralSettings error=%s", error);
@@ -77,7 +78,7 @@ void storageCheck(bool immediately)
 
   if (storageDirtyMsk & EE_MODEL) {
     TRACE("eeprom write model");
-    storageDirtyMsk -= EE_MODEL;
+    storageDirtyMsk &= ~EE_MODEL;
     const char * error = writeModel();
     if (error) {
       TRACE("writeModel error=%s", error);
