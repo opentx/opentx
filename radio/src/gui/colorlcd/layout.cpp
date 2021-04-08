@@ -75,7 +75,7 @@ void loadDefaultLayout()
   auto& screenData = g_model.screenData[0];
 
   if (screen == nullptr && defaultLayout != nullptr) {
-    strcpy(screenData.layoutName, defaultLayout->getName());
+    strcpy(screenData.layoutName, defaultLayout->getId());
     screen = defaultLayout->create(&screenData.layoutData);
     if (screen) {
       screen->attach(ViewMain::instance());
