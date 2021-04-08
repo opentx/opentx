@@ -23,7 +23,7 @@
 
 #if defined(LIBOPENUI)
 // #include "shutdown_animation.h"
-// #include "radio_calibration.h"
+#include "radio_calibration.h"
 #include "view_main.h"
 #endif
 
@@ -1632,8 +1632,7 @@ void opentxStart(const uint8_t startOptions = OPENTX_START_DEFAULT_ARGS)
 #if defined(GUI)
   if (calibration_needed) {
 #if defined(LIBOPENUI)
-    #warning "TODO add a startCalibration function"
-    // startCalibration();
+    startCalibration();
 #else
     chainMenu(menuFirstCalib);
 #endif
