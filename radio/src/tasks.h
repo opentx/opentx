@@ -48,7 +48,6 @@ extern RTOS_TASK_HANDLE audioTaskId;
 extern RTOS_DEFINE_STACK(audioStack, AUDIO_STACK_SIZE);
 
 extern RTOS_MUTEX_HANDLE mixerMutex;
-extern RTOS_FLAG_HANDLE openTxInitCompleteFlag;
 
 void stackPaint();
 void tasksStart();
