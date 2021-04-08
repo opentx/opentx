@@ -1927,8 +1927,10 @@ void moveTrimsToOffsets() // copy state of 3 primary to subtrim
 void opentxInit()
 {
   TRACE("opentxInit");
-
-#if defined(GUI) && !defined(LIBOPENUI)
+#if defined(LIBOPENUI)
+  // create ViewMain
+  ViewMain::instance();
+#elif defined(GUI)
   // TODO add a function for this (duplicated)
   menuHandlers[0] = menuMainView;
   #if MENUS_LOCK != 2/*no menus*/
