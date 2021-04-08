@@ -845,6 +845,12 @@ void rtcSetTime(const struct gtm * t)
 {
 }
 
+#if defined(USB_SERIAL)
+void usbSerialPutc(uint8_t c)
+{
+}
+#endif
+
 #if defined(AUX_SERIAL)
 #if defined(AUX_SERIAL_DMA_Stream_RX)
 AuxSerialRxFifo auxSerialRxFifo(nullptr);
@@ -852,6 +858,11 @@ AuxSerialRxFifo auxSerialRxFifo(nullptr);
 AuxSerialRxFifo auxSerialRxFifo;
 #endif
 uint8_t auxSerialMode;
+
+void auxSerialSetup(unsigned int baudrate, bool dma, uint16_t length, uint16_t parity, uint16_t stop)
+{
+}
+
 void auxSerialInit(unsigned int mode, unsigned int protocol)
 {
 }
@@ -872,6 +883,11 @@ void auxSerialStop()
 #if defined(AUX2_SERIAL)
 AuxSerialRxFifo aux2SerialRxFifo(nullptr);
 uint8_t aux2SerialMode;
+
+void aux2SerialSetup(unsigned int baudrate, bool dma, uint16_t length, uint16_t parity, uint16_t stop)
+{
+}
+
 void aux2SerialInit(unsigned int mode, unsigned int protocol)
 {
 }

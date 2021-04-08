@@ -102,8 +102,9 @@ void doMainScreenGraphics()
   if (g_model.throttleReversed && CONVERT_MODE(2) == THR_STICK)
     calibStickVert = -calibStickVert;
   drawStick(RBOX_CENTERX, calibratedAnalogs[CONVERT_MODE(3)], calibStickVert);
-
+#if defined(HARDWARE_POT1)
   drawPotsBars();
+#endif
 }
 
 #if defined(HARDWARE_NO_TRIMS)
@@ -290,7 +291,16 @@ void displayVoltageOrAlarm()
 #define displayVoltageOrAlarm() displayBattVoltage()
 #endif
 
-#if defined(NAVIGATION_X7_TX12)
+#if defined(RADIO_T8)
+#define EVT_KEY_CONTEXT_MENU           EVT_KEY_LONG(KEY_ENTER)
+#define EVT_KEY_PREVIOUS_VIEW          EVT_KEY_BREAK(KEY_PAGEUP)
+#define EVT_KEY_NEXT_VIEW              EVT_KEY_FIRST(KEY_PAGEDN)
+#define EVT_KEY_NEXT_PAGE              EVT_KEY_FIRST(KEY_PLUS)
+#define EVT_KEY_PREVIOUS_PAGE          EVT_KEY_FIRST(KEY_MINUS)
+#define EVT_KEY_MODEL_MENU             EVT_KEY_LONG(KEY_MODEL)
+#define EVT_KEY_GENERAL_MENU           EVT_KEY_LONG(KEY_SYS)
+#define EVT_KEY_TELEMETRY              EVT_KEY_LONG(KEY_PAGEUP)
+#elif defined(NAVIGATION_X7_TX12)
 #define EVT_KEY_CONTEXT_MENU           EVT_KEY_LONG(KEY_ENTER)
 #define EVT_KEY_PREVIOUS_VIEW          EVT_KEY_FIRST(KEY_PAGEUP)
 #define EVT_KEY_NEXT_VIEW              EVT_KEY_FIRST(KEY_PAGEDN)
@@ -527,6 +537,7 @@ void menuMainView(event_t event)
       chainMenu(menuViewTelemetry);
       killEvents(event);
       break;
+
 
     case EVT_KEY_FIRST(KEY_EXIT):
 #if defined(GVARS)

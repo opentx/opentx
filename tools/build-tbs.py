@@ -7,60 +7,7 @@ from builtins import NotADirectoryError
 import shutil
 import tempfile
 
-
-boards = {
-    "XLITE": {
-        "PCB": "XLITE",
-    },
-    "XLITES": {
-        "PCB": "XLITES",
-    },
-    "X9LITE": {
-        "PCB": "X9LITE",
-    },
-    "X9LITES": {
-        "PCB": "X9LITES",
-    },
-    "X9D": {
-        "PCB": "X9D+",
-    },
-    "X9D+": {
-        "PCB": "X9D+",
-    },
-    "X9D+2019": {
-        "PCB": "X9D+",
-        "PCBREV": "2019",
-    },
-    "X9E": {
-        "PCB": "X9E",
-    },
-    "X7": {
-        "PCB": "X7",
-    },
-    "X7ACCESS": {
-        "PCB": "X7",
-        "PCBREV": "ACCESS",
-    },
-    "X10": {
-        "PCB": "X10",
-    },
-    "X10EXPRESS": {
-        "PCB": "X10",
-        "PCBREV": "EXPRESS",
-    },
-    "X12S": {
-        "PCB": "X12S",
-    },
-    "T16": {
-        "PCB": "X10",
-        "PCBREV": "T16",
-        "INTERNAL_MODULE_MULTI": "YES"
-    },
-    "T12": {
-        "PCB": "X7",
-        "PCBREV": "T12",
-    },
-}
+from boards import *
 
 translations = [
     "EN"
@@ -78,15 +25,15 @@ def build(board, translation, srcdir):
         os.mkdir("output")
     path = tempfile.mkdtemp()
     os.chdir(path)
-    command = "cmake %s -DTRANSLATIONS=%s -DTBS_RELEASE=YES -DTEST_BUILD_WARNING=YES %s" % (cmake_options, translation, srcdir)
+    command = "cmake %s -DTRANSLATIONS=%s -DTBS_RELEASE=YES %s" % (cmake_options, translation, srcdir)
     print(command)
     os.system(command)
-    os.system("make firmware -j6")
+    os.system("make firmware -j16")
     os.chdir(cwd)
     index = 0
     while 1:
         suffix = "" if index == 0 else "_%d" % index
-        filename = "output/firmware_%s_%s_%s%s.bin" % (board.lower(), translation.lower(), timestamp(), suffix)
+        filename = "output/tbs_firm_%s_%s_%s%s.bin" % (board.lower(), translation.lower(), timestamp(), suffix)
         if not os.path.exists(filename):
             shutil.copy("%s/firmware.bin" % path, filename)
             break

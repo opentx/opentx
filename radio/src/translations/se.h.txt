@@ -284,7 +284,7 @@
 #define LEN_VUNITSSYSTEM     TR("\006", "\010")
 #define TR_VUNITSSYSTEM      TR("Metri.""Imper.", "Metriska""Imperial")
 #define LEN_VTELEMUNIT       "\003"
-#define TR_VTELEMUNIT        "-\0 ""V\0 ""A\0 ""mA\0""kts""m/s""f/s""kmh""mph""m\0 ""ft\0""@C\0""@F\0""%\0 ""mAh""W\0 ""mW\0""dB\0""rpm""g\0 ""@\0 ""rad""ml\0""fOz""mlm""Hz\0""mS\0""uS\0"
+#define TR_VTELEMUNIT        "-\0 ""V\0 ""A\0 ""mA\0""kts""m/s""f/s""kmh""mph""m\0 ""ft\0""@C\0""@F\0""%\0 ""mAh""W\0 ""mW\0""dB\0""rpm""g\0 ""@\0 ""rad""ml\0""fOz""mlm""Hz\0""mS\0""uS\0""km\0"
 
 #define STR_V                  (STR_VTELEMUNIT+1)
 #define STR_A                  (STR_VTELEMUNIT+4)
@@ -312,12 +312,15 @@
 #if defined(PCBHORUS)
   #define LEN_VKEYS            "\005"
   #define TR_VKEYS             "PGUP\0""PGDN\0""ENTER""MDL\0 ""RTN\0 ""TELE\0""SYS\0 "
-#elif defined(RADIO_T12)
+#elif defined(RADIO_FAMILY_JUMPER_T12)
   #define LEN_VKEYS            "\005"
   #define TR_VKEYS             "Exit\0""Enter""Down\0""Up\0  ""Right""Left\0"
 #elif defined(RADIO_TX12)
   #define LEN_VKEYS            "\005"
   #define TR_VKEYS             "Exit\0""Enter""Up\0  ""Down\0""SYS\0 ""MDL\0 ""TELE\0"
+#elif defined(RADIO_T8)
+  #define LEN_VKEYS                    "\005"
+  #define TR_VKEYS                     "RTN\0 ""ENTER""PGUP\0""PGDN\0""SYS\0 ""MDL\0 ""UP\0  ""DOWN\0"
 #elif defined(PCBTARANIS)
   #define LEN_VKEYS            "\005"
   #define TR_VKEYS             "Menu\0""Exit\0""Enter""Page\0""Plus\0""Minus"
@@ -476,8 +479,8 @@
 #if defined(PCBSKY9X) && defined(REVX)
   #define TR_OUTPUT_TYPE       INDENT "Output"
 #endif
-#define TR_PROTO               TR(INDENT "Proto", INDENT "Protokoll")
-  #define TR_PPMFRAME          INDENT "PPM-paket"
+#define TR_PROTOCOL            TR("Proto", "Protokoll")
+#define TR_PPMFRAME            INDENT "PPM-paket"
 #define TR_REFRESHRATE               TR(INDENT "Refresh", INDENT "Refresh rate")
 #define STR_WARN_BATTVOLTAGE           TR(INDENT "Output is VBAT: ", INDENT "Warning: output level is VBAT: ")
 #define TR_WARN_5VOLTS                 "Warning: output level is 5 volts"
@@ -688,6 +691,7 @@
 #define TR_SYNCMENU            "Synk [MENU]"
 #define TR_MULTI_RFTUNE        TR("Freq tune", "RF Freq. fine tune")
 #define TR_MULTI_RFPOWER               "RF power"
+#define TR_MULTI_WBUS                  "Output"
 #define TR_MULTI_TELEMETRY     "Telemetry"
 #define TR_MULTI_VIDFREQ       TR("Vid. freq.", "Video frequency")
 #define TR_RF_POWER             "RF Power"
@@ -836,7 +840,7 @@
 #define TR_NO_MODELS_ON_SD     "Ingen modell i SD"
 #define TR_NO_BITMAPS_ON_SD    "Ikoner saknas på SD"
 #define TR_NO_SCRIPTS_ON_SD    "Programkod saknas på SD"
-#define TR_SCRIPT_SYNTAX_ERROR "Script syntax error"
+#define TR_SCRIPT_SYNTAX_ERROR  TR("Syntax error", "Script syntax error")
 #define TR_SCRIPT_PANIC        "Script panic"
 #define TR_SCRIPT_KILLED       "Script killed"
 #define TR_SCRIPT_ERROR        "Unknown error"
@@ -1437,3 +1441,6 @@
 #define ZSTR_SERVO_VOLTAGE             "SrvV"
 #define ZSTR_SERVO_TEMPERATURE         "SrvT"
 #define ZSTR_SERVO_STATUS              "SrvS"
+#define ZSTR_LOSS                      "Loss"
+#define ZSTR_SPEED                     "Spd "
+#define ZSTR_FLOW                      "Flow"

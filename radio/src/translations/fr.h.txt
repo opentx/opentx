@@ -286,7 +286,7 @@
 #define LEN_VUNITSSYSTEM             TR("\006", "\012")
 #define TR_VUNITSSYSTEM              TR("Métr.\0""Impér.", "Métriques\0""Impériales")
 #define LEN_VTELEMUNIT               "\003"
-#define TR_VTELEMUNIT                "-\0 ""V\0 ""A\0 ""mA\0""kts""m/s""f/s""kmh""mph""m\0 ""ft\0""@C\0""@F\0""%\0 ""mAh""W\0 ""mW\0""dB\0""rpm""g\0 ""@\0 ""rad""ml\0""fOz""mlm""Hz\0""mS\0""uS\0"
+#define TR_VTELEMUNIT                "-\0 ""V\0 ""A\0 ""mA\0""kts""m/s""f/s""kmh""mph""m\0 ""ft\0""@C\0""@F\0""%\0 ""mAh""W\0 ""mW\0""dB\0""rpm""g\0 ""@\0 ""rad""ml\0""fOz""mlm""Hz\0""mS\0""uS\0""km\0"
 
 #define STR_V                          (STR_VTELEMUNIT+1)
 #define STR_A                          (STR_VTELEMUNIT+4)
@@ -317,12 +317,15 @@
 #elif defined(PCBXLITE)
   #define LEN_VKEYS                    "\005"
   #define TR_VKEYS                     "Shift""Exit\0""Enter""Bas\0 ""Haut\0""Droit""Gauch"
-#elif defined(RADIO_T12)
+#elif defined(RADIO_FAMILY_JUMPER_T12)
   #define LEN_VKEYS                    "\005"
   #define TR_VKEYS                     "Exit\0""Enter""Down\0""Up\0  ""Right""Left\0"
 #elif defined(RADIO_TX12)
   #define LEN_VKEYS                    "\005"
   #define TR_VKEYS                     "Exit\0""Enter""Up\0  ""Down\0""SYS\0 ""MDL\0 ""TELE\0"
+#elif defined(RADIO_T8)
+  #define LEN_VKEYS                    "\005"
+  #define TR_VKEYS                     "RTN\0 ""ENTER""PGUP\0""PGDN\0""SYS\0 ""MDL\0 ""UP\0  ""DOWN\0"
 #elif defined(PCBTARANIS)
   #define LEN_VKEYS                    "\005"
   #define TR_VKEYS                     "Menu\0""Exit\0""Enter""Page\0""Plus\0""Moins"
@@ -473,8 +476,8 @@
 #if defined(PCBSKY9X) && defined(REVX)
   #define TR_OUTPUT_TYPE               INDENT "Sortie"
 #endif
-#define TR_PROTO                       TR(INDENT "Proto.", INDENT "Protocole")
-  #define TR_PPMFRAME                  INDENT "Trame PPM"
+#define TR_PROTOCOL                    TR("Proto.", "Protocole")
+#define TR_PPMFRAME                    INDENT "Trame PPM"
 #define TR_REFRESHRATE                 INDENT "Période"
 #define STR_WARN_BATTVOLTAGE           TR(INDENT "Signal est VBAT: ", INDENT "ATTENTION: signal est à VBAT: ")
 #define TR_WARN_5VOLTS                 "Warning: output level is 5 volts"
@@ -688,6 +691,7 @@
 #define TR_RECEIVER                    "Récept."
 #define TR_MULTI_RFTUNE                TR(INDENT "Ajust.fréq", INDENT "Ajustement fréq.")
 #define TR_MULTI_RFPOWER               "RF power"
+#define TR_MULTI_WBUS                  "Output"
 #define TR_MULTI_TELEMETRY             "Télémétrie"
 #define TR_MULTI_VIDFREQ               TR(INDENT "Fréq. vidéo", INDENT "Fréquence vidéo")
 #define TR_RF_POWER                     TR("Puiss. RF", "Puissance RF")
@@ -835,7 +839,7 @@
 #define TR_NO_MODELS_ON_SD             "Aucun modèle SD"
 #define TR_NO_BITMAPS_ON_SD            "Aucun Bitmap SD"
 #define TR_NO_SCRIPTS_ON_SD            "Aucun Script SD"
-#define TR_SCRIPT_SYNTAX_ERROR         "Erreur syntaxe script"
+#define TR_SCRIPT_SYNTAX_ERROR          TR("Erreur syntaxe", "Erreur syntaxe script")
 #define TR_SCRIPT_PANIC                "Script bloqué"
 #define TR_SCRIPT_KILLED               "Script interrompu"
 #define TR_SCRIPT_ERROR                "Erreur inconnue"
@@ -1449,3 +1453,6 @@
 #define ZSTR_SERVO_VOLTAGE             "SrvV"
 #define ZSTR_SERVO_TEMPERATURE         "SrvT"
 #define ZSTR_SERVO_STATUS              "SrvS"
+#define ZSTR_LOSS                      "Loss"
+#define ZSTR_SPEED                     "Spd "
+#define ZSTR_FLOW                      "Flow"

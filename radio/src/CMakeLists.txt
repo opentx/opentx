@@ -378,6 +378,10 @@ if(RADIOMASTER_RELEASE)
   add_definitions(-DRADIOMASTER_RELEASE)
 endif()
 
+if(RADIOMASTER_RTF_RELEASE)
+  add_definitions(-DRADIOMASTER_RTF_RELEASE)
+endif()
+
 if(TBS_RELEASE)
   add_definitions(-DTBS_RELEASE)
 endif()
@@ -411,6 +415,7 @@ set(SRC
   strhelpers.cpp
   switches.cpp
   mixer.cpp
+  mixer_scheduler.cpp
   stamp.cpp
   timers.cpp
   trainer.cpp

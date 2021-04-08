@@ -21,10 +21,6 @@
 #include "opentx.h"
 #include "targets/horus/board.h"
 
-#if defined(SBUS)
-extern Fifo<uint8_t, 32> trainerSbusFifo;
-#endif
-
 #if defined(AUX_SERIAL)
 uint8_t auxSerialMode = UART_MODE_COUNT;  // Prevent debug output before port is setup
 Fifo<uint8_t, 512> auxSerialTxFifo;
@@ -35,7 +31,7 @@ AuxSerialRxFifo auxSerialRxFifo __DMA (AUX_SERIAL_DMA_Stream_RX);
 AuxSerialRxFifo auxSerialRxFifo;
 #endif
 
-void auxSerialSetup(unsigned int baudrate, bool dma, uint16_t lenght = USART_WordLength_8b, uint16_t parity = USART_Parity_No, uint16_t stop = USART_StopBits_1)
+void auxSerialSetup(unsigned int baudrate, bool dma, uint16_t length, uint16_t parity, uint16_t stop)
 {
   USART_InitTypeDef USART_InitStructure;
   GPIO_InitTypeDef GPIO_InitStructure;
@@ -58,7 +54,7 @@ void auxSerialSetup(unsigned int baudrate, bool dma, uint16_t lenght = USART_Wor
 #endif
 
   USART_InitStructure.USART_BaudRate = baudrate;
-  USART_InitStructure.USART_WordLength = lenght;
+  USART_InitStructure.USART_WordLength = length;
   USART_InitStructure.USART_StopBits = stop;
   USART_InitStructure.USART_Parity = parity;
   USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
@@ -150,12 +146,12 @@ void auxSerialInit(unsigned int mode, unsigned int protocol)
       break;
 
     case UART_MODE_SBUS_TRAINER:
-      auxSerialSetup(SBUS_BAUDRATE, true, USART_WordLength_9b, USART_Parity_Even, USART_StopBits_2); // 2 stop bits requires USART_WordLength_9b
+      auxSerialSetup(SBUS_BAUDRATE, true, USART_WordLength_9b, USART_Parity_Even, USART_StopBits_2); // USART_WordLength_9b due to parity bit
       AUX_SERIAL_POWER_ON();
       break;
 
     case UART_MODE_LUA:
-      auxSerialSetup(DEBUG_BAUDRATE, false);
+      auxSerialSetup(LUA_DEFAULT_BAUDRATE, false);
       AUX_SERIAL_POWER_ON();
   }
 }
@@ -250,7 +246,7 @@ uint8_t aux2SerialMode = UART_MODE_COUNT;  // Prevent debug output before port i
 Fifo<uint8_t, 512> aux2SerialTxFifo;
 AuxSerialRxFifo aux2SerialRxFifo __DMA (AUX2_SERIAL_DMA_Stream_RX);
 
-void aux2SerialSetup(unsigned int baudrate, bool dma, uint16_t lenght = USART_WordLength_8b, uint16_t parity = USART_Parity_No, uint16_t stop = USART_StopBits_1)
+void aux2SerialSetup(unsigned int baudrate, bool dma, uint16_t length, uint16_t parity, uint16_t stop)
 {
   USART_InitTypeDef USART_InitStructure;
   GPIO_InitTypeDef GPIO_InitStructure;
@@ -273,7 +269,7 @@ void aux2SerialSetup(unsigned int baudrate, bool dma, uint16_t lenght = USART_Wo
 #endif
 
   USART_InitStructure.USART_BaudRate = baudrate;
-  USART_InitStructure.USART_WordLength = lenght;
+  USART_InitStructure.USART_WordLength = length;
   USART_InitStructure.USART_StopBits = stop;
   USART_InitStructure.USART_Parity = parity;
   USART_InitStructure.USART_HardwareFlowControl = USART_HardwareFlowControl_None;
@@ -353,7 +349,7 @@ void aux2SerialInit(unsigned int mode, unsigned int protocol)
       break;
 
     case UART_MODE_LUA:
-      aux2SerialSetup(DEBUG_BAUDRATE, false);
+      aux2SerialSetup(LUA_DEFAULT_BAUDRATE, false);
       AUX2_SERIAL_POWER_ON();
   }
 }

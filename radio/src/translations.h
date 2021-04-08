@@ -171,6 +171,9 @@ extern const char STR_SBUS_INVERSION_VALUES[];
 
 extern const char STR_MULTI_PROTOCOLS[];
 extern const char STR_MULTI_POWER[];
+extern const char STR_MULTI_TELEMETRY_MODE[];
+extern const char STR_MULTI_WBUS_MODE[];
+extern const char STR_SPORT_MODES[];
 
 extern const char STR_AFHDS3_ONE_TO_ONE_TELEMETRY[];
 extern const char STR_AFHDS3_ONE_TO_MANY[];
@@ -426,6 +429,7 @@ extern const char STR_MULTI_OPTION[];
 extern const char STR_MULTI_VIDFREQ[];
 extern const char STR_MULTI_RFTUNE[];
 extern const char STR_MULTI_RFPOWER[];
+extern const char STR_MULTI_WBUS[];
 extern const char STR_MULTI_TELEMETRY[];
 extern const char STR_MULTI_AUTOBIND[];
 extern const char STR_DISABLE_CH_MAP[];
@@ -1096,6 +1100,7 @@ extern const char STR_ABOUT_PARENTS_3[];
 extern const char STR_ABOUT_PARENTS_4[];
 
 extern const char STR_AUTH_FAILURE[];
+extern const char STR_PROTOCOL[];
 
 #define CHR_HOUR   TR_CHR_HOUR
 #define CHR_INPUT  TR_CHR_INPUT

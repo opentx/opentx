@@ -226,21 +226,20 @@ typedef Dsm2SerialPulsesData Dsm2PulsesData;
 PACK(struct Dsm2TimerPulsesData {
   pulse_duration_t pulses[MAX_PULSES_TRANSITIONS];
   pulse_duration_t * ptr;
-  uint16_t rest;
   uint8_t index;
 });
 typedef Dsm2TimerPulsesData Dsm2PulsesData;
 #endif
 
 #define PPM_PERIOD_HALF_US(module)   ((g_model.moduleData[module].ppm.frameLength * 5 + 225) * 200) /*half us*/
-#define PPM_PERIOD(module)           (PPM_PERIOD_HALF_US(module) / 2000) /*ms*/
+#define PPM_PERIOD(module)           (PPM_PERIOD_HALF_US(module) / 2) /*us*/
 #define DSM2_BAUDRATE                125000
-#define DSM2_PERIOD                  22 /*ms*/
+#define DSM2_PERIOD                  22000 /*us*/
 #define SBUS_BAUDRATE                100000
 #define SBUS_PERIOD_HALF_US          ((g_model.moduleData[EXTERNAL_MODULE].sbus.refreshRate * 5 + 225) * 200) /*half us*/
-#define SBUS_PERIOD                  (SBUS_PERIOD_HALF_US / 2000) /*ms*/
+#define SBUS_PERIOD                  (SBUS_PERIOD_HALF_US / 2) /*us*/
 #define MULTIMODULE_BAUDRATE         100000
-#define MULTIMODULE_PERIOD           7 /*ms*/
+#define MULTIMODULE_PERIOD           7000 /*us*/
 
 #define CROSSFIRE_FRAME_MAXLEN         64
 PACK(struct CrossfirePulsesData {
@@ -325,8 +324,12 @@ extern TrainerPulsesData trainerPulsesData;
 
 #if defined(HARDWARE_INTERNAL_MODULE)
 bool setupPulsesInternalModule();
+void stopPulsesInternalModule();
 #endif
+#if defined(HARDWARE_EXTERNAL_MODULE)
 bool setupPulsesExternalModule();
+void stopPulsesExternalModule();
+#endif
 void setupPulsesDSM2();
 void setupPulsesCrossfire();
 void setupPulsesGhost();
@@ -363,7 +366,9 @@ inline void startPulses()
   setupPulsesInternalModule();
 #endif
 
+#if defined(HARDWARE_EXTERNAL_MODULE)
   setupPulsesExternalModule();
+#endif
 
 #if defined(HARDWARE_EXTRA_MODULE)
   extramodulePpmStart();

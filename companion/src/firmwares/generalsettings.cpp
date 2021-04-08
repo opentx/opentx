@@ -94,6 +94,12 @@ GeneralSettings::GeneralSettings()
     vBatMin = -23;  // 6.7V
     vBatMax = -37;  // 8.3V
   }
+  else if (IS_JUMPER_TLITE(board)) {
+    // 1S Li-Ion
+    vBatWarn = 32;
+    vBatMin = -60; //3V
+    vBatMax = -78; //4.2V
+  }
   else if (IS_TARANIS(board)) {
     // NI-MH 7.2V, X9D, X9D+ and X7
     vBatWarn = 65;
@@ -238,6 +244,10 @@ void GeneralSettings::setDefaultControlTypes(Board::Type board)
   for (int i=0; i<getBoardCapability(board, Board::FactoryInstalledSwitches); i++) {
     switchConfig[i] = Boards::getSwitchInfo(board, i).config;
   }
+
+  // TLite does not have pots or sliders
+  if (IS_JUMPER_TLITE(board))
+    return;
 
   // TODO: move to Boards, like with switches
   if (IS_FAMILY_HORUS_OR_T16(board)) {

@@ -6,6 +6,9 @@ option(AFHDS3 "AFHDS3 TX Module" ON)
 option(GHOST "Ghost TX Module" ON)
 option(INTERNAL_MODULE_PPM "Support for PPM internal module" OFF)
 option(AUTOUPDATE "Auto update internal chips from SD" OFF)
+option(BIND_KEY "Enable bind button" OFF)
+
+set(EXTERNAL_MODULE YES)
 
 add_definitions(-DPCBFRSKY)
 
@@ -64,6 +67,7 @@ elseif(PCB STREQUAL X9D+)
     option(INTERNAL_MODULE_PXX1 "Support for PXX1 internal module" OFF)
     option(INTERNAL_MODULE_PXX2 "Support for PXX2 internal module" ON)
     set(FLAVOUR x9d+2019)
+    set(LUA_EXPORT lua_export_x9d+2019)
     set(CPU_TYPE STM32F4)
     set(CPU_TYPE_FULL STM32F407xE)  # for size report
     set(LINKER_SCRIPT targets/taranis/stm32f4_flash.ld)
@@ -134,7 +138,21 @@ elseif(PCB STREQUAL X7)
     set(LINKER_SCRIPT targets/taranis/stm32f2_flash.ld)
     set(LUA_EXPORT lua_export_t12)
     add_definitions(-DRADIO_T12)
+    add_definitions(-DRADIO_FAMILY_JUMPER_T12)
     add_definitions(-DEEPROM_VARIANT=0x4001)
+    add_definitions(-DMANUFACTURER_JUMPER)
+  elseif(PCBREV STREQUAL TLITE)
+    option(INTERNAL_MODULE_MULTI "Support for MULTI internal module" ON)
+    set(FLAVOUR tlite)
+    set(NAVIGATION_TYPE 9x)
+    set(CPU_TYPE STM32F2)
+    set(CPU_TYPE_FULL STM32F205xE)  # for size report
+    set(LINKER_SCRIPT targets/taranis/stm32f2_flash.ld)
+    set(LUA_EXPORT lua_export_tlite)
+    add_definitions(-DRADIO_TLITE)
+    add_definitions(-DRADIO_FAMILY_JUMPER_T12)
+    add_definitions(-DEEPROM_VARIANT=0x4003)
+    add_definitions(-DMANUFACTURER_JUMPER)
   elseif(PCBREV STREQUAL TX12)
     option(INTERNAL_MODULE_MULTI "Support for MULTI internal module" ON)
     set(FLAVOUR tx12)
@@ -148,6 +166,24 @@ elseif(PCB STREQUAL X7)
     set(USB_CHARGER YES)
     add_definitions(-DRADIO_TX12)
     add_definitions(-DEEPROM_VARIANT=0x4002)
+    add_definitions(-DMANUFACTURER_RADIOMASTER)
+  elseif(PCBREV STREQUAL T8)
+    option(INTERNAL_MODULE_MULTI "Support for MULTI internal module" ON)
+    set(EXTERNAL_MODULE NO)
+    set(AFHDS3 NO)
+    set(FLAVOUR t8)
+    set(NAVIGATION_TYPE x7)
+    set(CPU_TYPE STM32F2)
+    set(CPU_TYPE_FULL STM32F205xE)  # for size report
+    set(LINKER_SCRIPT targets/taranis/stm32f2_flash.ld)
+    set(ROTARY_ENCODER NO)
+    set(LUA_EXPORT lua_export_t8)
+    set(BLUETOOTH NO)
+    if(RADIOMASTER_RELEASE)
+      set(BIND_KEY YES)
+    endif()
+    add_definitions(-DRADIO_T8)
+    add_definitions(-DEEPROM_VARIANT=0x4004)
     add_definitions(-DMANUFACTURER_RADIOMASTER)
   elseif(PCBREV STREQUAL ACCESS)
     option(INTERNAL_MODULE_PXX1 "Support for PXX1 internal module" OFF)
@@ -347,6 +383,14 @@ if(ROTARY_ENCODER)
     )
 endif()
 
+if(BIND_KEY)
+  set(TARGET_SRC
+        ${TARGET_SRC}
+        bind_button_driver.cpp
+        )
+  add_definitions(-DBIND_KEY)
+endif()
+
 if(USB_CHARGER)
   set(TARGET_SRC ${TARGET_SRC} usb_charger_driver.cpp)
   add_definitions(-DUSB_CHARGER)
@@ -428,6 +472,8 @@ set(TARGET_SRC
 set(FIRMWARE_TARGET_SRC
   ${FIRMWARE_TARGET_SRC}
   ../common/arm/stm32/adc_driver.cpp
+  ../common/arm/stm32/heartbeat_driver.cpp
+  ../common/arm/stm32/mixer_scheduler_driver.cpp
   )
 
 if(PCB STREQUAL XLITE OR PCB STREQUAL XLITES)
@@ -474,6 +520,10 @@ endif()
 if(INTERNAL_MODULE_PPM)
   add_definitions(-DHARDWARE_INTERNAL_MODULE)
   add_definitions(-DINTERNAL_MODULE_PPM)
+endif()
+
+if(EXTERNAL_MODULE)
+  add_definitions(-DHARDWARE_EXTERNAL_MODULE)
 endif()
 
 set(RADIO_DEPENDENCIES ${RADIO_DEPENDENCIES} ${BITMAPS_TARGET})

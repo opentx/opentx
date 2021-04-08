@@ -21,11 +21,11 @@
 #include "mixerdialog.h"
 #include "ui_mixerdialog.h"
 #include "radiodata.h"
-#include "rawitemfilteredmodel.h"
+#include "filtereditemmodels.h"
 #include "helpers.h"
 
 MixerDialog::MixerDialog(QWidget *parent, ModelData & model, MixData * mixdata, GeneralSettings & generalSettings, Firmware * firmware,
-                            RawItemFilteredModel * rawSourceModel, RawItemFilteredModel * rawSwitchModel, RawItemFilteredModel * curveItemModel) :
+                         CompoundItemModelFactory * sharedItemModels) :
   QDialog(parent),
   ui(new Ui::MixerDialog),
   model(model),
@@ -36,6 +36,9 @@ MixerDialog::MixerDialog(QWidget *parent, ModelData & model, MixData * mixdata, 
 {
   ui->setupUi(this);
 
+  dialogFilteredItemModels = new FilteredItemModelFactory();
+  int id;
+
   QRegExp rx(CHAR_FOR_NAMES_REGEX);
   QLabel * lb_fp[CPN_MAX_FLIGHT_MODES] = {ui->lb_FP0, ui->lb_FP1, ui->lb_FP2, ui->lb_FP3, ui->lb_FP4, ui->lb_FP5, ui->lb_FP6, ui->lb_FP7, ui->lb_FP8 };
   QCheckBox * tmp[CPN_MAX_FLIGHT_MODES] = {ui->cb_FP0, ui->cb_FP1, ui->cb_FP2, ui->cb_FP3, ui->cb_FP4, ui->cb_FP5, ui->cb_FP6, ui->cb_FP7, ui->cb_FP8 };
@@ -45,14 +48,24 @@ MixerDialog::MixerDialog(QWidget *parent, ModelData & model, MixData * mixdata, 
 
   this->setWindowTitle(tr("DEST -> %1").arg(RawSource(SOURCE_TYPE_CH, md->destCh - 1).toString(&model, &generalSettings)));
 
-  ui->sourceCB->setModel(rawSourceModel);
+  id = dialogFilteredItemModels->registerItemModel(new FilteredItemModel(sharedItemModels->getItemModel(AbstractItemModel::IMID_RawSource),
+                                                         (RawSource::InputSourceGroups & ~RawSource::NoneGroup) | RawSource::ScriptsGroup),
+                                                   "RawSource");
+  ui->sourceCB->setModel(dialogFilteredItemModels->getItemModel(id));
   ui->sourceCB->setCurrentIndex(ui->sourceCB->findData(md->srcRaw.toValue()));
 
   int limit = firmware->getCapability(OffsetWeight);
+  id = dialogFilteredItemModels->registerItemModel(new FilteredItemModel(sharedItemModels->getItemModel(AbstractItemModel::IMID_GVarRef)), "GVarRef");
 
-  gvWeightGroup = new GVarGroup(ui->weightGV, ui->weightSB, ui->weightCB, md->weight, model, 100, -limit, limit);
-  gvOffsetGroup = new GVarGroup(ui->offsetGV, ui->offsetSB, ui->offsetCB, md->sOffset, model, 0, -limit, limit);
-  curveGroup = new CurveReferenceUIManager(ui->curveTypeCB, ui->curveGVarCB, ui->curveValueSB, ui->curveValueCB, md->curve, model, curveItemModel, this);
+  gvWeightGroup = new GVarGroup(ui->weightGV, ui->weightSB, ui->weightCB, md->weight, model, 100, -limit, limit, 1.0,
+                                dialogFilteredItemModels->getItemModel(id));
+  gvOffsetGroup = new GVarGroup(ui->offsetGV, ui->offsetSB, ui->offsetCB, md->sOffset, model, 0, -limit, limit, 1.0,
+                                dialogFilteredItemModels->getItemModel(id));
+
+  curveRefFilteredItemModels = new CurveRefFilteredFactory(sharedItemModels,
+                                                           firmware->getCapability(HasMixerExpo) ? 0 : FilteredItemModel::PositiveFilter);
+  curveGroup = new CurveReferenceUIManager(ui->curveTypeCB, ui->curveGVarCB, ui->curveValueSB, ui->curveValueCB, md->curve, model,
+                                           curveRefFilteredItemModels, this);
 
   ui->MixDR_CB->setChecked(md->noExpo == 0);
 
@@ -104,7 +117,9 @@ MixerDialog::MixerDialog(QWidget *parent, ModelData & model, MixData * mixdata, 
     }
   }
 
-  ui->switchesCB->setModel(rawSwitchModel);
+  id = dialogFilteredItemModels->registerItemModel(new FilteredItemModel(sharedItemModels->getItemModel(AbstractItemModel::IMID_RawSwitch),
+                                                                         RawSwitch::MixesContext), "RawSwitch");
+  ui->switchesCB->setModel(dialogFilteredItemModels->getItemModel(id));
   ui->switchesCB->setCurrentIndex(ui->switchesCB->findData(md->swtch.toValue()));
   ui->warningCB->setCurrentIndex(md->mixWarn);
   ui->mltpxCB->setCurrentIndex(md->mltpx);
@@ -150,6 +165,7 @@ MixerDialog::~MixerDialog()
   delete ui;
   delete gvWeightGroup;
   delete gvOffsetGroup;
+  delete dialogFilteredItemModels;
 }
 
 void MixerDialog::changeEvent(QEvent *e)

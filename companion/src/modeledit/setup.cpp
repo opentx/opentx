@@ -22,7 +22,6 @@
 #include "ui_setup.h"
 #include "ui_setup_timer.h"
 #include "ui_setup_module.h"
-#include "rawitemfilteredmodel.h"
 #include "appdata.h"
 #include "modelprinter.h"
 #include "multiprotocols.h"
@@ -31,55 +30,61 @@
 
 #include <QDir>
 
-TimerPanel::TimerPanel(QWidget *parent, ModelData & model, TimerData & timer, GeneralSettings & generalSettings, Firmware * firmware, QWidget * prevFocus, RawItemFilteredModel * rawSwitchFilteredModel):
+constexpr char FIM_TIMERSWITCH[] {"Timer Switch"};
+constexpr char FIM_THRSOURCE[]   {"Throttle Source"};
+
+TimerPanel::TimerPanel(QWidget * parent, ModelData & model, TimerData & timer, GeneralSettings & generalSettings, Firmware * firmware,
+                       QWidget * prevFocus, FilteredItemModelFactory * panelFilteredModels, CompoundItemModelFactory * panelItemModels):
   ModelPanel(parent, model, generalSettings, firmware),
   timer(timer),
-  ui(new Ui::Timer)
+  ui(new Ui::Timer),
+  modelsUpdateCnt(0)
 {
   ui->setupUi(this);
-  connect(rawSwitchFilteredModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &TimerPanel::onModelDataAboutToBeUpdated);
-  connect(rawSwitchFilteredModel, &RawItemFilteredModel::dataUpdateComplete, this, &TimerPanel::onModelDataUpdateComplete);
+  connectItemModelEvents(panelFilteredModels->getItemModel(FIM_TIMERSWITCH));
 
   lock = true;
 
   // Name
   int length = firmware->getCapability(TimersName);
-  if (length == 0) {
+  if (length == 0)
     ui->name->hide();
+  else {
+    ui->name->setField(timer.name, length, this);
+    connect(ui->name, SIGNAL(currentDataChanged()), this, SLOT(onNameChanged()));
+  }
+
+  ui->value->setField(timer.val, this);
+  ui->value->setMaximumTime(firmware->getMaxTimerStart());
+
+  ui->mode->setModel(panelFilteredModels->getItemModel(FIM_TIMERSWITCH));
+  ui->mode->setField(timer.mode, this);
+
+  ui->countdownBeep->setModel(panelItemModels->getItemModel(AIM_TIMER_COUNTDOWNBEEP));
+  ui->countdownBeep->setField(timer.countdownBeep, this);
+  connect(ui->countdownBeep, SIGNAL(currentDataChanged(int)), this, SLOT(onCountdownBeepChanged(int)));
+
+  ui->minuteBeep->setField(timer.minuteBeep, this);
+
+  if (firmware->getCapability(PermTimers)) {
+    ui->persistent->setModel(panelItemModels->getItemModel(AIM_TIMER_PERSISTENT));
+    ui->persistent->setField(timer.persistent, this);
   }
   else {
-    ui->name->setMaxLength(length);
-  }
-
-  // Mode
-  ui->mode->setModel(rawSwitchFilteredModel);
-  ui->mode->setCurrentIndex(ui->mode->findData(timer.mode.toValue()));
-  connect(ui->mode, SIGNAL(activated(int)), this, SLOT(onModeChanged(int)));
-
-  if (!firmware->getCapability(PermTimers)) {
     ui->persistent->hide();
     ui->persistentValue->hide();
   }
 
-  ui->countdownBeep->setField(timer.countdownBeep, this);
-  ui->countdownBeep->addItem(tr("Silent"), TimerData::COUNTDOWN_SILENT);
-  ui->countdownBeep->addItem(tr("Beeps"), TimerData::COUNTDOWN_BEEPS);
-  ui->countdownBeep->addItem(tr("Voice"), TimerData::COUNTDOWN_VOICE);
-  ui->countdownBeep->addItem(tr("Haptic"), TimerData::COUNTDOWN_HAPTIC);
-
-  ui->value->setMaximumTime(firmware->getMaxTimerStart());
-
-  ui->persistent->setField(timer.persistent, this);
-  ui->persistent->addItem(tr("Not persistent"), 0);
-  ui->persistent->addItem(tr("Persistent (flight)"), 1);
-  ui->persistent->addItem(tr("Persistent (manual reset)"), 2);
+  ui->countdownStart->setModel(panelItemModels->getItemModel(AIM_TIMER_COUNTDOWNSTART));
+  ui->countdownStart->setField(timer.countdownStart, this);
 
   disableMouseScrolling();
   QWidget::setTabOrder(prevFocus, ui->name);
   QWidget::setTabOrder(ui->name, ui->value);
   QWidget::setTabOrder(ui->value, ui->mode);
   QWidget::setTabOrder(ui->mode, ui->countdownBeep);
-  QWidget::setTabOrder(ui->countdownBeep, ui->minuteBeep);
+  QWidget::setTabOrder(ui->countdownBeep, ui->countdownStart);
+  QWidget::setTabOrder(ui->countdownStart, ui->minuteBeep);
   QWidget::setTabOrder(ui->minuteBeep, ui->persistent);
 
   update();
@@ -95,32 +100,27 @@ void TimerPanel::update()
 {
   lock = true;
 
-  ui->name->setText(timer.name);
+  ui->name->updateValue();
+  ui->mode->updateValue();
+  ui->value->updateValue();
+  ui->countdownBeep->updateValue();
+  ui->minuteBeep->updateValue();
+  ui->countdownStart->updateValue();
 
-  int hour = timer.val / 3600;
-  int min = (timer.val - (hour * 3600)) / 60;
-  int sec = (timer.val - (hour * 3600)) % 60;
-
-  ui->mode->setCurrentIndex(ui->mode->findData(timer.mode.toValue()));
-  ui->value->setTime(QTime(hour, min, sec));
-
-  if (firmware->getCapability(PermTimers)) {
-    int sign = 1;
-    int pvalue = timer.pvalue;
-    if (pvalue < 0) {
-      pvalue = -pvalue;
-      sign = -1;
-    }
-    int hours = pvalue / 3600;
-    pvalue -= hours * 3600;
-    int minutes = pvalue / 60;
-    int seconds = pvalue % 60;
-    ui->persistentValue->setText(QString(" %1(%2:%3:%4)").arg(sign < 0 ? "-" :" ").arg(hours, 2, 10, QLatin1Char('0')).arg(minutes, 2, 10, QLatin1Char('0')).arg(seconds, 2, 10, QLatin1Char('0')));
+  if (timer.countdownBeep == TimerData::COUNTDOWNBEEP_SILENT) {
+    ui->countdownStartLabel->setEnabled(false);
+    ui->countdownStart->setEnabled(false);
+  }
+  else {
+    ui->countdownStartLabel->setEnabled(true);
+    ui->countdownStart->setEnabled(true);
   }
 
-  ui->countdownBeep->updateValue();
-  ui->minuteBeep->setChecked(timer.minuteBeep);
-  ui->persistent->updateValue();
+  if (firmware->getCapability(PermTimers)) {
+    ui->persistent->updateValue();
+    ui->persistentValue->setText(timer.pvalueToString());
+  }
+
   lock = false;
 }
 
@@ -129,58 +129,36 @@ QWidget * TimerPanel::getLastFocus()
   return ui->persistent;
 }
 
-void TimerPanel::on_value_editingFinished()
+void TimerPanel::connectItemModelEvents(const FilteredItemModel * itemModel)
 {
-  if (!lock) {
-    unsigned val = ui->value->time().hour() * 3600 + ui->value->time().minute() * 60 + ui->value->time().second();
-    if (timer.val != val) {
-      timer.val = val;
-      emit modified();
-    }
-  }
+  connect(itemModel, &FilteredItemModel::aboutToBeUpdated, this, &TimerPanel::onItemModelAboutToBeUpdated);
+  connect(itemModel, &FilteredItemModel::updateComplete, this, &TimerPanel::onItemModelUpdateComplete);
 }
 
-void TimerPanel::onModeChanged(int index)
-{
-  if (!lock) {
-    bool ok;
-    const RawSwitch rs(ui->mode->itemData(index).toInt(&ok));
-    if (ok && timer.mode.toValue() != rs.toValue()) {
-      timer.mode = rs;
-      emit modified();
-    }
-  }
-}
-
-void TimerPanel::on_minuteBeep_toggled(bool checked)
-{
-  if (!lock) {
-    timer.minuteBeep = checked;
-    emit modified();
-  }
-}
-
-void TimerPanel::on_name_editingFinished()
-{
-  if (!lock) {
-    if (QString(timer.name) != ui->name->text()) {
-      int length = ui->name->maxLength();
-      strncpy(timer.name, ui->name->text().toLatin1(), length);
-      emit nameChanged();
-      emit modified();
-    }
-  }
-}
-
-void TimerPanel::onModelDataAboutToBeUpdated()
+void TimerPanel::onItemModelAboutToBeUpdated()
 {
   lock = true;
+  modelsUpdateCnt++;
 }
 
-void TimerPanel::onModelDataUpdateComplete()
+void TimerPanel::onItemModelUpdateComplete()
 {
+  modelsUpdateCnt--;
+  if (modelsUpdateCnt < 1) {
+    update();
+    lock = false;
+  }
+}
+
+void TimerPanel::onNameChanged()
+{
+  emit nameChanged();
+}
+
+void TimerPanel::onCountdownBeepChanged(int index)
+{
+  timer.countdownBeepChanged();
   update();
-  lock = false;
 }
 
 /******************************************************************************/
@@ -679,6 +657,7 @@ void ModulePanel::onProtocolChanged(int index)
     module.protocol = ui->protocol->itemData(index).toInt();
     module.channelsCount = module.getMaxChannelCount();
     update();
+    emit updateItemModels();
     emit modified();
   }
 }
@@ -779,6 +758,7 @@ void ModulePanel::onMultiProtocolChanged(int index)
     module.subType = std::min(module.subType, maxSubTypes - 1);
     module.channelsCount = module.getMaxChannelCount();
     update();
+    emit updateItemModels();
     emit modified();
     lock = false;
   }
@@ -991,17 +971,33 @@ void ModulePanel::onClearAccessRxClicked()
 
 /******************************************************************************/
 
-SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, CommonItemModels * commonItemModels):
+SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware,
+                       CompoundItemModelFactory * sharedItemModels) :
   ModelPanel(parent, model, generalSettings, firmware),
   ui(new Ui::Setup),
-  commonItemModels(commonItemModels)
+  sharedItemModels(sharedItemModels)
 {
   ui->setupUi(this);
-  rawSwitchFilteredModel = new RawItemFilteredModel(commonItemModels->rawSwitchItemModel(), RawSwitch::TimersContext, this);
-
-  Board::Type board = firmware->getBoard();
 
   lock = true;
+
+  panelFilteredModels = new FilteredItemModelFactory();
+
+  panelFilteredModels->registerItemModel(new FilteredItemModel(sharedItemModels->getItemModel(AbstractItemModel::IMID_RawSwitch),
+                                                               RawSwitch::TimersContext),
+                                         FIM_TIMERSWITCH);
+  connectItemModelEvents(panelFilteredModels->getItemModel(FIM_TIMERSWITCH));
+
+  panelFilteredModels->registerItemModel(new FilteredItemModel(sharedItemModels->getItemModel(AbstractItemModel::IMID_ThrSource)),
+                                         FIM_THRSOURCE);
+  connectItemModelEvents(panelFilteredModels->getItemModel(FIM_THRSOURCE));
+
+  panelItemModels = new CompoundItemModelFactory(&generalSettings, &model);
+  panelItemModels->registerItemModel(TimerData::countdownBeepItemModel());
+  panelItemModels->registerItemModel(TimerData::countdownStartItemModel());
+  panelItemModels->registerItemModel(TimerData::persistentItemModel());
+
+  Board::Type board = firmware->getBoard();
 
   memset(modules, 0, sizeof(modules));
 
@@ -1082,7 +1078,7 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
 
   for (int i = 0; i < CPN_MAX_TIMERS; i++) {
     if (i < timersCount) {
-      timers[i] = new TimerPanel(this, model, model.timers[i], generalSettings, firmware, prevFocus, rawSwitchFilteredModel);
+      timers[i] = new TimerPanel(this, model, model.timers[i], generalSettings, firmware, prevFocus, panelFilteredModels, panelItemModels);
       ui->gridLayout->addWidget(timers[i], 1+i, 1);
       connect(timers[i], &TimerPanel::modified, this, &SetupPanel::modified);
       connect(timers[i], &TimerPanel::nameChanged, this, &SetupPanel::onTimerNameChanged);
@@ -1117,6 +1113,9 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
     ui->toplcdTimerLabel->hide();
     ui->toplcdTimer->hide();
   }
+
+  ui->throttleSource->setModel(panelFilteredModels->getItemModel(FIM_THRSOURCE));
+  ui->throttleSource->setField(model.thrTraceSrc, this);
 
   if (!firmware->getCapability(HasDisplayText)) {
     ui->displayText->hide();
@@ -1223,6 +1222,7 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
     modules[i] = new ModulePanel(this, model, model.moduleData[i], generalSettings, firmware, i);
     ui->modulesLayout->addWidget(modules[i]);
     connect(modules[i], &ModulePanel::modified, this, &SetupPanel::modified);
+    connect(modules[i], &ModulePanel::updateItemModels, this, &SetupPanel::onModuleUpdateItemModels);
     connect(this, &SetupPanel::extendedLimitsToggled, modules[i], &ModulePanel::onExtendedLimitsToggled);
   }
 
@@ -1248,6 +1248,8 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
 SetupPanel::~SetupPanel()
 {
   delete ui;
+  delete panelFilteredModels;
+  delete panelItemModels;
 }
 
 void SetupPanel::on_extendedLimits_toggled(bool checked)
@@ -1279,14 +1281,6 @@ void SetupPanel::on_trimIncrement_currentIndexChanged(int index)
 {
   model->trimInc = index - 2;
   emit modified();
-}
-
-void SetupPanel::on_throttleSource_currentIndexChanged(int index)
-{
-  if (!lock) {
-    model->thrTraceSrc = ui->throttleSource->currentData().toUInt();
-    emit modified();
-  }
 }
 
 void SetupPanel::on_throttleTrimSwitch_currentIndexChanged(int index)
@@ -1347,28 +1341,6 @@ void SetupPanel::on_image_currentIndexChanged(int index)
   }
 }
 
-void SetupPanel::populateThrottleSourceCB()
-{
-  Board::Type board = firmware->getBoard();
-  lock = true;
-  ui->throttleSource->clear();
-  ui->throttleSource->addItem(tr("THR"), 0);
-
-  int idx = 1;
-  for (int i = 0; i < getBoardCapability(board, Board::Pots) + getBoardCapability(board, Board::Sliders); i++, idx++) {
-    if (RawSource(SOURCE_TYPE_STICK, 4 + i).isAvailable(model, &generalSettings, board)) {
-      ui->throttleSource->addItem(firmware->getAnalogInputName(4 + i), idx);
-    }
-  }
-  for (int i = 0; i < firmware->getCapability(Outputs); i++, idx++) {
-    ui->throttleSource->addItem(RawSource(SOURCE_TYPE_CH, i).toString(model, &generalSettings), idx);
-  }
-
-  int thrTraceSrcIdx = ui->throttleSource->findData(model->thrTraceSrc);
-  ui->throttleSource->setCurrentIndex(thrTraceSrcIdx);
-  lock = false;
-}
-
 void SetupPanel::populateThrottleTrimSwitchCB()
 {
   Board::Type board = firmware->getBoard();
@@ -1396,7 +1368,7 @@ void SetupPanel::update()
 {
   ui->name->setText(model->name);
   ui->throttleReverse->setChecked(model->throttleReversed);
-  populateThrottleSourceCB();
+  ui->throttleSource->updateValue();
   populateThrottleTrimSwitchCB();
   ui->throttleWarning->setChecked(!model->disableThrottleWarning);
   ui->trimIncrement->setCurrentIndex(model->trimInc+2);
@@ -1750,7 +1722,27 @@ void SetupPanel::onTimerNameChanged()
   updateItemModels();
 }
 
+void SetupPanel::connectItemModelEvents(const FilteredItemModel * itemModel)
+{
+  connect(itemModel, &FilteredItemModel::aboutToBeUpdated, this, &SetupPanel::onItemModelAboutToBeUpdated);
+  connect(itemModel, &FilteredItemModel::updateComplete, this, &SetupPanel::onItemModelUpdateComplete);
+}
+
+void SetupPanel::onItemModelAboutToBeUpdated()
+{
+}
+
+void SetupPanel::onItemModelUpdateComplete()
+{
+}
+
 void SetupPanel::updateItemModels()
 {
-  commonItemModels->update(CommonItemModels::RMO_TIMERS);
+  sharedItemModels->update(AbstractItemModel::IMUE_Timers);
+  emit updated();
+}
+
+void SetupPanel::onModuleUpdateItemModels()
+{
+  sharedItemModels->update(AbstractItemModel::IMUE_Modules);
 }

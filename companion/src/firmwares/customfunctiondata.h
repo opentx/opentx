@@ -18,8 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#ifndef CUSTOMFUNCTIONDATA_H
-#define CUSTOMFUNCTIONDATA_H
+#pragma once
 
 #include "boards.h"
 #include "constants.h"
@@ -32,10 +31,12 @@ class Firmware;
 class ModelData;
 class GeneralSettings;
 class RadioDataConversionState;
+class AbstractStaticItemModel;
 
 enum AssignFunc {
   FuncOverrideCH1 = 0,
-  FuncOverrideCH32 = FuncOverrideCH1+CPN_MAX_CHNOUT-1,
+  FuncOverrideCHLast = FuncOverrideCH1 + CPN_MAX_CHNOUT - 1,
+  FuncOverrideCH32 = FuncOverrideCHLast,  //  TODO remove
   FuncTrainer,
   FuncTrainerRUD,
   FuncTrainerELE,
@@ -47,8 +48,9 @@ enum AssignFunc {
   FuncPlayHaptic,
   FuncReset,
   FuncSetTimer1,
-  FuncSetTimer2,
-  FuncSetTimer3,
+  FuncSetTimer2,  //  TODO remove
+  FuncSetTimer3,  //  TODO remove
+  FuncSetTimerLast = FuncSetTimer1 + CPN_MAX_TIMERS - 1,
   FuncVario,
   FuncPlayPrompt,
   FuncPlayBoth,
@@ -61,7 +63,7 @@ enum AssignFunc {
   FuncBackgroundMusic,
   FuncBackgroundMusicPause,
   FuncAdjustGV1,
-  FuncAdjustGVLast = FuncAdjustGV1+CPN_MAX_GVARS-1,
+  FuncAdjustGVLast = FuncAdjustGV1 + CPN_MAX_GVARS - 1,
   FuncSetFailsafe,
   FuncRangeCheckInternalModule,
   FuncRangeCheckExternalModule,
@@ -76,14 +78,23 @@ enum GVarAdjustModes
   FUNC_ADJUST_GVAR_CONSTANT,
   FUNC_ADJUST_GVAR_SOURCE,
   FUNC_ADJUST_GVAR_GVAR,
-  FUNC_ADJUST_GVAR_INCDEC
+  FUNC_ADJUST_GVAR_INCDEC,
+  FUNC_ADJUST_GVAR_COUNT
 };
 
 class CustomFunctionData {
   Q_DECLARE_TR_FUNCTIONS(CustomFunctionData)
 
   public:
-    CustomFunctionData(AssignFunc func=FuncOverrideCH1) { clear(); this->func = func; }
+    enum CustomFunctionContext
+    {
+      GlobalFunctionsContext  = 0x01,
+      SpecialFunctionsContext = 0x02,
+
+      AllFunctionContexts     = GlobalFunctionsContext | SpecialFunctionsContext
+    };
+
+    CustomFunctionData(AssignFunc func = FuncOverrideCH1) { clear(); this->func = func; }
     RawSwitch    swtch;
     AssignFunc   func;
     int param;
@@ -92,21 +103,33 @@ class CustomFunctionData {
     unsigned int adjustMode;
     int repeatParam;
 
-    void clear();
-    bool isEmpty() const;
-    QString nameToString(int index, bool globalContext = false) const;
-    QString funcToString(const ModelData * model = NULL) const;
-    QString paramToString(const ModelData * model) const;
-    QString repeatToString() const;
-    QString enabledToString() const;
-
-    static void populateResetParams(const ModelData * model, QComboBox * b, unsigned int value);
-    static void populatePlaySoundParams(QStringList & qs);
-    static void populateHapticParams(QStringList & qs);
-
     void convert(RadioDataConversionState & cstate);
 
+    void clear();
+    bool isEmpty() const;
+    QString funcToString(const ModelData * model = nullptr) const;
+    QString paramToString(const ModelData * model = nullptr) const;
+    QString repeatToString() const;
+    QString enabledToString() const;
+    QString playSoundToString() const;
+    QString harpicToString() const;
+    QString gvarAdjustModeToString() const;
+
+    static QString nameToString(const int index, const bool globalContext = false);
+    static QString funcToString(const AssignFunc func, const ModelData * model = nullptr);
+    static bool isFuncAvailable(const int index);
+    static int funcContext(const int index);
+    static QString resetToString(const int value, const ModelData * model = nullptr);
+    static int resetParamCount();
+    static bool isResetParamAvailable(const int index, const ModelData * model = nullptr);
+    static QString repeatToString(const int value);
+    static QStringList playSoundStringList();
+    static QString playSoundToString(const int value);
+    static QString harpicToString(const int value);
+    static QStringList gvarAdjustModeStringList();
+    static QString gvarAdjustModeToString(const int value);
+    static AbstractStaticItemModel * repeatItemModel();
+    static AbstractStaticItemModel * playSoundItemModel();
+    static AbstractStaticItemModel * harpicItemModel();
+    static AbstractStaticItemModel * gvarAdjustModeItemModel();
 };
-
-
-#endif // CUSTOMFUNCTIONDATA_H

@@ -19,7 +19,7 @@
  */
 
 #include "adjustmentreference.h"
-#include "radiodata.h"                  // for ModelData
+#include "modeldata.h"
 
 AdjustmentReference::AdjustmentReference(int value)
 {
@@ -75,4 +75,9 @@ QString AdjustmentReference::toString(const ModelData * model, const bool sign) 
       break;
   }
   return ret;
+}
+
+const bool AdjustmentReference::isAvailable() const
+{
+  return true;
 }

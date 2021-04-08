@@ -28,7 +28,7 @@
 #include "hardware.h"
 #include "../modeledit/customfunctions.h"
 #include "verticalscrollarea.h"
-#include "rawitemdatamodels.h"
+#include "compounditemmodels.h"
 
 GeneralEdit::GeneralEdit(QWidget * parent, RadioData & radioData, Firmware * firmware) :
   QDialog(parent),
@@ -56,10 +56,14 @@ GeneralEdit::GeneralEdit(QWidget * parent, RadioData & radioData, Firmware * fir
     }
   }
 
-  commonItemModels = new CommonItemModels(&generalSettings, nullptr, this);
+  sharedItemModels = new CompoundItemModelFactory(&generalSettings, nullptr);
+  sharedItemModels->addItemModel(AbstractItemModel::IMID_RawSource);
+  sharedItemModels->addItemModel(AbstractItemModel::IMID_RawSwitch);
+  sharedItemModels->addItemModel(AbstractItemModel::IMID_CustomFuncAction);
+  sharedItemModels->addItemModel(AbstractItemModel::IMID_CustomFuncResetParam);
 
   addTab(new GeneralSetupPanel(this, generalSettings, firmware), tr("Setup"));
-  addTab(new CustomFunctionsPanel(this, nullptr, generalSettings, firmware, commonItemModels), tr("Global Functions"));
+  addTab(new CustomFunctionsPanel(this, nullptr, generalSettings, firmware, sharedItemModels), tr("Global Functions"));
   addTab(new TrainerPanel(this, generalSettings, firmware), tr("Trainer"));
   addTab(new HardwarePanel(this, generalSettings, firmware), tr("Hardware"));
   addTab(new CalibrationPanel(this, generalSettings, firmware), tr("Calibration"));
@@ -70,6 +74,7 @@ GeneralEdit::GeneralEdit(QWidget * parent, RadioData & radioData, Firmware * fir
 GeneralEdit::~GeneralEdit()
 {
   delete ui;
+  delete sharedItemModels;
 }
 
 void GeneralEdit::closeEvent(QCloseEvent *event)

@@ -22,6 +22,8 @@ set(LINKER_SCRIPT targets/horus/stm32f4_flash.ld)
 set(RTC_BACKUP_RAM YES)
 set(PPM_LIMITS_SYMETRICAL YES)
 set(USB_SERIAL ON CACHE BOOL "Enable USB serial (CDC)")
+set(ROTARY_ENCODER YES)
+set(EXTERNAL_MODULE YES)
 
 if(BOOTLOADER)
   set(LINKER_SCRIPT targets/horus/stm32f4_flash_bootloader.ld)
@@ -214,6 +216,8 @@ set(TARGET_SRC
   led_driver.cpp
   extmodule_driver.cpp
   trainer_driver.cpp
+  ../common/arm/stm32/mixer_scheduler_driver.cpp
+  ../common/arm/stm32/heartbeat_driver.cpp
   ../common/arm/stm32/timers_driver.cpp
   ../common/arm/stm32/intmodule_serial_driver.cpp
   ../common/arm/stm32/rotary_encoder_driver.cpp

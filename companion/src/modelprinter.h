@@ -18,8 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _MODELPRINTER_H_
-#define _MODELPRINTER_H_
+#pragma once
 
 #include <QString>
 #include <QStringList>
@@ -68,8 +67,6 @@ class ModelPrinter: public QObject
     QString printTrim(int flightModeIndex, int stickIndex);
     QString printGlobalVar(int flightModeIndex, int gvarIndex);
     QString printRotaryEncoder(int flightModeIndex, int reIndex);
-    QString printTimer(int idx);
-    QString printTimer(const TimerData & timer);
     QString printInputName(int idx);
     QString printInputLine(int idx);
     QString printInputLine(const ExpoData & ed);
@@ -105,33 +102,21 @@ class ModelPrinter: public QObject
     QString printFailsafe(int idx);
     QString printFailsafeMode(unsigned int fsmode);
     QString printFailsafeValue(int val);
-    QString printTimerCountdownBeep(unsigned int countdownBeep);
-    QString printTimerPersistent(unsigned int persistent);
     QString printPPMFrameLength(int ppmFL);
-    QString printTimerName(int idx);
     QString printTimeValue(const int value, const unsigned int mask);
-    QString printTimerMinuteBeep(bool mb);
-    QString printTimerTimeValue(unsigned int val);
     QString printTelemetryProtocol(unsigned int val);
     QString printLabelValue(const QString & lbl, const QString & val, const bool sep = false);
     QString printLabelValues(const QString & lbl, const QStringList & vals, const bool sep = false);
     QString printRssiAlarmsDisabled(bool mb);
-    QString printTelemetrySource(int val);
     QString printVarioSource(unsigned int val);
     QString printVarioCenterSilent(bool mb);
     QString printVoltsSource(unsigned int val);
     QString printCurrentSource(unsigned int val);
     QString printMahPersistent(bool mb);
     QString printIgnoreSensorIds(bool mb);
-    QString printSensorType(unsigned int val);
-    QString printSensorFormula(unsigned int val);
-    QString printSensorCells(unsigned int val);
-    QString printSensorTypeCond(unsigned int idx);
-    QString printSensorParams(unsigned int idx);
     QString printTelemetryScreenType(unsigned int val);
     QString printTelemetryScreen(unsigned int idx, unsigned int line, unsigned int width);
     QString printChecklist();
-    QString printTelemetryPrecision(unsigned int val);
 
   private:
     Firmware * firmware;
@@ -139,5 +124,3 @@ class ModelPrinter: public QObject
     const ModelData & model;
 
 };
-
-#endif // _MODELPRINTER_H_

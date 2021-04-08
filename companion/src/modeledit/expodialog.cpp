@@ -20,12 +20,11 @@
 
 #include "expodialog.h"
 #include "ui_expodialog.h"
-#include "rawitemfilteredmodel.h"
+#include "filtereditemmodels.h"
 #include "helpers.h"
 
 ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, GeneralSettings & generalSettings,
-                          Firmware * firmware, QString & inputName, RawItemFilteredModel * rawSourceModel,
-                          RawItemFilteredModel * rawSwitchModel, RawItemFilteredModel * curveItemModel) :
+                       Firmware * firmware, QString & inputName, CompoundItemModelFactory * sharedItemModels) :
   QDialog(parent),
   ui(new Ui::ExpoDialog),
   model(model),
@@ -38,6 +37,9 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, G
 {
   ui->setupUi(this);
 
+  dialogFilteredItemModels = new FilteredItemModelFactory();
+  int id;
+
   QLabel * lb_fp[CPN_MAX_FLIGHT_MODES] = {ui->lb_FP0, ui->lb_FP1, ui->lb_FP2, ui->lb_FP3, ui->lb_FP4, ui->lb_FP5, ui->lb_FP6, ui->lb_FP7, ui->lb_FP8 };
   QCheckBox * tmp[CPN_MAX_FLIGHT_MODES] = {ui->cb_FP0, ui->cb_FP1, ui->cb_FP2, ui->cb_FP3, ui->cb_FP4, ui->cb_FP5, ui->cb_FP6, ui->cb_FP7, ui->cb_FP8 };
   for (int i = 0; i < CPN_MAX_FLIGHT_MODES; i++) {
@@ -48,11 +50,20 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, G
   setWindowTitle(tr("Edit %1").arg(RawSource(srcType, ed->chn).toString(&model, &generalSettings)));
   QRegExp rx(CHAR_FOR_NAMES_REGEX);
 
-  gvWeightGroup = new GVarGroup(ui->weightGV, ui->weightSB, ui->weightCB, ed->weight, model, 100, -100, 100);
-  gvOffsetGroup = new GVarGroup(ui->offsetGV, ui->offsetSB, ui->offsetCB, ed->offset, model, 0, -100, 100);
-  curveGroup = new CurveReferenceUIManager(ui->curveTypeCB, ui->curveGVarCB, ui->curveValueSB, ui->curveValueCB, ed->curve, model, curveItemModel, this);
+  id = dialogFilteredItemModels->registerItemModel(new FilteredItemModel(sharedItemModels->getItemModel(AbstractItemModel::IMID_GVarRef)), "GVarRef");
+  gvWeightGroup = new GVarGroup(ui->weightGV, ui->weightSB, ui->weightCB, ed->weight, model, 100, -100, 100, 1.0,
+                                dialogFilteredItemModels->getItemModel(id));
+  gvOffsetGroup = new GVarGroup(ui->offsetGV, ui->offsetSB, ui->offsetCB, ed->offset, model, 0, -100, 100, 1.0,
+                                dialogFilteredItemModels->getItemModel(id));
 
-  ui->switchesCB->setModel(rawSwitchModel);
+  curveRefFilteredItemModels = new CurveRefFilteredFactory(sharedItemModels,
+                                                           firmware->getCapability(HasInputDiff) ? 0 : FilteredItemModel::PositiveFilter);
+  curveGroup = new CurveReferenceUIManager(ui->curveTypeCB, ui->curveGVarCB, ui->curveValueSB, ui->curveValueCB, ed->curve, model,
+                                           curveRefFilteredItemModels, this);
+
+  id = dialogFilteredItemModels->registerItemModel(new FilteredItemModel(sharedItemModels->getItemModel(AbstractItemModel::IMID_RawSwitch),
+                                                                         RawSwitch::MixesContext), "RawSwitch");
+  ui->switchesCB->setModel(dialogFilteredItemModels->getItemModel(id));
   ui->switchesCB->setCurrentIndex(ui->switchesCB->findData(ed->swtch.toValue()));
 
   ui->sideCB->setCurrentIndex(ed->mode - 1);
@@ -83,7 +94,10 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, G
 
   if (firmware->getCapability(VirtualInputs)) {
     ui->inputName->setMaxLength(firmware->getCapability(InputsLength));
-    ui->sourceCB->setModel(rawSourceModel);
+    id = dialogFilteredItemModels->registerItemModel(new FilteredItemModel(sharedItemModels->getItemModel(AbstractItemModel::IMID_RawSource),
+                                                           (RawSource::InputSourceGroups & ~RawSource::NoneGroup & ~RawSource::InputsGroup) | RawSource::TelemGroup),
+                                                     "RawSource");
+    ui->sourceCB->setModel(dialogFilteredItemModels->getItemModel(id));
     ui->sourceCB->setCurrentIndex(ui->sourceCB->findData(ed->srcRaw.toValue()));
     ui->inputName->setValidator(new QRegExpValidator(rx, this));
     ui->inputName->setText(inputName);
@@ -135,9 +149,10 @@ ExpoDialog::ExpoDialog(QWidget *parent, ModelData & model, ExpoData *expoData, G
 
 ExpoDialog::~ExpoDialog()
 {
+  delete ui;
   delete gvWeightGroup;
   delete gvOffsetGroup;
-  delete ui;
+  delete dialogFilteredItemModels;
 }
 
 void ExpoDialog::updateScale()

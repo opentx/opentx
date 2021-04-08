@@ -171,17 +171,16 @@ void editName(coord_t x, coord_t y, char * name, uint8_t size, event_t event, ui
     uint8_t cur = editNameCursorPos;
     if (s_editMode > 0) {
       int8_t c = name[cur];
-      if (c == '\0')
-        c = ' ';
-      char v;
-      if (IS_NEXT_EVENT(event)) {
-        v = getNextChar(c, cur);
-      }
-      else if (IS_PREVIOUS_EVENT(event)) {
-        v = getPreviousChar(c, cur);
-      }
-      else {
-        v = c;
+      int8_t v = c;
+
+      if (IS_NEXT_EVENT(event) || IS_PREVIOUS_EVENT(event)) {
+        if (attr == ZCHAR) {
+          v = checkIncDec(event, abs(v), 0, ZCHAR_MAX, 0);
+          if (c <= 0) v = -v;
+        }
+        else {
+          v = checkIncDec(event, abs(v), ' ', 'z', 0);
+        }
       }
 
       switch (event) {

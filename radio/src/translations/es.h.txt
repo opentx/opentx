@@ -263,7 +263,7 @@
 #define LEN_VUNITSSYSTEM     "\010"
 #define TR_VUNITSSYSTEM      "Métrico\0""Imperial"
 #define LEN_VTELEMUNIT       "\003"
-#define TR_VTELEMUNIT        "-\0 ""V\0 ""A\0 ""mA\0""kts""m/s""f/s""kmh""mph""m\0 ""ft\0""@C\0""@F\0""%\0 ""mAh""W\0 ""mW\0""dB\0""rpm""g\0 ""@\0 ""rad""ml\0""fOz""mlm""Hz\0""mS\0""uS\0"
+#define TR_VTELEMUNIT        "-\0 ""V\0 ""A\0 ""mA\0""kts""m/s""f/s""kmh""mph""m\0 ""ft\0""@C\0""@F\0""%\0 ""mAh""W\0 ""mW\0""dB\0""rpm""g\0 ""@\0 ""rad""ml\0""fOz""mlm""Hz\0""mS\0""uS\0""km\0"
 
 #define STR_V                  (STR_VTELEMUNIT+1)
 #define STR_A                  (STR_VTELEMUNIT+4)
@@ -294,12 +294,15 @@
 #elif defined(PCBXLITE)
   #define LEN_VKEYS                    "\005"
   #define TR_VKEYS                     "Shift""Exit\0""Enter""Down\0""Up\0  ""Right""Left\0"
-#elif defined(RADIO_T12)
+#elif defined(RADIO_FAMILY_JUMPER_T12)
   #define LEN_VKEYS                    "\005"
   #define TR_VKEYS                     "Exit\0""Enter""Down\0""Up\0  ""Right""Left\0"
 #elif defined(RADIO_TX12)
   #define LEN_VKEYS                    "\005"
   #define TR_VKEYS                     "Exit\0""Enter""Up\0  ""Down\0""SYS\0 ""MDL\0 ""TELE\0"
+#elif defined(RADIO_T8)
+  #define LEN_VKEYS                    "\005"
+  #define TR_VKEYS                     "RTN\0 ""ENTER""PGUP\0""PGDN\0""SYS\0 ""MDL\0 ""UP\0  ""DOWN\0"
 #elif defined(PCBTARANIS)
   #define LEN_VKEYS                    "\005"
   #define TR_VKEYS                     "Menu\0""Exit\0""Enter""Page\0""Plus\0""Minus"
@@ -453,7 +456,7 @@
 #if defined(PCBSKY9X) && defined(REVX)
   #define TR_OUTPUT_TYPE       INDENT "Output"
 #endif
-#define TR_PROTO               TR(INDENT"Proto",INDENT"Protocolo")
+#define TR_PROTOCOL            TR("Proto", "Protocolo")
 #define TR_PPMFRAME            INDENT "Trama PPM"
 #define TR_REFRESHRATE         TR(INDENT "Refresco", INDENT "Velocidad refresco")
 #define STR_WARN_BATTVOLTAGE   TR(INDENT "Salida es VBAT: ", INDENT "Aviso: señal salida es VBAT: ")
@@ -668,6 +671,7 @@
 #define TR_RECEIVER                    "Receptor"
 #define TR_MULTI_RFTUNE                TR("Sint.freq.", "RF Freq. sint.fina")
 #define TR_MULTI_RFPOWER               "RF power"
+#define TR_MULTI_WBUS                  "Output"
 #define TR_MULTI_TELEMETRY             "Telemetría"
 #define TR_MULTI_VIDFREQ               TR("Freq.vídeo", "Frecuencia vídeo")
 #define TR_RF_POWER                     "RF Power"
@@ -816,7 +820,7 @@
 #define TR_NO_MODELS_ON_SD     "Sin modelos en SD"
 #define TR_NO_BITMAPS_ON_SD    "Sin imágenes en SD"
 #define TR_NO_SCRIPTS_ON_SD    "No scripts en SD"
-#define TR_SCRIPT_SYNTAX_ERROR "Script syntax error"
+#define TR_SCRIPT_SYNTAX_ERROR TR("Syntax error", "Script syntax error")
 #define TR_SCRIPT_PANIC        "Script panic"
 #define TR_SCRIPT_KILLED       "Script killed"
 #define TR_SCRIPT_ERROR        "Error desconocido"
@@ -1418,3 +1422,6 @@
 #define ZSTR_SERVO_VOLTAGE             "SrvV"
 #define ZSTR_SERVO_TEMPERATURE         "SrvT"
 #define ZSTR_SERVO_STATUS              "SrvS"
+#define ZSTR_LOSS                      "Loss"
+#define ZSTR_SPEED                     "Spd "
+#define ZSTR_FLOW                      "Flow"

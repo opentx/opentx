@@ -88,6 +88,10 @@ uint32_t readKeys()
     result |= 1 << KEY_SHIFT;
 #endif
 
+#if defined(KEYS_GPIO_PIN_BIND)
+  if (~KEYS_GPIO_REG_BIND & KEYS_GPIO_PIN_BIND)
+    result |= 1 << KEY_BIND;
+#endif
   // if (result != 0) TRACE("readKeys(): result=0x%02x", result);
 
   return result;
@@ -200,10 +204,16 @@ uint32_t switchState(uint8_t index)
   uint32_t xxx = 0;
 
   switch (index) {
-#if defined(RADIO_TX12)
+
+#if defined(RADIO_TX12) || defined(RADIO_T8)
     ADD_2POS_CASE(A);
     ADD_3POS_CASE(B, 1);
     ADD_3POS_CASE(C, 2);
+#elif defined(RADIO_TLITE)
+    ADD_3POS_CASE(A, 0);
+    ADD_3POS_CASE(B, 1);
+    ADD_2POS_CASE(C);
+    ADD_2POS_CASE(D);
 #else
     ADD_3POS_CASE(A, 0);
     ADD_3POS_CASE(B, 1);
@@ -235,6 +245,10 @@ uint32_t switchState(uint8_t index)
     ADD_2POS_CASE(D);
     ADD_3POS_CASE(E, 4);
     ADD_3POS_CASE(F, 5);
+#elif defined(RADIO_T8)
+    ADD_2POS_CASE(D);
+#elif defined(RADIO_TLITE)
+    // Only 4 switches
 #elif defined(PCBX7)
     ADD_3POS_CASE(D, 3);
     ADD_2POS_CASE(F);

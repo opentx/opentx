@@ -33,5 +33,9 @@ void usbChargerInit()
 
 bool usbChargerLed()
 {
+#if defined(SIMU)
+  return true;
+#else
   return (GPIO_ReadInputDataBit(USB_CHARGER_GPIO, USB_CHARGER_GPIO_PIN) == Bit_RESET && usbPlugged());
+#endif
 }

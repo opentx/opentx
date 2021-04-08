@@ -18,8 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _HELPERS_H_
-#define _HELPERS_H_
+#pragma once
 
 #include "eeprominterface.h"
 #include <QCheckBox>
@@ -60,12 +59,15 @@ class CompanionIcon: public QIcon {
     void addImage(const QString &baseimage, Mode mode = Normal, State state = Off);
 };
 
+class FilteredItemModel;
+
 class GVarGroup: public QObject {
 
   Q_OBJECT
 
   public:
-    GVarGroup(QCheckBox * weightGV, QAbstractSpinBox * weightSB, QComboBox * weightCB, int & weight, const ModelData & model, const int deflt, const int mini, const int maxi, const double step=1.0, bool allowGVars=true);
+    GVarGroup(QCheckBox * weightGV, QAbstractSpinBox * weightSB, QComboBox * weightCB, int & weight, const ModelData & model,
+              const int deflt, const int mini, const int maxi, const double step = 1.0, FilteredItemModel * gvarModel = nullptr);
 
     void setWeight(int val);
 
@@ -101,7 +103,6 @@ class GVarGroup: public QObject {
 namespace Helpers
 {
   void populateGvarUseCB(QComboBox *b, unsigned int phase);
-  void populateGVCB(QComboBox & b, int value, const ModelData & model);
 
   void populateFileComboBox(QComboBox * b, const QSet<QString> & set, const QString & current);
   void getFileComboBoxValue(QComboBox * b, char * dest, int length);
@@ -234,5 +235,3 @@ private:
 };
 
 extern Stopwatch gStopwatch;
-
-#endif // _HELPERS_H_

@@ -519,14 +519,28 @@ swsrc_t getMovedSwitch()
   swsrc_t result = 0;
 
 #if defined(PCBFRSKY)
-  for (int i=0; i<NUM_SWITCHES; i++) {
+  // Switches
+  for (int i = 0; i < NUM_SWITCHES; i++) {
     if (SWITCH_EXISTS(i)) {
-      swarnstate_t mask = ((swarnstate_t)0x03 << (i*2));
-      uint8_t prev = (switches_states & mask) >> (i*2);
-      uint8_t next = (1024+getValue(MIXSRC_SA+i)) / 1024;
+      swarnstate_t mask = ((swarnstate_t) 0x03 << (i * 2));
+      uint8_t prev = (switches_states & mask) >> (i * 2);
+      uint8_t next = (1024 + getValue(MIXSRC_SA + i)) / 1024;
       if (prev != next) {
-        switches_states = (switches_states & (~mask)) | ((swarnstate_t)next << (i*2));
-        result = 1+(3*i)+next;
+        switches_states = (switches_states & (~mask)) | ((swarnstate_t) next << (i * 2));
+        result = 1 + (3 * i) + next;
+      }
+    }
+  }
+  // Multipos
+  for (int i = 0; i < NUM_XPOTS; i++) {
+    if (IS_POT_MULTIPOS(POT1 + i)) {
+      StepsCalibData * calib = (StepsCalibData *) &g_eeGeneral.calib[POT1 + i];
+      if (IS_MULTIPOS_CALIBRATED(calib)) {
+        uint8_t prev = potsPos[i] & 0x0F;
+        uint8_t next = anaIn(POT1 + i) / (2 * RESX / calib->count);
+        if (prev != next) {
+          result = SWSRC_LAST_SWITCH + i * XPOTS_MULTIPOS_COUNT + next + 1;
+        }
       }
     }
   }
@@ -683,6 +697,9 @@ void checkSwitches()
       }
       int x = SWITCH_WARNING_LIST_X;
       int y = SWITCH_WARNING_LIST_Y;
+#if defined(COLORLCD)
+      lcdNextPos = SWITCH_WARNING_LIST_X;
+#endif
       int numWarnings = 0;
       for (int i=0; i<NUM_SWITCHES; ++i) {
         if (SWITCH_WARNING_ALLOWED(i) && !(g_model.switchWarningEnable & (1<<i))) {

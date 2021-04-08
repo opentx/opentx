@@ -20,10 +20,6 @@
 
 #include "opentx.h"
 
-#if defined(SBUS_TRAINER)
-Fifo<uint8_t, 32> trainerSbusFifo;
-#endif
-
 void trainerSendNextFrame();
 
 void init_trainer_ppm()

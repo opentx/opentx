@@ -47,8 +47,7 @@ enum {
   ITEM_RECEIVER_SETTINGS_PWM_RATE,
   ITEM_RECEIVER_SETTINGS_TELEMETRY,
   ITEM_RECEIVER_SETTINGS_TELEMETRY_25MW,
-  ITEM_RECEIVER_SETTINGS_SPORT_FPORT,
-  ITEM_RECEIVER_SETTINGS_FPORT2,
+  ITEM_RECEIVER_SETTINGS_SPORT_MODE,
   ITEM_RECEIVER_SETTINGS_CAPABILITY_NOT_SUPPORTED1,
   ITEM_RECEIVER_SETTINGS_CAPABILITY_NOT_SUPPORTED2,
   ITEM_RECEIVER_SETTINGS_PINMAP_FIRST
@@ -59,6 +58,15 @@ enum {
 
 #define CH_ENABLE_SPORT   4
 #define CH_ENABLE_SBUS    5
+
+bool isSPortModeAvailable(int mode)
+{
+  uint8_t receiverId = reusableBuffer.hardwareAndSettings.receiverSettings.receiverId;
+  if (mode == 2 && !IS_RECEIVER_CAPABILITY_ENABLED(RECEIVER_CAPABILITY_FPORT2)) {
+    return false;
+  }
+  return true;
+}
 
 void menuModelReceiverOptions(event_t event)
 {
@@ -82,8 +90,7 @@ void menuModelReceiverOptions(event_t event)
     0, // PWM rate
     isModuleR9MAccess(g_moduleIdx) && receiverVariant == PXX2_VARIANT_EU && reusableBuffer.hardwareAndSettings.moduleSettings.txPower > 14 /*25mW*/ ? READONLY_ROW : (uint8_t)0, // Telemetry
     IF_RECEIVER_CAPABILITY(RECEIVER_CAPABILITY_TELEMETRY_25MW, 0),
-    IF_RECEIVER_CAPABILITY(RECEIVER_CAPABILITY_FPORT, 0),
-    IF_RECEIVER_CAPABILITY(RECEIVER_CAPABILITY_FPORT2, 0),
+    uint8_t((IS_RECEIVER_CAPABILITY_ENABLED(RECEIVER_CAPABILITY_FPORT) || IS_RECEIVER_CAPABILITY_ENABLED(RECEIVER_CAPABILITY_FPORT2)) ? 0 : HIDDEN_ROW),
     uint8_t(reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].receivers[receiverId].information.capabilityNotSupported ? READONLY_ROW : HIDDEN_ROW),
     uint8_t(reusableBuffer.hardwareAndSettings.modules[g_moduleIdx].receivers[receiverId].information.capabilityNotSupported ? READONLY_ROW : HIDDEN_ROW),
     0 // channels ...
@@ -134,11 +141,11 @@ void menuModelReceiverOptions(event_t event)
   lcdInvertLine(0);
 
   if (reusableBuffer.hardwareAndSettings.receiverSettings.state == PXX2_SETTINGS_OK) {
-    for (uint8_t k=0; k<LCD_LINES-1; k++) {
-      coord_t y = MENU_HEADER_HEIGHT + 1 + k*FH;
+    for (uint8_t k = 0; k < LCD_LINES - 1; k++) {
+      coord_t y = MENU_HEADER_HEIGHT + 1 + k * FH;
       uint8_t i = k + menuVerticalOffset;
-      for (int j=0; j<=i; ++j) {
-        if (j<(int)DIM(mstate_tab) && mstate_tab[j] == HIDDEN_ROW) {
+      for (int j = 0; j <= i; ++j) {
+        if (j < (int)DIM(mstate_tab) && mstate_tab[j] == HIDDEN_ROW) {
           ++i;
         }
       }
@@ -166,19 +173,19 @@ void menuModelReceiverOptions(event_t event)
           }
           break;
 
-        case ITEM_RECEIVER_SETTINGS_SPORT_FPORT:
-          reusableBuffer.hardwareAndSettings.receiverSettings.fport = editCheckBox(reusableBuffer.hardwareAndSettings.receiverSettings.fport, RECEIVER_OPTIONS_2ND_COLUMN, y, "F.Port", attr, event);
-          if (attr && checkIncDec_Ret) {
+        case ITEM_RECEIVER_SETTINGS_SPORT_MODE:
+        {
+          lcdDrawText(0, y, STR_PROTOCOL);
+          uint8_t portType = reusableBuffer.hardwareAndSettings.receiverSettings.fport | (reusableBuffer.hardwareAndSettings.receiverSettings.fport2 << 1);
+          lcdDrawTextAtIndex(RECEIVER_OPTIONS_2ND_COLUMN, y, STR_SPORT_MODES, portType, attr);
+          portType = checkIncDec(event, portType, 0, 2, EE_MODEL, isSPortModeAvailable);
+          if (checkIncDec_Ret) {
+            reusableBuffer.hardwareAndSettings.receiverSettings.fport = portType & 0x01;
+            reusableBuffer.hardwareAndSettings.receiverSettings.fport2 = (portType & 0x02) >> 1;
             reusableBuffer.hardwareAndSettings.receiverSettings.dirty = RECEIVER_SETTINGS_DIRTY;
           }
           break;
-
-        case ITEM_RECEIVER_SETTINGS_FPORT2:
-          reusableBuffer.hardwareAndSettings.receiverSettings.fport2 = editCheckBox(reusableBuffer.hardwareAndSettings.receiverSettings.fport2, RECEIVER_OPTIONS_2ND_COLUMN, y, "F.Port2", attr, event);
-          if (attr && checkIncDec_Ret) {
-            reusableBuffer.hardwareAndSettings.receiverSettings.dirty = RECEIVER_SETTINGS_DIRTY;
-          }
-          break;
+        }
 
         case ITEM_RECEIVER_SETTINGS_CAPABILITY_NOT_SUPPORTED1:
           lcdDrawText(LCD_W/2, y+1, STR_MORE_OPTIONS_AVAILABLE, SMLSIZE|CENTERED);

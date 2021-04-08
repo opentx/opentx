@@ -111,6 +111,7 @@ void boardInit()
                          AUX_SERIAL_RCC_APB1Periph |
                          INTMODULE_RCC_APB1Periph |
                          TRAINER_MODULE_RCC_APB1Periph |
+                         MIXER_SCHEDULER_TIMER_RCC_APB1Periph |
                          BT_RCC_APB1Periph |
                          GYRO_RCC_APB1Periph,
                          ENABLE);
@@ -272,6 +273,8 @@ void boardOff()
 
 #if defined (RADIO_TX12)
   #define BATTERY_DIVIDER 22830
+#elif defined (RADIO_T8)
+  #define BATTERY_DIVIDER 50000
 #else
   #define BATTERY_DIVIDER 26214
 #endif 

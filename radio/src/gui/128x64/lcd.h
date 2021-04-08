@@ -176,8 +176,9 @@ uint8_t * lcdLoadBitmap(uint8_t * dest, const char * filename, uint8_t width, ui
 #if defined(BOOT)
   #define BLINK_ON_PHASE               (0)
 #else
-  #define BLINK_ON_PHASE               (g_blinkTmr10ms & (1<<6))
   #define SLOW_BLINK_ON_PHASE          (g_blinkTmr10ms & (1<<7))
+  #define BLINK_ON_PHASE               (g_blinkTmr10ms & (1<<6))
+  #define FAST_BLINK_ON_PHASE          (g_blinkTmr10ms & (1<<4))
 #endif
 
 inline pixel_t getPixel(uint8_t x, uint8_t y)

@@ -19,57 +19,15 @@
  */
 
 #include "customfunctions.h"
-#include "rawitemfilteredmodel.h"
 #include "helpers.h"
 #include "appdata.h"
 
 #include <TimerEdit>
 
-RepeatComboBox::RepeatComboBox(QWidget *parent, int & repeatParam):
-  QComboBox(parent),
-  repeatParam(repeatParam)
-{
-  unsigned int step = 1;
-  int value = repeatParam/step;
-
-  setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Fixed);
-
-  if (step == 1) {
-    addItem(tr("Played once, not during startup"), -1);
-    value++;
-  }
-
-  addItem(tr("No repeat"), 0);
-
-  for (unsigned int i = step; i <= 60; i += step) {
-    addItem(tr("%1s").arg(i), i);
-  }
-
-  setCurrentIndex(value);
-
-  connect(this, SIGNAL(currentIndexChanged(int)), this, SLOT(onIndexChanged(int)));
-}
-
-void RepeatComboBox::onIndexChanged(int index)
-{
-  repeatParam = itemData(index).toInt();
-  emit modified();
-}
-
-void RepeatComboBox::update()
-{
-  unsigned int step = 1;
-  int value = repeatParam/step;
-  if (step == 1) {
-    value++;
-  }
-  setCurrentIndex(value);
-}
-
-CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, GeneralSettings & generalSettings, Firmware * firmware, CommonItemModels * commonItemModels):
+CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, GeneralSettings & generalSettings, Firmware * firmware,
+                                           CompoundItemModelFactory * sharedItemModels):
   GenericPanel(parent, model, generalSettings, firmware),
   functions(model ? model->customFn : generalSettings.customFn),
-  commonItemModels(commonItemModels),
   mediaPlayerCurrent(-1),
   mediaPlayer(nullptr),
   modelsUpdateCnt(0)
@@ -77,21 +35,41 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
   lock = true;
   fswCapability = model ? firmware->getCapability(CustomFunctions) : firmware->getCapability(GlobalFunctions);
 
-  rawSwitchFilteredModel = new RawItemFilteredModel(commonItemModels->rawSwitchItemModel(), model ? RawSwitch::SpecialFunctionsContext : RawSwitch::GlobalFunctionsContext, this);
-  connect(rawSwitchFilteredModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &CustomFunctionsPanel::onModelDataAboutToBeUpdated);
-  connect(rawSwitchFilteredModel, &RawItemFilteredModel::dataUpdateComplete, this, &CustomFunctionsPanel::onModelDataUpdateComplete);
+  tabModelFactory = new CompoundItemModelFactory(&generalSettings, model);
+  playSoundId = tabModelFactory->registerItemModel(CustomFunctionData::playSoundItemModel());
+  harpicId = tabModelFactory->registerItemModel(CustomFunctionData::harpicItemModel());
+  repeatId = tabModelFactory->registerItemModel(CustomFunctionData::repeatItemModel());
+  gvarAdjustModeId = tabModelFactory->registerItemModel(CustomFunctionData::gvarAdjustModeItemModel());
 
-  rawSourceAllModel = new RawItemFilteredModel(commonItemModels->rawSourceItemModel(), this);
-  connect(rawSourceAllModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &CustomFunctionsPanel::onModelDataAboutToBeUpdated);
-  connect(rawSourceAllModel, &RawItemFilteredModel::dataUpdateComplete, this, &CustomFunctionsPanel::onModelDataUpdateComplete);
+  tabFilterFactory = new FilteredItemModelFactory();
 
-  rawSourceInputsModel = new RawItemFilteredModel(commonItemModels->rawSourceItemModel(), RawSource::InputSourceGroups, this);
-  connect(rawSourceInputsModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &CustomFunctionsPanel::onModelDataAboutToBeUpdated);
-  connect(rawSourceInputsModel, &RawItemFilteredModel::dataUpdateComplete, this, &CustomFunctionsPanel::onModelDataUpdateComplete);
+  funcActionsId = tabFilterFactory->registerItemModel(new FilteredItemModel(sharedItemModels->getItemModel(AbstractItemModel::IMID_CustomFuncAction),
+                                                      model ? CustomFunctionData::AllFunctionContexts : CustomFunctionData::GlobalFunctionsContext),
+                                                      "Function Actions");
+  connectItemModelEvents(tabFilterFactory->getItemModel(funcActionsId));
 
-  rawSourceGVarsModel = new RawItemFilteredModel(commonItemModels->rawSourceItemModel(), RawSource::GVarsGroup, this);
-  connect(rawSourceGVarsModel, &RawItemFilteredModel::dataAboutToBeUpdated, this, &CustomFunctionsPanel::onModelDataAboutToBeUpdated);
-  connect(rawSourceGVarsModel, &RawItemFilteredModel::dataUpdateComplete, this, &CustomFunctionsPanel::onModelDataUpdateComplete);
+  funcResetParamId = tabFilterFactory->registerItemModel(new FilteredItemModel(sharedItemModels->getItemModel(AbstractItemModel::IMID_CustomFuncResetParam)),
+                                                         "Reset Params");
+  connectItemModelEvents(tabFilterFactory->getItemModel(funcResetParamId));
+
+  rawSwitchId = tabFilterFactory->registerItemModel(new FilteredItemModel(sharedItemModels->getItemModel(AbstractItemModel::IMID_RawSwitch),
+                                                                          model ? RawSwitch::SpecialFunctionsContext : RawSwitch::GlobalFunctionsContext),
+                                                    "RawSwitch");
+  connectItemModelEvents(tabFilterFactory->getItemModel(rawSwitchId));
+
+  rawSourceAllId = tabFilterFactory->registerItemModel(new FilteredItemModel(sharedItemModels->getItemModel(AbstractItemModel::IMID_RawSource)),
+                                                       "RawSource All");
+  connectItemModelEvents(tabFilterFactory->getItemModel(rawSourceAllId));
+
+  rawSourceInputsId = tabFilterFactory->registerItemModel(new FilteredItemModel(sharedItemModels->getItemModel(AbstractItemModel::IMID_RawSource),
+                                                                                RawSource::InputSourceGroups),
+                                                          "RawSource Inputs");
+  connectItemModelEvents(tabFilterFactory->getItemModel(rawSourceInputsId));
+
+  rawSourceGVarsId = tabFilterFactory->registerItemModel(new FilteredItemModel(sharedItemModels->getItemModel(AbstractItemModel::IMID_RawSource),
+                                                                               RawSource::GVarsGroup),
+                                                         "RawSource GVars");
+  connectItemModelEvents(tabFilterFactory->getItemModel(rawSourceGVarsId));
 
   if (!firmware->getCapability(VoicesAsNumbers)) {
     tracksSet = getFilesSet(getSoundsPath(generalSettings), QStringList() << "*.wav" << "*.WAV", firmware->getCapability(VoicesMaxLength));
@@ -121,7 +99,7 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
   playIcon.addImage("stop.png", QIcon::Normal, QIcon::On);
 
   QStringList headerLabels;
-  headerLabels << "#" << tr("Switch") << tr("Action") << tr("Parameters") << tr("Enable");
+  headerLabels << "#" << tr("Switch") << tr("Action") << tr("Parameters") << "";
   TableLayout * tableLayout = new TableLayout(this, fswCapability, headerLabels);
 
   for (int i = 0; i < fswCapability; i++) {
@@ -138,32 +116,26 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
     label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Minimum);
     connect(label, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(onCustomContextMenuRequested(QPoint)));
     tableLayout->addWidget(i, 0, label);
-    // s1.report("label");
 
     // The switch
     fswtchSwtch[i] = new QComboBox(this);
-    fswtchSwtch[i]->setModel(rawSwitchFilteredModel);
-    fswtchSwtch[i]->setCurrentIndex(fswtchSwtch[i]->findData(functions[i].swtch.toValue()));
     fswtchSwtch[i]->setProperty("index", i);
+    fswtchSwtch[i]->setModel(tabFilterFactory->getItemModel(rawSwitchId));
+    fswtchSwtch[i]->setCurrentIndex(fswtchSwtch[i]->findData(functions[i].swtch.toValue()));
     fswtchSwtch[i]->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Minimum);
+    fswtchSwtch[i]->setSizeAdjustPolicy(QComboBox::AdjustToContents);
     fswtchSwtch[i]->setMaxVisibleItems(10);
     connect(fswtchSwtch[i], SIGNAL(currentIndexChanged(int)), this, SLOT(customFunctionEdited()));
     tableLayout->addWidget(i, 1, fswtchSwtch[i]);
-    // s1.report("switch");
 
     // The function
     fswtchFunc[i] = new QComboBox(this);
-    if (!i) {
-      populateFuncCB(fswtchFunc[i], functions[i].func);
-    }
-    else {
-      fswtchFunc[i]->setModel(fswtchFunc[0]->model());
-      fswtchFunc[i]->setCurrentIndex(fswtchFunc[i]->findData(functions[i].func));
-    }
     fswtchFunc[i]->setProperty("index", i);
+    fswtchFunc[i]->setModel(tabFilterFactory->getItemModel(funcActionsId));
+    fswtchFunc[i]->setCurrentIndex(fswtchFunc[i]->findData(functions[i].func));
+    fswtchFunc[i]->setSizeAdjustPolicy(QComboBox::AdjustToContents);
     connect(fswtchFunc[i], SIGNAL(currentIndexChanged(int)), this, SLOT(functionEdited()));
     tableLayout->addWidget(i, 2, fswtchFunc[i]);
-    // s1.report("func");
 
     // The parameters
     QHBoxLayout * paramLayout = new QHBoxLayout();
@@ -171,15 +143,15 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
 
     fswtchGVmode[i] = new QComboBox(this);
     fswtchGVmode[i]->setProperty("index", i);
-    populateGVmodeCB(fswtchGVmode[i], functions[i].adjustMode);
+    fswtchGVmode[i]->setModel(tabModelFactory->getItemModel(gvarAdjustModeId));
     fswtchGVmode[i]->setSizeAdjustPolicy(QComboBox::AdjustToContents);
     connect(fswtchGVmode[i], SIGNAL(currentIndexChanged(int)), this, SLOT(customFunctionEdited()));
     paramLayout->addWidget(fswtchGVmode[i]);
 
     fswtchParamGV[i] = new QCheckBox(this);
     fswtchParamGV[i]->setProperty("index", i);
-    fswtchParamGV[i]->setText("GV");
-    fswtchParamGV[i]->setSizePolicy(QSizePolicy::Minimum,QSizePolicy::Minimum);
+    fswtchParamGV[i]->setText(tr("GV"));
+    fswtchParamGV[i]->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
     connect(fswtchParamGV[i], SIGNAL(stateChanged(int)), this, SLOT(customFunctionEdited()));
     paramLayout->addWidget(fswtchParamGV[i]);
 
@@ -210,15 +182,6 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
     connect(fswtchParamArmT[i], SIGNAL(currentIndexChanged(int)), this, SLOT(customFunctionEdited()));
     connect(fswtchParamArmT[i], SIGNAL(editTextChanged ( const QString)), this, SLOT(customFunctionEdited()));
 
-    fswtchBLcolor[i] = new QSlider(this);
-    fswtchBLcolor[i]->setProperty("index", i);
-    fswtchBLcolor[i]->setMinimum(0);
-    fswtchBLcolor[i]->setMaximum(100);
-    fswtchBLcolor[i]->setSingleStep(1);
-    fswtchBLcolor[i]->setOrientation(Qt::Horizontal);
-    paramLayout->addWidget(fswtchBLcolor[i]);
-    connect(fswtchBLcolor[i], SIGNAL(sliderReleased()), this, SLOT(customFunctionEdited()));
-
     playBT[i] = new QToolButton(this);
     playBT[i]->setProperty("index", i);
     playBT[i]->setIcon(playIcon);
@@ -228,9 +191,13 @@ CustomFunctionsPanel::CustomFunctionsPanel(QWidget * parent, ModelData * model, 
 
     QHBoxLayout * repeatLayout = new QHBoxLayout();
     tableLayout->addLayout(i, 4, repeatLayout);
-    fswtchRepeat[i] = new RepeatComboBox(this, functions[i].repeatParam);
+    fswtchRepeat[i] = new QComboBox(this);
+    fswtchRepeat[i]->setProperty("index", i);
+    fswtchRepeat[i]->setModel(tabModelFactory->getItemModel(repeatId));
+    fswtchRepeat[i]->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Fixed);
+    fswtchRepeat[i]->setSizeAdjustPolicy(QComboBox::AdjustToContents);
     repeatLayout->addWidget(fswtchRepeat[i], i + 1);
-    connect(fswtchRepeat[i], SIGNAL(modified()), this, SLOT(onRepeatModified()));
+    connect(fswtchRepeat[i], SIGNAL(currentIndexChanged(int)), this, SLOT(customFunctionEdited()));
 
     fswtchEnable[i] = new QCheckBox(this);
     fswtchEnable[i]->setProperty("index", i);
@@ -253,6 +220,8 @@ CustomFunctionsPanel::~CustomFunctionsPanel()
 {
   if (mediaPlayer)
     stopSound(mediaPlayerCurrent);
+  delete tabModelFactory;
+  delete tabFilterFactory;
 }
 
 void CustomFunctionsPanel::onMediaPlayerStateChanged(QMediaPlayer::State state)
@@ -332,7 +301,6 @@ void CustomFunctionsPanel::toggleSound(bool play)
 #define CUSTOM_FUNCTION_ENABLE         (1<<6)
 #define CUSTOM_FUNCTION_REPEAT         (1<<7)
 #define CUSTOM_FUNCTION_PLAY           (1<<8)
-#define CUSTOM_FUNCTION_BL_COLOR       (1<<9)
 #define CUSTOM_FUNCTION_SHOW_FUNC      (1<<10)
 
 
@@ -360,11 +328,6 @@ void CustomFunctionsPanel::functionEdited()
     emit modified();
     lock = false;
   }
-}
-
-void CustomFunctionsPanel::onRepeatModified()
-{
-  emit modified();
 }
 
 void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
@@ -413,8 +376,8 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
     else if (func >= FuncAdjustGV1 && func <= FuncAdjustGVLast) {
       int gvidx = func - FuncAdjustGV1;
       if (modified)
-        cfn.adjustMode = fswtchGVmode[i]->currentIndex();
-      fswtchGVmode[i]->setCurrentIndex(cfn.adjustMode);
+        cfn.adjustMode = fswtchGVmode[i]->currentData().toInt();
+      fswtchGVmode[i]->setCurrentIndex(fswtchGVmode[i]->findData(cfn.adjustMode));
       widgetsMask |= CUSTOM_FUNCTION_GV_MODE | CUSTOM_FUNCTION_ENABLE;
       if (cfn.adjustMode == FUNC_ADJUST_GVAR_CONSTANT || cfn.adjustMode == FUNC_ADJUST_GVAR_INCDEC) {
         if (modified)
@@ -467,8 +430,10 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
     }
     else if (func == FuncPlaySound || func == FuncPlayHaptic || func == FuncPlayValue || func == FuncPlayPrompt || func == FuncPlayBoth || func == FuncBackgroundMusic) {
       if (func != FuncBackgroundMusic) {
+        if (modified)
+          cfn.repeatParam = fswtchRepeat[i]->currentData().toInt();
         widgetsMask |= CUSTOM_FUNCTION_REPEAT;
-        fswtchRepeat[i]->update();
+        fswtchRepeat[i]->setCurrentIndex(fswtchRepeat[i]->findData(cfn.repeatParam));
       }
       if (func == FuncPlayValue) {
         if (modified)
@@ -492,7 +457,7 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
           if (modified) {
             if (fswtchParamGV[i]->isChecked()) {
               fswtchParam[i]->setMinimum(1);
-              cfn.param = std::min(fswtchParam[i]->value(),5.0)+(fswtchParamGV[i]->isChecked() ? 250 : 0);
+              cfn.param = std::min(fswtchParam[i]->value(), 5.0) + (fswtchParamGV[i]->isChecked() ? 250 : 0);
             }
             else {
               cfn.param = fswtchParam[i]->value();
@@ -576,7 +541,6 @@ void CustomFunctionsPanel::refreshCustomFunction(int i, bool modified)
     fswtchEnable[i]->setChecked(false);
   fswtchRepeat[i]->setVisible(widgetsMask & CUSTOM_FUNCTION_REPEAT);
   fswtchGVmode[i]->setVisible(widgetsMask & CUSTOM_FUNCTION_GV_MODE);
-  fswtchBLcolor[i]->setVisible(widgetsMask & CUSTOM_FUNCTION_BL_COLOR);
   playBT[i]->setVisible(widgetsMask & CUSTOM_FUNCTION_PLAY);
 }
 
@@ -652,77 +616,43 @@ void CustomFunctionsPanel::onCustomContextMenuRequested(QPoint pos)
   contextMenu.exec(globalPos);
 }
 
-void CustomFunctionsPanel::populateFuncCB(QComboBox *b, unsigned int value)
-{
-  b->clear();
-  for (unsigned int i = 0; i < FuncCount; i++) {
-    if (((i >= FuncOverrideCH1 && i <= FuncOverrideCH32) && (!model || !firmware->getCapability(SafetyChannelCustomFunction))) ||
-        ((i == FuncVolume || i == FuncBackgroundMusic || i == FuncBackgroundMusicPause) && !firmware->getCapability(HasVolume)) ||
-        ((i == FuncPlayScript && !IS_HORUS_OR_TARANIS(firmware->getBoard()))) ||
-        ((i == FuncPlayHaptic) && !firmware->getCapability(Haptic)) ||
-        ((i == FuncPlayBoth) && !firmware->getCapability(HasBeeper)) ||
-        ((i == FuncLogs) && !firmware->getCapability(HasSDLogs)) ||
-        ((i == FuncSetTimer3) && firmware->getCapability(Timers) < 3) ||
-        ((i == FuncScreenshot) && !IS_HORUS_OR_TARANIS(firmware->getBoard())) ||
-        ((i >= FuncRangeCheckInternalModule && i <= FuncBindExternalModule) && (!model || !firmware->getCapability(DangerousFunctions))) ||
-        ((i >= FuncAdjustGV1 && i <= FuncAdjustGVLast) && (!model || !firmware->getCapability(Gvars)))
-        ) {
-      // skipped
-      continue;
-    }
-    else {
-      b->addItem(CustomFunctionData(AssignFunc(i)).funcToString(model), i);
-      if (i == value) {
-        b->setCurrentIndex(b->count() - 1);
-      }
-    }
-  }
-}
-
-void CustomFunctionsPanel::populateGVmodeCB(QComboBox *b, unsigned int value)
-{
-  b->clear();
-  b->addItem(tr("Value"));
-  b->addItem(tr("Source"));
-  b->addItem(tr("GVAR"));
-  b->addItem(tr("Increment"));
-  b->setCurrentIndex(value);
-}
-
 void CustomFunctionsPanel::populateFuncParamCB(QComboBox *b, uint function, unsigned int value, unsigned int adjustmode)
 {
   QStringList qs;
   b->setModel(new QStandardItemModel(b));  // clear combo box but not any shared item model
   if (function == FuncPlaySound) {
-    CustomFunctionData::populatePlaySoundParams(qs);
-    b->addItems(qs);
-    b->setCurrentIndex(value);
+    b->setModel(tabModelFactory->getItemModel(playSoundId));
+    b->setCurrentIndex(b->findData(value));
   }
   else if (function == FuncPlayHaptic) {
-    CustomFunctionData::populateHapticParams(qs);
-    b->addItems(qs);
-    b->setCurrentIndex(value);
+    b->setModel(tabModelFactory->getItemModel(harpicId));
+    b->setCurrentIndex(b->findData(value));
   }
   else if (function == FuncReset) {
-    CustomFunctionData::populateResetParams(model, b, value);
+    b->setModel(tabFilterFactory->getItemModel(funcResetParamId));
+    b->setCurrentIndex(b->findData(value));
   }
   else if (function == FuncVolume || function == FuncBacklight) {
-    b->setModel(rawSourceInputsModel);
+    b->setModel(tabFilterFactory->getItemModel(rawSourceInputsId));
     b->setCurrentIndex(b->findData(value));
   }
   else if (function == FuncPlayValue) {
-    b->setModel(rawSourceAllModel);
+    b->setModel(tabFilterFactory->getItemModel(rawSourceAllId));
     b->setCurrentIndex(b->findData(value));
   }
   else if (function >= FuncAdjustGV1 && function <= FuncAdjustGVLast) {
     switch (adjustmode) {
       case 1:
-        b->setModel(rawSourceInputsModel);
+        b->setModel(tabFilterFactory->getItemModel(rawSourceInputsId));
         b->setCurrentIndex(b->findData(value));
+        if (b->currentIndex() < 0)
+          b->setCurrentIndex(0);
         break;
       case 2:
-        b->setModel(rawSourceGVarsModel);
+        b->setModel(tabFilterFactory->getItemModel(rawSourceGVarsId));
         b->setCurrentIndex(b->findData(value));
+        if (b->currentIndex() < 0)
+          b->setCurrentIndex(0);
         break;
     }
   }
@@ -827,13 +757,19 @@ bool CustomFunctionsPanel::moveUpAllowed() const
   return selectedIndex > 0;
 }
 
-void CustomFunctionsPanel::onModelDataAboutToBeUpdated()
+void CustomFunctionsPanel::connectItemModelEvents(FilteredItemModel * itemModel)
+{
+  connect(itemModel, &FilteredItemModel::aboutToBeUpdated, this, &CustomFunctionsPanel::onItemModelAboutToBeUpdated);
+  connect(itemModel, &FilteredItemModel::updateComplete, this, &CustomFunctionsPanel::onItemModelUpdateComplete);
+}
+
+void CustomFunctionsPanel::onItemModelAboutToBeUpdated()
 {
   lock = true;
   modelsUpdateCnt++;
 }
 
-void CustomFunctionsPanel::onModelDataUpdateComplete()
+void CustomFunctionsPanel::onItemModelUpdateComplete()
 {
   modelsUpdateCnt--;
   if (modelsUpdateCnt < 1) {

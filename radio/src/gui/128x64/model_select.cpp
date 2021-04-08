@@ -203,7 +203,7 @@ void menuModelSelect(event_t event)
       }
       break;
 
-#if defined(NAVIGATION_X7_TX12)
+#if defined(KEYS_GPIO_REG_PAGEDN)
     case EVT_KEY_FIRST(KEY_PAGEUP):
       chainMenu(menuTabModel[DIM(menuTabModel)-1]);
       killEvents(event);
@@ -212,7 +212,7 @@ void menuModelSelect(event_t event)
     case EVT_KEY_FIRST(KEY_PAGEDN):
       chainMenu(menuModelSetup);
       break;
-#elif defined(NAVIGATION_X7)
+#elif defined(KEYS_GPIO_REG_PAGE)
     case EVT_KEY_LONG(KEY_PAGE):
       chainMenu(menuTabModel[DIM(menuTabModel)-1]);
       killEvents(event);
@@ -244,7 +244,7 @@ void menuModelSelect(event_t event)
 #endif
 #endif
 
-#if defined(NAVIGATION_X7)
+#if defined(ROTARY_ENCODER) && defined(NAVIGATION_X7)
     case EVT_ROTARY_LEFT:
     case EVT_ROTARY_RIGHT:
 #endif

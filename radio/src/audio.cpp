@@ -161,7 +161,7 @@ const char * const unitsFilenames[] = {
   "hertz",
   "ms",
   "us",
-  "spare4",
+  "km",
   "spare5",
   "spare6",
   "spare7",

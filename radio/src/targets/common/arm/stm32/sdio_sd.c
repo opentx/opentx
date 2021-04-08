@@ -1107,7 +1107,9 @@ OPTIMIZE("O0") SD_Error SD_WaitReadOperation(uint32_t timeout)
     delay_ms(1);
     timeout--;
   }
+#if !defined(BOOT)
   TRACE_SD_CARD_EVENT((timeout == 0), sd_wait_read, (TransferError << 8) + (DMAEndOfTransfer << 1) + TransferEnd);
+#endif  
 
   DMAEndOfTransfer = 0;
 
@@ -1117,7 +1119,9 @@ OPTIMIZE("O0") SD_Error SD_WaitReadOperation(uint32_t timeout)
     delay_ms(1);
     timeout--;
   }
+#if !defined(BOOT)
   TRACE_SD_CARD_EVENT((timeout == 0), sd_wait_read, -1);
+#endif  
 
   if (StopCondition == 1) {
     errorstatus = SD_StopTransfer();
@@ -1332,8 +1336,10 @@ OPTIMIZE("O0") SD_Error SD_WaitWriteOperation(uint32_t timeout)
     delay_ms(1);
     timeout--;
   }
+#if !defined(BOOT)
   TRACE_SD_CARD_EVENT((timeout == 0), sd_wait_write, (TransferError << 8) + (DMAEndOfTransfer << 1) + TransferEnd);
-
+#endif
+  
   DMAEndOfTransfer = 0;
 
   timeout = 100;
@@ -1342,7 +1348,9 @@ OPTIMIZE("O0") SD_Error SD_WaitWriteOperation(uint32_t timeout)
     delay_ms(1);
     timeout--;
   }
+#if !defined(BOOT)
   TRACE_SD_CARD_EVENT((timeout == 0), sd_wait_write, -1);
+#endif  
 
   if (StopCondition == 1) {
     errorstatus = SD_StopTransfer();
@@ -1474,7 +1482,9 @@ OPTIMIZE("O0") void SD_ProcessIRQ(void)
                 SDIO_IT_TXFIFOHE | SDIO_IT_RXFIFOHF | SDIO_IT_TXUNDERR |
                 SDIO_IT_RXOVERR | SDIO_IT_STBITERR, DISABLE);
 
+#if !defined(BOOT)
   TRACE_SD_CARD_EVENT((TransferError != SD_OK), sd_irq, TransferError);
+#endif  
 }
 
 /**

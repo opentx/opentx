@@ -76,6 +76,8 @@ inline int MAX_POTS(Board::Type board, int version)
 {
   if (version <= 218 && IS_FAMILY_HORUS_OR_T16(board))
     return 3;
+  if (IS_FAMILY_T12(board))
+    return 2;
   return Boards::getCapability(board, Board::Pots);
 }
 
@@ -85,6 +87,8 @@ inline int MAX_POTS_STORAGE(Board::Type board, int version)
     return 3;
   if (version >= 219 && IS_FAMILY_HORUS_OR_T16(board))
     return 5;
+  if (IS_FAMILY_T12(board))
+    return 2;
   return Boards::getCapability(board, Board::Pots);
 }
 
@@ -92,6 +96,8 @@ inline int MAX_POTS_SOURCES(Board::Type board, int version)
 {
   if (version <= 218 && IS_FAMILY_HORUS_OR_T16(board))
     return 5;
+  if (IS_FAMILY_T12(board))
+    return 2;
   return Boards::getCapability(board, Board::Pots);
 }
 
@@ -2305,7 +2311,8 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, Board::Type board, unsig
       internalField.Append(new UnsignedField<2>(this, modelData.timers[i].countdownBeep));
       internalField.Append(new BoolField<1>(this, modelData.timers[i].minuteBeep));
       internalField.Append(new UnsignedField<2>(this, modelData.timers[i].persistent));
-      internalField.Append(new SpareBitsField<3>(this));
+      internalField.Append(new SignedField<2>(this, modelData.timers[i].countdownStart));
+      internalField.Append(new UnsignedField<1>(this, modelData.timers[i].direction));
       if (HAS_LARGE_LCD(board))
         internalField.Append(new ZCharField<8>(this, modelData.timers[i].name, "Timer name"));
       else

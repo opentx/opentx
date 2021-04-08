@@ -27,31 +27,6 @@
 #include "helpers.h"
 #include "adjustmentreference.h"
 
-/*
- * TimerData
- */
-
-void TimerData::convert(RadioDataConversionState & cstate)
-{
-  cstate.setComponent(tr("TMR"), 1);
-  cstate.setSubComp(tr("Timer %1").arg(cstate.subCompIdx + 1));
-  mode.convert(cstate);
-}
-
-bool TimerData::isEmpty()
-{
-  return (mode == RawSwitch(SWITCH_TYPE_TIMER_MODE, 0) && name[0] == '\0' && minuteBeep == 0 && countdownBeep == COUNTDOWN_SILENT && val == 0 && persistent == 0 /*&& pvalue == 0*/);
-}
-
-QString TimerData::nameToString(int index) const
-{
-  return RadioData::getElementName(tr("TMR", "as in Timer"), index + 1, name);
-}
-
-/*
- * ModelData
- */
-
 ModelData::ModelData()
 {
   clear();
@@ -678,40 +653,55 @@ int ModelData::updateReference()
     LogicalSwitchData *lsd = &logicalSw[i];
     if (!lsd->isEmpty()) {
       bool clearlsd = false;
+      int oldval1;
+      int oldval2;
       CSFunctionFamily family = lsd->getFunctionFamily();
       switch(family) {
         case LS_FAMILY_VOFS:
-          updateSourceIntRef(lsd->val1);
-          if (lsd->val1 == 0)
-            clearlsd = true;
+          if (lsd->val1 != 0) {
+            updateSourceIntRef(lsd->val1);
+            if (lsd->val1 == 0)
+              clearlsd = true;
+          }
           break;
         case LS_FAMILY_STICKY:
         case LS_FAMILY_VBOOL:
-          updateSwitchIntRef(lsd->val1);
-          updateSwitchIntRef(lsd->val2);
-          if (lsd->val1 == 0 && lsd->val2 == 0)
+          oldval1 = lsd->val1;
+          oldval2 = lsd->val2;
+          if (lsd->val1 != 0)
+            updateSwitchIntRef(lsd->val1);
+          if (lsd->val2 != 0)
+            updateSwitchIntRef(lsd->val2);
+          if (lsd->val1 == 0 && lsd->val2 == 0 && ((lsd->val1 != oldval1 && oldval2 == 0) || (lsd->val2 != oldval2 && oldval1 == 0)))
             clearlsd = true;
           break;
         case LS_FAMILY_EDGE:
-          updateSwitchIntRef(lsd->val1);
-          if (lsd->val1 == 0)
-            clearlsd = true;
+          if (lsd->val1 != 0) {
+            updateSwitchIntRef(lsd->val1);
+            if (lsd->val1 == 0)
+              clearlsd = true;
+          }
           break;
         case LS_FAMILY_VCOMP:
-          updateSourceIntRef(lsd->val1);
-          updateSourceIntRef(lsd->val2);
-          if (lsd->val1 == 0 && lsd->val2 == 0)
+          oldval1 = lsd->val1;
+          oldval2 = lsd->val2;
+          if (lsd->val1 != 0)
+            updateSourceIntRef(lsd->val1);
+          if (lsd->val2 != 0)
+            updateSourceIntRef(lsd->val2);
+          if (lsd->val1 == 0 && lsd->val2 == 0 && ((lsd->val1 != oldval1 && oldval2 == 0) || (lsd->val2 != oldval2 && oldval1 == 0)))
             clearlsd = true;
           break;
         default:
           break;
       }
-      if (clearlsd) {
+
+      if (lsd->andsw != 0)
+        updateSwitchIntRef(lsd->andsw);
+
+      if (clearlsd && lsd->andsw == 0) {
         lsd->clear();
         appendUpdateReferenceParams(REF_UPD_TYPE_LOGICAL_SWITCH, REF_UPD_ACT_CLEAR, i);
-      }
-      else {
-        updateSwitchIntRef(lsd->andsw);
       }
     }
   }
@@ -841,6 +831,7 @@ void ModelData::updateTypeIndexRef(R & curRef, const T type, const int idxAdj, c
   newRef.index = abs(curRef.index);
 
   div_t idx = div(newRef.index, updRefInfo.occurences);
+  div_t newidx;
 
   switch (updRefInfo.action)
   {
@@ -858,9 +849,10 @@ void ModelData::updateTypeIndexRef(R & curRef, const T type, const int idxAdj, c
       if (idx.quot < (updRefInfo.index1 + idxAdj))
         return;
 
-      newRef.index += updRefInfo.shift;
+      newRef.index = ((idx.quot + updRefInfo.shift) * updRefInfo.occurences) + idx.rem;
+      newidx = div(newRef.index, updRefInfo.occurences);
 
-      if (idx.quot < (updRefInfo.index1 + idxAdj) || idx.quot > (updRefInfo.maxindex + idxAdj)) {
+      if (newidx.quot < (updRefInfo.index1 + idxAdj) || newidx.quot > (updRefInfo.maxindex + idxAdj)) {
         if (defClear)
           newRef.clear();
         else {
@@ -1106,7 +1098,7 @@ void ModelData::updateFlightModeFlags(unsigned int & curRef)
   switch (updRefInfo.action)
   {
     case REF_UPD_ACT_CLEAR:
-      flag[updRefInfo.index1] = false;
+      flag[updRefInfo.index1] = true;
       break;
     case REF_UPD_ACT_SHIFT:
         if(updRefInfo.shift < 0) {
@@ -1114,7 +1106,7 @@ void ModelData::updateFlightModeFlags(unsigned int & curRef)
             if (i - updRefInfo.shift <= updRefInfo.maxindex)
               flag[i] = flag[i - updRefInfo.shift];
             else
-              flag[i] = false;
+              flag[i] = true;
           }
         }
         else {
@@ -1122,7 +1114,7 @@ void ModelData::updateFlightModeFlags(unsigned int & curRef)
             if (i - updRefInfo.shift >= updRefInfo.index1)
               flag[i] = flag[i - updRefInfo.shift];
             else
-              flag[i] = false;
+              flag[i] = true;
           }
         }
       break;
@@ -1381,7 +1373,6 @@ void ModelData::sortMixes()
 
 void ModelData::updateResetParam(CustomFunctionData * cfd)
 {
-
   if (cfd->func != FuncReset)
     return;
 
@@ -1392,6 +1383,11 @@ void ModelData::updateResetParam(CustomFunctionData * cfd)
 
   switch (updRefInfo.type)
   {
+    case REF_UPD_TYPE_TIMER:
+      if (cfd->param < 0 || cfd->param > 2)
+        return;
+      idxAdj = -2;   //  reverse earlier offset required for rawsource
+      break;
     case REF_UPD_TYPE_SENSOR:
       idxAdj = 5/*3 Timers + Flight + Telemetery*/ + firmware->getCapability(RotaryEncoders);
       if (cfd->param < idxAdj || cfd->param > (idxAdj + firmware->getCapability(Sensors)))
@@ -1438,4 +1434,119 @@ void ModelData::updateResetParam(CustomFunctionData * cfd)
     cfd->param = newRef;
     updRefInfo.updcnt++;
   }
+}
+
+QString ModelData::thrTraceSrcToString() const
+{
+  return thrTraceSrcToString((int)thrTraceSrc);
+}
+
+QString ModelData::thrTraceSrcToString(const int index) const
+{
+  Firmware * firmware = getCurrentFirmware();
+  const Boards board = Boards(getCurrentBoard());
+  const int pscnt = board.getCapability(Board::Pots) + board.getCapability(Board::Sliders);
+
+  if (index == 0)
+    return tr("THR");
+  else if (index <= pscnt)
+    return board.getAnalogInputName(index + board.getCapability(Board::Sticks) - 1);
+  else if (index <= pscnt + firmware->getCapability(Outputs))
+    return RawSource(SOURCE_TYPE_CH, index - pscnt - 1).toString(this);
+
+  return QString(CPN_STR_UNKNOWN_ITEM);
+}
+
+int ModelData::thrTraceSrcCount() const
+{
+  const Boards board = Boards(getCurrentBoard());
+  Firmware * firmware = getCurrentFirmware();
+
+  return 1 + board.getCapability(Board::Pots) + board.getCapability(Board::Sliders) + firmware->getCapability(Outputs);
+}
+
+bool ModelData::isThrTraceSrcAvailable(const GeneralSettings * generalSettings, const int index) const
+{
+  const Boards board = Boards(getCurrentBoard());
+
+  if (index > 0 && index <= board.getCapability(Board::Pots) + board.getCapability(Board::Sliders))
+    return RawSource(SOURCE_TYPE_STICK, index + board.getCapability(Board::Sticks) - 1).isAvailable(this, generalSettings, board.getBoardType());
+  else
+    return true;
+}
+
+void ModelData::limitsClear(const int index)
+{
+  if (index < 0 || index >= CPN_MAX_CHNOUT)
+    return;
+
+  if (!limitData[index].isEmpty()) {
+    limitData[index].clear();
+    updateAllReferences(REF_UPD_TYPE_CHANNEL, REF_UPD_ACT_CLEAR, index);
+  }
+}
+
+void ModelData::limitsClearAll()
+{
+  for (int i = 0; i < CPN_MAX_CHNOUT; i++) {
+    limitsClear(i);
+  }
+}
+
+void ModelData::limitsDelete(const int index)
+{
+  if (index < 0 || index >= CPN_MAX_CHNOUT)
+    return;
+
+  memmove(&limitData[index], &limitData[index + 1], (CPN_MAX_CHNOUT - (index + 1)) * sizeof(LimitData));
+  limitData[CPN_MAX_CHNOUT - 1].clear();
+  updateAllReferences(REF_UPD_TYPE_CHANNEL, REF_UPD_ACT_SHIFT, index, 0, -1);
+}
+
+void ModelData::limitsGet(const int index, QByteArray & data)
+{
+  if (index < 0 || index >= CPN_MAX_CHNOUT)
+    return;
+
+  data.append((char*)&limitData[index], sizeof(LimitData));
+}
+
+void ModelData::limitsInsert(const int index)
+{
+  if (index < 0 || index >= CPN_MAX_CHNOUT)
+    return;
+
+  memmove(&limitData[index + 1], &limitData[index], (CPN_MAX_CHNOUT - (index + 1)) * sizeof(LimitData));
+  limitData[index].clear();
+  updateAllReferences(REF_UPD_TYPE_CHANNEL, REF_UPD_ACT_SHIFT, index, 0, 1);
+}
+
+void ModelData::limitsMove(const int index, const int offset)
+{
+  if (index + offset < 0 || index + offset >= CPN_MAX_CHNOUT)
+    return;
+
+  int idx1 = index;
+  int idx2;
+  const int direction = offset < 0 ? -1 : 1;
+  const int cnt = abs(offset);
+
+  for (int i = 1; i <= cnt; i++) {
+    idx2 = idx1 + direction;
+    LimitData tmp = limitData[idx2];
+    LimitData *d1 = &limitData[idx1];
+    LimitData *d2 = &limitData[idx2];
+    memcpy(d2, d1, sizeof(LimitData));
+    memcpy(d1, &tmp, sizeof(LimitData));
+    updateAllReferences(REF_UPD_TYPE_CHANNEL, REF_UPD_ACT_SWAP, idx1, idx2);
+    idx1 += direction;
+  }
+}
+
+void ModelData::limitsSet(const int index, const QByteArray & data)
+{
+  if (index < 0 || index >= CPN_MAX_CHNOUT || data.size() < (int)sizeof(LimitData))
+    return;
+
+  memcpy(&limitData[index], data.constData(), sizeof(LimitData));
 }

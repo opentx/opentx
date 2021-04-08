@@ -25,7 +25,7 @@
 #include "eeprominterface.h"
 #include "genericpanel.h"
 
-class CommonItemModels;
+class CompoundItemModelFactory;
 
 namespace Ui {
   class GeneralEdit;
@@ -73,7 +73,7 @@ class GeneralEdit : public QDialog
     QVector<GenericPanel *> panels;
     void addTab(GenericPanel *panel, QString text);
     void closeEvent(QCloseEvent *event);
-    CommonItemModels *commonItemModels;
+    CompoundItemModelFactory *sharedItemModels;
 };
 
 #endif // _GENERALEDIT_H_

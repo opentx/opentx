@@ -179,6 +179,16 @@
     <file>images/simulator/JumperT12/JumperT12-x.png</file>
     <file>images/simulator/JumperT12/JumperT12-center.png</file>
     <file>images/simulator/JumperT12/JumperT12-top.png</file>
+    <file>images/simulator/JumperTLITE/bottom.png</file>
+    <file>images/simulator/JumperTLITE/bottom_right.png</file>
+    <file>images/simulator/JumperTLITE/bottom_left.png</file>
+    <file>images/simulator/JumperTLITE/left.png</file>
+    <file>images/simulator/JumperTLITE/left_top.png</file>
+    <file>images/simulator/JumperTLITE/left_bottom.png</file>
+    <file>images/simulator/JumperTLITE/right.png</file>
+    <file>images/simulator/JumperTLITE/right_top.png</file>
+    <file>images/simulator/JumperTLITE/right_bottom.png</file>
+    <file>images/simulator/JumperTLITE/top.png</file>
     <file>images/simulator/TX12/left.png</file>
     <file>images/simulator/TX12/left-pageup.png</file>
     <file>images/simulator/TX12/left-pagedn.png</file>
@@ -190,6 +200,18 @@
     <file>images/simulator/TX12/right-mdl.png</file>
     <file>images/simulator/TX12/bottom.png</file>
     <file>images/simulator/TX12/top.png</file>
+    <file>images/simulator/T8/left.png</file>
+    <file>images/simulator/T8/left-pageup.png</file>
+    <file>images/simulator/T8/left-pagedn.png</file>
+    <file>images/simulator/T8/left-rtn.png</file>
+    <file>images/simulator/T8/left-sys.png</file>
+    <file>images/simulator/T8/right.png</file>
+    <file>images/simulator/T8/right-ent.png</file>
+    <file>images/simulator/T8/right-mdl.png</file>
+    <file>images/simulator/T8/right-up.png</file>
+    <file>images/simulator/T8/right-dn.png</file>
+    <file>images/simulator/T8/bottom.png</file>
+    <file>images/simulator/T8/top.png</file>
     <file>images/simulator/JumperT16/left.png</file>
     <file>images/simulator/JumperT16/right.png</file>
     <file>images/simulator/JumperT16/top.png</file>

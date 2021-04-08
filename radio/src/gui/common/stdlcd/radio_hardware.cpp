@@ -98,8 +98,10 @@ enum {
   ITEM_RADIO_HARDWARE_STICK2,
   ITEM_RADIO_HARDWARE_STICK3,
   ITEM_RADIO_HARDWARE_STICK4,
+#if (NUM_POTS + NUM_SLIDERS) > 0
   ITEM_RADIO_HARDWARE_LABEL_POTS,
   ITEM_RADIO_HARDWARE_POT1,
+#endif
 #if defined(HARDWARE_POT2)
   ITEM_RADIO_HARDWARE_POT2,
 #endif
@@ -195,20 +197,22 @@ enum {
   ITEM_RADIO_HARDWARE_MAX
 };
 
-#if (NUM_POTS + NUM_SLIDERS) == 1
-  #define POTS_ROWS               NAVIGATION_LINE_BY_LINE|1
+#if (NUM_POTS + NUM_SLIDERS) == 0
+  #define POTS_ROWS
+#elif (NUM_POTS + NUM_SLIDERS) == 1
+  #define POTS_ROWS                LABEL(Pots), NAVIGATION_LINE_BY_LINE|1,
 #elif (NUM_POTS + NUM_SLIDERS) == 2
-  #define POTS_ROWS               NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
+  #define POTS_ROWS               LABEL(Pots), NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1,
 #elif (NUM_POTS + NUM_SLIDERS) == 3
-  #define POTS_ROWS               NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
+  #define POTS_ROWS               LABEL(Pots), NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1,
 #elif defined(PCBX9D) // TODO defined(STORAGE_POT3) && !defined(STORAGE_POT3)
-  #define POTS_ROWS               NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, HIDDEN_ROW, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
+  #define POTS_ROWS               LABEL(Pots), NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, HIDDEN_ROW, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1,
 #elif (NUM_POTS + NUM_SLIDERS) == 4
-  #define POTS_ROWS               NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
+  #define POTS_ROWS               LABEL(Pots), NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1,
 #elif (NUM_POTS + NUM_SLIDERS) == 5
-  #define POTS_ROWS               NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
+  #define POTS_ROWS               LABEL(Pots), NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1,
 #elif (NUM_POTS + NUM_SLIDERS) == 8
-  #define POTS_ROWS               NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1
+  #define POTS_ROWS               LABEL(Pots), NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1, NAVIGATION_LINE_BY_LINE|1,
 #endif
 
 #if defined(PCBX9E)
@@ -238,20 +242,20 @@ enum {
 #endif
 
 #if defined(INTERNAL_MODULE_PXX1) && defined(EXTERNAL_ANTENNA)
-#define EXTERNAL_ANTENNA_ROW           0,
-void onHardwareAntennaSwitchConfirm(const char * result)
-{
-  if (result == STR_OK) {
-    // Switch to external antenna confirmation
-    g_eeGeneral.antennaMode = reusableBuffer.radioHardware.antennaMode;
-    storageDirty(EE_GENERAL);
+  #define EXTERNAL_ANTENNA_ROW           0,
+  void onHardwareAntennaSwitchConfirm(const char * result)
+  {
+    if (result == STR_OK) {
+      // Switch to external antenna confirmation
+      g_eeGeneral.antennaMode = reusableBuffer.radioHardware.antennaMode;
+      storageDirty(EE_GENERAL);
+    }
+    else {
+      reusableBuffer.radioHardware.antennaMode = g_eeGeneral.antennaMode;
+    }
   }
-  else {
-    reusableBuffer.radioHardware.antennaMode = g_eeGeneral.antennaMode;
-  }
-}
 #else
-#define EXTERNAL_ANTENNA_ROW
+  #define EXTERNAL_ANTENNA_ROW
 #endif
 
 #if defined(PCBX9LITE)
@@ -262,7 +266,7 @@ void onHardwareAntennaSwitchConfirm(const char * result)
   #define SWITCH_TYPE_MAX(sw)            (SWITCH_3POS)
 #elif defined(PCBX9E)
   #define SWITCH_TYPE_MAX(sw)            ((MIXSRC_SF - MIXSRC_FIRST_SWITCH == sw || MIXSRC_SH - MIXSRC_FIRST_SWITCH == sw) ? SWITCH_2POS : SWITCH_3POS)
-#elif defined(RADIO_TX12)
+#elif defined(RADIO_TX12) || defined(RADIO_T8)
   #define SWITCH_TYPE_MAX(sw)            ((MIXSRC_SA - MIXSRC_FIRST_SWITCH == sw || MIXSRC_SD - MIXSRC_FIRST_SWITCH == sw) ? SWITCH_2POS : SWITCH_3POS)
 #else
   #define SWITCH_TYPE_MAX(sw)            ((MIXSRC_SF - MIXSRC_FIRST_SWITCH == sw || MIXSRC_SH - MIXSRC_FIRST_SWITCH <= sw) ? SWITCH_2POS : SWITCH_3POS)
@@ -280,7 +284,7 @@ void onHardwareAntennaSwitchConfirm(const char * result)
   #define TX_CAPACITY_MEASUREMENT_ROWS
 #endif
 
-#if (defined(CROSSFIRE) || defined(GHOST)) && SPORT_MAX_BAUDRATE < 400000
+#if (defined(CROSSFIRE) || defined(GHOST)) && (SPORT_MAX_BAUDRATE < 400000 || defined(DEBUG))
   #define MAX_BAUD_ROWS                  0,
 #else
   #define MAX_BAUD_ROWS
@@ -326,31 +330,22 @@ void menuRadioHardware(event_t event)
       0 /* stick 2 */,
       0 /* stick 3 */,
       0 /* stick 4 */,
-    LABEL(Pots),
-      POTS_ROWS,
+    POTS_ROWS
     LABEL(Switches),
       SWITCHES_ROWS,
-
     0 /* battery calib */,
     RTC_ROW
     TX_CAPACITY_MEASUREMENT_ROWS
-
     MAX_BAUD_ROWS
-
     BLUETOOTH_ROWS
-
     EXTERNAL_ANTENNA_ROW
-
     AUX_SERIAL_ROWS
-
     0 /* ADC filter */,
     READONLY_ROW /* RAS */,
     SPORT_POWER_ROWS
     1 /* debugs */,
-
-    0,
-
-    0
+    0 /* EEPROM backup */,
+    0 /* Factory reset */
   });
 
   uint8_t sub = menuVerticalPosition - HEADER_LINE;
@@ -399,6 +394,7 @@ void menuRadioHardware(event_t event)
         editStickHardwareSettings(HW_SETTINGS_COLUMN1, y, k - ITEM_RADIO_HARDWARE_STICK1, event, attr);
         break;
 
+#if (NUM_POTS + NUM_SLIDERS) > 0
       case ITEM_RADIO_HARDWARE_LABEL_POTS:
         lcdDrawTextAlignedLeft(y, STR_POTS);
         break;
@@ -450,6 +446,7 @@ void menuRadioHardware(event_t event)
         g_eeGeneral.slidersConfig |= (potType << idx);
         break;
       }
+#endif
 #endif
 
       case ITEM_RADIO_HARDWARE_LABEL_SWITCHES:

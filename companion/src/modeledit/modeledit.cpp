@@ -33,7 +33,7 @@
 #include "customfunctions.h"
 #include "telemetry.h"
 #include "appdata.h"
-#include "rawitemdatamodels.h"
+#include "compounditemmodels.h"
 
 ModelEdit::ModelEdit(QWidget * parent, RadioData & radioData, int modelId, Firmware * firmware) :
   QDialog(parent),
@@ -53,42 +53,54 @@ ModelEdit::ModelEdit(QWidget * parent, RadioData & radioData, int modelId, Firmw
   GeneralSettings &generalSettings = radioData.generalSettings;
   ModelData &model = radioData.models[modelId];
 
-  commonItemModels = new CommonItemModels(&generalSettings, &model, this);
+  sharedItemModels = new CompoundItemModelFactory(&generalSettings, &model);
+  sharedItemModels->addItemModel(AbstractItemModel::IMID_RawSource);
+  sharedItemModels->addItemModel(AbstractItemModel::IMID_RawSwitch);
+  sharedItemModels->addItemModel(AbstractItemModel::IMID_Curve);
+  sharedItemModels->addItemModel(AbstractItemModel::IMID_GVarRef);
+  sharedItemModels->addItemModel(AbstractItemModel::IMID_ThrSource);
+  sharedItemModels->addItemModel(AbstractItemModel::IMID_CustomFuncAction);
+  sharedItemModels->addItemModel(AbstractItemModel::IMID_CustomFuncResetParam);
+  sharedItemModels->addItemModel(AbstractItemModel::IMID_TeleSource);
+  sharedItemModels->addItemModel(AbstractItemModel::IMID_RssiSource);
+  sharedItemModels->addItemModel(AbstractItemModel::IMID_CurveRefType);
+  sharedItemModels->addItemModel(AbstractItemModel::IMID_CurveRefFunc);
+
   s1.report("Init");
 
-  SetupPanel * setupPanel = new SetupPanel(this, model, generalSettings, firmware, commonItemModels);
+  SetupPanel * setupPanel = new SetupPanel(this, model, generalSettings, firmware, sharedItemModels);
   addTab(setupPanel, tr("Setup"));
   s1.report("Setup");
 
   if (firmware->getCapability(Heli)) {
-    addTab(new HeliPanel(this, model, generalSettings, firmware, commonItemModels), tr("Heli"));
+    addTab(new HeliPanel(this, model, generalSettings, firmware, sharedItemModels), tr("Heli"));
     s1.report("Heli");
   }
 
-  addTab(new FlightModesPanel(this, model, generalSettings, firmware, commonItemModels), tr("Flight Modes"));
+  addTab(new FlightModesPanel(this, model, generalSettings, firmware, sharedItemModels), tr("Flight Modes"));
   s1.report("Flight Modes");
 
-  addTab(new InputsPanel(this, model, generalSettings, firmware, commonItemModels), tr("Inputs"));
+  addTab(new InputsPanel(this, model, generalSettings, firmware, sharedItemModels), tr("Inputs"));
   s1.report("Inputs");
 
-  addTab(new MixesPanel(this, model, generalSettings, firmware, commonItemModels), tr("Mixes"));
+  addTab(new MixesPanel(this, model, generalSettings, firmware, sharedItemModels), tr("Mixes"));
   s1.report("Mixes");
 
-  ChannelsPanel * channelsPanel = new ChannelsPanel(this, model, generalSettings, firmware, commonItemModels);
+  ChannelsPanel * channelsPanel = new ChannelsPanel(this, model, generalSettings, firmware, sharedItemModels);
   addTab(channelsPanel, tr("Outputs"));
   s1.report("Outputs");
 
-  addTab(new CurvesPanel(this, model, generalSettings, firmware, commonItemModels), tr("Curves"));
+  addTab(new CurvesPanel(this, model, generalSettings, firmware, sharedItemModels), tr("Curves"));
   s1.report("Curves");
 
-  addTab(new LogicalSwitchesPanel(this, model, generalSettings, firmware, commonItemModels), tr("Logical Switches"));
+  addTab(new LogicalSwitchesPanel(this, model, generalSettings, firmware, sharedItemModels), tr("Logical Switches"));
   s1.report("Logical Switches");
 
-  addTab(new CustomFunctionsPanel(this, &model, generalSettings, firmware, commonItemModels), tr("Special Functions"));
+  addTab(new CustomFunctionsPanel(this, &model, generalSettings, firmware, sharedItemModels), tr("Special Functions"));
   s1.report("Special Functions");
 
   if (firmware->getCapability(Telemetry)) {
-    addTab(new TelemetryPanel(this, model, generalSettings, firmware, commonItemModels), tr("Telemetry"));
+    addTab(new TelemetryPanel(this, model, generalSettings, firmware, sharedItemModels), tr("Telemetry"));
     s1.report("Telemetry");
   }
 
@@ -104,6 +116,7 @@ ModelEdit::ModelEdit(QWidget * parent, RadioData & radioData, int modelId, Firmw
 ModelEdit::~ModelEdit()
 {
   delete ui;
+  delete sharedItemModels;
 }
 
 void ModelEdit::closeEvent(QCloseEvent *event)

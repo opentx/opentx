@@ -60,7 +60,7 @@ RawSourceRange RawSource::getRange(const ModelData * model, const GeneralSetting
         result.min = -30000 * result.step;
         result.max = +30000 * result.step;
         result.decimals = sensor.prec;
-        result.unit = sensor.unitString();
+        result.unit = SensorData::unitToString(qr.quot);
         break;
       }
 
@@ -143,14 +143,14 @@ QString RawSource::toString(const ModelData * model, const GeneralSettings * con
   static const QString rotary[]  = { tr("REa"), tr("REb") };
 
   if (index<0) {
-    return tr("???");
+    return QString(CPN_STR_UNKNOWN_ITEM);
   }
 
   QString result;
   int genAryIdx = 0;
   switch (type) {
     case SOURCE_TYPE_NONE:
-      return tr("----");
+      return QString(CPN_STR_NONE_ITEM);
 
     case SOURCE_TYPE_VIRTUAL_INPUT:
     {
@@ -161,7 +161,7 @@ QString RawSource::toString(const ModelData * model, const GeneralSettings * con
     }
 
     case SOURCE_TYPE_LUA_OUTPUT:
-      return tr("LUA%1%2").arg(index/16+1).arg(QChar('a'+index%16));
+      return tr("LUA%1%2").arg(index / 16 + 1).arg(QChar('a' + index % 16));
 
     case SOURCE_TYPE_STICK:
       if (generalSettings) {
@@ -193,10 +193,10 @@ QString RawSource::toString(const ModelData * model, const GeneralSettings * con
       return result;
 
     case SOURCE_TYPE_CUSTOM_SWITCH:
-      return RawSwitch(SWITCH_TYPE_VIRTUAL, index+1).toString();
+      return RawSwitch(SWITCH_TYPE_VIRTUAL, index + 1).toString();
 
     case SOURCE_TYPE_CYC:
-      return tr("CYC%1").arg(index+1);
+      return tr("CYC%1").arg(index + 1);
 
     case SOURCE_TYPE_PPM:
       return RadioData::getElementName(tr("TR", "as in Trainer"), index + 1);
@@ -208,18 +208,15 @@ QString RawSource::toString(const ModelData * model, const GeneralSettings * con
         return LimitData().nameToString(index);
 
     case SOURCE_TYPE_SPECIAL:
-      result = CHECK_IN_ARRAY(special, index);
-      //  TODO  refactor timers into own source type
-      if (result.startsWith("Timer")) {
-        bool ok;
-        int n = result.right(1).toInt(&ok);
-        if (ok) {
-          if (model)
-            result = model->timers[n - 1].nameToString(n - 1);
-          else
-            result = TimerData().nameToString(n - 1);
-        }
+      if (index >= SOURCE_TYPE_SPECIAL_TIMER1_IDX && index <= SOURCE_TYPE_SPECIAL_TIMER1_IDX + CPN_MAX_TIMERS - 1) {
+        if (model)
+          result = model->timers[index - SOURCE_TYPE_SPECIAL_TIMER1_IDX].nameToString(index - SOURCE_TYPE_SPECIAL_TIMER1_IDX);
+        else
+          result = TimerData().nameToString(index - SOURCE_TYPE_SPECIAL_TIMER1_IDX);
       }
+      else
+        result = CHECK_IN_ARRAY(special, index);
+
       return result;
 
     case SOURCE_TYPE_TELEMETRY:
@@ -241,7 +238,7 @@ QString RawSource::toString(const ModelData * model, const GeneralSettings * con
         return GVarData().nameToString(index);
 
     default:
-      return tr("???");
+      return QString(CPN_STR_UNKNOWN_ITEM);
   }
 }
 
@@ -409,4 +406,3 @@ QStringList RawSource::getSwitchList(Boards board) const
   }
   return ret;
 }
-

@@ -79,13 +79,13 @@ enum {
   ITEM_RADIO_SETUP_MEMORY_WARNING,
   ITEM_RADIO_SETUP_ALARM_WARNING,
   ITEM_RADIO_SETUP_RSSI_POWEROFF_ALARM,
-  ITEM_RADIO_SETUP_BACKLIGHT_LABEL,
-  ITEM_RADIO_SETUP_BACKLIGHT_MODE,
-  ITEM_RADIO_SETUP_BACKLIGHT_DELAY,
-  ITEM_RADIO_SETUP_BRIGHTNESS,
+  CASE_BACKLIGHT(ITEM_RADIO_SETUP_BACKLIGHT_LABEL)
+  CASE_BACKLIGHT(ITEM_RADIO_SETUP_BACKLIGHT_MODE)
+  CASE_BACKLIGHT(ITEM_RADIO_SETUP_BACKLIGHT_DELAY)
+  CASE_BACKLIGHT(ITEM_RADIO_SETUP_BRIGHTNESS)
   CASE_PWM_BACKLIGHT(ITEM_RADIO_SETUP_BACKLIGHT_BRIGHTNESS_OFF)
   CASE_PWM_BACKLIGHT(ITEM_RADIO_SETUP_BACKLIGHT_BRIGHTNESS_ON)
-  ITEM_RADIO_SETUP_FLASH_BEEP,
+  CASE_BACKLIGHT(ITEM_RADIO_SETUP_FLASH_BEEP)
   CASE_SPLASH_PARAM(ITEM_RADIO_SETUP_DISABLE_SPLASH)
   CASE_PWR_BUTTON_PRESS(ITEM_RADIO_SETUP_PWR_ON_SPEED)
   CASE_PWR_BUTTON_PRESS(ITEM_RADIO_SETUP_PWR_OFF_SPEED)
@@ -152,10 +152,14 @@ void menuRadioSetup(event_t event)
     CASE_GYRO(0)
     CASE_GYRO(0)
     0, LABEL(ALARMS), 0, CASE_CAPACITY(0)
-    0, 0, 0, 0,
-    LABEL(BACKLIGHT), 0, 0, 0, CASE_PWM_BACKLIGHT(0)
+    0, 0, 0, 0, /* ITEM_RADIO_SETUP_INACTIVITY_ALARM ITEM_RADIO_SETUP_MEMORY_WARNING ITEM_RADIO_SETUP_ALARM_WARNING ITEM_RADIO_SETUP_RSSI_POWEROFF_ALARM */
+    CASE_BACKLIGHT(LABEL(BACKLIGHT))
+    CASE_BACKLIGHT(0)
+    CASE_BACKLIGHT(0)
+    CASE_BACKLIGHT(0)
     CASE_PWM_BACKLIGHT(0)
-    0,
+    CASE_PWM_BACKLIGHT(0)
+    CASE_BACKLIGHT(0)
     CASE_SPLASH_PARAM(0)
     CASE_PWR_BUTTON_PRESS(0)
     CASE_PWR_BUTTON_PRESS(0)
@@ -251,7 +255,7 @@ void menuRadioSetup(event_t event)
         putsVolts(lcdLastRightPos+FW, y, 120+g_eeGeneral.vBatMax, (menuHorizontalPosition>0 ? attr : 0)|LEFT|NO_UNIT);
         if (attr && s_editMode>0) {
           if (menuHorizontalPosition==0)
-            CHECK_INCDEC_GENVAR(event, g_eeGeneral.vBatMin, -50, g_eeGeneral.vBatMax+29); // min=4.0V
+            CHECK_INCDEC_GENVAR(event, g_eeGeneral.vBatMin, -60, g_eeGeneral.vBatMax+29); // min=3.0V
           else
             CHECK_INCDEC_GENVAR(event, g_eeGeneral.vBatMax, g_eeGeneral.vBatMin-29, +40); // max=16.0V
         }
@@ -424,7 +428,7 @@ void menuRadioSetup(event_t event)
       case ITEM_RADIO_SETUP_BATTERY_WARNING:
         lcdDrawText(INDENT_WIDTH, y, STR_BATTERYWARNING);
         putsVolts(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.vBatWarn, attr|LEFT);
-        if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.vBatWarn, 40, 120); //4-12V
+        if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.vBatWarn, 30, 120); //3-12V
         break;
 
       case ITEM_RADIO_SETUP_MEMORY_WARNING:
@@ -466,6 +470,7 @@ void menuRadioSetup(event_t event)
         if(attr) g_eeGeneral.inactivityTimer = checkIncDec(event, g_eeGeneral.inactivityTimer, 0, 250, EE_GENERAL); //0..250minutes
         break;
 
+#if defined(BACKLIGHT_GPIO)
       case ITEM_RADIO_SETUP_BACKLIGHT_LABEL:
         lcdDrawTextAlignedLeft(y, STR_BACKLIGHT_LABEL);
         break;
@@ -496,6 +501,7 @@ void menuRadioSetup(event_t event)
           g_eeGeneral.backlightBright = 100 - b;
         }
         break;
+#endif
 
 #if defined(PWM_BACKLIGHT)
       case ITEM_RADIO_SETUP_BACKLIGHT_BRIGHTNESS_OFF:

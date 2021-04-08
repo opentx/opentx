@@ -344,6 +344,14 @@ void generalDefault()
   setDefaultOwnerId();
 #endif
 
+#if defined(RADIOMASTER_RTF_RELEASE)
+  // Those settings are for headless radio
+  g_eeGeneral.USBMode = USB_JOYSTICK_MODE;
+  g_eeGeneral.disableRtcWarning = 1;
+  g_eeGeneral.splashMode = 3; // Disable splash
+  g_eeGeneral.pwrOnSpeed = 1; // 1 second
+#endif
+
   g_eeGeneral.chkSum = 0xFFFF;
 }
 
@@ -518,6 +526,15 @@ void modelDefault(uint8_t id)
     g_model.switchWarningState |= (1 << (3*i));
   }
 #endif
+
+#if defined(RADIOMASTER_RTF_RELEASE)
+  // Those settings are for headless radio
+  g_model.trainerData.mode = TRAINER_MODE_SLAVE;
+  g_model.moduleData[INTERNAL_MODULE].type = MODULE_TYPE_MULTIMODULE;
+  g_model.moduleData[INTERNAL_MODULE].setMultiProtocol(MODULE_SUBTYPE_MULTI_FRSKY);
+  g_model.moduleData[INTERNAL_MODULE].subType = MM_RF_FRSKY_SUBTYPE_D8;
+  g_model.moduleData[INTERNAL_MODULE].failsafeMode = FAILSAFE_NOPULSES;
+#endif
 }
 
 bool isInputRecursive(int index)
@@ -535,6 +552,8 @@ bool isInputRecursive(int index)
 }
 
 #if defined(AUTOSOURCE)
+constexpr int MULTIPOS_STEP_SIZE = (2 * RESX) / XPOTS_MULTIPOS_COUNT;
+
 int8_t getMovedSource(GET_MOVED_SOURCE_PARAMS)
 {
   int8_t result = 0;
@@ -543,7 +562,7 @@ int8_t getMovedSource(GET_MOVED_SOURCE_PARAMS)
   static int16_t inputsStates[MAX_INPUTS];
   if (min <= MIXSRC_FIRST_INPUT) {
     for (uint8_t i=0; i<MAX_INPUTS; i++) {
-      if (abs(anas[i] - inputsStates[i]) > 512) {
+      if (abs(anas[i] - inputsStates[i]) > MULTIPOS_STEP_SIZE) {
         if (!isInputRecursive(i)) {
           result = MIXSRC_FIRST_INPUT+i;
           break;
@@ -555,7 +574,7 @@ int8_t getMovedSource(GET_MOVED_SOURCE_PARAMS)
   static int16_t sourcesStates[NUM_STICKS+NUM_POTS+NUM_SLIDERS+NUM_MOUSE_ANALOGS];
   if (result == 0) {
     for (uint8_t i=0; i<NUM_STICKS+NUM_POTS+NUM_SLIDERS; i++) {
-      if (abs(calibratedAnalogs[i] - sourcesStates[i]) > 512) {
+      if (abs(calibratedAnalogs[i] - sourcesStates[i]) > MULTIPOS_STEP_SIZE) {
         result = MIXSRC_Rud+i;
         break;
       }
@@ -913,7 +932,7 @@ void checkAll()
   checkFailsafe();
   checkRSSIAlarmsDisabled();
 
-#if defined(SDCARD)
+#if defined(SDCARD) && !defined(RADIOMASTER_RTF_RELEASE)
   checkSDVersion();
 #endif
 
@@ -1449,6 +1468,19 @@ void doMixerCalculations()
   DEBUG_TIMER_START(debugTimerEvalMixes);
   evalMixes(tick10ms);
   DEBUG_TIMER_STOP(debugTimerEvalMixes);
+}
+
+void doMixerPeriodicUpdates()
+{
+  static tmr10ms_t lastTMR = 0;
+
+  tmr10ms_t tmr10ms = get_tmr10ms();
+
+  uint8_t tick10ms = (tmr10ms >= lastTMR ? tmr10ms - lastTMR : 1);
+  // handle tick10ms overrun
+  // correct overflow handling costs a lot of code; happens only each 11 min;
+  // therefore forget the exact calculation and use only 1 instead; good compromise
+  lastTMR = tmr10ms;
 
   DEBUG_TIMER_START(debugTimerMixes10ms);
   if (tick10ms) {
@@ -2227,6 +2259,7 @@ uint32_t pwrCheck()
 #endif
           event_t evt = getEvent(false);
           DISPLAY_WARNING(evt);
+          LED_ERROR_BEGIN();
           lcdRefresh();
 
           if (warningResult) {
@@ -2236,6 +2269,7 @@ uint32_t pwrCheck()
           else if (!warningText) {
             // shutdown has been cancelled
             pwr_check_state = PWR_CHECK_PAUSED;
+            LED_ERROR_END();
             return e_power_on;
           }
 #endif

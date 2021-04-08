@@ -1294,37 +1294,33 @@ void menuModelSetup(event_t event)
 #if defined(MULTIMODULE)
 
        if (MULTIMODULE_PROTOCOL_KNOWN(moduleIdx)) {
+         const char * title = getMultiOptionTitle(moduleIdx);
+
+         lcdDrawText(INDENT_WIDTH, y, title);
+         if (title == STR_MULTI_RFTUNE) {
+           lcdDrawText(MODEL_SETUP_2ND_COLUMN + 23, y, "RSSI(", LEFT);
+           lcdDrawNumber(lcdLastRightPos, y, TELEMETRY_RSSI(), LEFT);
+           lcdDrawText(lcdLastRightPos, y, ")", LEFT);
+         }
+
          int optionValue = g_model.moduleData[moduleIdx].multi.optionValue;
-
-         MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
-         const uint8_t multi_proto = g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol();
-         if (status.isValid()) {
-           lcdDrawText(INDENT_WIDTH, y, mm_options_strings::options[status.optionDisp]);
-           if (attr && status.optionDisp == 2) {
-             lcdDrawText(MODEL_SETUP_3RD_COLUMN+22, y, "RSSI(", LEFT);
-             lcdDrawNumber(lcdLastRightPos, y, TELEMETRY_RSSI(), LEFT);
-             lcdDrawText(lcdLastRightPos, y, ")", LEFT);
-           }
-         }
-         else {
-           const mm_protocol_definition * pdef = getMultiProtocolDefinition(multi_proto);
-           if (pdef->optionsstr)
-             lcdDrawText(INDENT_WIDTH, y, pdef->optionsstr);
-           if (pdef->optionsstr == STR_MULTI_RFTUNE) {
-             lcdDrawText(MODEL_SETUP_3RD_COLUMN+22, y, "RSSI(", LEFT);
-             lcdDrawNumber(lcdLastRightPos, y, TELEMETRY_RSSI(), LEFT);
-             lcdDrawText(lcdLastRightPos, y, ")", LEFT);
-           }
-         }
-
+         const uint8_t multi_proto = g_model.moduleData[moduleIdx].getMultiProtocol();
          int8_t min, max;
          getMultiOptionValues(multi_proto, min, max);
 
-         if (multi_proto == MODULE_SUBTYPE_MULTI_FS_AFHDS2A) {
-           lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, 50 + 5 * optionValue, LEFT | attr);
-         }
-         else if (multi_proto == MODULE_SUBTYPE_MULTI_FRSKY_R9) {
+         if (title == STR_MULTI_RFPOWER) {
            lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_MULTI_POWER, optionValue, LEFT | attr);
+         }
+         else if (title == STR_MULTI_TELEMETRY) {
+           lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_MULTI_TELEMETRY_MODE, optionValue, LEFT | attr);
+         }
+         else if (title == STR_MULTI_WBUS) {
+           lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_MULTI_WBUS_MODE, optionValue, LEFT | attr);
+           min = 0;
+           max = 1;
+         }
+         else if (multi_proto == MODULE_SUBTYPE_MULTI_FS_AFHDS2A) {
+           lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, 50 + 5 * optionValue, LEFT | attr);
          }
          else if (multi_proto == MODULE_SUBTYPE_MULTI_DSM2) {
            optionValue = optionValue & 0x01;

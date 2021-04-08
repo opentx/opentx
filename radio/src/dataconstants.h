@@ -213,7 +213,11 @@ enum ModuleIndex {
   };
 #endif
 
-#if defined(RADIO_T16) && !defined(INTERNAL_MODULE_MULTI)
+#define TRAINER_MODE_MIN()               TRAINER_MODE_MASTER_TRAINER_JACK
+
+#if !defined(HARDWARE_EXTERNAL_MODULE)
+  #define TRAINER_MODE_MAX()             TRAINER_MODE_SLAVE
+#elif defined(RADIO_T16) && !defined(INTERNAL_MODULE_MULTI)
 #if  defined(BLUETOOTH)
   #define TRAINER_MODE_MAX()             TRAINER_MODE_SLAVE_BLUETOOTH
 #else
@@ -281,6 +285,7 @@ enum TelemetryProtocol
   PROTOCOL_TELEMETRY_FLYSKY_IBUS,
   PROTOCOL_TELEMETRY_HITEC,
   PROTOCOL_TELEMETRY_HOTT,
+  PROTOCOL_TELEMETRY_MLINK,
   PROTOCOL_TELEMETRY_MULTIMODULE,
   PROTOCOL_TELEMETRY_AFHDS3,
   PROTOCOL_TELEMETRY_GHOST,
@@ -322,8 +327,8 @@ enum TelemetryUnit {
   UNIT_HERTZ,
   UNIT_MS,
   UNIT_US,
-  UNIT_MAX = UNIT_US,
-  UNIT_SPARE4,
+  UNIT_KM,
+  UNIT_MAX = UNIT_KM,
   UNIT_SPARE5,
   UNIT_SPARE6,
   UNIT_SPARE7,
@@ -679,7 +684,7 @@ enum MixSources {
   MIXSRC_GYRO2,                         LUA_EXPORT("gyry", "Gyro Y")
 #endif
 
-  MIXSRC_MAX,
+  MIXSRC_MAX,                          LUA_EXPORT("max", "MAX")
 
   MIXSRC_FIRST_HELI SKIP,
   MIXSRC_CYC1 = MIXSRC_FIRST_HELI,     LUA_EXPORT("cyc1", "Cyclic 1")

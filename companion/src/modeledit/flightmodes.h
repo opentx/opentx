@@ -24,8 +24,8 @@
 #include "modeledit.h"
 #include "eeprominterface.h"
 
-class CommonItemModels;
-class RawItemFilteredModel;
+class CompoundItemModelFactory;
+class FilteredItemModel;
 
 constexpr char MIMETYPE_FLIGHTMODE[] = "application/x-companion-flightmode";
 constexpr char MIMETYPE_GVAR_PARAMS[]  = "application/x-companion-gvar-params";
@@ -41,7 +41,8 @@ class FlightModePanel : public ModelPanel
     Q_OBJECT
 
   public:
-    FlightModePanel(QWidget *parent, ModelData &model, int modeIdx, GeneralSettings & generalSettings, Firmware * firmware, RawItemFilteredModel * rawSwitchFilteredModel);
+    FlightModePanel(QWidget *parent, ModelData &model, int modeIdx, GeneralSettings & generalSettings, Firmware * firmware,
+                    FilteredItemModel * rawSwitchFilteredModel);
     virtual ~FlightModePanel();
 
     virtual void update();
@@ -90,8 +91,8 @@ class FlightModePanel : public ModelPanel
     void gvCmPaste();
     void gvCmMoveDown();
     void gvCmMoveUp();
-    void onModelDataAboutToBeUpdated();
-    void onModelDataUpdateComplete();
+    void onItemModelAboutToBeUpdated();
+    void onItemModelUpdateComplete();
 
   private:
     Ui::FlightMode *ui;
@@ -138,6 +139,7 @@ class FlightModePanel : public ModelPanel
     bool gvMoveDownAllowed() const;
     bool gvMoveUpAllowed() const;
     void gvSwapData(int idx1, int idx2);
+    void connectItemModelEvents(const FilteredItemModel * itemModel);
 };
 
 class FlightModesPanel : public ModelPanel
@@ -145,7 +147,7 @@ class FlightModesPanel : public ModelPanel
     Q_OBJECT
 
   public:
-    FlightModesPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, CommonItemModels * commonItemModels);
+    FlightModesPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, CompoundItemModelFactory * sharedItemModels);
     virtual ~FlightModesPanel();
 
   public slots:
@@ -157,16 +159,19 @@ class FlightModesPanel : public ModelPanel
   private slots:
     void onPhaseNameChanged();
     void onTabIndexChanged(int index);
+    void onItemModelAboutToBeUpdated();
+    void onItemModelUpdateComplete();
 
   private:
     QString getTabName(int index);
 
     int modesCount;
     QTabWidget *tabWidget;
-    CommonItemModels *commonItemModels;
-    RawItemFilteredModel *rawSwitchFilteredModel;
+    CompoundItemModelFactory *sharedItemModels;
+    FilteredItemModel *rawSwitchFilteredModel;
     QVector<GenericPanel *> panels;
     void updateItemModels();
+    void connectItemModelEvents(const FilteredItemModel * itemModel);
 };
 
 #endif // _FLIGHTMODES_H_

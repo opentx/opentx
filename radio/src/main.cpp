@@ -574,6 +574,10 @@ void perMain()
   }
 #endif
 
+#if defined(KEYS_GPIO_REG_BIND) && defined(BIND_KEY)
+  bindButtonHandler(evt);
+#endif
+
 #if defined(GUI)
   DEBUG_TIMER_START(debugTimerGuiMain);
 #if defined(LIBOPENUI)

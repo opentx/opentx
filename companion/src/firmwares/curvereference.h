@@ -29,7 +29,7 @@
 
 
 class ModelData;
-class RawItemFilteredModel;
+class CurveRefFilteredFactory;
 
 class CurveReference {
 
@@ -63,6 +63,7 @@ class CurveReference {
     const bool isValueNumber() const;
     const bool isValueReference() const { return !isValueNumber(); }
     const QString toString(const ModelData * model = nullptr, bool verbose = true) const;
+    const bool isAvailable() const;
 
     CurveRefType type;
     int value;
@@ -78,6 +79,9 @@ class CurveReference {
     static int getDefaultValue(const CurveRefType type, const bool isGVar = false);
     static QString typeToString(const CurveRefType type);
     static QString functionToString(const int value);
+    static bool isTypeAvailable(const CurveRefType type);
+    static bool isFunctionAvailable(const int value);
+    static int functionCount();
 };
 
 class CurveReferenceUIManager : public QObject {
@@ -85,38 +89,34 @@ class CurveReferenceUIManager : public QObject {
   Q_OBJECT
 
   public:
-    CurveReferenceUIManager(QComboBox *curveValueCB, CurveReference & curve, const ModelData & model,
-                            RawItemFilteredModel * curveItemModel, QObject * parent = nullptr);
-    CurveReferenceUIManager(QComboBox *curveTypeCB, QCheckBox *curveGVarCB, QSpinBox *curveValueSB, QComboBox *curveValueCB,
-                            CurveReference & curve, const ModelData & model, RawItemFilteredModel * curveItemModel, QObject * parent = nullptr);
+    explicit CurveReferenceUIManager(QComboBox *curveTypeCB, QCheckBox *curveGVarCB, QSpinBox *curveValueSB, QComboBox *curveValueCB,
+                            CurveReference & curve, const ModelData & model, CurveRefFilteredFactory * curveRefFilteredFactory,
+                            QObject * parent = nullptr);
+
+    explicit CurveReferenceUIManager(QComboBox *curveValueCB, CurveReference & curve, const ModelData & model,
+                            CurveRefFilteredFactory * curveRefFilteredFactory, QObject * parent = nullptr) :
+                CurveReferenceUIManager(nullptr, nullptr, nullptr, curveValueCB, curve, model, curveRefFilteredFactory, parent) {}
+
     virtual ~CurveReferenceUIManager();
-    void init(RawItemFilteredModel * curveModel);
-    void update();
 
   protected slots:
     void gvarCBChanged(int);
     void typeChanged(int);
     void valueSBChanged();
     void valueCBChanged();
+    void update();
 
-  protected:
+  private:
     QComboBox *curveTypeCB;
     QCheckBox *curveGVarCB;
     QSpinBox *curveValueSB;
     QComboBox *curveValueCB;
-    CurveReference & curve;
+    CurveReference & curveRef;
     const ModelData & model;
     bool lock;
-
-    static bool firsttime;
-    static int flags;
-    static bool hasCapabilityGvars;
-    static int numCurves;
-    static RawItemFilteredModel * curveItemModel;
-    static QStandardItemModel * tempModel;
-
-    static void populateTypeCB(QComboBox * cb, const CurveReference & curveRef);
-    static void populateValueCB(QComboBox * cb, const CurveReference & curveRef, const ModelData * model = nullptr);
+    bool hasCapabilityGvars;
+    CurveRefFilteredFactory *filteredModelFactory;
+    void populateValueCB(QComboBox * cb);
 };
 
 #endif // CURVEREFERENCE_H
