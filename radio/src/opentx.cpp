@@ -426,7 +426,7 @@ void defaultGVars()
 // - vendors should provide their own defaults in their own builds,
 // - and disclose them by their own means (GPL compliance)
 //
-void vendorSpecificModelDefaults()
+void setVendorSpecificModelDefaults()
 {
 #if defined(FRSKY_RELEASE)
   g_model.moduleData[INTERNAL_MODULE].type = IS_PXX2_INTERNAL_ENABLED() ? MODULE_TYPE_ISRM_PXX2 : MODULE_TYPE_XJT_PXX1;
@@ -473,6 +473,8 @@ void applyDefaultTemplate()
 #endif
 
   // TODO: what about switch warnings in non-color LCD radios?
+
+  setVendorSpecificModelDefaults();
 }
 
 
