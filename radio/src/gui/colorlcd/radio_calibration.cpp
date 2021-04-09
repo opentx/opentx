@@ -276,8 +276,11 @@ void RadioCalibrationPage::nextStep()
       g_eeGeneral.chkSum = evalChkSum();
       storageDirty(EE_GENERAL);
       menuCalibrationState = CALIB_FINISHED;
+
+      // initial calibration completed
+      // -> exit
       if (initial)
-        text->getParent()->getParent()->deleteLater();
+        deleteLater();
       break;
 
     default:
@@ -289,5 +292,5 @@ void RadioCalibrationPage::nextStep()
 
 void startCalibration()
 {
-  new RadioCalibrationPage();
+  new RadioCalibrationPage(true);
 }

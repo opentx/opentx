@@ -104,7 +104,7 @@ class OpenTxTest : public testing::Test
       SYSTEM_RESET();
       MODEL_RESET();
       MIXER_RESET();
-      modelDefault(0);
+      setModelDefaults(0);
       RADIO_RESET();
     }
 };

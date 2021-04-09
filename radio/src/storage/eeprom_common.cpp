@@ -23,6 +23,7 @@
 #include <string.h>
 #include "opentx.h"
 #include "timers.h"
+#include "model_init.h"
 
 void eeLoadModel(uint8_t index)
 {
@@ -45,7 +46,7 @@ void eeLoadModel(uint8_t index)
 
     bool alarms = true;
     if (size < EEPROM_MIN_MODEL_SIZE) { // if not loaded a fair amount
-      modelDefault(index) ;
+      setModelDefaults(index);
       storageCheck(true);
       alarms = false;
     }
@@ -131,7 +132,7 @@ void storageEraseAll(bool warn)
   TRACE("storageEraseAll");
 
   generalDefault();
-  modelDefault(0);
+  setModelDefault(0);
 
   if (warn) {
     ALERT(STR_STORAGE_WARNING, STR_BAD_RADIO_DATA, AU_BAD_RADIODATA);
@@ -142,4 +143,79 @@ void storageEraseAll(bool warn)
   storageFormat();
   storageDirty(EE_GENERAL|EE_MODEL);
   storageCheck(true);
+}
+
+void checkModelIdUnique(uint8_t index, uint8_t module)
+{
+  if (isModuleXJTD8(module))
+    return;
+
+  uint8_t modelId = g_model.header.modelId[module];
+  uint8_t additionalOnes = 0;
+  char * name = reusableBuffer.moduleSetup.msg;
+
+  memset(reusableBuffer.moduleSetup.msg, 0, sizeof(reusableBuffer.moduleSetup.msg));
+
+  if (modelId != 0) {
+    for (uint8_t i = 0; i < MAX_MODELS; i++) {
+      if (i != index) {
+        if (modelId == modelHeaders[i].modelId[module]) {
+          if ((WARNING_LINE_LEN - 4 - (name - reusableBuffer.moduleSetup.msg)) > (signed)(modelHeaders[i].name[0] ? zlen(modelHeaders[i].name, LEN_MODEL_NAME) : sizeof(TR_MODEL) + 2)) { // you cannot rely exactly on WARNING_LINE_LEN so using WARNING_LINE_LEN-2 (-2 for the ",")
+            if (reusableBuffer.moduleSetup.msg[0] != '\0') {
+              name = strAppend(name, ", ");
+            }
+            if (modelHeaders[i].name[0] == 0) {
+              name = strAppend(name, STR_MODEL);
+              name = strAppendUnsigned(name+strlen(name), i + 1, 2);
+            }
+            else {
+              name += zchar2str(name, modelHeaders[i].name, LEN_MODEL_NAME);
+            }
+          }
+          else {
+            additionalOnes++;
+          }
+        }
+      }
+    }
+  }
+
+  if (additionalOnes) {
+    name = strAppend(name, " (+");
+    name = strAppendUnsigned(name, additionalOnes);
+    strAppend(name, ")");
+  }
+
+  if (reusableBuffer.moduleSetup.msg[0]) {
+    POPUP_WARNING(STR_MODELIDUSED, reusableBuffer.moduleSetup.msg);
+  }
+}
+
+uint8_t findNextUnusedModelId(uint8_t index, uint8_t module)
+{
+  uint8_t usedModelIds[(MAX_RXNUM + 7) / 8];
+  memset(usedModelIds, 0, sizeof(usedModelIds));
+
+  for (uint8_t modelIndex = 0; modelIndex < MAX_MODELS; modelIndex++) {
+    if (modelIndex == index)
+      continue;
+
+    uint8_t id = modelHeaders[modelIndex].modelId[module];
+    if (id == 0)
+      continue;
+
+    uint8_t mask = 1u << (id & 7u);
+    usedModelIds[id >> 3u] |= mask;
+  }
+
+  for (uint8_t id = 1; id <= getMaxRxNum(module); id++) {
+    uint8_t mask = 1u << (id & 7u);
+    if (!(usedModelIds[id >> 3u] & mask)) {
+      // found free ID
+      return id;
+    }
+  }
+
+  // failed finding something...
+  return 0;
 }

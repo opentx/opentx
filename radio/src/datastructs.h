@@ -550,9 +550,9 @@ typedef uint8_t swarnenable_t;
 #elif defined(COLORLCD)
 #include "gui/colorlcd/layout.h"
 #include "gui/colorlcd/topbar.h"
-#define LAYOUT_NAME_LEN 10
+#define LAYOUT_ID_LEN 10
 PACK(struct CustomScreenData {
-  char layoutName[LAYOUT_NAME_LEN];
+  char LayoutId[LAYOUT_ID_LEN];
   Layout::PersistentData layoutData;
 });
 #define CUSTOM_SCREENS_DATA \

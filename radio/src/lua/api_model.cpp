@@ -23,6 +23,7 @@
 #include "opentx.h"
 #include "lua_api.h"
 #include "timers.h"
+#include "model_init.h"
 
 /*luadoc
 @function model.getInfo()
@@ -664,7 +665,8 @@ Set all inputs to defaults
 */
 static int luaModelDefaultInputs(lua_State *L)
 {
-  defaultInputs();
+  clearInputs();
+  setDefaultInputs();
   return 0;
 }
 

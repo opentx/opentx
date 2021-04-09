@@ -397,7 +397,7 @@ PACK(struct TelemetrySensor_218 {
 
 #if defined(PCBHORUS)
   PACK(struct CustomScreenData_v218 {
-    char layoutName[10];
+    char LayoutId[10];
     Layout::PersistentData layoutData;
   });
   #define VIEW_DATA \

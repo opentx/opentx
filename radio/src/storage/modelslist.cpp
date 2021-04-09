@@ -441,14 +441,12 @@ bool ModelsList::load()
   if (!currentModel) {
     if (model) {
       currentModel = model;
-      currentCategory = category;
     }
     else {
-      model = new ModelCell(line);
       category = new ModelsCategory("Models");
       categories.push_back(category);
-      category->push_back(model);
     }
+    currentCategory = category;
   }
 
   loaded = true;

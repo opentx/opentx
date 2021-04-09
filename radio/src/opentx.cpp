@@ -23,7 +23,7 @@
 
 #if defined(LIBOPENUI)
 // #include "shutdown_animation.h"
-// #include "radio_calibration.h"
+#include "radio_calibration.h"
 #include "view_main.h"
 #endif
 
@@ -364,178 +364,6 @@ uint16_t evalChkSum()
   return sum;
 }
 
-void clearInputs()
-{
-  memset(g_model.expoData, 0, sizeof(g_model.expoData)); // clear all expos
-}
-
-void defaultInputs()
-{
-  clearInputs();
-
-  for (int i=0; i<NUM_STICKS; i++) {
-    uint8_t stick_index = channelOrder(i+1);
-    ExpoData *expo = expoAddress(i);
-    expo->srcRaw = MIXSRC_Rud - 1 + stick_index;
-    expo->curve.type = CURVE_REF_EXPO;
-    expo->chn = i;
-    expo->weight = 100;
-    expo->mode = 3; // TODO constant
-    for (int c = 0; c < 3; c++) {
-      g_model.inputNames[i][c] = STR_VSRCRAW[2 + 4 * stick_index + c];
-    }
-#if LEN_INPUT_NAME > 3
-    g_model.inputNames[i][3] = '\0';
-#endif
-  }
-  storageDirty(EE_MODEL);
-}
-
-void applyDefaultTemplate()
-{
-  defaultInputs(); // calls storageDirty internally
-
-  for (int i=0; i<NUM_STICKS; i++) {
-    MixData * mix = mixAddress(i);
-    mix->destCh = i;
-    mix->weight = 100;
-    mix->srcRaw = i+1;
-  }
-}
-
-#if defined(EEPROM)
-void checkModelIdUnique(uint8_t index, uint8_t module)
-{
-  if (isModuleXJTD8(module))
-    return;
-
-  uint8_t modelId = g_model.header.modelId[module];
-  uint8_t additionalOnes = 0;
-  char * name = reusableBuffer.moduleSetup.msg;
-
-  memset(reusableBuffer.moduleSetup.msg, 0, sizeof(reusableBuffer.moduleSetup.msg));
-
-  if (modelId != 0) {
-    for (uint8_t i = 0; i < MAX_MODELS; i++) {
-      if (i != index) {
-        if (modelId == modelHeaders[i].modelId[module]) {
-          if ((WARNING_LINE_LEN - 4 - (name - reusableBuffer.moduleSetup.msg)) > (signed)(modelHeaders[i].name[0] ? zlen(modelHeaders[i].name, LEN_MODEL_NAME) : sizeof(TR_MODEL) + 2)) { // you cannot rely exactly on WARNING_LINE_LEN so using WARNING_LINE_LEN-2 (-2 for the ",")
-            if (reusableBuffer.moduleSetup.msg[0] != '\0') {
-              name = strAppend(name, ", ");
-            }
-            if (modelHeaders[i].name[0] == 0) {
-              name = strAppend(name, STR_MODEL);
-              name = strAppendUnsigned(name+strlen(name), i + 1, 2);
-            }
-            else {
-              name += zchar2str(name, modelHeaders[i].name, LEN_MODEL_NAME);
-            }
-          }
-          else {
-            additionalOnes++;
-          }
-        }
-      }
-    }
-  }
-
-  if (additionalOnes) {
-    name = strAppend(name, " (+");
-    name = strAppendUnsigned(name, additionalOnes);
-    strAppend(name, ")");
-  }
-
-  if (reusableBuffer.moduleSetup.msg[0]) {
-    POPUP_WARNING(STR_MODELIDUSED, reusableBuffer.moduleSetup.msg);
-  }
-}
-
-uint8_t findNextUnusedModelId(uint8_t index, uint8_t module)
-{
-  uint8_t usedModelIds[(MAX_RXNUM + 7) / 8];
-  memset(usedModelIds, 0, sizeof(usedModelIds));
-
-  for (uint8_t modelIndex = 0; modelIndex < MAX_MODELS; modelIndex++) {
-    if (modelIndex == index)
-      continue;
-
-    uint8_t id = modelHeaders[modelIndex].modelId[module];
-    if (id == 0)
-      continue;
-
-    uint8_t mask = 1u << (id & 7u);
-    usedModelIds[id >> 3u] |= mask;
-  }
-
-  for (uint8_t id = 1; id <= getMaxRxNum(module); id++) {
-    uint8_t mask = 1u << (id & 7u);
-    if (!(usedModelIds[id >> 3u] & mask)) {
-      // found free ID
-      return id;
-    }
-  }
-
-  // failed finding something...
-  return 0;
-}
-#endif
-
-void modelDefault(uint8_t id)
-{
-  memset(&g_model, 0, sizeof(g_model));
-
-  applyDefaultTemplate();
-
-  memcpy(g_model.modelRegistrationID, g_eeGeneral.ownerRegistrationID, PXX2_LEN_REGISTRATION_ID);
-
-#if defined(LUA) && defined(PCBTARANIS) // Horus uses menuModelWizard() for wizard
-  if (isFileAvailable(WIZARD_PATH "/" WIZARD_NAME)) {
-    f_chdir(WIZARD_PATH);
-    luaExec(WIZARD_NAME);
-  }
-#endif
-
-#if defined(FRSKY_RELEASE)
-  g_model.moduleData[INTERNAL_MODULE].type = IS_PXX2_INTERNAL_ENABLED() ? MODULE_TYPE_ISRM_PXX2 : MODULE_TYPE_XJT_PXX1;
-  g_model.moduleData[INTERNAL_MODULE].channelsCount = defaultModuleChannels_M8(INTERNAL_MODULE);
-  #if defined(EEPROM)
-    g_model.header.modelId[INTERNAL_MODULE] = findNextUnusedModelId(id, INTERNAL_MODULE);
-    modelHeaders[id].modelId[INTERNAL_MODULE] = g_model.header.modelId[INTERNAL_MODULE];
-  #endif
-#endif
-
-#if defined(PCBXLITE)
-  g_model.trainerData.mode = TRAINER_MODE_MASTER_BLUETOOTH;
-#endif
-
-#if defined(FLIGHT_MODES) && defined(GVARS)
-  for (int fmIdx = 1; fmIdx < MAX_FLIGHT_MODES; fmIdx++) {
-    for (int gvarIdx = 0; gvarIdx < MAX_GVARS; gvarIdx++) {
-      g_model.flightModeData[fmIdx].gvars[gvarIdx] = GVAR_MAX + 1;
-    }
-  }
-#endif
-
-  strAppendUnsigned(strAppend(g_model.header.name, STR_MODEL), id + 1, 2);
-
-#if defined(COLORLCD)
-  loadDefaultLayout();
-
-  // enable switch warnings
-  for (int i = 0; i < NUM_SWITCHES; i++) {
-    g_model.switchWarningState |= (1 << (3*i));
-  }
-#endif
-
-#if defined(RADIOMASTER_RTF_RELEASE)
-  // Those settings are for headless radio
-  g_model.trainerData.mode = TRAINER_MODE_SLAVE;
-  g_model.moduleData[INTERNAL_MODULE].type = MODULE_TYPE_MULTIMODULE;
-  g_model.moduleData[INTERNAL_MODULE].setMultiProtocol(MODULE_SUBTYPE_MULTI_FRSKY);
-  g_model.moduleData[INTERNAL_MODULE].subType = MM_RF_FRSKY_SUBTYPE_D8;
-  g_model.moduleData[INTERNAL_MODULE].failsafeMode = FAILSAFE_NOPULSES;
-#endif
-}
 
 bool isInputRecursive(int index)
 {
@@ -1632,8 +1460,7 @@ void opentxStart(const uint8_t startOptions = OPENTX_START_DEFAULT_ARGS)
 #if defined(GUI)
   if (calibration_needed) {
 #if defined(LIBOPENUI)
-    #warning "TODO add a startCalibration function"
-    // startCalibration();
+    startCalibration();
 #else
     chainMenu(menuFirstCalib);
 #endif
@@ -1927,8 +1754,10 @@ void moveTrimsToOffsets() // copy state of 3 primary to subtrim
 void opentxInit()
 {
   TRACE("opentxInit");
-
-#if defined(GUI) && !defined(LIBOPENUI)
+#if defined(LIBOPENUI)
+  // create ViewMain
+  ViewMain::instance();
+#elif defined(GUI)
   // TODO add a function for this (duplicated)
   menuHandlers[0] = menuMainView;
   #if MENUS_LOCK != 2/*no menus*/
