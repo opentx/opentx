@@ -664,6 +664,7 @@ Set all inputs to defaults
 */
 static int luaModelDefaultInputs(lua_State *L)
 {
+  clearInputs();
   defaultInputs();
   return 0;
 }
