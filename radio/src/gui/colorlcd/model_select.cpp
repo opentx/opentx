@@ -287,12 +287,7 @@ class ModelCategoryPageBody: public FormWindow {
                 });
               }
               menu->addLine(STR_CREATE_MODEL, [=]() {
-                  storageCheck(true);
-                  modelslist.setCurrentModel(modelslist.addModel(category, createModel()));
-#if defined(LUA)
-                  // chainMenu(menuModelWizard);
-#endif
-                  update(category->size() - 1);
+                  this->createModelAction();
               });
               menu->addLine(STR_DUPLICATE_MODEL, [=]() {
                   char duplicatedFilename[LEN_MODEL_FILENAME + 1];
@@ -342,11 +337,56 @@ class ModelCategoryPageBody: public FormWindow {
       }
 
       setInnerHeight(y);
+
+      if (category->empty()) {
+        setFocus();
+      }
     }
 
+#if defined(HARDWARE_KEYS)
+    void onEvent(event_t event) override
+    {
+      if (event == EVT_KEY_BREAK(KEY_ENTER)) {
+    
+        Menu * menu = new Menu(this);
+        menu->addLine(STR_CREATE_MODEL, [=]() {
+          this->createModelAction();
+        });
+        //TODO: create category?
+      }
+      else {
+        FormWindow::onEvent(event);
+      }
+    }
+#endif
+
+    void setFocus(uint8_t flag = SET_FOCUS_DEFAULT, Window * from = nullptr) override
+    {
+      if (category->empty()) {
+        // use Window::setFocus() to avoid forwarding focus to nowhere
+        // this crashes currently in libopenui
+        Window::setFocus(flag,from);
+      }
+      else {
+        FormWindow::setFocus(flag,from);
+      }
+    }
+
+  
   protected:
     ModelsCategory * category;
     ModelSelectFooter * footer;
+
+    void createModelAction()
+    {
+      storageCheck(true);
+      modelslist.setCurrentModel(modelslist.addModel(category, createModel()));
+#if defined(LUA)
+      // chainMenu(menuModelWizard);
+#endif
+      update(category->size() - 1);
+    }
+
 };
 
 class ModelCategoryPage: public PageTab {

@@ -257,8 +257,10 @@ class SetupWidgetsPage: public FormWindow
 #if defined(HARDWARE_TOUCH)
       Keyboard::hide();
 #endif
-      // give it back to its old parent before it gets deleted
-      screen->attach(oldParent);
+      if (oldParent) {
+        // give it back to its old parent before it gets deleted
+        screen->attach(oldParent);
+      }
 
       FormWindow::deleteLater(detach, trash);
     }
