@@ -542,7 +542,7 @@ static uint8_t counter;
 const uint16_t MultiModuleSyncStatus::getAdjustedRefreshRate()
 {
   if (!isValid() || refreshRate == 0)
-    return 18000;
+    return return MULTIMODULE_PERIOD * 2000;;
 
   counter = (uint8_t) (counter + 1 % 10);
   uint16_t rate = (uint16_t) ((adjustedRefreshRate + counter * 50) / 500);
