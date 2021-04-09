@@ -60,6 +60,8 @@ const char * writeModel()
 {
   char path[256];
   getModelPath(path, g_eeGeneral.currModelFilename);
+
+  sdCheckAndCreateDirectory(MODELS_PATH);
   return writeFile(path, (uint8_t *)&g_model, sizeof(g_model));
 }
 
