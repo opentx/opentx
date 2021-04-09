@@ -366,13 +366,11 @@ uint16_t evalChkSum()
 
 void clearInputs()
 {
-  memset(g_model.expoData, 0, sizeof(g_model.expoData)); // clear all expos
+  memset(g_model.expoData, 0, sizeof(g_model.expoData));
 }
 
 void defaultInputs()
 {
-  clearInputs();
-
   for (int i=0; i<NUM_STICKS; i++) {
     uint8_t stick_index = channelOrder(i+1);
     ExpoData *expo = expoAddress(i);
@@ -391,16 +389,90 @@ void defaultInputs()
   storageDirty(EE_MODEL);
 }
 
-void applyDefaultTemplate()
+void clearMixers()
 {
-  defaultInputs(); // calls storageDirty internally
+  memset(g_model.mixData, 0, sizeof(g_model.mixData));
+}
 
+void defaultMixers()
+{
   for (int i=0; i<NUM_STICKS; i++) {
     MixData * mix = mixAddress(i);
     mix->destCh = i;
     mix->weight = 100;
     mix->srcRaw = i+1;
   }
+  storageDirty(EE_MODEL);
+}
+
+void defaultModelRegistrationID()
+{
+  memcpy(g_model.modelRegistrationID, g_eeGeneral.ownerRegistrationID, PXX2_LEN_REGISTRATION_ID);
+}
+
+void defaultGVars()
+{
+#if defined(FLIGHT_MODES) && defined(GVARS)
+  for (int fmIdx = 1; fmIdx < MAX_FLIGHT_MODES; fmIdx++) {
+    for (int gvarIdx = 0; gvarIdx < MAX_GVARS; gvarIdx++) {
+      g_model.flightModeData[fmIdx].gvars[gvarIdx] = GVAR_MAX + 1;
+    }
+  }
+#endif
+}
+
+// TODO:
+// - this needs to go away and be banned out of the main
+// - vendors should provide their own defaults in their own builds,
+// - and disclose them by their own means (GPL compliance)
+//
+void vendorSpecificModelDefaults()
+{
+#if defined(FRSKY_RELEASE)
+  g_model.moduleData[INTERNAL_MODULE].type = IS_PXX2_INTERNAL_ENABLED() ? MODULE_TYPE_ISRM_PXX2 : MODULE_TYPE_XJT_PXX1;
+  g_model.moduleData[INTERNAL_MODULE].channelsCount = defaultModuleChannels_M8(INTERNAL_MODULE);
+  #if defined(EEPROM)
+    g_model.header.modelId[INTERNAL_MODULE] = findNextUnusedModelId(id, INTERNAL_MODULE);
+    modelHeaders[id].modelId[INTERNAL_MODULE] = g_model.header.modelId[INTERNAL_MODULE];
+  #endif
+#endif
+
+    // TODO: we should probably have some default trainer mode
+    //       per radio, depending on what is supported
+    //
+#if defined(PCBXLITE)
+  g_model.trainerData.mode = TRAINER_MODE_MASTER_BLUETOOTH;
+#endif
+
+#if defined(RADIOMASTER_RTF_RELEASE)
+  // Those settings are for headless radio
+  g_model.trainerData.mode = TRAINER_MODE_SLAVE;
+  g_model.moduleData[INTERNAL_MODULE].type = MODULE_TYPE_MULTIMODULE;
+  g_model.moduleData[INTERNAL_MODULE].setMultiProtocol(MODULE_SUBTYPE_MULTI_FRSKY);
+  g_model.moduleData[INTERNAL_MODULE].subType = MM_RF_FRSKY_SUBTYPE_D8;
+  g_model.moduleData[INTERNAL_MODULE].failsafeMode = FAILSAFE_NOPULSES;
+#endif
+}
+
+void applyDefaultTemplate()
+{
+  defaultInputs();
+  defaultMixers();
+  defaultGVars();
+
+  defaultModelRegistrationID();
+
+#if defined(COLORLCD)
+  //TODO: not sure yet we need it here
+  loadDefaultLayout();
+
+  // enable switch warnings
+  for (int i = 0; i < NUM_SWITCHES; i++) {
+    g_model.switchWarningState |= (1 << (3*i));
+  }
+#endif
+
+  // TODO: what about switch warnings in non-color LCD radios?
 }
 
 #if defined(EEPROM)
@@ -483,57 +555,14 @@ uint8_t findNextUnusedModelId(uint8_t index, uint8_t module)
 void modelDefault(uint8_t id)
 {
   memset(&g_model, 0, sizeof(g_model));
-
   applyDefaultTemplate();
-
-  memcpy(g_model.modelRegistrationID, g_eeGeneral.ownerRegistrationID, PXX2_LEN_REGISTRATION_ID);
+  strAppendUnsigned(strAppend(g_model.header.name, STR_MODEL), id + 1, 2);
 
 #if defined(LUA) && defined(PCBTARANIS) // Horus uses menuModelWizard() for wizard
   if (isFileAvailable(WIZARD_PATH "/" WIZARD_NAME)) {
     f_chdir(WIZARD_PATH);
     luaExec(WIZARD_NAME);
   }
-#endif
-
-#if defined(FRSKY_RELEASE)
-  g_model.moduleData[INTERNAL_MODULE].type = IS_PXX2_INTERNAL_ENABLED() ? MODULE_TYPE_ISRM_PXX2 : MODULE_TYPE_XJT_PXX1;
-  g_model.moduleData[INTERNAL_MODULE].channelsCount = defaultModuleChannels_M8(INTERNAL_MODULE);
-  #if defined(EEPROM)
-    g_model.header.modelId[INTERNAL_MODULE] = findNextUnusedModelId(id, INTERNAL_MODULE);
-    modelHeaders[id].modelId[INTERNAL_MODULE] = g_model.header.modelId[INTERNAL_MODULE];
-  #endif
-#endif
-
-#if defined(PCBXLITE)
-  g_model.trainerData.mode = TRAINER_MODE_MASTER_BLUETOOTH;
-#endif
-
-#if defined(FLIGHT_MODES) && defined(GVARS)
-  for (int fmIdx = 1; fmIdx < MAX_FLIGHT_MODES; fmIdx++) {
-    for (int gvarIdx = 0; gvarIdx < MAX_GVARS; gvarIdx++) {
-      g_model.flightModeData[fmIdx].gvars[gvarIdx] = GVAR_MAX + 1;
-    }
-  }
-#endif
-
-  strAppendUnsigned(strAppend(g_model.header.name, STR_MODEL), id + 1, 2);
-
-#if defined(COLORLCD)
-  loadDefaultLayout();
-
-  // enable switch warnings
-  for (int i = 0; i < NUM_SWITCHES; i++) {
-    g_model.switchWarningState |= (1 << (3*i));
-  }
-#endif
-
-#if defined(RADIOMASTER_RTF_RELEASE)
-  // Those settings are for headless radio
-  g_model.trainerData.mode = TRAINER_MODE_SLAVE;
-  g_model.moduleData[INTERNAL_MODULE].type = MODULE_TYPE_MULTIMODULE;
-  g_model.moduleData[INTERNAL_MODULE].setMultiProtocol(MODULE_SUBTYPE_MULTI_FRSKY);
-  g_model.moduleData[INTERNAL_MODULE].subType = MM_RF_FRSKY_SUBTYPE_D8;
-  g_model.moduleData[INTERNAL_MODULE].failsafeMode = FAILSAFE_NOPULSES;
 #endif
 }
 
