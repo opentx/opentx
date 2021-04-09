@@ -286,9 +286,7 @@ class ModelCategoryPageBody: public FormWindow {
                     update(); // modelslist.getModelIndex(modelCell));
                 });
               }
-              menu->addLine(STR_CREATE_MODEL, [=]() {
-                  this->createModelAction();
-              });
+              menu->addLine(STR_CREATE_MODEL, getCreateModelAction());
               menu->addLine(STR_DUPLICATE_MODEL, [=]() {
                   char duplicatedFilename[LEN_MODEL_FILENAME + 1];
                   memcpy(duplicatedFilename, model->modelFilename, sizeof(duplicatedFilename));
@@ -347,11 +345,8 @@ class ModelCategoryPageBody: public FormWindow {
     void onEvent(event_t event) override
     {
       if (event == EVT_KEY_BREAK(KEY_ENTER)) {
-    
         Menu * menu = new Menu(this);
-        menu->addLine(STR_CREATE_MODEL, [=]() {
-          this->createModelAction();
-        });
+        menu->addLine(STR_CREATE_MODEL, getCreateModelAction());
         //TODO: create category?
       }
       else {
@@ -365,10 +360,10 @@ class ModelCategoryPageBody: public FormWindow {
       if (category->empty()) {
         // use Window::setFocus() to avoid forwarding focus to nowhere
         // this crashes currently in libopenui
-        Window::setFocus(flag,from);
+        Window::setFocus(flag, from);
       }
       else {
-        FormWindow::setFocus(flag,from);
+        FormWindow::setFocus(flag, from);
       }
     }
 
@@ -377,14 +372,16 @@ class ModelCategoryPageBody: public FormWindow {
     ModelsCategory * category;
     ModelSelectFooter * footer;
 
-    void createModelAction()
+    std::function<void(void)> getCreateModelAction()
     {
-      storageCheck(true);
-      modelslist.setCurrentModel(modelslist.addModel(category, createModel()));
+      return [=]() {
+        storageCheck(true);
+        modelslist.setCurrentModel(modelslist.addModel(category, createModel()));
 #if defined(LUA)
-      // chainMenu(menuModelWizard);
+        // chainMenu(menuModelWizard);
 #endif
-      update(category->size() - 1);
+        update(category->size() - 1);
+      };
     }
 
 };

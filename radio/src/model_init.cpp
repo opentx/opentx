@@ -45,12 +45,12 @@ void defaultInputs()
   storageDirty(EE_MODEL);
 }
 
-void clearMixers()
+void clearMixes()
 {
   memset(g_model.mixData, 0, sizeof(g_model.mixData));
 }
 
-void defaultMixers()
+void defaultMixes()
 {
   for (int i=0; i<NUM_STICKS; i++) {
     MixData * mix = mixAddress(i);
@@ -108,7 +108,7 @@ void setVendorSpecificModelDefaults()
 void applyDefaultTemplate()
 {
   defaultInputs();
-  defaultMixers();
+  defaultMixes();
   defaultGVars();
 
   defaultModelRegistrationID();
