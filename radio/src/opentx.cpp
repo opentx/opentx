@@ -1445,6 +1445,19 @@ void doMixerCalculations()
   DEBUG_TIMER_START(debugTimerEvalMixes);
   evalMixes(tick10ms);
   DEBUG_TIMER_STOP(debugTimerEvalMixes);
+}
+
+void doMixerPeriodicUpdates()
+{
+  static tmr10ms_t lastTMR = 0;
+
+  tmr10ms_t tmr10ms = get_tmr10ms();
+
+  uint8_t tick10ms = (tmr10ms >= lastTMR ? tmr10ms - lastTMR : 1);
+  // handle tick10ms overrun
+  // correct overflow handling costs a lot of code; happens only each 11 min;
+  // therefore forget the exact calculation and use only 1 instead; good compromise
+  lastTMR = tmr10ms;
 
   DEBUG_TIMER_START(debugTimerMixes10ms);
   if (tick10ms) {

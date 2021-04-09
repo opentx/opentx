@@ -20,62 +20,80 @@
 
 #pragma once
 
-#include <QCheckBox>
+#include <QTimeEdit>
 #include "genericpanel.h"
 
-class AutoCheckBox: public QCheckBox
+class AutoTimeEdit: public QTimeEdit
 {
   Q_OBJECT
 
   public:
-    explicit AutoCheckBox(QWidget * parent = nullptr):
-      QCheckBox(parent),
+    explicit AutoTimeEdit(QWidget * parent = nullptr):
+      QTimeEdit(parent),
       field(nullptr),
       panel(nullptr),
       lock(false)
     {
-      connect(this, SIGNAL(toggled(bool)), this, SLOT(onToggled(bool)));
+      connect(this, SIGNAL(timeChanged(QTime)), this, SLOT(onTimeChanged(QTime)));
     }
 
-    void setField(bool & field, GenericPanel * panel = nullptr)
+    void setField(unsigned int & field, GenericPanel * panel = nullptr)
     {
       this->field = &field;
       this->panel = panel;
       updateValue();
     }
 
+    void setMinimumTime(const QTime time)
+    {
+      QTimeEdit::setMinimumTime(time);
+    }
+
+    void setMaximumTime(const QTime time)
+    {
+      QTimeEdit::setMaximumTime(time);
+    }
+
     void setEnabled(bool enabled)
     {
-      QCheckBox::setEnabled(enabled);
+      QTimeEdit::setEnabled(enabled);
     }
 
     void updateValue()
     {
       if (field) {
         lock = true;
-        setChecked(*field);
+        int hour = *field / 3600;
+        int min = (*field - (hour * 3600)) / 60;
+        int sec = (*field - (hour * 3600)) % 60;
+        setTime(QTime(hour, min, sec));
         lock = false;
       }
     }
 
   signals:
-    void currentDataChanged(bool value);
+    void currentDataChanged(unsigned int value);
 
   protected slots:
-    void onToggled(bool checked)
+    void onTimeChanged(QTime time)
     {
       if (panel && panel->lock)
         return;
-      if (field && !lock) {
-        *field = checked;
-        emit currentDataChanged(checked);
+      if (!field || lock)
+        return;
+
+      unsigned int val = time.hour() * 3600 + time.minute() * 60 + time.second();
+      if (*field != val) {
+        *field = val;
+        emit currentDataChanged(val);
         if (panel)
           emit panel->modified();
       }
     }
 
   protected:
-    bool *field = nullptr;
+    unsigned int *field = nullptr;
     GenericPanel *panel = nullptr;
     bool lock = false;
 };
+

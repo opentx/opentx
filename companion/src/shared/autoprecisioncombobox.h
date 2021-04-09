@@ -123,7 +123,7 @@ class AutoPrecisionComboBox: public QComboBox
       if (*m_field != val) {
         *m_field = rangecheckDecimals(val);
         updateValue();
-        emit valueChanged();
+        emit currentDataChanged(value);
       }
     }
 
@@ -134,7 +134,7 @@ class AutoPrecisionComboBox: public QComboBox
       if (*m_field != value) {
         *m_field = rangecheckDecimals(value);
         updateValue();
-        emit valueChanged();
+        emit currentDataChanged((int)value);
       }
     }
 
@@ -160,7 +160,7 @@ class AutoPrecisionComboBox: public QComboBox
     }
 
   signals:
-    void valueChanged();
+    void currentDataChanged(int index);
 
   protected slots:
     void init()
@@ -203,13 +203,13 @@ class AutoPrecisionComboBox: public QComboBox
 
     void onCurrentIndexChanged(int index)
     {
-      if (index < 0)
+      if (index < 0 || (m_panel && m_panel->lock) || m_lock)
         return;
-      if (m_field && !m_lock) {
+      if (m_field) {
         *m_field = itemData(index).toUInt();
+        emit currentDataChanged(index);
         if (m_panel)
           emit m_panel->modified();
-        emit valueChanged();
       }
     }
 

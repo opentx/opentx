@@ -76,7 +76,6 @@ void _send_1(uint8_t v)
 
   *extmodulePulsesData.dsm2.ptr++ = v - 1;
   extmodulePulsesData.dsm2.index += 1;
-  extmodulePulsesData.dsm2.rest -= v;
 }
 
 void sendByteDsm2(uint8_t b) // max 10 changes 0 10 10 10 10 1
@@ -101,9 +100,9 @@ void sendByteDsm2(uint8_t b) // max 10 changes 0 10 10 10 10 1
 void putDsm2Flush()
 {
   if (extmodulePulsesData.dsm2.index & 1)
-    *extmodulePulsesData.dsm2.ptr++ = extmodulePulsesData.dsm2.rest;
+    *extmodulePulsesData.dsm2.ptr++ = 60000;
   else
-    *(extmodulePulsesData.dsm2.ptr - 1) = extmodulePulsesData.dsm2.rest;
+    *(extmodulePulsesData.dsm2.ptr - 1) = 60000;
 }
 #endif
 
@@ -119,7 +118,6 @@ void setupPulsesDSM2()
   extmodulePulsesData.dsm2.serialBitCount = 0 ;
 #else
   extmodulePulsesData.dsm2.index = 0;
-  extmodulePulsesData.dsm2.rest = DSM2_PERIOD * 2000;
 #endif
 
   extmodulePulsesData.dsm2.ptr = extmodulePulsesData.dsm2.pulses;

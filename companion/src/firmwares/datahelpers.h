@@ -24,8 +24,6 @@
 
 class FieldRange
 {
-  Q_DECLARE_TR_FUNCTIONS(FieldRange)
-
   public:
     FieldRange():
       decimals(0),
@@ -48,3 +46,24 @@ class FieldRange
     QString prefix;
     QString unit;
 };
+
+
+constexpr unsigned int TIMESTR_MASK_HRSMINS   { 1 << 1 };
+constexpr unsigned int TIMESTR_MASK_ZEROHRS   { 1 << 2 };
+constexpr unsigned int TIMESTR_MASK_PADSIGN   { 1 << 3 };
+
+namespace DataHelpers
+{
+  enum BoolFormat {
+    BOOL_FMT_ENABLEDISABLE,
+    BOOL_FMT_ONOFF,
+    BOOL_FMT_TRUEFALSE,
+    BOOL_FMT_YN,
+    BOOL_FMT_YESNO
+  };
+
+  QString boolToString(const bool value, const BoolFormat format);
+  QString getElementName(const QString & prefix, const unsigned int index, const char * name = 0, const bool padding = false);
+  QString timeToString(const int value, const unsigned int mask);
+
+}

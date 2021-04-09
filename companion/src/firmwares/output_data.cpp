@@ -31,7 +31,8 @@ void LimitData::clear()
 
 bool LimitData::isEmpty() const
 {
-  return (min == -1000 && max == 1000 && !revert && !offset && !ppmCenter && !symetrical && name[0] == '\0' && !curve.isSet());
+  LimitData tmp;
+  return !memcmp(this, &tmp, sizeof(LimitData));
 }
 
 QString LimitData::minToString() const

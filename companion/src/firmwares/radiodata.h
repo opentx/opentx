@@ -1,8 +1,9 @@
-#ifndef _RADIODATA_H_
-#define _RADIODATA_H_
+#pragma once
 
 #include "generalsettings.h"
 #include "modeldata.h"
+
+#include "datahelpers.h"  // required for getElementName
 
 #include <QtCore>
 
@@ -32,10 +33,10 @@ class RadioData {
     void fixModelFilenames();
     QString getNextModelFilename();
 
-    static QString getElementName(const QString & prefix, unsigned int index, const char * name = 0, bool padding = false);
+    // leave here until all calls repointed
+    static QString getElementName(const QString & prefix, unsigned int index, const char * name = 0, bool padding = false)
+      { return DataHelpers::getElementName(prefix, index, name, padding); }
 
   protected:
     void fixModelFilename(unsigned int index);
 };
-
-#endif // _RADIODATA_H_

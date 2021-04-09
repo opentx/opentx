@@ -363,6 +363,7 @@ class CompoundItemModelFactory
     void unregisterItemModel(const int id);
     bool isItemModelRegistered(const int id) const;
     AbstractItemModel * getItemModel(const int id) const;
+    AbstractItemModel * getItemModel(const QString name) const;
     void update(const int event = AbstractItemModel::IMUE_SystemRefresh);
     void dumpAllItemModelContents() const;
 
