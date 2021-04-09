@@ -25,7 +25,7 @@ void clearInputs()
   memset(g_model.expoData, 0, sizeof(g_model.expoData));
 }
 
-void defaultInputs()
+void setDefaultInputs()
 {
   for (int i=0; i<NUM_STICKS; i++) {
     uint8_t stick_index = channelOrder(i+1);
@@ -50,7 +50,7 @@ void clearMixes()
   memset(g_model.mixData, 0, sizeof(g_model.mixData));
 }
 
-void defaultMixes()
+void setDefaultMixes()
 {
   for (int i=0; i<NUM_STICKS; i++) {
     MixData * mix = mixAddress(i);
@@ -61,12 +61,12 @@ void defaultMixes()
   storageDirty(EE_MODEL);
 }
 
-void defaultModelRegistrationID()
+void setDefaultModelRegistrationID()
 {
   memcpy(g_model.modelRegistrationID, g_eeGeneral.ownerRegistrationID, PXX2_LEN_REGISTRATION_ID);
 }
 
-void defaultGVars()
+void setDefaultGVars()
 {
 #if defined(FLIGHT_MODES) && defined(GVARS)
   for (int fmIdx = 1; fmIdx < MAX_FLIGHT_MODES; fmIdx++) {
@@ -107,11 +107,11 @@ void setVendorSpecificModelDefaults()
 
 void applyDefaultTemplate()
 {
-  defaultInputs();
-  defaultMixes();
-  defaultGVars();
+  setDefaultInputs();
+  setDefaultMixes();
+  setDefaultGVars();
 
-  defaultModelRegistrationID();
+  setDefaultModelRegistrationID();
 
 #if defined(COLORLCD)
   //TODO: not sure yet we need it here
@@ -124,15 +124,16 @@ void applyDefaultTemplate()
 #endif
 
   // TODO: what about switch warnings in non-color LCD radios?
-
-  setVendorSpecificModelDefaults();
 }
 
 
-void modelDefault(uint8_t id)
+void setModelDefaults(uint8_t id)
 {
   memset(&g_model, 0, sizeof(g_model));
   applyDefaultTemplate();
+  
+  setVendorSpecificModelDefaults();
+
   strAppendUnsigned(strAppend(g_model.header.name, STR_MODEL), id + 1, 2);
 
 #if defined(LUA) && defined(PCBTARANIS) // Horus uses menuModelWizard() for wizard

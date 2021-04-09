@@ -665,7 +665,6 @@ inline void resumeMixerCalculations()
 
 void setDefaultOwnerId();
 void generalDefault();
-void modelDefault(uint8_t id);
 
 uint32_t hash(const void * ptr, uint32_t size);
 
@@ -780,12 +779,6 @@ inline void getGVarIncDecRange(int16_t & valMin, int16_t & valMax)
   valMax = rng;
 }
 #endif
-
-
-
-
-void clearInputs();
-void defaultInputs();
 
 void applyExpos(int16_t * anas, uint8_t mode, uint8_t ovwrIdx=0, int16_t ovwrValue=0);
 int16_t applyLimits(uint8_t channel, int32_t value);

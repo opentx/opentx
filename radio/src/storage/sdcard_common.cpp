@@ -23,6 +23,7 @@
 #include "sdcard_common.h"
 #include "modelslist.h"
 #include "conversions/conversions.h"
+#include "model_init.h"
 
 // defined either in sdcard_raw.cpp or sdcard_yaml.cpp
 void storageCreateModelsList();
@@ -92,7 +93,7 @@ const char * createModel()
 
   int index = findNextFileIndex(filename, LEN_MODEL_FILENAME, MODELS_PATH);
   if (index > 0) {
-    modelDefault(index);
+    setModelDefaults(index);
     memcpy(g_eeGeneral.currModelFilename, filename, sizeof(g_eeGeneral.currModelFilename));
     storageDirty(EE_GENERAL);
     storageDirty(EE_MODEL);
