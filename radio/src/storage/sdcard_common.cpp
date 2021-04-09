@@ -50,11 +50,7 @@ void storageEraseAll(bool warn)
   RAISE_ALERT(STR_STORAGE_WARNING, STR_STORAGE_FORMAT, NULL, AU_NONE);
 
   storageFormat();
-  storageDirty(EE_GENERAL|EE_MODEL);
-
-  generalDefault();
-  modelDefault(1);
-
+  storageDirty(EE_GENERAL);
   storageCheck(true);
 }
 
@@ -110,18 +106,20 @@ const char * createModel()
 const char * loadModel(const char * filename, bool alarms)
 {
   uint8_t version;
-  
   preModelLoad();
 
   const char * error = readModel(filename, (uint8_t *)&g_model, sizeof(g_model), &version);
   if (error) {
     TRACE("loadModel error=%s", error);
-  }
-  
-  if (error) {
-    modelDefault(0) ;
+
+    // just get some clean memory state in "g_model"
+    // so the mixer can run safely
+    memset(&g_model, 0, sizeof(g_model));
+    applyDefaultTemplate();
+
     storageCheck(true);
-    alarms = false;
+    postModelLoad(false);
+    return error;
   }
 
 #if defined(STORAGE_CONVERSIONS)
@@ -131,8 +129,7 @@ const char * loadModel(const char * filename, bool alarms)
 #endif
 
   postModelLoad(alarms);
-
-  return error;
+  return nullptr;
 }
 
 void storageReadAll()
@@ -151,8 +148,7 @@ void storageReadAll()
   }
 
   if (loadModel(g_eeGeneral.currModelFilename, false) != nullptr) {
-    sdCheckAndCreateDirectory(MODELS_PATH);
-    createModel();
+    TRACE("No current model or SD card error");
   }
 
   // Wipe models list in case
