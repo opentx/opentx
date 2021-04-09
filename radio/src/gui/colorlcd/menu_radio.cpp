@@ -33,9 +33,9 @@
 RadioMenu::RadioMenu():
   TabsGroup(ICON_RADIO)
 {
-  addTab(new RadioSetupPage());
-  addTab(new RadioSdManagerPage());
   addTab(new RadioToolsPage());
+  addTab(new RadioSdManagerPage());
+  addTab(new RadioSetupPage());
   addTab(new SpecialFunctionsPage(g_eeGeneral.customFn));
   addTab(new RadioTrainerPage());
   addTab(new RadioHardwarePage());
