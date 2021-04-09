@@ -75,7 +75,7 @@ void loadDefaultLayout()
   auto& screenData = g_model.screenData[0];
 
   if (screen == nullptr && defaultLayout != nullptr) {
-    strcpy(screenData.layoutName, defaultLayout->getId());
+    strcpy(screenData.LayoutId, defaultLayout->getId());
     screen = defaultLayout->create(&screenData.layoutData);
     if (screen) {
       screen->attach(ViewMain::instance());
@@ -88,7 +88,7 @@ void loadCustomScreens()
   for (unsigned int i = 0; i < MAX_CUSTOM_SCREENS; i++) {
 
     auto& screen = customScreens[i];
-    screen = loadLayout(g_model.screenData[i].layoutName,
+    screen = loadLayout(g_model.screenData[i].LayoutId,
                         &g_model.screenData[i].layoutData);
 
     if (screen) {

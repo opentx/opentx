@@ -69,7 +69,7 @@ void ScreenAddPage::build(FormWindow * window)
       const LayoutFactory * factory = getRegisteredLayouts().front();
 
       screen = factory->create(&screenData.layoutData);
-      strncpy(screenData.layoutName, factory->getId(), sizeof(screenData.layoutName));
+      strncpy(screenData.LayoutId, factory->getId(), sizeof(screenData.LayoutId));
 
       auto tab = new ScreenSetupPage(menu, screen, screenData);
       std::string title(STR_MAIN_VIEW_X);
@@ -301,7 +301,7 @@ void ScreenSetupPage::build(FormWindow * window)
   layoutChoice = new LayoutChoice(window, layoutSlot, GET_VALUE(screen->getFactory()), [=](const LayoutFactory *factory) {
       delete screen;
       screen = factory->create(&screenData.layoutData);
-      strncpy(screenData.layoutName, factory->getId(), sizeof(CustomScreenData::layoutName));
+      strncpy(screenData.LayoutId, factory->getId(), sizeof(CustomScreenData::LayoutId));
       SET_DIRTY();
       updateLayoutOptions();
   });

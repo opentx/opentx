@@ -323,7 +323,7 @@ void convertModelData_218_to_219(ModelData &model)
 
   for (int screen=0; screen<MAX_CUSTOM_SCREENS; screen++) {
     CustomScreenData& screenData = g_model.screenData[screen];
-    if (screenData.layoutName[0] == '\0')
+    if (screenData.LayoutId[0] == '\0')
       continue;
     for (int zone=0; zone<MAX_LAYOUT_ZONES; zone++) {
       Layout::ZonePersistentData * zoneData = &screenData.layoutData.zones[zone];

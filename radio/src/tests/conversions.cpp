@@ -291,7 +291,7 @@ TEST(Conversions, ConversionX10From22)
   EXPECT_EQ(9, g_model.telemetrySensors[0].frskyInstance.physID);
   EXPECT_EQ((NUM_POTS + NUM_SLIDERS + 3), g_model.thrTraceSrc); // CH3
 
-  EXPECT_STREQ("Layout2P1", g_model.screenData[0].layoutName);
+  EXPECT_STREQ("Layout2P1", g_model.screenData[0].LayoutId);
   EXPECT_STREQ("ModelBmp", g_model.screenData[0].layoutData.zones[0].widgetName);
   EXPECT_STREQ("Value", g_model.topbarData.zones[0].widgetName);
   EXPECT_EQ(MIXSRC_FIRST_TELEM, g_model.topbarData.zones[0].widgetData.options[0].value.unsignedValue);
@@ -358,7 +358,7 @@ TEST(Conversions, ConversionX12SFrom22)
   EXPECT_EQ(9, g_model.telemetrySensors[0].frskyInstance.physID);
   EXPECT_EQ((NUM_POTS + NUM_SLIDERS + 3), g_model.thrTraceSrc); // CH3
 
-  EXPECT_STREQ("Layout2P1", g_model.screenData[0].layoutName);
+  EXPECT_STREQ("Layout2P1", g_model.screenData[0].LayoutId);
   EXPECT_STREQ("ModelBmp", g_model.screenData[0].layoutData.zones[0].widgetName);
   EXPECT_STREQ("Value", g_model.topbarData.zones[0].widgetName);
   EXPECT_EQ(MIXSRC_FIRST_TELEM, g_model.topbarData.zones[0].widgetData.options[0].unsignedValue);
