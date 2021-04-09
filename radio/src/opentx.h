@@ -667,11 +667,6 @@ void setDefaultOwnerId();
 void generalDefault();
 void modelDefault(uint8_t id);
 
-#if defined(EEPROM)
-void checkModelIdUnique(uint8_t index, uint8_t module);
-uint8_t findNextUnusedModelId(uint8_t index, uint8_t module);
-#endif
-
 uint32_t hash(const void * ptr, uint32_t size);
 
 #define calc100to256_16Bits(x) calc100to256(x)

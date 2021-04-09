@@ -39,6 +39,9 @@ void storageClearRadioSettings();
 bool storageReadRadioSettings(bool allowFixes = true);
 void storageReadCurrentModel();
 
+void checkModelIdUnique(uint8_t index, uint8_t module);
+uint8_t findNextUnusedModelId(uint8_t index, uint8_t module);
+
 #if defined(EEPROM_RLC)
 #include "eeprom_rlc.h"
 #else
