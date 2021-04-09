@@ -419,6 +419,7 @@ set(SRC
   stamp.cpp
   timers.cpp
   trainer.cpp
+  model_init.cpp
   )
 
 if(GUI)
