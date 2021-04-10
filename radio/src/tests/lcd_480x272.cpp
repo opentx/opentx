@@ -187,4 +187,31 @@ TEST(Lcd_colorlcd, fonts)
   EXPECT_TRUE(checkScreenshot_colorlcd(&dc, "fonts"));
 }
 
+TEST(Lcd_colorlcd, clipping)
+{
+  loadFonts();
+
+  BitmapBuffer dc(BMP_RGB565, LCD_W, LCD_H);
+  dc.clear(DEFAULT_BGCOLOR);
+
+  dc.drawSolidVerticalLine(100, 0, LCD_H, DEFAULT_COLOR);
+  dc.drawSolidVerticalLine(400, 0, LCD_H, DEFAULT_COLOR);
+
+  dc.drawSolidHorizontalLine(0,  50, LCD_W, DEFAULT_COLOR);
+  dc.drawSolidHorizontalLine(0, 200, LCD_W, DEFAULT_COLOR);
+
+  dc.setClippingRect(100, 400, 50, 200);
+
+  dc.drawSolidHorizontalLine(0, 80, LCD_W, TITLE_BGCOLOR);
+  dc.drawHorizontalLine(     0, 81, LCD_W, SOLID, TITLE_BGCOLOR);
+
+  dc.drawSolidVerticalLine(150,  0, LCD_H, TITLE_BGCOLOR);
+  dc.drawVerticalLine(     151,  0, LCD_H, SOLID, TITLE_BGCOLOR);
+
+  dc.drawSolidRect(20, 20, 50, 50, 2, TITLE_BGCOLOR);
+  dc.drawRect(    380, 20, 50, 50, 2, SOLID, TITLE_BGCOLOR);
+  
+  EXPECT_TRUE(checkScreenshot_colorlcd(&dc, "clipping"));
+}
+
 #endif
