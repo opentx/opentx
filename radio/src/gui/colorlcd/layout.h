@@ -111,14 +111,14 @@ class Layout: public LayoutBase
 
   protected:
     const LayoutFactory * factory;
-    TopBar * topBar = nullptr;
-    uint8_t  decorationSettings = 0;
-    std::list<Window*> decorations;
 
-    // adds trims, sliders, pots, etc...
+    // Decoration settings bitmask to detect updates
+    uint8_t  decorationSettings = 0;
+
+    // Updates settings for trims, sliders, pots, etc...
     void decorate();
 
-    // get the Zone rect without decoration
+    // Get the Zone rect without decoration
     rect_t getMainZone(rect_t zone) const;
 };
 

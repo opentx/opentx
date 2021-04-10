@@ -22,6 +22,9 @@
 #define _VIEW_MAIN_H_
 
 #include "form.h"
+#include <memory>
+
+class TopBar;
 
 class ViewMain: public FormWindow
 {
@@ -46,14 +49,54 @@ class ViewMain: public FormWindow
     }
 #endif
 
+    // Set decoration visibility
+    void setTopbarVisible(bool visible);
+    void setTrimsVisible(bool visible);
+    void setSlidersVisible(bool visible);
+    void setFlightModeVisible(bool visible);
+
+    // Re-calculate positions
+    void adjustDecoration();
+  
   protected:
     static ViewMain * _instance;
 
+    enum {
+      SLIDERS_POT1 = 0,
+      SLIDERS_POT2,
+      SLIDERS_POT3,
+      SLIDERS_REAR_LEFT,
+      SLIDERS_EXT1,
+      SLIDERS_REAR_RIGHT,
+      SLIDERS_EXT2,
+      SLIDERS_MAX
+    };
+  
+    enum {
+      TRIMS_LH = 0,
+      TRIMS_LV,
+      TRIMS_RV,
+      TRIMS_RH,
+      TRIMS_MAX
+    };
+
+    TopBar* topbar;
+    Window* sliders[SLIDERS_MAX];
+    Window* trims[TRIMS_MAX];
+    Window* flightMode;
+  
 #if defined(HARDWARE_KEYS)
     void onEvent(event_t event) override;
 #endif
     void paint(BitmapBuffer * dc) override;
+
     void openMenu();
+
+    void createDecoration();
+    void createTopbar();
+    void createSliders();
+    void createTrims();
+    void createFlightMode();
 };
 
 #endif // _VIEW_MAIN_H_

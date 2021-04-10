@@ -32,6 +32,7 @@ constexpr coord_t HMARGIN = 5;
 constexpr coord_t HORIZONTAL_SLIDERS_WIDTH = SLIDER_TICKS_COUNT * 4 + TRIM_SQUARE_SIZE;
 constexpr coord_t MULTIPOS_H = 20;
 constexpr coord_t MULTIPOS_W = 50;
+
 inline coord_t VERTICAL_SLIDERS_HEIGHT(bool topbar)
 {
   return topbar ? SLIDER_TICKS_COUNT * 4 + TRIM_SQUARE_SIZE : SLIDER_TICKS_COUNT * 5 + TRIM_SQUARE_SIZE;
@@ -40,16 +41,16 @@ inline coord_t VERTICAL_SLIDERS_HEIGHT(bool topbar)
 class MainViewSlider : public Window
 {
   public:
-    MainViewSlider(Window * parent, const rect_t & rect, std::function<int16_t()> getValue):
+    MainViewSlider(Window * parent, const rect_t & rect, uint8_t idx):
       Window(parent, rect),
-      getValue(std::move(getValue))
+      idx(idx)
     {
     }
 
     void checkEvents() override
     {
       Window::checkEvents();
-      int16_t newValue = getValue();
+      int16_t newValue = calibratedAnalogs[idx];
       if (value != newValue) {
         value = newValue;
         invalidate();
@@ -57,8 +58,8 @@ class MainViewSlider : public Window
     }
 
   protected:
-    std::function<int16_t()> getValue;
-    int8_t value = 0;
+    uint8_t idx;
+    int16_t value = 0;
 };
 
 class MainViewHorizontalSlider : public MainViewSlider
@@ -80,7 +81,6 @@ class MainViewHorizontalSlider : public MainViewSlider
       }
 
       // The square
-      auto value = - getValue();
       x = width() - TRIM_SQUARE_SIZE - divRoundClosest((width() - TRIM_SQUARE_SIZE) * (value + RESX), 2 * RESX);
       drawTrimSquare(dc, x, 0, TRIM_BGCOLOR);
     }
@@ -102,7 +102,7 @@ class MainView6POS : public MainViewSlider
       }
 
       // The square
-      auto value = getValue();
+      auto value = 1 + (potsPos[idx] & 0x0f);
       x = TRIM_SQUARE_SIZE / 2 + divRoundClosest((width() - TRIM_SQUARE_SIZE) * (value -1) , 6);
       drawTrimSquare(dc, x, 0, TRIM_BGCOLOR);
       dc->drawNumber(x + 1, 0, value, FOCUS_COLOR);
@@ -129,7 +129,6 @@ class MainViewVerticalSlider : public MainViewSlider
       }
 
       // The square
-      auto value = getValue();
       y = height() - TRIM_SQUARE_SIZE - divRoundClosest((height() - TRIM_SQUARE_SIZE) * (value + RESX), 2 * RESX);
       drawTrimSquare(dc, 0, y, TRIM_BGCOLOR);
     }
