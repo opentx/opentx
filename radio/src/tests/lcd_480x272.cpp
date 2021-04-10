@@ -102,10 +102,10 @@ TEST(Lcd_colorlcd, primitives)
 
   dc.drawFilledRect(10, 30, 30, 30, SOLID, TITLE_BGCOLOR);
   dc.drawFilledRect(50, 30, 30, 30, DOTTED, DEFAULT_COLOR);
-  //dc.drawFilledRect(90, 30, 30, 30, SOLID, ROUND|TITLE_BGCOLOR);
-  dc.drawRect(130, 30, 30, 30, 1, SOLID, TITLE_BGCOLOR);
-  dc.drawRect(170, 30, 30, 30, 2, SOLID, TITLE_BGCOLOR);
-  dc.drawRect(210, 30, 30, 30, 5, SOLID, TITLE_BGCOLOR);
+
+  dc.drawRect(90, 30, 30, 30, 1, SOLID, TITLE_BGCOLOR);
+  dc.drawRect(130, 30, 30, 30, 2, SOLID, TITLE_BGCOLOR);
+  dc.drawRect(170, 30, 30, 30, 5, SOLID, TITLE_BGCOLOR);
 
   dc.drawVerticalLine(10, 70, 100, SOLID, TITLE_BGCOLOR);
   dc.drawVerticalLine(15, 70,  90, SOLID, TITLE_BGCOLOR);
@@ -133,10 +133,10 @@ TEST(Lcd_colorlcd, transparency)
 
   dc.drawFilledRect(10, 30, 30, 30, SOLID, TITLE_BGCOLOR|OPACITY(8));
   dc.drawFilledRect(50, 30, 30, 30, DOTTED, DEFAULT_COLOR|OPACITY(10));
-  //dc.drawFilledRect(90, 30, 30, 30, SOLID, ROUND|TITLE_BGCOLOR|OPACITY(12));
-  dc.drawRect(130, 30, 30, 30, 1, SOLID, TITLE_BGCOLOR|OPACITY(8));
-  dc.drawRect(170, 30, 30, 30, 2, SOLID, TITLE_BGCOLOR|OPACITY(8));
-  dc.drawRect(210, 30, 30, 30, 5, SOLID, TITLE_BGCOLOR|OPACITY(8));
+
+  dc.drawRect(90, 30, 30, 30, 1, SOLID, TITLE_BGCOLOR|OPACITY(8));
+  dc.drawRect(130, 30, 30, 30, 2, SOLID, TITLE_BGCOLOR|OPACITY(8));
+  dc.drawRect(170, 30, 30, 30, 5, SOLID, TITLE_BGCOLOR|OPACITY(8));
 
   dc.drawVerticalLine(10, 70, 100, SOLID, TITLE_BGCOLOR|OPACITY(2));
   dc.drawVerticalLine(15, 70,  90, SOLID, TITLE_BGCOLOR|OPACITY(6));
@@ -173,7 +173,6 @@ TEST(Lcd_colorlcd, fonts)
 
   dc.drawText(10, 200, "The quick", DEFAULT_COLOR|VERTICAL);
   dc.drawText(30, 200, "The quick brown fox", DEFAULT_COLOR|VERTICAL);
-  // dc.drawText(50, 200, "The quick brown fox jumps over the lazy dog", DEFAULT_COLOR|VERTICAL);
 
   dc.drawText(50, 25, "The quick", DEFAULT_COLOR | FONT(XXS));
   dc.drawText(50, 40, "The quick", DEFAULT_COLOR | FONT(XS));
