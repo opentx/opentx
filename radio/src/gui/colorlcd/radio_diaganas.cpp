@@ -55,8 +55,9 @@ class RadioAnalogsDiagsWindow: public Window {
         x = dc->drawNumber(x + 5, y, touchState.x);
         x = dc->drawText(x, y, ":");
         dc->drawNumber(x, y, touchState.y);
+        TRACE("Drawing: %d,%d - %d,%d", touchState.x - 10, touchState.y - 8 - parent->top(), touchState.x + 10, touchState.y + 8 - parent->top());
         dc->drawLine(touchState.x - 10, touchState.y - 8 - parent->top(), touchState.x + 10, touchState.y + 8 - parent->top(), SOLID, 0);
-        dc->drawLine(touchState.x - 10, touchState.y + 8 - parent->top(), touchState.x + 10, touchState.y - 8- parent->top(), SOLID, 0);
+        //dc->drawLine(touchState.x - 10, touchState.y + 8 - parent->top(), touchState.x + 10, touchState.y - 8- parent->top(), SOLID, 0);
       }
 #endif
     };
