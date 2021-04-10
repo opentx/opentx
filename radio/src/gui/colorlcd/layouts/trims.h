@@ -25,25 +25,17 @@
 class MainViewTrim : public Window
 {
   public:
-    MainViewTrim(Window * parent, const rect_t & rect, std::function<int16_t()> getValue):
+    MainViewTrim(Window * parent, const rect_t & rect, uint8_t idx):
       Window(parent, rect),
-      getValue(std::move(getValue))
+      idx(idx)
     {
     }
 
-    void checkEvents() override
-    {
-      Window::checkEvents();
-      int8_t newValue = getValue();
-      if (value != newValue) {
-        value = newValue;
-        invalidate();
-      }
-    }
+    void checkEvents() override;
 
   protected:
-    std::function<int16_t()> getValue;
-    int8_t value = 0;
+    uint8_t idx;
+    int value = 0;
 };
 
 class MainViewHorizontalTrim : public MainViewTrim
@@ -51,41 +43,7 @@ class MainViewHorizontalTrim : public MainViewTrim
   public:
     using MainViewTrim::MainViewTrim;
 
-    void paint(BitmapBuffer * dc) override
-    {
-      int32_t trimMin, trimMax;
-      if (g_model.extendedTrims) {
-        trimMin = TRIM_EXTENDED_MIN;
-        trimMax = TRIM_EXTENDED_MAX;
-      }
-      else {
-        trimMin = TRIM_MIN;
-        trimMax = TRIM_MAX;
-      }
-
-      // Trim line
-      lcdSetColor(GREY); // TODO add a color
-      dc->drawSolidFilledRect(TRIM_SQUARE_SIZE / 2, (height() - TRIM_LINE_WIDTH - 1) / 2, width() - TRIM_SQUARE_SIZE + 1, TRIM_LINE_WIDTH, CUSTOM_COLOR);
-
-      // Trim square
-      auto value = getValue();
-      coord_t x = divRoundClosest((width() - TRIM_SQUARE_SIZE) * (value - trimMin), trimMax - trimMin);
-      drawTrimSquare(dc, x, 0, (value < TRIM_MIN || value > TRIM_MAX) ? HIGHLIGHT_COLOR /* TODO add a color */ : TRIM_BGCOLOR);
-
-      // Trim value / small lines on the square
-      if (g_model.displayTrims == DISPLAY_TRIMS_ALWAYS) {
-        // TODO DISPLAY_TRIMS_CHANGE
-        dc->drawNumber(x + (TRIM_SQUARE_SIZE + 1) / 2, 3, divRoundClosest(value * 100, trimMax), FONT(XXS) | FOCUS_COLOR | CENTERED);
-      }
-      else {
-        if (value >= 0) {
-          dc->drawSolidVerticalLine(x + 4, 3, 9, FOCUS_COLOR);
-        }
-        if (value <= 0) {
-          dc->drawSolidVerticalLine(x + 10, 3, 9, FOCUS_COLOR);
-        }
-      }
-    }
+    void paint(BitmapBuffer * dc) override;
 };
 
 class MainViewVerticalTrim : public MainViewTrim
@@ -93,39 +51,5 @@ class MainViewVerticalTrim : public MainViewTrim
   public:
     using MainViewTrim::MainViewTrim;
 
-    void paint(BitmapBuffer * dc) override
-    {
-      int32_t trimMin, trimMax;
-      if (g_model.extendedTrims) {
-        trimMin = TRIM_EXTENDED_MIN;
-        trimMax = TRIM_EXTENDED_MAX;
-      }
-      else {
-        trimMin = TRIM_MIN;
-        trimMax = TRIM_MAX;
-      }
-
-      // Trim line
-      lcdSetColor(GREY); // TODO add a color
-      dc->drawSolidFilledRect((width() - TRIM_LINE_WIDTH) / 2, TRIM_SQUARE_SIZE / 2, TRIM_LINE_WIDTH, height() - TRIM_SQUARE_SIZE + 1, CUSTOM_COLOR);
-
-      // Trim square
-      auto value = getValue();
-      coord_t y = height() - TRIM_SQUARE_SIZE - divRoundClosest((height() - TRIM_SQUARE_SIZE) * (value - trimMin), trimMax - trimMin);
-      drawTrimSquare(dc, 0, y, (value < TRIM_MIN || value > TRIM_MAX) ? HIGHLIGHT_COLOR /* TODO add a color */ : TRIM_BGCOLOR);
-
-      // Trim value / small lines on the square
-      if (g_model.displayTrims == DISPLAY_TRIMS_ALWAYS) {
-        // TODO DISPLAY_TRIMS_CHANGE
-        dc->drawNumber((TRIM_SQUARE_SIZE + 1) / 2, y + 3, divRoundClosest(value * 100, trimMax), FONT(XXS) | FOCUS_COLOR | CENTERED);
-      }
-      else {
-        if (value >= 0) {
-          dc->drawSolidHorizontalLine(3, y + 4, 9, FOCUS_COLOR);
-        }
-        if (value <= 0) {
-          dc->drawSolidHorizontalLine(3, y + 10, 9, FOCUS_COLOR);
-        }
-      }
-    }
+    void paint(BitmapBuffer * dc) override;
 };
