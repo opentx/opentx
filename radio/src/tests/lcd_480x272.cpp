@@ -209,8 +209,21 @@ TEST(Lcd_colorlcd, clipping)
 
   dc.drawSolidRect(20, 20, 50, 50, 2, TITLE_BGCOLOR);
   dc.drawRect(    380, 20, 50, 50, 2, SOLID, TITLE_BGCOLOR);
-  
+
   EXPECT_TRUE(checkScreenshot_colorlcd(&dc, "clipping"));
 }
 
+TEST(Lcd_colorlcd, bitmap)
+{
+  BitmapBuffer dc(BMP_RGB565, LCD_W, LCD_H);
+  dc.clear(DEFAULT_BGCOLOR);
+
+  dc.setClippingRect(100, 400, 50, 200);
+  std::unique_ptr<BitmapBuffer> bmp(BitmapBuffer::loadBitmap(TESTS_PATH "/opentx.png"));
+  dc.drawBitmap(  0,   0, bmp.get());
+  dc.drawBitmap(320,   0, bmp.get());
+  dc.drawBitmap(  0, 150, bmp.get());
+
+  EXPECT_TRUE(checkScreenshot_colorlcd(&dc, "bitmap"));
+}
 #endif
