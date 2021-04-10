@@ -27,6 +27,7 @@
 
 #define SWAP_DEFINED
 #include "opentx.h"
+#include "model_init.h"
 
 #define CHANNEL_MAX (1024*256)
 

@@ -132,7 +132,7 @@ void storageEraseAll(bool warn)
   TRACE("storageEraseAll");
 
   generalDefault();
-  setModelDefault(0);
+  setModelDefaults(0);
 
   if (warn) {
     ALERT(STR_STORAGE_WARNING, STR_BAD_RADIO_DATA, AU_BAD_RADIODATA);
