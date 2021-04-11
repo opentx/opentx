@@ -122,6 +122,15 @@ class WidgetsContainer: public FormGroup, public WidgetsContainerInterface
       }
     }
 
+    void updateZones()
+    {
+      for (int i = 0; i < N; i++) {
+        if (widgets[i]) {
+          widgets[i]->setRect(getZone(i));
+        }
+      }
+    }
+  
   protected:
     PersistentData * persistentData;
     Widget * widgets[N] = {};
