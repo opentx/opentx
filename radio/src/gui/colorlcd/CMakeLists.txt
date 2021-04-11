@@ -95,10 +95,18 @@ set(SRC
   storage/modelslist.cpp
   )
 
+
+option(WINDOWS_INSPECT_BORDERS "Draw bounding boxes around windows" OFF)
+if(WINDOWS_INSPECT_BORDERS)
+  add_definitions(-DWINDOWS_INSPECT_BORDERS)
+endif()
+
 # includes libopenui
 include(${RADIO_SRC_DIR}/thirdparty/libopenui/src/CMakeLists.txt)
 include_directories(gui/libopenui)
+
 add_definitions(-DLIBOPENUI)
+
 foreach(LIBOPENUI_FILE ${LIBOPENUI_SRC})
   set(SRC ${SRC} thirdparty/libopenui/src/${LIBOPENUI_FILE})
 endforeach()
