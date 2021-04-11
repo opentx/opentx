@@ -145,7 +145,7 @@ void ViewMain::adjustDecoration()
   // Topbar does not need any computation
   // (height() has been set in setTopbarVisible())
   
-  // Sliders are closer to the edge and must be computed then
+  // Sliders are closer to the edge and must be computed first
   // (vertical sliders depends on topbar)
 
   // These are located on the bottom
@@ -168,22 +168,36 @@ void ViewMain::adjustDecoration()
   sliders[SLIDERS_POT3]->setTop(pos);
 #endif
 
+  // Horizontal trims are on top of horizontal sliders
+  pos -= trims[TRIMS_LH]->height();
+  trims[TRIMS_LH]->setTop(pos);
+  trims[TRIMS_RH]->setTop(pos);
+
+  // Vertical trims/slider are on top of horizontal sliders with a small margin
+  auto vertTop = pos - HMARGIN - VERTICAL_SLIDERS_HEIGHT;
+  
   // Left side (vertical)
   pos = left();
   sliders[SLIDERS_REAR_LEFT]->setLeft(pos);
-  sliders[SLIDERS_REAR_LEFT]->setTop(topbar->bottom());
+  sliders[SLIDERS_REAR_LEFT]->setTop(vertTop);
+
 #if defined(HARDWARE_EXT1)
   sliders[SLIDERS_EXT1]->setLeft(pos);
   if (IS_POT_SLIDER_AVAILABLE(EXT1)) {
     auto rl = sliders[SLIDERS_REAR_LEFT];
     auto e1 = sliders[SLIDERS_EXT1];
+
+    // If EXT1 is configured as a slider,
+    // place it bellow rear-left slider (and make them smaller)
     rl->setHeight(VERTICAL_SLIDERS_HEIGHT / 2);
-    e1->setTop(topbar->bottom() + rl->height());
+    e1->setTop(vertTop + rl->height() + HMARGIN/2);
     e1->setHeight(rl->height());
   }
   else {
     auto rl = sliders[SLIDERS_REAR_LEFT];
     auto e1 = sliders[SLIDERS_EXT1];
+
+    // Otherwise hide the extra slider and make rear-left fullsize
     rl->setHeight(VERTICAL_SLIDERS_HEIGHT);
     e1->setHeight(0);
   }
@@ -192,34 +206,37 @@ void ViewMain::adjustDecoration()
   // Right side (vertical)
   pos = right() - sliders[SLIDERS_REAR_RIGHT]->width();
   sliders[SLIDERS_REAR_RIGHT]->setLeft(pos);
-  sliders[SLIDERS_REAR_RIGHT]->setTop(topbar->bottom());
+  sliders[SLIDERS_REAR_RIGHT]->setTop(vertTop);
+
 #if defined(HARDWARE_EXT2)
   sliders[SLIDERS_EXT2]->setLeft(pos);
   if (IS_POT_SLIDER_AVAILABLE(EXT2)) {
     auto rr = sliders[SLIDERS_REAR_RIGHT];
     auto e2 = sliders[SLIDERS_EXT2];
+
+    // If EXT2 is configured as a slider,
+    // place it bellow rear-left slider (and make them smaller)
     rr->setHeight(VERTICAL_SLIDERS_HEIGHT / 2);
-    e2->setTop(topbar->bottom() + rr->height());
+    e2->setTop(vertTop + rr->height() + HMARGIN/2);
     e2->setHeight(rr->height());
   }
   else {
     auto rr = sliders[SLIDERS_REAR_RIGHT];
     auto e2 = sliders[SLIDERS_EXT2];
+
+    // Otherwise hide the extra slider and make rear-left fullsize
     rr->setHeight(VERTICAL_SLIDERS_HEIGHT);
     e2->setHeight(0);
   }
 #endif
 
-  // Trims are last as they are located more on the inside
-  // (depend on everything else)
-
-  pos = sliders[SLIDERS_POT1]->top() - TRIM_SQUARE_SIZE;
-  trims[TRIMS_LH]->setTop(pos);
-  trims[TRIMS_RH]->setTop(pos);
+  // Finally place the vertical trims further from the edge
   trims[TRIMS_LV]->setLeft(sliders[SLIDERS_REAR_LEFT]->right());
-  trims[TRIMS_LV]->setTop(topbar->bottom());
+  trims[TRIMS_LV]->setTop(vertTop);
   trims[TRIMS_RV]->setLeft(sliders[SLIDERS_REAR_RIGHT]->left() - trims[TRIMS_RV]->width());
-  trims[TRIMS_RV]->setTop(topbar->bottom());
+  trims[TRIMS_RV]->setTop(vertTop);
+
+  //TODO: find a proper place for the flight-mode text box
 }
 
 #if defined(HARDWARE_KEYS)
@@ -384,20 +401,19 @@ void ViewMain::createTrims()
     VERTICAL_SLIDERS_HEIGHT
   }; 
 
-  r.x = left() + HMARGIN + TRIM_SQUARE_SIZE; // DBG
+  //r.x = left() + HMARGIN + TRIM_SQUARE_SIZE; // DBG
   trims[TRIMS_LV] = new MainViewVerticalTrim(this, r, 1);
 
-  r.x = right() - HMARGIN - TRIM_SQUARE_SIZE; // DBG
+  //r.x = right() - HMARGIN - TRIM_SQUARE_SIZE; // DBG
   trims[TRIMS_RV] = new MainViewVerticalTrim(this, r, 2);
 }
 
 void ViewMain::createFlightMode()
 {
   rect_t r = {
-    50,
-    LCD_H - 4 - /*(hasSliders() ?*/ 2 * TRIM_SQUARE_SIZE /*: TRIM_SQUARE_SIZE)*/,
-    LCD_W - 100,
-    20
+    // centered text box (50 pixels from either edge)
+    // -> re-size once the other components are set
+    50, 0, width() - 100, 0
   };
 
   std::function<std::string()> getFM = []() -> std::string {
