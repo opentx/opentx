@@ -57,6 +57,10 @@ class ViewMain: public FormWindow
 
     // Re-calculate positions
     void adjustDecoration();
+
+    // Get the available space in the middle of the screen
+    // (without decoration)
+    rect_t getMainZone() const;
   
   protected:
     static ViewMain * _instance;

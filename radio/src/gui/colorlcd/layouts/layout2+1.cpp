@@ -22,8 +22,6 @@
 #include "sliders.h"
 #include "trims.h"
 
-constexpr coord_t border = 10;
-
 const uint8_t LBM_LAYOUT_2P1[] = {
 #include "mask_layout2+1.lbm"
 };
@@ -48,7 +46,7 @@ class Layout2P1: public Layout
 
     rect_t getZone(unsigned int index) const override
     {
-      rect_t zone = getMainZone({border, border, LCD_W - 2 * border, LCD_H - 2 * border});
+      rect_t zone = getMainZone();
 
       if (index == 0) {
         return {isMirrored() ? zone.x : zone.x + zone.w / 2, zone.y,zone.w / 2, zone.h};
