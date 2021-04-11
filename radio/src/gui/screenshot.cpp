@@ -80,7 +80,7 @@ const char * writeScreenshot()
 #if defined(COLORLCD)
   for (int y = LCD_H - 1; y >= 0; y--) {
     for (int x = 0; x < LCD_W; x++) {
-      pixel_t pixel = *lcd->getPixelPtr(x, y);
+      auto pixel = *lcd->getPixelPtr(x, y);
       uint32_t dst = (0xFF << 24) + (GET_RED(pixel) << 16) + (GET_GREEN(pixel) << 8) + (GET_BLUE(pixel) << 0);
       if (f_write(&bmpFile, &dst, sizeof(dst), &written) != FR_OK || written != sizeof(dst)) {
         f_close(&bmpFile);
