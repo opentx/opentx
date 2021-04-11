@@ -85,15 +85,6 @@ void ViewMain::setTopbarVisible(bool visible)
   topbar->setVisible(visible);
 }
 
-void ViewMain::setTrimsVisible(bool visible)
-{
-  trims[TRIMS_LH]->setHeight(visible ? TRIM_SQUARE_SIZE : 0);
-  trims[TRIMS_RH]->setHeight(visible ? TRIM_SQUARE_SIZE : 0);
-
-  trims[TRIMS_LV]->setWidth(visible ? TRIM_SQUARE_SIZE : 0);
-  trims[TRIMS_RV]->setWidth(visible ? TRIM_SQUARE_SIZE : 0);
-}
-
 void ViewMain::setSlidersVisible(bool visible)
 {
   //
@@ -135,6 +126,15 @@ void ViewMain::setSlidersVisible(bool visible)
 #endif
 }
 
+void ViewMain::setTrimsVisible(bool visible)
+{
+  trims[TRIMS_LH]->setHeight(visible ? TRIM_SQUARE_SIZE : 0);
+  trims[TRIMS_RH]->setHeight(visible ? TRIM_SQUARE_SIZE : 0);
+
+  trims[TRIMS_LV]->setWidth(visible ? TRIM_SQUARE_SIZE : 0);
+  trims[TRIMS_RV]->setWidth(visible ? TRIM_SQUARE_SIZE : 0);
+}
+
 void ViewMain::setFlightModeVisible(bool visible)
 {
   flightMode->setHeight(visible ? 20 : 0);
@@ -142,8 +142,84 @@ void ViewMain::setFlightModeVisible(bool visible)
 
 void ViewMain::adjustDecoration()
 {
-  // TODO:
-  //  -> re-compute all the components' positions
+  // Topbar does not need any computation
+  // (height() has been set in setTopbarVisible())
+  
+  // Sliders are closer to the edge and must be computed then
+  // (vertical sliders depends on topbar)
+
+  // These are located on the bottom
+  auto pos = height() - sliders[SLIDERS_POT1]->height();
+  sliders[SLIDERS_POT1]->setTop(pos);
+
+  if (sliders[SLIDERS_POT2]) {
+    auto sl = sliders[SLIDERS_POT2];
+    sl->setTop(pos);
+    if (IS_POT_MULTIPOS(POT2)) {
+      sl->setWidth(MULTIPOS_W);
+    }
+    else { // if !IS_POT(POT2) -> sliders[SLIDERS_POT2] == nullptr
+      sl->setWidth(HORIZONTAL_SLIDERS_WIDTH);
+    }
+    sl->setLeft((width() - sl->width()) / 2);
+  }
+
+#if defined(HARDWARE_POT3)
+  sliders[SLIDERS_POT3]->setTop(pos);
+#endif
+
+  // Left side (vertical)
+  pos = left();
+  sliders[SLIDERS_REAR_LEFT]->setLeft(pos);
+  sliders[SLIDERS_REAR_LEFT]->setTop(topbar->bottom());
+#if defined(HARDWARE_EXT1)
+  sliders[SLIDERS_EXT1]->setLeft(pos);
+  if (IS_POT_SLIDER_AVAILABLE(EXT1)) {
+    auto rl = sliders[SLIDERS_REAR_LEFT];
+    auto e1 = sliders[SLIDERS_EXT1];
+    rl->setHeight(VERTICAL_SLIDERS_HEIGHT / 2);
+    e1->setTop(topbar->bottom() + rl->height());
+    e1->setHeight(rl->height());
+  }
+  else {
+    auto rl = sliders[SLIDERS_REAR_LEFT];
+    auto e1 = sliders[SLIDERS_EXT1];
+    rl->setHeight(VERTICAL_SLIDERS_HEIGHT);
+    e1->setHeight(0);
+  }
+#endif
+
+  // Right side (vertical)
+  pos = right() - sliders[SLIDERS_REAR_RIGHT]->width();
+  sliders[SLIDERS_REAR_RIGHT]->setLeft(pos);
+  sliders[SLIDERS_REAR_RIGHT]->setTop(topbar->bottom());
+#if defined(HARDWARE_EXT2)
+  sliders[SLIDERS_EXT2]->setLeft(pos);
+  if (IS_POT_SLIDER_AVAILABLE(EXT2)) {
+    auto rr = sliders[SLIDERS_REAR_RIGHT];
+    auto e2 = sliders[SLIDERS_EXT2];
+    rr->setHeight(VERTICAL_SLIDERS_HEIGHT / 2);
+    e2->setTop(topbar->bottom() + rr->height());
+    e2->setHeight(rr->height());
+  }
+  else {
+    auto rr = sliders[SLIDERS_REAR_RIGHT];
+    auto e2 = sliders[SLIDERS_EXT2];
+    rr->setHeight(VERTICAL_SLIDERS_HEIGHT);
+    e2->setHeight(0);
+  }
+#endif
+
+  // Trims are last as they are located more on the inside
+  // (depend on everything else)
+
+  pos = sliders[SLIDERS_POT1]->top() - TRIM_SQUARE_SIZE;
+  trims[TRIMS_LH]->setTop(pos);
+  trims[TRIMS_RH]->setTop(pos);
+  trims[TRIMS_LV]->setLeft(sliders[SLIDERS_REAR_LEFT]->right());
+  trims[TRIMS_LV]->setTop(topbar->bottom());
+  trims[TRIMS_RV]->setLeft(sliders[SLIDERS_REAR_RIGHT]->left() - trims[TRIMS_RV]->width());
+  trims[TRIMS_RV]->setTop(topbar->bottom());
 }
 
 #if defined(HARDWARE_KEYS)
@@ -243,166 +319,75 @@ void ViewMain::createSliders()
   //  - components should be created in "folded" state
   //  - it should not be required to call hasXXXX() at all
   
-#if defined(HARDWARE_EXT1) || defined(HARDWARE_EXT2)
-  coord_t yOffset = /*(hasTrims() ?*/ - TRIM_SQUARE_SIZE /*: 0)*/ + /*(hasTopbar() ?*/ TOPBAR_HEIGHT / 2 /*: 0)*/;
-#endif
-
   // fixed size array, so that works
   memset(sliders, 0, sizeof(sliders));
     
   rect_t r = {
-    HMARGIN,
-    LCD_H - TRIM_SQUARE_SIZE,
-    HORIZONTAL_SLIDERS_WIDTH,
-    TRIM_SQUARE_SIZE
+    // left
+    HMARGIN, 0,
+    HORIZONTAL_SLIDERS_WIDTH, 0
   };
     
   sliders[SLIDERS_POT1] = new MainViewHorizontalSlider(this, r, CALIBRATED_POT1);
 
+  r = rect_t { 0, 0, 0, 0 };
   if (IS_POT_MULTIPOS(POT2)) {
-
-    r = rect_t {
-      LCD_W / 2 - MULTIPOS_W / 2,
-      LCD_H - TRIM_SQUARE_SIZE,
-      MULTIPOS_W + 1,
-      MULTIPOS_H
-    };
-
     sliders[SLIDERS_POT2] = new MainView6POS(this, r, 1);
   }
   else if (IS_POT(POT2)) {
-
-    r = {
-      LCD_W - HORIZONTAL_SLIDERS_WIDTH - HMARGIN,
-      LCD_H - TRIM_SQUARE_SIZE,
-      HORIZONTAL_SLIDERS_WIDTH,
-      TRIM_SQUARE_SIZE
-    };
-      
     sliders[SLIDERS_POT2] = new MainViewHorizontalSlider(this, r, CALIBRATED_POT2);
   }
 
 #if defined(HARDWARE_POT3)
   r = rect_t {
-    LCD_W - HORIZONTAL_SLIDERS_WIDTH - HMARGIN,
-    LCD_H - TRIM_SQUARE_SIZE,
-    HORIZONTAL_SLIDERS_WIDTH,
-    TRIM_SQUARE_SIZE
+    // right
+    width() - HORIZONTAL_SLIDERS_WIDTH - HMARGIN, 0,
+    HORIZONTAL_SLIDERS_WIDTH, 0
   };
 
   sliders[SLIDERS_POT3] = new MainViewHorizontalSlider(this, r, CALIBRATED_POT3);
 #endif
 
+  r = rect_t { 0, 0, 0, 0 };
+  sliders[SLIDERS_REAR_LEFT] = new MainViewVerticalSlider(this, r, CALIBRATED_SLIDER_REAR_LEFT);
+  sliders[SLIDERS_REAR_RIGHT] = new MainViewVerticalSlider(this, r, CALIBRATED_SLIDER_REAR_RIGHT);
+
 #if defined(HARDWARE_EXT1)
-  if (IS_POT_SLIDER_AVAILABLE(EXT1)) {
-    r = rect_t {
-      HMARGIN,
-      LCD_H / 2 - VERTICAL_SLIDERS_HEIGHT(true/*hasTopbar()*/) / 2 + yOffset,
-      TRIM_SQUARE_SIZE,
-      VERTICAL_SLIDERS_HEIGHT(true/*hasTopbar()*/) / 2
-    };
-
-    sliders[SLIDERS_REAR_LEFT] = new MainViewVerticalSlider(this, r, CALIBRATED_SLIDER_REAR_LEFT);
-
-    r = rect_t {
-      HMARGIN,
-      LCD_H / 2 + yOffset,
-      TRIM_SQUARE_SIZE,
-      VERTICAL_SLIDERS_HEIGHT(true/*hasTopbar()*/) / 2
-    };
-
-    sliders[SLIDERS_EXT1] = new MainViewVerticalSlider(this, r, CALIBRATED_POT_EXT1);
-  }
-  else {
-    r = rect_t {
-      HMARGIN,
-      LCD_H / 2 - VERTICAL_SLIDERS_HEIGHT(true/*hasTopbar()*/) / 2 + yOffset,
-      TRIM_SQUARE_SIZE,
-      VERTICAL_SLIDERS_HEIGHT(true/*hasTopbar()*/)
-    }; 
-
-    sliders[SLIDERS_REAR_LEFT] = new MainViewVerticalSlider(this, r, CALIBRATED_SLIDER_REAR_LEFT);
-  }
+  sliders[SLIDERS_EXT1] = new MainViewVerticalSlider(this, r, CALIBRATED_POT_EXT1);
 #endif
 
 #if defined(HARDWARE_EXT2)
-  if (IS_POT_SLIDER_AVAILABLE(EXT2)) {
-    r = rect_t {
-      LCD_W - HMARGIN - TRIM_SQUARE_SIZE,
-      LCD_H / 2 - VERTICAL_SLIDERS_HEIGHT(true/*hasTopbar()*/) / 2 + yOffset,
-      TRIM_SQUARE_SIZE,
-      VERTICAL_SLIDERS_HEIGHT(true/*hasTopbar()*/) / 2
-    };
-
-    sliders[SLIDERS_REAR_RIGHT] = new MainViewVerticalSlider(this, r, CALIBRATED_SLIDER_REAR_RIGHT);
-      
-    r = rect_t {
-      LCD_W - HMARGIN - TRIM_SQUARE_SIZE,
-      LCD_H / 2 + yOffset,
-      TRIM_SQUARE_SIZE,
-      VERTICAL_SLIDERS_HEIGHT(true/*hasTopbar()*/) / 2
-    };
-
-    sliders[SLIDERS_EXT2] = new MainViewVerticalSlider(this, r, CALIBRATED_POT_EXT2);
-  }
-  else {
-    r = rect_t {
-      LCD_W - HMARGIN - TRIM_SQUARE_SIZE,
-      LCD_H / 2 - VERTICAL_SLIDERS_HEIGHT(true/*hasTopbar()*/) / 2 + yOffset,
-      TRIM_SQUARE_SIZE,
-      VERTICAL_SLIDERS_HEIGHT(true/*hasTopbar()*/)
-    };
-
-    sliders[SLIDERS_REAR_RIGHT] = new MainViewVerticalSlider(this, r, CALIBRATED_SLIDER_REAR_RIGHT);
-  }
+  sliders[SLIDERS_EXT2] = new MainViewVerticalSlider(this, r, CALIBRATED_POT_EXT2);
 #endif
 }
 
 void ViewMain::createTrims()
 {
-#if defined(HARDWARE_POT3) || defined(HARDWARE_EXT1)
-  coord_t xOffset = /*hasSliders() ?*/ TRIM_SQUARE_SIZE /*: 0*/;
-#else
-  coord_t xOffset = 0;
-#endif
-  coord_t yOffset = /*hasTrims() ?*/ - TRIM_SQUARE_SIZE /*: 0)*/;
-
   // Trim order TRIM_LH, TRIM_LV, TRIM_RV, TRIM_RH
 
   rect_t r = {
-    HMARGIN,
-    LCD_H - TRIM_SQUARE_SIZE + yOffset,
-    HORIZONTAL_SLIDERS_WIDTH,
-    TRIM_SQUARE_SIZE
+    left() + HMARGIN, 0,
+    HORIZONTAL_SLIDERS_WIDTH, 0
   };
   
   trims[TRIMS_LH] = new MainViewHorizontalTrim(this, r, 0);
 
   r = rect_t {
-    LCD_W - HORIZONTAL_SLIDERS_WIDTH - HMARGIN,
-    LCD_H - TRIM_SQUARE_SIZE + yOffset,
-    HORIZONTAL_SLIDERS_WIDTH,
-    TRIM_SQUARE_SIZE
+    right() - HORIZONTAL_SLIDERS_WIDTH - HMARGIN, 0,
+    HORIZONTAL_SLIDERS_WIDTH, 0
   };
 
   trims[TRIMS_RH] = new MainViewHorizontalTrim(this, r, 3);
 
   r = rect_t {
-    HMARGIN + xOffset,
-    LCD_H /2 - VERTICAL_SLIDERS_HEIGHT(true/*hasTopbar()*/) / 2 + yOffset + /*(hasTopbar() ?*/ TOPBAR_HEIGHT / 2 /*: 0)*/,
-    TRIM_SQUARE_SIZE,
-    VERTICAL_SLIDERS_HEIGHT(true/*hasTopbar()*/)
+    0, 0, 0,
+    VERTICAL_SLIDERS_HEIGHT
   }; 
 
+  r.x = left() + HMARGIN + TRIM_SQUARE_SIZE; // DBG
   trims[TRIMS_LV] = new MainViewVerticalTrim(this, r, 1);
 
-  r = rect_t {
-    LCD_W - HMARGIN - TRIM_SQUARE_SIZE - xOffset,
-    LCD_H /2 - VERTICAL_SLIDERS_HEIGHT(true/*hasTopbar()*/) / 2 + yOffset + /*(hasTopbar() ?*/ TOPBAR_HEIGHT / 2 /*: 0)*/,
-    TRIM_SQUARE_SIZE,
-    VERTICAL_SLIDERS_HEIGHT(true/*hasTopbar()*/)
-  };
-
+  r.x = right() - HMARGIN - TRIM_SQUARE_SIZE; // DBG
   trims[TRIMS_RV] = new MainViewVerticalTrim(this, r, 2);
 }
 

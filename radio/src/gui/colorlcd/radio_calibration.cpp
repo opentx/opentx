@@ -94,29 +94,29 @@ void RadioCalibrationPage::buildBody(FormWindow * window)
   coord_t yOffset = TOPBAR_HEIGHT / 2;
 
   if (IS_POT_SLIDER_AVAILABLE(EXT1)) {
-    new MainViewVerticalSlider(this, {HMARGIN, LCD_H / 2 - VERTICAL_SLIDERS_HEIGHT(true) / 2 + yOffset, TRIM_SQUARE_SIZE, VERTICAL_SLIDERS_HEIGHT(true) / 2},
+    new MainViewVerticalSlider(this, {HMARGIN, LCD_H / 2 - VERTICAL_SLIDERS_HEIGHT / 2 + yOffset, TRIM_SQUARE_SIZE, VERTICAL_SLIDERS_HEIGHT / 2},
                                CALIBRATED_SLIDER_REAR_LEFT);
-    new MainViewVerticalSlider(this, {HMARGIN, LCD_H / 2 + yOffset, TRIM_SQUARE_SIZE, VERTICAL_SLIDERS_HEIGHT(true) / 2},
+    new MainViewVerticalSlider(this, {HMARGIN, LCD_H / 2 + yOffset, TRIM_SQUARE_SIZE, VERTICAL_SLIDERS_HEIGHT / 2},
                                CALIBRATED_POT_EXT1);
   }
   else {
-    new MainViewVerticalSlider(this, {HMARGIN, LCD_H / 2 - VERTICAL_SLIDERS_HEIGHT(true) / 2 + yOffset, TRIM_SQUARE_SIZE, VERTICAL_SLIDERS_HEIGHT(true)},
+    new MainViewVerticalSlider(this, {HMARGIN, LCD_H / 2 - VERTICAL_SLIDERS_HEIGHT / 2 + yOffset, TRIM_SQUARE_SIZE, VERTICAL_SLIDERS_HEIGHT},
                                CALIBRATED_SLIDER_REAR_LEFT);
   }
 #endif
 
 #if defined(HARDWARE_EXT2)
   if (IS_POT_SLIDER_AVAILABLE(EXT2)) {
-    new MainViewVerticalSlider(this, {LCD_W - HMARGIN - TRIM_SQUARE_SIZE, LCD_H / 2 - VERTICAL_SLIDERS_HEIGHT(true) / 2 + yOffset, TRIM_SQUARE_SIZE,
-                                      VERTICAL_SLIDERS_HEIGHT(true) / 2},
+    new MainViewVerticalSlider(this, {LCD_W - HMARGIN - TRIM_SQUARE_SIZE, LCD_H / 2 - VERTICAL_SLIDERS_HEIGHT / 2 + yOffset, TRIM_SQUARE_SIZE,
+                                      VERTICAL_SLIDERS_HEIGHT / 2},
                                CALIBRATED_SLIDER_REAR_RIGHT);
     new MainViewVerticalSlider(this, {LCD_W - HMARGIN - TRIM_SQUARE_SIZE, LCD_H / 2 + yOffset, TRIM_SQUARE_SIZE,
-                                      VERTICAL_SLIDERS_HEIGHT(true) / 2},
+                                      VERTICAL_SLIDERS_HEIGHT / 2},
                                CALIBRATED_POT_EXT2);
   }
   else {
-    new MainViewVerticalSlider(this, {LCD_W - HMARGIN - TRIM_SQUARE_SIZE, LCD_H / 2 - VERTICAL_SLIDERS_HEIGHT(true) / 2 + yOffset, TRIM_SQUARE_SIZE,
-                                      VERTICAL_SLIDERS_HEIGHT(true)},
+    new MainViewVerticalSlider(this, {LCD_W - HMARGIN - TRIM_SQUARE_SIZE, LCD_H / 2 - VERTICAL_SLIDERS_HEIGHT / 2 + yOffset, TRIM_SQUARE_SIZE,
+                                      VERTICAL_SLIDERS_HEIGHT},
                                CALIBRATED_SLIDER_REAR_RIGHT);
   }
 #endif

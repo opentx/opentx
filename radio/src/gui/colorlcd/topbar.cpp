@@ -43,7 +43,7 @@ rect_t TopBar::getZone(unsigned int index) const
 
 void TopBar::setVisible(bool visible)
 {
-  setHeight(visible ? TOPBAR_HEIGHT : 0);
+  setHeight(visible ? MENU_HEADER_HEIGHT : 0);
 }
 
 const char * const STR_MONTHS[] = TR_MONTHS;
