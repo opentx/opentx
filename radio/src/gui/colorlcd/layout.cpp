@@ -124,7 +124,10 @@ void Layout::decorate()
 
   // Re-compute positions
   viewMain->adjustDecoration();
-  viewMain->invalidate();
+
+  // and update relevant windows
+  updateZones();
+  invalidate();
 }
 
 rect_t Layout::getMainZone() const
