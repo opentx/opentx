@@ -32,11 +32,7 @@ constexpr coord_t HMARGIN = 5;
 constexpr coord_t HORIZONTAL_SLIDERS_WIDTH = SLIDER_TICKS_COUNT * 4 + TRIM_SQUARE_SIZE;
 constexpr coord_t MULTIPOS_H = 20;
 constexpr coord_t MULTIPOS_W = 50;
-
-inline coord_t VERTICAL_SLIDERS_HEIGHT(bool topbar)
-{
-  return topbar ? SLIDER_TICKS_COUNT * 4 + TRIM_SQUARE_SIZE : SLIDER_TICKS_COUNT * 5 + TRIM_SQUARE_SIZE;
-}
+constexpr coord_t VERTICAL_SLIDERS_HEIGHT = SLIDER_TICKS_COUNT * 4 + TRIM_SQUARE_SIZE;
 
 class MainViewSlider : public Window
 {
