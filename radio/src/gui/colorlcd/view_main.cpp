@@ -30,6 +30,8 @@
 #include "layouts/trims.h"
 #include "opentx.h"
 
+constexpr coord_t MAIN_ZONE_BORDER = 10;
+
 Layout * customScreens[MAX_CUSTOM_SCREENS] = {};
 
 int getMainViewsCount()
@@ -237,6 +239,20 @@ void ViewMain::adjustDecoration()
   trims[TRIMS_RV]->setTop(vertTop);
 
   //TODO: find a proper place for the flight-mode text box
+}
+
+rect_t ViewMain::getMainZone() const
+{
+  rect_t zone = {
+    trims[TRIMS_LV]->right() + MAIN_ZONE_BORDER,
+    topbar->bottom() + MAIN_ZONE_BORDER,
+    0, 0 // let's compute them!
+  };
+
+  zone.w = trims[TRIMS_RV]->left() - MAIN_ZONE_BORDER - zone.x;
+  zone.h = trims[TRIMS_LH]->top()  - MAIN_ZONE_BORDER - zone.y;
+
+  return zone;
 }
 
 #if defined(HARDWARE_KEYS)

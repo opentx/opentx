@@ -118,8 +118,8 @@ class Layout: public LayoutBase
     // Updates settings for trims, sliders, pots, etc...
     void decorate();
 
-    // Get the Zone rect without decoration
-    rect_t getMainZone(rect_t zone) const;
+    // Get the available space for widgets
+    rect_t getMainZone() const;
 };
 
 void registerLayout(const LayoutFactory * factory);

@@ -21,8 +21,6 @@
 #include "opentx.h"
 #include "trims.h"
 
-constexpr coord_t border = 10;
-
 const uint8_t LBM_LAYOUT_1x1[] = {
 #include "mask_layout1x1.lbm"
 };
@@ -47,9 +45,7 @@ class Layout1x1: public Layout
 
     rect_t getZone(unsigned int index) const override
     {
-      rect_t zone = getMainZone({border, border, LCD_W - 2 * border, LCD_H - 2 * border});
-
-      return zone;
+      return getMainZone();
     }
 };
 

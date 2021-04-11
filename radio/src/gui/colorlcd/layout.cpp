@@ -127,35 +127,7 @@ void Layout::decorate()
   viewMain->invalidate();
 }
 
-rect_t Layout::getMainZone(rect_t zone) const
+rect_t Layout::getMainZone() const
 {
-  if (hasTopbar()) {
-    zone.y += MENU_HEADER_HEIGHT;
-    zone.h -= MENU_HEADER_HEIGHT;
-  }
-
-  if (hasFlightMode() || hasTrims()) {
-    zone.h -= TRIM_SQUARE_SIZE;
-  }
-
-  if (hasSliders()) {
-#if NUM_SLIDERS + NUM_POTS > 2
-    zone.h -= TRIM_SQUARE_SIZE;
-#endif
-    zone.w -= 2 * TRIM_SQUARE_SIZE;
-    zone.x += TRIM_SQUARE_SIZE;
-  }
-
-  if (hasTrims()) {
-    zone.w -= 2 * TRIM_SQUARE_SIZE;
-    zone.x += TRIM_SQUARE_SIZE;
-  }
-
-  if (zone.w % 2 != 0)
-    zone.w -= 1;
-
-  if (zone.h % 2 != 0)
-    zone.h -= 1;
-
-  return zone;
+  return ViewMain::instance()->getMainZone();
 }    

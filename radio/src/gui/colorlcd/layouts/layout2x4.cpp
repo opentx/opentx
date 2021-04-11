@@ -20,8 +20,6 @@
 
 #include "opentx.h"
 
-constexpr coord_t border = 10;
-
 const uint8_t LBM_LAYOUT_2x4[] = {
 #include "mask_layout2x4.lbm"
 };
@@ -67,7 +65,7 @@ class Layout2x4: public Layout
 
     rect_t getZone(unsigned int index) const override
     {
-      rect_t zone = getMainZone({border, border, LCD_W - 2 * border, LCD_H - 2 * border});
+      rect_t zone = getMainZone();
 
       zone.w /= 2;
       zone.h /= 4;
