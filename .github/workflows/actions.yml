@@ -19,6 +19,11 @@ jobs:
         with:
           submodules: true
       -
+        name: Test COMPANION
+        run: |
+          echo "Running commit tests for COMPANION"
+          FLAVOR=COMPANION ./tools/commit-tests.sh
+      -
         name: Test COLORLCD
         run: |
           echo "Running commit tests for COLORLCD"
