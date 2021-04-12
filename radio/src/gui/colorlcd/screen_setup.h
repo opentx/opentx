@@ -44,17 +44,19 @@ class ScreenAddPage: public PageTab {
 
 class ScreenSetupPage: public PageTab {
   public:
-    ScreenSetupPage(ScreenMenu * menu, Layout*& screen, CustomScreenData& screenData);
+    ScreenSetupPage(ScreenMenu * menu, unsigned pageIndex, unsigned customScreenIndex);
 
     void build(FormWindow * window) override;
 
   protected:
     ScreenMenu * menu;
-    Layout *& screen;
-    CustomScreenData& screenData;
-    FormGroup * optionsWindow = nullptr;
-    TextButton * setupWidgetsButton = nullptr;
-    FormField * layoutChoice = nullptr;
+    unsigned pageIndex;
+    unsigned customScreenIndex;
+
+    // FormGroup * optionsWindow = nullptr;
+    // TextButton * setupWidgetsButton = nullptr;
+    // FormField * layoutChoice = nullptr;
 
     void updateLayoutOptions();
+    //void disposeCustomScreen();
 };

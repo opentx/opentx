@@ -58,15 +58,36 @@ class WidgetsContainer: public FormGroup, public WidgetsContainerInterface
 
     Widget * createWidget(unsigned int index, const WidgetFactory * factory) override
     {
+      if (index >= N)
+        return nullptr;
+
+      // remove old one if existing
+      removeWidget(index);
+
       Widget * widget = nullptr;
-      memset(persistentData->zones[index].widgetName, 0, sizeof(persistentData->zones[index].widgetName));
       if (factory) {
-        strncpy(persistentData->zones[index].widgetName, factory->getName(), sizeof(persistentData->zones[index].widgetName));
+        strncpy(persistentData->zones[index].widgetName, factory->getName(), sizeof(ZonePersistentData::widgetName));
         widget = factory->create(this, getZone(index), &persistentData->zones[index].widgetData);
       }
       widgets[index] = widget;
 
+      if (widget)
+        widget->attach(this);
+
       return widget;
+    }
+
+    void removeWidget(unsigned int index)
+    {
+      if (index >= N)
+        return;
+
+      if (widgets[index])
+        widgets[index]->deleteLater();
+
+      widgets[index] = nullptr;
+      memset(persistentData->zones[index].widgetName, 0, sizeof(ZonePersistentData::widgetName));
+      memset(&persistentData->zones[index].widgetData, 0, sizeof(Widget::PersistentData));
     }
 
     Widget * getWidget(unsigned int index) override

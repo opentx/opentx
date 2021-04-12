@@ -25,6 +25,7 @@
 #include <memory>
 
 class TopBar;
+class SetupWidgetsPage;
 
 class ViewMain: public FormWindow
 {
@@ -88,6 +89,8 @@ class ViewMain: public FormWindow
     Window* sliders[SLIDERS_MAX];
     Window* trims[TRIMS_MAX];
     Window* flightMode;
+
+    friend class SetupWidgetsPage;
   
 #if defined(HARDWARE_KEYS)
     void onEvent(event_t event) override;
