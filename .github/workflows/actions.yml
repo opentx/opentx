@@ -1,0 +1,23 @@
+name: OpenTX Commit Tests
+on:
+  push:
+    branches: [ 2.4 ]
+  pull_request:
+    branches: [ 2.4 ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/raphaelcoeffic/opentx-commit-tests
+      volumes:
+        - ${{ github.workspace }}:/src
+    steps:
+      -
+        name: Check out the repo
+        uses: actions/checkout@v2
+      -
+        name: Test COLORLCD
+        run: |
+          echo "Running commit tests for COLORLCD"
+          FLAVOR=COLORLCD ./tools/commit-tests.sh
