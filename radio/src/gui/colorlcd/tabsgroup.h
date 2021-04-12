@@ -193,7 +193,16 @@ class TabsGroup: public Window
     }
 #endif
 
+    unsigned getTabs() const
+    {
+      return tabs.size();
+    }
+  
     void addTab(PageTab * page);
+
+    // Return the index of the found tab
+    // or -1 if the tab could not be found
+    int removeTab(PageTab * page);
 
     void removeTab(unsigned index);
 
@@ -206,7 +215,7 @@ class TabsGroup: public Window
         setVisibleTab(tabs[index]);
       }
     }
-
+  
     void checkEvents() override;
 
 #if defined(HARDWARE_KEYS)

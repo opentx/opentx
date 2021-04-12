@@ -26,72 +26,14 @@
 
 #define SET_DIRTY()     storageDirty(EE_MODEL)
 
-ScreenUserInterfacePage::ScreenUserInterfacePage():
-  PageTab(STR_USER_INTERFACE, ICON_THEME_SETUP)
+class LayoutChoice: public FormField
 {
-}
-
-void ScreenUserInterfacePage::build(FormWindow * window)
-{
-  FormGridLayout grid;
-
-  // Theme choice
-  new StaticText(window, grid.getLabelSlot(), STR_THEME, 0, 0);
-  // TODO: Theme picklist
-  grid.nextLine();
-
-  // Theme options ?
-
-  // Top Bar
-  new StaticText(window, grid.getLabelSlot(), STR_TOP_BAR, 0, 0);
-  // TODO: enable settings topbar widgets
-  grid.nextLine();
-}
-
-ScreenAddPage::ScreenAddPage(ScreenMenu * menu, uint8_t pageIndex):
-  PageTab(),
-  menu(menu),
-  pageIndex(pageIndex)
-{
-  setTitle(STR_ADD_MAIN_VIEW);
-  setIcon(ICON_THEME_ADD_VIEW);
-}
-
-void ScreenAddPage::build(FormWindow * window)
-{
-  rect_t buttonRect = {LCD_W / 2 - 100, (window->height() - 24) / 2, 200, 24};
-  auto button = new TextButton(window, buttonRect, STR_ADD_MAIN_VIEW);
-  button->setPressHandler([=]() -> uint8_t {
-
-      auto& screen     = customScreens[pageIndex];
-      auto& screenData = g_model.screenData[pageIndex];
-
-      const LayoutFactory * factory = getRegisteredLayouts().front();
-
-      screen = factory->create(&screenData.layoutData);
-      strncpy(screenData.LayoutId, factory->getId(), sizeof(screenData.LayoutId));
-
-      auto tab = new ScreenSetupPage(menu, screen, screenData);
-      std::string title(STR_MAIN_VIEW_X);
-      title.back() = pageIndex + '0';      
-      tab->setTitle(title);
-      tab->setIcon(ICON_THEME_VIEW1 + pageIndex);
-      
-      menu->removeTab(pageIndex);
-      menu->addTab(tab);
-      menu->setCurrentTab(pageIndex);
-
-      if (pageIndex < MAX_CUSTOM_SCREENS - 1) {
-        menu->addTab(new ScreenAddPage(menu, pageIndex + 1));
-      }
-      storageDirty(EE_MODEL);
-      return 0;
-  });
-}
-
-class LayoutChoice: public FormField {
   public:
-    LayoutChoice(Window * parent, const rect_t & rect, std::function<const LayoutFactory *()> getValue, std::function<void(const LayoutFactory *)> setValue):
+
+    typedef std::function<const LayoutFactory *()> LayoutFactoryGetter;
+    typedef std::function<void(const LayoutFactory *)> LayoutFactorySetter;
+
+    LayoutChoice(Window * parent, const rect_t & rect, LayoutFactoryGetter getValue, LayoutFactorySetter setValue):
       FormField(parent, {rect.x, rect.y, 59, 33}),
       getValue(std::move(getValue)),
       setValue(std::move(setValue))
@@ -102,7 +44,9 @@ class LayoutChoice: public FormField {
     {
       FormField::paint(dc);
       auto layout = getValue();
-      layout->drawThumb(dc, 4, 4, editMode ? FOCUS_COLOR : LINE_COLOR);
+      if (layout) {
+        layout->drawThumb(dc, 4, 4, editMode ? FOCUS_COLOR : LINE_COLOR);
+      }
     }
 
 #if defined(HARDWARE_KEYS)
@@ -162,93 +106,90 @@ class LayoutChoice: public FormField {
     std::function<void(const LayoutFactory *)> setValue;
 };
 
-ScreenSetupPage::ScreenSetupPage(ScreenMenu * menu, Layout*& screen, CustomScreenData& screenData):
-  PageTab(),
-  menu(menu),
-  screen(screen),
-  screenData(screenData)
-{
-}
-
 class SetupWidgetsPageSlot: public Button
 {
   public:
     SetupWidgetsPageSlot(FormGroup * parent, const rect_t & rect, Layout* screen, uint8_t slotIndex):
-      Button(parent, rect),
-      screen(screen),
-      slotIndex(slotIndex)
+      Button(parent, rect)
     {
-      widget = screen->getWidget(slotIndex);
-      setPressHandler([=]() -> uint8_t {
-          if (widget) {
-            Menu * menu = new Menu(this);
-            menu->addLine(TR_SELECT_WIDGET, [=]() {
-                Menu * menu = new Menu(this);
-                for (auto factory: getRegisteredWidgets()) {
-                  menu->addLine(factory->getName(), [=]() {
-                      if (widget) widget->deleteLater();
-                      widget = screen->createWidget(slotIndex, factory);
-                  });
-                }
-            });
-            menu->addLine(TR_WIDGET_SETTINGS, [=]() {
-                new WidgetSettings(this, widget);
-            });
+      //auto parent = (Window*)this;
+      setPressHandler([parent, screen, slotIndex]() -> uint8_t {
 
-            menu->addLine(STR_REMOVE_WIDGET, [=]() {
-                widget->deleteLater();
-                widget = nullptr;
+          Menu * menu = new Menu(parent);
+          menu->addLine(TR_SELECT_WIDGET, [=]() {
+              Menu * menu = new Menu(parent);
+              for (auto factory: getRegisteredWidgets()) {
+                menu->addLine(factory->getName(), [=]() {
+                    screen->createWidget(slotIndex, factory);
+                });
+              }
+          });
+
+          if (screen->getWidget(slotIndex)) {
+            menu->addLine(TR_WIDGET_SETTINGS, [=]() {
+                auto widget = screen->getWidget(slotIndex);
+                new WidgetSettings(parent, widget);
             });
-            return 0;
+            menu->addLine(STR_REMOVE_WIDGET, [=]() {
+                screen->removeWidget(slotIndex);
+            });
           }
-          else {
-            Menu * menu = new Menu(this);
-            for (auto factory: getRegisteredWidgets()) {
-              menu->addLine(factory->getName(), [=]() {
-                  if (widget) widget->deleteLater();
-                  widget = screen->createWidget(slotIndex, factory);
-              });
-            }
-          }
+
           return 0;
+          // }
+          // else {
+          //   Menu * menu = new Menu(this);
+          //   for (auto factory: getRegisteredWidgets()) {
+          //     menu->addLine(factory->getName(), [=]() {
+          //         if (widget) widget->deleteLater();
+          //         widget = screen->createWidget(slotIndex, factory);
+          //     });
+          //   }
+          // }
+          // return 0;
       });
     }
 
     void paint(BitmapBuffer * dc) override
     {
       if (hasFocus()) {
-        dc->drawSolidRect(0, 0, width(), height(), 1, DEFAULT_COLOR);
-      }
-      else {
-        dc->drawRect(0, 0, width(), height(), 1, DOTTED, DEFAULT_COLOR);
+        dc->drawRect(0, 0, width()-2, height()-2, 2, DOTTED, CHECKBOX_COLOR);
       }
     }
-
-  protected:
-    Layout * screen;
-    uint8_t slotIndex;
-    Widget * widget = nullptr;
 };
 
 class SetupWidgetsPage: public FormWindow
 {
   public:
-    SetupWidgetsPage(Layout * screen):
-      FormWindow(MainWindow::instance(), {0, 0, LCD_W, LCD_H}, OPAQUE | FORM_FORWARD_FOCUS),
-      screen(screen),
-      oldParent(screen->getParent())
+  SetupWidgetsPage(ScreenMenu* menu, uint8_t customScreenIdx):
+      FormWindow(ViewMain::instance(), {0, 0, LCD_W, LCD_H}, /*OPAQUE |*/ FORM_FORWARD_FOCUS),
+      menu(menu),
+      customScreenIdx(customScreenIdx)
     {
       Layer::push(this);
-      clearFocus();
 
-      // attach this custom screen here so we can display it 
-      screen->attach(this);
-      
+      // attach this custom screen here so we can display it
+      auto screen = customScreens[customScreenIdx];
+      if (screen) {
+        screen->attach(this);
+        setRect(screen->getRect());
+      }
+
+      ViewMain::instance()->bringToTop();
+
       for (unsigned i = 0; i < screen->getZonesCount(); i++) {
         auto rect = screen->getZone(i);
-        new SetupWidgetsPageSlot(this, {rect.x - 1, rect.y - 1, rect.w + 2, rect.h + 2}, screen, i);
+        auto widget = new SetupWidgetsPageSlot(this, rect, customScreens[customScreenIdx], i);
+        if (i == 0) widget->setFocus();
       }
     }
+
+#if defined(DEBUG_WINDOWS)
+    std::string getName() const override
+    {
+      return "SetupWidgetPage(idx=" + std::to_string(customScreenIdx) + ")";
+    }
+#endif
 
     void deleteLater(bool detach = true, bool trash = true) override
     {
@@ -257,12 +198,14 @@ class SetupWidgetsPage: public FormWindow
 #if defined(HARDWARE_TOUCH)
       Keyboard::hide();
 #endif
-      if (oldParent) {
-        // give it back to its old parent before it gets deleted
-        screen->attach(oldParent);
+      auto screen = customScreens[customScreenIdx];
+      if (screen) {
+        screen->attach(ViewMain::instance());
       }
-
       FormWindow::deleteLater(detach, trash);
+
+      // restore screen setting tab on top
+      menu->bringToTop();
     }
 
 #if defined(HARDWARE_KEYS)
@@ -279,15 +222,99 @@ class SetupWidgetsPage: public FormWindow
 #endif
 
   protected:
-    Layout* screen;
-    Window* oldParent;
+    ScreenMenu* menu;
+    uint8_t customScreenIdx;
 
-    void paint(BitmapBuffer * dc) override
-    {
-      dc->clear(DEFAULT_BGCOLOR);
-    }
-
+    // void paint(BitmapBuffer * dc) override
+    // {
+    //   //ViewMain::instance()->fullPaint(dc);
+    //   //dc->clear(DEFAULT_BGCOLOR);
+    // }
 };
+
+ScreenUserInterfacePage::ScreenUserInterfacePage():
+  PageTab(STR_USER_INTERFACE, ICON_THEME_SETUP)
+{
+}
+
+void ScreenUserInterfacePage::build(FormWindow * window)
+{
+  FormGridLayout grid;
+
+  // Theme choice
+  new StaticText(window, grid.getLabelSlot(), STR_THEME, 0, 0);
+  // TODO: Theme picklist
+  grid.nextLine();
+
+  // Theme options ?
+
+  // Top Bar
+  new StaticText(window, grid.getLabelSlot(), STR_TOP_BAR, 0, 0);
+  // TODO: enable settings topbar widgets
+  grid.nextLine();
+}
+
+ScreenAddPage::ScreenAddPage(ScreenMenu * menu, uint8_t pageIndex):
+  PageTab(),
+  menu(menu),
+  pageIndex(pageIndex)
+{
+  setTitle(STR_ADD_MAIN_VIEW);
+  setIcon(ICON_THEME_ADD_VIEW);
+}
+
+extern const LayoutFactory * defaultLayout;
+
+void ScreenAddPage::build(FormWindow * window)
+{
+  rect_t buttonRect = {LCD_W / 2 - 100, (window->height() - 24) / 2, 200, 24};
+  auto button = new TextButton(window, buttonRect, STR_ADD_MAIN_VIEW);
+
+  auto pageIndex = this->pageIndex;
+  auto menu      = this->menu;
+
+  button->setPressHandler([menu,pageIndex]() -> uint8_t {
+
+      auto  newPageIdx = menu->getTabs();
+      auto  newIdx     = newPageIdx - 2;
+      
+      auto& screen     = customScreens[newIdx];
+      auto& screenData = g_model.screenData[newIdx];
+
+      const LayoutFactory * factory = defaultLayout;
+      screen = factory->create(&screenData.layoutData);
+      strncpy(screenData.LayoutId, factory->getId(), sizeof(screenData.LayoutId));
+
+      auto tab = new ScreenSetupPage(menu, newPageIdx, newIdx);
+      std::string title(STR_MAIN_VIEW_X);
+      title.back() = newIdx + '1';
+      tab->setTitle(title);
+      tab->setIcon(ICON_THEME_VIEW1 + newIdx);
+
+      // remove current tab first
+      menu->setCurrentTab(0);
+      menu->removeTab(pageIndex);
+
+      // add the new one
+      menu->addTab(tab);
+      menu->setCurrentTab(newPageIdx);
+
+      if (menu->getTabs() < MAX_CUSTOM_SCREENS) {
+        menu->addTab(new ScreenAddPage(menu, menu->getTabs()));
+      }
+
+      storageDirty(EE_MODEL);
+      return 0;
+  });
+}
+
+ScreenSetupPage::ScreenSetupPage(ScreenMenu * menu, unsigned pageIndex, unsigned customScreenIndex):
+  PageTab(),
+  menu(menu),
+  pageIndex(pageIndex),
+  customScreenIndex(customScreenIndex)
+{
+}
 
 void ScreenSetupPage::build(FormWindow * window)
 {
@@ -296,46 +323,95 @@ void ScreenSetupPage::build(FormWindow * window)
 
   // Layout choice...
   new StaticText(window, grid.getLabelSlot(false), STR_LAYOUT);
+
   auto layoutSlot = grid.getFieldSlot();
   layoutSlot.h = 2 * PAGE_LINE_HEIGHT - 1;
-  layoutChoice = new LayoutChoice(window, layoutSlot, GET_VALUE(screen->getFactory()), [=](const LayoutFactory *factory) {
-      delete screen;
-      screen = factory->create(&screenData.layoutData);
-      strncpy(screenData.LayoutId, factory->getId(), sizeof(CustomScreenData::LayoutId));
-      SET_DIRTY();
-      updateLayoutOptions();
-  });
+
+  auto idx = customScreenIndex;
+  LayoutChoice::LayoutFactoryGetter getFactory = GET_VALUE(customScreens[idx]->getFactory());
+  LayoutChoice::LayoutFactorySetter setLayout = [idx](const LayoutFactory *factory) {
+    createCustomScreen(factory, idx);
+    SET_DIRTY();
+  };
+  
+  auto layoutChoice = new LayoutChoice(window, layoutSlot, getFactory, setLayout);
   grid.nextLine(layoutChoice->height());
+  TRACE("layoutChoice = %p", layoutChoice);
 
   // Setup widgets button...
-  setupWidgetsButton = new TextButton(window, grid.getFieldSlot(), STR_SETUP_WIDGETS);
-  setupWidgetsButton->setPressHandler([=]() -> uint8_t {
-      new SetupWidgetsPage(screen);
+  auto setupWidgetsButton = new TextButton(window, grid.getFieldSlot(), STR_SETUP_WIDGETS);
+  TRACE("setupWidgetsButton = %p", setupWidgetsButton);
+
+  auto menu = this->menu;
+  setupWidgetsButton->setPressHandler([idx,menu]() -> uint8_t {
+      new SetupWidgetsPage(menu, idx);
       return 0;
   });
   grid.nextLine();
 
   // Dynamic options window...
-  optionsWindow = new FormGroup(window, {0, grid.getWindowHeight(), LCD_W, 0}, FORWARD_SCROLL | FORM_FORWARD_FOCUS);
-  grid.addWindow(optionsWindow);
-  updateLayoutOptions();
+  // rect_t r = {0, grid.getWindowHeight(), LCD_W, 0};
+  // auto optionsWindow = new FormGroup(window, r, FORWARD_SCROLL | FORM_FORWARD_FOCUS);
+  // grid.addWindow(optionsWindow);
+  // updateLayoutOptions();
+
+  // Prevent removing the last page
+  if (customScreens[1] != nullptr) {
+    auto button = new TextButton(window, grid.getFieldSlot(), STR_REMOVE_SCREEN);
+    auto menu = this->menu;
+    button->setPressHandler([menu,idx]() -> uint8_t {
+
+      // Set the current tab to "User interface" to trigger body clearing
+      menu->setCurrentTab(0);
+
+      // Remove this screen from the model
+      disposeCustomScreen(idx);
+
+      // Delete all custom screens
+      deleteCustomScreens();
+
+      // ... and reload
+      loadCustomScreens();
+      menu->updateTabs();
+
+      // Let's try to stay on the same page
+      // (first tab is "User interface")
+      auto pageIdx = idx + 1;
+
+      // Subtract one more as the last one is "New main screen"
+      if (pageIdx > menu->getTabs() - 2) {
+        pageIdx = menu->getTabs() - 2;
+      }      
+      menu->setCurrentTab(pageIdx);
+
+      // save the changes
+      storageDirty(EE_MODEL);  
+      return 0;
+    });
+  }
+
+  // optionsWindow->adjustHeight();
+  // optionsWindow->getParent()->adjustInnerHeight();  
 }
 
 void ScreenSetupPage::updateLayoutOptions()
 {
+#if 0
   FormGridLayout grid;
   optionsWindow->clear();
 
   // Layout options...
   int index = 0;
-  for (auto * option = screen->getFactory()->getOptions(); option->name; option++, index++) {
-    ZoneOptionValue * value = screen->getOptionValue(index);
+  auto factory = customScreen[customScreenIndex]->getFactory();
+  if (factory) {
+    for (auto * option = factory->getOptions(); option->name; option++, index++) {
+      ZoneOptionValue * value = customScreens[customScreenIndex]->getOptionValue(index);
 
-    // Option label
-    new StaticText(optionsWindow, grid.getLabelSlot(false), option->name);
+      // Option label
+      new StaticText(optionsWindow, grid.getLabelSlot(false), option->name);
 
-    // Option value
-    switch (option->type) {
+      // Option value
+      switch (option->type) {
       case ZoneOption::Bool:
         new CheckBox(optionsWindow, grid.getFieldSlot(), GET_SET_DEFAULT(value->boolValue));
         break;
@@ -346,25 +422,10 @@ void ScreenSetupPage::updateLayoutOptions()
 
       default:
         break;
+      }
+      grid.nextLine();
     }
-    grid.nextLine();
   }
 
-  //if (pageIndex > 0 || customScreens[1]) {
-    auto button = new TextButton(optionsWindow, grid.getFieldSlot(), STR_REMOVE_SCREEN);
-    button->setPressHandler([=]() -> uint8_t {
-        // if (pageIndex < MAX_CUSTOM_SCREENS - 1) {
-        //   memmove(&g_model.screenData[pageIndex], &g_model.screenData[pageIndex + 1], sizeof(CustomScreenData) * (MAX_CUSTOM_SCREENS - pageIndex - 1));
-        // }
-        // memset(&g_model.screenData[MAX_CUSTOM_SCREENS - 1], 0, sizeof(CustomScreenData));
-        memset(&screenData, 0, sizeof(CustomScreenData));
-        loadCustomScreens();
-        menu->updateTabs();
-        storageDirty(EE_MODEL);
-        return 0;
-    });
-    //}
-
-  optionsWindow->adjustHeight();
-  optionsWindow->getParent()->adjustInnerHeight();
+#endif
 }

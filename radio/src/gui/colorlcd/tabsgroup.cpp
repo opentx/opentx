@@ -94,6 +94,19 @@ void TabsGroup::addTab(PageTab * page)
     setCurrentTab(0);
   }
   header.carousel.updateInnerWidth();
+  invalidate();
+}
+
+int TabsGroup::removeTab(PageTab * page)
+{
+  auto tabIter = std::find(tabs.begin(), tabs.end(), page);
+  if (tabIter != tabs.end()) {
+    auto idx = tabIter - tabs.begin();
+    removeTab(idx);
+    return idx;
+  }
+
+  return -1;
 }
 
 void TabsGroup::removeTab(unsigned index)
@@ -103,6 +116,7 @@ void TabsGroup::removeTab(unsigned index)
   }
   tabs.erase(tabs.begin() + index);
   header.carousel.updateInnerWidth();
+  invalidate();
 }
 
 void TabsGroup::removeAllTabs()
@@ -131,6 +145,11 @@ void TabsGroup::setVisibleTab(PageTab * tab)
     invalidate();
   }
 }
+
+// TODO: add a mechanism to trigger a rebuild of a PageTab
+// -> rebuild():
+//    - as in setVisibleTab() (clear & build)
+//    - but without changing tab
 
 void TabsGroup::checkEvents()
 {

@@ -68,6 +68,13 @@ class Layout: public LayoutBase
       decorate();
     }
 
+#if defined(DEBUG_WINDOWS)
+    std::string getName() const override
+    {
+      return "Layout";
+    }
+#endif
+
     void create() override
     {
       setOptionValue(OPTION_TOPBAR,   OPTION_VALUE_BOOL(true));
@@ -196,5 +203,13 @@ void loadDefaultLayout();
 
 // intended for existing models
 void loadCustomScreens();
+
+// delete all custom screens from memory
+void deleteCustomScreens();
+
+Layout* createCustomScreen(const LayoutFactory* factory, unsigned customScreenIndex);
+
+// Remove custom screen from the model
+void disposeCustomScreen(unsigned idx);
 
 std::list<const LayoutFactory *> & getRegisteredLayouts();

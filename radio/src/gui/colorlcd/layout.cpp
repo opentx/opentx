@@ -46,6 +46,9 @@ const LayoutFactory * getLayoutFactory(const char * name)
   return nullptr;
 }
 
+//
+// Loads a layout, but does not attach it to any window
+//
 Layout * loadLayout(const char * name, Layout::PersistentData * persistentData)
 {
   const LayoutFactory * factory = getLayoutFactory(name);
@@ -55,10 +58,12 @@ Layout * loadLayout(const char * name, Layout::PersistentData * persistentData)
   return nullptr;
 }
 
+//
+// Detaches and deletes all custom screens
+//
 void deleteCustomScreens()
 {
-  for (unsigned int i = 0; i < MAX_CUSTOM_SCREENS; i++) {
-    auto& screen = customScreens[i];
+  for (auto& screen : customScreens) {
     if (screen) {
       screen->detach();
       delete screen;
@@ -75,6 +80,7 @@ void loadDefaultLayout()
   auto& screenData = g_model.screenData[0];
 
   if (screen == nullptr && defaultLayout != nullptr) {
+
     strcpy(screenData.LayoutId, defaultLayout->getId());
     screen = defaultLayout->create(&screenData.layoutData);
     if (screen) {
@@ -83,6 +89,9 @@ void loadDefaultLayout()
   }
 }
 
+//
+// Loads and attaches all configured custom screens
+//
 void loadCustomScreens()
 {
   for (unsigned int i = 0; i < MAX_CUSTOM_SCREENS; i++) {
@@ -95,6 +104,53 @@ void loadCustomScreens()
       screen->attach(ViewMain::instance());
     }
   }
+}
+
+//
+// Creates a new customer screen from factory:
+//  - the old screen is detached & deleted (including children)
+//  - new screen is configured into g_model
+//  - the new screen is returned (not attached)
+//
+Layout* createCustomScreen(const LayoutFactory* factory, unsigned customScreenIndex)
+{
+  if (!factory || (customScreenIndex >= MAX_CUSTOM_SCREENS))
+    return nullptr;
+
+  if (customScreens[customScreenIndex]) {
+    customScreens[customScreenIndex]->deleteLater(true, false);
+    delete customScreens[customScreenIndex];
+  }
+
+  auto screen = factory->create(&g_model.screenData[customScreenIndex].layoutData);
+  customScreens[customScreenIndex] = screen;
+
+  if (screen) {
+    auto dst = g_model.screenData[customScreenIndex].LayoutId;
+    auto src = factory->getId();
+    strncpy(dst, src, sizeof(CustomScreenData::LayoutId));
+
+    return screen;
+  }
+
+  return nullptr;
+}
+
+void disposeCustomScreen(unsigned idx)
+{
+  // move custom screen data
+  if (idx >= MAX_CUSTOM_SCREENS) {
+    return;
+  }
+
+  auto dst = &g_model.screenData[idx];
+  auto src = dst + 1;
+  auto len = sizeof(CustomScreenData) * (MAX_CUSTOM_SCREENS - idx - 1);
+  memmove(dst, src, len);
+
+  dst = &g_model.screenData[MAX_CUSTOM_SCREENS - 1];
+  len = sizeof(CustomScreenData);
+  memset(dst, 0, len);
 }
 
 void Layout::decorate()

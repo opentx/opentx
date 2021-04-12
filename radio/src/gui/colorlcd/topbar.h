@@ -34,6 +34,13 @@ class TopBar: public WidgetsContainer<MAX_TOPBAR_ZONES, MAX_TOPBAR_OPTIONS>
   public:
     explicit TopBar(Window * parent);
 
+#if defined(DEBUG_WINDOWS)
+    std::string getName() const override
+    {
+      return "TopBar";
+    }
+#endif
+
     unsigned int getZonesCount() const override;
 
     rect_t getZone(unsigned int index) const override;
