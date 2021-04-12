@@ -16,6 +16,8 @@ jobs:
       -
         name: Check out the repo
         uses: actions/checkout@v2
+        with:
+          submodules: true
       -
         name: Test COLORLCD
         run: |
