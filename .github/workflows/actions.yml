@@ -27,4 +27,4 @@ jobs:
         name: Test X7
         run: |
           echo "Running commit tests for X7"
-          FLAVOR=COLORLCD ./tools/commit-tests.sh
+          FLAVOR=X7 ./tools/commit-tests.sh
