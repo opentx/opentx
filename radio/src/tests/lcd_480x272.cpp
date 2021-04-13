@@ -210,6 +210,7 @@ TEST(Lcd_colorlcd, clipping)
   dc.drawSolidRect(20, 20, 50, 50, 2, TITLE_BGCOLOR);
   dc.drawRect(    380, 20, 50, 50, 2, SOLID, TITLE_BGCOLOR);
 
+  dc.clearClippingRect();
   EXPECT_TRUE(checkScreenshot_colorlcd(&dc, "clipping"));
 }
 
@@ -224,6 +225,7 @@ TEST(Lcd_colorlcd, bitmap)
   dc.drawBitmap(320,   0, bmp.get());
   dc.drawBitmap(  0, 150, bmp.get());
 
+  dc.clearClippingRect();
   EXPECT_TRUE(checkScreenshot_colorlcd(&dc, "bitmap"));
 }
 #endif
