@@ -18,62 +18,72 @@
  * GNU General Public License for more details.
  */
 
-#include <QtCore/QDir>
-#include <QtCore/QDebug>
-#include <QApplication>
-#include <QPainter>
 #include <math.h>
 #include <gtest/gtest.h>
 
 #define SWAP_DEFINED
 #include "opentx.h"
 #include "location.h"
-#include "targets/simu/simulcd.h"
 
 #if defined(COLORLCD)
 
 #include "gui/colorlcd/fonts.h"
 
-void doPaint_colorlcd(const BitmapBuffer* dc, QPainter & p)
-{
-  QRgb rgb = qRgb(0, 0, 0);
-  p.setBackground(QBrush(rgb));
-  p.eraseRect(0, 0, LCD_W, LCD_H);
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "stb_image_write.h"
 
-  uint16_t previousColor = 0xFF;
-  for (int y=0; y<LCD_H; y++) {
-    for (int x=0; x<LCD_W; x++) {
-      auto color = *(dc->getPixelPtr(x, y));  // color in RGB565
-      if (color) {
-        if (color != previousColor) {
-          previousColor = color;
-          RGB_SPLIT(color, r, g, b);
-          rgb = qRgb(r<<3, g<<2, b<<3);
-          p.setPen(rgb);
-          p.setBrush(QBrush(rgb));
-        }
-        p.drawPoint(x, y);
-      }
-    }
+void convert_RGB565_to_RGB888(uint8_t * dst, const uint16_t * src, unsigned pixels)
+{
+  while(pixels--) {
+    RGB_SPLIT(*src, r, g, b); src++;
+    *(dst++) = (uint8_t)(r << 3);
+    *(dst++) = (uint8_t)(g << 2);
+    *(dst++) = (uint8_t)(b << 3);
   }
 }
 
-bool checkScreenshot_colorlcd(const BitmapBuffer* dc, const QString & test)
+void dumpImage(const std::string& filename, const BitmapBuffer* dc)
 {
-  QImage buffer(LCD_W, LCD_H, QImage::Format_RGB32);
-  QPainter p(&buffer);
-  doPaint_colorlcd(dc, p);
-  QString filename(QString("%1_%2x%3.png").arg(test).arg(LCD_W).arg(LCD_H));
-  QImage reference(TESTS_PATH "/" + filename);
+  std::string fullpath = TESTS_PATH "/failed_" + filename;
 
-  if (buffer == reference) {
-    return true;
-  }
-  else {
-    QString filename(QString("%1_%2x%3.png").arg(test).arg(LCD_W).arg(LCD_H));
-    buffer.save("/tmp/" + filename);
+  // allocate enough for 3 channels
+  auto pixels = dc->width() * dc->height();
+  auto stride = dc->width() * 3;
+  uint8_t * img = (uint8_t *)malloc(pixels * 3);
+  convert_RGB565_to_RGB888(img, dc->getPixelPtr(0,0), pixels);
+  stbi_write_png(fullpath.c_str(), dc->width(), dc->height(), 3, img, stride);
+}
+
+bool checkScreenshot_colorlcd(const BitmapBuffer* dc, const char* test)
+{
+  if (dc->width() != LCD_W || dc->height() != LCD_H) {
     return false;
   }
+
+  std::string filename = std::string(test);
+  filename += '_' + std::to_string(LCD_W);
+  filename += 'x' + std::to_string(LCD_H);
+  filename += ".png";
+
+  std::string fullpath = TESTS_PATH "/" + filename;
+  
+  std::unique_ptr<BitmapBuffer> testPict(BitmapBuffer::loadBitmap(fullpath.c_str()));
+  if (!testPict || testPict->width() != LCD_W || testPict->height() != LCD_H) {
+    dumpImage(filename, dc);
+    return false;
+  }
+  
+  auto testPtr = testPict->getPixelPtr(0,0);
+  auto dcPtr   = dc->getPixelPtr(0,0);
+
+  for (int i=0; i<LCD_W*LCD_H; i++) {
+    if (testPtr[i] != dcPtr[i]) {
+      dumpImage(filename, dc);
+      return false;
+    }
+  }
+
+  return true;
 }
 
 
