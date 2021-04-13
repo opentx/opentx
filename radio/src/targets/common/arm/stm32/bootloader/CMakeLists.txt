@@ -162,7 +162,7 @@ set(CMAKE_EXE_LINKER_FLAGS "-mcpu=${MCU} -mthumb -nostartfiles -lm -T${RADIO_SRC
 set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --specs=nano.specs")
 
 add_executable(bootloader ${BOOTLOADER_SRC})
-add_dependencies(bootloader ${BITMAPS_TARGET})
+add_dependencies(bootloader ${BITMAPS_TARGET} radio_translations)
 
 add_custom_command(
   TARGET bootloader POST_BUILD
