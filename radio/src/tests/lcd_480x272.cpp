@@ -172,6 +172,13 @@ TEST(Lcd_colorlcd, transparency)
   EXPECT_TRUE(checkScreenshot_colorlcd(&dc, "transparency"));
 }
 
+//
+// Fonts test are disabled, as they cause
+// too much trouble (font are generated and never
+// really the same based on which software / radio
+// combination.
+//
+#if 0
 TEST(Lcd_colorlcd, fonts)
 {
   loadFonts();
@@ -196,6 +203,7 @@ TEST(Lcd_colorlcd, fonts)
 
   EXPECT_TRUE(checkScreenshot_colorlcd(&dc, "fonts"));
 }
+#endif
 
 TEST(Lcd_colorlcd, clipping)
 {
