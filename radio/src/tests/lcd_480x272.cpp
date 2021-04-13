@@ -207,7 +207,7 @@ TEST(Lcd_colorlcd, clipping)
   dc.drawSolidVerticalLine(150,  0, LCD_H, TITLE_BGCOLOR);
   dc.drawVerticalLine(     151,  0, LCD_H, SOLID, TITLE_BGCOLOR);
 
-  dc.drawSolidRect(20, 20, 50, 50, 2, TITLE_BGCOLOR);
+  dc.drawSolidRect(70, 20, 50, 50, 2, TITLE_BGCOLOR);
   dc.drawRect(    380, 20, 50, 50, 2, SOLID, TITLE_BGCOLOR);
 
   dc.clearClippingRect();
