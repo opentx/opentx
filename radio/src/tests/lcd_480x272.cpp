@@ -52,6 +52,7 @@ void dumpImage(const std::string& filename, const BitmapBuffer* dc)
   uint8_t * img = (uint8_t *)malloc(pixels * 3);
   convert_RGB565_to_RGB888(img, dc->getPixelPtr(0,0), pixels);
   stbi_write_png(fullpath.c_str(), dc->width(), dc->height(), 3, img, stride);
+  free(img);
 }
 
 bool checkScreenshot_colorlcd(const BitmapBuffer* dc, const char* test)
