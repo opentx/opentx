@@ -417,10 +417,7 @@ void ViewMain::createTrims()
     VERTICAL_SLIDERS_HEIGHT
   }; 
 
-  //r.x = left() + HMARGIN + TRIM_SQUARE_SIZE; // DBG
   trims[TRIMS_LV] = new MainViewVerticalTrim(this, r, 1);
-
-  //r.x = right() - HMARGIN - TRIM_SQUARE_SIZE; // DBG
   trims[TRIMS_RV] = new MainViewVerticalTrim(this, r, 2);
 }
 

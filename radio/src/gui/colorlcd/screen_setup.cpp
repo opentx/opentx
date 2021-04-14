@@ -394,7 +394,7 @@ void ScreenSetupPage::build(FormWindow * window)
   // optionsWindow->getParent()->adjustInnerHeight();  
 }
 
-void ScreenSetupPage::updateLayoutOptions()
+void ScreenSetupPage::updateLayoutOptions() // TODO
 {
 #if 0
   FormGridLayout grid;

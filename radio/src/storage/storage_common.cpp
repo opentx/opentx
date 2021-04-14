@@ -61,6 +61,10 @@ void preModelLoad()
 #endif
 
   stopTrainer();
+
+#if defined(COLORLCD)
+  deleteCustomScreens();
+#endif
 }
 
 void postRadioSettingsLoad()
