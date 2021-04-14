@@ -1,15 +1,22 @@
-set(FONT "Roboto/Roboto-Regular")
-set(FONT_BOLD "Roboto/Roboto-Bold")
-set(CJK_FONT "Noto/NotoSansCJKsc-Regular")
-set(CJK_FONT_BOLD "Noto/NotoSansCJKsc-Bold")
-
-#set(FONT "Kanit/Kanit-Regular")
-#set(FONT_BOLD "Kanit/Kanit-Bold")
-
-#set(FONT "Ubuntu/Ubuntu-Regular")
-#set(FONT_BOLD "Ubuntu/Ubuntu-Bold")
-
 string(TOLOWER ${TRANSLATIONS} subset)
+
+if( (${subset} STREQUAL "cn") OR (${subset} STREQUAL "tw"))
+  # Use this font for CJK languages
+  set(FONT "Noto/NotoSansCJKsc-Regular")
+  set(FONT_BOLD "Noto/NotoSansCJKsc-Bold")
+  set(FONT_OFFSET -3)
+else()
+  # Use this font for non-CJK languages
+  set(FONT "Roboto/Roboto-Regular")
+  set(FONT_BOLD "Roboto/Roboto-Bold")
+  set(FONT_OFFSET 0)
+
+  #set(FONT "Kanit/Kanit-Regular")
+  #set(FONT_BOLD "Kanit/Kanit-Bold")
+
+  #set(FONT "Ubuntu/Ubuntu-Regular")
+  #set(FONT_BOLD "Ubuntu/Ubuntu-Bold")
+endif()
 
 add_truetype_font_target(9      9  ${subset} none)
 add_truetype_font_target(13     13 ${subset} none)
