@@ -46,6 +46,8 @@ void dumpImage(const std::string& filename, const BitmapBuffer* dc)
 {
   std::string fullpath = TESTS_PATH "/failed_" + filename;
 
+  TRACE("dumping image '%s'", fullpath.c_str());
+  
   // allocate enough for 3 channels
   auto pixels = dc->width() * dc->height();
   auto stride = dc->width() * 3;
@@ -129,7 +131,7 @@ TEST(Lcd_colorlcd, primitives)
   dc.drawHorizontalLine(30, 85,  70, SOLID, DEFAULT_COLOR);
 
 
-  EXPECT_TRUE(checkScreenshot_colorlcd(&dc, "primitives"));
+  EXPECT_TRUE(checkScreenshot_colorlcd(&dc, "primitives_" TRANSLATIONS));
 }
 
 TEST(Lcd_colorlcd, transparency)
@@ -169,7 +171,7 @@ TEST(Lcd_colorlcd, transparency)
 
   }
 
-  EXPECT_TRUE(checkScreenshot_colorlcd(&dc, "transparency"));
+  EXPECT_TRUE(checkScreenshot_colorlcd(&dc, "transparency_" TRANSLATIONS));
 }
 
 //
@@ -201,7 +203,7 @@ TEST(Lcd_colorlcd, fonts)
   dc.drawText(8, 208, "The quick brown fox jumps over the lazy dog", TITLE_BGCOLOR|OPACITY(4));
   dc.drawText(5, 205, "The quick brown fox jumps over the lazy dog", TITLE_BGCOLOR|OPACITY(12));
 
-  EXPECT_TRUE(checkScreenshot_colorlcd(&dc, "fonts"));
+  EXPECT_TRUE(checkScreenshot_colorlcd(&dc, "fonts_" TRANSLATIONS));
 }
 #endif
 
