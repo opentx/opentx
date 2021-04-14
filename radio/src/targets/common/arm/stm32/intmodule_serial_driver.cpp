@@ -169,7 +169,7 @@ void intmoduleSendBuffer(const uint8_t * data, uint8_t size)
 
 void intmoduleSendNextFrame()
 {
-  switch(moduleState[INTERNAL_MODULE].protocol) {
+  switch (moduleState[INTERNAL_MODULE].protocol) {
 #if defined(PXX2)
     case PROTOCOL_CHANNELS_PXX2_HIGHSPEED:
       intmoduleSendBuffer(intmodulePulsesData.pxx2.getData(), intmodulePulsesData.pxx2.getSize());
