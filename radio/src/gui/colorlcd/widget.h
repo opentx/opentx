@@ -90,6 +90,13 @@ class Widget : public FormField
     {
     }
 
+#if defined(DEBUG_WINDOWS)
+    std::string getName() const override
+    {
+      return "Widget";
+    }
+#endif
+
   protected:
     const WidgetFactory * factory;
     PersistentData * persistentData;

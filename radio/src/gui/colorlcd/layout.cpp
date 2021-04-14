@@ -65,8 +65,7 @@ void deleteCustomScreens()
 {
   for (auto& screen : customScreens) {
     if (screen) {
-      screen->detach();
-      delete screen;
+      screen->deleteLater();
       screen = nullptr;
     }
   }
@@ -83,6 +82,13 @@ void loadDefaultLayout()
 
     strcpy(screenData.LayoutId, defaultLayout->getId());
     screen = defaultLayout->create(&screenData.layoutData);
+    //
+    // TODO:
+    // -> attach a few default widgets
+    //    - ModelBmp
+    //    - Timer
+    //    - ???
+    //
     if (screen) {
       screen->attach(ViewMain::instance());
     }
