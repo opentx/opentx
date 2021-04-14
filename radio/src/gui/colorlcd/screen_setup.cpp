@@ -285,7 +285,7 @@ void ScreenAddPage::build(FormWindow * window)
       screen = factory->create(&screenData.layoutData);
       strncpy(screenData.LayoutId, factory->getId(), sizeof(screenData.LayoutId));
 
-      auto tab = new ScreenSetupPage(menu, newPageIdx, newIdx);
+      auto tab = new ScreenSetupPage(menu, pageIndex, newIdx);
       std::string title(STR_MAIN_VIEW_X);
       title.back() = newIdx + '1';
       tab->setTitle(title);
@@ -297,7 +297,7 @@ void ScreenAddPage::build(FormWindow * window)
 
       // add the new one
       menu->addTab(tab);
-      menu->setCurrentTab(newPageIdx);
+      menu->setCurrentTab(pageIndex);
 
       if (menu->getTabs() < MAX_CUSTOM_SCREENS) {
         menu->addTab(new ScreenAddPage(menu, menu->getTabs()));
