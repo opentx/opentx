@@ -8,6 +8,16 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        target:
+          - COMPANION
+          - ARM9X
+          - X9LITE
+          - X7
+          - XLITE
+          - X9
+          - COLORLCD
     container:
       image: ghcr.io/raphaelcoeffic/opentx-commit-tests
       volumes:
@@ -19,17 +29,9 @@ jobs:
         with:
           submodules: true
       -
-        name: Test COMPANION
+        name: Test ${{ matrix.target }}
+        env:
+          FLAVOR: ${{ matrix.target }}
         run: |
-          echo "Running commit tests for COMPANION"
-          FLAVOR=COMPANION ./tools/commit-tests.sh
-      -
-        name: Test COLORLCD
-        run: |
-          echo "Running commit tests for COLORLCD"
-          FLAVOR=COLORLCD ./tools/commit-tests.sh
-      -
-        name: Test X7
-        run: |
-          echo "Running commit tests for X7"
-          FLAVOR=X7 ./tools/commit-tests.sh
+          echo "Running commit tests"
+          ./tools/commit-tests.sh
