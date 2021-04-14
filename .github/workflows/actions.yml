@@ -1,0 +1,37 @@
+name: OpenTX Commit Tests
+on:
+  push:
+    branches: [ 2.4 ]
+  pull_request:
+    branches: [ 2.4 ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        target:
+          - COMPANION
+          - ARM9X
+          - X9LITE
+          - X7
+          - XLITE
+          - X9
+          - COLORLCD
+    container:
+      image: ghcr.io/raphaelcoeffic/opentx-commit-tests
+      volumes:
+        - ${{ github.workspace }}:/src
+    steps:
+      -
+        name: Check out the repo
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+      -
+        name: Test ${{ matrix.target }}
+        env:
+          FLAVOR: ${{ matrix.target }}
+        run: |
+          echo "Running commit tests"
+          ./tools/commit-tests.sh
