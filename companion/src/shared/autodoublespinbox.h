@@ -35,7 +35,8 @@ class AutoDoubleSpinBox: public QDoubleSpinBox
       QDoubleSpinBox(parent),
       field(nullptr),
       panel(nullptr),
-      lock(false)
+      lock(false),
+      offset(0)
     {
       connect(this, SIGNAL(valueChanged(double)), this, SLOT(onValueChanged(double)));
     }
@@ -58,7 +59,7 @@ class AutoDoubleSpinBox: public QDoubleSpinBox
     {
       if (field) {
         lock = true;
-        setValue(float(*field) / multiplier());
+        setValue(float(*field + offset) / multiplier());
         lock = false;
       }
     }
@@ -66,6 +67,12 @@ class AutoDoubleSpinBox: public QDoubleSpinBox
     void setDecimals(int prec)
     {
       QDoubleSpinBox::setDecimals(prec);
+      updateValue();
+    }
+
+    void setOffset(int offset)
+    {
+      this->offset = offset;
       updateValue();
     }
 
@@ -91,8 +98,8 @@ class AutoDoubleSpinBox: public QDoubleSpinBox
       if (panel && panel->lock)
         return;
       if (field && !lock) {
-        *field = round(value * multiplier());
-        emit currentDataChanged(value);
+        *field = round(value * multiplier() - offset);
+        emit currentDataChanged(*field);
         if (panel) {
           emit panel->modified();
         }
@@ -103,4 +110,5 @@ class AutoDoubleSpinBox: public QDoubleSpinBox
     int * field = nullptr;
     GenericPanel * panel = nullptr;
     bool lock = false;
+    int offset = 0;
 };

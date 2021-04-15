@@ -20,72 +20,62 @@
 
 #pragma once
 
-#include <QCheckBox>
+#include <QSpinBox>
+
 #include "genericpanel.h"
 
-class AutoCheckBox: public QCheckBox
+class AutoSpinBox : public QSpinBox
 {
   Q_OBJECT
 
   public:
-    explicit AutoCheckBox(QWidget * parent = nullptr):
-      QCheckBox(parent),
+    explicit AutoSpinBox(QWidget * parent = nullptr):
+      QSpinBox(parent),
       field(nullptr),
       panel(nullptr),
-      lock(false),
-      invert(false)
+      lock(false)
     {
-      connect(this, &AutoCheckBox::toggled, this, &AutoCheckBox::onToggled);
+      connect(this, QOverload<int>::of(&AutoSpinBox::valueChanged), this, &AutoSpinBox::onValueChanged);
     }
 
-    void setField(bool & field, GenericPanel * panel = nullptr, bool invert = false)
+    void setField(int & field, GenericPanel * panel = nullptr)
     {
       this->field = &field;
       this->panel = panel;
-      this->invert = invert;
       updateValue();
     }
 
-    void setEnabled(bool enabled)
+    void setField(unsigned int & field, GenericPanel * panel = nullptr)
     {
-      QCheckBox::setEnabled(enabled);
-    }
-
-    void setInvert(bool invert)
-    {
-      this->invert = invert;
+      this->field = (int *)&field;
+      this->panel = panel;
       updateValue();
     }
 
     void updateValue()
     {
+      lock = true;
       if (field) {
-        lock = true;
-        setChecked(invert ? !(*field) : *field);
-        lock = false;
+        setValue(*field);
       }
+      lock = false;
     }
 
-  signals:
-    void currentDataChanged(bool value);
-
   protected slots:
-    void onToggled(bool checked)
+    void onValueChanged(int value)
     {
       if (panel && panel->lock)
         return;
       if (field && !lock) {
-        const bool val = invert ? !checked : checked;
-        *field = val;
-        emit currentDataChanged(val);
-        if (panel)
+        *field = value;
+        if (panel) {
           emit panel->modified();
+        }
       }
     }
 
   protected:
-    bool *field = nullptr;
-    GenericPanel *panel = nullptr;
-    bool lock = false;
-    bool invert = false;
+    int * field;
+    GenericPanel * panel;
+    bool lock;
 };
