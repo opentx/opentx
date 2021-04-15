@@ -21,6 +21,7 @@
 #include "opentx.h"
 #include "radio_calibration.h"
 #include "sliders.h"
+#include "view_main_decoration.h"
 
 #define XPOT_DELTA                     10
 #define XPOT_DELAY                     5 /* cycles */
@@ -81,51 +82,14 @@ void RadioCalibrationPage::buildBody(FormWindow * window)
   new StickCalibrationWindow(window, {40, 20, 90, 90}, STICK1, STICK2);
   new StickCalibrationWindow(window, {LCD_W - 130, 20, 90, 90}, STICK4, STICK3);
 
-#if defined(PCBHORUS)
+  rect_t r = { 0, 0, window->width(), window->height() };
+  auto deco = new ViewMainDecoration(window, r);
+  deco->setTrimsVisible(false);
+  deco->setSlidersVisible(true);
+  deco->setFlightModeVisible(false);
+  deco->adjustDecoration();
 
-  new MainViewHorizontalSlider(this, {HMARGIN, LCD_H - TRIM_SQUARE_SIZE, HORIZONTAL_SLIDERS_WIDTH, TRIM_SQUARE_SIZE}, CALIBRATED_POT1);
-
-  if (IS_POT_MULTIPOS(POT2)) {
-    new MainView6POS(this, {LCD_W / 2 - MULTIPOS_W / 2, LCD_H - TRIM_SQUARE_SIZE, MULTIPOS_W + 1, MULTIPOS_H}, 1);
-  }
-
-  new MainViewHorizontalSlider(this, {LCD_W - HORIZONTAL_SLIDERS_WIDTH - HMARGIN, LCD_H - TRIM_SQUARE_SIZE, HORIZONTAL_SLIDERS_WIDTH, TRIM_SQUARE_SIZE}, CALIBRATED_POT3);
-#if defined(HARDWARE_EXT1)
-  coord_t yOffset = TOPBAR_HEIGHT / 2;
-
-  if (IS_POT_SLIDER_AVAILABLE(EXT1)) {
-    new MainViewVerticalSlider(this, {HMARGIN, LCD_H / 2 - VERTICAL_SLIDERS_HEIGHT / 2 + yOffset, TRIM_SQUARE_SIZE, VERTICAL_SLIDERS_HEIGHT / 2},
-                               CALIBRATED_SLIDER_REAR_LEFT);
-    new MainViewVerticalSlider(this, {HMARGIN, LCD_H / 2 + yOffset, TRIM_SQUARE_SIZE, VERTICAL_SLIDERS_HEIGHT / 2},
-                               CALIBRATED_POT_EXT1);
-  }
-  else {
-    new MainViewVerticalSlider(this, {HMARGIN, LCD_H / 2 - VERTICAL_SLIDERS_HEIGHT / 2 + yOffset, TRIM_SQUARE_SIZE, VERTICAL_SLIDERS_HEIGHT},
-                               CALIBRATED_SLIDER_REAR_LEFT);
-  }
-#endif
-
-#if defined(HARDWARE_EXT2)
-  if (IS_POT_SLIDER_AVAILABLE(EXT2)) {
-    new MainViewVerticalSlider(this, {LCD_W - HMARGIN - TRIM_SQUARE_SIZE, LCD_H / 2 - VERTICAL_SLIDERS_HEIGHT / 2 + yOffset, TRIM_SQUARE_SIZE,
-                                      VERTICAL_SLIDERS_HEIGHT / 2},
-                               CALIBRATED_SLIDER_REAR_RIGHT);
-    new MainViewVerticalSlider(this, {LCD_W - HMARGIN - TRIM_SQUARE_SIZE, LCD_H / 2 + yOffset, TRIM_SQUARE_SIZE,
-                                      VERTICAL_SLIDERS_HEIGHT / 2},
-                               CALIBRATED_POT_EXT2);
-  }
-  else {
-    new MainViewVerticalSlider(this, {LCD_W - HMARGIN - TRIM_SQUARE_SIZE, LCD_H / 2 - VERTICAL_SLIDERS_HEIGHT / 2 + yOffset, TRIM_SQUARE_SIZE,
-                                      VERTICAL_SLIDERS_HEIGHT},
-                               CALIBRATED_SLIDER_REAR_RIGHT);
-  }
-#endif
-
-#elif defined(PCBNV14)
-  new MainViewHorizontalSlider(this, {HMARGIN, LCD_H - TRIM_SQUARE_SIZE, HORIZONTAL_SLIDERS_WIDTH, TRIM_SQUARE_SIZE}, CALIBRATED_POT1);
-
-  new MainViewHorizontalSlider(this, {LCD_W - HORIZONTAL_SLIDERS_WIDTH - HMARGIN, LCD_H - TRIM_SQUARE_SIZE, HORIZONTAL_SLIDERS_WIDTH, TRIM_SQUARE_SIZE}, CALIBRATED_POT2);
-
+#if defined(PCBNV14)
   new TextButton(window, {LCD_W - 120, LCD_H - 140, 90, 40}, "Next",
                     [=]() -> uint8_t {
                         nextStep();

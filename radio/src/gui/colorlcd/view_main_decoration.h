@@ -18,41 +18,22 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _VIEW_MAIN_H_
-#define _VIEW_MAIN_H_
+#pragma once
 
-#include "form.h"
-#include <memory>
+#include "window.h"
 
-class TopBar;
-class ViewMainDecoration;
-class SetupWidgetsPage;
-
-class ViewMain: public FormWindow
+class ViewMainDecoration: public Window
 {
-    // singleton
-    explicit ViewMain();
-
   public:
-    ~ViewMain() override;
-
-    static ViewMain * instance()
+    ViewMainDecoration(Window * parent, const rect_t & rect):
+        Window(parent, rect)
     {
-      if (!_instance)
-        _instance = new ViewMain();
-
-      return _instance;
+      createSliders();
+      createTrims();
+      createFlightMode();
     }
 
-#if defined(DEBUG_WINDOWS)
-    std::string getName() const override
-    {
-      return "ViewMain";
-    }
-#endif
-
-    // Set topbar & decoration visibility
-    void setTopbarVisible(bool visible);
+    // Set decoration visibility
     void setTrimsVisible(bool visible);
     void setSlidersVisible(bool visible);
     void setFlightModeVisible(bool visible);
@@ -63,24 +44,40 @@ class ViewMain: public FormWindow
     // Get the available space in the middle of the screen
     // (without decoration)
     rect_t getMainZone() const;
-  
+
   protected:
-    static ViewMain * _instance;
 
-    TopBar*             topbar;
-    ViewMainDecoration* decoration;
+#if defined(DEBUG_WINDOWS)
+    virtual std::string getName() const
+    {
+      return "ViewMainDecoration";
+    }
+#endif    
 
-    friend class SetupWidgetsPage;
+    enum {
+      SLIDERS_POT1 = 0,
+      SLIDERS_POT2,
+      SLIDERS_POT3,
+      SLIDERS_REAR_LEFT,
+      SLIDERS_EXT1,
+      SLIDERS_REAR_RIGHT,
+      SLIDERS_EXT2,
+      SLIDERS_MAX
+    };
   
-#if defined(HARDWARE_KEYS)
-    void onEvent(event_t event) override;
-#endif
-    void paint(BitmapBuffer * dc) override;
+    enum {
+      TRIMS_LH = 0,
+      TRIMS_LV,
+      TRIMS_RV,
+      TRIMS_RH,
+      TRIMS_MAX
+    };
 
-    void openMenu();
+    Window* sliders[SLIDERS_MAX];
+    Window* trims[TRIMS_MAX];
+    Window* flightMode;
 
-    void createDecoration();
-    void createTopbar();
+    void createSliders();
+    void createTrims();
+    void createFlightMode();
 };
-
-#endif // _VIEW_MAIN_H_
