@@ -52,10 +52,10 @@ class Layout2x4: public Layout
     void create() override
     {
       Layout::create();
-      setOptionValue(OPTION_PANEL1_BACKGROUND, OPTION_VALUE_BOOL(true));
-      setOptionValue(OPTION_PANEL1_COLOR, OPTION_VALUE_UNSIGNED( RGB(77,112,203)));
-      setOptionValue(OPTION_PANEL2_BACKGROUND, OPTION_VALUE_BOOL(true));
-      setOptionValue(OPTION_PANEL2_COLOR, OPTION_VALUE_UNSIGNED( RGB(77,112,203)));
+      getOptionValue(OPTION_PANEL1_BACKGROUND)->boolValue = true;
+      getOptionValue(OPTION_PANEL1_COLOR)->unsignedValue  =  RGB(77,112,203);
+      getOptionValue(OPTION_PANEL2_BACKGROUND)->boolValue = true;
+      getOptionValue(OPTION_PANEL2_COLOR)->unsignedValue  =  RGB(77,112,203);
     }
 
     unsigned int getZonesCount() const override

@@ -21,6 +21,10 @@
 #include "opentx.h"
 #include <math.h>
 
+#if defined(LIBOPENUI)
+  #include "libopenui.h"
+#endif
+
 extern RTOS_MUTEX_HANDLE audioMutex;
 
 const int16_t sineValues[] =

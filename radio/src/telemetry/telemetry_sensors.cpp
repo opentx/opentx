@@ -22,6 +22,10 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
+#if defined(LIBOPENUI)
+  #include "libopenui.h"
+#endif
+
 TelemetryItem telemetryItems[MAX_TELEMETRY_SENSORS];
 uint8_t allowNewSensors;
 

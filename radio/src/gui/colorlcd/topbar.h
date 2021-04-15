@@ -49,10 +49,10 @@ class TopBar: public WidgetsContainer<MAX_TOPBAR_ZONES, MAX_TOPBAR_OPTIONS>
   
     void paint(BitmapBuffer * dc) override;
 
-    void checkEvents() override
-    {
-      invalidate();
-    }
+    void checkEvents() override;
+
+  protected:
+    uint32_t lastRefresh = 0;
 };
 
 #endif // _TOPBAR_H_

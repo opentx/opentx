@@ -20,6 +20,7 @@
 
 #include "special_functions.h"
 #include "opentx.h"
+#include "libopenui.h"
 
 #define SET_DIRTY()     storageDirty(functions == g_model.customFn ? EE_MODEL : EE_GENERAL)
 

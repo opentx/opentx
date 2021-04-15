@@ -20,7 +20,8 @@
 
 #include "opentx.h"
 #include "frsky_firmware_update.h"
-#include "libopenui/src/libopenui_file.h"
+
+#include "libopenui.h"
 
 #define PRIM_REQ_POWERUP    0
 #define PRIM_REQ_VERSION    1

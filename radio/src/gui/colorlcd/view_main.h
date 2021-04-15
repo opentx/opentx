@@ -63,12 +63,18 @@ class ViewMain: public FormWindow
     // Get the available space in the middle of the screen
     // (without decoration)
     rect_t getMainZone() const;
+
+    unsigned getMainViewsCount() const;
+    void setMainViewsCount(unsigned views);
+
+    coord_t getMainViewLeftPos(unsigned view) const;
   
   protected:
     static ViewMain * _instance;
 
-    TopBar*             topbar;
-    ViewMainDecoration* decoration;
+    unsigned            views = 0;
+    TopBar*             topbar = nullptr;
+    ViewMainDecoration* decoration = nullptr;
 
     friend class SetupWidgetsPage;
   
@@ -81,6 +87,8 @@ class ViewMain: public FormWindow
 
     void createDecoration();
     void createTopbar();
+
+    void nextView();
 };
 
 #endif // _VIEW_MAIN_H_

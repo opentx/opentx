@@ -21,7 +21,10 @@
 #include <stdint.h>
 #include "opentx.h"
 #include "diskio.h"
-#include "libopenui/src/libopenui_file.h"
+
+#if defined(LIBOPENUI)
+  #include "libopenui.h"
+#endif
 
 bool sdCardFormat()
 {

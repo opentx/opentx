@@ -19,7 +19,9 @@
  */
 
 #include "opentx.h"
+
 #include "widget_settings.h"
+#include "libopenui.h"
 
 static const rect_t widgetSettingsDialogRect = {
   LCD_W / 10, // x
@@ -51,30 +53,30 @@ WidgetSettings::WidgetSettings(Window * parent, Widget * widget) :
       case ZoneOption::Integer:
         new NumberEdit(form, grid.getFieldSlot(), option.min.signedValue, option.max.signedValue,
                        [=]() -> int {
-                           return widget->getOptionValue(optIdx)->signedValue;
+                         return widget->getOptionValue(optIdx)->signedValue;
                        },
                        [=](int32_t newValue) {
-                           widget->setOptionValue(optIdx, OPTION_VALUE_SIGNED(newValue));
+                         widget->getOptionValue(optIdx)->signedValue = newValue;
                        });
         break;
 
       case ZoneOption::Source:
         new SourceChoice(form, grid.getFieldSlot(), 0, MIXSRC_LAST_TELEM,
                          [=]() -> int16_t {
-                             return (int16_t) widget->getOptionValue(optIdx)->unsignedValue;
+                           return (int16_t) widget->getOptionValue(optIdx)->unsignedValue;
                          },
                          [=](int16_t newValue) {
-                             widget->setOptionValue(optIdx, OPTION_VALUE_UNSIGNED((uint32_t) newValue));
+                           widget->getOptionValue(optIdx)->unsignedValue = (uint32_t)newValue;
                          });
         break;
 
       case ZoneOption::Bool:
         new CheckBox(form, grid.getFieldSlot(),
                      [=]() -> uint8_t {
-                         return (uint8_t) widget->getOptionValue(optIdx)->boolValue;
+                       return (uint8_t) widget->getOptionValue(optIdx)->boolValue;
                      },
                      [=](int8_t newValue) {
-                         widget->setOptionValue(optIdx, OPTION_VALUE_BOOL((uint32_t) newValue));
+                         widget->getOptionValue(optIdx)->boolValue = newValue;
                      });
         break;
 
@@ -91,10 +93,10 @@ WidgetSettings::WidgetSettings(Window * parent, Widget * widget) :
       {
         auto tmChoice = new Choice(form, grid.getFieldSlot(), 0, TIMERS - 1,
                                    [=]() -> int {        // getValue
-                                       return (int) widget->getOptionValue(optIdx)->unsignedValue;
+                                     return (int) widget->getOptionValue(optIdx)->unsignedValue;
                                    },
                                    [=](int newValue) {   // setValue
-                                       widget->setOptionValue(optIdx, OPTION_VALUE_UNSIGNED((uint32_t) newValue));
+                                     widget->getOptionValue(optIdx)->unsignedValue = (uint32_t) newValue;
                                    });
 
         tmChoice->setTextHandler([](int value) {
@@ -108,19 +110,20 @@ WidgetSettings::WidgetSettings(Window * parent, Widget * widget) :
                          option.min.unsignedValue, // min
                          option.max.unsignedValue, // max
                          [=]() -> int16_t {        // getValue
-                             return (uint8_t) widget->getOptionValue(optIdx)->unsignedValue;
+                           return (uint8_t) widget->getOptionValue(optIdx)->unsignedValue;
                          },
                          [=](int16_t newValue) {   // setValue
-                             widget->setOptionValue(optIdx, OPTION_VALUE_UNSIGNED((uint32_t) newValue));
+                           widget->getOptionValue(optIdx)->unsignedValue = (uint32_t) newValue;
                          });
         break;
 
       case ZoneOption::Color:
-        new ColorEdit(form, grid.getFieldSlot(), [=]() -> int {        // getValue
-                          return (int) widget->getOptionValue(optIdx)->unsignedValue;
+        new ColorEdit(form, grid.getFieldSlot(),
+                      [=]() -> int {        // getValue
+                        return (int) widget->getOptionValue(optIdx)->unsignedValue;
                       },
                       [=](int newValue) {   // setValue
-                          widget->setOptionValue(optIdx, OPTION_VALUE_UNSIGNED((uint32_t) newValue));
+                        widget->getOptionValue(optIdx)->unsignedValue = (uint32_t) newValue;
                       });
         break;
     }

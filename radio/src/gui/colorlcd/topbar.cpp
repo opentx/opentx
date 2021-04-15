@@ -20,6 +20,8 @@
 
 #include "opentx.h"
 
+constexpr uint32_t TOPBAR_REFRESH = 1000 / 2; // 2 Hz
+
 TopBar::TopBar(Window * parent) :
   WidgetsContainer<MAX_TOPBAR_ZONES, MAX_TOPBAR_OPTIONS>({0, 0, LCD_W, MENU_HEADER_HEIGHT}, &g_model.topbarData)
 {
@@ -159,4 +161,13 @@ void TopBar::paint(BitmapBuffer * dc)
     }
   }
 #endif
+}
+
+void TopBar::checkEvents()
+{
+  // uint32_t now = RTOS_GET_MS();
+  // if (now - lastRefresh >= TOPBAR_REFRESH) {
+  //   lastRefresh = now;
+  //   invalidate();
+  // }
 }

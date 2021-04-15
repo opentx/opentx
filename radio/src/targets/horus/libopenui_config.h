@@ -29,7 +29,7 @@
 typedef uint16_t pixel_t;
 
 constexpr bool WRAP_FORM_FIELDS_WITHIN_PAGE = true;
-constexpr uint32_t SLIDE_SPEED_REDUCTION = 5;
+constexpr short SLIDE_SPEED_REDUCTION = 5;
 
 constexpr uint32_t MENU_HEADER_BUTTON_WIDTH =      33;
 constexpr uint32_t MENU_HEADER_BUTTONS_LEFT =      47;

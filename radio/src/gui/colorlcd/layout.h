@@ -74,28 +74,18 @@ class Layout: public LayoutBase
     {
       return "Layout";
     }
+
+    void paint(BitmapBuffer * dc) override;
 #endif
 
-    void create() override
-    {
-      setOptionValue(OPTION_TOPBAR,   OPTION_VALUE_BOOL(true));
-      setOptionValue(OPTION_FM,       OPTION_VALUE_BOOL(true));
-      setOptionValue(OPTION_SLIDERS,  OPTION_VALUE_BOOL(true));
-      setOptionValue(OPTION_TRIMS,    OPTION_VALUE_BOOL(true));
-      setOptionValue(OPTION_MIRRORED, OPTION_VALUE_BOOL(false));
-      decorate();
-    }    
+    void create() override;
   
     inline const LayoutFactory * getFactory() const
     {
       return factory;
     }
 
-    void checkEvents() override
-    {
-      LayoutBase::checkEvents();
-      decorate();
-    }
+    void checkEvents() override;
   
     bool hasTopbar() const {
       return getOptionValue(OPTION_TOPBAR)->boolValue;
@@ -123,6 +113,9 @@ class Layout: public LayoutBase
     // Decoration settings bitmask to detect updates
     uint8_t  decorationSettings = 0;
 
+    // Last time we refreshed the window
+    uint32_t lastRefresh = 0;
+  
     // Updates settings for trims, sliders, pots, etc...
     void decorate();
 

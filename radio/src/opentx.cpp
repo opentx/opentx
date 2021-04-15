@@ -22,9 +22,10 @@
 #include <io/frsky_firmware_update.h>
 
 #if defined(LIBOPENUI)
-// #include "shutdown_animation.h"
-#include "radio_calibration.h"
-#include "view_main.h"
+  #include "libopenui.h"
+  // #include "shutdown_animation.h"
+  #include "radio_calibration.h"
+  #include "view_main.h"
 #endif
 
 #if defined(PCBSKY9X)

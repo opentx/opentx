@@ -23,6 +23,7 @@
 #include "opentx.h"
 #include "view_main.h"
 #include "widget_settings.h"
+#include "libopenui.h"
 
 #define SET_DIRTY()     storageDirty(EE_MODEL)
 
@@ -172,6 +173,7 @@ class SetupWidgetsPage: public FormWindow
       auto screen = customScreens[customScreenIdx];
       if (screen) {
         screen->attach(this);
+        screen->setLeft(0);
         setRect(screen->getRect());
       }
 
@@ -200,7 +202,9 @@ class SetupWidgetsPage: public FormWindow
 #endif
       auto screen = customScreens[customScreenIdx];
       if (screen) {
-        screen->attach(ViewMain::instance());
+        auto viewMain = ViewMain::instance();
+        screen->setLeft(viewMain->getMainViewLeftPos(customScreenIdx));
+        screen->attach(viewMain);
       }
       FormWindow::deleteLater(detach, trash);
 
@@ -277,33 +281,44 @@ void ScreenAddPage::build(FormWindow * window)
 
       // First page is "User interface", subtract it
       auto  newIdx     = pageIndex - 1; 
-      
+      TRACE("ScreenAddPage: add screen: newIdx = %d", newIdx);
+
       auto& screen     = customScreens[newIdx];
       auto& screenData = g_model.screenData[newIdx];
 
+      TRACE("ScreenAddPage: add screen: screen = %p", screen);
+
       const LayoutFactory * factory = defaultLayout;
-      screen = factory->create(&screenData.layoutData);
-      strncpy(screenData.LayoutId, factory->getId(), sizeof(screenData.LayoutId));
+      if (factory) {
+        TRACE("ScreenAddPage: add screen: factory = %p", factory);
+        screen = factory->create(&screenData.layoutData);
 
-      auto tab = new ScreenSetupPage(menu, pageIndex, newIdx);
-      std::string title(STR_MAIN_VIEW_X);
-      title.back() = newIdx + '1';
-      tab->setTitle(title);
-      tab->setIcon(ICON_THEME_VIEW1 + newIdx);
+        strncpy(screenData.LayoutId, factory->getId(), sizeof(screenData.LayoutId));
+        TRACE("ScreenAddPage: add screen: LayoutId = %s", screenData.LayoutId);
 
-      // remove current tab first
-      menu->setCurrentTab(0);
-      menu->removeTab(pageIndex);
+        auto tab = new ScreenSetupPage(menu, pageIndex, newIdx);
+        std::string title(STR_MAIN_VIEW_X);
+        title.back() = newIdx + '1';
+        tab->setTitle(title);
+        tab->setIcon(ICON_THEME_VIEW1 + newIdx);
 
-      // add the new one
-      menu->addTab(tab);
-      menu->setCurrentTab(pageIndex);
+        // remove current tab first
+        menu->setCurrentTab(0);
+        menu->removeTab(pageIndex);
 
-      if (menu->getTabs() < MAX_CUSTOM_SCREENS) {
-        menu->addTab(new ScreenAddPage(menu, menu->getTabs()));
+        // add the new one
+        menu->addTab(tab);
+        menu->setCurrentTab(pageIndex);
+
+        if (menu->getTabs() < MAX_CUSTOM_SCREENS) {
+          menu->addTab(new ScreenAddPage(menu, menu->getTabs()));
+        }
+
+        storageDirty(EE_MODEL);
       }
-
-      storageDirty(EE_MODEL);
+      else {
+        TRACE("Add main view: factory is NULL");
+      }
       return 0;
   });
 }
