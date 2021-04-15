@@ -20,6 +20,7 @@
 
 #include "opentx.h"
 #include "bootloader_flash.h"
+#include "libopenui.h"
 
 bool isBootloader(const char * filename)
 {

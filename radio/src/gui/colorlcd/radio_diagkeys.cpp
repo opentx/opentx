@@ -20,6 +20,7 @@
 
 #include "opentx.h"
 #include "radio_diagkeys.h"
+#include "libopenui.h"
 
 #if defined(KEYS_GPIO_PIN_PGUP)
 constexpr uint8_t KEY_START = 0;

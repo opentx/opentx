@@ -24,6 +24,7 @@
 #include "multi_firmware_update.h"
 #include "stk500.h"
 #include "debug.h"
+#include "libopenui.h"
 
 #define UPDATE_MULTI_EXT_BIN ".bin"
 

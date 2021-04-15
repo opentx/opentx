@@ -20,6 +20,7 @@
 
 #include "opentx.h"
 #include "view_logical_switches.h"
+#include "gridlayout.h"
 
 #include <utility>
 

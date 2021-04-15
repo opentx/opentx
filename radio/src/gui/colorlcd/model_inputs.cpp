@@ -21,6 +21,7 @@
 #include "model_inputs.h"
 #include "opentx.h"
 #include "gvar_numberedit.h"
+#include "libopenui.h"
 
 #define SET_DIRTY() storageDirty(EE_MODEL)
 

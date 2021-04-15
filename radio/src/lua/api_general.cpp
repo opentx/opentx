@@ -26,6 +26,10 @@
 #include "telemetry/frsky.h"
 #include "telemetry/multi.h"
 
+#if defined(LIBOPENUI)
+  #include "libopenui.h"
+#endif
+
 #if defined(PCBX12S)
   #include "lua/lua_exports_x12s.inc"   // this line must be after lua headers
 #elif defined(RADIO_FAMILY_T16)

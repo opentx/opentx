@@ -20,6 +20,10 @@
 
 #include "opentx.h"
 
+#if defined(LIBOPENUI)
+  #include "libopenui.h"
+#endif
+
 int8_t * curveEnd[MAX_CURVES];
 
 void loadCurves()

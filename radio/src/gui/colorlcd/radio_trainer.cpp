@@ -20,6 +20,7 @@
 
 #include "radio_trainer.h"
 #include "opentx.h"
+#include "libopenui.h"
 
 #define SET_DIRTY()     storageDirty(EE_GENERAL)
 

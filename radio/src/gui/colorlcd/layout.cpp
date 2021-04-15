@@ -23,6 +23,10 @@
 #include "layouts/trims.h"
 #include "layouts/sliders.h"
 
+constexpr uint32_t LAYOUT_REFRESH = 1000 / 2; // 2 Hz
+
+Layout * customScreens[MAX_CUSTOM_SCREENS] = {};
+
 std::list<const LayoutFactory *> & getRegisteredLayouts()
 {
   static std::list<const LayoutFactory *> layouts;
@@ -100,15 +104,24 @@ void loadDefaultLayout()
 //
 void loadCustomScreens()
 {
-  for (unsigned int i = 0; i < MAX_CUSTOM_SCREENS; i++) {
+  unsigned i = 0;
+  while (i < MAX_CUSTOM_SCREENS) {
 
     auto& screen = customScreens[i];
     screen = loadLayout(g_model.screenData[i].LayoutId,
                         &g_model.screenData[i].layoutData);
 
-    if (screen) {
-      screen->attach(ViewMain::instance());
+    if (!screen) {
+      // no more layouts
+      break;
     }
+
+    // layout is ok, let's add it
+    auto viewMain = ViewMain::instance();
+    screen->attach(viewMain);
+    viewMain->setMainViewsCount(i + 1);
+    screen->setLeft(viewMain->getMainViewLeftPos(i));
+    i++;
   }
 }
 
@@ -157,6 +170,39 @@ void disposeCustomScreen(unsigned idx)
   dst = &g_model.screenData[MAX_CUSTOM_SCREENS - 1];
   len = sizeof(CustomScreenData);
   memset(dst, 0, len);
+}
+
+void Layout::create()
+{
+  memset(persistentData, 0, sizeof(PersistentData));
+
+  getOptionValue(OPTION_TOPBAR)->boolValue   = true;
+  getOptionValue(OPTION_FM)->boolValue       = true;
+  getOptionValue(OPTION_SLIDERS)->boolValue  = true;
+  getOptionValue(OPTION_TRIMS)->boolValue    = true;
+  getOptionValue(OPTION_MIRRORED)->boolValue = false;
+}    
+
+#if defined(DEBUG_WINDOWS)
+void Layout::paint(BitmapBuffer * dc)
+{
+  TRACE("### painting -> %s", getWindowDebugString().c_str());
+  //rect_t zone = getMainZone();
+  //dc->drawSolidFilledRect( zone.x, zone.y + rect.y, zone.w, zone.h, DEFAULT_BGCOLOR);
+  LayoutBase::paint(dc);
+}
+#endif
+
+void Layout::checkEvents()
+{
+  LayoutBase::checkEvents();
+  decorate();
+
+  // uint32_t now = RTOS_GET_MS();
+  // if (now - lastRefresh >= LAYOUT_REFRESH) {
+  //   lastRefresh = now;
+  //   invalidate();
+  // }
 }
 
 void Layout::decorate()

@@ -23,6 +23,8 @@
 #include "opentx.h"
 #include "tabsgroup.h"
 #include "static.h"
+#include "window.h"
+#include "font.h"
 
 template <class T>
 class DebugInfoNumber : public Window
@@ -34,7 +36,7 @@ class DebugInfoNumber : public Window
     prefix(prefix),
     suffix(suffix)
     {
-      coord_t prefixSize = getTextWidth(prefix, 0,HEADER_COLOR | FONT(XS));
+      coord_t prefixSize = getTextWidth(prefix, 0, HEADER_COLOR | FONT(XS));
       new StaticText(this, {0, 0,  prefixSize, rect.h}, prefix, 0, HEADER_COLOR | FONT(XS));
       new DynamicNumber<uint32_t>(this, {prefixSize, 0, rect.w - prefixSize, rect.h}, [] {
           return menusStack.available();

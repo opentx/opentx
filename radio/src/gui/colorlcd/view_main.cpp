@@ -31,22 +31,10 @@
 #include "view_main_decoration.h"
 #include "opentx.h"
 
-Layout * customScreens[MAX_CUSTOM_SCREENS] = {};
-
-int getMainViewsCount()
-{
-  for (int index=1; index<MAX_CUSTOM_SCREENS; index++) {
-    if (!customScreens[index]) {
-      return index + 1;
-    }
-  }
-  return MAX_CUSTOM_SCREENS;
-}
-
 ViewMain * ViewMain::_instance = nullptr;
 
 ViewMain::ViewMain():
-  FormWindow(MainWindow::instance(), { 0, 0, LCD_W, LCD_H })
+  FormWindow(MainWindow::instance(), MainWindow::instance()->getRect())
 {
 #if defined(HARDWARE_TOUCH) && !defined(HARDWARE_KEYS)
   new FabButton(this, 50, 100, ICON_MODEL,
@@ -73,7 +61,10 @@ ViewMain::ViewMain():
                    return 0;
                  }, NO_FOCUS);
 #endif
+
   createDecoration();
+  setPageWidth(getParent()->width());
+
   focusWindow = this;
 }
 
@@ -109,6 +100,26 @@ void ViewMain::adjustDecoration()
   decoration->adjustDecoration();
 }
 
+unsigned ViewMain::getMainViewsCount() const
+{
+  return views;
+}
+
+void ViewMain::setMainViewsCount(unsigned views)
+{
+  if (views > MAX_CUSTOM_SCREENS)
+    views = MAX_CUSTOM_SCREENS;
+  
+  this->views = views;
+  setInnerWidth(getParent()->width() * views);
+  //setWidth(getParent()->width() * views);
+}
+
+coord_t ViewMain::getMainViewLeftPos(unsigned view) const
+{
+  return getParent()->width() * view;
+}
+
 rect_t ViewMain::getMainZone() const
 {
   rect_t zone = decoration->getMainZone();
@@ -140,6 +151,33 @@ void ViewMain::onEvent(event_t event)
     case EVT_KEY_LONG(KEY_ENTER):
       killEvents(event);
       openMenu();
+      break;
+
+    case EVT_KEY_BREAK(KEY_PGDN):
+      killEvents(event);
+      g_model.view++;
+      if (g_model.view >= getMainViewsCount())
+        g_model.view = 0;
+      setScrollPositionX(g_model.view * pageWidth);
+      //customScreens[g_model.view]->setFocus();
+      TRACE("### switched to view #%i", g_model.view);
+      break;
+
+//TODO: these need to go away!
+// -> board code should map the keys as required
+#if defined(KEYS_GPIO_REG_UP)
+    case EVT_KEY_BREAK(KEY_PGUP):
+#else
+    case EVT_KEY_LONG(KEY_PGDN):
+#endif
+      killEvents(event);
+      if (!g_model.view)
+        g_model.view = getMainViewsCount() - 1;
+      else
+        g_model.view--;
+      setScrollPositionX(g_model.view * pageWidth);
+      //customScreens[g_model.view]->setFocus();
+      TRACE("### switched to view #%i", g_model.view);
       break;
   }
 }
@@ -187,6 +225,9 @@ void ViewMain::openMenu()
 
 void ViewMain::paint(BitmapBuffer * dc)
 {
+  TRACE("### ViewMain::paint(offset_x=%d;offset_y=%d) ###",
+        dc->getOffsetX(), dc->getOffsetY());
+
   OpenTxTheme::instance()->drawBackground(dc);
 
   if (g_model.view >= getMainViewsCount()) {
@@ -206,3 +247,28 @@ void ViewMain::createTopbar()
   topbar->load();
 }
 
+#if 0
+FormGroup * setMultiPageForm(uint8_t pages, bool focus = true)
+{
+  if (mainForm)
+    mainForm->deleteLater();
+
+  coord_t height =
+    bottomToolbarIcon >= 0 ?
+    MULTI_PAGE_FORM_HEIGHT
+    : MULTI_PAGE_FORM_WITHOUT_TOOLBAR_HEIGHT;
+
+  mainForm = new FormWindow(this,
+                            {0, MULTI_PAGE_FORM_TOP, LCD_W, height},
+                            FRSKY_PAGE_FORM_FLAGS);
+
+  mainForm->setPageWidth(LCD_W);
+  mainForm->setInnerWidth(pages * LCD_W);
+
+  if (focus) {
+    mainForm->setFocus(SET_FOCUS_DEFAULT);
+  }
+
+  return mainForm;
+}
+#endif

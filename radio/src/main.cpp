@@ -21,7 +21,7 @@
 #include "opentx.h"
 
 #if defined(LIBOPENUI)
-  #include "mainwindow.h"
+  #include "libopenui.h"
 #endif
 
 uint8_t currentSpeakerVolume = 255;

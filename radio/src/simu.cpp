@@ -383,7 +383,7 @@ void OpenTxSim::updateKeysAndSwitches(bool start)
   static FXuint trimKeys[] = { KEY_F1, KEY_F2, KEY_F3, KEY_F4, KEY_F5, KEY_F6, KEY_F7, KEY_F8, KEY_F9, KEY_F10, KEY_F11, KEY_F12 };
 #endif
 
-  for (unsigned i=0; i<NUM_TRIMS_KEYS; i++) {
+  for (unsigned i=0; i<sizeof(trimKeys)/(2*sizeof(FXuint)); i++) {
     simuSetTrim(i, getApp()->getKeyState(trimKeys[i]));
   }
 
