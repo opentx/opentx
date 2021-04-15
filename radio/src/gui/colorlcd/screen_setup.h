@@ -52,11 +52,4 @@ class ScreenSetupPage: public PageTab {
     ScreenMenu * menu;
     unsigned pageIndex;
     unsigned customScreenIndex;
-
-    // FormGroup * optionsWindow = nullptr;
-    // TextButton * setupWidgetsButton = nullptr;
-    // FormField * layoutChoice = nullptr;
-
-    void updateLayoutOptions();
-    //void disposeCustomScreen();
 };

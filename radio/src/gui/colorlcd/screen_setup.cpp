@@ -273,10 +273,10 @@ void ScreenAddPage::build(FormWindow * window)
   auto pageIndex = this->pageIndex;
   auto menu      = this->menu;
 
-  button->setPressHandler([menu,pageIndex]() -> uint8_t {
+  button->setPressHandler([menu, pageIndex]() -> uint8_t {
 
-      auto  newPageIdx = menu->getTabs();
-      auto  newIdx     = newPageIdx - 2;
+      // First page is "User interface", subtract it
+      auto  newIdx     = pageIndex - 1; 
       
       auto& screen     = customScreens[newIdx];
       auto& screenData = g_model.screenData[newIdx];
@@ -316,6 +316,40 @@ ScreenSetupPage::ScreenSetupPage(ScreenMenu * menu, unsigned pageIndex, unsigned
 {
 }
 
+static void updateLayoutOptions(FormGroup* optionsWindow, unsigned customScreenIndex) // TODO
+{
+  FormGridLayout grid;
+  optionsWindow->clear();
+
+  // Layout options...
+  int index = 0;
+  auto factory = customScreens[customScreenIndex]->getFactory();
+  if (factory) {
+    for (auto * option = factory->getOptions(); option->name; option++, index++) {
+      ZoneOptionValue * value = customScreens[customScreenIndex]->getOptionValue(index);
+
+      // Option label
+      new StaticText(optionsWindow, grid.getLabelSlot(false), option->name);
+
+      // Option value
+      switch (option->type) {
+      case ZoneOption::Bool:
+        new CheckBox(optionsWindow, grid.getFieldSlot(), GET_SET_DEFAULT(value->boolValue));
+        break;
+
+      case ZoneOption::Color:
+        new ColorEdit(optionsWindow, grid.getFieldSlot(), GET_SET_DEFAULT(value->unsignedValue));
+        break;
+
+      default:
+        break;
+      }
+      grid.nextLine();
+    }
+  }
+  optionsWindow->adjustHeight();
+}
+
 void ScreenSetupPage::build(FormWindow * window)
 {
   FormGridLayout grid;
@@ -327,39 +361,48 @@ void ScreenSetupPage::build(FormWindow * window)
   auto layoutSlot = grid.getFieldSlot();
   layoutSlot.h = 2 * PAGE_LINE_HEIGHT - 1;
 
+  // Dynamic options window...
   auto idx = customScreenIndex;
+  rect_t optRect = {0, grid.getWindowHeight(), window->width(), 0};
+  auto optionsWindow = new FormGroup(window, optRect, FORWARD_SCROLL | FORM_FORWARD_FOCUS);
+
   LayoutChoice::LayoutFactoryGetter getFactory = GET_VALUE(customScreens[idx]->getFactory());
-  LayoutChoice::LayoutFactorySetter setLayout = [idx](const LayoutFactory *factory) {
+  LayoutChoice::LayoutFactorySetter setLayout = [idx, optionsWindow](const LayoutFactory *factory) {
+    // delete any options potentially accessing
+    // the old custom screen
+    optionsWindow->clear();
     createCustomScreen(factory, idx);
+    updateLayoutOptions(optionsWindow, idx);
     SET_DIRTY();
   };
   
   auto layoutChoice = new LayoutChoice(window, layoutSlot, getFactory, setLayout);
   grid.nextLine(layoutChoice->height());
-  TRACE("layoutChoice = %p", layoutChoice);
 
   // Setup widgets button...
   auto setupWidgetsButton = new TextButton(window, grid.getFieldSlot(), STR_SETUP_WIDGETS);
-  TRACE("setupWidgetsButton = %p", setupWidgetsButton);
 
   auto menu = this->menu;
-  setupWidgetsButton->setPressHandler([idx,menu]() -> uint8_t {
+  setupWidgetsButton->setPressHandler([idx, menu]() -> uint8_t {
       new SetupWidgetsPage(menu, idx);
       return 0;
   });
   grid.nextLine();
 
-  // Dynamic options window...
-  // rect_t r = {0, grid.getWindowHeight(), LCD_W, 0};
-  // auto optionsWindow = new FormGroup(window, r, FORWARD_SCROLL | FORM_FORWARD_FOCUS);
-  // grid.addWindow(optionsWindow);
-  // updateLayoutOptions();
+  // place the options window at the right spot
+  optionsWindow->setTop(grid.getWindowHeight());
+  updateLayoutOptions(optionsWindow, idx);
+  grid.addWindow(optionsWindow);
 
+  // fix focus order due to early insertion
+  FormField::link(setupWidgetsButton, optionsWindow);
+  window->setLastField(optionsWindow);
+  
   // Prevent removing the last page
   if (customScreens[1] != nullptr) {
     auto button = new TextButton(window, grid.getFieldSlot(), STR_REMOVE_SCREEN);
     auto menu = this->menu;
-    button->setPressHandler([menu,idx]() -> uint8_t {
+    button->setPressHandler([menu, idx]() -> uint8_t {
 
       // Set the current tab to "User interface" to trigger body clearing
       menu->setCurrentTab(0);
@@ -388,44 +431,8 @@ void ScreenSetupPage::build(FormWindow * window)
       storageDirty(EE_MODEL);  
       return 0;
     });
+
+    // fix focus order due to early insertion
+    FormField::link(button, layoutChoice);
   }
-
-  // optionsWindow->adjustHeight();
-  // optionsWindow->getParent()->adjustInnerHeight();  
-}
-
-void ScreenSetupPage::updateLayoutOptions() // TODO
-{
-#if 0
-  FormGridLayout grid;
-  optionsWindow->clear();
-
-  // Layout options...
-  int index = 0;
-  auto factory = customScreen[customScreenIndex]->getFactory();
-  if (factory) {
-    for (auto * option = factory->getOptions(); option->name; option++, index++) {
-      ZoneOptionValue * value = customScreens[customScreenIndex]->getOptionValue(index);
-
-      // Option label
-      new StaticText(optionsWindow, grid.getLabelSlot(false), option->name);
-
-      // Option value
-      switch (option->type) {
-      case ZoneOption::Bool:
-        new CheckBox(optionsWindow, grid.getFieldSlot(), GET_SET_DEFAULT(value->boolValue));
-        break;
-
-      case ZoneOption::Color:
-        new ColorEdit(optionsWindow, grid.getFieldSlot(), GET_SET_DEFAULT(value->unsignedValue));
-        break;
-
-      default:
-        break;
-      }
-      grid.nextLine();
-    }
-  }
-
-#endif
 }
