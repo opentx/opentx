@@ -28,9 +28,8 @@
 #include "topbar.h"
 #include "layouts/sliders.h"
 #include "layouts/trims.h"
+#include "view_main_decoration.h"
 #include "opentx.h"
-
-constexpr coord_t MAIN_ZONE_BORDER = 10;
 
 Layout * customScreens[MAX_CUSTOM_SCREENS] = {};
 
@@ -38,7 +37,7 @@ int getMainViewsCount()
 {
   for (int index=1; index<MAX_CUSTOM_SCREENS; index++) {
     if (!customScreens[index]) {
-      return index;
+      return index + 1;
     }
   }
   return MAX_CUSTOM_SCREENS;
@@ -87,171 +86,35 @@ void ViewMain::setTopbarVisible(bool visible)
   topbar->setVisible(visible);
 }
 
-void ViewMain::setSlidersVisible(bool visible)
-{
-  //
-  // Horizontal Sliders
-  //
-  sliders[SLIDERS_POT1]->setHeight(visible ? TRIM_SQUARE_SIZE : 0);
-
-  //TODO: might change depending on hardware settings
-  if (IS_POT_MULTIPOS(POT2)) {
-    sliders[SLIDERS_POT2]->setHeight(visible ? MULTIPOS_H : 0);
-  }
-  else if (IS_POT(POT2)) {
-    sliders[SLIDERS_POT2]->setHeight(visible ? TRIM_SQUARE_SIZE : 0);
-  }
-
-#if defined(HARDWARE_POT3)
-  sliders[SLIDERS_POT3]->setHeight(visible ? TRIM_SQUARE_SIZE : 0);
-#endif
-
-  //
-  // Vertical sliders
-  //
-  sliders[SLIDERS_REAR_LEFT]->setWidth(visible ? TRIM_SQUARE_SIZE : 0);
-
-#if defined(HARDWARE_EXT1)
-  //TODO: might change depending on hardware settings
-  if (IS_POT_SLIDER_AVAILABLE(EXT1)) {
-    sliders[SLIDERS_EXT1]->setWidth(visible ? TRIM_SQUARE_SIZE : 0);
-  }
-#endif
-
-  sliders[SLIDERS_REAR_RIGHT]->setWidth(visible ? TRIM_SQUARE_SIZE : 0);
-    
-#if defined(HARDWARE_EXT2)
-  //TODO: might change depending on hardware settings
-  if (IS_POT_SLIDER_AVAILABLE(EXT2)) {
-    sliders[SLIDERS_EXT2]->setWidth(visible ? TRIM_SQUARE_SIZE : 0);
-  }
-#endif
-}
-
 void ViewMain::setTrimsVisible(bool visible)
 {
-  trims[TRIMS_LH]->setHeight(visible ? TRIM_SQUARE_SIZE : 0);
-  trims[TRIMS_RH]->setHeight(visible ? TRIM_SQUARE_SIZE : 0);
+  decoration->setTrimsVisible(visible);
+}
 
-  trims[TRIMS_LV]->setWidth(visible ? TRIM_SQUARE_SIZE : 0);
-  trims[TRIMS_RV]->setWidth(visible ? TRIM_SQUARE_SIZE : 0);
+void ViewMain::setSlidersVisible(bool visible)
+{
+  decoration->setSlidersVisible(visible);
 }
 
 void ViewMain::setFlightModeVisible(bool visible)
 {
-  flightMode->setHeight(visible ? 20 : 0);
+  decoration->setFlightModeVisible(visible);
 }
 
 void ViewMain::adjustDecoration()
 {
   // Topbar does not need any computation
   // (height() has been set in setTopbarVisible())
-  
-  // Sliders are closer to the edge and must be computed first
-  // (vertical sliders depends on topbar)
 
-  // These are located on the bottom
-  auto pos = height() - sliders[SLIDERS_POT1]->height();
-  sliders[SLIDERS_POT1]->setTop(pos);
-
-  if (sliders[SLIDERS_POT2]) {
-    auto sl = sliders[SLIDERS_POT2];
-    sl->setTop(pos);
-    if (IS_POT_MULTIPOS(POT2)) {
-      sl->setWidth(MULTIPOS_W);
-    }
-    else { // if !IS_POT(POT2) -> sliders[SLIDERS_POT2] == nullptr
-      sl->setWidth(HORIZONTAL_SLIDERS_WIDTH);
-    }
-    sl->setLeft((width() - sl->width()) / 2);
-  }
-
-#if defined(HARDWARE_POT3)
-  sliders[SLIDERS_POT3]->setTop(pos);
-#endif
-
-  // Horizontal trims are on top of horizontal sliders
-  pos -= trims[TRIMS_LH]->height();
-  trims[TRIMS_LH]->setTop(pos);
-  trims[TRIMS_RH]->setTop(pos);
-
-  // Vertical trims/slider are on top of horizontal sliders with a small margin
-  auto vertTop = pos - HMARGIN - VERTICAL_SLIDERS_HEIGHT;
-  
-  // Left side (vertical)
-  pos = left();
-  sliders[SLIDERS_REAR_LEFT]->setLeft(pos);
-  sliders[SLIDERS_REAR_LEFT]->setTop(vertTop);
-
-#if defined(HARDWARE_EXT1)
-  sliders[SLIDERS_EXT1]->setLeft(pos);
-  if (IS_POT_SLIDER_AVAILABLE(EXT1)) {
-    auto rl = sliders[SLIDERS_REAR_LEFT];
-    auto e1 = sliders[SLIDERS_EXT1];
-
-    // If EXT1 is configured as a slider,
-    // place it bellow rear-left slider (and make them smaller)
-    rl->setHeight(VERTICAL_SLIDERS_HEIGHT / 2);
-    e1->setTop(vertTop + rl->height() + HMARGIN/2);
-    e1->setHeight(rl->height());
-  }
-  else {
-    auto rl = sliders[SLIDERS_REAR_LEFT];
-    auto e1 = sliders[SLIDERS_EXT1];
-
-    // Otherwise hide the extra slider and make rear-left fullsize
-    rl->setHeight(VERTICAL_SLIDERS_HEIGHT);
-    e1->setHeight(0);
-  }
-#endif
-
-  // Right side (vertical)
-  pos = right() - sliders[SLIDERS_REAR_RIGHT]->width();
-  sliders[SLIDERS_REAR_RIGHT]->setLeft(pos);
-  sliders[SLIDERS_REAR_RIGHT]->setTop(vertTop);
-
-#if defined(HARDWARE_EXT2)
-  sliders[SLIDERS_EXT2]->setLeft(pos);
-  if (IS_POT_SLIDER_AVAILABLE(EXT2)) {
-    auto rr = sliders[SLIDERS_REAR_RIGHT];
-    auto e2 = sliders[SLIDERS_EXT2];
-
-    // If EXT2 is configured as a slider,
-    // place it bellow rear-left slider (and make them smaller)
-    rr->setHeight(VERTICAL_SLIDERS_HEIGHT / 2);
-    e2->setTop(vertTop + rr->height() + HMARGIN/2);
-    e2->setHeight(rr->height());
-  }
-  else {
-    auto rr = sliders[SLIDERS_REAR_RIGHT];
-    auto e2 = sliders[SLIDERS_EXT2];
-
-    // Otherwise hide the extra slider and make rear-left fullsize
-    rr->setHeight(VERTICAL_SLIDERS_HEIGHT);
-    e2->setHeight(0);
-  }
-#endif
-
-  // Finally place the vertical trims further from the edge
-  trims[TRIMS_LV]->setLeft(sliders[SLIDERS_REAR_LEFT]->right());
-  trims[TRIMS_LV]->setTop(vertTop);
-  trims[TRIMS_RV]->setLeft(sliders[SLIDERS_REAR_RIGHT]->left() - trims[TRIMS_RV]->width());
-  trims[TRIMS_RV]->setTop(vertTop);
-
-  //TODO: find a proper place for the flight-mode text box
+  decoration->adjustDecoration();
 }
 
 rect_t ViewMain::getMainZone() const
 {
-  rect_t zone = {
-    trims[TRIMS_LV]->right() + MAIN_ZONE_BORDER,
-    topbar->bottom() + MAIN_ZONE_BORDER,
-    0, 0 // let's compute them!
-  };
-
-  zone.w = trims[TRIMS_RV]->left() - MAIN_ZONE_BORDER - zone.x;
-  zone.h = trims[TRIMS_LH]->top()  - MAIN_ZONE_BORDER - zone.y;
-
+  rect_t zone = decoration->getMainZone();
+  zone.y += topbar->bottom();
+  zone.h -= topbar->height();
+  
   return zone;
 }
 
@@ -334,9 +197,7 @@ void ViewMain::paint(BitmapBuffer * dc)
 void ViewMain::createDecoration()
 {
   createTopbar();
-  createSliders();
-  createTrims();
-  createFlightMode();
+  decoration = new ViewMainDecoration(this, getRect());
 }
 
 void ViewMain::createTopbar()
@@ -345,93 +206,3 @@ void ViewMain::createTopbar()
   topbar->load();
 }
 
-void ViewMain::createSliders()
-{
-  // TODO:
-  //  - layout must become really dynamic (see adjustDecoration())
-  //  - components should be created in "folded" state
-  //  - it should not be required to call hasXXXX() at all
-  
-  // fixed size array, so that works
-  memset(sliders, 0, sizeof(sliders));
-    
-  rect_t r = {
-    // left
-    HMARGIN, 0,
-    HORIZONTAL_SLIDERS_WIDTH, 0
-  };
-    
-  sliders[SLIDERS_POT1] = new MainViewHorizontalSlider(this, r, CALIBRATED_POT1);
-
-  r = rect_t { 0, 0, 0, 0 };
-  if (IS_POT_MULTIPOS(POT2)) {
-    sliders[SLIDERS_POT2] = new MainView6POS(this, r, 1);
-  }
-  else if (IS_POT(POT2)) {
-    sliders[SLIDERS_POT2] = new MainViewHorizontalSlider(this, r, CALIBRATED_POT2);
-  }
-
-#if defined(HARDWARE_POT3)
-  r = rect_t {
-    // right
-    width() - HORIZONTAL_SLIDERS_WIDTH - HMARGIN, 0,
-    HORIZONTAL_SLIDERS_WIDTH, 0
-  };
-
-  sliders[SLIDERS_POT3] = new MainViewHorizontalSlider(this, r, CALIBRATED_POT3);
-#endif
-
-  r = rect_t { 0, 0, 0, 0 };
-  sliders[SLIDERS_REAR_LEFT] = new MainViewVerticalSlider(this, r, CALIBRATED_SLIDER_REAR_LEFT);
-  sliders[SLIDERS_REAR_RIGHT] = new MainViewVerticalSlider(this, r, CALIBRATED_SLIDER_REAR_RIGHT);
-
-#if defined(HARDWARE_EXT1)
-  sliders[SLIDERS_EXT1] = new MainViewVerticalSlider(this, r, CALIBRATED_POT_EXT1);
-#endif
-
-#if defined(HARDWARE_EXT2)
-  sliders[SLIDERS_EXT2] = new MainViewVerticalSlider(this, r, CALIBRATED_POT_EXT2);
-#endif
-}
-
-void ViewMain::createTrims()
-{
-  // Trim order TRIM_LH, TRIM_LV, TRIM_RV, TRIM_RH
-
-  rect_t r = {
-    left() + HMARGIN, 0,
-    HORIZONTAL_SLIDERS_WIDTH, 0
-  };
-  
-  trims[TRIMS_LH] = new MainViewHorizontalTrim(this, r, 0);
-
-  r = rect_t {
-    right() - HORIZONTAL_SLIDERS_WIDTH - HMARGIN, 0,
-    HORIZONTAL_SLIDERS_WIDTH, 0
-  };
-
-  trims[TRIMS_RH] = new MainViewHorizontalTrim(this, r, 3);
-
-  r = rect_t {
-    0, 0, 0,
-    VERTICAL_SLIDERS_HEIGHT
-  }; 
-
-  trims[TRIMS_LV] = new MainViewVerticalTrim(this, r, 1);
-  trims[TRIMS_RV] = new MainViewVerticalTrim(this, r, 2);
-}
-
-void ViewMain::createFlightMode()
-{
-  rect_t r = {
-    // centered text box (50 pixels from either edge)
-    // -> re-size once the other components are set
-    50, 0, width() - 100, 0
-  };
-
-  std::function<std::string()> getFM = []() -> std::string {
-    return g_model.flightModeData[mixerCurrentFlightMode].name;
-  };
-
-  flightMode = new DynamicText(this, r, getFM, CENTERED);
-}

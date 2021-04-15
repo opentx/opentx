@@ -53,6 +53,7 @@ set(GUI_SRC
   radio_diaganas.cpp
   radio_calibration.cpp
   view_main.cpp
+  view_main_decoration.cpp
   view_channels.cpp
   view_logical_switches.cpp
   view_statistics.cpp
