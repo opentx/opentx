@@ -27,6 +27,8 @@
 
 #include "opentx.h" // TODO for constants...
 
+#include <algorithm>
+
 TabsGroupHeader::TabsGroupHeader(TabsGroup * parent, uint8_t icon):
   FormGroup(parent, { 0, 0, LCD_W, MENU_BODY_TOP }, OPAQUE),
 #if defined(HARDWARE_TOUCH)
