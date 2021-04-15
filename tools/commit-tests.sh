@@ -142,7 +142,7 @@ fi
 if [[ " T8 X7 ALL " =~ \ ${FLAVOR}\  ]] ; then
   # OpenTX on T8
   rm -rf ./*
-  cmake "${COMMON_OPTIONS}" -DPCB=X7 -DPCBREV=TX12 -DHELI=YES -DGVARS=YES "${SRCDIR}"
+  cmake "${COMMON_OPTIONS}" -DPCB=X7 -DPCBREV=T8 -DHELI=YES -DGVARS=YES "${SRCDIR}"
   make -j"${CORES}" ${FIRMARE_TARGET}
   make -j"${CORES}" libsimulator
   make -j"${CORES}" tests-radio
