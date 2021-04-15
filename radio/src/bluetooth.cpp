@@ -21,6 +21,12 @@
 #include "opentx.h"
 #include "io/frsky_firmware_update.h"
 
+#if defined(LIBOPENUI)
+  #include "libopenui.h"
+#else
+  #include "libopenui/src/libopenui_file.h"
+#endif
+
 #if defined(LOG_BLUETOOTH)
 extern FIL g_bluetoothFile;
 #endif
