@@ -128,7 +128,9 @@ class MultiExternalUpdateDriver: public MultiFirmwareUpdateDriver
 
     void sendByte(uint8_t byte) const override
     {
+#if defined(HARDWARE_EXTERNAL_MODULE)
       extmoduleSendInvertedByte(byte);
+#endif
     }
 
     void clear() const override
@@ -595,8 +597,10 @@ bool MultiDeviceFirmwareUpdate::flashFirmware(const char * filename, ProgressHan
   INTERNAL_MODULE_OFF();
 #endif
 
+#if defined(HARDWARE_EXTERNAL_MODULE)
   uint8_t extPwr = IS_EXTERNAL_MODULE_ON();
   EXTERNAL_MODULE_OFF();
+#endif
 
 #if defined(SPORT_UPDATE_PWR_GPIO)
   uint8_t spuPwr = IS_SPORT_UPDATE_POWER_ON();
@@ -642,10 +646,12 @@ bool MultiDeviceFirmwareUpdate::flashFirmware(const char * filename, ProgressHan
   }
 #endif
 
+#if defined(HARDWARE_EXTERNAL_MODULE)
   if (extPwr) {
     EXTERNAL_MODULE_ON();
     setupPulsesExternalModule();
   }
+#endif
 
 #if defined(SPORT_UPDATE_PWR_GPIO)
   if (spuPwr) {

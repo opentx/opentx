@@ -485,8 +485,10 @@ const char * FrskyDeviceFirmwareUpdate::flashFirmware(const char * filename, Pro
   INTERNAL_MODULE_OFF();
 #endif
 
+#if defined(HARDWARE_EXTERNAL_MODULE)
   uint8_t extPwr = IS_EXTERNAL_MODULE_ON();
   EXTERNAL_MODULE_OFF();
+#endif
 
 #if defined(SPORT_UPDATE_PWR_GPIO)
   uint8_t spuPwr = IS_SPORT_UPDATE_POWER_ON();
@@ -529,10 +531,12 @@ const char * FrskyDeviceFirmwareUpdate::flashFirmware(const char * filename, Pro
   }
 #endif
 
+#if defined(HARDWARE_EXTERNAL_MODULE)
   if (extPwr) {
     EXTERNAL_MODULE_ON();
     setupPulsesExternalModule();
   }
+#endif
 
 #if defined(SPORT_UPDATE_PWR_GPIO)
   if (spuPwr) {
@@ -797,10 +801,12 @@ const char * FrskyChipFirmwareUpdate::flashFirmware(const char * filename, Progr
   }
 #endif
 
+#if defined(HARDWARE_EXTERNAL_MODULE)
   if (extPwr) {
     EXTERNAL_MODULE_ON();
     setupPulsesExternalModule();
   }
+#endif
 
 #if defined(SPORT_UPDATE_PWR_GPIO)
   if (spuPwr) {
