@@ -172,6 +172,7 @@ class SetupWidgetsPage: public FormWindow
         savedView = viewMain->getCurrentMainView();
         viewMain->setCurrentMainView(customScreenIdx);
         viewMain->bringToTop();
+        setLeft(viewMain->getMainViewLeftPos(customScreenIdx));
       }
 
       for (unsigned i = 0; i < screen->getZonesCount(); i++) {
@@ -299,6 +300,9 @@ void ScreenAddPage::build(FormWindow * window)
         tab->setTitle(title);
         tab->setIcon(ICON_THEME_VIEW1 + newIdx);
 
+        auto viewMain = ViewMain::instance();
+        viewMain->setMainViewsCount(viewMain->getMainViewsCount() + 1);
+        
         // remove current tab first
         menu->setCurrentTab(0);
         menu->removeTab(pageIndex);
