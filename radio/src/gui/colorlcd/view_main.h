@@ -27,7 +27,7 @@
 class TopBar;
 class SetupWidgetsPage;
 
-class ViewMain: public FormWindow
+class ViewMain: public Window
 {
     // singleton
     explicit ViewMain();

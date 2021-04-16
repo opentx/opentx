@@ -34,7 +34,7 @@
 ViewMain * ViewMain::_instance = nullptr;
 
 ViewMain::ViewMain():
-  FormWindow(MainWindow::instance(), MainWindow::instance()->getRect())
+  Window(MainWindow::instance(), MainWindow::instance()->getRect())
 {
 #if defined(HARDWARE_TOUCH) && !defined(HARDWARE_KEYS)
   new FabButton(this, 50, 100, ICON_MODEL,
