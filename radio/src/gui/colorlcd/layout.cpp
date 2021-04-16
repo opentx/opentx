@@ -198,11 +198,11 @@ void Layout::checkEvents()
   LayoutBase::checkEvents();
   decorate();
 
-  // uint32_t now = RTOS_GET_MS();
-  // if (now - lastRefresh >= LAYOUT_REFRESH) {
-  //   lastRefresh = now;
-  //   invalidate();
-  // }
+  uint32_t now = RTOS_GET_MS();
+  if (now - lastRefresh >= LAYOUT_REFRESH) {
+    lastRefresh = now;
+    invalidate();
+  }
 }
 
 void Layout::decorate()
