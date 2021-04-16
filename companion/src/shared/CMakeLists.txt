@@ -18,6 +18,7 @@ set(shared_HDRS
   autoprecisioncombobox.h
   autotimeedit.h
   autospinbox.h
+  autoslider.h
 )
 
 qt5_wrap_cpp(shared_SRCS ${shared_HDRS})
