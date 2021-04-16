@@ -74,7 +74,10 @@ class ViewMain: public Window
     void setCurrentMainView(unsigned view);
     void nextMainView();
     void previousMainView();
-  
+
+    void setScrollPositionX(coord_t value) override;
+    void setScrollPositionY(coord_t value) override;
+
 #if defined(HARDWARE_KEYS)
     void onEvent(event_t event) override;
 #endif
