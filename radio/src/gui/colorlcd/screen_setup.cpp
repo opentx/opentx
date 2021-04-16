@@ -143,7 +143,10 @@ class SetupWidgetsPageSlot: public Button
     void paint(BitmapBuffer * dc) override
     {
       if (hasFocus()) {
-        dc->drawRect(0, 0, width()-2, height()-2, 2, DOTTED, CHECKBOX_COLOR);
+        dc->drawRect(0, 0, width()-1, height()-1, 2, STASHED, CHECKBOX_COLOR);
+      }
+      else {
+        dc->drawSolidRect(0, 0, width()-1, height()-1, 2, LINE_COLOR);
       }
     }
 };
