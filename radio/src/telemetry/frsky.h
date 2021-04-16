@@ -259,9 +259,10 @@ inline uint8_t TELEMETRY_RSSI()
   return telemetryData.rssi.value();
 }
 
-constexpr uint8_t START_STOP = 0x7E;
-constexpr uint8_t BYTE_STUFF = 0x7D;
-constexpr uint8_t STUFF_MASK = 0x20;
+constexpr uint8_t START_STOP    = 0x7E;
+constexpr uint8_t BYTE_STUFF    = 0x7D;
+constexpr uint8_t STUFF_MASK    = 0x20;
+constexpr uint8_t TRAINER_FRAME = 0x80;
 
 typedef enum {
   TS_IDLE = 0,  // waiting for 0x5e frame marker
