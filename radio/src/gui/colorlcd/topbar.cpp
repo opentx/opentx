@@ -43,9 +43,18 @@ rect_t TopBar::getZone(unsigned int index) const
   };
 }
 
-void TopBar::setVisible(bool visible)
+void TopBar::setVisible(float visible) // 0.0 -> 1.0
 {
-  setHeight(visible ? MENU_HEADER_HEIGHT : 0);
+  if (visible == 0.0) {
+    setTop(-(int)MENU_HEADER_HEIGHT);
+  }
+  else if (visible == 1.0) {
+    setTop(0);
+  }
+  else if (visible > 0.0 && visible < 1.0){
+    float top = - (float)MENU_HEADER_HEIGHT * (1.0 - visible);
+    setTop((coord_t)top);
+  }
 }
 
 const char * const STR_MONTHS[] = TR_MONTHS;

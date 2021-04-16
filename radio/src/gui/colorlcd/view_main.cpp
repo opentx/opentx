@@ -72,7 +72,7 @@ ViewMain::~ViewMain()
 {
 }
 
-void ViewMain::setTopbarVisible(bool visible)
+void ViewMain::setTopbarVisible(float visible)
 {
   topbar->setVisible(visible);
 }
@@ -98,8 +98,9 @@ coord_t ViewMain::getMainViewLeftPos(unsigned view) const
 
 rect_t ViewMain::getMainZone(rect_t zone) const
 {
-  zone.y += topbar->bottom();
-  zone.h -= topbar->height();
+  auto visibleHeight = topbar->bottom() - zone.y;
+  zone.y += visibleHeight;
+  zone.h -= visibleHeight;
   
   return zone;
 }
@@ -142,16 +143,22 @@ void ViewMain::setScrollPositionX(coord_t value)
   Window::setScrollPositionX(value);
   topbar->setLeft(getScrollPositionX());
 
-  auto pageIdx = getPageIndex();
-  if (pageIdx != g_model.view) {
-    g_model.view = pageIdx;
-    if (customScreens[pageIdx]) {
-      // crude on/off for now
-      setTopbarVisible(customScreens[pageIdx]->hasTopbar());
-      customScreens[pageIdx]->decorate();
-      //TODO: compute topbar visibility
-      //auto relativeScrollPosition = getScrollPositionX() % pageWidth;
-    }
+  auto newIdx = getPageIndex();
+  if (newIdx != g_model.view) {
+
+    auto oldIdx = g_model.view;
+    // auto hadTopbar = customScreens[oldIdx]->hasTopbar();
+    // auto willHaveTopbar = customScreens[newIdx]->hasTopbar();
+
+    // update current view
+    g_model.view = newIdx;
+
+    // crude on/off for now
+    setTopbarVisible(customScreens[pageIdx]->hasTopbar());
+    customScreens[pageIdx]->decorate();
+
+    //TODO: compute topbar visibility
+    //auto relativeScrollPosition = getScrollPositionX() % pageWidth;
   }
 }
 
