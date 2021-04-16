@@ -197,7 +197,7 @@ class SetupWidgetsPage: public FormWindow
         auto viewMain = ViewMain::instance();
         screen->attach(viewMain);
         screen->setRect(getRect());
-        viewMain->setCurrentMainView(customScreenIdx);
+        viewMain->setCurrentMainView(savedView);
       }
       FormWindow::deleteLater(detach, trash);
 
