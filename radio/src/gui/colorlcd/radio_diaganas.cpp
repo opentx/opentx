@@ -46,6 +46,19 @@ class RadioAnalogsDiagsWindow: public Window {
         drawHexNumber(dc, x + 3 * 15 - 1, y, anaIn(i));
         dc->drawNumber(x + ANA_OFFSET, y, (int16_t) calibratedAnalogs[CONVERT_MODE(i)] * 25 / 256, RIGHT);
       }
+
+#if defined(HARDWARE_TOUCH)
+      constexpr coord_t y = MENU_CONTENT_TOP + 6 * FH;
+
+      if (touchState.event != TE_NONE && touchState.event != TE_SLIDE_END) {
+        coord_t x = dc->drawText(MENUS_MARGIN_LEFT, y, STR_TOUCH_PANEL);
+        x = dc->drawNumber(x + 5, y, touchState.x);
+        x = dc->drawText(x, y, ":");
+        dc->drawNumber(x, y, touchState.y);
+        dc->drawLine(touchState.x - 10, touchState.y - 8 - parent->top(), touchState.x + 10, touchState.y + 8 - parent->top(), SOLID, 0);
+        dc->drawLine(touchState.x - 10, touchState.y + 8 - parent->top(), touchState.x + 10, touchState.y - 8- parent->top(), SOLID, 0);
+      }
+#endif
     };
 
   protected:
