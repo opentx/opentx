@@ -152,7 +152,7 @@ class SetupWidgetsPage: public FormWindow
 {
   public:
   SetupWidgetsPage(ScreenMenu* menu, uint8_t customScreenIdx):
-      FormWindow(ViewMain::instance(), {0, 0, 0, 0}, /*OPAQUE |*/ FORM_FORWARD_FOCUS),
+    FormWindow(ViewMain::instance(), {0, 0, 0, 0}, FORM_FORWARD_FOCUS),
       menu(menu),
       customScreenIdx(customScreenIdx)
     {
@@ -163,6 +163,7 @@ class SetupWidgetsPage: public FormWindow
       if (screen) {
         screen->attach(this);
         setRect(screen->getRect());
+        screen->setLeft(0);
 
         auto viewMain = ViewMain::instance();
         savedView = viewMain->getCurrentMainView();
@@ -195,6 +196,7 @@ class SetupWidgetsPage: public FormWindow
       if (screen) {
         auto viewMain = ViewMain::instance();
         screen->attach(viewMain);
+        screen->setRect(getRect());
         viewMain->setCurrentMainView(customScreenIdx);
       }
       FormWindow::deleteLater(detach, trash);
