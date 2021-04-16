@@ -47,7 +47,7 @@ before_install:
   - sudo ln -sf /usr/bin/python3 /usr/bin/python
   - python3 -m pip install pip==20.3.3
   - sudo apt-get install python3-setuptools
-  - python3 -m pip install pillow clang
+  - python3 -m pip install pillow==7.2.0 clang
 
 script:
   - ./tools/commit-tests.sh
