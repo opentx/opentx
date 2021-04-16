@@ -195,9 +195,7 @@ void Layout::create()
 #if defined(DEBUG_WINDOWS)
 void Layout::paint(BitmapBuffer * dc)
 {
-  TRACE("### painting -> %s", getWindowDebugString().c_str());
-  //rect_t zone = getMainZone();
-  //dc->drawSolidFilledRect( zone.x, zone.y + rect.y, zone.w, zone.h, DEFAULT_BGCOLOR);
+  TRACE_WINDOW("# painting -> %s", getWindowDebugString().c_str());
   LayoutBase::paint(dc);
 }
 #endif
@@ -211,6 +209,8 @@ void Layout::checkEvents()
   if (now - lastRefresh >= LAYOUT_REFRESH) {
     lastRefresh = now;
     invalidate();
+
+    TRACE_WINDOW(("# %s refresh: %s", factory->getId(), getWindowDebugString().c_str());
   }
 }
 
