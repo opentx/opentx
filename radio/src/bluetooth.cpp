@@ -217,10 +217,10 @@ void Bluetooth::processTrainerByte(uint8_t data)
 
   if (bufferIndex >= BLUETOOTH_PACKET_SIZE) {
     uint8_t crc = 0x00;
-    for (int i=0; i<(BLUETOOTH_PACKET_SIZE-1); i++) {
+    for (int i = 0; i < BLUETOOTH_PACKET_SIZE - 1; i++) {
       crc ^= buffer[i];
     }
-    if (crc == buffer[BLUETOOTH_PACKET_SIZE-1]) {
+    if (crc == buffer[BLUETOOTH_PACKET_SIZE - 1]) {
       if (buffer[0] == TRAINER_FRAME) {
         processTrainerFrame(buffer);
       }
