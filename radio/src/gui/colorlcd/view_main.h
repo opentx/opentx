@@ -50,8 +50,8 @@ class ViewMain: public Window
     }
 #endif
 
-    // Set topbar visibility
-    void setTopbarVisible(bool visible);
+    // Set topbar visibility [0.0 -> 1.0]
+    void setTopbarVisible(float visible);
 
     // Get the available space in the middle of the screen
     // (without topbar)
