@@ -138,6 +138,18 @@ void ViewMain::previousMainView()
   setCurrentMainView(view);
 }
 
+void ViewMain::setScrollPositionX(coord_t value)
+{
+  Window::setScrollPositionX(value);
+  topbar->setLeft(getScrollPositionX());
+}
+
+void ViewMain::setScrollPositionY(coord_t value)
+{
+  Window::setScrollPositionY(value);
+  topbar->setTop(getScrollPositionY());
+}
+
 #if defined(HARDWARE_KEYS)
 void ViewMain::onEvent(event_t event)
 {
