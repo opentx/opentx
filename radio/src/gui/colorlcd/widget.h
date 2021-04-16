@@ -34,7 +34,7 @@
 #endif
 
 class WidgetFactory;
-class Widget : public FormField
+class Widget : public Window
 {
   public:
     struct PersistentData {
@@ -42,7 +42,7 @@ class Widget : public FormField
     };
 
     Widget(const WidgetFactory * factory, FormGroup * parent, const rect_t & rect, PersistentData * persistentData):
-      FormField(parent, rect),
+      Window(parent, rect),
       factory(factory),
       persistentData(persistentData)
     {
@@ -84,11 +84,6 @@ class Widget : public FormField
       return persistentData;
     }
     
-    void paint(BitmapBuffer * dc) override
-    {
-      FormField::paint(dc);
-    }
-  
     virtual void background()
     {
     }
