@@ -137,17 +137,6 @@ class SetupWidgetsPageSlot: public Button
           }
 
           return 0;
-          // }
-          // else {
-          //   Menu * menu = new Menu(this);
-          //   for (auto factory: getRegisteredWidgets()) {
-          //     menu->addLine(factory->getName(), [=]() {
-          //         if (widget) widget->deleteLater();
-          //         widget = screen->createWidget(slotIndex, factory);
-          //     });
-          //   }
-          // }
-          // return 0;
       });
     }
 
@@ -163,7 +152,7 @@ class SetupWidgetsPage: public FormWindow
 {
   public:
   SetupWidgetsPage(ScreenMenu* menu, uint8_t customScreenIdx):
-      FormWindow(ViewMain::instance(), {0, 0, LCD_W, LCD_H}, /*OPAQUE |*/ FORM_FORWARD_FOCUS),
+      FormWindow(ViewMain::instance(), {0, 0, 0, 0}, /*OPAQUE |*/ FORM_FORWARD_FOCUS),
       menu(menu),
       customScreenIdx(customScreenIdx)
     {
@@ -173,11 +162,13 @@ class SetupWidgetsPage: public FormWindow
       auto screen = customScreens[customScreenIdx];
       if (screen) {
         screen->attach(this);
-        screen->setLeft(0);
         setRect(screen->getRect());
-      }
 
-      ViewMain::instance()->bringToTop();
+        auto viewMain = ViewMain::instance();
+        savedView = viewMain->getCurrentMainView();
+        viewMain->setCurrentMainView(customScreenIdx);
+        viewMain->bringToTop();
+      }
 
       for (unsigned i = 0; i < screen->getZonesCount(); i++) {
         auto rect = screen->getZone(i);
@@ -203,8 +194,8 @@ class SetupWidgetsPage: public FormWindow
       auto screen = customScreens[customScreenIdx];
       if (screen) {
         auto viewMain = ViewMain::instance();
-        screen->setLeft(viewMain->getMainViewLeftPos(customScreenIdx));
         screen->attach(viewMain);
+        viewMain->setCurrentMainView(customScreenIdx);
       }
       FormWindow::deleteLater(detach, trash);
 
@@ -228,6 +219,7 @@ class SetupWidgetsPage: public FormWindow
   protected:
     ScreenMenu* menu;
     uint8_t customScreenIdx;
+    unsigned savedView = 0;
 
     // void paint(BitmapBuffer * dc) override
     // {

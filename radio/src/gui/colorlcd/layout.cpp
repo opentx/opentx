@@ -22,6 +22,7 @@
 #include "view_main.h"
 #include "layouts/trims.h"
 #include "layouts/sliders.h"
+#include "view_main_decoration.h"
 
 constexpr uint32_t LAYOUT_REFRESH = 1000 / 2; // 2 Hz
 
@@ -172,6 +173,14 @@ void disposeCustomScreen(unsigned idx)
   memset(dst, 0, len);
 }
 
+Layout::Layout(const LayoutFactory * factory, PersistentData * persistentData):
+  LayoutBase({0, 0, LCD_W, LCD_H}, persistentData),
+  factory(factory),
+  decoration(new ViewMainDecoration(this, getRect()))
+{
+  decorate();
+}
+
 void Layout::create()
 {
   memset(persistentData, 0, sizeof(PersistentData));
@@ -205,6 +214,26 @@ void Layout::checkEvents()
   }
 }
 
+void Layout::setTrimsVisible(bool visible)
+{
+  decoration->setTrimsVisible(visible);
+}
+
+void Layout::setSlidersVisible(bool visible)
+{
+  decoration->setSlidersVisible(visible);
+}
+
+void Layout::setFlightModeVisible(bool visible)
+{
+  decoration->setFlightModeVisible(visible);
+}
+
+void Layout::adjustDecoration()
+{
+  decoration->adjustDecoration();
+}
+
 void Layout::decorate()
 {
   // Check if deco setting are still up-to-date
@@ -222,23 +251,29 @@ void Layout::decorate()
   // Save settings
   decorationSettings = checkSettings;
 
-  auto viewMain = ViewMain::instance();
-
   // Set visible decoration
-  viewMain->setTopbarVisible(hasTopbar());
-  viewMain->setSlidersVisible(hasSliders());
-  viewMain->setTrimsVisible(hasTrims());
-  viewMain->setFlightModeVisible(hasFlightMode());
+  ViewMain::instance()->setTopbarVisible(hasTopbar());
+  setSlidersVisible(hasSliders());
+  setTrimsVisible(hasTrims());
+  setFlightModeVisible(hasFlightMode());
 
   // Re-compute positions
-  viewMain->adjustDecoration();
+  adjustDecoration();
 
   // and update relevant windows
   updateZones();
-  invalidate();
+
+  // probably not needed
+  //invalidate();
+}
+
+void Layout::createDecoration()
+{
 }
 
 rect_t Layout::getMainZone() const
 {
-  return ViewMain::instance()->getMainZone();
+  rect_t zone = decoration->getMainZone();
+  return ViewMain::instance()->getMainZone(zone);
 }    
+

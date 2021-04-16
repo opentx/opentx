@@ -25,7 +25,6 @@
 #include <memory>
 
 class TopBar;
-class ViewMainDecoration;
 class SetupWidgetsPage;
 
 class ViewMain: public FormWindow
@@ -51,18 +50,12 @@ class ViewMain: public FormWindow
     }
 #endif
 
-    // Set topbar & decoration visibility
+    // Set topbar visibility
     void setTopbarVisible(bool visible);
-    void setTrimsVisible(bool visible);
-    void setSlidersVisible(bool visible);
-    void setFlightModeVisible(bool visible);
-
-    // Re-calculate positions
-    void adjustDecoration();
 
     // Get the available space in the middle of the screen
-    // (without decoration)
-    rect_t getMainZone() const;
+    // (without topbar)
+    rect_t getMainZone(rect_t zone) const;
 
     unsigned getMainViewsCount() const;
     void setMainViewsCount(unsigned views);
@@ -72,11 +65,15 @@ class ViewMain: public FormWindow
   protected:
     static ViewMain * _instance;
 
-    unsigned            views = 0;
-    TopBar*             topbar = nullptr;
-    ViewMainDecoration* decoration = nullptr;
+    unsigned views = 0;
+    TopBar*  topbar = nullptr;
 
     friend class SetupWidgetsPage;
+
+    unsigned getCurrentMainView() const;
+    void setCurrentMainView(unsigned view);
+    void nextMainView();
+    void previousMainView();
   
 #if defined(HARDWARE_KEYS)
     void onEvent(event_t event) override;
@@ -84,11 +81,7 @@ class ViewMain: public FormWindow
     void paint(BitmapBuffer * dc) override;
 
     void openMenu();
-
-    void createDecoration();
     void createTopbar();
-
-    void nextView();
 };
 
 #endif // _VIEW_MAIN_H_

@@ -32,6 +32,7 @@ constexpr coord_t TRIM_SQUARE_SIZE = 17;
 constexpr coord_t MAIN_ZONE_BORDER = 10;
 
 class LayoutFactory;
+class ViewMainDecoration;
 
 #define LAYOUT_COMMON_OPTIONS \
   { STR_TOP_BAR, ZoneOption::Bool },         \
@@ -62,12 +63,7 @@ class Layout: public LayoutBase
       OPTION_LAST_DEFAULT=OPTION_MIRRORED
     };
   
-    Layout(const LayoutFactory * factory, PersistentData * persistentData):
-      LayoutBase({0, 0, LCD_W, LCD_H}, persistentData),
-      factory(factory)
-    {
-      decorate();
-    }
+    Layout(const LayoutFactory * factory, PersistentData * persistentData);
 
 #if defined(DEBUG_WINDOWS)
     std::string getName() const override
@@ -107,8 +103,17 @@ class Layout: public LayoutBase
       return getOptionValue(OPTION_MIRRORED)->boolValue;
     }
 
+    // Set decoration visibility
+    void setTrimsVisible(bool visible);
+    void setSlidersVisible(bool visible);
+    void setFlightModeVisible(bool visible);
+
+    // Re-calculate positions
+    void adjustDecoration();
+
   protected:
-    const LayoutFactory * factory;
+    const LayoutFactory * factory  = nullptr;
+    ViewMainDecoration* decoration = nullptr;
 
     // Decoration settings bitmask to detect updates
     uint8_t  decorationSettings = 0;
@@ -118,6 +123,8 @@ class Layout: public LayoutBase
   
     // Updates settings for trims, sliders, pots, etc...
     void decorate();
+
+    void createDecoration();
 
     // Get the available space for widgets
     rect_t getMainZone() const;

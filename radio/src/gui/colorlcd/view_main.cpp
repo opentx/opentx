@@ -62,7 +62,7 @@ ViewMain::ViewMain():
                  }, NO_FOCUS);
 #endif
 
-  createDecoration();
+  createTopbar();
   setPageWidth(getParent()->width());
 
   focusWindow = this;
@@ -77,29 +77,6 @@ void ViewMain::setTopbarVisible(bool visible)
   topbar->setVisible(visible);
 }
 
-void ViewMain::setTrimsVisible(bool visible)
-{
-  decoration->setTrimsVisible(visible);
-}
-
-void ViewMain::setSlidersVisible(bool visible)
-{
-  decoration->setSlidersVisible(visible);
-}
-
-void ViewMain::setFlightModeVisible(bool visible)
-{
-  decoration->setFlightModeVisible(visible);
-}
-
-void ViewMain::adjustDecoration()
-{
-  // Topbar does not need any computation
-  // (height() has been set in setTopbarVisible())
-
-  decoration->adjustDecoration();
-}
-
 unsigned ViewMain::getMainViewsCount() const
 {
   return views;
@@ -112,7 +89,6 @@ void ViewMain::setMainViewsCount(unsigned views)
   
   this->views = views;
   setInnerWidth(getParent()->width() * views);
-  //setWidth(getParent()->width() * views);
 }
 
 coord_t ViewMain::getMainViewLeftPos(unsigned view) const
@@ -120,13 +96,46 @@ coord_t ViewMain::getMainViewLeftPos(unsigned view) const
   return getParent()->width() * view;
 }
 
-rect_t ViewMain::getMainZone() const
+rect_t ViewMain::getMainZone(rect_t zone) const
 {
-  rect_t zone = decoration->getMainZone();
   zone.y += topbar->bottom();
   zone.h -= topbar->height();
   
   return zone;
+}
+
+unsigned ViewMain::getCurrentMainView() const
+{
+  return g_model.view;
+}
+
+void ViewMain::setCurrentMainView(unsigned view)
+{
+  if (view < getMainViewsCount()) {
+    g_model.view = view;
+    setScrollPositionX(g_model.view * pageWidth);
+    TRACE("### switched to view #%i", g_model.view);
+  }
+}
+
+void ViewMain::nextMainView()
+{
+  auto view = getCurrentMainView();
+  if (++view >= getMainViewsCount())
+    view = 0;
+
+  setCurrentMainView(view);
+}
+
+void ViewMain::previousMainView()
+{
+  auto view = getCurrentMainView();
+  if (view > 0)
+    view--;  
+  else
+    view = getMainViewsCount() - 1;
+
+  setCurrentMainView(view);
 }
 
 #if defined(HARDWARE_KEYS)
@@ -155,12 +164,7 @@ void ViewMain::onEvent(event_t event)
 
     case EVT_KEY_BREAK(KEY_PGDN):
       killEvents(event);
-      g_model.view++;
-      if (g_model.view >= getMainViewsCount())
-        g_model.view = 0;
-      setScrollPositionX(g_model.view * pageWidth);
-      //customScreens[g_model.view]->setFocus();
-      TRACE("### switched to view #%i", g_model.view);
+      nextMainView();
       break;
 
 //TODO: these need to go away!
@@ -171,13 +175,7 @@ void ViewMain::onEvent(event_t event)
     case EVT_KEY_LONG(KEY_PGDN):
 #endif
       killEvents(event);
-      if (!g_model.view)
-        g_model.view = getMainViewsCount() - 1;
-      else
-        g_model.view--;
-      setScrollPositionX(g_model.view * pageWidth);
-      //customScreens[g_model.view]->setFocus();
-      TRACE("### switched to view #%i", g_model.view);
+      previousMainView();
       break;
   }
 }
@@ -233,12 +231,6 @@ void ViewMain::paint(BitmapBuffer * dc)
   if (g_model.view >= getMainViewsCount()) {
     g_model.view = 0;
   }
-}
-
-void ViewMain::createDecoration()
-{
-  createTopbar();
-  decoration = new ViewMainDecoration(this, getRect());
 }
 
 void ViewMain::createTopbar()
