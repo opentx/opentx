@@ -463,7 +463,6 @@ set(TARGET_SRC
   ${TARGET_SRC}
   ${LED_DRIVER}
   backlight_driver.cpp
-  extmodule_driver.cpp
   trainer_driver.cpp
   ../common/arm/stm32/timers_driver.cpp
   ../common/arm/stm32/audio_dac_driver.cpp
@@ -523,6 +522,10 @@ if(INTERNAL_MODULE_PPM)
 endif()
 
 if(EXTERNAL_MODULE)
+  set(TARGET_SRC
+    ${TARGET_SRC}
+    extmodule_driver.cpp
+    )
   add_definitions(-DHARDWARE_EXTERNAL_MODULE)
 endif()
 

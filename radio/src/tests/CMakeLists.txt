@@ -9,8 +9,8 @@ if(GTEST_INCDIR AND GTEST_SRCDIR AND Qt5Widgets_FOUND)
   set(TESTS_BUILD_PATH ${CMAKE_CURRENT_BINARY_DIR})
   configure_file(${RADIO_SRC_DIR}/tests/location.h.in ${CMAKE_CURRENT_BINARY_DIR}/location.h @ONLY)
   include_directories(${CMAKE_CURRENT_BINARY_DIR})
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS_DEBUG} -O0")
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} -O0 ${WARNING_FLAGS}")
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS_DEBUG} -O0 -fsanitize=address")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS_DEBUG} -O0 ${WARNING_FLAGS} -fsanitize=address")
   use_cxx11()  # ensure gnu++11 in CXX_FLAGS with CMake < 3.1
 
   if(PCB STREQUAL X12S OR PCB STREQUAL X10)

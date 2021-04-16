@@ -49,7 +49,7 @@ class MainViewSlider : public Window
     void checkEvents() override
     {
       Window::checkEvents();
-      int8_t newValue = getValue();
+      int16_t newValue = getValue();
       if (value != newValue) {
         value = newValue;
         invalidate();

@@ -102,10 +102,12 @@ void sendSynchronousPulses(uint8_t runMask)
   }
 #endif
 
+#if defined(HARDWARE_EXTERNAL_MODULE)
   if ((runMask & (1 << EXTERNAL_MODULE)) && isModuleSynchronous(EXTERNAL_MODULE)) {
     if (setupPulsesExternalModule())
       extmoduleSendNextFrame();
   }
+#endif
 }
 
 uint32_t nextMixerTime[NUM_MODULES];

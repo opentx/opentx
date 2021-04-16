@@ -218,6 +218,7 @@ uint8_t getRequiredProtocol(uint8_t module)
   return protocol;
 }
 
+#if defined(HARDWARE_EXTERNAL_MODULE)
 void enablePulsesExternalModule(uint8_t protocol)
 {
   // start new protocol hardware here
@@ -444,6 +445,7 @@ bool setupPulsesExternalModule(uint8_t protocol)
       return false;
   }
 }
+#endif
 
 #if defined(HARDWARE_INTERNAL_MODULE)
 static void enablePulsesInternalModule(uint8_t protocol)
@@ -601,6 +603,7 @@ bool setupPulsesInternalModule()
 }
 #endif
 
+#if defined(HARDWARE_EXTERNAL_MODULE)
 void stopPulsesExternalModule()
 {
   if (moduleState[EXTERNAL_MODULE].protocol != PROTOCOL_CHANNELS_UNINITIALIZED) {
@@ -625,6 +628,7 @@ bool setupPulsesExternalModule()
     return setupPulsesExternalModule(protocol);
   }
 }
+#endif
 
 void setCustomFailsafe(uint8_t moduleIndex)
 {
