@@ -2158,15 +2158,16 @@ class ModuleUnionField: public UnionField<unsigned int> {
         module(module)
       {
         internalField.Append(new UnsignedField<3>(this, module.access.receivers));
-        internalField.Append(new SpareBitsField<5>(this));
+        internalField.Append(new SpareBitsField<4>(this));
+        internalField.Append(new UnsignedField<1>(this, module.access.racingMode));
 
-        for (int i=0; i<PXX2_MAX_RECEIVERS_PER_MODULE; i++)
+        for (int i = 0; i < PXX2_MAX_RECEIVERS_PER_MODULE; i++)
           internalField.Append(new CharField<8>(this, receiverName[i]));
 
         memset(receiverName, 0, sizeof(receiverName));
       }
 
-      bool select(const unsigned int& attr) const override
+      bool select(const unsigned int & attr) const override
       {
         return attr >= PULSES_ACCESS_ISRM && attr <= PULSES_ACCESS_R9M_LITE_PRO;
       }
