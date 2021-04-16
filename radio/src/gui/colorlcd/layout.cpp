@@ -210,7 +210,7 @@ void Layout::checkEvents()
     lastRefresh = now;
     invalidate();
 
-    TRACE_WINDOW(("# %s refresh: %s", factory->getId(), getWindowDebugString().c_str());
+    TRACE_WINDOW("# %s refresh: %s", factory->getId(), getWindowDebugString().c_str());
   }
 }
 
