@@ -235,7 +235,7 @@ void ViewMain::openMenu()
 
 void ViewMain::paint(BitmapBuffer * dc)
 {
-  TRACE("### ViewMain::paint(offset_x=%d;offset_y=%d) ###",
+  TRACE_WINDOWS("### ViewMain::paint(offset_x=%d;offset_y=%d) ###",
         dc->getOffsetX(), dc->getOffsetY());
 
   OpenTxTheme::instance()->drawBackground(dc);

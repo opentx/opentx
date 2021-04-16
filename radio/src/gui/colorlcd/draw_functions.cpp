@@ -374,7 +374,7 @@ void drawSourceCustomValue(BitmapBuffer * dc, coord_t x, coord_t y, source_t sou
 {
   if (source >= MIXSRC_FIRST_TELEM) {
     source = (source-MIXSRC_FIRST_TELEM) / 3;
-    drawSensorCustomValue(dc, y, source, value, flags);
+    drawSensorCustomValue(dc, x, y, source, value, flags);
   }
   else if (source >= MIXSRC_FIRST_TIMER || source == MIXSRC_TX_TIME) {
     // TODO if (value < 0) flags |= BLINK|INVERS;
