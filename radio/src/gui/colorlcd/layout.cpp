@@ -195,7 +195,7 @@ void Layout::create()
 #if defined(DEBUG_WINDOWS)
 void Layout::paint(BitmapBuffer * dc)
 {
-  TRACE_WINDOW("# painting -> %s", getWindowDebugString().c_str());
+  TRACE_WINDOWS("# painting -> %s", getWindowDebugString().c_str());
   LayoutBase::paint(dc);
 }
 #endif
@@ -210,7 +210,9 @@ void Layout::checkEvents()
     lastRefresh = now;
     invalidate();
 
-    TRACE_WINDOW("# %s refresh: %s", factory->getId(), getWindowDebugString().c_str());
+#if defined(DEBUG_WINDOWS)
+    TRACE_WINDOWS("# %s refresh: %s", factory->getId(), getWindowDebugString().c_str());
+#endif
   }
 }
 
