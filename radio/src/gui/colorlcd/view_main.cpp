@@ -112,8 +112,7 @@ unsigned ViewMain::getCurrentMainView() const
 void ViewMain::setCurrentMainView(unsigned view)
 {
   if (view < getMainViewsCount()) {
-    g_model.view = view;
-    setScrollPositionX(g_model.view * pageWidth);
+    setScrollPositionX(view * pageWidth);
     TRACE("### switched to view #%i", g_model.view);
   }
 }
@@ -142,10 +141,22 @@ void ViewMain::setScrollPositionX(coord_t value)
 {
   Window::setScrollPositionX(value);
   topbar->setLeft(getScrollPositionX());
+
+  auto pageIdx = getPageIndex();
+  if (pageIdx != g_model.view) {
+    g_model.view = pageIdx;
+    // crude on/off for now
+    setTopbarVisible(customScreens[pageIdx]->hasTopbar());
+    customScreens[pageIdx]->decorate();
+    //TODO: compute topbar visibility
+    //auto relativeScrollPosition = getScrollPositionX() % pageWidth;
+  }
 }
 
 void ViewMain::setScrollPositionY(coord_t value)
 {
+  // this one is not used yet, but could
+  // usefull to place the screens upwards
   Window::setScrollPositionY(value);
   topbar->setTop(getScrollPositionY());
 }
