@@ -62,6 +62,11 @@ class ViewMain: public Window
 
     coord_t getMainViewLeftPos(unsigned view) const;
   
+    unsigned getCurrentMainView() const;
+    void setCurrentMainView(unsigned view);
+    void nextMainView();
+    void previousMainView();
+
   protected:
     static ViewMain * _instance;
 
@@ -69,11 +74,6 @@ class ViewMain: public Window
     TopBar*  topbar = nullptr;
 
     friend class SetupWidgetsPage;
-
-    unsigned getCurrentMainView() const;
-    void setCurrentMainView(unsigned view);
-    void nextMainView();
-    void previousMainView();
 
     void setScrollPositionX(coord_t value) override;
     void setScrollPositionY(coord_t value) override;
