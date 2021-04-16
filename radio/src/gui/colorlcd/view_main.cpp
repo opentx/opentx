@@ -263,29 +263,3 @@ void ViewMain::createTopbar()
   topbar = new TopBar(this);
   topbar->load();
 }
-
-#if 0
-FormGroup * setMultiPageForm(uint8_t pages, bool focus = true)
-{
-  if (mainForm)
-    mainForm->deleteLater();
-
-  coord_t height =
-    bottomToolbarIcon >= 0 ?
-    MULTI_PAGE_FORM_HEIGHT
-    : MULTI_PAGE_FORM_WITHOUT_TOOLBAR_HEIGHT;
-
-  mainForm = new FormWindow(this,
-                            {0, MULTI_PAGE_FORM_TOP, LCD_W, height},
-                            FRSKY_PAGE_FORM_FLAGS);
-
-  mainForm->setPageWidth(LCD_W);
-  mainForm->setInnerWidth(pages * LCD_W);
-
-  if (focus) {
-    mainForm->setFocus(SET_FOCUS_DEFAULT);
-  }
-
-  return mainForm;
-}
-#endif
