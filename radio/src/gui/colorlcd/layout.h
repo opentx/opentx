@@ -111,6 +111,9 @@ class Layout: public LayoutBase
     // Re-calculate positions
     void adjustDecoration();
 
+    // Updates settings for trims, sliders, pots, etc...
+    void decorate();
+
   protected:
     const LayoutFactory * factory  = nullptr;
     ViewMainDecoration* decoration = nullptr;
@@ -121,9 +124,6 @@ class Layout: public LayoutBase
     // Last time we refreshed the window
     uint32_t lastRefresh = 0;
   
-    // Updates settings for trims, sliders, pots, etc...
-    void decorate();
-
     void createDecoration();
 
     // Get the available space for widgets
