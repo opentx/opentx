@@ -106,6 +106,8 @@ void loadDefaultLayout()
 void loadCustomScreens()
 {
   unsigned i = 0;
+  auto viewMain = ViewMain::instance();
+
   while (i < MAX_CUSTOM_SCREENS) {
 
     auto& screen = customScreens[i];
@@ -118,12 +120,14 @@ void loadCustomScreens()
     }
 
     // layout is ok, let's add it
-    auto viewMain = ViewMain::instance();
     screen->attach(viewMain);
     viewMain->setMainViewsCount(i + 1);
     screen->setLeft(viewMain->getMainViewLeftPos(i));
     i++;
   }
+
+  viewMain->setCurrentMainView(0);
+  viewMain->setTopbarVisible(customScreens[0]->hasTopbar());
 }
 
 //

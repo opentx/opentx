@@ -145,11 +145,13 @@ void ViewMain::setScrollPositionX(coord_t value)
   auto pageIdx = getPageIndex();
   if (pageIdx != g_model.view) {
     g_model.view = pageIdx;
-    // crude on/off for now
-    setTopbarVisible(customScreens[pageIdx]->hasTopbar());
-    customScreens[pageIdx]->decorate();
-    //TODO: compute topbar visibility
-    //auto relativeScrollPosition = getScrollPositionX() % pageWidth;
+    if (customScreens[pageIdx]) {
+      // crude on/off for now
+      setTopbarVisible(customScreens[pageIdx]->hasTopbar());
+      customScreens[pageIdx]->decorate();
+      //TODO: compute topbar visibility
+      //auto relativeScrollPosition = getScrollPositionX() % pageWidth;
+    }
   }
 }
 
