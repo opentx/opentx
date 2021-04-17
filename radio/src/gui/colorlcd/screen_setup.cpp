@@ -209,6 +209,14 @@ class SetupWidgetsPage: public FormWindow
       menu->bringToTop();
     }
 
+#if defined(HARDWARE_TOUCH)
+    bool onTouchSlide(coord_t x, coord_t y, coord_t startX, coord_t startY, coord_t slideX, coord_t slideY) override
+    {
+      // prevent screen sliding when setting up widgets
+      return true;
+    }
+#endif
+
 #if defined(HARDWARE_KEYS)
     void onEvent(event_t event) override
     {
