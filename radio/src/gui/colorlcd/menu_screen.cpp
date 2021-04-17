@@ -21,11 +21,16 @@
 #include "opentx.h"
 #include "menu_screen.h"
 #include "screen_setup.h"
+#include "view_main.h"
 
 ScreenMenu::ScreenMenu():
   TabsGroup(ICON_THEME)
 {
   updateTabs();
+
+  setCloseHandler([]{
+      ViewMain::instance()->updateTopbarVisibility();
+  });
 }
 
 void ScreenMenu::updateTabs()
