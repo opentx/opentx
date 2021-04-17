@@ -401,7 +401,6 @@ local function Config_Init()
   --get Module settings and set to config
   Module =  model.getModule(1)
   InitialProtocol = Module.protocol
-  print("Protocol read : ", Module.protocol)
   Module.protocol = 86
   model.setModule(1, Module)
   for i = 0, 10, 1 do end
