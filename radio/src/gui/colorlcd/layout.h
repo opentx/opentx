@@ -124,8 +124,6 @@ class Layout: public LayoutBase
     // Last time we refreshed the window
     uint32_t lastRefresh = 0;
   
-    void createDecoration();
-
     // Get the available space for widgets
     rect_t getMainZone() const;
 };
