@@ -255,10 +255,54 @@ void sendChannels(uint8_t moduleIdx)
   }
 }
 
+void convertMultiProtocolToOtx(int *protocol, int *subprotocol)
+{
+  if (*protocol == 3 and *subprotocol == 0) {
+    *protocol = MODULE_SUBTYPE_MULTI_FRSKY + 1;
+    *subprotocol = MM_RF_FRSKY_SUBTYPE_D8;
+    return;
+  }
+
+  if (*protocol == 3 and *subprotocol == 1) {
+    *protocol = MODULE_SUBTYPE_MULTI_FRSKY + 1;
+    *subprotocol = MM_RF_FRSKY_SUBTYPE_D8_CLONED;
+    return;
+  }
+
+  if (*protocol == 25) {
+    *protocol = MODULE_SUBTYPE_MULTI_FRSKY + 1;
+    *subprotocol = MM_RF_FRSKY_SUBTYPE_D8_CLONED;
+    return;
+  }
+
+  if (*protocol == 15) {
+    *protocol = MODULE_SUBTYPE_MULTI_FRSKY + 1;
+
+    if (*subprotocol == 0)
+      *subprotocol = MM_RF_FRSKY_SUBTYPE_D16;
+    else if (*subprotocol == 1)
+      *subprotocol = MM_RF_FRSKY_SUBTYPE_D16_8CH;
+    else if (*subprotocol == 2)
+      *subprotocol = MM_RF_FRSKY_SUBTYPE_D16_LBT;
+    else if (*subprotocol == 3)
+      *subprotocol = MM_RF_FRSKY_SUBTYPE_D16_LBT_8CH;
+    else if (*subprotocol == 4)
+      *subprotocol = MM_RF_FRSKY_SUBTYPE_D16_CLONED;
+
+    return;
+  }
+
+  if (*protocol >= 25)
+    *protocol -= 1;
+
+  if (*protocol >= 16)
+    *protocol -= 1;
+}
+
 void convertOtxProtocolToMulti(int *protocol, int *subprotocol)
 {
   // Special treatment for the FrSky entry...
-  if (*protocol == MODULE_SUBTYPE_MULTI_FRSKY +1) {
+  if (*protocol == MODULE_SUBTYPE_MULTI_FRSKY + 1) {
     if (*subprotocol == MM_RF_FRSKY_SUBTYPE_D8) {
       //D8
       *protocol = 3;

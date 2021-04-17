@@ -122,11 +122,9 @@ Get RF module parameters
  * if the module type is Multi additional information are available
  * `protocol` (number) protocol number (Multi only)
  * `subProtocol` (number) sub-protocol number (Multi only)
- * `otxProtocol` (number) protocol number as stored in OpenTX eeprom (Multi only)
- * `otxSubProtocol` (number) sub-protocol number as stored in OpenTX eeprom (Multi only)
  * `channelsOrder` (number) first 4 channels expected order (Multi only)
 
-@status current Introduced in 2.2.0, modified in 2.3.12 (otx proto/subproto)
+@status current Introduced in 2.2.0
 */
 static int luaModelGetModule(lua_State *L)
 {
@@ -146,8 +144,6 @@ static int luaModelGetModule(lua_State *L)
       convertOtxProtocolToMulti(&protocol, &subprotocol); // Special treatment for the FrSky entry...
       lua_pushtableinteger(L, "protocol", protocol);
       lua_pushtableinteger(L, "subProtocol", subprotocol);
-      lua_pushtableinteger(L, "otxProtocol", g_model.moduleData[idx].getMultiProtocol());
-      lua_pushtableinteger(L, "otxSubProtocol", g_model.moduleData[idx].subType);
       if (getMultiModuleStatus(idx).isValid()) {
         if (getMultiModuleStatus(idx).ch_order == 0xFF)
           lua_pushtableinteger(L, "channelsOrder", -1);
@@ -178,11 +174,13 @@ Set RF module parameters
 @notice If a parameter is missing from the value, then
 that parameter remains unchanged.
 
-@status current Introduced in 2.2.0, modified in 2.3.12 (otx proto/subproto)
+@status current Introduced in 2.2.0, modified in 2.3.12 (proto/subproto)
 */
 static int luaModelSetModule(lua_State *L)
 {
   unsigned int idx = luaL_checkunsigned(L, 1);
+  int protocol = 0xFFFF;
+  int subprotocol = 0xFFFF;
 
   if (idx < NUM_MODULES) {
     ModuleData & module = g_model.moduleData[idx];
@@ -206,14 +204,21 @@ static int luaModelSetModule(lua_State *L)
         module.channelsCount = luaL_checkinteger(L, -1) - 8;
       }
 #if defined(MULTIMODULE)
-      if (!strcmp(key, "otxProtocol")) {
-        g_model.moduleData[idx].setMultiProtocol(luaL_checkinteger(L, -1));
+      if (!strcmp(key, "protocol")) {
+        protocol = luaL_checkinteger(L, -1);
       }
-      if (!strcmp(key, "otxSubProtocol")) {
-        g_model.moduleData[idx].subType = luaL_checkinteger(L, -1);
+      if (!strcmp(key, "subProtocol")) {
+        subprotocol = luaL_checkinteger(L, -1);
       }
 #endif
     }
+#if defined(MULTIMODULE)
+    if (protocol != 0xFFFF && subprotocol != 0xFFFF) {  // Both are needed to compute otx protocol
+      convertMultiProtocolToOtx(&protocol, &subprotocol);
+      g_model.moduleData[idx].setMultiProtocol(protocol - 1);
+      g_model.moduleData[idx].subType = subprotocol;
+    }
+#endif
     storageDirty(EE_MODEL);
   }
   return 0;
