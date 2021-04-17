@@ -57,6 +57,19 @@ void TopBar::setVisible(float visible) // 0.0 -> 1.0
   }
 }
 
+coord_t TopBar::getVisibleHeight(float visible) const // 0.0 -> 1.0
+{
+  if (visible == 0.0) {
+    return 0;
+  }
+  else if (visible == 1.0) {
+    return MENU_HEADER_HEIGHT;
+  }
+
+  float h = (float)MENU_HEADER_HEIGHT * visible;
+  return (coord_t)h;
+}
+
 const char * const STR_MONTHS[] = TR_MONTHS;
 
 void TopBar::paint(BitmapBuffer * dc)

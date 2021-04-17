@@ -46,6 +46,7 @@ class TopBar: public WidgetsContainer<MAX_TOPBAR_ZONES, MAX_TOPBAR_OPTIONS>
     rect_t getZone(unsigned int index) const override;
 
     void setVisible(float visible);
+    coord_t getVisibleHeight(float visible) const; // 0.0 -> 1.0
   
     void paint(BitmapBuffer * dc) override;
 
