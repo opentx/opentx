@@ -20,13 +20,8 @@
 
 #include "opentx.h"
 #include "view_main.h"
-#include "layouts/trims.h"
-#include "layouts/sliders.h"
-#include "view_main_decoration.h"
 
-constexpr uint32_t LAYOUT_REFRESH = 1000 / 2; // 2 Hz
-
-Layout * customScreens[MAX_CUSTOM_SCREENS] = {};
+WidgetsContainerInterface * customScreens[MAX_CUSTOM_SCREENS] = {};
 
 std::list<const LayoutFactory *> & getRegisteredLayouts()
 {
@@ -54,7 +49,8 @@ const LayoutFactory * getLayoutFactory(const char * name)
 //
 // Loads a layout, but does not attach it to any window
 //
-Layout * loadLayout(const char * name, Layout::PersistentData * persistentData)
+WidgetsContainerInterface *
+loadLayout(const char * name, LayoutPersistentData * persistentData)
 {
   const LayoutFactory * factory = getLayoutFactory(name);
   if (factory) {
@@ -127,6 +123,8 @@ void loadCustomScreens()
   }
 
   auto topbar = viewMain->getTopbar();
+
+  // TODO: how to reload this guy?
   topbar->load();
   
   viewMain->setCurrentMainView(0);
@@ -139,7 +137,8 @@ void loadCustomScreens()
 //  - new screen is configured into g_model
 //  - the new screen is returned (not attached)
 //
-Layout* createCustomScreen(const LayoutFactory* factory, unsigned customScreenIndex)
+WidgetsContainerInterface *
+createCustomScreen(const LayoutFactory* factory, unsigned customScreenIndex)
 {
   if (!factory || (customScreenIndex >= MAX_CUSTOM_SCREENS))
     return nullptr;
@@ -180,104 +179,10 @@ void disposeCustomScreen(unsigned idx)
   memset(dst, 0, len);
 }
 
-Layout::Layout(const LayoutFactory * factory, PersistentData * persistentData):
-  LayoutBase({0, 0, LCD_W, LCD_H}, persistentData),
-  factory(factory),
-  decoration(new ViewMainDecoration(this, getRect()))
+LayoutFactory::LayoutFactory(const char * id, const char * name):
+  id(id),
+  name(name)
 {
-  decorate();
+  registerLayout(this);
 }
-
-void Layout::create()
-{
-  memset(persistentData, 0, sizeof(PersistentData));
-
-  getOptionValue(OPTION_TOPBAR)->boolValue   = true;
-  getOptionValue(OPTION_FM)->boolValue       = true;
-  getOptionValue(OPTION_SLIDERS)->boolValue  = true;
-  getOptionValue(OPTION_TRIMS)->boolValue    = true;
-  getOptionValue(OPTION_MIRRORED)->boolValue = false;
-}    
-
-#if defined(DEBUG_WINDOWS)
-void Layout::paint(BitmapBuffer * dc)
-{
-  TRACE_WINDOWS("# painting -> %s", getWindowDebugString().c_str());
-  LayoutBase::paint(dc);
-}
-#endif
-
-void Layout::checkEvents()
-{
-  LayoutBase::checkEvents();
-  decorate();
-
-  uint32_t now = RTOS_GET_MS();
-  if (now - lastRefresh >= LAYOUT_REFRESH) {
-    lastRefresh = now;
-    invalidate();
-
-#if defined(DEBUG_WINDOWS)
-    TRACE_WINDOWS("# %s refresh: %s", factory->getId(), getWindowDebugString().c_str());
-#endif
-  }
-}
-
-void Layout::setTrimsVisible(bool visible)
-{
-  decoration->setTrimsVisible(visible);
-}
-
-void Layout::setSlidersVisible(bool visible)
-{
-  decoration->setSlidersVisible(visible);
-}
-
-void Layout::setFlightModeVisible(bool visible)
-{
-  decoration->setFlightModeVisible(visible);
-}
-
-void Layout::adjustDecoration()
-{
-  decoration->adjustDecoration();
-}
-
-void Layout::decorate()
-{
-  // Check if deco setting are still up-to-date
-  uint8_t checkSettings =
-    (hasTopbar() ? 1 << 0 : 0) |
-    (hasSliders() ? 1 << 1 : 0) |
-    (hasTrims() ? 1 << 2 : 0) |
-    (hasFlightMode() ? 1 << 3 : 0);
-
-  if (checkSettings == decorationSettings) {
-    // everything ok, exit!
-    return;
-  }
-
-  // Save settings
-  decorationSettings = checkSettings;
-
-  // Set visible decoration
-  setSlidersVisible(hasSliders());
-  setTrimsVisible(hasTrims());
-  setFlightModeVisible(hasFlightMode());
-
-  // Re-compute positions
-  adjustDecoration();
-
-  // and update relevant windows
-  updateZones();
-
-  // probably not needed
-  //invalidate();
-}
-
-rect_t Layout::getMainZone() const
-{
-  rect_t zone = decoration->getMainZone();
-  return ViewMain::instance()->getMainZone(zone, hasTopbar());
-}    
 

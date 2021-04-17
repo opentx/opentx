@@ -18,7 +18,8 @@
  * GNU General Public License for more details.
  */
 
-#include "opentx.h"
+#include "layout.h"
+#include "layout_factory_implem.h"
 
 const uint8_t LBM_LAYOUT_2x4[] = {
 #include "mask_layout2x4.lbm"
@@ -38,7 +39,7 @@ class Layout2x4: public Layout
   public:
 
     enum {
-      OPTION_PANEL1_BACKGROUND = OPTION_LAST_DEFAULT + 1,
+      OPTION_PANEL1_BACKGROUND = LAYOUT_OPTION_LAST_DEFAULT + 1,
       OPTION_PANEL1_COLOR,
       OPTION_PANEL2_BACKGROUND,
       OPTION_PANEL2_COLOR

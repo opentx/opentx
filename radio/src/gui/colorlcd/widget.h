@@ -23,10 +23,8 @@
 #include <list>
 #include <string.h>
 #include "form.h"
-#include "zone.h"
+#include "widgets_container.h"
 #include "debug.h"
-
-#define MAX_WIDGET_OPTIONS             5
 
 // YAML_GENERATOR defs
 #if !defined(USE_IDX)
@@ -34,14 +32,14 @@
 #endif
 
 class WidgetFactory;
+
 class Widget : public Window
 {
   public:
-    struct PersistentData {
-      ZoneOptionValueTyped options[MAX_WIDGET_OPTIONS] USE_IDX;
-    };
 
-    Widget(const WidgetFactory * factory, FormGroup * parent, const rect_t & rect, PersistentData * persistentData):
+    typedef WidgetPersistentData PersistentData;
+
+    Widget(const WidgetFactory * factory, FormGroup * parent, const rect_t & rect, WidgetPersistentData * persistentData):
       Window(parent, rect),
       factory(factory),
       persistentData(persistentData)

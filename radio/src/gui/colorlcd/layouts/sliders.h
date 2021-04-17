@@ -62,70 +62,19 @@ class MainViewHorizontalSlider : public MainViewSlider
 {
   public:
     using MainViewSlider::MainViewSlider;
-
-    void paint(BitmapBuffer * dc) override
-    {
-      // The ticks
-      int delta = (width() - TRIM_SQUARE_SIZE) / SLIDER_TICKS_COUNT;
-      coord_t x = TRIM_SQUARE_SIZE / 2;
-      for (uint8_t i = 0; i <= SLIDER_TICKS_COUNT; i++) {
-        if (i == 0 || i == SLIDER_TICKS_COUNT / 2 || i == SLIDER_TICKS_COUNT)
-          dc->drawSolidVerticalLine(x, 2, 13, DEFAULT_COLOR);
-        else
-          dc->drawSolidVerticalLine(x, 4, 9, DEFAULT_COLOR);
-        x += delta;
-      }
-
-      // The square
-      x = width() - TRIM_SQUARE_SIZE - divRoundClosest((width() - TRIM_SQUARE_SIZE) * (value + RESX), 2 * RESX);
-      drawTrimSquare(dc, x, 0, TRIM_BGCOLOR);
-    }
+    void paint(BitmapBuffer * dc) override;
 };
 
 class MainView6POS : public MainViewSlider
 {
   public:
     using MainViewSlider::MainViewSlider;
-
-    void paint(BitmapBuffer * dc) override
-    {
-      // The ticks
-      int delta = (width() - TRIM_SQUARE_SIZE) / (XPOTS_MULTIPOS_COUNT - 1);
-      coord_t x = TRIM_SQUARE_SIZE / 2;
-      for (uint8_t i = 0; i <= XPOTS_MULTIPOS_COUNT; i++) {
-        dc->drawSolidVerticalLine(x, 4, 9, DEFAULT_COLOR);
-        x += delta;
-      }
-
-      // The square
-      auto value = 1 + (potsPos[idx] & 0x0f);
-      x = TRIM_SQUARE_SIZE / 2 + divRoundClosest((width() - TRIM_SQUARE_SIZE) * (value -1) , 6);
-      drawTrimSquare(dc, x, 0, TRIM_BGCOLOR);
-      dc->drawNumber(x + 1, 0, value, FOCUS_COLOR);
-    }
+    void paint(BitmapBuffer * dc) override;
 };
 
 class MainViewVerticalSlider : public MainViewSlider
 {
   public:
     using MainViewSlider::MainViewSlider;
-
-    void paint(BitmapBuffer * dc) override
-    {
-      uint8_t slidersTick = height() / 5;
-      // The ticks
-      int delta = (height() - TRIM_SQUARE_SIZE) / slidersTick;
-      coord_t y = TRIM_SQUARE_SIZE / 2;
-      for (uint8_t i = 0; i <= slidersTick; i++) {
-        if (i == 0 || i == slidersTick / 2 || i == slidersTick)
-          dc->drawSolidHorizontalLine(2, y, 13, DEFAULT_COLOR);
-        else
-          dc->drawSolidHorizontalLine(4, y, 9, DEFAULT_COLOR);
-        y += delta;
-      }
-
-      // The square
-      y = height() - TRIM_SQUARE_SIZE - divRoundClosest((height() - TRIM_SQUARE_SIZE) * (value + RESX), 2 * RESX);
-      drawTrimSquare(dc, 0, y, TRIM_BGCOLOR);
-    }
+    void paint(BitmapBuffer * dc) override;
 };

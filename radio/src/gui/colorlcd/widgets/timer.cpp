@@ -19,6 +19,7 @@
  */
 
 #include "opentx.h"
+#include "widgets_container_implem.h"
 
 class TimerWidget: public Widget
 {

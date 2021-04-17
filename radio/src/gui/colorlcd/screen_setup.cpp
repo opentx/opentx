@@ -344,6 +344,8 @@ ScreenSetupPage::ScreenSetupPage(ScreenMenu * menu, unsigned pageIndex, unsigned
 {
 }
 
+
+
 static void updateLayoutOptions(FormGroup* optionsWindow, unsigned customScreenIndex) // TODO
 {
   FormGridLayout grid;
@@ -354,7 +356,9 @@ static void updateLayoutOptions(FormGroup* optionsWindow, unsigned customScreenI
   auto factory = customScreens[customScreenIndex]->getFactory();
   if (factory) {
     for (auto * option = factory->getOptions(); option->name; option++, index++) {
-      ZoneOptionValue * value = customScreens[customScreenIndex]->getOptionValue(index);
+
+      auto layoutData = g_model.screenData[customScreenIndex].layoutData;
+      ZoneOptionValue * value = &layoutData.options[index].value;
 
       // Option label
       new StaticText(optionsWindow, grid.getLabelSlot(false), option->name);

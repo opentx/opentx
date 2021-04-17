@@ -21,10 +21,11 @@
 #ifndef _VIEW_MAIN_H_
 #define _VIEW_MAIN_H_
 
-#include "form.h"
 #include <memory>
+#include "form.h"
+#include "topbar.h"
 
-class TopBar;
+
 class SetupWidgetsPage;
 class SetupTopBarWidgetsPage;
 
@@ -68,16 +69,13 @@ class ViewMain: public Window
     void nextMainView();
     void previousMainView();
 
-    TopBar* getTopbar() const
-    {
-      return topbar;
-    }
+    Topbar* getTopbar();
   
   protected:
     static ViewMain * _instance;
 
-    unsigned views = 0;
-    TopBar*  topbar = nullptr;
+    unsigned    views = 0;
+    TopbarImpl* topbar = nullptr;
 
     // Widget setup requires special permissions ;-)
     friend class SetupWidgetsPage;
