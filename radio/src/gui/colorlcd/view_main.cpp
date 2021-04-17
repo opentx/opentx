@@ -198,6 +198,55 @@ void ViewMain::setScrollPositionY(coord_t value)
   topbar->setTop(getScrollPositionY());
 }
 
+#if defined(HARDWARE_TOUCH)
+
+//#define DEBUG_SLIDE
+
+bool ViewMain::onTouchSlide(coord_t x, coord_t y, coord_t startX, coord_t startY, coord_t slideX, coord_t slideY)
+{
+  // prevent screen sliding over the next one (one screen at a time)
+  if (slidingWindow == this) {
+    if (prevSlideState != touchState.event) {
+      if (touchState.event == TE_SLIDE_END) {
+        startSlidePage = getCurrentMainView();
+#if defined(DEBUG_SLIDE)
+        TRACE("### startSlidePage = %d ###", startSlidePage);
+#endif
+      }
+      prevSlideState = touchState.event;
+    }
+    else if (prevSlideState == TE_SLIDE_END){
+
+      // let's check what would be the next position
+      auto nextPos = (getScrollPositionX() - slideX);
+
+      // if we would get over more than one page counting from slide-start
+      if (abs(nextPos - getMainViewLeftPos(startSlidePage)) > pageWidth) {
+
+#if defined(DEBUG_SLIDE)
+        TRACE("### kill the move ###");
+#endif
+        // kill the movement and let "snap-to-view" finish the job
+        prevSlideState   = TE_NONE;
+        touchState.event = TE_NONE;
+        touchState.lastDeltaX = 0;
+        touchState.lastDeltaY = 0;
+        return true;
+      }
+    }
+  }
+
+#if defined(DEBUG_SLIDE)
+  TRACE("%sWindow[scrollX=%d, scrollY=%d]->onTouchSlide[x=%d, y=%d, startX=%d, startY=%d, slideX=%d, slideY=%d]",
+        touchState.event == TE_SLIDE_END && slidingWindow ? "###" : "",
+        getScrollPositionX(), getScrollPositionY(),
+        x, y, startX, startY, slideX, slideY);
+#endif
+
+  return Window::onTouchSlide(x, y, startX, startY, slideX, slideY);
+}
+#endif
+
 #if defined(HARDWARE_KEYS)
 void ViewMain::onEvent(event_t event)
 {
