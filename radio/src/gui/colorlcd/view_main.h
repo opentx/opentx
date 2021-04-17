@@ -81,6 +81,13 @@ class ViewMain: public Window
     void setScrollPositionX(coord_t value) override;
     void setScrollPositionY(coord_t value) override;
 
+#if defined(HARDWARE_TOUCH)
+    unsigned char prevSlideState = 0;
+    unsigned int  startSlidePage = 0;
+
+    bool onTouchSlide(coord_t x, coord_t y, coord_t startX, coord_t startY, coord_t slideX, coord_t slideY) override;
+#endif
+
 #if defined(HARDWARE_KEYS)
     void onEvent(event_t event) override;
 #endif
