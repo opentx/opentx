@@ -25,17 +25,16 @@
 #include "model_select.h"
 #include "view_channels.h"
 #include "view_statistics.h"
-#include "topbar.h"
-#include "layouts/sliders.h"
-#include "layouts/trims.h"
-#include "view_main_decoration.h"
+#include "topbar_impl.h"
+#include "menu.h"
+
 #include "opentx.h"
 
 ViewMain * ViewMain::_instance = nullptr;
 
 ViewMain::ViewMain():
   Window(MainWindow::instance(), MainWindow::instance()->getRect()),
-  topbar(new TopBar(this))
+  topbar(dynamic_cast<TopbarImpl*>(TopbarFactory::create(this)))
 {
 #if defined(HARDWARE_TOUCH) && !defined(HARDWARE_KEYS)
   new FabButton(this, 50, 100, ICON_MODEL,
@@ -144,18 +143,33 @@ void ViewMain::previousMainView()
   setCurrentMainView(view);
 }
 
+Topbar* ViewMain::getTopbar()
+{
+  return topbar;
+}
+
+static bool hasTopbar(unsigned view)
+{
+  if (view < sizeof(g_model.screenData)) {
+    const auto& layoutData = g_model.screenData[view].layoutData;
+    return layoutData.options[LAYOUT_OPTION_TOPBAR].value.boolValue;
+  }
+
+  return false;
+}
+
 void ViewMain::updateTopbarVisibility()
 {
   // relative to left visible page
   int leftScroll = getScrollPositionX() % pageWidth;
   if (leftScroll == 0) {
-    setTopbarVisible(customScreens[g_model.view]->hasTopbar());
+    setTopbarVisible(hasTopbar(g_model.view));
     customScreens[g_model.view]->decorate();
   }
   else {
     int  leftIdx     = getScrollPositionX() / pageWidth;
-    bool leftTopbar  = customScreens[leftIdx]->hasTopbar();
-    bool rightTopbar = customScreens[leftIdx+1]->hasTopbar();
+    bool leftTopbar  = hasTopbar(leftIdx);
+    bool rightTopbar = hasTopbar(leftIdx+1);
 
     if (leftTopbar != rightTopbar) {
 

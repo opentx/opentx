@@ -18,45 +18,28 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _TOPBAR_H_
-#define _TOPBAR_H_
+#pragma once
 
-#include "widgets_container.h"
+#include "layout.h"
 
-#define MAX_TOPBAR_ZONES               4
-#define MAX_TOPBAR_OPTIONS             1 // just because of VC++ which doesn't like 0-size arrays :(
-#define TOPBAR_ZONE_WIDTH              70
+constexpr coord_t TOPBAR_ZONE_WIDTH  = 70;
 constexpr coord_t TOPBAR_ZONE_MARGIN = 3;
 constexpr coord_t TOPBAR_HEIGHT = MENU_HEADER_HEIGHT - 2 * TOPBAR_ZONE_MARGIN;
 
-class TopBar: public WidgetsContainer<MAX_TOPBAR_ZONES, MAX_TOPBAR_OPTIONS>
+class ScreenMenu;
+class TopbarImpl;
+
+class Topbar
 {
   public:
-    explicit TopBar(Window * parent);
-
-#if defined(DEBUG_WINDOWS)
-    std::string getName() const override
-    {
-      return "TopBar";
-    }
-#endif
-
-    unsigned int getZonesCount() const override;
-
-    rect_t getZone(unsigned int index) const override;
-
-    void setVisible(float visible);
-    coord_t getVisibleHeight(float visible) const; // 0.0 -> 1.0
-  
-    void paint(BitmapBuffer * dc) override;
-
-    void checkEvents() override;
-
-  protected:
-    uint32_t lastRefresh = 0;
+    virtual void load() = 0;
 };
 
-class ScreenMenu;
+class TopbarFactory
+{
+public:
+  static Topbar * create(Window * parent);
+};
 
 class SetupTopBarWidgetsPage: public FormWindow
 {
@@ -80,5 +63,3 @@ class SetupTopBarWidgetsPage: public FormWindow
     ScreenMenu* menu;
     unsigned savedView = 0;
 };
-
-#endif // _TOPBAR_H_

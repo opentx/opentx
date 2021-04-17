@@ -18,8 +18,8 @@
  * GNU General Public License for more details.
  */
 
-#include "opentx.h"
-#include "trims.h"
+#include "layout.h"
+#include "layout_factory_implem.h"
 
 const uint8_t LBM_LAYOUT_1x1[] = {
 #include "mask_layout1x1.lbm"

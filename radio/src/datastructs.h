@@ -553,11 +553,11 @@ typedef uint8_t swarnenable_t;
 #define LAYOUT_ID_LEN 10
 PACK(struct CustomScreenData {
   char LayoutId[LAYOUT_ID_LEN];
-  Layout::PersistentData layoutData;
+  LayoutPersistentData layoutData;
 });
 #define CUSTOM_SCREENS_DATA \
   NOBACKUP(CustomScreenData screenData[MAX_CUSTOM_SCREENS]); \
-  NOBACKUP(TopBar::PersistentData topbarData); \
+  NOBACKUP(TopBarPersistentData topbarData); \
   NOBACKUP(uint8_t view);
 #else
 #define CUSTOM_SCREENS_DATA \
@@ -921,7 +921,7 @@ static inline void check_struct()
   CHKSIZE(ModelHeader, 31);
   CHKSIZE(CurveHeader, 4);
   CHKSIZE(CustomScreenData, 850);
-  CHKSIZE(TopBar::PersistentData, 300);
+  CHKTYPE(TopBarPersistentData, 300);
 #elif defined(PCBNV14)
   // TODO
 #elif defined(PCBSKY9X)

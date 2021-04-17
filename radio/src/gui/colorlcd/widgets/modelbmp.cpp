@@ -19,6 +19,8 @@
  */
 
 #include "opentx.h"
+#include "widgets_container_implem.h"
+
 #include <memory>
 
 class ModelBitmapWidget: public Widget
