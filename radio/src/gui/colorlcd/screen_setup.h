@@ -24,11 +24,12 @@
 
 class ScreenUserInterfacePage: public PageTab {
   public:
-    ScreenUserInterfacePage();
+    ScreenUserInterfacePage(ScreenMenu* menu);
 
     void build(FormWindow * window) override;
 
   protected:
+    ScreenMenu * menu;
 };
 
 class ScreenAddPage: public PageTab {
@@ -52,4 +53,12 @@ class ScreenSetupPage: public PageTab {
     ScreenMenu * menu;
     unsigned pageIndex;
     unsigned customScreenIndex;
+};
+
+class SetupWidgetsPageSlot: public Button
+{
+  public:
+    SetupWidgetsPageSlot(FormGroup * parent, const rect_t & rect, WidgetsContainerInterface* container, uint8_t slotIndex);
+
+    void paint(BitmapBuffer * dc) override;
 };

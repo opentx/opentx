@@ -126,6 +126,9 @@ void loadCustomScreens()
     i++;
   }
 
+  auto topbar = viewMain->getTopbar();
+  topbar->load();
+  
   viewMain->setCurrentMainView(0);
   viewMain->updateTopbarVisibility();
 }
