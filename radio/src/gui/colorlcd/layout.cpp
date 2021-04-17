@@ -258,7 +258,6 @@ void Layout::decorate()
   decorationSettings = checkSettings;
 
   // Set visible decoration
-  ViewMain::instance()->setTopbarVisible(hasTopbar());
   setSlidersVisible(hasSliders());
   setTrimsVisible(hasTrims());
   setFlightModeVisible(hasFlightMode());
