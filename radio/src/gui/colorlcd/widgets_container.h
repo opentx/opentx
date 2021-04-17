@@ -32,6 +32,7 @@ class WidgetsContainerInterface
     virtual rect_t getZone(unsigned int index) const = 0;
     virtual Widget * createWidget(unsigned int index, const WidgetFactory * factory) = 0;
     virtual Widget * getWidget(unsigned int index) = 0;
+    virtual void removeWidget(unsigned int index) = 0;
 };
 
 #define WIDGET_NAME_LEN   10
@@ -77,7 +78,7 @@ class WidgetsContainer: public FormGroup, public WidgetsContainerInterface
       return widget;
     }
 
-    void removeWidget(unsigned int index)
+    void removeWidget(unsigned int index) override
     {
       if (index >= N)
         return;
@@ -107,15 +108,19 @@ class WidgetsContainer: public FormGroup, public WidgetsContainerInterface
     {
       unsigned int count = getZonesCount();
       for (unsigned int i = 0; i < count; i++) {
-        delete widgets[i];
+
+        // remove old widget
+        if (widgets[i]) {
+          widgets[i]->deleteLater();
+          widgets[i] = nullptr;
+        }
+
+        // and load new one if required
         if (persistentData->zones[i].widgetName[0]) {
           char name[WIDGET_NAME_LEN + 1];
           memset(name, 0, sizeof(name));
           strncpy(name, persistentData->zones[i].widgetName, WIDGET_NAME_LEN);
           widgets[i] = loadWidget(name, this, getZone(i), &persistentData->zones[i].widgetData);
-        }
-        else {
-          widgets[i] = nullptr;
         }
       }
     }

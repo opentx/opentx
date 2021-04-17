@@ -56,4 +56,29 @@ class TopBar: public WidgetsContainer<MAX_TOPBAR_ZONES, MAX_TOPBAR_OPTIONS>
     uint32_t lastRefresh = 0;
 };
 
+class ScreenMenu;
+
+class SetupTopBarWidgetsPage: public FormWindow
+{
+  public:
+    explicit SetupTopBarWidgetsPage(ScreenMenu* menu);
+
+#if defined(DEBUG_WINDOWS)
+    std::string getName() const override
+    {
+      return "SetupTopBarWidgetsPage";
+    }
+#endif
+
+    void deleteLater(bool detach = true, bool trash = true) override;
+
+#if defined(HARDWARE_KEYS)
+    void onEvent(event_t event) override;
+#endif
+
+  protected:
+    ScreenMenu* menu;
+    unsigned savedView = 0;
+};
+
 #endif // _TOPBAR_H_

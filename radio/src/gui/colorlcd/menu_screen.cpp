@@ -37,7 +37,7 @@ void ScreenMenu::updateTabs()
 {
   removeAllTabs();
 
-  addTab(new ScreenUserInterfacePage());
+  addTab(new ScreenUserInterfacePage(this));
 
   for (int index = 0; index < MAX_CUSTOM_SCREENS; index++) {
     if (customScreens[index]) {

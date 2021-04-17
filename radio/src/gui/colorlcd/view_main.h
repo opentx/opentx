@@ -26,6 +26,7 @@
 
 class TopBar;
 class SetupWidgetsPage;
+class SetupTopBarWidgetsPage;
 
 class ViewMain: public Window
 {
@@ -67,13 +68,20 @@ class ViewMain: public Window
     void nextMainView();
     void previousMainView();
 
+    TopBar* getTopbar() const
+    {
+      return topbar;
+    }
+  
   protected:
     static ViewMain * _instance;
 
     unsigned views = 0;
     TopBar*  topbar = nullptr;
 
+    // Widget setup requires special permissions ;-)
     friend class SetupWidgetsPage;
+    friend class SetupTopBarWidgetsPage;
 
     // Set topbar visibility [0.0 -> 1.0]
     void setTopbarVisible(float visible);
@@ -94,7 +102,6 @@ class ViewMain: public Window
     void paint(BitmapBuffer * dc) override;
 
     void openMenu();
-    void createTopbar();
 };
 
 #endif // _VIEW_MAIN_H_

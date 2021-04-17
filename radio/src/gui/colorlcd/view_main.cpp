@@ -34,7 +34,8 @@
 ViewMain * ViewMain::_instance = nullptr;
 
 ViewMain::ViewMain():
-  Window(MainWindow::instance(), MainWindow::instance()->getRect())
+  Window(MainWindow::instance(), MainWindow::instance()->getRect()),
+  topbar(new TopBar(this))
 {
 #if defined(HARDWARE_TOUCH) && !defined(HARDWARE_KEYS)
   new FabButton(this, 50, 100, ICON_MODEL,
@@ -62,9 +63,7 @@ ViewMain::ViewMain():
                  }, NO_FOCUS);
 #endif
 
-  createTopbar();
   setPageWidth(getParent()->width());
-
   focusWindow = this;
 }
 
@@ -340,10 +339,4 @@ void ViewMain::paint(BitmapBuffer * dc)
   if (g_model.view >= getMainViewsCount()) {
     g_model.view = 0;
   }
-}
-
-void ViewMain::createTopbar()
-{
-  topbar = new TopBar(this);
-  topbar->load();
 }

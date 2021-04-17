@@ -23,6 +23,7 @@
 #include "opentx.h"
 #include "view_main.h"
 #include "widget_settings.h"
+#include "topbar.h"
 #include "libopenui.h"
 
 #define SET_DIRTY()     storageDirty(EE_MODEL)
@@ -107,55 +108,50 @@ class LayoutChoice: public FormField
     std::function<void(const LayoutFactory *)> setValue;
 };
 
-class SetupWidgetsPageSlot: public Button
+SetupWidgetsPageSlot::SetupWidgetsPageSlot(FormGroup * parent, const rect_t & rect, WidgetsContainerInterface* container, uint8_t slotIndex):
+  Button(parent, rect)
 {
-  public:
-    SetupWidgetsPageSlot(FormGroup * parent, const rect_t & rect, Layout* screen, uint8_t slotIndex):
-      Button(parent, rect)
-    {
-      //auto parent = (Window*)this;
-      setPressHandler([parent, screen, slotIndex]() -> uint8_t {
+  setPressHandler([parent, container, slotIndex]() -> uint8_t {
 
+      Menu * menu = new Menu(parent);
+      menu->addLine(TR_SELECT_WIDGET, [=]() {
           Menu * menu = new Menu(parent);
-          menu->addLine(TR_SELECT_WIDGET, [=]() {
-              Menu * menu = new Menu(parent);
-              for (auto factory: getRegisteredWidgets()) {
-                menu->addLine(factory->getName(), [=]() {
-                    screen->createWidget(slotIndex, factory);
-                });
-              }
-          });
-
-          if (screen->getWidget(slotIndex)) {
-            menu->addLine(TR_WIDGET_SETTINGS, [=]() {
-                auto widget = screen->getWidget(slotIndex);
-                new WidgetSettings(parent, widget);
-            });
-            menu->addLine(STR_REMOVE_WIDGET, [=]() {
-                screen->removeWidget(slotIndex);
+          for (auto factory: getRegisteredWidgets()) {
+            menu->addLine(factory->getName(), [=]() {
+                container->createWidget(slotIndex, factory);
             });
           }
-
-          return 0;
       });
-    }
 
-    void paint(BitmapBuffer * dc) override
-    {
-      if (hasFocus()) {
-        dc->drawRect(0, 0, width()-1, height()-1, 2, STASHED, CHECKBOX_COLOR);
+      if (container->getWidget(slotIndex)) {
+        menu->addLine(TR_WIDGET_SETTINGS, [=]() {
+            auto widget = container->getWidget(slotIndex);
+            new WidgetSettings(parent, widget);
+        });
+        menu->addLine(STR_REMOVE_WIDGET, [=]() {
+            container->removeWidget(slotIndex);
+        });
       }
-      else {
-        dc->drawSolidRect(0, 0, width()-1, height()-1, 2, LINE_COLOR);
-      }
-    }
-};
+
+      return 0;
+    });
+}
+
+void SetupWidgetsPageSlot::paint(BitmapBuffer * dc)
+{
+  if (hasFocus()) {
+    dc->drawRect(0, 0, width()-1, height()-1, 2, STASHED, CHECKBOX_COLOR);
+  }
+  else {
+    dc->drawSolidRect(0, 0, width()-1, height()-1, 2, LINE_COLOR);
+  }
+}
 
 class SetupWidgetsPage: public FormWindow
 {
   public:
-  SetupWidgetsPage(ScreenMenu* menu, uint8_t customScreenIdx):
-    FormWindow(ViewMain::instance(), {0, 0, 0, 0}, FORM_FORWARD_FOCUS),
+    SetupWidgetsPage(ScreenMenu* menu, uint8_t customScreenIdx):
+      FormWindow(ViewMain::instance(), {0, 0, 0, 0}, FORM_FORWARD_FOCUS),
       menu(menu),
       customScreenIdx(customScreenIdx)
     {
@@ -242,8 +238,9 @@ class SetupWidgetsPage: public FormWindow
     // }
 };
 
-ScreenUserInterfacePage::ScreenUserInterfacePage():
-  PageTab(STR_USER_INTERFACE, ICON_THEME_SETUP)
+ScreenUserInterfacePage::ScreenUserInterfacePage(ScreenMenu* menu):
+  PageTab(STR_USER_INTERFACE, ICON_THEME_SETUP),
+  menu(menu)
 {
 }
 
@@ -262,6 +259,13 @@ void ScreenUserInterfacePage::build(FormWindow * window)
   new StaticText(window, grid.getLabelSlot(), STR_TOP_BAR, 0, 0);
   // TODO: enable settings topbar widgets
   grid.nextLine();
+
+  auto menu = this->menu;
+  auto setupTopbarWidgets = new TextButton(window, grid.getFieldSlot(), STR_SETUP_WIDGETS);
+  setupTopbarWidgets->setPressHandler([menu]() -> uint8_t {
+      new SetupTopBarWidgetsPage(menu);
+      return 0;
+  });
 }
 
 ScreenAddPage::ScreenAddPage(ScreenMenu * menu, uint8_t pageIndex):

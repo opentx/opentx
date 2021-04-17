@@ -19,6 +19,10 @@
  */
 
 #include "opentx.h"
+#include "layer.h"
+#include "view_main.h"
+#include "screen_setup.h"
+#include "storage/storage.h"
 
 constexpr uint32_t TOPBAR_REFRESH = 1000 / 2; // 2 Hz
 
@@ -193,3 +197,55 @@ void TopBar::checkEvents()
     invalidate();
   }
 }
+
+
+SetupTopBarWidgetsPage::SetupTopBarWidgetsPage(ScreenMenu* menu):
+  FormWindow(ViewMain::instance(), {0, 0, 0, 0}, FORM_FORWARD_FOCUS),
+  menu(menu)
+{
+  // remember focus
+  Layer::push(this);
+
+  auto viewMain = ViewMain::instance();
+
+  // save current view & switch to 1st one
+  savedView = viewMain->getCurrentMainView();
+  viewMain->setCurrentMainView(0);
+  viewMain->bringToTop();
+
+  //TODO: force the topbar to be visible?
+
+  // adopt the dimensions of the main view
+  setRect(viewMain->getRect());
+
+  auto topbar = viewMain->getTopbar();
+  for (unsigned i = 0; i < topbar->getZonesCount(); i++) {
+    auto rect = topbar->getZone(i);
+    auto widget = new SetupWidgetsPageSlot(this, rect, topbar, i);
+    if (i == 0) widget->setFocus();
+  }
+}
+
+void SetupTopBarWidgetsPage::deleteLater(bool detach, bool trash)
+{
+  // restore screen setting tab on top
+  menu->bringToTop();
+  Layer::pop(this);
+
+  // and continue async deletion...
+  FormWindow::deleteLater(detach, trash);
+
+  storageDirty(EE_MODEL);
+}
+
+#if defined(HARDWARE_KEYS)
+void SetupTopBarWidgetsPage::onEvent(event_t event)
+{
+  switch (event) {
+    case EVT_KEY_BREAK(KEY_EXIT):
+      killEvents(event);
+      deleteLater();
+      break;
+  }
+}
+#endif
