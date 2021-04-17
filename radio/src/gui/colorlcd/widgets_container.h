@@ -147,7 +147,9 @@ class WidgetsContainer: public FormGroup, public WidgetsContainerInterface
     {
       for (int i = 0; i < N; i++) {
         if (widgets[i]) {
-          widgets[i]->setRect(getZone(i));
+          auto zone = getZone(i);
+          widgets[i]->setRect(zone);
+          widgets[i]->setInnerHeight(zone.h);
         }
       }
     }
