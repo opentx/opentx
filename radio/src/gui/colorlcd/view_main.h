@@ -50,12 +50,11 @@ class ViewMain: public Window
     }
 #endif
 
-    // Set topbar visibility [0.0 -> 1.0]
-    void setTopbarVisible(float visible);
+    void updateTopbarVisibility();
 
     // Get the available space in the middle of the screen
     // (without topbar)
-    rect_t getMainZone(rect_t zone) const;
+    rect_t getMainZone(rect_t zone, bool hasTopbar) const;
 
     unsigned getMainViewsCount() const;
     void setMainViewsCount(unsigned views);
@@ -64,6 +63,7 @@ class ViewMain: public Window
   
     unsigned getCurrentMainView() const;
     void setCurrentMainView(unsigned view);
+
     void nextMainView();
     void previousMainView();
 
@@ -74,6 +74,9 @@ class ViewMain: public Window
     TopBar*  topbar = nullptr;
 
     friend class SetupWidgetsPage;
+
+    // Set topbar visibility [0.0 -> 1.0]
+    void setTopbarVisible(float visible);
 
     void setScrollPositionX(coord_t value) override;
     void setScrollPositionY(coord_t value) override;

@@ -127,7 +127,7 @@ void loadCustomScreens()
   }
 
   viewMain->setCurrentMainView(0);
-  viewMain->setTopbarVisible(customScreens[0]->hasTopbar());
+  viewMain->updateTopbarVisibility();
 }
 
 //
@@ -272,13 +272,9 @@ void Layout::decorate()
   //invalidate();
 }
 
-void Layout::createDecoration()
-{
-}
-
 rect_t Layout::getMainZone() const
 {
   rect_t zone = decoration->getMainZone();
-  return ViewMain::instance()->getMainZone(zone);
+  return ViewMain::instance()->getMainZone(zone, hasTopbar());
 }    
 
