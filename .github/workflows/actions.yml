@@ -18,6 +18,7 @@ jobs:
           - XLITE
           - X9
           - COLORLCD
+          - YAML
     container:
       image: ghcr.io/raphaelcoeffic/opentx-commit-tests
       volumes:
