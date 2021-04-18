@@ -22,6 +22,8 @@
 
 #include "window.h"
 
+constexpr coord_t FM_LABEL_HEIGHT = 20;
+
 class ViewMainDecoration: public Window
 {
   public:

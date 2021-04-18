@@ -365,7 +365,7 @@ static void updateLayoutOptions(FormGroup* optionsWindow, unsigned customScreenI
 
   for (auto * option = factory->getOptions(); option->name; option++, index++) {
 
-    auto layoutData = g_model.screenData[customScreenIndex].layoutData;
+    auto& layoutData = g_model.screenData[customScreenIndex].layoutData;
     ZoneOptionValue * value = &layoutData.options[index].value;
 
     // Option label

@@ -37,7 +37,6 @@ void ViewMainDecoration::setSlidersVisible(bool visible)
   //
   sliders[SLIDERS_POT1]->setHeight(visible ? TRIM_SQUARE_SIZE : 0);
 
-  //TODO: might change depending on hardware settings
   if (IS_POT_MULTIPOS(POT2)) {
     sliders[SLIDERS_POT2]->setHeight(visible ? MULTIPOS_H : 0);
   }
@@ -55,7 +54,6 @@ void ViewMainDecoration::setSlidersVisible(bool visible)
   sliders[SLIDERS_REAR_LEFT]->setWidth(visible ? TRIM_SQUARE_SIZE : 0);
 
 #if defined(HARDWARE_EXT1)
-  //TODO: might change depending on hardware settings
   if (IS_POT_SLIDER_AVAILABLE(EXT1)) {
     sliders[SLIDERS_EXT1]->setWidth(visible ? TRIM_SQUARE_SIZE : 0);
   }
@@ -64,7 +62,6 @@ void ViewMainDecoration::setSlidersVisible(bool visible)
   sliders[SLIDERS_REAR_RIGHT]->setWidth(visible ? TRIM_SQUARE_SIZE : 0);
     
 #if defined(HARDWARE_EXT2)
-  //TODO: might change depending on hardware settings
   if (IS_POT_SLIDER_AVAILABLE(EXT2)) {
     sliders[SLIDERS_EXT2]->setWidth(visible ? TRIM_SQUARE_SIZE : 0);
   }
@@ -82,7 +79,7 @@ void ViewMainDecoration::setTrimsVisible(bool visible)
 
 void ViewMainDecoration::setFlightModeVisible(bool visible)
 {
-  flightMode->setHeight(visible ? 20 : 0);
+  flightMode->setHeight(visible ? FM_LABEL_HEIGHT : 0);
 }
 
 void ViewMainDecoration::adjustDecoration()
@@ -177,7 +174,19 @@ void ViewMainDecoration::adjustDecoration()
   trims[TRIMS_RV]->setLeft(sliders[SLIDERS_REAR_RIGHT]->left() - trims[TRIMS_RV]->width());
   trims[TRIMS_RV]->setTop(vertTop);
 
-  //TODO: find a proper place for the flight-mode text box
+  // Place the flight-mode text box
+  // -> between horiz trims (if existing)
+  // else on top of horiz sliders
+  //
+  pos = trims[TRIMS_LH]->right();
+  flightMode->setLeft(pos);
+
+  pos = trims[TRIMS_RH]->left() - pos;
+  flightMode->setWidth(pos);
+
+  pos = sliders[SLIDERS_POT1]->top();
+  pos -= flightMode->height();
+  flightMode->setTop(pos);
 }
 
 rect_t ViewMainDecoration::getMainZone() const
@@ -189,18 +198,20 @@ rect_t ViewMainDecoration::getMainZone() const
   };
 
   zone.w = trims[TRIMS_RV]->left() - MAIN_ZONE_BORDER - zone.x;
-  zone.h = trims[TRIMS_LH]->top()  - MAIN_ZONE_BORDER - zone.y;
+
+  // min(trims[TRIMS_LH]->top(), flightMode->top())
+  if (trims[TRIMS_LH]->top() < flightMode->top())
+    zone.h = trims[TRIMS_LH]->top();
+  else
+    zone.h = flightMode->top();
+
+  zone.h -= MAIN_ZONE_BORDER + zone.y;
 
   return zone;
 }
 
 void ViewMainDecoration::createSliders()
 {
-  // TODO:
-  //  - layout must become really dynamic (see adjustDecoration())
-  //  - components should be created in "folded" state
-  //  - it should not be required to call hasXXXX() at all
-  
   // fixed size array, so that works
   memset(sliders, 0, sizeof(sliders));
     
