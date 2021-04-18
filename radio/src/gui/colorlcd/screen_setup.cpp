@@ -222,7 +222,6 @@ class SetupWidgetsPage: public FormWindow
       if (event == EVT_KEY_LONG(KEY_EXIT) || event == EVT_KEY_BREAK(KEY_EXIT)) {
         killEvents(event);
         deleteLater();
-        SET_DIRTY();
       }
     }
 #endif
@@ -327,8 +326,6 @@ void ScreenAddPage::build(FormWindow * window)
         if (menu->getTabs() < MAX_CUSTOM_SCREENS) {
           menu->addTab(new ScreenAddPage(menu, menu->getTabs()));
         }
-
-        storageDirty(EE_MODEL);
       }
       else {
         TRACE("Add main view: factory is NULL");
@@ -417,7 +414,6 @@ void ScreenSetupPage::build(FormWindow * window)
     optionsWindow->clear();
     createCustomScreen(factory, idx);
     updateLayoutOptions(optionsWindow, idx);
-    SET_DIRTY();
   };
   
   auto layoutChoice = new LayoutChoice(window, layoutSlot, getFactory, setLayout);
@@ -470,9 +466,6 @@ void ScreenSetupPage::build(FormWindow * window)
         pageIdx = menu->getTabs() - 2;
       }      
       menu->setCurrentTab(pageIdx);
-
-      // save the changes
-      storageDirty(EE_MODEL);  
       return 0;
     });
 

@@ -22,6 +22,7 @@
 #include "menu_screen.h"
 #include "screen_setup.h"
 #include "view_main.h"
+#include "storage/storage.h"
 
 ScreenMenu::ScreenMenu():
   TabsGroup(ICON_THEME)
@@ -30,6 +31,7 @@ ScreenMenu::ScreenMenu():
 
   setCloseHandler([]{
       ViewMain::instance()->updateTopbarVisibility();
+      storageDirty(EE_MODEL);
   });
 }
 
