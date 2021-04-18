@@ -40,7 +40,7 @@
 
 class ViewMainDecoration;
 
-typedef WidgetsContainer<MAX_LAYOUT_ZONES, MAX_LAYOUT_OPTIONS> LayoutBase;
+typedef WidgetsContainerImpl<MAX_LAYOUT_ZONES, MAX_LAYOUT_OPTIONS> LayoutBase;
 
 class Layout: public LayoutBase
 {
@@ -61,7 +61,7 @@ class Layout: public LayoutBase
 
     void create() override;
   
-    const LayoutFactory * getFactory() const override
+    const LayoutFactory * getFactory() const
     {
       return factory;
     }
@@ -93,11 +93,8 @@ class Layout: public LayoutBase
     void setSlidersVisible(bool visible);
     void setFlightModeVisible(bool visible);
 
-    // Re-calculate positions
-    void adjustDecoration();
-
     // Updates settings for trims, sliders, pots, etc...
-    void decorate() override;
+    void adjustLayout() override;
 
   protected:
     const LayoutFactory * factory  = nullptr;

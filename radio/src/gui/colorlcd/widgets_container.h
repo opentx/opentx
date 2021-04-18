@@ -64,7 +64,7 @@ struct WidgetsContainerPersistentData {
 
 typedef WidgetsContainerPersistentData<MAX_TOPBAR_ZONES, MAX_TOPBAR_OPTIONS> TopBarPersistentData;
 
-class WidgetsContainerInterface: public FormGroup
+class WidgetsContainer: public FormGroup
 {
   public:
     using FormGroup::FormGroup;
@@ -74,10 +74,7 @@ class WidgetsContainerInterface: public FormGroup
     virtual Widget * createWidget(unsigned int index, const WidgetFactory * factory) = 0;
     virtual Widget * getWidget(unsigned int index) = 0;
     virtual void removeWidget(unsigned int index) = 0;
-
-    // this should go away...
-    virtual const LayoutFactory * getFactory() const = 0;
-    virtual void decorate() = 0;
+    virtual void adjustLayout() = 0;
 };
 
 

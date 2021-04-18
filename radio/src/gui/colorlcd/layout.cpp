@@ -21,7 +21,7 @@
 #include "opentx.h"
 #include "view_main.h"
 
-WidgetsContainerInterface * customScreens[MAX_CUSTOM_SCREENS] = {};
+WidgetsContainer * customScreens[MAX_CUSTOM_SCREENS] = {};
 
 std::list<const LayoutFactory *> & getRegisteredLayouts()
 {
@@ -49,7 +49,7 @@ const LayoutFactory * getLayoutFactory(const char * name)
 //
 // Loads a layout, but does not attach it to any window
 //
-WidgetsContainerInterface *
+WidgetsContainer *
 loadLayout(const char * name, LayoutPersistentData * persistentData)
 {
   const LayoutFactory * factory = getLayoutFactory(name);
@@ -137,7 +137,7 @@ void loadCustomScreens()
 //  - new screen is configured into g_model
 //  - the new screen is returned (not attached)
 //
-WidgetsContainerInterface *
+WidgetsContainer *
 createCustomScreen(const LayoutFactory* factory, unsigned customScreenIndex)
 {
   if (!factory || (customScreenIndex >= MAX_CUSTOM_SCREENS))

@@ -58,7 +58,7 @@ class ScreenSetupPage: public PageTab {
 class SetupWidgetsPageSlot: public Button
 {
   public:
-    SetupWidgetsPageSlot(FormGroup * parent, const rect_t & rect, WidgetsContainerInterface* container, uint8_t slotIndex);
+    SetupWidgetsPageSlot(FormGroup * parent, const rect_t & rect, WidgetsContainer* container, uint8_t slotIndex);
 
     void paint(BitmapBuffer * dc) override;
 };

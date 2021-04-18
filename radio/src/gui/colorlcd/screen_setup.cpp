@@ -25,6 +25,7 @@
 #include "widget_settings.h"
 #include "topbar.h"
 #include "libopenui.h"
+#include "layouts/layout_factory_impl.h"
 
 #define SET_DIRTY()     storageDirty(EE_MODEL)
 
@@ -108,7 +109,7 @@ class LayoutChoice: public FormField
     std::function<void(const LayoutFactory *)> setValue;
 };
 
-SetupWidgetsPageSlot::SetupWidgetsPageSlot(FormGroup * parent, const rect_t & rect, WidgetsContainerInterface* container, uint8_t slotIndex):
+SetupWidgetsPageSlot::SetupWidgetsPageSlot(FormGroup * parent, const rect_t & rect, WidgetsContainer* container, uint8_t slotIndex):
   Button(parent, rect)
 {
   setPressHandler([parent, container, slotIndex]() -> uint8_t {
@@ -353,32 +354,39 @@ static void updateLayoutOptions(FormGroup* optionsWindow, unsigned customScreenI
 
   // Layout options...
   int index = 0;
-  auto factory = customScreens[customScreenIndex]->getFactory();
-  if (factory) {
-    for (auto * option = factory->getOptions(); option->name; option++, index++) {
-
-      auto layoutData = g_model.screenData[customScreenIndex].layoutData;
-      ZoneOptionValue * value = &layoutData.options[index].value;
-
-      // Option label
-      new StaticText(optionsWindow, grid.getLabelSlot(false), option->name);
-
-      // Option value
-      switch (option->type) {
-      case ZoneOption::Bool:
-        new CheckBox(optionsWindow, grid.getFieldSlot(), GET_SET_DEFAULT(value->boolValue));
-        break;
-
-      case ZoneOption::Color:
-        new ColorEdit(optionsWindow, grid.getFieldSlot(), GET_SET_DEFAULT(value->unsignedValue));
-        break;
-
-      default:
-        break;
-      }
-      grid.nextLine();
-    }
+  auto layout = dynamic_cast<Layout*>(customScreens[customScreenIndex]);
+  if (!layout) {
+    return;
   }
+  auto factory = layout->getFactory();
+  if (!factory) {
+    return;
+  }
+
+  for (auto * option = factory->getOptions(); option->name; option++, index++) {
+
+    auto layoutData = g_model.screenData[customScreenIndex].layoutData;
+    ZoneOptionValue * value = &layoutData.options[index].value;
+
+    // Option label
+    new StaticText(optionsWindow, grid.getLabelSlot(false), option->name);
+
+    // Option value
+    switch (option->type) {
+    case ZoneOption::Bool:
+      new CheckBox(optionsWindow, grid.getFieldSlot(), GET_SET_DEFAULT(value->boolValue));
+      break;
+
+    case ZoneOption::Color:
+      new ColorEdit(optionsWindow, grid.getFieldSlot(), GET_SET_DEFAULT(value->unsignedValue));
+      break;
+
+    default:
+      break;
+    }
+    grid.nextLine();
+  }
+
   optionsWindow->adjustHeight();
 }
 
@@ -398,7 +406,11 @@ void ScreenSetupPage::build(FormWindow * window)
   rect_t optRect = {0, grid.getWindowHeight(), window->width(), 0};
   auto optionsWindow = new FormGroup(window, optRect, FORWARD_SCROLL | FORM_FORWARD_FOCUS);
 
-  LayoutChoice::LayoutFactoryGetter getFactory = GET_VALUE(customScreens[idx]->getFactory());
+  LayoutChoice::LayoutFactoryGetter getFactory = [idx] () -> const LayoutFactory * {
+    auto layout = dynamic_cast<Layout*>(customScreens[idx]);
+    if (!layout) return nullptr;
+    return layout->getFactory();
+  };
   LayoutChoice::LayoutFactorySetter setLayout = [idx, optionsWindow](const LayoutFactory *factory) {
     // delete any options potentially accessing
     // the old custom screen

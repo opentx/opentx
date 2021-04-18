@@ -25,7 +25,7 @@ const char * const STR_MONTHS[] = TR_MONTHS;
 constexpr uint32_t TOPBAR_REFRESH = 1000 / 2; // 2 Hz
 
 TopbarImpl::TopbarImpl(Window * parent) :
-  WidgetsContainer<MAX_TOPBAR_ZONES, MAX_TOPBAR_OPTIONS>({0, 0, LCD_W, MENU_HEADER_HEIGHT}, &g_model.topbarData)
+  TopbarImplBase({0, 0, LCD_W, MENU_HEADER_HEIGHT}, &g_model.topbarData)
 {
   attach(parent);
 }

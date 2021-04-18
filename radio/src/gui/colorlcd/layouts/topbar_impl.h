@@ -23,7 +23,7 @@
 #include "topbar.h"
 #include "layouts/layout_factory_impl.h"
 
-typedef WidgetsContainer<MAX_TOPBAR_ZONES, MAX_TOPBAR_OPTIONS> TopbarImplBase;
+typedef WidgetsContainerImpl<MAX_TOPBAR_ZONES, MAX_TOPBAR_OPTIONS> TopbarImplBase;
 
 class TopbarImpl:
   public TopbarImplBase,
@@ -54,13 +54,6 @@ class TopbarImpl:
     void paint(BitmapBuffer * dc) override;
 
     void checkEvents() override;
-
-    // Fake implementation to satisfy WidgetsContainerInterface
-    // this should probably be get rid of (might be tricky
-    const LayoutFactory * getFactory() const override
-    {
-        return nullptr;
-    }
     
   protected:
     uint32_t lastRefresh = 0;

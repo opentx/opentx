@@ -24,22 +24,13 @@
 #include "widgets_container.h"
 
 template<int N, int O>
-class WidgetsContainer: public WidgetsContainerInterface
+class WidgetsContainerImpl: public WidgetsContainer
 {
   public:
-    // struct ZonePersistentData {
-    //   char widgetName[WIDGET_NAME_LEN];
-    //   Widget::PersistentData widgetData;
-    // };
-
-    // struct PersistentData {
-    //   ZonePersistentData   zones[N];
-    //   ZoneOptionValueTyped options[O];
-    // };
     typedef WidgetsContainerPersistentData<N,O> PersistentData;
 
-    WidgetsContainer(const rect_t & rect, PersistentData * persistentData):
-      WidgetsContainerInterface(nullptr, rect, FORM_FORWARD_FOCUS),
+    WidgetsContainerImpl(const rect_t & rect, PersistentData * persistentData):
+      WidgetsContainer(nullptr, rect, FORM_FORWARD_FOCUS),
       persistentData(persistentData)
     {
     }
@@ -146,7 +137,7 @@ class WidgetsContainer: public WidgetsContainerInterface
       }
     }
 
-    void decorate() override
+    void adjustLayout() override
     {
     }
   

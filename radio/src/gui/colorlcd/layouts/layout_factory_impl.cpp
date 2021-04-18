@@ -29,7 +29,7 @@ Layout::Layout(const LayoutFactory * factory, PersistentData * persistentData):
   factory(factory),
   decoration(new ViewMainDecoration(this, getRect()))
 {
-  decorate();
+  adjustLayout();
 }
 
 void Layout::create()
@@ -54,7 +54,7 @@ void Layout::paint(BitmapBuffer * dc)
 void Layout::checkEvents()
 {
   LayoutBase::checkEvents();
-  decorate();
+  adjustLayout();
 
   uint32_t now = RTOS_GET_MS();
   if (now - lastRefresh >= LAYOUT_REFRESH) {
@@ -82,12 +82,7 @@ void Layout::setFlightModeVisible(bool visible)
   decoration->setFlightModeVisible(visible);
 }
 
-void Layout::adjustDecoration()
-{
-  decoration->adjustDecoration();
-}
-
-void Layout::decorate()
+void Layout::adjustLayout()
 {
   // Check if deco setting are still up-to-date
   uint8_t checkSettings =
@@ -110,7 +105,7 @@ void Layout::decorate()
   setFlightModeVisible(hasFlightMode());
 
   // Re-compute positions
-  adjustDecoration();
+  decoration->adjustDecoration();
 
   // and update relevant windows
   updateZones();
