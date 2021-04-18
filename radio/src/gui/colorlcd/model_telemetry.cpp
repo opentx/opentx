@@ -324,7 +324,7 @@ class SensorEditWindow : public Page {
 
       // Sensor name
       new StaticText(window, grid.getLabelSlot(), STR_NAME);
-      new TextEdit(window, grid.getFieldSlot(), sensor->label, sizeof(sensor->label));
+      new RadioTextEdit(window, grid.getFieldSlot(), sensor->label, sizeof(sensor->label));
       grid.nextLine();
 
       // Type

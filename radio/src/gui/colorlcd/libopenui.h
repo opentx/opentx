@@ -55,6 +55,7 @@
 #include "curveedit.h"
 #include "coloredit.h"
 #include "draw_functions.h"
+#include "textedits.h"
 
 inline MessageDialog * createPopupInformation(const char * message)
 {
