@@ -21,7 +21,7 @@
 #pragma once
 
 #include "topbar.h"
-#include "widgets/widgets_container_implem.h"
+#include "layouts/layout_factory_impl.h"
 
 typedef WidgetsContainer<MAX_TOPBAR_ZONES, MAX_TOPBAR_OPTIONS> TopbarImplBase;
 

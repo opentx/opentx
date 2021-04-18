@@ -19,7 +19,7 @@
  */
 
 #include "layout.h"
-#include "layout_factory_implem.h"
+#include "layout_factory_impl.h"
 
 const uint8_t LBM_LAYOUT_2x4[] = {
 #include "mask_layout2x4.lbm"

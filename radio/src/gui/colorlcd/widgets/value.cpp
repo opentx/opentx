@@ -19,7 +19,7 @@
  */
 
 #include "opentx.h"
-#include "widgets_container_implem.h"
+#include "widgets_container_impl.h"
 
 const coord_t NUMBERS_PADDING = 4;
 

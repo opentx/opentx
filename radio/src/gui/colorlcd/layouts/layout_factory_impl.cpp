@@ -18,7 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#include "layout_factory_implem.h"
+#include "layout_factory_impl.h"
 #include "layouts/trims.h"
 #include "layouts/sliders.h"
 #include "view_main_decoration.h"
