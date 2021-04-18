@@ -23,6 +23,8 @@
 #include "widget_settings.h"
 #include "libopenui.h"
 
+#define SET_DIRTY()     storageDirty(EE_MODEL)
+
 static const rect_t widgetSettingsDialogRect = {
   LCD_W / 10, // x
   LCD_H / 4,  // y
@@ -118,12 +120,14 @@ WidgetSettings::WidgetSettings(Window * parent, Widget * widget) :
         break;
 
       case ZoneOption::Color:
+        for (uint8_t part = 0; part < 3; part++)
         new ColorEdit(form, grid.getFieldSlot(),
                       [=]() -> int {        // getValue
                         return (int) widget->getOptionValue(optIdx)->unsignedValue;
                       },
                       [=](int newValue) {   // setValue
                         widget->getOptionValue(optIdx)->unsignedValue = (uint32_t) newValue;
+                        SET_DIRTY();
                       });
         break;
     }
