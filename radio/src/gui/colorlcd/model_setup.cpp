@@ -817,6 +817,8 @@ class ModuleWindow : public FormGroup {
                 return 1;
               }
 #endif
+              // silence compiler warning...
+              return 0;
           });
           bindButton->setCheckHandler([=]() {
               if (moduleState[moduleIdx].mode != MODULE_MODE_BIND) {
