@@ -1,29 +1,9 @@
-sudo: required
-dist: xenial
 language: cpp
-compiler: gcc
 
-addons:
-  apt:
-    sources:
-      - sourceline: 'ppa:ubuntu-sdk-team/ppa'
-      - sourceline: 'ppa:ubuntu-toolchain-r/test'
-      - sourceline: 'ppa:beineri/opt-qt571-xenial'
-    update: true
-    packages:
-      - curl
-      - libmpfr4
-      - libmpc3
-      - libfox-1.6-dev
-      - libgtest-dev
-      - lib32stdc++6
-      - libclang-common-6.0-dev
-      - clang-6.0
-      - python3-pip
+services:
+  - docker
 
 env:
-  global:
-    - QT_BASE=57
   matrix:
     - FLAVOR=COMPANION
     - FLAVOR=ARM9X
@@ -34,20 +14,7 @@ env:
     - FLAVOR=COLORLCD
 
 before_install:
-  - wget --quiet https://developer.arm.com/-/media/Files/downloads/gnu-rm/6-2017q2/gcc-arm-none-eabi-6-2017-q2-update-linux.tar.bz2
-  - tar xjf gcc-arm-none-eabi-6-2017-q2-update-linux.tar.bz2
-  - sudo mv gcc-arm-none-eabi-6-2017-q2-update /opt/gcc-arm-none-eabi
-  - sudo ln -s /opt/gcc-arm-none-eabi/bin/arm-none-eabi-gcc /usr/bin/arm-none-eabi-gcc
-  - sudo ln -s /opt/gcc-arm-none-eabi/bin/arm-none-eabi-g++ /usr/bin/arm-none-eabi-g++
-  - sudo ln -s /opt/gcc-arm-none-eabi/bin/arm-none-eabi-as /usr/bin/arm-none-eabi-as
-  - sudo ln -s /opt/gcc-arm-none-eabi/bin/arm-none-eabi-objcopy /usr/bin/arm-none-eabi-objcopy
-  - sudo ln -s /opt/gcc-arm-none-eabi/bin/arm-none-eabi-objdump /usr/bin/arm-none-eabi-objdump
-  - sudo ln -s /opt/gcc-arm-none-eabi/bin/arm-none-eabi-size /usr/bin/arm-none-eabi-size
-  - sudo apt-get install --yes --force-yes -qq qt${QT_BASE}base qt${QT_BASE}multimedia qt${QT_BASE}svg qt${QT_BASE}tools; source /opt/qt${QT_BASE}/bin/qt${QT_BASE}-env.sh
-  - sudo ln -sf /usr/bin/python3 /usr/bin/python
-  - python3 -m pip install pip==20.3.3
-  - sudo apt-get install python3-setuptools
-  - python3 -m pip install pillow==7.2.0 clang
+  - docker pull ghcr.io/raphaelcoeffic/opentx-commit-tests
 
 script:
-  - ./tools/commit-tests.sh
+  - docker run --rm --env FLAVOR=$FLAVOR -v $(pwd):/src ghcr.io/raphaelcoeffic/opentx-commit-tests
