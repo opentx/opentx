@@ -60,6 +60,7 @@ void storageFormat()
   sdCheckAndCreateDirectory(RADIO_PATH);
   sdCheckAndCreateDirectory(MODELS_PATH);
   storageCreateModelsList();
+  generalDefault();
 }
 
 void storageCheck(bool immediately)
