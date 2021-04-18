@@ -25,8 +25,8 @@
 #include "audio.h"
 #include "translations.h"
 
-#include "layout.h"
 #include "widgets/widgets_container_impl.h"
+#include "layout.h"
 
 #define LAYOUT_COMMON_OPTIONS \
   { STR_TOP_BAR, ZoneOption::Bool },         \
@@ -133,6 +133,7 @@ class BaseLayoutFactory: public LayoutFactory
 
     Layout * create(Layout::PersistentData * persistentData) const override
     {
+      initPersistentData(persistentData);
       Layout * layout = new T(this, persistentData);
       if (layout) {
         layout->create();
@@ -147,6 +148,20 @@ class BaseLayoutFactory: public LayoutFactory
         layout->load();
       }
       return layout;
+    }
+
+    void initPersistentData(Layout::PersistentData * persistentData) const
+    {
+      memset(persistentData, 0, sizeof(Layout::PersistentData));
+      if (options) {
+        int i = 0;
+        for (const ZoneOption * option = options; option->name; option++, i++) {
+          TRACE("LayoutFactory::initPersistentData() setting option '%s'", option->name);
+          // TODO compiler bug? The CPU freezes ... persistentData->options[i++] = option->deflt;
+          memcpy(&persistentData->options[i].value, &option->deflt, sizeof(ZoneOptionValue));
+          persistentData->options[i].type = zoneValueEnumFromType(option->type);
+        }
+      }
     }
 
   protected:

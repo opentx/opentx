@@ -125,11 +125,11 @@ class WidgetFactory
       memset(persistentData, 0, sizeof(Widget::PersistentData));
       if (options) {
         int i = 0;
-        for (const ZoneOption * option = options; option->name; option++) {
+        for (const ZoneOption * option = options; option->name; option++, i++) {
           TRACE("WidgetFactory::initPersistentData() setting option '%s'", option->name);
           // TODO compiler bug? The CPU freezes ... persistentData->options[i++] = option->deflt;
-          memcpy(&persistentData->options[i++].value, &option->deflt, sizeof(ZoneOptionValue));
-          persistentData->options[i++].type = zoneValueEnumFromType(option->type);
+          memcpy(&persistentData->options[i].value, &option->deflt, sizeof(ZoneOptionValue));
+          persistentData->options[i].type = zoneValueEnumFromType(option->type);
         }
       }
     }
@@ -139,25 +139,6 @@ class WidgetFactory
   protected:
     const char * name;
     const ZoneOption * options;
-};
-
-template<class T>
-class BaseWidgetFactory: public WidgetFactory
-{
-  public:
-    BaseWidgetFactory(const char * name, const ZoneOption * options):
-      WidgetFactory(name, options)
-    {
-    }
-
-    Widget * create(FormGroup * parent, const rect_t & rect, Widget::PersistentData * persistentData, bool init = true) const override
-    {
-      if (init) {
-        initPersistentData(persistentData);
-      }
-
-      return new T(this, parent, rect, persistentData);
-    }
 };
 
 inline const ZoneOption * Widget::getOptions() const

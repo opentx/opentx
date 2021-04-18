@@ -145,3 +145,22 @@ class WidgetsContainerImpl: public WidgetsContainer
     PersistentData * persistentData;
     Widget * widgets[N] = {};
 };
+
+template<class T>
+class BaseWidgetFactory: public WidgetFactory
+{
+  public:
+    BaseWidgetFactory(const char * name, const ZoneOption * options):
+      WidgetFactory(name, options)
+    {
+    }
+
+    Widget * create(FormGroup * parent, const rect_t & rect, Widget::PersistentData * persistentData, bool init = true) const override
+    {
+      if (init) {
+        initPersistentData(persistentData);
+      }
+
+      return new T(this, parent, rect, persistentData);
+    }
+};
