@@ -12,6 +12,7 @@ env:
     - FLAVOR=XLITE
     - FLAVOR=X9
     - FLAVOR=COLORLCD
+    - FLAVOR=YAML
 
 before_install:
   - docker pull ghcr.io/raphaelcoeffic/opentx-commit-tests
