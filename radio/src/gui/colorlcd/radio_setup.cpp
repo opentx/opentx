@@ -208,16 +208,6 @@ void RadioSetupPage::build(FormWindow * window)
   new Slider(window, grid.getFieldSlot(), -2, +2, GET_SET_DEFAULT(g_eeGeneral.beepVolume));
   grid.nextLine();
 
-  // Wav volume
-  new StaticText(window, grid.getLabelSlot(true), STR_WAV_VOLUME);
-  new Slider(window, grid.getFieldSlot(), -2, +2, GET_SET_DEFAULT(g_eeGeneral.wavVolume));
-  grid.nextLine();
-
-  // Background volume
-  new StaticText(window, grid.getLabelSlot(true), STR_BG_VOLUME);
-  new Slider(window, grid.getFieldSlot(), -2, +2, GET_SET_DEFAULT(g_eeGeneral.backgroundVolume));
-  grid.nextLine();
-
   // Beeps length
   new StaticText(window, grid.getLabelSlot(true), STR_BEEP_LENGTH);
   new Slider(window, grid.getFieldSlot(), -2, +2, GET_SET_DEFAULT(g_eeGeneral.beepLength));
@@ -228,12 +218,22 @@ void RadioSetupPage::build(FormWindow * window)
   auto edit = new NumberEdit(window, grid.getFieldSlot(), 0, 300,
                              GET_DEFAULT(15 * g_eeGeneral.speakerPitch),
                              [=](int32_t newValue) {
-                               g_eeGeneral.speakerPitch = newValue / 15;
-                               SET_DIRTY();
+                                 g_eeGeneral.speakerPitch = newValue / 15;
+                                 SET_DIRTY();
                              });
   edit->setStep(15);
   edit->setPrefix("+");
   edit->setSuffix("Hz");
+  grid.nextLine();
+
+  // Wav volume
+  new StaticText(window, grid.getLabelSlot(true), STR_WAV_VOLUME);
+  new Slider(window, grid.getFieldSlot(), -2, +2, GET_SET_DEFAULT(g_eeGeneral.wavVolume));
+  grid.nextLine();
+
+  // Background volume
+  new StaticText(window, grid.getLabelSlot(true), STR_BG_VOLUME);
+  new Slider(window, grid.getFieldSlot(), -2, +2, GET_SET_DEFAULT(g_eeGeneral.backgroundVolume));
   grid.nextLine();
 
 #if defined(VARIO)
@@ -305,6 +305,12 @@ void RadioSetupPage::build(FormWindow * window)
     edit->setSuffix("v");
     grid.nextLine();
 
+    // Inactivity alarm
+    new StaticText(window, grid.getLabelSlot(true), STR_INACTIVITYALARM);
+    edit = new NumberEdit(window, grid.getFieldSlot(), 0, 250, GET_SET_DEFAULT(g_eeGeneral.inactivityTimer));
+    edit->setSuffix("minutes");
+    grid.nextLine();
+
     // Alarms warning
     new StaticText(window, grid.getLabelSlot(true), STR_ALARMWARNING);
     new CheckBox(window, grid.getFieldSlot(), GET_SET_INVERTED(g_eeGeneral.disableAlarmWarning));
@@ -313,12 +319,6 @@ void RadioSetupPage::build(FormWindow * window)
     // RSSI shutdown alarm
     new StaticText(window, grid.getLabelSlot(true), STR_RSSI_SHUTDOWN_ALARM);
     new CheckBox(window, grid.getFieldSlot(), GET_SET_INVERTED(g_eeGeneral.disableRssiPoweroffAlarm));
-    grid.nextLine();
-
-    // Inactivity alarm
-    new StaticText(window, grid.getLabelSlot(true), STR_INACTIVITYALARM);
-    edit = new NumberEdit(window, grid.getFieldSlot(), 0, 250, GET_SET_DEFAULT(g_eeGeneral.inactivityTimer));
-    edit->setSuffix("minutes");
     grid.nextLine();
   }
 
