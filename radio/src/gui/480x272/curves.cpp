@@ -94,3 +94,36 @@ void drawCurvePoint(int x, int y, LcdFlags color)
   lcdDrawBitmapPattern(x, y, LBM_CURVE_POINT, color);
   lcdDrawBitmapPattern(x, y, LBM_CURVE_POINT_CENTER, TEXT_BGCOLOR);
 }
+
+void drawCursor(FnFuncP fn)
+{
+  char textx[5];
+  char texty[5];
+  int x = getValue(s_currSrcRaw);
+  if (s_currSrcRaw >= MIXSRC_FIRST_TELEM) {
+    strAppendUnsigned(textx, calcRESXto100(x));
+    // TODO drawSensorCustomValue(LCD_W-8, 6*FH, ed->srcRaw - MIXSRC_FIRST_TELEM, x);
+    if (s_currScale > 0)
+      x = (x * 1024) / convertTelemValue(s_currSrcRaw - MIXSRC_FIRST_TELEM + 1, s_currScale);
+  }
+  else {
+    strAppendSigned(textx, calcRESXto100(x));
+  }
+  
+  x = limit(-1024, x, 1024);
+  int y = limit<int>(-1024, fn(x), 1024);
+  strAppendSigned(texty, calcRESXto100(y));
+
+  x = divRoundClosest(x * CURVE_SIDE_WIDTH, RESX);
+  y = CURVE_CENTER_Y + getCurveYCoord(fn, x, CURVE_SIDE_WIDTH);
+
+  lcdDrawSolidFilledRect(CURVE_CENTER_X + x, CURVE_CENTER_Y - CURVE_SIDE_WIDTH, 2, 2 * CURVE_SIDE_WIDTH + 2, CURVE_CURSOR_COLOR);
+  lcdDrawSolidFilledRect(CURVE_CENTER_X - CURVE_SIDE_WIDTH-2, y-1, 2*CURVE_SIDE_WIDTH + 2, 2, CURVE_CURSOR_COLOR);
+  lcdDrawBitmapPattern(CURVE_CENTER_X + x - 4, y - 4, LBM_CURVE_POINT, CURVE_CURSOR_COLOR);
+  lcdDrawBitmapPattern(CURVE_CENTER_X + x - 4, y - 4, LBM_CURVE_POINT_CENTER, TEXT_BGCOLOR);
+
+  int left = limit(CURVE_CENTER_X - CURVE_SIDE_WIDTH, CURVE_CENTER_X - CURVE_COORD_WIDTH / 2 + x, CURVE_CENTER_X + CURVE_SIDE_WIDTH - CURVE_COORD_WIDTH + 2);
+  drawCurveCoord(left, CURVE_CENTER_Y + CURVE_SIDE_WIDTH + 2, textx);
+  int top = limit(CURVE_CENTER_Y - CURVE_SIDE_WIDTH - 1, -CURVE_COORD_HEIGHT / 2 + y, CURVE_CENTER_Y + CURVE_SIDE_WIDTH - CURVE_COORD_HEIGHT + 1);
+  drawCurveCoord(CURVE_CENTER_X-CURVE_SIDE_WIDTH - 37, top, texty);
+}

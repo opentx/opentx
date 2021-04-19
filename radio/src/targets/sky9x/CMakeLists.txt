@@ -11,6 +11,8 @@ set(RADIO_DEPENDENCIES ${RADIO_DEPENDENCIES} 9x_bitmaps)
 set(PPM_LIMITS_SYMETRICAL YES)
 set(PXX1 YES)
 set(AFHDS3 NO)
+set(GHOST NO)
+add_definitions(-DHARDWARE_EXTERNAL_MODULE)
 add_definitions(-DDISABLE_MULTI_UPDATE)
 
 if(PCB STREQUAL 9XRPRO)
@@ -121,9 +123,13 @@ set(FIRMWARE_TARGET_SRC
   MEDSdcard.c
   )
 
+set(FIRMWARE_TARGET_SRC
+  ${FIRMWARE_TARGET_SRC}
+  telemetry_driver.cpp
+  )
+
 set(TARGET_SRC
   ${TARGET_SRC}
-  telemetry_driver.cpp
   adc_driver.cpp
   pulses_driver.cpp
   audio_driver.cpp

@@ -33,6 +33,7 @@
 #endif
 
 #define CROSSFIRE_CHANNELS_COUNT        16
+#define GHOST_CHANNELS_COUNT            12
 
 #if defined(MULTIMODULE)
 // When using packed, the pointer in here end up not being aligned, which clang and gcc complain about
@@ -40,6 +41,8 @@
 struct mm_options_strings {
   static const char* options[];
 };
+
+const uint8_t getMaxMultiOptions();
 
 struct mm_protocol_definition {
   uint8_t protocol;
@@ -150,6 +153,18 @@ inline bool isModuleCrossfire(uint8_t idx)
 }
 #endif
 
+#if defined(GHOST)
+inline bool isModuleGhost(uint8_t idx)
+{
+  return idx == EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_GHOST;
+}
+#else
+inline bool isModuleGhost(uint8_t idx)
+{
+  return false;
+}
+#endif
+
 #if defined(PCBSKY9X)
 inline bool isExtraModule(uint8_t idx)
 {
@@ -178,7 +193,7 @@ inline bool isModulePPM(uint8_t moduleIdx)
 
 inline bool isModuleTypeR9MNonAccess(uint8_t type)
 {
-  return type == MODULE_TYPE_R9M_PXX1 || type == MODULE_TYPE_R9M_LITE_PXX1 || type == MODULE_TYPE_R9M_LITE_PRO_PXX1;
+  return type == MODULE_TYPE_R9M_PXX1 || type == MODULE_TYPE_R9M_LITE_PXX1;
 }
 
 inline bool isModuleR9MNonAccess(uint8_t idx)
@@ -218,7 +233,7 @@ inline bool isModuleR9MLiteNonPro(uint8_t idx)
 
 inline bool isModuleTypeR9MLitePro(uint8_t type)
 {
-  return type == MODULE_TYPE_R9M_LITE_PRO_PXX1 || type == MODULE_TYPE_R9M_LITE_PRO_PXX2;
+  return type == MODULE_TYPE_R9M_LITE_PRO_PXX2;
 }
 
 inline bool isModuleTypeR9MLite(uint8_t type)
@@ -271,9 +286,14 @@ inline bool isModulePXX1(uint8_t idx)
   return isModuleTypePXX1(g_model.moduleData[idx].type);
 }
 
+inline bool isModuleXJTLite(uint8_t idx)
+{
+  return g_model.moduleData[idx].type == MODULE_TYPE_XJT_LITE_PXX2;
+}
+
 inline bool isModulePXX2(uint8_t idx)
 {
-  return isModuleISRM(idx) || isModuleR9MAccess(idx);
+  return isModuleISRM(idx) || isModuleR9MAccess(idx) || isModuleXJTLite(idx);
 }
 
 inline bool isModuleRFAccess(uint8_t idx)
@@ -302,24 +322,6 @@ inline bool isModuleSBUS(uint8_t moduleIdx)
 inline bool isModuleAFHDS3(uint8_t idx)
 {
   return g_model.moduleData[idx].type == MODULE_TYPE_AFHDS3;
-}
-
-inline bool isModulePxx2(uint8_t idx)
-{
-  if (idx != EXTERNAL_MODULE)
-    return false;
-#if defined(PXX2)
-  #if defined(HARDWARE_EXTERNAL_MODULE_SIZE_SML)
-     if (g_model.moduleData[idx].type == MODULE_TYPE_XJT_LITE_PXX2 ||
-        g_model.moduleData[idx].type == MODULE_TYPE_R9M_LITE_PRO_PXX2)
-       return true;
-  #endif
-  #if defined(HARDWARE_EXTERNAL_MODULE_SIZE_SML)
-    if (g_model.moduleData[idx].type == MODULE_TYPE_R9M_LITE_PXX2)
-      return true;
-  #endif
-#endif
-  return false;
 }
 
 // order is the same as in enum Protocols in myeeprom.h (none, ppm, pxx, pxx2, dsm, crossfire, multi, r9m, r9m2, sbus)
@@ -384,6 +386,8 @@ inline int8_t sentModuleChannels(uint8_t idx)
 {
   if (isModuleCrossfire(idx))
     return CROSSFIRE_CHANNELS_COUNT;
+  else if (isModuleGhost(idx))
+    return GHOST_CHANNELS_COUNT;
   else if (isModuleMultimodule(idx) && !isModuleMultimoduleDSM2(idx))
     return 16;
   else if (isModuleSBUS(idx))
@@ -412,6 +416,9 @@ inline bool isModuleRxNumAvailable(uint8_t moduleIdx)
     return true;
 
   if (isModuleMultimodule(moduleIdx))
+    return true;
+
+  if (isModuleCrossfire(moduleIdx))
     return true;
 
   return false;
@@ -528,7 +535,7 @@ inline bool isTelemAllowedOnBind(uint8_t moduleIndex)
       return true;
   }
 
-  if (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_R9M_PXX1 || g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_R9M_LITE_PRO_PXX1) {
+  if (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_R9M_PXX1) {
     if (isModuleR9M_LBT(EXTERNAL_MODULE))
       return g_model.moduleData[EXTERNAL_MODULE].pxx.power < R9M_LBT_POWER_200_16CH_NOTELEM;
     else
@@ -666,10 +673,6 @@ inline void getMultiOptionValues(int8_t multi_proto, int8_t & min, int8_t & max)
       min = -1;
       max = 84;
       break;
-    case MODULE_SUBTYPE_MULTI_FRSKY_R9:
-      min = 0;  // 10mW
-      max = 5;  // 300mW
-      break;
     default:
       min = -128;
       max = 127;
@@ -677,5 +680,21 @@ inline void getMultiOptionValues(int8_t multi_proto, int8_t & min, int8_t & max)
   }
 }
 #endif
+
+inline const char * getRssiLabel()
+{
+#if defined(MULTIMODULE)
+  if (telemetryProtocol == PROTOCOL_TELEMETRY_MULTIMODULE && (g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol() == MODULE_SUBTYPE_MULTI_FS_AFHDS2A
+                                                           || g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol() == MODULE_SUBTYPE_MULTI_HOTT)) {
+    return "RQly";
+  }
+#endif
+#if defined(GHOST)
+  if (telemetryProtocol == PROTOCOL_TELEMETRY_GHOST) {
+    return "RQly";
+  }
+#endif
+  return "RSSI";
+}
 
 #endif // _MODULES_HELPERS_H_

@@ -137,6 +137,7 @@ void boardInit()
                          INTMODULE_RCC_APB1Periph |
                          EXTMODULE_RCC_APB1Periph |
                          I2C_RCC_APB1Periph |
+                         MIXER_SCHEDULER_TIMER_RCC_APB1Periph |
                          GPS_RCC_APB1Periph |
                          BACKLIGHT_RCC_APB1Periph,
                          ENABLE);

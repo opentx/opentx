@@ -251,6 +251,10 @@ void drawSensorCustomValue(coord_t x, coord_t y, uint8_t sensor, int32_t value, 
               "Rx2 Lost",
               "Rx1 NS",
               "Rx2 NS",
+              "Rx3 FS",
+              "Rx3 LF",
+              "Rx3 Lost",
+              "Rx3 NS"
             };
             for (uint8_t i=0; i<DIM(RXS_STATUS); i++) {
               if (value & (1<<i)) {

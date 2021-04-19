@@ -227,14 +227,7 @@ void menuModelTelemetry(event_t event)
         break;
 
       case ITEM_TELEMETRY_RSSI_LABEL:
-#if defined(MULTIMODULE)
-        if (telemetryProtocol == PROTOCOL_TELEMETRY_MULTIMODULE && (g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol() == MODULE_SUBTYPE_MULTI_FS_AFHDS2A || g_model.moduleData[EXTERNAL_MODULE].getMultiProtocol() == MODULE_SUBTYPE_MULTI_HOTT))
-          lcdDrawTextAlignedLeft(y, "RQly");
-        else
-          lcdDrawTextAlignedLeft(y, "RSSI");
-#else
-        lcdDrawTextAlignedLeft(y, "RSSI");
-#endif
+        lcdDrawTextAlignedLeft(y,  getRssiLabel());
         break;
 
       case ITEM_TELEMETRY_RSSI_SOURCE: {

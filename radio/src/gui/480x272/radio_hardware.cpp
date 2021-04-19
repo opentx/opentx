@@ -126,7 +126,7 @@ void onHardwareAntennaSwitchConfirm(const char * result)
 #define EXTERNAL_ANTENNA_ROW
 #endif
 
-#if defined(CROSSFIRE) && SPORT_MAX_BAUDRATE < 400000
+#if (defined(CROSSFIRE) || defined(GHOST)) && (SPORT_MAX_BAUDRATE < 400000 || defined(DEBUG))
   #define MAX_BAUDRATE_ROW          0
 #else
   #define MAX_BAUDRATE_ROW          HIDDEN_ROW
@@ -325,7 +325,7 @@ bool menuRadioHardware(event_t event)
 #if defined(BLUETOOTH)
       case ITEM_RADIO_HARDWARE_BLUETOOTH_MODE:
         lcdDrawText(MENUS_MARGIN_LEFT, y, STR_BLUETOOTH);
-        g_eeGeneral.bluetoothMode = editChoice(HW_SETTINGS_COLUMN2, y, STR_BLUETOOTH_MODES, g_eeGeneral.bluetoothMode, BLUETOOTH_OFF, BLUETOOTH_TRAINER, attr, event);
+        g_eeGeneral.bluetoothMode = editChoice(HW_SETTINGS_COLUMN2, y, STR_BLUETOOTH_MODES, g_eeGeneral.bluetoothMode, BLUETOOTH_OFF, BLUETOOTH_MAX, attr, event);
         break;
 
       case ITEM_RADIO_HARDWARE_BLUETOOTH_PAIRING_CODE:

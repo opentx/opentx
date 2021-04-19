@@ -22,6 +22,8 @@
 
 uint8_t currentSpeakerVolume = 255;
 uint8_t requiredSpeakerVolume = 255;
+uint8_t currentBacklightBright = 0;
+uint8_t requiredBacklightBright = 0;
 uint8_t mainRequestFlags = 0;
 
 #if defined(STM32)
@@ -527,6 +529,10 @@ void perMain()
     lcdRefresh();
     return;
   }
+#endif
+
+#if defined(KEYS_GPIO_REG_BIND) && defined(BIND_KEY)
+  bindButtonHandler(evt);
 #endif
 
 #if defined(GUI)

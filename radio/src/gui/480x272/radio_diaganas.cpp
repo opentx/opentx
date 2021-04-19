@@ -19,13 +19,13 @@
  */
 
 #include "opentx.h"
-#if defined(RADIO_TX16S)
+#if defined(HARDWARE_TOUCH)
+#include "touch.h"
 #include "tp_gt911.h"
 #include <math.h>
 #endif
 
 constexpr coord_t LEFT_NAME_COLUMN = MENUS_MARGIN_LEFT;
-constexpr coord_t RIGHT_NAME_COLUMN = LCD_W / 2;
 constexpr coord_t ANA_OFFSET = 150;
 
 bool menuRadioDiagAnalogs(event_t event)
@@ -71,7 +71,7 @@ bool menuRadioDiagAnalogs(event_t event)
     lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + 7 * FH, STR_TOUCH_PANEL);
   }
 
-  if (touchPanelEvent) {
+  if (touchPanelEventOccured()) {
     touchPanelRead();
     lcdDrawNumber(lcdNextPos + 1, MENU_CONTENT_TOP + 7 * FH, touchState.x);
     lcdDrawText(lcdNextPos, MENU_CONTENT_TOP + 7 * FH, ", ");

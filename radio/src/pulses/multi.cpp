@@ -42,6 +42,7 @@ static void sendD16BindOption(uint8_t moduleIdx);
 #if defined(LUA)
 static void sendSport(uint8_t moduleIdx);
 static void sendHott(uint8_t moduleIdx);
+static void sendDSM(uint8_t moduleIdx);
 #endif
 
 void multiPatchCustom(uint8_t moduleIdx)
@@ -107,15 +108,15 @@ static void sendFailsafeChannels(uint8_t moduleIdx)
     int16_t failsafeValue = g_model.failsafeChannels[i];
     int pulseValue;
 
-    if (g_model.moduleData[moduleIdx].failsafeMode == FAILSAFE_HOLD) {
+    if (g_model.moduleData[moduleIdx].failsafeMode == FAILSAFE_HOLD || failsafeValue == FAILSAFE_CHANNEL_HOLD) {
       pulseValue = 2047;
     }
-    else if (g_model.moduleData[moduleIdx].failsafeMode == FAILSAFE_NOPULSES) {
+    else if (g_model.moduleData[moduleIdx].failsafeMode == FAILSAFE_NOPULSES || failsafeValue == FAILSAFE_CHANNEL_NOPULSE) {
       pulseValue = 0;
     }
     else {
       failsafeValue += 2 * PPM_CH_CENTER(g_model.moduleData[moduleIdx].channelsStart + i) - 2 * PPM_CENTER;
-      pulseValue = limit(1, (failsafeValue * 800 / 1000) + 1024, 2047);
+      pulseValue = limit(1, (failsafeValue * 800 / 1000) + 1024, 2046);
     }
 
     bits |= pulseValue << bitsavailable;
@@ -167,13 +168,18 @@ void setupPulsesMulti(uint8_t moduleIdx)
     sendChannels(moduleIdx);
 
   // Multi V1.3.X.X -> Send byte 26, Protocol (bits 7 & 6), RX_Num (bits 5 & 4), invert, not used, disable telemetry, disable mapping
-  sendMulti(moduleIdx, (uint8_t) (((g_model.moduleData[moduleIdx].getMultiProtocol()+3)&0xC0)
-                                  | (g_model.header.modelId[moduleIdx] & 0x30)
-                                  | (invert[moduleIdx] & 0x08)
-                                  //| 0x04 // Future use
-                                  | (g_model.moduleData[moduleIdx].multi.disableTelemetry << 1)
-                                  | g_model.moduleData[moduleIdx].multi.disableMapping));
-  
+  if (moduleState[moduleIdx].mode == MODULE_MODE_SPECTRUM_ANALYSER) {
+    sendMulti(moduleIdx, invert[moduleIdx] & 0x08);
+  }
+  else {
+    sendMulti(moduleIdx, (uint8_t) (((g_model.moduleData[moduleIdx].getMultiProtocol() + 3) & 0xC0)
+                                    | (g_model.header.modelId[moduleIdx] & 0x30)
+                                    | (invert[moduleIdx] & 0x08)
+                                    //| 0x04 // Future use
+                                    | (g_model.moduleData[moduleIdx].multi.disableTelemetry << 1)
+                                    | g_model.moduleData[moduleIdx].multi.disableMapping));
+  }
+
   // Multi V1.3.X.X -> Send protocol additional data: max 9 bytes
   if (getMultiModuleStatus(moduleIdx).isValid()) {
     MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
@@ -189,6 +195,9 @@ void setupPulsesMulti(uint8_t moduleIdx)
       else if (IS_HOTT_MULTI(moduleIdx)) {
         sendHott(moduleIdx);        //1 byte of additional data
       }
+      else if (IS_DSM_MULTI(moduleIdx)) {
+        sendDSM(moduleIdx);         //7 bytes of additional data
+      }
 #endif
     }
   }
@@ -200,10 +209,8 @@ void setupPulsesMultiExternalModule()
   extmodulePulsesData.dsm2.serialByte = 0 ;
   extmodulePulsesData.dsm2.serialBitCount = 0 ;
 #else
-  extmodulePulsesData.dsm2.rest = getMultiSyncStatus(EXTERNAL_MODULE).getAdjustedRefreshRate();
   extmodulePulsesData.dsm2.index = 0;
 #endif
-
   extmodulePulsesData.dsm2.ptr = extmodulePulsesData.dsm2.pulses;
 
   setupPulsesMulti(EXTERNAL_MODULE);
@@ -394,6 +401,20 @@ void sendHott(uint8_t moduleIdx)
   if (Multi_Buffer && memcmp(Multi_Buffer, "HoTT", 4) == 0 && (Multi_Buffer[5] & 0x80) && (Multi_Buffer[5] & 0x0F) >= 0x07) {
     // HoTT Lua script is running
     sendMulti(moduleIdx, Multi_Buffer[5]);
+  }
+}
+
+void sendDSM(uint8_t moduleIdx)
+{
+  // Multi_Buffer[0..2]=="DSM" -> Lua script is running
+  // Multi_Buffer[3]==0x70 + len -> TX to RX data ready to be sent
+  // Multi_Buffer[4..9]=6 bytes of TX to RX data
+  // Multi_Buffer[10..25]=16 bytes of RX to TX data
+  if (Multi_Buffer && memcmp(Multi_Buffer, "DSM", 3) == 0 && (Multi_Buffer[3] & 0xF8) == 0x70) {
+    for(uint8_t i = 0; i < 7; i++) {
+        sendMulti(moduleIdx, Multi_Buffer[3+i]);
+    }
+    Multi_Buffer[3] = 0x00;    // Data sent
   }
 }
 #endif

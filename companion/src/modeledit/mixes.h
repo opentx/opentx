@@ -26,12 +26,15 @@
 #include "mixerdialog.h"
 #include "modelprinter.h"
 
+class CompoundItemModelFactory;
+class FilteredItemModel;
+
 class MixesPanel : public ModelPanel
 {
     Q_OBJECT
 
   public:
-    MixesPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware);
+    MixesPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, CompoundItemModelFactory * sharedItemModels);
     virtual ~MixesPanel();
 
     virtual void update();
@@ -39,7 +42,7 @@ class MixesPanel : public ModelPanel
   private slots:
     // TODO all slots?
     void clearMixes();
-    void mixersDelete(bool ask=true);
+    void mixersDelete(bool prompt = true);
     void mixersCut();
     void mixersCopy();
     void mixersPaste();
@@ -50,7 +53,6 @@ class MixesPanel : public ModelPanel
     void moveMixDown();
     void mixerHighlight();
 
-
     void mixerlistWidget_customContextMenuRequested(QPoint pos);
     void mixerlistWidget_doubleClicked(QModelIndex index);
     void mixerlistWidget_KeyPress(QKeyEvent *event);
@@ -58,11 +60,16 @@ class MixesPanel : public ModelPanel
     void mimeMixerDropped(int index, const QMimeData *data, Qt::DropAction action);
     void pasteMixerMimeData(const QMimeData * mimeData, int destIdx);
 
+    void onItemModelAboutToBeUpdated();
+    void onItemModelUpdateComplete();
+
   private:
     MixersListWidget * mixersListWidget;
     bool mixInserted;
     unsigned int highlightedSource;
     ModelPrinter modelPrinter;
+    CompoundItemModelFactory *sharedItemModels;
+    int modelsUpdateCnt;
 
     int getMixerIndex(unsigned int dch);
     bool gm_insertMix(int idx);
@@ -74,6 +81,7 @@ class MixesPanel : public ModelPanel
     void setSelectedByMixList(QList<int> list);
     void AddMixerLine(int dest);
     QString getMixerText(int dest, bool newChannel);
+    void connectItemModelEvents(const int id);
 };
 
 #endif // _MIXES_H_

@@ -47,14 +47,20 @@ void Pxx2Pulses::addFlag1(uint8_t module)
   else {
     subType = g_model.moduleData[module].subType;
   }
-  Pxx2Transport::addByte(subType << 4);
+
+  uint8_t flag1 = subType << 4u;
+  if (isRacingModeEnabled() && isFunctionActive(FUNCTION_RACING_MODE)) {
+    flag1 |= PXX2_CHANNELS_FLAG1_RACING_MODE;
+  }
+
+  Pxx2Transport::addByte(flag1);
 }
 
 void Pxx2Pulses::addPulsesValues(uint16_t low, uint16_t high)
 {
   Pxx2Transport::addByte(low); // Low byte of channel
-  Pxx2Transport::addByte(((low >> 8) & 0x0F) | (high << 4));  // 4 bits each from 2 channels
-  Pxx2Transport::addByte(high >> 4);  // High byte of channel
+  Pxx2Transport::addByte(((low >> 8u) & 0x0Fu) | (high << 4u));  // 4 bits each from 2 channels
+  Pxx2Transport::addByte(high >> 4u);  // High byte of channel
 }
 
 void Pxx2Pulses::addChannels(uint8_t module)
@@ -227,6 +233,8 @@ void Pxx2Pulses::setupReceiverSettingsFrame(uint8_t module)
         flag1 |= PXX2_RX_SETTINGS_FLAG1_TELEMETRY_25MW;
       if (reusableBuffer.hardwareAndSettings.receiverSettings.enablePwmCh5Ch6)
         flag1 |= PXX2_RX_SETTINGS_FLAG1_ENABLE_PWM_CH5_CH6;
+      if (reusableBuffer.hardwareAndSettings.receiverSettings.fport2)
+        flag1 |= PXX2_RX_SETTINGS_FLAG1_FPORT2;
       Pxx2Transport::addByte(flag1);
       uint8_t outputsCount = min<uint8_t>(24, reusableBuffer.hardwareAndSettings.receiverSettings.outputsCount);
       for (int i = 0; i < outputsCount; i++) {

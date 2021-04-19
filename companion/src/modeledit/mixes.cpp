@@ -20,13 +20,21 @@
 
 #include "mixes.h"
 #include "helpers.h"
+#include "filtereditemmodels.h"
 
-MixesPanel::MixesPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware):
+MixesPanel::MixesPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, CompoundItemModelFactory * sharedItemModels):
   ModelPanel(parent, model, generalSettings, firmware),
   mixInserted(false),
   highlightedSource(0),
-  modelPrinter(firmware, generalSettings, model)
+  modelPrinter(firmware, generalSettings, model),
+  sharedItemModels(sharedItemModels),
+  modelsUpdateCnt(0)
 {
+  connectItemModelEvents(AbstractItemModel::IMID_RawSource);
+  connectItemModelEvents(AbstractItemModel::IMID_RawSwitch);
+  connectItemModelEvents(AbstractItemModel::IMID_Curve);
+  connectItemModelEvents(AbstractItemModel::IMID_GVarRef);
+
   QGridLayout * mixesLayout = new QGridLayout(this);
 
   mixersListWidget = new MixersListWidget(this, false); // TODO enum
@@ -175,8 +183,8 @@ void MixesPanel::gm_openMix(int index)
 
   MixData mixd(model->mixData[index]);
 
-  MixerDialog *g = new MixerDialog(this, *model, &mixd, generalSettings, firmware);
-  if(g->exec()) {
+  MixerDialog *dlg = new MixerDialog(this, *model, &mixd, generalSettings, firmware, sharedItemModels);
+  if(dlg->exec()) {
     model->mixData[index] = mixd;
     emit modified();
     update();
@@ -188,6 +196,7 @@ void MixesPanel::gm_openMix(int index)
     mixInserted = false;
     update();
   }
+  delete dlg;
 }
 
 int MixesPanel::getMixerIndex(unsigned int dch)
@@ -253,28 +262,27 @@ void MixesPanel::setSelectedByMixList(QList<int> list)
 }
 
 
-void MixesPanel::mixersDelete(bool ask)
+void MixesPanel::mixersDelete(bool prompt)
 {
   QList<int> list = createMixListFromSelected();
-  if(list.isEmpty()) return;
+  if(list.isEmpty())
+    return;
 
-  QMessageBox::StandardButton ret = QMessageBox::No;
-
-  if(ask) {
-    ret = QMessageBox::warning(this, "companion",
-             tr("Delete Selected Mixes?"),
-             QMessageBox::Yes | QMessageBox::No);
+  if (prompt) {
+    if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Delete selected Mix lines. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+      return;
   }
 
-  if ((ret == QMessageBox::Yes) || (!ask)) {
-    mixersDeleteList(list);
-    emit modified();
-    update();
-  }
+  mixersDeleteList(list);
+  emit modified();
+  update();
 }
 
 void MixesPanel::mixersCut()
 {
+  if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Cut selected Mix lines. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+    return;
+
   mixersCopy();
   mixersDelete(false);
 }
@@ -346,7 +354,11 @@ void MixesPanel::mixersDuplicate()
 
 void MixesPanel::mixerOpen()
 {
-  int idx = mixersListWidget->currentItem()->data(Qt::UserRole).toByteArray().at(0);
+  QListWidgetItem *item = mixersListWidget->currentItem();
+  if (item == nullptr) 
+    return;
+
+  int idx = item->data(Qt::UserRole).toByteArray().at(0);
   if(idx < 0) {
     int i = -idx;
     idx = getMixerIndex(i); //get mixer index to insert
@@ -363,7 +375,11 @@ void MixesPanel::mixerOpen()
 
 void MixesPanel::mixerHighlight()
 {
-  int idx = mixersListWidget->currentItem()->data(Qt::UserRole).toByteArray().at(0);
+  QListWidgetItem *item = mixersListWidget->currentItem();
+  if (item == nullptr) 
+    return;
+
+  int idx = item->data(Qt::UserRole).toByteArray().at(0);
   int dest;
   if (idx<0) {
     dest = -idx;
@@ -528,5 +544,29 @@ void MixesPanel::clearMixes()
     model->clearMixes();
     emit modified();
     update();
+  }
+}
+
+void MixesPanel::connectItemModelEvents(const int id)
+{
+  AbstractDynamicItemModel * itemModel = qobject_cast<AbstractDynamicItemModel *>(sharedItemModels->getItemModel(id));
+  if (itemModel) {
+    connect(itemModel, &AbstractDynamicItemModel::aboutToBeUpdated, this, &MixesPanel::onItemModelAboutToBeUpdated);
+    connect(itemModel, &AbstractDynamicItemModel::updateComplete, this, &MixesPanel::onItemModelUpdateComplete);
+  }
+}
+
+void MixesPanel::onItemModelAboutToBeUpdated()
+{
+  lock = true;
+  modelsUpdateCnt++;
+}
+
+void MixesPanel::onItemModelUpdateComplete()
+{
+  modelsUpdateCnt--;
+  if (modelsUpdateCnt < 1) {
+    update();
+    lock = false;
   }
 }

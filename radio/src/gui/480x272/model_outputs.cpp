@@ -96,6 +96,14 @@ bool menuModelLimits(event_t event)
 
   uint32_t sub = menuVerticalPosition;
 
+  if (sub < MAX_OUTPUT_CHANNELS) {
+#if defined(PPM_CENTER_ADJUSTABLE) || defined(PPM_UNIT_US)
+    lcdDrawNumber(LCD_W / 2, MENU_TITLE_TOP + 1, PPM_CH_CENTER(sub)+channelOutputs[sub]/2, MENU_TITLE_COLOR, 0, "", STR_US);
+#else
+    lcdDrawNumber(LCD_W / 2, MENU_TITLE_TOP + 1, calcRESXto1000(channelOutputs[sub]), PREC1 | MENU_TITLE_COLOR);
+#endif
+  }
+
   if (sub<MAX_OUTPUT_CHANNELS && menuHorizontalPosition>=0) {
     drawColumnHeader(STR_LIMITS_HEADERS, NULL, menuHorizontalPosition);
   }

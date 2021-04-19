@@ -253,23 +253,23 @@ class LuaWidget: public Widget
     LuaWidget(const WidgetFactory * factory, const Zone & zone, Widget::PersistentData * persistentData, int widgetData):
       Widget(factory, zone, persistentData),
       widgetData(widgetData),
-      errorMessage(0)
+      errorMessage(nullptr)
     {
     }
 
-    virtual ~LuaWidget()
+    ~LuaWidget() override
     {
       luaL_unref(lsWidgets, LUA_REGISTRYINDEX, widgetData);
-      if (errorMessage) free(errorMessage);
+      free(errorMessage);
     }
 
-    virtual void update();
+    void update() override;
 
     void refresh() override;
 
-    virtual void background();
+    void background() override;
 
-    virtual const char * getErrorMessage() const;
+    const char * getErrorMessage() const override;
 
   protected:
     int widgetData;
@@ -300,7 +300,7 @@ class LuaWidgetFactory: public WidgetFactory
     {
     }
 
-    virtual Widget * create(const Zone & zone, Widget::PersistentData * persistentData, bool init=true) const
+    Widget * create(const Zone & zone, Widget::PersistentData * persistentData, bool init=true) const override
     {
       if (lsWidgets == 0) return 0;
       if (init) {

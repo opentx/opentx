@@ -451,7 +451,8 @@ PACK(struct ModuleData {
       int8_t refreshRate;  // definition as framelength for ppm (* 5 + 225 = time in 1/10 ms)
     } sbus);
     NOBACKUP(PACK(struct {
-      uint8_t receivers; // 5 bits spare
+      uint8_t receivers:7; // 4 bits spare
+      uint8_t racingMode:1;
       char receiverName[PXX2_MAX_RECEIVERS_PER_MODULE][PXX2_LEN_RX_NAME];
     }) pxx2);
     NOBACKUP(PACK(struct {
@@ -475,13 +476,20 @@ PACK(struct ModuleData {
   };
 
   // Helper functions to set both of the rfProto protocol at the same time
-  NOBACKUP(inline uint8_t getMultiProtocol() {
+  NOBACKUP(inline uint8_t getMultiProtocol() const
+  {
     return ((uint8_t) (rfProtocol & 0x0F)) + (multi.rfProtocolExtra << 4);
   })
 
-  NOBACKUP(inline void setMultiProtocol(uint8_t proto) {
+  NOBACKUP(inline void setMultiProtocol(uint8_t proto)
+  {
     rfProtocol = (uint8_t) (proto & 0x0F);
     multi.rfProtocolExtra = (proto & 0x70) >> 4;
+  })
+
+  NOBACKUP(inline uint8_t getChannelsCount() const
+  {
+    return channelsCount + 8;
   })
 });
 
@@ -605,8 +613,9 @@ PACK(struct ModelData {
 
   NOBACKUP(RssiAlarmData rssiAlarms);
 
-  NOBACKUP(uint8_t spare1:6);
-  NOBACKUP(uint8_t potsWarnMode:2);
+  uint8_t spare1:3;
+  uint8_t thrTrimSw:3;
+  uint8_t potsWarnMode:2;
 
   ModuleData moduleData[NUM_MODULES];
   int16_t failsafeChannels[MAX_OUTPUT_CHANNELS];
@@ -625,6 +634,20 @@ PACK(struct ModelData {
   CUSTOM_SCREENS_DATA
 
   char modelRegistrationID[PXX2_LEN_REGISTRATION_ID];
+
+
+  uint8_t getThrottleStickTrimSource() const
+  {
+    // The order here is TERA, so that 0 (default) means Throttle
+    switch (thrTrimSw) {
+      case 0:
+        return MIXSRC_TrimThr;
+      case 2:
+        return MIXSRC_TrimRud;
+      default:
+        return thrTrimSw + MIXSRC_FIRST_TRIM;
+    }
+  }
 });
 
 /*

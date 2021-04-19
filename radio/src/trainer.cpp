@@ -26,8 +26,8 @@ uint8_t currentTrainerMode = 0xff;
 
 void checkTrainerSignalWarning()
 {
-  enum PpmInValidState_t {
-    PPM_IN_IS_NOT_USED=0,
+  enum {
+    PPM_IN_IS_NOT_USED = 0,
     PPM_IN_IS_VALID,
     PPM_IN_INVALID
   };
@@ -48,6 +48,11 @@ void checkTrainerSignalWarning()
 }
 
 #if defined(PCBSKY9X)
+void stopTrainer()
+{
+  stop_trainer_capture();
+}
+
 void checkTrainerSettings()
 {
   uint8_t requiredTrainerMode = SLAVE_MODE();
@@ -55,43 +60,59 @@ void checkTrainerSettings()
   if (requiredTrainerMode != currentTrainerMode) {
     currentTrainerMode = requiredTrainerMode;
     if (requiredTrainerMode)
-      stop_trainer_capture();
+      stopTrainer();
     else
       init_trainer_capture();
   }
 }
 #else
+void stopTrainer()
+{
+  switch (currentTrainerMode) {
+    case TRAINER_MODE_MASTER_TRAINER_JACK:
+      stop_trainer_capture();
+      break;
+
+    case TRAINER_MODE_SLAVE:
+      stop_trainer_ppm();
+      break;
+
+#if defined(TRAINER_MODULE_CPPM)
+    case TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE:
+      stop_trainer_module_cppm();
+      break;
+#endif
+
+#if defined(TRAINER_MODULE_SBUS)
+    case TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE:
+      stop_trainer_module_sbus();
+      break;
+#endif
+
+#if defined(TRAINER_BATTERY_COMPARTMENT)
+    case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:
+#if defined(AUX_SERIAL)
+      if (g_eeGeneral.auxSerialMode == UART_MODE_SBUS_TRAINER)
+        auxSerialStop();
+#endif
+#if defined(AUX2_SERIAL)
+      if (g_eeGeneral.aux2SerialMode == UART_MODE_SBUS_TRAINER)
+        aux2SerialStop();
+#endif
+      break;
+#endif
+  }
+
+  currentTrainerMode = 0xFF;
+}
+
 void checkTrainerSettings()
 {
   uint8_t requiredTrainerMode = g_model.trainerData.mode;
 
   if (requiredTrainerMode != currentTrainerMode) {
-    switch (currentTrainerMode) {
-      case TRAINER_MODE_MASTER_TRAINER_JACK:
-        stop_trainer_capture();
-        break;
-
-      case TRAINER_MODE_SLAVE:
-        stop_trainer_ppm();
-        break;
-
-#if defined(TRAINER_MODULE_CPPM)
-      case TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE:
-        stop_trainer_module_cppm();
-        break;
-#endif
-
-#if defined(TRAINER_MODULE_SBUS)
-      case TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE:
-        stop_trainer_module_sbus();
-        break;
-#endif
-
-#if defined(TRAINER_BATTERY_COMPARTMENT)
-      case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:
-        auxSerialStop();
-        break;
-#endif
+    if (currentTrainerMode != 0xFF) {
+      stopTrainer();
     }
 
     currentTrainerMode = requiredTrainerMode;
@@ -116,17 +137,20 @@ void checkTrainerSettings()
 #if defined(TRAINER_BATTERY_COMPARTMENT)
       case TRAINER_MODE_MASTER_BATTERY_COMPARTMENT:
 #if defined(AUX_SERIAL)
-        if (g_eeGeneral.auxSerialMode == UART_MODE_SBUS_TRAINER)
+        if (g_eeGeneral.auxSerialMode == UART_MODE_SBUS_TRAINER) {
           auxSerialSbusInit();
-        else
+          break;
+        }
 #endif
+
 #if defined(AUX2_SERIAL)
-        if (g_eeGeneral.aux2SerialMode == UART_MODE_SBUS_TRAINER)
+        if (g_eeGeneral.aux2SerialMode == UART_MODE_SBUS_TRAINER) {
           aux2SerialSbusInit();
-        else
+          break;
+        }
 #endif
-          init_trainer_capture();
-        break;
+
+        // no break
 #endif
 
       case TRAINER_MODE_MASTER_TRAINER_JACK:
@@ -140,7 +164,12 @@ void checkTrainerSettings()
     else
       init_intmodule_heartbeat();
 #else
+#if defined(HARDWARE_EXTERNAL_ACCESS_MOD)
+    if (g_model.moduleData[EXTERNAL_MODULE].type != MODULE_TYPE_R9M_PXX2) // externalaccessmod 'bridges' HB and Ext module RX pins
+      init_intmodule_heartbeat();
+#else
     init_intmodule_heartbeat();
+#endif
 #endif
   }
 }

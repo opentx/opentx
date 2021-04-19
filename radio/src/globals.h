@@ -50,6 +50,7 @@ extern uint8_t trimsDisplayMask;
 extern uint16_t maxMixerDuration;
 
 extern uint8_t requiredSpeakerVolume;
+extern uint8_t requiredBacklightBright;
 
 enum MainRequest {
   REQUEST_SCREENSHOT,

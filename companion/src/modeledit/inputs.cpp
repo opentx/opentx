@@ -21,12 +21,20 @@
 #include "inputs.h"
 #include "expodialog.h"
 #include "helpers.h"
+#include "filtereditemmodels.h"
 
-InputsPanel::InputsPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware):
+InputsPanel::InputsPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, CompoundItemModelFactory * sharedItemModels):
   ModelPanel(parent, model, generalSettings, firmware),
   expoInserted(false),
-  modelPrinter(firmware, generalSettings, model)
+  modelPrinter(firmware, generalSettings, model),
+  sharedItemModels(sharedItemModels),
+  modelsUpdateCnt(0)
 {
+  connectItemModelEvents(AbstractItemModel::IMID_RawSource);
+  connectItemModelEvents(AbstractItemModel::IMID_RawSwitch);
+  connectItemModelEvents(AbstractItemModel::IMID_Curve);
+  connectItemModelEvents(AbstractItemModel::IMID_GVarRef);
+
   inputsCount = firmware->getCapability(VirtualInputs);
   if (inputsCount == 0)
     inputsCount = CPN_MAX_STICKS;
@@ -180,13 +188,14 @@ void InputsPanel::gm_openExpo(int index)
   if (firmware->getCapability(VirtualInputs))
     inputName = model->inputNames[ed.chn];
 
-  ExpoDialog *g = new ExpoDialog(this, *model, &ed, generalSettings, firmware, inputName);
-  if (g->exec())  {
+  ExpoDialog *dlg = new ExpoDialog(this, *model, &ed, generalSettings, firmware, inputName, sharedItemModels);
+  if (dlg->exec())  {
     model->expoData[index] = ed;
     if (firmware->getCapability(VirtualInputs))
       strncpy(model->inputNames[ed.chn], inputName.toLatin1().data(), INPUT_NAME_LEN);
-    emit modified();
     update();
+    updateItemModels();
+    emit modified();
   }
   else {
     if (expoInserted) {
@@ -195,6 +204,7 @@ void InputsPanel::gm_openExpo(int index)
     expoInserted=false;
     update();
   }
+  delete dlg;
 }
 
 int InputsPanel::getExpoIndex(unsigned int dch)
@@ -227,26 +237,28 @@ void InputsPanel::setSelectedByExpoList(QList<int> list)
   }
 }
 
-void InputsPanel::exposDelete(bool ask)
+void InputsPanel::exposDelete(bool prompt)
 {
   QList<int> list = createExpoListFromSelected();
   if (list.isEmpty())
     return;
 
-  QMessageBox::StandardButton ret = QMessageBox::No;
-
-  if (ask)
-    ret = QMessageBox::warning(this, CPN_STR_APP_NAME, tr("Delete selected Inputs. Are you sure?"), QMessageBox::Yes | QMessageBox::No);
-
-  if ((ret == QMessageBox::Yes) || (!ask)) {
-      exposDeleteList(list, ask);
-      emit modified();
-      update();
+  if (prompt) {
+    if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Delete selected Input lines. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+      return;
   }
+
+  exposDeleteList(list, prompt);
+  update();
+  updateItemModels();
+  emit modified();
 }
 
 void InputsPanel::exposCut()
 {
+  if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Cut selected Input lines. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+    return;
+
   exposCopy();
   exposDelete(false);
 }
@@ -312,11 +324,11 @@ void InputsPanel::pasteExpoMimeData(const QMimeData * mimeData, int destIdx)
       i += sizeof(ExpoData);
     }
 
-    emit modified();
     update();
+    updateItemModels();
+    emit modified();
   }
 }
-
 
 void InputsPanel::exposPaste()
 {
@@ -339,6 +351,9 @@ void InputsPanel::expoOpen(QListWidgetItem *item)
   if (!item)
     item = ExposlistWidget->currentItem();
 
+  if (item == nullptr)
+    return;
+
   int idx = item->data(Qt::UserRole).toByteArray().at(0);
   if (idx < 0) {
     int ch = -idx - 1;
@@ -356,7 +371,11 @@ void InputsPanel::expoOpen(QListWidgetItem *item)
 
 void InputsPanel::expoAdd()
 {
-  int index = ExposlistWidget->currentItem()->data(Qt::UserRole).toByteArray().at(0);
+  QListWidgetItem *item = ExposlistWidget->currentItem();
+  if (item == nullptr)
+    return;
+
+  int index = item->data(Qt::UserRole).toByteArray().at(0);
 
   if (index < 0) {  // if empty then return relevant index
     expoOpen();
@@ -481,8 +500,9 @@ void InputsPanel::moveExpoList(bool down)
     }
   }
   if (mod) {
-    emit modified();
     update();
+    updateItemModels();
+    emit modified();
   }
   setSelectedByExpoList(highlightList);
 }
@@ -515,13 +535,14 @@ void InputsPanel::exposDeleteList(QList<int> list, bool clearName)
 
 void InputsPanel::clearExpos()
 {
-  if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Clear all Inputs. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes) {
+  if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Clear all Input lines. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes) {
     model->clearInputs();
     for (int i = 0; i < inputsCount; i++) {
       model->updateAllReferences(ModelData::REF_UPD_TYPE_INPUT, ModelData::REF_UPD_ACT_CLEAR, i);
     }
-    emit modified();
     update();
+    updateItemModels();
+    emit modified();
   }
 }
 
@@ -559,30 +580,35 @@ bool InputsPanel::cmInputMoveUpAllowed() const
 
 void InputsPanel::cmInputClear()
 {
-  if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Clear Input. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+  if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Clear all lines for the selected Input. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
     return;
 
   for (int i = CPN_MAX_EXPOS - 1; i >= 0; i--) {
     ExpoData *ed = &model->expoData[i];
-    if ((int)ed->chn == inputIdx)
-      model->removeInput(i);
+    if (!ed->isEmpty()) {
+      if ((int)ed->chn == inputIdx)
+        model->removeInput(i);
+    }
   }
   model->updateAllReferences(ModelData::REF_UPD_TYPE_INPUT, ModelData::REF_UPD_ACT_CLEAR, inputIdx);
   update();
+  updateItemModels();
   emit modified();
 }
 
 void InputsPanel::cmInputDelete()
 {
-  if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Delete Input. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+  if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Delete all lines for the selected Input. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
     return;
 
-  for (int i = 0; i < CPN_MAX_EXPOS; i++) {
+  for (int i = CPN_MAX_EXPOS - 1; i >= 0; i--) {
     ExpoData *ed = &model->expoData[i];
-    if ((int)ed->chn == inputIdx)
-      model->removeInput(i);
-    else if ((int)ed->chn > inputIdx)
-      ed->chn--;
+    if (!ed->isEmpty()) {
+      if ((int)ed->chn == inputIdx)
+        model->removeInput(i);
+      else if ((int)ed->chn > inputIdx)
+        ed->chn--;
+    }
   }
 
   for (int i = inputIdx; i < inputsCount; i++) {
@@ -592,6 +618,7 @@ void InputsPanel::cmInputDelete()
 
   model->updateAllReferences(ModelData::REF_UPD_TYPE_INPUT, ModelData::REF_UPD_ACT_SHIFT, inputIdx, 0, -1);
   update();
+  updateItemModels();
   emit modified();
 }
 
@@ -610,6 +637,7 @@ void InputsPanel::cmInputInsert()
 
   model->updateAllReferences(ModelData::REF_UPD_TYPE_INPUT, ModelData::REF_UPD_ACT_SHIFT, inputIdx, 0, 1);
   update();
+  updateItemModels();
   emit modified();
 }
 
@@ -671,6 +699,7 @@ void InputsPanel::cmInputSwapData(int idx1, int idx2)
 
   model->updateAllReferences(ModelData::REF_UPD_TYPE_INPUT, ModelData::REF_UPD_ACT_SWAP, idx1, idx2);
   update();
+  updateItemModels();
   emit modified();
 }
 
@@ -704,4 +733,33 @@ int InputsPanel::getInputIndexFromSelected()
     idx = ed->chn;
   }
   return idx;
+}
+
+void InputsPanel::connectItemModelEvents(const int id)
+{
+  AbstractDynamicItemModel * itemModel = qobject_cast<AbstractDynamicItemModel *>(sharedItemModels->getItemModel(id));
+  if (itemModel) {
+    connect(itemModel, &AbstractDynamicItemModel::aboutToBeUpdated, this, &InputsPanel::onItemModelAboutToBeUpdated);
+    connect(itemModel, &AbstractDynamicItemModel::updateComplete, this, &InputsPanel::onItemModelUpdateComplete);
+  }
+}
+
+void InputsPanel::onItemModelAboutToBeUpdated()
+{
+  lock = true;
+  modelsUpdateCnt++;
+}
+
+void InputsPanel::onItemModelUpdateComplete()
+{
+  modelsUpdateCnt--;
+  if (modelsUpdateCnt < 1) {
+    update();
+    lock = false;
+  }
+}
+
+void InputsPanel::updateItemModels()
+{
+  sharedItemModels->update(AbstractItemModel::IMUE_Inputs);
 }

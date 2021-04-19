@@ -45,7 +45,10 @@ inline int MAX_SWITCHES(Board::Type board, int version)
   if (IS_TARANIS_X9D(board))
     return 9;
 
-  if (IS_JUMPER_T12(board))
+  if (IS_FAMILY_T12(board))
+    return 8;
+
+  if (IS_TARANIS_X7(board))
     return 8;
 
   return Boards::getCapability(board, Board::Switches);
@@ -73,6 +76,8 @@ inline int MAX_POTS(Board::Type board, int version)
 {
   if (version <= 218 && IS_FAMILY_HORUS_OR_T16(board))
     return 3;
+  if (IS_FAMILY_T12(board))
+    return 2;
   return Boards::getCapability(board, Board::Pots);
 }
 
@@ -82,6 +87,8 @@ inline int MAX_POTS_STORAGE(Board::Type board, int version)
     return 3;
   if (version >= 219 && IS_FAMILY_HORUS_OR_T16(board))
     return 5;
+  if (IS_FAMILY_T12(board))
+    return 2;
   return Boards::getCapability(board, Board::Pots);
 }
 
@@ -89,6 +96,8 @@ inline int MAX_POTS_SOURCES(Board::Type board, int version)
 {
   if (version <= 218 && IS_FAMILY_HORUS_OR_T16(board))
     return 5;
+  if (IS_FAMILY_T12(board))
+    return 2;
   return Boards::getCapability(board, Board::Pots);
 }
 
@@ -126,6 +135,14 @@ inline int SWITCHES_CONFIG_SIZE(Board::Type board, int version)
     return 32;
 
   return 16;
+}
+
+inline int MAX_MOUSE_ANALOG_SOURCES(Board::Type board, int version)
+{
+  if (IS_FAMILY_HORUS_OR_T16(board))
+    return 2;
+  else
+    return 0;
 }
 
 #define MAX_ROTARY_ENCODERS(board)            0
@@ -300,7 +317,7 @@ class SourcesConversionTable: public ConversionTable {
         }
       }
 
-      for (int i=0; i<CPN_MAX_STICKS + MAX_POTS_SOURCES(board, version) + MAX_SLIDERS_SOURCES(board, version) + Boards::getCapability(board, Board::MouseAnalogs) + MAX_GYRO_ANALOGS(board, version); i++) {
+      for (int i=0; i<CPN_MAX_STICKS + MAX_POTS_SOURCES(board, version) + MAX_SLIDERS_SOURCES(board, version) + MAX_MOUSE_ANALOG_SOURCES(board, version) + MAX_GYRO_ANALOGS(board, version); i++) {
         int offset = 0;
         if (version <= 218 && IS_HORUS_X10(board) && i >= CPN_MAX_STICKS + MAX_POTS_STORAGE(board, version))
           offset += 2;
@@ -1398,8 +1415,7 @@ class CustomFunctionsConversionTable: public ConversionTable {
         addConversion(FuncAdjustGV1+i, val);
       val++;
       addConversion(FuncVolume, val++);
-      addConversion(FuncSetFailsafeInternalModule, val);
-      addConversion(FuncSetFailsafeExternalModule, val++);
+      addConversion(FuncSetFailsafe, val++);
       addConversion(FuncRangeCheckInternalModule, val);
       addConversion(FuncRangeCheckExternalModule, val++);
       addConversion(FuncBindInternalModule, val);
@@ -1512,9 +1528,6 @@ class ArmCustomFunctionField: public TransformedField {
           *((uint16_t *)_param) = fn.param;
           *((uint8_t *)(_param+3)) = fn.func - FuncSetTimer1;
         }
-        else if (fn.func >= FuncSetFailsafeInternalModule && fn.func <= FuncSetFailsafeExternalModule) {
-          *((uint16_t *)_param) = fn.func - FuncSetFailsafeInternalModule;
-        }
         else if (fn.func >= FuncRangeCheckInternalModule && fn.func <= FuncRangeCheckExternalModule) {
           *((uint16_t *)_param) = fn.func - FuncRangeCheckInternalModule;
         }
@@ -1536,7 +1549,7 @@ class ArmCustomFunctionField: public TransformedField {
             value = fn.param;
           *((uint16_t *)_param) = value;
         }
-        else if (fn.func == FuncPlayValue || fn.func == FuncVolume) {
+        else if (fn.func == FuncPlayValue || fn.func == FuncVolume || fn.func == FuncBacklight) {
           unsigned int value;
           sourcesConversionTable->exportValue(fn.param, (int &)value);
           *((uint16_t *)_param) = value;
@@ -1579,7 +1592,7 @@ class ArmCustomFunctionField: public TransformedField {
       else if (fn.func == FuncPlayPrompt || fn.func == FuncBackgroundMusic || fn.func == FuncPlayScript) {
         memcpy(fn.paramarm, _param, sizeof(fn.paramarm));
       }
-      else if (fn.func == FuncVolume) {
+      else if (fn.func == FuncVolume || fn.func == FuncBacklight) {
         sourcesConversionTable->importValue(value, (int &)fn.param);
       }
       else if (fn.func >= FuncAdjustGV1 && fn.func <= FuncAdjustGVLast) {
@@ -2145,15 +2158,16 @@ class ModuleUnionField: public UnionField<unsigned int> {
         module(module)
       {
         internalField.Append(new UnsignedField<3>(this, module.access.receivers));
-        internalField.Append(new SpareBitsField<5>(this));
+        internalField.Append(new SpareBitsField<4>(this));
+        internalField.Append(new UnsignedField<1>(this, module.access.racingMode));
 
-        for (int i=0; i<PXX2_MAX_RECEIVERS_PER_MODULE; i++)
+        for (int i = 0; i < PXX2_MAX_RECEIVERS_PER_MODULE; i++)
           internalField.Append(new CharField<8>(this, receiverName[i]));
 
         memset(receiverName, 0, sizeof(receiverName));
       }
 
-      bool select(const unsigned int& attr) const override
+      bool select(const unsigned int & attr) const override
       {
         return attr >= PULSES_ACCESS_ISRM && attr <= PULSES_ACCESS_R9M_LITE_PRO;
       }
@@ -2298,7 +2312,8 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, Board::Type board, unsig
       internalField.Append(new UnsignedField<2>(this, modelData.timers[i].countdownBeep));
       internalField.Append(new BoolField<1>(this, modelData.timers[i].minuteBeep));
       internalField.Append(new UnsignedField<2>(this, modelData.timers[i].persistent));
-      internalField.Append(new SpareBitsField<3>(this));
+      internalField.Append(new SignedField<2>(this, modelData.timers[i].countdownStart));
+      internalField.Append(new UnsignedField<1>(this, modelData.timers[i].direction));
       if (HAS_LARGE_LCD(board))
         internalField.Append(new ZCharField<8>(this, modelData.timers[i].name, "Timer name"));
       else
@@ -2413,7 +2428,8 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, Board::Type board, unsig
     internalField.Append(new UnsignedField<2>(this, modelData.potsWarningMode));
   }
   else {
-    internalField.Append(new SpareBitsField<6>(this));
+    internalField.Append(new SpareBitsField<3>(this));
+    internalField.Append(new UnsignedField<3>(this, modelData.thrTrimSwitch));
     internalField.Append(new UnsignedField<2>(this, modelData.potsWarningMode));
   }
 
@@ -2569,7 +2585,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
   generalData(generalData),
   board(board),
   version(version),
-  inputsCount(CPN_MAX_STICKS + MAX_POTS_STORAGE(board, version) + MAX_SLIDERS_STORAGE(board, version) + Boards::getCapability(board, Board::MouseAnalogs))
+  inputsCount(CPN_MAX_STICKS + MAX_POTS_STORAGE(board, version) + MAX_SLIDERS_STORAGE(board, version) + MAX_MOUSE_ANALOG_SOURCES(board, version))
 {
   qCDebug(eepromImport) << QString("OpenTxGeneralData::OpenTxGeneralData(board: %1, version:%2, variant:%3)").arg(board).arg(version).arg(variant);
 
@@ -2711,7 +2727,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
     internalField.Append(new BoolField<1>(this, generalData.disableRssiPoweroffAlarm));
     internalField.Append(new UnsignedField<2>(this, generalData.usbMode));
     internalField.Append(new UnsignedField<2>(this, generalData.jackMode));
-    internalField.Append(new SpareBitsField<1>(this));
+    internalField.Append(new BoolField<1>(this, generalData.sportPower));
   }
   else {
     internalField.Append(new SpareBitsField<7>(this));

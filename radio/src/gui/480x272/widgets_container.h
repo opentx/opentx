@@ -80,7 +80,7 @@ class WidgetsContainer: public WidgetsContainerInterface
       }
     }
 
-    virtual void createWidget(unsigned int index, const WidgetFactory * factory)
+    void createWidget(unsigned int index, const WidgetFactory * factory) override
     {
       if (widgets) {
         memset(persistentData->zones[index].widgetName, 0, sizeof(persistentData->zones[index].widgetName));
@@ -123,9 +123,9 @@ class WidgetsContainer: public WidgetsContainerInterface
       return &persistentData->options[index];
     }
 
-    virtual unsigned int getZonesCount() const = 0;
+    unsigned int getZonesCount() const override = 0;
 
-    virtual Zone getZone(unsigned int index) const = 0;
+    Zone getZone(unsigned int index) const override = 0;
 
     virtual void refresh()
     {

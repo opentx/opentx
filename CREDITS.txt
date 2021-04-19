@@ -1,6 +1,7 @@
 [Main developers]
 Bertrand Songis (bsongis)
 André Bernet (kilrah)
+JC D. (3djc)
 Michael Blandford
 Damjan Adamic (projectkk2glider)
 Franck Aguerre (jivarofad)
@@ -9,6 +10,7 @@ Martin Hotař (mhotar)
 Maxim (Max) Paperno (mpaperno)
 Arne Schwabe (schwabe)
 Daniel Gorbea (dgatf)
+Neil Horne (elecpower)
 
 [Translators]
 [fr] Sebastien Charpentier (LapinFou)
@@ -32,6 +34,7 @@ Michael Byrne
 <a href="https://www.flysky-cn.com/home">FlySky (monthly)</a>
 <a href="https://www.jumper-rc.com">JumperRC (monthly)</a>
 <a href="https://www.radiomasterrc.com">RadioMaster (monthly)</a>
+<a href="http://www.happymodel.cn">HappyModel (monthly)</a>
 <a href="https://alofthobbies.com">Aloft Hobbies</a>
 <a href="https://jonathan.it">Jonathan Modellismo</a>
 <a href="http://wstech.de">WsTech</a>
@@ -1838,3 +1841,400 @@ Laurence Gerrard
 Nico Wagner
 Christoph Rössner
 Ruben Flores
+Jim Cukla
+Lee Taylor
+Stefan Kuster
+Barry Wright
+Steven Gilley
+Lloyd Evans
+Nolan O'Hearne
+Jeffrey James N Buffie
+James Houck
+Andreas Arlt
+William Walker
+Salvador Munoz Vinas
+Chris Geiger Photography
+John F Smith
+Robert Zecha
+Fernando Martins
+Martin Brungard
+Paul Witko
+Michael Campbell
+Stuart Posnett
+PK Doddema
+Leonard MacKey
+Andrew Peterson
+Dominik Sedlacek
+Ronald Hellstern
+Vicente Suarez
+Patrick Geerts
+Rossi Giampaolo
+Jose Luis Franco Torres
+Bart Sillen
+Antonio Moreno
+Carolina Carcione
+Lonnie Misner
+John Eppling
+Phillip Elliott
+Robin Bayer
+Jurij Peternel
+George Aandahl
+Guy Dangerfield
+Thomas Limpert
+Ismael G Zapater
+Alan Hall
+Bradley Goodwin
+Paul Dittman
+John Johnson
+Liam Mahoney
+Joseph Carr
+Fiorenzo Agnelli
+Brian Ramsey
+Angelo Movio
+Weldon Parks
+Simon Brink
+Weldon Parks
+Ralf Herzenbruch
+Ashley Pearce
+SneakIT
+Soaring Stuff  
+Jörg Lemnitz
+Johann Gross
+Mark Gibson
+Rendall Assoc
+Cozyn Holdings Pty Ltd
+Tim Karsten
+Nick Hesson
+Laurent Lapassade
+Peter Deacon
+Gilles Dando
+Philippe Desrichard
+Jón Haase
+Michael Hansen
+Sylvain Vanston
+Helmut Nemecek
+Alexander Mathis
+Jay Watkins
+Patrice Oudjaoudi
+Didier Hochedez
+Robert Hunter
+Christophe Gilsoul
+Lincoln Roberts
+Johan Jurriens
+Michael Ledward
+Dave Waldesbuehl
+Dale Rhoads
+Denis Kelly
+SBEurope LTD
+Jean-Louis Mouche
+Grant Mills
+Fernando Rimoldi
+Jim Cukla
+Tomas Kirnak
+Raymond Henderson
+James Jewitt
+Martin Sauter
+Philip Hawkey
+Lonnie Misner
+Michael Hirschauer
+Brian Bracken
+Stuart Olson
+Terry McKinley
+Miklos Turcsin
+Edward Skerness
+Stefano Perinetti
+Toni Marchante
+Stuart Olson
+Peter Campbell
+Keith Wood
+Leo Duflou
+Michael Florey
+Gerhard Weixelbaumer
+Peter K Lehotsky
+Elisha Jones
+Joerg Sattler
+paul42
+Pascal Heg
+Bjorn Sorenssen
+Chris Payne
+Pascal Afflard
+Robert Boboryko
+Chris Whitehead
+David Bradley
+Ian Lever
+Phillip Barber
+Jan Bronee
+N Haasnoot
+Rick Smith
+Randall Grant
+Patrick Degouy
+Piotr Zdanowski
+David Gardner
+TMac FPV
+Bernard Thompson
+Mark Sutton
+Darren J Crane
+Michael Keyes
+Magnus Borg
+David Lorentzen
+Antony Smith
+Aleksandr Sarkisov
+Johannes Kuhne
+Kathleen Cilluffo
+David Hoffmann
+Alan Porter
+Arlé Mooldijk
+Tenbones
+Kim Bitsch Lauridsen
+Arthur Costerus
+Peter Harvey
+John Simpson
+Landy de los Santos
+Graham Ridley
+Schenk Peter
+Joseph Rex
+Richard Honeywell
+Roy Nixon
+Andrew Shewan
+David Bradley
+Alan Micklethwaite
+Susan Siegel
+Stephen Evans
+William Hallman
+Franck Michel
+László Gajcsi (monthly)
+Danny Koch
+Robert Martin
+Gavin Meerwald
+Frédéric Maix
+Frank Steinberg
+Kevin Berkefeld
+Marccos Colon
+Kerry Reynolds
+Kim Jeppesen
+Arthur Peters
+Andrew Lowes
+Anthony Hallo
+Bill Hill
+Gerard Falaise
+Kevin Raynor
+Lorenzo gh
+Jan Landeweer
+David Bland
+Manuel Spoerri
+Jeff Jacobs
+David Thorne
+Maddox Philip
+James Jewitt
+Justin Digby
+John Magnuson (monthly)
+Holger Lippert
+Hubert Huber
+David Blum
+Noam Kfir
+Mats gårdstad friberg
+Jesper Frickmann
+Alan Bunker
+Emanuel Kircher
+Barry Andersen
+Gabriel Formanek
+Timothy Justiniano
+Kelvin Garcia Urbina
+Jan Lau
+Choon Wei Jonathan Tan
+Daniel Navas
+Ray Moss
+Markus Frielingsdorf
+Michael Hirschauer
+Jesse Frey
+Philipp Koch
+Robert Rubio
+Dennis G Miller
+Leonardo Garcia Osuna
+Antonio Carrasco Pastor
+Musa Pinar
+Jens Moder
+Josef de Beer
+Chad Mofford
+Pim Pouw
+Kenth Jonsson
+Gordon Westfall
+Jean-Michel Saves
+Roberto Orsello
+Luboš Konvalinka
+Lawrence Dorn
+Michael Dittmann
+Bernd Schmiedel
+Raoul Piccioli
+Uwe Probst
+Glendon Satchell
+Trevor Collins
+Horst Grashauser
+Miguel José Cárdenas Herrera
+Mike Jennings
+José Bernardo
+Carlos Dangle
+Gordon Evans
+Pablo Peinado Abad
+Carl Payne
+Adam Sosnowski
+Гасак Сергей
+SaltCtyRacingFPV
+Georg Bernhardt
+James Mildenhall
+Dave Plummer
+Ivan Mokris
+Patrick Daniels
+Stuart Olson
+Cory Znebel
+Andrey Yarovoy
+Christian Pons
+Burt Pickard-Richardson
+Michal Mesaros
+Conrad Young
+Martin Mathes
+Jens Rainer Hansen
+Mark Trible
+Marc Dubois
+Alan Wilkins
+Daniel Hryciuk
+Thomas Fox
+Sidney B Harden
+Augustas Sereika
+David Belletete
+Karl-Heinz Behn
+Lena Hjort
+Jan Langhorst
+Alberto Scotti
+John Rock
+Adam Kouse
+Ricardo Martins
+Noel Irwin
+Christoph Rausch
+Anthony Hrabusicky
+Sergio Tondini
+Aldo Visentin
+Greg Wilson
+Mark Sutton
+Lukas Kana
+Peter Newman
+Kevin Cave
+Arold Reinders
+Jason Plant
+John Beech
+Ian Parris
+Danny Music
+Eric Bissonnette
+Riso LTD
+William Booth
+Ferenc Kunkli
+Offer Shmuely
+Troy Atneosen
+Long Technologies
+John Jaugilas
+Jan-Hinrich Klee
+Hans-Reinhard Mette
+Alejandro Casals Oliver
+David Homewood
+John Dunning
+Konrad Helbach
+Bernard Delpy
+Raymond Ellsworth
+Bogdan Musial
+Гасак Сергей
+Philip Garcia
+Helder Simoes
+Thomas Blanchin
+Jean-Luc Mesnier
+Michael Bajer
+David Homewood
+Marc Sanders
+Буров Александр
+Rudy T'Jolleyn
+Jay Watkins
+Blaz Vodopivec
+David De Salvo
+Willem Verschoren
+Dennis Kathrens
+Alan Aucote
+Richard Jerome Danstrom
+David Garcia-Mendia
+Mark Jones
+John Zseleczky
+Xiao Sun
+Glenn Harvey
+Albrecht Friebel
+Gunter Klemke
+Travis McCarthy
+Franz Zier
+Ian Contessa
+Sean Sadler
+Richard F Janczak
+Mateusz Dziadosz
+Thomas Merchant
+M L Perkins
+Stefano Boggia
+Новоселов Юрий
+James Rhodes
+Peter Gaskill
+Jacques Temey
+Anthony Challis
+Gerard Falaise
+George McGinnis
+Antoine Soulie
+Tjeerd Jager
+Bertold Van den Bergh
+Stefanie Zerbe
+James Mandelbaum
+Javier J. Cordovez
+Jess Barkley
+Schneider Modell
+Michael Hasselgaard
+Thomas Young
+Непочатов Алексей
+Thomas Goebel
+Joseph Macias
+Paw Melin-Nielsen
+Liam O'Brien
+Ronald B Backman
+Corvus Inspection Services Inc
+Stuart Posnett
+Clark Emerick
+Helmut Sippel
+Jhon Lennon Silva do Nascimento
+Peter McCarthy
+Bob Brown
+Claude Lawyer
+Peter Fithern
+Michael Hoffman
+Tim Smith
+OpenSki Institute
+Simon Melov
+Richard Podolsky
+James Wilson
+John Norrbin
+James Goins
+Phillip Nguyen
+Jeffrey M Engel
+Richard Marotto
+Greg Bell
+Scott Geer
+Thomas Abshier
+Ernst Camenzind
+Radomir Sterba
+Ignacio Barrio
+Bradley Murchie
+Emmanuel Balintec
+Rowell Torres
+Christopher Kokis
+Ken Bryan
+Eric Yoder
+Olav Roth
+Rowell Torres
+Christopher Kokis
+Ken Bryan
+Glenn Noonan
+Michael Jakob
+Dean Berg
+David Hankins
+Gary Cripps

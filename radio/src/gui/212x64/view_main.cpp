@@ -27,7 +27,6 @@
 #define MODELNAME_Y   (11)
 #define VBATT_X       (MODELNAME_X+26)
 #define VBATT_Y       (FH+3)
-#define VBATTUNIT_X   (VBATT_X-2)
 #define VBATTUNIT_Y   VBATT_Y
 #define BITMAP_X      ((LCD_W-64)/2)
 #define BITMAP_Y      (LCD_H/2)

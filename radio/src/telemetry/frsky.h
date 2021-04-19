@@ -139,6 +139,8 @@ enum FrSkyDataState {
 #define A4_LAST_ID                0x091F
 #define AIR_SPEED_FIRST_ID        0x0A00
 #define AIR_SPEED_LAST_ID         0x0A0F
+#define FUEL_QTY_FIRST_ID         0x0A10
+#define FUEL_QTY_LAST_ID          0x0A1F
 #define RBOX_BATT1_FIRST_ID       0x0B00
 #define RBOX_BATT1_LAST_ID        0x0B0F
 #define RBOX_BATT2_FIRST_ID       0x0B10
@@ -152,9 +154,9 @@ enum FrSkyDataState {
 #define ESC_POWER_FIRST_ID        0x0B50
 #define ESC_POWER_LAST_ID         0x0B5F
 #define ESC_RPM_CONS_FIRST_ID     0x0B60
-#define ESC_RPM_CONS_LAST_ID      0x0B6f
+#define ESC_RPM_CONS_LAST_ID      0x0B6F
 #define ESC_TEMPERATURE_FIRST_ID  0x0B70
-#define ESC_TEMPERATURE_LAST_ID   0x0B7f
+#define ESC_TEMPERATURE_LAST_ID   0x0B7F
 #define RB3040_OUTPUT_FIRST_ID    0x0B80
 #define RB3040_OUTPUT_LAST_ID     0x0B8F
 #define RB3040_CH1_2_FIRST_ID     0x0B90
@@ -165,10 +167,10 @@ enum FrSkyDataState {
 #define RB3040_CH5_6_LAST_ID      0x0BBF
 #define RB3040_CH7_8_FIRST_ID     0x0BC0
 #define RB3040_CH7_8_LAST_ID      0x0BCF
-#define X8R_FIRST_ID              0x0c20
-#define X8R_LAST_ID               0x0c2F
-#define S6R_FIRST_ID              0x0c30
-#define S6R_LAST_ID               0x0c3F
+#define X8R_FIRST_ID              0x0C20
+#define X8R_LAST_ID               0x0C2F
+#define S6R_FIRST_ID              0x0C30
+#define S6R_LAST_ID               0x0C3F
 #define GASSUIT_TEMP1_FIRST_ID    0x0D00
 #define GASSUIT_TEMP1_LAST_ID     0x0D0F
 #define GASSUIT_TEMP2_FIRST_ID    0x0D10
@@ -182,15 +184,17 @@ enum FrSkyDataState {
 #define GASSUIT_FLOW_FIRST_ID     0x0D50
 #define GASSUIT_FLOW_LAST_ID      0x0D5F
 #define GASSUIT_MAX_FLOW_FIRST_ID 0x0D60
-#define GASSUIT_MAX_FLOW_LAST_ID  0x0D6f
+#define GASSUIT_MAX_FLOW_LAST_ID  0x0D6F
 #define GASSUIT_AVG_FLOW_FIRST_ID 0x0D70
-#define GASSUIT_AVG_FLOW_LAST_ID  0x0D7f
+#define GASSUIT_AVG_FLOW_LAST_ID  0x0D7F
 #define SBEC_POWER_FIRST_ID       0x0E50
 #define SBEC_POWER_LAST_ID        0x0E5F
 #define DIY_FIRST_ID              0x5100
 #define DIY_LAST_ID               0x52FF
 #define DIY_STREAM_FIRST_ID       0x5000
 #define DIY_STREAM_LAST_ID        0x50FF
+#define SERVO_FIRST_ID            0x6800
+#define SERVO_LAST_ID             0x680F
 #define FACT_TEST_ID              0xF000
 #define VALID_FRAME_RATE_ID       0xF010
 #define RSSI_ID                   0xF101
@@ -202,8 +206,6 @@ enum FrSkyDataState {
 #define R9_PWR_ID                 0xF107
 #define SP2UART_A_ID              0xFD00
 #define SP2UART_B_ID              0xFD01
-#define FUEL_QTY_FIRST_ID         0x0A10
-#define FUEL_QTY_LAST_ID          0x0A1F
 
 #if defined(MULTIMODULE)
 // Virtual IDs, value can be changed to anything only used for display

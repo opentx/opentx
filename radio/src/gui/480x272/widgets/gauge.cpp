@@ -49,14 +49,16 @@ void GaugeWidget::refresh()
   uint16_t color = persistentData->options[3].unsignedValue;
 
   int32_t value = getValue(index);
-  int32_t value_in_range = value;
-  if (value < min)
-    value_in_range = min;
-  else if (value > max)
-    value_in_range = max;
 
-  int w = divRoundClosest(zone.w * (value_in_range - min), (max - min));
-  int percent = divRoundClosest(100 * (value_in_range - min), (max - min));
+  if (min > max) {
+    SWAP(min, max);
+    value = value - min - max;
+  }
+
+  value = limit(min, value, max);
+
+  int w = divRoundClosest(zone.w * (value - min), (max - min));
+  int percent = divRoundClosest(100 * (value - min), (max - min));
 
   // Gauge label
   drawSource(zone.x, zone.y, index, SMLSIZE | TEXT_INVERTED_COLOR);

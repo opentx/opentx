@@ -18,8 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _OPENTX_H_
-#define _OPENTX_H_
+#pragma once
 
 #include <stdlib.h>
 #include "definitions.h"
@@ -68,6 +67,12 @@
 #define CASE_GYRO(x) x,
 #else
 #define CASE_GYRO(x)
+#endif
+
+#if defined(BACKLIGHT_GPIO)
+#define CASE_BACKLIGHT(x) x,
+#else
+#define CASE_BACKLIGHT(x)
 #endif
 
 #if defined(LUA)
@@ -277,6 +282,12 @@ void memswap(void * a, void * b, uint8_t size);
   #define IS_MULTIPOS_CALIBRATED(cal)  (false)
 #endif
 
+#if NUM_XPOTS > 0
+  #define IS_SWITCH_MULTIPOS(x)         (SWSRC_FIRST_MULTIPOS_SWITCH <= (x) && (x) <= SWSRC_LAST_MULTIPOS_SWITCH)
+#else
+  #define IS_SWITCH_MULTIPOS(x)         (false)
+#endif
+
 #if defined(PWR_BUTTON_PRESS)
   #define pwrOffPressed()              pwrPressed()
 #else
@@ -309,7 +320,7 @@ void memswap(void * a, void * b, uint8_t size);
 #define MASK_CFN_TYPE  uint64_t  // current max = 64 function switches
 #define MASK_FUNC_TYPE uint32_t  // current max = 32 functions
 
-typedef struct {
+struct CustomFunctionsContext {
   MASK_FUNC_TYPE activeFunctions;
   MASK_CFN_TYPE  activeSwitches;
   tmr10ms_t lastFunctionTime[MAX_SPECIAL_FUNCTIONS];
@@ -323,7 +334,7 @@ typedef struct {
   {
     memclear(this, sizeof(*this));
   }
-} CustomFunctionsContext;
+};
 
 #include "strhelpers.h"
 #include "gui.h"
@@ -383,6 +394,8 @@ inline bool SPLASH_NEEDED()
   #define ROTENC_HIGHSPEED             50
   #define ROTENC_DELAY_MIDSPEED        32
   #define ROTENC_DELAY_HIGHSPEED       16
+#elif defined(RADIO_T8)
+  constexpr uint8_t rotencSpeed = 1;
 #endif
 
 constexpr uint8_t HEART_TIMER_10MS = 0x01;
@@ -438,6 +451,10 @@ extern uint8_t potsPos[NUM_XPOTS];
 bool trimDown(uint8_t idx);
 void readKeysAndTrims();
 
+#if defined(KEYS_GPIO_REG_BIND)
+void bindButtonHandler(event_t event);
+#endif
+
 uint16_t evalChkSum();
 
 void alert(const char * title, const char * msg, uint8_t sound);
@@ -484,9 +501,11 @@ extern uint32_t nextMixerTime[NUM_MODULES];
 void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms);
 void evalMixes(uint8_t tick10ms);
 void doMixerCalculations();
+void doMixerPeriodicUpdates();
 void scheduleNextMixerCalculation(uint8_t module, uint32_t period_ms);
 
 void checkTrims();
+extern uint8_t currentBacklightBright;
 void perMain();
 void per10ms();
 
@@ -537,6 +556,8 @@ bool setTrimValue(uint8_t phase, uint8_t idx, int trim);
 #if defined(PCBSKY9X)
   #define ROTARY_ENCODER_GRANULARITY (2 << g_eeGeneral.rotarySteps)
 #elif defined(RADIO_FAMILY_T16) && !defined(RADIO_T18)
+  #define ROTARY_ENCODER_GRANULARITY (1)
+#elif defined(RADIO_TX12)
   #define ROTARY_ENCODER_GRANULARITY (1)
 #else
   #define ROTARY_ENCODER_GRANULARITY (2)
@@ -846,12 +867,13 @@ enum FunctionsActive {
   FUNCTION_TRAINER_CHANNELS = FUNCTION_TRAINER_STICK1 + NUM_STICKS,
   FUNCTION_INSTANT_TRIM,
   FUNCTION_VARIO,
-  FUNCTION_BACKLIGHT,
 #if defined(SDCARD)
   FUNCTION_LOGS,
 #endif
   FUNCTION_BACKGND_MUSIC,
   FUNCTION_BACKGND_MUSIC_PAUSE,
+  FUNCTION_BACKLIGHT,
+  FUNCTION_RACING_MODE,
 };
 
 #define VARIO_FREQUENCY_ZERO   700/*Hz*/
@@ -996,7 +1018,13 @@ constexpr uint8_t OPENTX_START_NO_CHECKS = 0x04;
 
 #if defined(STATUS_LEDS)
   #define LED_ERROR_BEGIN()            ledRed()
+#if defined(RADIO_T8)
+  // Because of green backlit logo, green is preferred on this radio
+  #define LED_ERROR_END()              ledGreen()
+  #define LED_BIND()                   ledBlue()
+#else
   #define LED_ERROR_END()              ledBlue()
+#endif
 #else
   #define LED_ERROR_BEGIN()
   #define LED_ERROR_END()
@@ -1124,6 +1152,15 @@ union ReusableBuffer
     uint8_t dirty;
     uint8_t moduleOFF;
   } spectrumAnalyser;
+
+#if defined(GHOST)
+  struct {
+    GhostMenuData line[GHST_MENU_LINES + 1];
+    uint8_t menuStatus;
+    uint8_t menuAction;
+    uint8_t buttonAction;
+  } ghostMenu;
+#endif
 
   struct {
     uint32_t freq;
@@ -1329,4 +1366,3 @@ inline bool isAsteriskDisplayed()
 #include "thirdparty/libACCESS/libAccess.h"
 #endif
 
-#endif // _OPENTX_H_

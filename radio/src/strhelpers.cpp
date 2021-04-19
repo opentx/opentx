@@ -170,7 +170,11 @@ char * strAppendStringWithIndex(char * dest, const char * s, int idx)
   return strAppendUnsigned(strAppend(dest, s), abs(idx));
 }
 
-char * getTimerString(char * dest, int32_t tme, uint8_t hours)
+constexpr int secondsPerDay = 24 * 3600;
+constexpr int secondsPer99Hours = 99*3600 + 59*60 + 59;
+constexpr int secondsPerYear = 365 * secondsPerDay;
+
+char * getTimerString(char * dest, int tme, uint8_t hours)
 {
   char * s = dest;
   div_t qr;
@@ -180,28 +184,63 @@ char * getTimerString(char * dest, int32_t tme, uint8_t hours)
     *s++ = '-';
   }
 
-  qr = div((int)tme, 60);
+  if (tme < secondsPerDay) {
+    qr = div((int) tme, 60);
 
-  if (hours) {
-    div_t qr2 = div(qr.quot, 60);
+    if (hours) {
+      div_t qr2 = div(qr.quot, 60);
+      *s++ = '0' + (qr2.quot / 10);
+      *s++ = '0' + (qr2.quot % 10);
+      *s++ = ':';
+      qr.quot = qr2.rem;
+    }
+
+    if (!hours && qr.quot > 99) {
+      *s++ = '0' + (qr.quot / 100);
+      qr.quot = qr.quot % 100;
+    }
+
+    *s++ = '0' + (qr.quot / 10);
+    *s++ = '0' + (qr.quot % 10);
+    *s++ = ':';
+    *s++ = '0' + (qr.rem / 10);
+    *s++ = '0' + (qr.rem % 10);
+    *s = '\0';
+  }
+  else if (tme < secondsPer99Hours) {
+    qr = div(tme, 3600);
+    div_t qr2 = div(qr.rem, 60);
+    *s++ = '0' + (qr.quot / 10);
+    *s++ = '0' + (qr.quot % 10);
+    *s++ = 'H';
     *s++ = '0' + (qr2.quot / 10);
     *s++ = '0' + (qr2.quot % 10);
-    *s++ = ':';
-    qr.quot = qr2.rem;
+    *s = '\0';
   }
-
-  if (!hours && qr.quot > 99) {
+  else if (tme < secondsPerYear) {
+    qr = div(tme, secondsPerDay);
+    div_t qr2 = div(qr.rem, 60);
     *s++ = '0' + (qr.quot / 100);
-    qr.quot = qr.quot % 100;
+    *s++ = '0' + (qr.quot / 10);
+    *s++ = '0' + (qr.quot % 10);
+    *s++ = 'D';
+    *s++ = '0' + (qr2.quot / 10);
+    *s++ = '0' + (qr2.quot % 10);
+    *s++ = 'H';
+    *s = '\0';
   }
-
-  *s++ = '0' + (qr.quot / 10);
-  *s++ = '0' + (qr.quot % 10);
-  *s++ = ':';
-  *s++ = '0' + (qr.rem / 10);
-  *s++ = '0' + (qr.rem % 10);
-  *s = '\0';
-
+  else {
+    qr = div(tme, secondsPerYear);
+    div_t qr2 = div(qr.rem, secondsPerDay);
+    *s++ = '0' + (qr.quot / 10);
+    *s++ = '0' + (qr.quot % 10);
+    *s++ = 'Y';
+    *s++ = 'Y';
+    *s++ = '0' + (qr2.quot / 10);
+    *s++ = '0' + (qr2.quot % 10);
+    *s++ = 'D';
+    *s = '\0';
+  }
   return dest;
 }
 
@@ -251,7 +290,7 @@ char * getSwitchName(char * dest, swsrc_t idx)
   }
   else {
     *dest++ = 'S';
-#if defined(PCBX7)
+#if defined(PCBX7) && !defined(RADIO_TX12)
     if (swinfo.quot >= 5)
         *dest++ = 'H' + swinfo.quot - 5;
       else if (swinfo.quot == 4)
@@ -312,16 +351,9 @@ char * getSwitchPositionName(char * dest, swsrc_t idx)
   }
 #endif
 
-#if defined(PCBSKY9X)
-  else if (idx <= SWSRC_REa) {
-    getStringAtIndex(s, STR_VSWITCHES, IDX_TRIMS_IN_STR_VSWITCHES+idx-SWSRC_FIRST_TRIM);
-  }
-#else
   else if (idx <= SWSRC_LAST_TRIM) {
     getStringAtIndex(s, STR_VSWITCHES, IDX_TRIMS_IN_STR_VSWITCHES+idx-SWSRC_FIRST_TRIM);
   }
-#endif
-
   else if (idx <= SWSRC_LAST_LOGICAL_SWITCH) {
     *s++ = 'L';
     strAppendUnsigned(s, idx-SWSRC_FIRST_LOGICAL_SWITCH+1, 2);

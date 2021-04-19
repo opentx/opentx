@@ -24,7 +24,11 @@
 #include "rtos.h"
 
 // stack sizes should be in multiples of 8 for better alignment
-#define MENUS_STACK_SIZE       2000
+#if defined (COLORLCD)
+  #define MENUS_STACK_SIZE     4000
+#else
+  #define MENUS_STACK_SIZE     2000
+#endif
 #define MIXER_STACK_SIZE       400
 #define AUDIO_STACK_SIZE       400
 #define CLI_STACK_SIZE         1000  // only consumed with CLI build option

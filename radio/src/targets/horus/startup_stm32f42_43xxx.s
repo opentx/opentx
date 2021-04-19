@@ -1,16 +1,16 @@
 /**
   ******************************************************************************
-  * @file      startup_stm32f40_41xxx.s
+  * @file      startup_stm32f42_43xx.s
   * @author    MCD Application Team
   * @version   V1.3.0
   * @date      08-November-2013
-  * @brief     STM32F40xxx/41xxx Devices vector table for RIDE7 toolchain.          
+  * @brief     STM32F42xxx/43xxx Devices vector table for RIDE7 toolchain.          
   *            This module performs:
   *                - Set the initial SP
   *                - Set the initial PC == Reset_Handler,
   *                - Set the vector table entries with the exceptions ISR address
   *                - Configure the clock system and the external SRAM mounted on 
-  *                  STM324xG-EVAL board to be used as data memory (optional, 
+  *                  STM32F4xG-EVAL board to be used as data memory (optional, 
   *                  to be enabled by user)
   *                - Branches to main in the C library (which eventually
   *                  calls main()).
@@ -37,7 +37,7 @@
   */
     
   .syntax unified
-  .cpu cortex-m3
+  .cpu cortex-m4
   .fpu softvfp
   .thumb
 
@@ -69,9 +69,9 @@ defined in linker script */
     .section  .text.Reset_Handler
   .weak  Reset_Handler
   .type  Reset_Handler, %function
-Reset_Handler:  
-
-  bl pwrResetHandler    /*jump to WDT reset handler where soft power control pin is turned on as soon as possible */
+Reset_Handler:
+  ldr   sp, =_estack    /* set stack pointer */
+  bl pwrResetHandler    /* jump to WDT reset handler where soft power control pin is turned on as soon as possible */
 
 /* Copy the data segment initializers from flash to SRAM */  
   movs  r1, #0
@@ -113,7 +113,7 @@ LoopPaintMainStack:
 
 /* Call the clock system intitialization function.*/
   bl  SystemInit
-/* Call C++ constructors for static objects */
+/* Call static constructors */
   bl  __libc_init_array 
 /* Call the application's entry point.*/
   bl  main

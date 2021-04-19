@@ -20,43 +20,33 @@
 
 #include "channels.h"
 #include "helpers.h"
+#include "filtereditemmodels.h"
 
-LimitsGroup::LimitsGroup(Firmware * firmware, TableLayout * tableLayout, int row, int col, int & value, const ModelData & model, int min, int max, int deflt, ModelPanel * panel):
+LimitsGroup::LimitsGroup(Firmware * firmware, TableLayout * tableLayout, int row, int col, int & value, const ModelData & model,
+                         int min, int max, int deflt, FilteredItemModel * gvarModel, ModelPanel * panel):
   firmware(firmware),
   spinbox(new QDoubleSpinBox()),
-  value(value),
-  displayStep(0.1)
+  value(value)
 {
-  Board::Type board = firmware->getBoard();
-  bool allowGVars = IS_HORUS_OR_TARANIS(board);
-  int internalStep = 1;
-
   spinbox->setProperty("index", row);
   spinbox->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
   spinbox->setAccelerated(true);
+  spinbox->setDecimals(1);
 
   if (firmware->getCapability(PPMUnitMicroseconds)) {
     displayStep = 0.512;
-    spinbox->setDecimals(1);
     spinbox->setSuffix("us");
   }
   else {
-    spinbox->setDecimals(0);
+    displayStep = 0.1;
     spinbox->setSuffix("%");
   }
 
-  if (deflt == 0 /*it's the offset*/) {
-    spinbox->setDecimals(1);
-  }
-  else {
-    internalStep *= 10;
-  }
-
-  spinbox->setSingleStep(displayStep * internalStep);
+  spinbox->setSingleStep(displayStep);
   spinbox->setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
 
   QHBoxLayout *horizontalLayout = new QHBoxLayout();
-  QCheckBox *gv = new QCheckBox(tr("GV"));
+  gv = new QCheckBox(tr("GV"));
   gv->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
   horizontalLayout->addWidget(gv);
   QComboBox *cb = new QComboBox();
@@ -64,7 +54,7 @@ LimitsGroup::LimitsGroup(Firmware * firmware, TableLayout * tableLayout, int row
   horizontalLayout->addWidget(cb);
   horizontalLayout->addWidget(spinbox);
   tableLayout->addLayout(row, col, horizontalLayout);
-  gvarGroup = new GVarGroup(gv, spinbox, cb, value, model, deflt, min, max, displayStep, allowGVars);
+  gvarGroup = new GVarGroup(gv, spinbox, cb, value, model, deflt, min, max, displayStep, gvarModel);
   QObject::connect(gvarGroup, &GVarGroup::valueChanged, panel, &ModelPanel::modified);
 }
 
@@ -83,26 +73,32 @@ void LimitsGroup::updateMinMax(int max)
   if (spinbox->maximum() == 0) {
     spinbox->setMinimum(-max * displayStep);
     gvarGroup->setMinimum(-max);
-    if (value < -max) {
+    if (!gv->isChecked() && value < -max) {
       value = -max;
     }
   }
   if (spinbox->minimum() == 0) {
     spinbox->setMaximum(max * displayStep);
     gvarGroup->setMaximum(max);
-    if (value > max) {
+    if (!gv->isChecked() && value > max) {
       value = max;
     }
   }
 }
 
-Channels::Channels(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware):
-  ModelPanel(parent, model, generalSettings, firmware)
+ChannelsPanel::ChannelsPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, CompoundItemModelFactory * sharedItemModels):
+  ModelPanel(parent, model, generalSettings, firmware),
+  sharedItemModels(sharedItemModels)
 {
-  Stopwatch s1("Channels");
-
   chnCapability = firmware->getCapability(Outputs);
   int channelNameMaxLen = firmware->getCapability(ChannelsName);
+
+  dialogFilteredItemModels = new FilteredItemModelFactory();
+
+  int crvid = dialogFilteredItemModels->registerItemModel(new FilteredItemModel(sharedItemModels->getItemModel(AbstractItemModel::IMID_Curve)), "Curve");
+  connectItemModelEvents(dialogFilteredItemModels->getItemModel(crvid));
+
+  int gvid = dialogFilteredItemModels->registerItemModel(new FilteredItemModel(sharedItemModels->getItemModel(AbstractItemModel::IMID_GVarRef)), "GVarRef");
 
   QStringList headerLabels;
   headerLabels << "#";
@@ -117,8 +113,6 @@ Channels::Channels(QWidget * parent, ModelData & model, GeneralSettings & genera
   if (firmware->getCapability(SYMLimits))
     headerLabels << tr("Linear Subtrim");
   TableLayout *tableLayout = new TableLayout(this, chnCapability, headerLabels);
-
-  s1.report("header");
 
   for (int i = 0; i < chnCapability; i++) {
     int col = 0;
@@ -146,13 +140,13 @@ Channels::Channels(QWidget * parent, ModelData & model, GeneralSettings & genera
     }
 
     // Channel offset
-    chnOffset[i] = new LimitsGroup(firmware, tableLayout, i, col++, model.limitData[i].offset, model, -1000, 1000, 0, this);
+    chnOffset[i] = new LimitsGroup(firmware, tableLayout, i, col++, model.limitData[i].offset, model, -1000, 1000, 0, dialogFilteredItemModels->getItemModel(gvid), this);
 
     // Channel min
-    chnMin[i] = new LimitsGroup(firmware, tableLayout, i, col++, model.limitData[i].min, model, -model.getChannelsMax() * 10, 0, -1000, this);
+    chnMin[i] = new LimitsGroup(firmware, tableLayout, i, col++, model.limitData[i].min, model, -model.getChannelsMax() * 10, 0, -1000, dialogFilteredItemModels->getItemModel(gvid), this);
 
     // Channel max
-    chnMax[i] = new LimitsGroup(firmware, tableLayout, i, col++, model.limitData[i].max, model, 0, model.getChannelsMax() * 10, 1000, this);
+    chnMax[i] = new LimitsGroup(firmware, tableLayout, i, col++, model.limitData[i].max, model, 0, model.getChannelsMax() * 10, 1000, dialogFilteredItemModels->getItemModel(gvid), this);
 
     // Channel inversion
     invCB[i] = new QComboBox(this);
@@ -165,6 +159,7 @@ Channels::Channels(QWidget * parent, ModelData & model, GeneralSettings & genera
     if (IS_HORUS_OR_TARANIS(firmware->getBoard())) {
       curveCB[i] = new QComboBox(this);
       curveCB[i]->setProperty("index", i);
+      curveCB[i]->setModel(dialogFilteredItemModels->getItemModel(crvid));
       connect(curveCB[i], SIGNAL(currentIndexChanged(int)), this, SLOT(curveEdited()));
       tableLayout->addWidget(i, col++, curveCB[i]);
     }
@@ -193,15 +188,13 @@ Channels::Channels(QWidget * parent, ModelData & model, GeneralSettings & genera
     }
   }
   update();
-  s1.report("add elements");
 
   disableMouseScrolling();
   tableLayout->resizeColumnsToContents();
   tableLayout->pushRowsUp(chnCapability+1);
-  s1.report("end");
 }
 
-Channels::~Channels()
+ChannelsPanel::~ChannelsPanel()
 {
   // compiler warning if delete[]
   for (int i = 0; i < CPN_MAX_CHNOUT; i++) {
@@ -214,9 +207,10 @@ Channels::~Channels()
     delete centerSB[i];
     delete symlimitsChk[i];
   }
+  delete dialogFilteredItemModels;
 }
 
-void Channels::symlimitsEdited()
+void ChannelsPanel::symlimitsEdited()
 {
   if (!lock) {
     QCheckBox *ckb = qobject_cast<QCheckBox*>(sender());
@@ -226,29 +220,31 @@ void Channels::symlimitsEdited()
   }
 }
 
-void Channels::nameEdited()
+void ChannelsPanel::nameEdited()
 {
   if (!lock) {
     QLineEdit *le = qobject_cast<QLineEdit*>(sender());
     int index = le->property("index").toInt();
-    strcpy(model->limitData[index].name, le->text().toLatin1());
-    emit modified();
+    if (model->limitData[index].name != le->text()) {
+      strcpy(model->limitData[index].name, le->text().toLatin1());
+      updateItemModels();
+      emit modified();
+    }
   }
 }
 
-void Channels::refreshExtendedLimits()
+void ChannelsPanel::refreshExtendedLimits()
 {
-  int channelMax = model->getChannelsMax();
+  int channelMax = model->getChannelsMax() * 10;
 
   for (int i = 0 ; i < CPN_MAX_CHNOUT; i++) {
-    chnOffset[i]->updateMinMax(10 * channelMax);
-    chnMin[i]->updateMinMax(10 * channelMax);
-    chnMax[i]->updateMinMax(10 * channelMax);
+    chnMin[i]->updateMinMax(channelMax);
+    chnMax[i]->updateMinMax(channelMax);
   }
   emit modified();
 }
 
-void Channels::invEdited()
+void ChannelsPanel::invEdited()
 {
   if (!lock) {
     QComboBox *cb = qobject_cast<QComboBox*>(sender());
@@ -258,17 +254,20 @@ void Channels::invEdited()
   }
 }
 
-void Channels::curveEdited()
+void ChannelsPanel::curveEdited()
 {
   if (!lock) {
     QComboBox *cb = qobject_cast<QComboBox*>(sender());
     int index = cb->property("index").toInt();
-    model->limitData[index].curve = CurveReference(CurveReference::CURVE_REF_CUSTOM, cb->itemData(cb->currentIndex()).toInt());
-    emit modified();
+    //  ignore unnecessary updates that could be triggered by updates to the data model
+    if (model->limitData[index].curve != CurveReference(CurveReference::CURVE_REF_CUSTOM, cb->itemData(cb->currentIndex()).toInt())) {
+      model->limitData[index].curve = CurveReference(CurveReference::CURVE_REF_CUSTOM, cb->itemData(cb->currentIndex()).toInt());
+      emit modified();
+    }
   }
 }
 
-void Channels::ppmcenterEdited()
+void ChannelsPanel::ppmcenterEdited()
 {
   if (!lock) {
     QSpinBox *sb = qobject_cast<QSpinBox*>(sender());
@@ -278,82 +277,79 @@ void Channels::ppmcenterEdited()
   }
 }
 
-void Channels::update()
+void ChannelsPanel::update()
 {
   for (int i = 0; i < chnCapability; i++) {
     updateLine(i);
   }
 }
 
-void Channels::updateLine(int i)
+void ChannelsPanel::updateLine(int i)
 {
   lock = true;
+  LimitData &chn = model->limitData[i];
+
   if (firmware->getCapability(ChannelsName) > 0) {
-    name[i]->setText(model->limitData[i].name);
+    name[i]->setText(chn.name);
   }
-  chnOffset[i]->setValue(model->limitData[i].offset);
-  chnMin[i]->setValue(model->limitData[i].min);
-  chnMax[i]->setValue(model->limitData[i].max);
-  invCB[i]->setCurrentIndex((model->limitData[i].revert) ? 1 : 0);
+  chnOffset[i]->setValue(chn.offset);
+  chnMin[i]->setValue(chn.min);
+  chnMax[i]->setValue(chn.max);
+  invCB[i]->setCurrentIndex((chn.revert) ? 1 : 0);
   if (IS_HORUS_OR_TARANIS(firmware->getBoard())) {
-    int numcurves = firmware->getCapability(NumCurves);
-    curveCB[i]->clear();
-    for (int j = -numcurves; j <= numcurves; j++) {
-      curveCB[i]->addItem(CurveReference(CurveReference::CURVE_REF_CUSTOM, j).toString(model, false), j);
-    }
-    curveCB[i]->setCurrentIndex(model->limitData[i].curve.value + numcurves);
+    curveCB[i]->setCurrentIndex(curveCB[i]->findData(chn.curve.value));
   }
   if (firmware->getCapability(PPMCenter)) {
-    centerSB[i]->setValue(model->limitData[i].ppmCenter + 1500);
+    centerSB[i]->setValue(chn.ppmCenter + 1500);
   }
   if (firmware->getCapability(SYMLimits)) {
-    symlimitsChk[i]->setChecked(model->limitData[i].symetrical);
+    symlimitsChk[i]->setChecked(chn.symetrical);
   }
   lock = false;
 }
 
-void Channels::cmPaste()
+void ChannelsPanel::cmPaste()
 {
   QByteArray data;
   if (hasClipboardData(&data)) {
-    memcpy(&model->limitData[selectedIndex], data.constData(), sizeof(LimitData));
+    model->limitsSet(selectedIndex, data);
     updateLine(selectedIndex);
-    emit modified();
+    updateItemModels();
   }
 }
 
-void Channels::cmDelete()
+void ChannelsPanel::cmDelete()
 {
   if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Delete Channel. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
     return;
 
-  memmove(&model->limitData[selectedIndex], &model->limitData[selectedIndex + 1], (CPN_MAX_CHNOUT - (selectedIndex + 1)) * sizeof(LimitData));
-  model->limitData[chnCapability - 1].clear();
-  model->updateAllReferences(ModelData::REF_UPD_TYPE_CHANNEL, ModelData::REF_UPD_ACT_SHIFT, selectedIndex, 0, -1);
-
+  model->limitsDelete(selectedIndex);
   for (int i = selectedIndex; i < chnCapability; i++) {
     updateLine(i);
   }
 
-  emit modified();
+  updateItemModels();
 }
 
-void Channels::cmCopy()
+void ChannelsPanel::cmCopy()
 {
   QByteArray data;
-  data.append((char*)&model->limitData[selectedIndex], sizeof(LimitData));
+  model->limitsGet(selectedIndex, data);
   QMimeData *mimeData = new QMimeData;
   mimeData->setData(MIMETYPE_CHANNEL, data);
   QApplication::clipboard()->setMimeData(mimeData,QClipboard::Clipboard);
 }
 
-void Channels::cmCut()
+void ChannelsPanel::cmCut()
 {
+  if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Cut Channel. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+    return;
+
   cmCopy();
-  cmClear();
+  cmClear(false);
 }
 
-void Channels::onCustomContextMenuRequested(QPoint pos)
+void ChannelsPanel::onCustomContextMenuRequested(QPoint pos)
 {
   QLabel *label = (QLabel *)sender();
   selectedIndex = label->property("index").toInt();
@@ -375,7 +371,7 @@ void Channels::onCustomContextMenuRequested(QPoint pos)
   contextMenu.exec(globalPos);
 }
 
-bool Channels::hasClipboardData(QByteArray * data) const
+bool ChannelsPanel::hasClipboardData(QByteArray * data) const
 {
   const QClipboard * clipboard = QApplication::clipboard();
   const QMimeData * mimeData = clipboard->mimeData();
@@ -387,75 +383,88 @@ bool Channels::hasClipboardData(QByteArray * data) const
   return false;
 }
 
-bool Channels::insertAllowed() const
+bool ChannelsPanel::insertAllowed() const
 {
   return ((selectedIndex < chnCapability - 1) && (model->limitData[chnCapability - 1].isEmpty()));
 }
 
-bool Channels::moveDownAllowed() const
+bool ChannelsPanel::moveDownAllowed() const
 {
   return selectedIndex < chnCapability - 1;
 }
 
-bool Channels::moveUpAllowed() const
+bool ChannelsPanel::moveUpAllowed() const
 {
   return selectedIndex > 0;
 }
 
-void Channels::cmMoveUp()
+void ChannelsPanel::cmMoveUp()
 {
-  swapData(selectedIndex, selectedIndex - 1);
-}
-
-void Channels::cmMoveDown()
-{
-  swapData(selectedIndex, selectedIndex + 1);
-}
-
-void Channels::cmClear()
-{
-  if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Clear Channel. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
-    return;
-
-  model->limitData[selectedIndex].clear();
-  model->updateAllReferences(ModelData::REF_UPD_TYPE_CHANNEL, ModelData::REF_UPD_ACT_CLEAR, selectedIndex);
+  model->limitsMove(selectedIndex, -1);
+  updateLine(selectedIndex - 1);
   updateLine(selectedIndex);
-  emit modified();
+  updateItemModels();
 }
 
-void Channels::cmClearAll()
+void ChannelsPanel::cmMoveDown()
+{
+  model->limitsMove(selectedIndex, 1);
+  updateLine(selectedIndex);
+  updateLine(selectedIndex + 1);
+  updateItemModels();
+}
+
+void ChannelsPanel::cmClear(bool prompt)
+{
+  if (prompt) {
+    if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Clear Channel. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+      return;
+  }
+
+  model->limitsClear(selectedIndex);
+  updateLine(selectedIndex);
+  updateItemModels();
+}
+
+void ChannelsPanel::cmClearAll()
 {
   if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Clear all Channels. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
     return;
 
-  for (int i = 0; i < chnCapability; i++) {
-    model->limitData[i].clear();
-    model->updateAllReferences(ModelData::REF_UPD_TYPE_CHANNEL, ModelData::REF_UPD_ACT_CLEAR, i);
+  model->limitsClearAll();
+  update();
+  updateItemModels();
+}
+
+void ChannelsPanel::cmInsert()
+{
+  model->limitsInsert(selectedIndex);
+  for (int i = selectedIndex; i < chnCapability; i++) {
     updateLine(i);
   }
-  emit modified();
+
+  updateItemModels();
 }
 
-void Channels::cmInsert()
+void ChannelsPanel::connectItemModelEvents(const FilteredItemModel * itemModel)
 {
-  memmove(&model->limitData[selectedIndex + 1], &model->limitData[selectedIndex], (CPN_MAX_CHNOUT - (selectedIndex + 1)) * sizeof(LimitData));
-  model->limitData[selectedIndex].clear();
-  model->updateAllReferences(ModelData::REF_UPD_TYPE_CHANNEL, ModelData::REF_UPD_ACT_SHIFT, selectedIndex, 0, 1);
+  connect(itemModel, &FilteredItemModel::aboutToBeUpdated, this, &ChannelsPanel::onItemModelAboutToBeUpdated);
+  connect(itemModel, &FilteredItemModel::updateComplete, this, &ChannelsPanel::onItemModelUpdateComplete);
+}
+
+void ChannelsPanel::onItemModelAboutToBeUpdated()
+{
+  lock = true;
+}
+
+void ChannelsPanel::onItemModelUpdateComplete()
+{
   update();
-  emit modified();
+  lock = false;
 }
 
-void Channels::swapData(int idx1, int idx2)
+void ChannelsPanel::updateItemModels()
 {
-  if ((idx1 != idx2) && (!model->limitData[idx1].isEmpty() || !model->limitData[idx2].isEmpty())) {
-    LimitData chntmp = model->limitData[idx2];
-    LimitData *chn1 = &model->limitData[idx1];
-    LimitData *chn2 = &model->limitData[idx2];
-    memcpy(chn2, chn1, sizeof(LimitData));
-    memcpy(chn1, &chntmp, sizeof(LimitData));
-    model->updateAllReferences(ModelData::REF_UPD_TYPE_CHANNEL, ModelData::REF_UPD_ACT_SWAP, idx1, idx2);
-    updateLine(idx1);
-    updateLine(idx2);
-    emit modified();
-  }
+  sharedItemModels->update(AbstractItemModel::IMUE_Channels);
+  emit modified();
 }

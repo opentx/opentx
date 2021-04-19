@@ -148,7 +148,7 @@ endif()
 
 if(MULTIMODULE)
   add_definitions(-DMULTIMODULE)
-  set(SRC ${SRC} pulses/multi.cpp telemetry/spektrum.cpp telemetry/hitec.cpp telemetry/hott.cpp telemetry/multi.cpp io/multi_firmware_update.cpp)
+  set(SRC ${SRC} pulses/multi.cpp telemetry/spektrum.cpp telemetry/hitec.cpp telemetry/hott.cpp telemetry/mlink.cpp telemetry/multi.cpp io/multi_firmware_update.cpp)
 endif()
 
 if(CROSSFIRE)
@@ -173,6 +173,18 @@ endif()
 
 if(MULTIMODULE OR AFHDS3)
  set(SRC ${SRC} telemetry/flysky_ibus.cpp )
+endif()
+
+if(GHOST)
+  add_definitions(-DGHOST)
+  set(PULSES_SRC
+    ${PULSES_SRC}
+    ghost.cpp
+    )
+  set(SRC
+    ${SRC}
+    telemetry/ghost.cpp
+    )
 endif()
 
 add_definitions(-DCPUARM)
@@ -205,12 +217,8 @@ set(FIRMWARE_TARGET_SRC
   ${FIRMWARE_TARGET_SRC}
   keys_driver.cpp
   diskio.cpp
-)
-
-set(TARGET_SRC
-  ${TARGET_SRC}
   telemetry_driver.cpp
-  )
+)
 
 set(FIRMWARE_SRC
   ${FIRMWARE_SRC}

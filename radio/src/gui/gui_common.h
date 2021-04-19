@@ -99,6 +99,8 @@ bool isRssiSensorAvailable(int sensor);
 
 bool modelHasNotes();
 
+bool confirmModelChange();
+
 #if defined(COLORLCD)
 bool isSwitch2POSWarningStateAvailable(int state);
 #endif
@@ -126,8 +128,6 @@ void drawSourceValue(coord_t x, coord_t y, source_t channel, LcdFlags flags=0);
 
 int convertMultiToOtx(int type);
 
-void drawCurve(coord_t offset=0);
-
 #if defined(COLORLCD)
 void drawStringWithIndex(coord_t x, coord_t y, const char * str, int idx, LcdFlags flags=0, const char * prefix=nullptr, const char * suffix=nullptr);
 uint8_t editCheckBox(uint8_t value, coord_t x, coord_t y, LcdFlags flags, event_t event);
@@ -143,11 +143,14 @@ void runFatalErrorScreen(const char * message);
 
 inline uint8_t MODULE_BIND_ROWS(int moduleIdx)
 {
+  if (isModuleCrossfire(moduleIdx))
+    return 0;
+
   if (isModuleMultimodule(moduleIdx)) {
-   if (IS_RX_MULTI(moduleIdx))
-     return 1;
-   else
-     return 2;
+    if (IS_RX_MULTI(moduleIdx))
+      return 1;
+    else
+      return 2;
   }
   else if (isModuleXJTD8(moduleIdx) || isModuleSBUS(moduleIdx) || isModuleAFHDS3(moduleIdx)) {
     return 1;
@@ -173,13 +176,41 @@ inline uint8_t MODULE_CHANNELS_ROWS(int moduleIdx)
     else
       return 0;
   }
-  else if (isModuleDSM2(moduleIdx) || isModuleCrossfire(moduleIdx) || isModuleSBUS(moduleIdx)) {
+  else if (isModuleDSM2(moduleIdx) || isModuleCrossfire(moduleIdx) || isModuleGhost(moduleIdx) || isModuleSBUS(moduleIdx)) {
     return 0;
   }
   else {
     return 1;
   }
 }
+
+#if defined(PXX2)
+inline bool isRacingModeAllowed()
+{
+  return isModulePXX2(INTERNAL_MODULE) && g_model.moduleData[INTERNAL_MODULE].getChannelsCount() == 8;
+}
+
+inline bool isRacingModeEnabled()
+{
+  return isRacingModeAllowed() && g_model.moduleData[INTERNAL_MODULE].pxx2.racingMode;
+}
+
+inline uint8_t IF_ALLOW_RACING_MODE(int moduleIdx)
+{
+  if (!IS_MODULE_ENABLED(moduleIdx)) {
+    return HIDDEN_ROW;
+  }
+  else if (isRacingModeAllowed()) {
+    return 0;
+  }
+  return HIDDEN_ROW;
+}
+#else
+inline uint8_t IF_ALLOW_RACING_MODE(int)
+{
+  return HIDDEN_ROW;
+}
+#endif
 
 #if defined(MULTIMODULE)
 inline uint8_t MULTI_DISABLE_CHAN_MAP_ROW(uint8_t moduleIdx)
@@ -238,10 +269,12 @@ inline bool MULTIMODULE_HAS_SUBTYPE(uint8_t moduleIdx)
   }
   else
   {
-    if (g_model.moduleData[moduleIdx].getMultiProtocol() > MODULE_SUBTYPE_MULTI_LAST)
+    if (g_model.moduleData[moduleIdx].getMultiProtocol() > MODULE_SUBTYPE_MULTI_LAST) {
       return true;
-    else
-      return getMultiProtocolDefinition(g_model.moduleData[moduleIdx].getMultiProtocol())->maxSubtype > 0;
+    }
+    else {
+      return getMultiProtocolDefinition(g_model.moduleData[moduleIdx].getMultiProtocol())->subTypeString != nullptr;
+    }
   }
 }
 
@@ -273,7 +306,7 @@ inline uint8_t MULTIMODULE_HASOPTIONS(uint8_t moduleIdx)
 
 #define MULTIMODULE_MODULE_ROWS(moduleIdx)      (MULTIMODULE_PROTOCOL_KNOWN(moduleIdx) && !IS_RX_MULTI(moduleIdx)) ? (uint8_t) 0 : HIDDEN_ROW, (MULTIMODULE_PROTOCOL_KNOWN(moduleIdx) && !IS_RX_MULTI(moduleIdx)) ? (uint8_t) 0 : HIDDEN_ROW, MULTI_DISABLE_CHAN_MAP_ROW(moduleIdx), // AUTOBIND, DISABLE TELEM, DISABLE CN.MAP
 #define MULTIMODULE_TYPE_ROW(moduleIdx)         isModuleMultimodule(moduleIdx) ? MULTIMODULE_RFPROTO_COLUMNS(moduleIdx) : HIDDEN_ROW,
-#define MULTIMODULE_STATUS_ROWS(moduleIdx)      isModuleMultimodule(moduleIdx) ? TITLE_ROW : HIDDEN_ROW, (isModuleMultimodule(moduleIdx) && getMultiSyncStatus(moduleIdx).isValid()) ? TITLE_ROW : HIDDEN_ROW,
+#define MULTIMODULE_STATUS_ROWS(moduleIdx)      isModuleMultimodule(moduleIdx) ? TITLE_ROW : HIDDEN_ROW, (isModuleMultimodule(moduleIdx) && getModuleSyncStatus(moduleIdx).isValid()) ? TITLE_ROW : HIDDEN_ROW,
 #define MULTIMODULE_MODE_ROWS(moduleIdx)        (g_model.moduleData[moduleIdx].multi.customProto) ? (uint8_t) 3 : MULTIMODULE_HAS_SUBTYPE(moduleIdx) ? (uint8_t)2 : (uint8_t)1
 #define MULTIMODULE_TYPE_ROWS(moduleIdx)        isModuleMultimodule(moduleIdx) ? (uint8_t) 0 : HIDDEN_ROW,
 #define MULTIMODULE_SUBTYPE_ROWS(moduleIdx)     isModuleMultimodule(moduleIdx) ? MULTIMODULE_RFPROTO_COLUMNS(moduleIdx) : HIDDEN_ROW,
@@ -293,9 +326,9 @@ inline uint8_t MULTIMODULE_HASOPTIONS(uint8_t moduleIdx)
 #endif
 
 #if defined(AFHDS3)
-#define AFHDS3_PROTOCOL_ROW(moduleIdx)          isModuleAFHDS3(moduleIdx) ? TITLE_ROW : HIDDEN_ROW,
+#define AFHDS3_PROTOCOL_ROW(moduleIdx)          isModuleAFHDS3(moduleIdx) ? uint8_t(0) : HIDDEN_ROW,
 #define AFHDS3_MODE_ROWS(moduleIdx)             isModuleAFHDS3(moduleIdx) ? TITLE_ROW : HIDDEN_ROW, isModuleAFHDS3(moduleIdx) ? TITLE_ROW : HIDDEN_ROW, isModuleAFHDS3(moduleIdx) ? TITLE_ROW : HIDDEN_ROW,
-#define AFHDS3_MODULE_ROWS(moduleIdx)           isModuleAFHDS3(moduleIdx) ? (uint8_t) 0 : HIDDEN_ROW, isModuleAFHDS3(moduleIdx) ? (uint8_t) TITLE_ROW : HIDDEN_ROW,
+#define AFHDS3_MODULE_ROWS(moduleIdx)           isModuleAFHDS3(moduleIdx) ? uint8_t(0) : HIDDEN_ROW, isModuleAFHDS3(moduleIdx) ? TITLE_ROW : HIDDEN_ROW,
 #else
 #define AFHDS3_PROTOCOL_ROW(moduleIdx)
 #define AFHDS3_MODE_ROWS(moduleIdx)
@@ -313,6 +346,7 @@ inline uint8_t MODULE_OPTION_ROW(uint8_t moduleIdx) {
 }
 
 void editStickHardwareSettings(coord_t x, coord_t y, int idx, event_t event, LcdFlags flags);
+const char * getMultiOptionTitle(uint8_t moduleIdx);
 
 const char * writeScreenshot();
 

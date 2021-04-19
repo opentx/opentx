@@ -1,12 +1,12 @@
 
 set(datamodels_SRCS
-  rawitemdatamodels.cpp
-  rawitemfilteredmodel.cpp
+  compounditemmodels.cpp
+  filtereditemmodels.cpp
 )
 
 set(datamodels_HDRS
-  rawitemdatamodels.h
-  rawitemfilteredmodel.h
+  compounditemmodels.h
+  filtereditemmodels.h
 )
 
 qt5_wrap_cpp(datamodels_SRCS ${datamodels_HDRS})

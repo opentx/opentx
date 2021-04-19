@@ -40,6 +40,12 @@
   #include "lua/lua_exports_x7.inc"
 #elif defined(RADIO_T12)
   #include "lua/lua_exports_t12.inc"
+#elif defined(RADIO_TLITE)
+  #include "lua/lua_exports_tlite.inc"
+#elif defined(RADIO_TX12)
+  #include "lua/lua_exports_tx12.inc"
+#elif defined(RADIO_T8)
+  #include "lua/lua_exports_t8.inc"
 #elif defined(PCBX9LITES)
   #include "lua/lua_exports_x9lites.inc"
 #elif defined(PCBX9LITE)
@@ -48,6 +54,8 @@
   #include "lua/lua_exports_xlites.inc"
 #elif defined(PCBXLITE)
   #include "lua/lua_exports_xlite.inc"
+#elif defined(RADIO_X9DP2019)
+  #include "lua/lua_exports_x9d+2019.inc"
 #elif defined(PCBTARANIS)
   #include "lua/lua_exports_x9d.inc"
 #endif
@@ -373,6 +381,26 @@ bool luaFindFieldByName(const char * name, LuaField & field, unsigned int flags)
   }
 
   return false;  // not found
+}
+
+/*luadoc
+@function getRotEncSpeed()
+
+Return rotary encoder current speed
+
+@retval number in list: ROTENC_LOWSPEED, ROTENC_MIDSPEED, ROTENC_HIGHSPEED
+        return 0 on radio without rotary encoder
+
+@status current Introduced in 2.3.10
+*/
+static int luaGetRotEncSpeed(lua_State * L)
+{
+#if defined(ROTARY_ENCODER_NAVIGATION)
+  lua_pushunsigned(L, rotencSpeed);
+#else
+  lua_pushunsigned(L, 0);
+#endif
+  return 1;
 }
 
 /*luadoc
@@ -847,7 +875,7 @@ Return the internal GPS position or nil if no valid hardware found
 static int luaGetTxGPS(lua_State * L)
 {
 #if defined(INTERNAL_GPS)
-  lua_createtable(L, 0, 7);
+  lua_createtable(L, 0, 8);
   lua_pushtablenumber(L, "lat", gpsData.latitude * 0.000001);
   lua_pushtablenumber(L, "lon", gpsData.longitude * 0.000001);
   lua_pushtableinteger(L, "numsat", gpsData.numSat);
@@ -1383,7 +1411,10 @@ Get RSSI value as well as low and critical RSSI alarm levels (in dB)
 */
 static int luaGetRSSI(lua_State * L)
 {
-  lua_pushunsigned(L, min((uint8_t)99, TELEMETRY_RSSI()));
+  if (TELEMETRY_STREAMING())
+    lua_pushunsigned(L, min((uint8_t)99, TELEMETRY_RSSI()));
+  else
+    lua_pushunsigned(L, 0);
   lua_pushunsigned(L, g_model.rssiAlarms.getWarningRssi());
   lua_pushunsigned(L, g_model.rssiAlarms.getCriticalRssi());
   return 3;
@@ -1575,12 +1606,41 @@ static int luaMultiBuffer(lua_State * L)
 #endif
 
 /*luadoc
+@function setSerialBaudrate(baudrate)
+@param baudrate Desired baurate
+
+Set baudrate for serial port(s) affected to LUA
+
+@status current Introduced in 2.3.12
+*/
+static int luaSetSerialBaudrate(lua_State * L)
+{
+#if defined(AUX_SERIAL) || defined(AUX2_SERIAL)
+  unsigned int baudrate = luaL_checkunsigned(L, 1);
+#endif
+
+#if defined(AUX_SERIAL)
+  if (auxSerialMode == UART_MODE_LUA) {
+    auxSerialStop();
+    auxSerialSetup(baudrate, false);
+  }
+#endif
+#if defined(AUX2_SERIAL)
+  if (aux2SerialMode == UART_MODE_LUA) {
+    aux2SerialStop();
+    aux2SerialSetup(baudrate, false);
+  }
+#endif
+  return 1;
+}
+
+/*luadoc
 @function serialWrite(str)
 @param str (string) String to be written to the serial port.
 
 Writes a string to the serial port. The string is allowed to contain any character, including 0.
 
-@status current Introduced in TODO
+@status current Introduced in 2.3.10
 */
 static int luaSerialWrite(lua_State * L)
 {
@@ -1590,30 +1650,28 @@ static int luaSerialWrite(lua_State * L)
   if (!str || len < 1)
     return 0;
 
-#if !defined(SIMU)
-  #if defined(USB_SERIAL)
+#if defined(USB_SERIAL)
   if (getSelectedUsbMode() == USB_SERIAL_MODE) {
     size_t wr_len = len;
     const char* p = str;
     while(wr_len--) usbSerialPutc(*p++);
   }
-  #endif
-  #if defined(AUX_SERIAL)
+#endif
+
+#if defined(AUX_SERIAL)
   if (auxSerialMode == UART_MODE_LUA) {
     size_t wr_len = len;
     const char* p = str;
     while(wr_len--) auxSerialPutc(*p++);
   }
-  #endif
+#endif
+
 #if defined(AUX2_SERIAL)
   if (aux2SerialMode == UART_MODE_LUA) {
     size_t wr_len = len;
     const char* p = str;
     while(wr_len--) aux2SerialPutc(*p++);
   }
-#endif
-#else
-  debugPrintf("luaSerialWrite: %.*s",len,str);
 #endif
 
   return 0;
@@ -1680,6 +1738,7 @@ const luaL_Reg opentxLib[] = {
   { "getVersion", luaGetVersion },
   { "getGeneralSettings", luaGetGeneralSettings },
   { "getGlobalTimer", luaGetGlobalTimer },
+  { "getRotEncSpeed", luaGetRotEncSpeed },
   { "getValue", luaGetValue },
   { "getRAS", luaGetRAS },
   { "getTxGPS", luaGetTxGPS },
@@ -1717,6 +1776,7 @@ const luaL_Reg opentxLib[] = {
 #if defined(MULTIMODULE)
   { "multiBuffer", luaMultiBuffer },
 #endif
+  { "setSerialBaudrate", luaSetSerialBaudrate },
   { "serialWrite", luaSerialWrite },
   { "serialRead", luaSerialRead },
   { nullptr, nullptr }  /* sentinel */
@@ -1756,8 +1816,10 @@ const luaR_value_entry opentxConstants[] = {
   { "MIXSRC_SE", MIXSRC_SE },
   { "MIXSRC_SG", MIXSRC_SG },
 #endif
-#if !defined(PCBXLITE) && !defined(PCBX9LITE)
+#if defined(HARDWARE_SWITCH_F)
   { "MIXSRC_SF", MIXSRC_SF },
+#endif
+#if defined(HARDWARE_SWITCH_H)
   { "MIXSRC_SH", MIXSRC_SH },
 #endif
   { "MIXSRC_CH1", MIXSRC_CH1 },
@@ -1768,7 +1830,6 @@ const luaR_value_entry opentxConstants[] = {
   { "COLOR", ZoneOption::Color },
   { "BOOL", ZoneOption::Bool },
   { "STRING", ZoneOption::String },
-  { "CUSTOM_COLOR", CUSTOM_COLOR },
   { "TEXT_COLOR", TEXT_COLOR },
   { "TEXT_BGCOLOR", TEXT_BGCOLOR },
   { "TEXT_INVERTED_COLOR", TEXT_INVERTED_COLOR },
@@ -1778,22 +1839,26 @@ const luaR_value_entry opentxConstants[] = {
   { "MENU_TITLE_BGCOLOR", MENU_TITLE_BGCOLOR },
   { "MENU_TITLE_COLOR", MENU_TITLE_COLOR },
   { "MENU_TITLE_DISABLE_COLOR", MENU_TITLE_DISABLE_COLOR },
+  { "HEADER_COLOR", HEADER_COLOR },
   { "ALARM_COLOR", ALARM_COLOR },
   { "WARNING_COLOR", WARNING_COLOR },
   { "TEXT_DISABLE_COLOR", TEXT_DISABLE_COLOR },
-  { "HEADER_COLOR", HEADER_COLOR },
   { "CURVE_AXIS_COLOR", CURVE_AXIS_COLOR },
   { "CURVE_COLOR", CURVE_COLOR },
   { "CURVE_CURSOR_COLOR", CURVE_CURSOR_COLOR },
   { "TITLE_BGCOLOR", TITLE_BGCOLOR },
   { "TRIM_BGCOLOR", TRIM_BGCOLOR },
   { "TRIM_SHADOW_COLOR", TRIM_SHADOW_COLOR },
-  { "MAINVIEW_PANES_COLOR", MAINVIEW_PANES_COLOR },
-  { "MAINVIEW_GRAPHICS_COLOR", MAINVIEW_GRAPHICS_COLOR },
   { "HEADER_BGCOLOR", HEADER_BGCOLOR },
   { "HEADER_ICON_BGCOLOR", HEADER_ICON_BGCOLOR },
   { "HEADER_CURRENT_BGCOLOR", HEADER_CURRENT_BGCOLOR },
+  { "MAINVIEW_PANES_COLOR", MAINVIEW_PANES_COLOR },
+  { "MAINVIEW_GRAPHICS_COLOR", MAINVIEW_GRAPHICS_COLOR },
   { "OVERLAY_COLOR", OVERLAY_COLOR },
+  { "BARGRAPH1_COLOR", BARGRAPH1_COLOR },
+  { "BARGRAPH2_COLOR", BARGRAPH2_COLOR },
+  { "BARGRAPH_BGCOLOR", BARGRAPH_BGCOLOR },
+  { "CUSTOM_COLOR", CUSTOM_COLOR },
   { "MENU_HEADER_HEIGHT", MENU_HEADER_HEIGHT },
   { "WHITE", (double)WHITE },
   { "GREY", (double)GREY },
@@ -1814,7 +1879,10 @@ const luaR_value_entry opentxConstants[] = {
   { "EVT_VIRTUAL_NEXT", EVT_ROTARY_RIGHT },
   { "EVT_VIRTUAL_DEC", EVT_ROTARY_LEFT },
   { "EVT_VIRTUAL_INC", EVT_ROTARY_RIGHT },
-#elif defined(PCBX9D) || defined(PCBX9DP)  // key reverted between field nav and value change
+  { "ROTENC_LOWSPEED", ROTENC_LOWSPEED },
+  { "ROTENC_MIDSPEED", ROTENC_MIDSPEED },
+  { "ROTENC_HIGHSPEED", ROTENC_HIGHSPEED },
+#elif defined(PCBX9D) || defined(PCBX9DP) || defined(RADIO_T8) // key reverted between field nav and value change
   { "EVT_VIRTUAL_PREV", EVT_KEY_FIRST(KEY_PLUS) },
   { "EVT_VIRTUAL_PREV_REPT", EVT_KEY_REPT(KEY_PLUS) },
   { "EVT_VIRTUAL_NEXT", EVT_KEY_FIRST(KEY_MINUS) },
@@ -1851,10 +1919,17 @@ const luaR_value_entry opentxConstants[] = {
   { "EVT_VIRTUAL_ENTER_LONG", EVT_KEY_LONG(KEY_ENTER) },
   { "EVT_VIRTUAL_EXIT", EVT_KEY_BREAK(KEY_EXIT) },
 #elif defined(NAVIGATION_X7) || defined(NAVIGATION_X9D)
+#if defined(RADIO_TX12) || defined(RADIO_T8)
+  { "EVT_VIRTUAL_PREV_PAGE", EVT_KEY_BREAK(KEY_PAGEUP) },
+  { "EVT_VIRTUAL_NEXT_PAGE", EVT_KEY_BREAK(KEY_PAGEDN) },
+  { "EVT_VIRTUAL_MENU", EVT_KEY_BREAK(KEY_MODEL) },
+  { "EVT_VIRTUAL_MENU_LONG", EVT_KEY_LONG(KEY_MODEL) },
+#else
   { "EVT_VIRTUAL_PREV_PAGE", EVT_KEY_LONG(KEY_PAGE) },
   { "EVT_VIRTUAL_NEXT_PAGE", EVT_KEY_BREAK(KEY_PAGE) },
   { "EVT_VIRTUAL_MENU", EVT_KEY_BREAK(KEY_MENU) },
   { "EVT_VIRTUAL_MENU_LONG", EVT_KEY_LONG(KEY_MENU) },
+#endif
   { "EVT_VIRTUAL_ENTER", EVT_KEY_BREAK(KEY_ENTER) },
   { "EVT_VIRTUAL_ENTER_LONG", EVT_KEY_LONG(KEY_ENTER) },
   { "EVT_VIRTUAL_EXIT", EVT_KEY_BREAK(KEY_EXIT) },
@@ -1966,6 +2041,7 @@ const luaR_value_entry opentxConstants[] = {
   {"UNIT_KMH", UNIT_KMH },
   {"UNIT_MPH", UNIT_MPH },
   {"UNIT_METERS", UNIT_METERS },
+  {"UNIT_KM", UNIT_KM },
   {"UNIT_FEET", UNIT_FEET },
   {"UNIT_CELSIUS", UNIT_CELSIUS },
   {"UNIT_FAHRENHEIT", UNIT_FAHRENHEIT },
@@ -1981,6 +2057,9 @@ const luaR_value_entry opentxConstants[] = {
   {"UNIT_MILLILITERS", UNIT_MILLILITERS },
   {"UNIT_FLOZ", UNIT_FLOZ },
   {"UNIT_MILLILITERS_PER_MINUTE", UNIT_MILLILITERS_PER_MINUTE },
+  {"UNIT_HERTZ", UNIT_HERTZ },
+  {"UNIT_MS", UNIT_MS },
+  {"UNIT_US", UNIT_US },
   {"UNIT_HOURS", UNIT_HOURS },
   {"UNIT_MINUTES", UNIT_MINUTES },
   {"UNIT_SECONDS", UNIT_SECONDS },

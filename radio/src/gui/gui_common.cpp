@@ -342,12 +342,6 @@ bool isSwitchAvailable(int swtch, SwitchContext context)
   }
 #endif
 
-#if defined(PCBSKY9X) && defined(REVX)
-  if (swtch == SWSRC_REa) {
-    return false;
-  }
-#endif
-
   if (swtch >= SWSRC_FIRST_LOGICAL_SWITCH && swtch <= SWSRC_LAST_LOGICAL_SWITCH) {
     if (context == GeneralCustomFunctionsContext) {
       return false;
@@ -390,6 +384,10 @@ bool isAux1ModeAvailable(int mode)
 #if defined(AUX2_SERIAL)
   if (mode == UART_MODE_SBUS_TRAINER)
     return g_eeGeneral.aux2SerialMode != UART_MODE_SBUS_TRAINER;
+#if defined(RADIO_TX16S)
+  else
+    return (g_model.trainerData.mode != TRAINER_MODE_MASTER_BATTERY_COMPARTMENT || g_eeGeneral.aux2SerialMode == UART_MODE_SBUS_TRAINER);
+#endif
 #endif
   return true;
 }
@@ -399,6 +397,10 @@ bool isAux2ModeAvailable(int mode)
 #if defined(AUX_SERIAL)
   if (mode == UART_MODE_SBUS_TRAINER)
     return g_eeGeneral.auxSerialMode != UART_MODE_SBUS_TRAINER;
+#if defined(RADIO_TX16S)
+  else
+    return (g_model.trainerData.mode != TRAINER_MODE_MASTER_BATTERY_COMPARTMENT || g_eeGeneral.auxSerialMode == UART_MODE_SBUS_TRAINER);
+#endif
 #endif
   return true;
 }
@@ -552,7 +554,7 @@ bool isPxx2IsrmChannelsCountAllowed(int channels)
 bool isTrainerUsingModuleBay()
 {
 #if defined(PCBTARANIS)
-  if (TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE <= g_model.trainerData.mode && g_model.trainerData.mode <= TRAINER_MODE_MASTER_BATTERY_COMPARTMENT)
+  if (TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE <= g_model.trainerData.mode && g_model.trainerData.mode <= TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE)
     return true;
 #endif
   return false;
@@ -584,6 +586,14 @@ bool isModuleUsingSport(uint8_t moduleBay, uint8_t moduleType)
   }
 }
 
+bool areModulesConflicting(int intModuleType, int extModuleType)
+{
+  if (intModuleType == MODULE_TYPE_ISRM_PXX2)
+    return (extModuleType == MODULE_TYPE_GHOST);
+
+  return false;
+}
+
 #if defined(HARDWARE_INTERNAL_MODULE)
 bool isInternalModuleAvailable(int moduleType)
 {
@@ -605,7 +615,7 @@ bool isInternalModuleAvailable(int moduleType)
 
   if (moduleType == MODULE_TYPE_ISRM_PXX2) {
 #if defined(PXX2) && defined(INTERNAL_MODULE_PXX2)
-    return true;
+    return !areModulesConflicting(moduleType, g_model.moduleData[EXTERNAL_MODULE].type);
 #endif
   }
 
@@ -620,9 +630,6 @@ bool isInternalModuleAvailable(int moduleType)
 
 bool isExternalModuleAvailable(int moduleType)
 {
-  if (moduleType == MODULE_TYPE_R9M_LITE_PRO_PXX1)
-    return false;
-
 #if !defined(HARDWARE_EXTERNAL_MODULE_SIZE_SML)
   if (isModuleTypeR9MLite(moduleType) || moduleType == MODULE_TYPE_XJT_LITE_PXX2)
     return false;
@@ -657,6 +664,11 @@ bool isExternalModuleAvailable(int moduleType)
     return false;
 #endif
 
+#if !defined(GHOST)
+  if (moduleType == MODULE_TYPE_GHOST)
+    return false;
+#endif
+
 #if !defined(DSM2)
   if (moduleType == MODULE_TYPE_DSM2)
      return false;
@@ -673,6 +685,9 @@ bool isExternalModuleAvailable(int moduleType)
 #endif
 
 #if defined(HARDWARE_INTERNAL_MODULE)
+  if (areModulesConflicting(g_model.moduleData[INTERNAL_MODULE].type, moduleType))
+    return false;
+
   if (isTrainerUsingModuleBay() || (isModuleUsingSport(EXTERNAL_MODULE, moduleType) && isModuleUsingSport(INTERNAL_MODULE, g_model.moduleData[INTERNAL_MODULE].type)))
     return false;
 #endif
@@ -694,6 +709,11 @@ bool isRfProtocolAvailable(int protocol)
 {
 #if defined(CROSSFIRE)
   if (protocol != MODULE_SUBTYPE_PXX1_OFF && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_CROSSFIRE) {
+    return false;
+  }
+#endif
+#if defined(GHOST)
+  if (protocol != MODULE_SUBTYPE_PXX1_OFF && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_GHOST) {
     return false;
   }
 #endif
@@ -723,6 +743,10 @@ bool isTelemetryProtocolAvailable(int protocol)
 #endif
 
   if (protocol== PROTOCOL_TELEMETRY_CROSSFIRE) {
+    return false;
+  }
+
+  if ( protocol== PROTOCOL_TELEMETRY_GHOST) {
     return false;
   }
 
@@ -761,7 +785,10 @@ bool isTrainerModeAvailable(int mode)
   }
 #endif
 
-#if defined(PCBTARANIS) && !defined(TRAINER_BATTERY_COMPARTMENT)
+#if defined(RADIO_TX16S) && defined(TRAINER_BATTERY_COMPARTMENT)
+  if (mode == TRAINER_MODE_MASTER_BATTERY_COMPARTMENT)
+    return (g_eeGeneral.auxSerialMode == UART_MODE_SBUS_TRAINER || g_eeGeneral.aux2SerialMode == UART_MODE_SBUS_TRAINER);
+#elif defined(PCBTARANIS) && !defined(TRAINER_BATTERY_COMPARTMENT)
   if (mode == TRAINER_MODE_MASTER_BATTERY_COMPARTMENT)
     return false;
 #elif defined(PCBTARANIS)
@@ -803,6 +830,25 @@ bool modelHasNotes()
 #endif
 
   return false;
+}
+
+bool confirmModelChange()
+{
+  if (TELEMETRY_STREAMING()) {
+    RAISE_ALERT(STR_MODEL, STR_MODEL_STILL_POWERED, STR_PRESS_ENTER_TO_CONFIRM, AU_MODEL_STILL_POWERED);
+    while (TELEMETRY_STREAMING()) {
+      RTOS_WAIT_MS(20);
+      if (readKeys() == (1 << KEY_ENTER)) {
+        killEvents(KEY_ENTER);
+        return true;
+      }
+      else if (readKeys() == (1 << KEY_EXIT)) {
+        killEvents(KEY_EXIT);
+        return false;
+      }
+    }
+  }
+  return true;
 }
 
 int getFirstAvailable(int min, int max, IsValueAvailable isValueAvailable)
@@ -898,8 +944,9 @@ const char STR_SUBTYPE_ESky[] =       "\003""Std""ET4";
 const char STR_SUBTYPE_MT99[] =       "\006""MT99\0 ""H7\0   ""YZ\0   ""LS\0   ""FY805";
 const char STR_SUBTYPE_MJXQ[] =       "\007""WLH08\0 ""X600\0  ""X800\0  ""H26D\0  ""E010\0  ""H26WH\0 ""Phoenix";
 const char STR_SUBTYPE_FY326[] =      "\005""Std\0 ""FY319";
+const char STR_SUBTYPE_FUTABA[] =     "\005""SFHSS";
 const char STR_SUBTYPE_HONTAI[] =     "\007""Std\0   ""JJRC X1""X5C1\0  ""FQ_951";
-const char STR_SUBTYPE_AFHDS2A[] =    "\010""PWM,IBUS""PPM,IBUS""PWM,SBUS""PPM,SBUS";
+const char STR_SUBTYPE_AFHDS2A[] =    "\010""PWM,IBUS""PPM,IBUS""PWM,SBUS""PPM,SBUS""PWM,IB16""PPM,IB16";
 const char STR_SUBTYPE_Q2X2[] =       "\004""Q222""Q242""Q282";
 const char STR_SUBTYPE_WK2x01[] =     "\006""WK2801""WK2401""W6_5_1""W6_6_1""W6_HeL""W6_HeI";
 const char STR_SUBTYPE_Q303[] =       "\006""Std\0  ""CX35\0 ""CX10D\0""CX10WD";
@@ -908,7 +955,7 @@ const char STR_SUBTYPE_ESKY150[] =    "\003""4ch""7ch";
 const char STR_SUBTYPE_H83D[] =       "\007""Std\0   ""H20H\0  ""H20Mini""H30Mini";
 const char STR_SUBTYPE_CORONA[] =     "\005""V1\0  ""V2\0  ""FD V3";
 const char STR_SUBTYPE_HITEC[] =      "\007""Optima\0""Opt Hub""Minima\0";
-const char STR_SUBTYPE_WFLY[] =       "\006""WFR0xS";
+const char STR_SUBTYPE_WFLY[] =       "\005""WFR0x";
 const char STR_SUBTYPE_BUGS_MINI[] =  "\006""Std\0  ""Bugs3H";
 const char STR_SUBTYPE_TRAXXAS[] =    "\004""6519";
 const char STR_SUBTYPE_E01X[] =       "\005""E012\0""E015\0""E016H";
@@ -918,18 +965,24 @@ const char STR_SUBTYPE_V761[] =       "\003""3ch""4ch";
 const char STR_SUBTYPE_REDPINE[] =    "\004""Fast""Slow";
 const char STR_SUBTYPE_POTENSIC[] =   "\003""A20";
 const char STR_SUBTYPE_ZSX[] =        "\007""280JJRC";
-const char STR_SUBTYPE_FLYZONE[] =    "\005""FZ410";
+const char STR_SUBTYPE_HEIGHT[] =     "\003""5ch""8ch";
 const char STR_SUBTYPE_FRSKYX_RX[] =  "\007""RX\0    ""CloneTX";
 const char STR_SUBTYPE_HOTT[] =       "\007""Sync\0  ""No_Sync";
 const char STR_SUBTYPE_FX816[] =      "\003""P38";
 const char STR_SUBTYPE_PELIKAN[] =    "\004""Pro\0""Lite";
 const char STR_SUBTYPE_XK[] =         "\004""X450""X420";
 const char STR_SUBTYPE_XN297DUMP[] =  "\004""250K""1M\0 ""2M\0 ""AUTO""NRF\0";
-const char STR_SUBTYPE_FRSKYX2[] =    "\011""D16\0     ""D16 8ch\0 ""LBT(EU)\0 ""LBT 8ch\0 ""D16Cloned";
-const char STR_SUBTYPE_FRSKYR9[] =    "\007""915MHz\0""868MHz\0""915 8ch""868 8ch";
+const char STR_SUBTYPE_FRSKYX2[] =    "\010""D16\0    ""D16 8ch\0""LBT(EU)\0""LBT 8ch\0""Cloned\0 ""Clone8ch";
+const char STR_SUBTYPE_FRSKYR9[] =    "\007""915MHz\0""868MHz\0""915 8ch""868 8ch""FCC\0   ""---\0   ""FCC 8ch";
 const char STR_SUBTYPE_PROPEL[] =     "\004""74-Z";
 const char STR_SUBTYPE_FRSKYL[] =     "\010""LR12\0   ""LR12 6ch";
 const char STR_SUBTYPE_ESKY150V2[] =  "\006""150 V2";
+const char STR_SUBTYPE_JJRC345[] =    "\007""Std\0   ""SkyTmbr";
+const char STR_SUBTYPE_KYOSHO[] =     "\004""FHSS""Hype";
+const char STR_SUBTYPE_RLINK[] =      "\007""Surface""Air\0   ""DumboRC";
+const char STR_SUBTYPE_ELRS[] =       "\007""N/A WIP";
+const char STR_SUBTYPE_REALACC[] =    "\003""R11";
+const char STR_SUBTYPE_WFLY2[] =      "\005""RF20x";
 
 const char* mm_options_strings::options[] = {
   nullptr,
@@ -941,8 +994,14 @@ const char* mm_options_strings::options[] = {
   STR_MULTI_SERVOFREQ,
   STR_MULTI_MAX_THROW,
   STR_MULTI_RFCHAN,
-  STR_MULTI_RFPOWER
+  STR_MULTI_RFPOWER,
+  STR_MULTI_WBUS
 };
+
+const uint8_t getMaxMultiOptions()
+{
+  return DIM(mm_options_strings::options);
+}
 
 const mm_protocol_definition multi_protocols[] = {
 // Protocol as defined in pulses\modules_constants.h, number of sub_protocols - 1, Failsafe supported, Disable channel mapping supported, Subtype string, Option type
@@ -964,11 +1023,11 @@ const mm_protocol_definition multi_protocols[] = {
   {MODULE_SUBTYPE_MULTI_MT99XX,     4, false, false,  STR_SUBTYPE_MT99,      nullptr},
   {MODULE_SUBTYPE_MULTI_MJXQ,       6, false, false,  STR_SUBTYPE_MJXQ,      STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_FY326,      1, false, false,  STR_SUBTYPE_FY326,     nullptr},
-  {MODULE_SUBTYPE_MULTI_SFHSS,      0, true,  true,   NO_SUBTYPE,            STR_MULTI_RFTUNE},
+  {MODULE_SUBTYPE_MULTI_FUTABA,     0, true,  true,   STR_SUBTYPE_FUTABA,    STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_J6PRO,      0, false, true,   NO_SUBTYPE,            nullptr},
   {MODULE_SUBTYPE_MULTI_HONTAI,     3, false, false,  STR_SUBTYPE_HONTAI,    nullptr},
   {MODULE_SUBTYPE_MULTI_OLRS,       0, false, false,  NO_SUBTYPE,            STR_RFPOWER},
-  {MODULE_SUBTYPE_MULTI_FS_AFHDS2A, 3, true,  true,   STR_SUBTYPE_AFHDS2A,   STR_MULTI_SERVOFREQ},
+  {MODULE_SUBTYPE_MULTI_FS_AFHDS2A, 5, true,  true,   STR_SUBTYPE_AFHDS2A,   STR_MULTI_SERVOFREQ},
   {MODULE_SUBTYPE_MULTI_Q2X2,       2, false, false,  STR_SUBTYPE_Q2X2,      nullptr},
   {MODULE_SUBTYPE_MULTI_WK_2X01,    5, false, true,   STR_SUBTYPE_WK2x01,    nullptr},
   {MODULE_SUBTYPE_MULTI_Q303,       3, false, false,  STR_SUBTYPE_Q303,      nullptr},
@@ -988,20 +1047,28 @@ const mm_protocol_definition multi_protocols[] = {
   {MODULE_SUBTYPE_MULTI_REDPINE,    1, false, false,  STR_SUBTYPE_REDPINE,   STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_POTENSIC,   0, false, false,  STR_SUBTYPE_POTENSIC,  nullptr},
   {MODULE_SUBTYPE_MULTI_ZSX,        0, false, false,  STR_SUBTYPE_ZSX,       nullptr},
-  {MODULE_SUBTYPE_MULTI_FLYZONE,    0, false, false,  STR_SUBTYPE_FLYZONE,   nullptr},
+  {MODULE_SUBTYPE_MULTI_HEIGHT,     1, false, false,  STR_SUBTYPE_HEIGHT,    nullptr},
   {MODULE_SUBTYPE_MULTI_FRSKYX_RX,  1, false, false,  STR_SUBTYPE_FRSKYX_RX, STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_HOTT,       1, true,  false,  STR_SUBTYPE_HOTT,      STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_FX816,      0, false, false,  STR_SUBTYPE_FX816,     nullptr},
-  {MODULE_SUBTYPE_MULTI_PELIKAN,    1, false, false,  STR_SUBTYPE_PELIKAN,   nullptr},
+  {MODULE_SUBTYPE_MULTI_PELIKAN,    1, false, true,   STR_SUBTYPE_PELIKAN,   nullptr},
   {MODULE_SUBTYPE_MULTI_XK,         1, false, false,  STR_SUBTYPE_XK,        STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_XN297DUMP,  4, false, false,  STR_SUBTYPE_XN297DUMP, STR_MULTI_RFCHAN},
-  {MODULE_SUBTYPE_MULTI_FRSKYX2,    4, true,  false,  STR_SUBTYPE_FRSKYX2,   STR_MULTI_RFTUNE},
-  {MODULE_SUBTYPE_MULTI_FRSKY_R9,   3, true,  false,  STR_SUBTYPE_FRSKYR9,   nullptr},
+  {MODULE_SUBTYPE_MULTI_FRSKYX2,    5, true,  false,  STR_SUBTYPE_FRSKYX2,   STR_MULTI_RFTUNE},
+  {MODULE_SUBTYPE_MULTI_FRSKY_R9,   6, true,  false,  STR_SUBTYPE_FRSKYR9,   nullptr},
   {MODULE_SUBTYPE_MULTI_PROPEL,     0, false, false,  STR_SUBTYPE_PROPEL,    nullptr},
   {MODULE_SUBTYPE_MULTI_FRSKYL,     1, false, false,  STR_SUBTYPE_FRSKYL,    STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_SKYARTEC,   0, false, false,  NO_SUBTYPE,            STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_ESKY150V2,  0, false, true,   STR_SUBTYPE_ESKY150V2, STR_MULTI_RFTUNE},
+  {MODULE_SUBTYPE_MULTI_JJRC345,    1, false, false,  STR_SUBTYPE_JJRC345,   nullptr},
   {MODULE_SUBTYPE_MULTI_Q90C,       0, false, false,  NO_SUBTYPE,            STR_MULTI_RFTUNE},
+  {MODULE_SUBTYPE_MULTI_KYOSHO,     1, false, true,   STR_SUBTYPE_KYOSHO,    nullptr},
+  {MODULE_SUBTYPE_MULTI_RLINK,      2, false, false,  STR_SUBTYPE_RLINK,     STR_MULTI_RFTUNE},
+  {MODULE_SUBTYPE_MULTI_ELRS,       0, false, false,  STR_SUBTYPE_ELRS,      nullptr},
+  {MODULE_SUBTYPE_MULTI_REALACC,    0, false, false,  STR_SUBTYPE_REALACC,   nullptr},
+  {MODULE_SUBTYPE_MULTI_OMP,        0, false, false,  NO_SUBTYPE,            STR_MULTI_RFTUNE},
+  {MODULE_SUBTYPE_MULTI_WFLY2,      0, false, false,  STR_SUBTYPE_WFLY2,     STR_MULTI_OPTION},
+  {MODULE_SUBTYPE_MULTI_E016HV2,    0, false, false,  NO_SUBTYPE,            STR_MULTI_RFTUNE},
   {MM_RF_CUSTOM_SELECTED,           7, true,  true,   NO_SUBTYPE,            STR_MULTI_OPTION},
 
   // Sentinel and default for protocols not listed above (MM_RF_CUSTOM is 0xff)
@@ -1030,3 +1097,22 @@ void editStickHardwareSettings(coord_t x, coord_t y, int idx, event_t event, Lcd
   else
     lcdDrawMMM(x, y, flags);
 }
+
+#if defined(MULTIMODULE)
+const char * getMultiOptionTitle(uint8_t moduleIdx)
+{
+  MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
+
+  if (status.isValid()) {
+    if (status.optionDisp >= getMaxMultiOptions()) {
+      status.optionDisp = 1; // Unknown options are defaulted to type 1 (basic option)
+    }
+    return mm_options_strings::options[status.optionDisp];
+  }
+  else {
+    const uint8_t multi_proto = g_model.moduleData[moduleIdx].getMultiProtocol();
+    const mm_protocol_definition * pdef = getMultiProtocolDefinition(multi_proto);
+    return pdef->optionsstr;
+  }
+}
+#endif

@@ -25,6 +25,9 @@
 #include "mixerslistwidget.h"
 #include "modelprinter.h"
 
+class CompoundItemModelFactory;
+class FilteredItemModel;
+
 constexpr char MIMETYPE_EXPO[] = "application/x-companion-expo";
 
 class InputsPanel : public ModelPanel
@@ -32,7 +35,7 @@ class InputsPanel : public ModelPanel
     Q_OBJECT
 
   public:
-    InputsPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware);
+    InputsPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, CompoundItemModelFactory * sharedItemModels);
     virtual ~InputsPanel();
 
     virtual void update();
@@ -46,7 +49,7 @@ class InputsPanel : public ModelPanel
     void expolistWidget_customContextMenuRequested(QPoint pos);
     void expolistWidget_doubleClicked(QModelIndex index);
     void expolistWidget_KeyPress(QKeyEvent *event);
-    void exposDelete(bool ask=true);
+    void exposDelete(bool prompt = true);
     void exposCut();
     void exposCopy();
     void exposPaste();
@@ -59,6 +62,8 @@ class InputsPanel : public ModelPanel
     void cmInputInsert();
     void cmInputMoveDown();
     void cmInputMoveUp();
+    void onItemModelAboutToBeUpdated();
+    void onItemModelUpdateComplete();
 
   private:
     bool expoInserted;
@@ -67,6 +72,8 @@ class InputsPanel : public ModelPanel
     ModelPrinter modelPrinter;
     int selectedIdx;
     int inputIdx;
+    CompoundItemModelFactory *sharedItemModels;
+    int modelsUpdateCnt;
 
     int getExpoIndex(unsigned int dch);
     bool gm_insertExpo(int idx);
@@ -87,6 +94,8 @@ class InputsPanel : public ModelPanel
     bool isExpoIndex(const int index);
     int getIndexFromSelected();
     int getInputIndexFromSelected();
+    void updateItemModels();
+    void connectItemModelEvents(const int id);
 };
 
 #endif // _INPUTS_H_

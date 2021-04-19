@@ -24,32 +24,31 @@
 #if defined(MULTIMODULE)
 void lcdDrawMultiProtocolString(coord_t x, coord_t y, uint8_t moduleIdx, uint8_t protocol, LcdFlags flags)
 {
-  if (protocol <= MODULE_SUBTYPE_MULTI_LAST) {
+  MultiModuleStatus & status = getMultiModuleStatus(moduleIdx);
+  if (status.protocolName[0] && status.isValid()) {
+    lcdDrawText(x, y, status.protocolName, flags);
+  }
+  else if (protocol <= MODULE_SUBTYPE_MULTI_LAST) {
     lcdDrawTextAtIndex(x, y, STR_MULTI_PROTOCOLS, protocol, flags);
-    return;
   }
   else {
-    MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
-    if (status.protocolName[0] && status.isValid())
-      lcdDrawText(x, y, status.protocolName, flags);
-    else
-      lcdDrawNumber(x, y, protocol + 3, flags); // Convert because of OpenTX FrSky fidling (OpenTX protocol tables and Multiprotocol tables don't match)
+    lcdDrawNumber(x, y, protocol + 3, flags); // Convert because of OpenTX FrSky fidling (OpenTX protocol tables and Multiprotocol tables don't match)
   }
 }
 
 void lcdDrawMultiSubProtocolString(coord_t x, coord_t y, uint8_t moduleIdx, uint8_t subType, LcdFlags flags)
 {
-  const mm_protocol_definition *pdef = getMultiProtocolDefinition(g_model.moduleData[moduleIdx].getMultiProtocol());
-  if (subType <= pdef->maxSubtype && pdef->subTypeString != nullptr) {
+  MultiModuleStatus & status = getMultiModuleStatus(moduleIdx);
+  const mm_protocol_definition * pdef = getMultiProtocolDefinition(g_model.moduleData[moduleIdx].getMultiProtocol());
+
+  if (status.protocolName[0] && status.isValid()) {
+    lcdDrawText(x, y, status.protocolSubName, flags);
+  }
+  else if (subType <= pdef->maxSubtype && pdef->subTypeString != nullptr) {
     lcdDrawTextAtIndex(x, y, pdef->subTypeString, subType, flags);
-    return;
   }
   else {
-    MultiModuleStatus &status = getMultiModuleStatus(moduleIdx);
-    if (status.protocolName[0] && status.isValid())
-      lcdDrawText(x, y, status.protocolSubName, flags);
-    else
-      lcdDrawNumber(x, y, subType, flags);
+    lcdDrawNumber(x, y, subType, flags);
   }
 }
 #endif
@@ -146,7 +145,7 @@ void editName(coord_t x, coord_t y, char * name, uint8_t size, event_t event, ui
           if (c <= 0) v = -v;
         }
         else {
-          v = checkIncDec(event, abs(v), '0', 'z', 0);
+          v = checkIncDec(event, abs(v), ' ', 'z', 0);
         }
       }
 
@@ -402,6 +401,10 @@ void drawSensorCustomValue(coord_t x, coord_t y, uint8_t sensor, int32_t value, 
               "Rx2 Lost",
               "Rx1 NS",
               "Rx2 NS",
+              "Rx3 FS",
+              "Rx3 LF",
+              "Rx3 Lost",
+              "Rx3 NS"
             };
             for (uint8_t i = 0; i < DIM(RXS_STATUS); i++) {
               if (value & (1u << i)) {

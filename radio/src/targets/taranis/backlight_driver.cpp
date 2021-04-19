@@ -20,7 +20,13 @@
 
 #include "opentx.h"
 
-#if defined(PCBX9E)
+#if !defined(BACKLIGHT_GPIO)
+  // no backlight
+  void backlightInit() {}
+  void backlightEnable(uint8_t level) {}
+  void backlightDisable() {}
+  uint8_t isBacklightEnabled() {return false;}
+#elif defined(PCBX9E)
 void backlightInit()
 {
   GPIO_InitTypeDef GPIO_InitStructure;

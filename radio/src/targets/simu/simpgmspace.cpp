@@ -42,6 +42,8 @@ char * main_thread_error = nullptr;
 bool simu_shutdown = false;
 bool simu_running = false;
 
+uint32_t telemetryErrors = 0;
+
 #if defined(STM32)
 GPIO_TypeDef gpioa, gpiob, gpioc, gpiod, gpioe, gpiof, gpiog, gpioh, gpioi, gpioj;
 TIM_TypeDef tim1, tim2, tim3, tim4, tim5, tim6, tim7, tim8, tim9, tim10;
@@ -441,6 +443,47 @@ void sportUpdatePowerInit()
 {
 }
 
+void telemetryPortSetDirectionInput()
+{
+}
+
+void telemetryPortSetDirectionOutput()
+{
+}
+
+void rxPdcUsart( void (*pChProcess)(uint8_t x) )
+{
+}
+
+void telemetryPortInit(uint32_t baudrate, uint8_t mode)
+{
+}
+
+bool telemetryGetByte(uint8_t * byte)
+{
+  return false;
+}
+
+void telemetryClearFifo()
+{
+}
+
+void telemetryPortInvertedInit(uint32_t baudrate)
+{
+}
+
+void sportSendByte(uint8_t byte)
+{
+}
+
+void sportSendBuffer(const uint8_t * buffer, uint32_t count)
+{
+}
+
+void check_telemetry_exti()
+{
+}
+
 void boardInit()
 {
 }
@@ -768,9 +811,20 @@ void rtcSetTime(const struct gtm * t)
 {
 }
 
+#if defined(USB_SERIAL)
+void usbSerialPutc(uint8_t c)
+{
+}
+#endif
+
 #if defined(AUX_SERIAL)
 AuxSerialRxFifo auxSerialRxFifo(nullptr);
 uint8_t auxSerialMode;
+
+void auxSerialSetup(unsigned int baudrate, bool dma, uint16_t length, uint16_t parity, uint16_t stop)
+{
+}
+
 void auxSerialInit(unsigned int mode, unsigned int protocol)
 {
 }
@@ -791,6 +845,11 @@ void auxSerialStop()
 #if defined(AUX2_SERIAL)
 AuxSerialRxFifo aux2SerialRxFifo(nullptr);
 uint8_t aux2SerialMode;
+
+void aux2SerialSetup(unsigned int baudrate, bool dma, uint16_t length, uint16_t parity, uint16_t stop)
+{
+}
+
 void aux2SerialInit(unsigned int mode, unsigned int protocol)
 {
 }

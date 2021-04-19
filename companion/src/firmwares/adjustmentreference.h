@@ -45,6 +45,7 @@ class AdjustmentReference {
     bool isSet() const { return type != ADJUST_REF_VALUE || value != 0; }
     bool isValid(const int value) const;
     QString toString(const ModelData * model = nullptr, const bool sign = false) const;
+    const bool isAvailable() const;
 
     inline const int toValue() const
     {

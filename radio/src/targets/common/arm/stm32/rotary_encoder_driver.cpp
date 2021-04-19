@@ -71,7 +71,7 @@ void rotaryEncoderInit()
 
 void rotaryEncoderCheck()
 {
-#if defined(RADIO_FAMILY_T16) && !defined(RADIO_T18)
+#if (defined(RADIO_FAMILY_T16) && !defined(RADIO_T18)) || defined(RADIO_TX12)
   static uint8_t  state = 0;
   uint8_t pins = ROTARY_ENCODER_POSITION();
 

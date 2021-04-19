@@ -19,6 +19,9 @@
  */
 
 #include "opentx.h"
+#include "storage/modelslist.h"
+
+extern ModelsList modelslist;
 
 const BitmapBuffer * Theme::asterisk = NULL;
 const BitmapBuffer * Theme::question = NULL;
@@ -138,6 +141,7 @@ Theme * getTheme(const char * name)
 void loadTheme(Theme * new_theme)
 {
   TRACE("load theme %s", new_theme->getName());
+  modelslist.clear();
   theme = new_theme;
   theme->load();
 }

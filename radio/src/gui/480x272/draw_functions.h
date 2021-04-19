@@ -74,7 +74,7 @@ void drawShutdownAnimation(uint32_t duration, uint32_t totalDuration, const char
 // Main view standard widgets
 void drawTopBar();
 void drawMainPots();
-void drawTrims(uint8_t flightMode);
+void drawTrims(uint8_t flightMode, bool sliderdisplayed = true);
 
 void drawReceiverName(coord_t x, coord_t y, uint8_t moduleIdx, uint8_t receiverIdx, LcdFlags flags);
 

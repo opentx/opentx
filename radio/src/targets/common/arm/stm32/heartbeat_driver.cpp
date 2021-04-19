@@ -19,6 +19,7 @@
  */
 
 #include "opentx.h"
+#include "mixer_scheduler.h"
 
 #if defined(INTMODULE_HEARTBEAT_GPIO)
 volatile HeartbeatCapture heartbeatCapture;
@@ -77,6 +78,8 @@ void check_intmodule_heartbeat()
     heartbeatCapture.count++;
 #endif
     EXTI_ClearITPendingBit(INTMODULE_HEARTBEAT_EXTI_LINE);
+
+    mixerSchedulerISRTrigger();
   }
 }
 #endif

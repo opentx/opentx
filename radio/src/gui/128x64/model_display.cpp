@@ -242,10 +242,10 @@ void menuModelDisplay(event_t event)
                 }
                 break;
               case 1:
-                bar.barMin = checkIncDec(event, bar.barMin, barMin, bar.barMax, EE_MODEL|NO_INCDEC_MARKS);
+                bar.barMin = checkIncDec(event, bar.barMin, barMin, barMax, EE_MODEL|NO_INCDEC_MARKS);
                 break;
               case 2:
-                bar.barMax = checkIncDec(event, bar.barMax, bar.barMin, barMax, EE_MODEL|NO_INCDEC_MARKS);
+                bar.barMax = checkIncDec(event, bar.barMax, barMin, barMax, EE_MODEL|NO_INCDEC_MARKS);
                 break;
             }
           }

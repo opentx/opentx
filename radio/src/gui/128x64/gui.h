@@ -36,7 +36,6 @@
   #define HEADER_LINE_COLUMNS          0,
 #endif
 
-#define COLUMN_X                       0
 #define drawFieldLabel(x, y, str)      lcdDrawTextAlignedLeft(y, str)
 
 #define NUM_BODY_LINES                 (LCD_LINES-1)
@@ -217,6 +216,8 @@ extern int8_t s_copySrcRow;
 extern int8_t s_copyTgtOfs;
 extern uint8_t s_currIdx;
 extern uint8_t s_currIdxSubMenu;
+extern uint16_t s_currSrcRaw;
+extern uint16_t s_currScale;
 extern uint8_t s_copySrcIdx;
 extern uint8_t s_copySrcCh;
 extern int8_t s_currCh;
@@ -275,9 +276,6 @@ void deleteExpo(uint8_t idx);
 uint8_t getMixesCount();
 void insertMix(uint8_t idx);
 void deleteMix(uint8_t idx);
-
-typedef int (*FnFuncP) (int x);
-void drawFunction(FnFuncP fn, uint8_t offset=0);
 
 void onSourceLongEnterPress(const char *result);
 

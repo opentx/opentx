@@ -25,12 +25,15 @@
 #include "crossfire.h"
 #include "myeeprom.h"
 #include "io/frsky_sport.h"
-
+#if defined(GHOST)
+  #include "ghost.h"
+#endif
 #if defined(MULTIMODULE)
   #include "spektrum.h"
   #include "hitec.h"
   #include "hott.h"
   #include "multi.h"
+  #include "mlink.h"
 #endif
 #if defined(MULTIMODULE) || defined(AFHDS3)
   #include "flysky_ibus.h"
@@ -95,6 +98,7 @@ PACK(struct CellValue
 });
 
 int setTelemetryValue(TelemetryProtocol protocol, uint16_t id, uint8_t subId, uint8_t instance, int32_t value, uint32_t unit, uint32_t prec);
+int setTelemetryText(TelemetryProtocol protocol, uint16_t id, uint8_t subId, uint8_t instance, const char * text);
 void delTelemetryIndex(uint8_t index);
 int availableTelemetryIndex();
 int lastUsedTelemetryIndex();
@@ -114,6 +118,7 @@ extern uint8_t telemetryProtocol;
                                          || (g_model.moduleData[module].getMultiProtocol() == MODULE_SUBTYPE_MULTI_FRSKYX2))
   #define IS_R9_MULTI(module)            (g_model.moduleData[module].getMultiProtocol() == MODULE_SUBTYPE_MULTI_FRSKY_R9)
   #define IS_HOTT_MULTI(module)          (g_model.moduleData[module].getMultiProtocol() == MODULE_SUBTYPE_MULTI_HOTT)
+  #define IS_DSM_MULTI(module)           (g_model.moduleData[module].getMultiProtocol() == MODULE_SUBTYPE_MULTI_DSM2)
   #define IS_RX_MULTI(module)            ((g_model.moduleData[module].getMultiProtocol() == MODULE_SUBTYPE_MULTI_AFHDS2A_RX) || (g_model.moduleData[module].getMultiProtocol() == MODULE_SUBTYPE_MULTI_FRSKYX_RX) \
                                          || (g_model.moduleData[module].getMultiProtocol() == MODULE_SUBTYPE_MULTI_BAYANG_RX) || (g_model.moduleData[module].getMultiProtocol() == MODULE_SUBTYPE_MULTI_DSM_RX))
   #if defined(HARDWARE_INTERNAL_MODULE)
@@ -125,6 +130,7 @@ extern uint8_t telemetryProtocol;
   #define IS_D16_MULTI(module)           false
   #define IS_R9_MULTI(module)            false
   #define IS_HOTT_MULTI(module)          false
+  #define IS_DSM_MULTI(module)           false
   #define IS_FRSKY_SPORT_PROTOCOL()      (telemetryProtocol == PROTOCOL_TELEMETRY_FRSKY_SPORT)
   #define IS_RX_MULTI(module)            false
 #endif
@@ -150,6 +156,12 @@ inline uint8_t modelTelemetryProtocol()
 #if defined(CROSSFIRE)
   if (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_CROSSFIRE) {
     return PROTOCOL_TELEMETRY_CROSSFIRE;
+  }
+#endif
+
+#if defined(GHOST)
+  if (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_GHOST) {
+    return PROTOCOL_TELEMETRY_GHOST;
   }
 #endif
 
@@ -277,5 +289,34 @@ extern Fifo<uint8_t, LUA_TELEMETRY_INPUT_FIFO_SIZE> * luaInputTelemetryFifo;
 #endif
 
 void processPXX2Frame(uint8_t module, const uint8_t *frame);
+
+// Module pulse synchronization
+struct ModuleSyncStatus
+{
+  // feedback input: last received values
+  uint16_t  refreshRate; // in us
+  int16_t   inputLag;    // in us
+
+  tmr10ms_t lastUpdate;  // in 10ms
+  int16_t   currentLag;  // in us
+  
+  inline bool isValid() {
+    // 2 seconds
+    return (get_tmr10ms() - lastUpdate < 200);
+  }
+
+  // Set feedback from RF module
+  void update(uint16_t newRefreshRate, uint16_t newInputLag);
+
+  // Get computed settings for scheduler
+  uint16_t getAdjustedRefreshRate();
+
+  // Status string for the UI
+  void getRefreshString(char* refreshText);
+
+  ModuleSyncStatus();
+};
+
+ModuleSyncStatus& getModuleSyncStatus(uint8_t moduleIdx);
 
 #endif // _TELEMETRY_H_

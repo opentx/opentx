@@ -37,21 +37,31 @@
 #elif defined(JUMPER_RELEASE)
 #define DISPLAY_VERSION "-jumper"
 #elif defined(RADIOMASTER_RELEASE)
-#define DISPLAY_VERSION "-radiomaster"
+#define DISPLAY_VERSION "-RM"
 #elif defined(TBS_RELEASE)
 #define DISPLAY_VERSION "-tbs"
+#elif defined(IMRC_RELEASE)
+#define DISPLAY_VERSION "-imrc"
 #else
 #define DISPLAY_VERSION
 #endif
 
 #if defined(COLORLCD)
   const char fw_stamp[]    =   "FW" TAB ": opentx-" FLAVOUR;
+#if defined(RADIOMASTER_RELEASE) || defined(JUMPER_RELEASE)
+  const char vers_stamp[]  =   "VERS" TAB ": Factory firmware (" GIT_STR ")";
+#else
   const char vers_stamp[]  =   "VERS" TAB ": " VERSION DISPLAY_VERSION " (" GIT_STR ")";
+#endif
   const char date_stamp[]  =   "DATE" TAB ": " DATE;
   const char time_stamp[]  =   "TIME" TAB ": " TIME;
   const char eeprom_stamp[]  = "EEPR" TAB ": " EEPROM_STR;
 #elif defined(BOARD_NAME)
   const char vers_stamp[]  = "FW" TAB ": opentx-" BOARD_NAME "\036VERS" TAB ": " VERSION DISPLAY_VERSION " (" GIT_STR ")" "\036DATE" TAB ": " DATE " " TIME "\036EEPR" TAB ": " EEPROM_STR;
+#elif defined(RADIOMASTER_RELEASE)
+  const char vers_stamp[]  = "FW" TAB ": opentx-" FLAVOUR    "\036VERS" TAB ": RM Factory (" GIT_STR ")" "\036BUILT BY : OpenTX" "\036DATE" TAB ": " DATE " " TIME "\036EEPR" TAB ": " EEPROM_STR;
+#elif defined(JUMPER_RELEASE)
+  const char vers_stamp[]  = "FW" TAB ": opentx-" FLAVOUR    "\036VERS" TAB ": Factory (" GIT_STR ")" "\036BUILT BY : OpenTX" "\036DATE" TAB ": " DATE " " TIME "\036EEPR" TAB ": " EEPROM_STR;
 #else
   const char vers_stamp[]  = "FW" TAB ": opentx-" FLAVOUR    "\036VERS" TAB ": " VERSION DISPLAY_VERSION " (" GIT_STR ")" "\036DATE" TAB ": " DATE " " TIME "\036EEPR" TAB ": " EEPROM_STR;
 #endif

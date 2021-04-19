@@ -7,6 +7,7 @@
       <option name="FUNCTION_BRACE_PLACEMENT" value="2" />
       <option name="SUPERCLASS_LIST_BEFORE_COLON" value="0" />
       <option name="SPACE_AFTER_POINTER_IN_DECLARATION" value="true" />
+      <option name="SPACE_AFTER_REFERENCE_IN_DECLARATION" value="true" />
     </Objective-C>
     <codeStyleSettings language="CMake">
       <option name="SPACE_BEFORE_IF_PARENTHESES" value="false" />

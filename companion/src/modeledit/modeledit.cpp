@@ -33,6 +33,7 @@
 #include "customfunctions.h"
 #include "telemetry.h"
 #include "appdata.h"
+#include "compounditemmodels.h"
 
 ModelEdit::ModelEdit(QWidget * parent, RadioData & radioData, int modelId, Firmware * firmware) :
   QDialog(parent),
@@ -48,39 +49,74 @@ ModelEdit::ModelEdit(QWidget * parent, RadioData & radioData, int modelId, Firmw
   setWindowIcon(CompanionIcon("edit.png"));
   restoreGeometry(g.modelEditGeo());
   ui->pushButton->setIcon(CompanionIcon("simulate.png"));
-  SetupPanel * setupPanel = new SetupPanel(this, radioData.models[modelId], radioData.generalSettings, firmware);
+
+  GeneralSettings &generalSettings = radioData.generalSettings;
+  ModelData &model = radioData.models[modelId];
+
+  sharedItemModels = new CompoundItemModelFactory(&generalSettings, &model);
+  sharedItemModels->addItemModel(AbstractItemModel::IMID_RawSource);
+  sharedItemModels->addItemModel(AbstractItemModel::IMID_RawSwitch);
+  sharedItemModels->addItemModel(AbstractItemModel::IMID_Curve);
+  sharedItemModels->addItemModel(AbstractItemModel::IMID_GVarRef);
+  sharedItemModels->addItemModel(AbstractItemModel::IMID_ThrSource);
+  sharedItemModels->addItemModel(AbstractItemModel::IMID_CustomFuncAction);
+  sharedItemModels->addItemModel(AbstractItemModel::IMID_CustomFuncResetParam);
+  sharedItemModels->addItemModel(AbstractItemModel::IMID_TeleSource);
+  sharedItemModels->addItemModel(AbstractItemModel::IMID_RssiSource);
+  sharedItemModels->addItemModel(AbstractItemModel::IMID_CurveRefType);
+  sharedItemModels->addItemModel(AbstractItemModel::IMID_CurveRefFunc);
+
+  s1.report("Init");
+
+  SetupPanel * setupPanel = new SetupPanel(this, model, generalSettings, firmware, sharedItemModels);
   addTab(setupPanel, tr("Setup"));
-  if (firmware->getCapability(Heli))
-    addTab(new HeliPanel(this, radioData.models[modelId], radioData.generalSettings, firmware), tr("Heli"));
-  addTab(new FlightModesPanel(this, radioData.models[modelId], radioData.generalSettings, firmware), tr("Flight Modes"));
-  addTab(new InputsPanel(this, radioData.models[modelId], radioData.generalSettings, firmware), tr("Inputs"));
-  s1.report("inputs");
-  addTab(new MixesPanel(this, radioData.models[modelId], radioData.generalSettings, firmware), tr("Mixes"));
+  s1.report("Setup");
+
+  if (firmware->getCapability(Heli)) {
+    addTab(new HeliPanel(this, model, generalSettings, firmware, sharedItemModels), tr("Heli"));
+    s1.report("Heli");
+  }
+
+  addTab(new FlightModesPanel(this, model, generalSettings, firmware, sharedItemModels), tr("Flight Modes"));
+  s1.report("Flight Modes");
+
+  addTab(new InputsPanel(this, model, generalSettings, firmware, sharedItemModels), tr("Inputs"));
+  s1.report("Inputs");
+
+  addTab(new MixesPanel(this, model, generalSettings, firmware, sharedItemModels), tr("Mixes"));
   s1.report("Mixes");
-  Channels * chnPanel = new Channels(this, radioData.models[modelId], radioData.generalSettings, firmware);
-  addTab(chnPanel, tr("Outputs"));
+
+  ChannelsPanel * channelsPanel = new ChannelsPanel(this, model, generalSettings, firmware, sharedItemModels);
+  addTab(channelsPanel, tr("Outputs"));
   s1.report("Outputs");
-  addTab(new Curves(this, radioData.models[modelId], radioData.generalSettings, firmware), tr("Curves"));
-  addTab(new LogicalSwitchesPanel(this, radioData.models[modelId], radioData.generalSettings, firmware), tr("Logical Switches"));
-  s1.report("LS");
-  addTab(new CustomFunctionsPanel(this, &radioData.models[modelId], radioData.generalSettings, firmware), tr("Special Functions"));
-  s1.report("CF");
-  if (firmware->getCapability(Telemetry))
-    addTab(new TelemetryPanel(this, radioData.models[modelId], radioData.generalSettings, firmware), tr("Telemetry"));
 
-  onTabIndexChanged(ui->tabWidget->currentIndex());  // make sure to trigger update on default tab panel
+  addTab(new CurvesPanel(this, model, generalSettings, firmware, sharedItemModels), tr("Curves"));
+  s1.report("Curves");
 
-  connect(setupPanel, &SetupPanel::extendedLimitsToggled, chnPanel, &Channels::refreshExtendedLimits);
+  addTab(new LogicalSwitchesPanel(this, model, generalSettings, firmware, sharedItemModels), tr("Logical Switches"));
+  s1.report("Logical Switches");
+
+  addTab(new CustomFunctionsPanel(this, &model, generalSettings, firmware, sharedItemModels), tr("Special Functions"));
+  s1.report("Special Functions");
+
+  if (firmware->getCapability(Telemetry)) {
+    addTab(new TelemetryPanel(this, model, generalSettings, firmware, sharedItemModels), tr("Telemetry"));
+    s1.report("Telemetry");
+  }
+
+  connect(setupPanel, &SetupPanel::extendedLimitsToggled, channelsPanel, &ChannelsPanel::refreshExtendedLimits);
   connect(ui->tabWidget, &QTabWidget::currentChanged, this, &ModelEdit::onTabIndexChanged);
   connect(ui->pushButton, &QPushButton::clicked, this, &ModelEdit::launchSimulation);
 
-  s1.report("end");
+  onTabIndexChanged(ui->tabWidget->currentIndex());  // make sure to trigger update on default tab panel
+
   gStopwatch.report("ModelEdit end constructor");
 }
 
 ModelEdit::~ModelEdit()
 {
   delete ui;
+  delete sharedItemModels;
 }
 
 void ModelEdit::closeEvent(QCloseEvent *event)

@@ -18,27 +18,26 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _AUTOHEXSPINBOX_H_
-#define _AUTOHEXSPINBOX_H_
+#pragma once
 
 #include "hexspinbox.h"
-#include "modeledit/modeledit.h"
+#include "genericpanel.h"
 
 class AutoHexSpinBox: public HexSpinBox
 {
   Q_OBJECT
 
   public:
-    explicit AutoHexSpinBox(QWidget *parent = 0):
+    explicit AutoHexSpinBox(QWidget * parent = nullptr):
       HexSpinBox(parent),
-      field(NULL),
-      panel(NULL),
+      field(nullptr),
+      panel(nullptr),
       lock(false)
     {
       connect(this, SIGNAL(valueChanged(int)), this, SLOT(onValueChanged(int)));
     }
 
-    void setField(unsigned int & field, ModelPanel * panel=NULL)
+    void setField(unsigned int & field, GenericPanel * panel = nullptr)
     {
       this->field = &field;
       this->panel = panel;
@@ -48,15 +47,23 @@ class AutoHexSpinBox: public HexSpinBox
     void updateValue()
     {
       if (field) {
+        lock = true;
         setValue(*field);
+        lock = false;
       }
     }
+
+  signals:
+    void currentDataChanged(int value);
 
   protected slots:
     void onValueChanged(int value)
     {
+      if (panel && panel->lock)
+        return;
       if (field && !lock) {
         *field = value;
+        emit currentDataChanged(value);
         if (panel) {
           emit panel->modified();
         }
@@ -64,9 +71,7 @@ class AutoHexSpinBox: public HexSpinBox
     }
 
   protected:
-    unsigned int * field;
-    ModelPanel * panel;
-    bool lock;
+    unsigned int * field = nullptr;
+    GenericPanel * panel = nullptr;
+    bool lock = false;
 };
-
-#endif // _AUTOHEXSPINBOX_H_

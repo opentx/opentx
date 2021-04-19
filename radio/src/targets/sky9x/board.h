@@ -269,11 +269,12 @@ extern "C" {
 #endif
 
 // Backlight driver
-#define backlightEnable()              (PWM->PWM_CH_NUM[0].PWM_CDTY = g_eeGeneral.backlightBright)
+#define backlightEnable()              (PWM->PWM_CH_NUM[0].PWM_CDTY = currentBacklightBright)
 #define backlightDisable()             (PWM->PWM_CH_NUM[0].PWM_CDTY = 100)
 #define isBacklightEnabled()           (PWM->PWM_CH_NUM[0].PWM_CDTY != 100)
 #define BACKLIGHT_ENABLE()             backlightEnable()
 #define BACKLIGHT_DISABLE()            backlightDisable()
+#define BACKLIGHT_FORCED_ON            101
 
 // ADC driver
 #define NUM_POTS                       3
@@ -394,10 +395,8 @@ void debugPutc(const char c);
 
 // Telemetry driver
 void telemetryPortInit(uint32_t baudrate, uint8_t mode);
-inline void telemetryPortSetDirectionOutput()
-{
-}
-uint32_t telemetryTransmitPending();
+void telemetryPortSetDirectionOutput();
+void telemetryPortSetDirectionInput();
 void telemetryTransmitBuffer(const uint8_t * buffer, uint32_t size);
 void rxPdcUsart( void (*pChProcess)(uint8_t x) );
 void sportSendBuffer(const uint8_t * buffer, uint32_t size);

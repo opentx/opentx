@@ -122,8 +122,8 @@ void telemetryPortInvertedInit(uint32_t baudrate)
       probeTimeFromStartBit = 25;
       break;
     case 57600:
-      bitLength = 35; //34 was used before - I prefer to use use 35 because of lower error
-      probeTimeFromStartBit = 52; //round down - 48 used in original implementation
+      bitLength = 35;
+      probeTimeFromStartBit = 48;
       break;
     default:
       bitLength = 2000000/baudrate; //because of 0,5 us  tick
@@ -203,6 +203,11 @@ void telemetryPortInvertedRxBit()
 
 void telemetryPortSetDirectionOutput()
 {
+#if defined(GHOST) && SPORT_MAX_BAUDRATE < 400000
+  if (isModuleGhost(EXTERNAL_MODULE)) {
+    TELEMETRY_USART->BRR = BRR_400K;
+  }
+#endif
   TELEMETRY_DIR_OUTPUT();
   TELEMETRY_USART->CR1 &= ~USART_CR1_RE; // turn off receiver
 }
@@ -215,6 +220,11 @@ void sportWaitTransmissionComplete()
 void telemetryPortSetDirectionInput()
 {
   sportWaitTransmissionComplete();
+#if defined(GHOST) && SPORT_MAX_BAUDRATE < 400000
+  if (isModuleGhost(EXTERNAL_MODULE) && g_eeGeneral.telemetryBaudrate == GHST_TELEMETRY_RATE_115K) {
+    TELEMETRY_USART->BRR = BRR_115K;
+  }
+#endif
   TELEMETRY_DIR_INPUT();
   TELEMETRY_USART->CR1 |= USART_CR1_RE; // turn on receiver
 }

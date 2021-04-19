@@ -71,6 +71,7 @@
 #define CPN_STR_APP_SETTINGS_FILTER    CPN_STR_APP_SETTINGS_FILES % " (*.ini)"
 
 #define CPN_STR_UNKNOWN_ITEM           "???"
+#define CPN_STR_NONE_ITEM              "----"
 
 #define CPN_STR_SW_INDICATOR_UP        QCoreApplication::translate("RawSwitch", "\xE2\x86\x91")  // Switch up position indicator: Up arrow, or similar.
 #define CPN_STR_SW_INDICATOR_DN        QCoreApplication::translate("RawSwitch", "\xE2\x86\x93")  // Switch down position indicator: Down arrow, or similar.

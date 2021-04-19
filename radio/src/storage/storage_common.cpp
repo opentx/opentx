@@ -51,8 +51,16 @@ void preModelLoad()
   if (pulsesStarted()) {
     pausePulses();
   }
-
   pauseMixerCalculations();
+
+#if defined(HARDWARE_INTERNAL_MODULE)
+  stopPulsesInternalModule();
+#endif
+#if defined(HARDWARE_EXTERNAL_MODULE)
+  stopPulsesExternalModule();
+#endif
+
+  stopTrainer();
 }
 
 void postRadioSettingsLoad()

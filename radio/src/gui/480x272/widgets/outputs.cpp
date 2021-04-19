@@ -89,7 +89,7 @@ const ZoneOption OutputsWidget::options[] = {
   { STR_FIRST_CHANNEL, ZoneOption::Integer, OPTION_VALUE_UNSIGNED(1), OPTION_VALUE_UNSIGNED(1), OPTION_VALUE_UNSIGNED(32) },
   { STR_FILL_BACKGROUND, ZoneOption::Bool, OPTION_VALUE_BOOL(false) },
   { STR_BG_COLOR, ZoneOption::Color, OPTION_VALUE_UNSIGNED(LIGHTGREY) },
-  { NULL, ZoneOption::Bool }
+  { nullptr, ZoneOption::Bool }
 };
 
 

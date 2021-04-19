@@ -32,6 +32,7 @@
 #include "simulatorinterface.h"
 #include "simulatormainwindow.h"
 #include "storage/sdcard.h"
+#include "filtereditemmodels.h"
 
 #include <QFileDialog>
 #include <QLabel>
@@ -117,7 +118,8 @@ void CompanionIcon::addImage(const QString & baseimage, Mode mode, State state)
  * GVarGroup
 */
 
-GVarGroup::GVarGroup(QCheckBox * weightGV, QAbstractSpinBox * weightSB, QComboBox * weightCB, int & weight, const ModelData & model, const int deflt, const int mini, const int maxi, const double step, bool allowGvars):
+GVarGroup::GVarGroup(QCheckBox * weightGV, QAbstractSpinBox * weightSB, QComboBox * weightCB, int & weight, const ModelData & model,
+                     const int deflt, const int mini, const int maxi, const double step, FilteredItemModel * gvarModel):
   QObject(),
   weightGV(weightGV),
   weightSB(weightSB),
@@ -131,8 +133,8 @@ GVarGroup::GVarGroup(QCheckBox * weightGV, QAbstractSpinBox * weightSB, QComboBo
   step(step),
   lock(true)
 {
-  if (allowGvars && getCurrentFirmware()->getCapability(Gvars)) {
-    Helpers::populateGVCB(*weightCB, weight, model);
+  if (gvarModel && gvarModel->rowCount() > 0) {
+    weightCB->setModel(gvarModel);
     connect(weightGV, SIGNAL(stateChanged(int)), this, SLOT(gvarCBChanged(int)));
     connect(weightCB, SIGNAL(currentIndexChanged(int)), this, SLOT(valuesChanged()));
   }
@@ -152,12 +154,19 @@ GVarGroup::GVarGroup(QCheckBox * weightGV, QAbstractSpinBox * weightSB, QComboBo
 
 void GVarGroup::gvarCBChanged(int state)
 {
-  weightCB->setVisible(state);
-  if (weightSB)
+  if (!lock) {
+    weightCB->setVisible(state);
+    if (weightGV->isChecked()) {
+      //  set CB to +GV1
+      int cnt = getCurrentFirmware()->getCapability(Gvars);
+      if (weightCB->count() > cnt)
+        weightCB->setCurrentIndex(cnt);
+      else
+        weightCB->setCurrentIndex(0);
+    }
     weightSB->setVisible(!state);
-  else
-    weightSB->setVisible(!state);
-  valuesChanged();
+    valuesChanged();
+  }
 }
 
 void GVarGroup::valuesChanged()
@@ -168,7 +177,7 @@ void GVarGroup::valuesChanged()
     else if (sb)
       weight = sb->value();
     else
-      weight = round(dsb->value()/step);
+      weight = round(dsb->value() / step);
 
     emit valueChanged();
   }
@@ -180,7 +189,7 @@ void GVarGroup::setWeight(int val)
 
   int tval;
 
-  if (val>maxi || val<mini) {
+  if (val > maxi || val < mini) {
     tval = deflt;
     weightGV->setChecked(true);
     weightSB->hide();
@@ -210,214 +219,9 @@ void GVarGroup::setWeight(int val)
   lock = false;
 }
 
-
-/*
- * CurveGroup
-*/
-
-CurveGroup::CurveGroup(QComboBox * curveTypeCB, QCheckBox * curveGVarCB, QComboBox * curveValueCB, QSpinBox * curveValueSB, CurveReference & curve, const ModelData & model, unsigned int flags):
-  QObject(),
-  curveTypeCB(curveTypeCB),
-  curveGVarCB(curveGVarCB),
-  curveValueCB(curveValueCB),
-  curveValueSB(curveValueSB),
-  curve(curve),
-  model(model),
-  flags(flags),
-  lock(false),
-  lastType(-1)
-{
-  if (!(flags & HIDE_DIFF)) curveTypeCB->addItem(tr("Diff"), 0);
-  if (!(flags & HIDE_EXPO)) curveTypeCB->addItem(tr("Expo"), 1);
-  curveTypeCB->addItem(tr("Func"), 2);
-  curveTypeCB->addItem(tr("Curve"), 3);
-
-  curveValueCB->setMaxVisibleItems(10);
-
-  connect(curveTypeCB, SIGNAL(currentIndexChanged(int)), this, SLOT(typeChanged(int)));
-  connect(curveGVarCB, SIGNAL(stateChanged(int)), this, SLOT(gvarCBChanged(int)));
-  connect(curveValueCB, SIGNAL(currentIndexChanged(int)), this, SLOT(valuesChanged()));
-  connect(curveValueSB, SIGNAL(editingFinished()), this, SLOT(valuesChanged()));
-
-  update();
-}
-
-void CurveGroup::update()
-{
-  lock = true;
-
-  int found = curveTypeCB->findData(curve.type);
-  if (found < 0) found = 0;
-  curveTypeCB->setCurrentIndex(found);
-
-  if (curve.type == CurveReference::CURVE_REF_DIFF || curve.type == CurveReference::CURVE_REF_EXPO) {
-    curveGVarCB->setVisible(getCurrentFirmware()->getCapability(Gvars));
-    if (curve.value > 100 || curve.value < -100) {
-      curveGVarCB->setChecked(true);
-      if (lastType != CurveReference::CURVE_REF_DIFF && lastType != CurveReference::CURVE_REF_EXPO) {
-        lastType = curve.type;
-        Helpers::populateGVCB(*curveValueCB, curve.value, model);
-      }
-      curveValueCB->show();
-      curveValueSB->hide();
-    }
-    else {
-      curveGVarCB->setChecked(false);
-      curveValueSB->setMinimum(-100);
-      curveValueSB->setMaximum(100);
-      curveValueSB->setValue(curve.value);
-      curveValueSB->show();
-      curveValueCB->hide();
-    }
-  }
-  else {
-    curveGVarCB->hide();
-    curveValueSB->hide();
-    curveValueCB->show();
-    switch (curve.type) {
-      case CurveReference::CURVE_REF_FUNC:
-        if (lastType != curve.type) {
-          lastType = curve.type;
-          curveValueCB->clear();
-          for (int i=0; i<=6/*TODO constant*/; i++) {
-            curveValueCB->addItem(CurveReference(CurveReference::CURVE_REF_FUNC, i).toString(&model, false));
-          }
-        }
-        curveValueCB->setCurrentIndex(curve.value);
-        break;
-      case CurveReference::CURVE_REF_CUSTOM:
-      {
-        int numcurves = getCurrentFirmware()->getCapability(NumCurves);
-        if (lastType != curve.type) {
-          lastType = curve.type;
-          curveValueCB->clear();
-          for (int i= ((flags & HIDE_NEGATIVE_CURVES) ? 0 : -numcurves); i<=numcurves; i++) {
-            curveValueCB->addItem(CurveReference(CurveReference::CURVE_REF_CUSTOM, i).toString(&model, false), i);
-            if (i == curve.value) {
-              curveValueCB->setCurrentIndex(curveValueCB->count() - 1);
-            }
-          }
-        }
-        break;
-      }
-      default:
-        break;
-    }
-  }
-
-  lock = false;
-}
-
-void CurveGroup::gvarCBChanged(int state)
-{
-  if (!lock) {
-    if (state) {
-      curve.value = 10000+1; // TODO constant in EEpromInterface ...
-      lastType = -1; // quickfix for issue #3518: force refresh of curveValueCB at next update() to set current index to GV1
-    }
-    else {
-      curve.value = 0; // TODO could be better
-    }
-
-    update();
-  }
-}
-
-void CurveGroup::typeChanged(int value)
-{
-  if (!lock) {
-    int type = curveTypeCB->itemData(curveTypeCB->currentIndex()).toInt();
-    switch (type) {
-      case 0:
-        curve = CurveReference(CurveReference::CURVE_REF_DIFF, 0);
-        break;
-      case 1:
-        curve = CurveReference(CurveReference::CURVE_REF_EXPO, 0);
-        break;
-      case 2:
-        curve = CurveReference(CurveReference::CURVE_REF_FUNC, 0);
-        break;
-      case 3:
-        curve = CurveReference(CurveReference::CURVE_REF_CUSTOM, 0);
-        break;
-    }
-
-    update();
-  }
-}
-
-void CurveGroup::valuesChanged()
-{
-  if (!lock) {
-    switch (curveTypeCB->itemData(curveTypeCB->currentIndex()).toInt()) {
-      case 0:
-      case 1:
-      {
-        int value;
-        if (curveGVarCB->isChecked())
-          value = curveValueCB->itemData(curveValueCB->currentIndex()).toInt();
-        else
-          value = curveValueSB->value();
-        curve = CurveReference(curveTypeCB->itemData(curveTypeCB->currentIndex()).toInt() == 0 ? CurveReference::CURVE_REF_DIFF : CurveReference::CURVE_REF_EXPO, value);
-        break;
-      }
-      case 2:
-        curve = CurveReference(CurveReference::CURVE_REF_FUNC, curveValueCB->currentIndex());
-        break;
-      case 3:
-        curve = CurveReference(CurveReference::CURVE_REF_CUSTOM, curveValueCB->itemData(curveValueCB->currentIndex()).toInt());
-        break;
-    }
-
-    update();
-  }
-}
-
-
 /*
  * Helpers namespace functions
 */
-
-void Helpers::populateGVCB(QComboBox & b, int value, const ModelData & model)
-{
-  int count = getCurrentFirmware()->getCapability(Gvars);
-
-  b.clear();
-
-  for (int i=-count; i<=-1; i++) {
-    int16_t gval = (int16_t)(-10000+i);
-    b.addItem("-" + RawSource(SOURCE_TYPE_GVAR, abs(i)-1).toString(&model), gval);
-  }
-
-  for (int i=1; i<=count; i++) {
-    int16_t gval = (int16_t)(10000+i);
-    b.addItem(RawSource(SOURCE_TYPE_GVAR, i-1).toString(&model), gval);
-  }
-
-  b.setCurrentIndex(b.findData(value));
-  if (b.currentIndex() == -1)
-    b.setCurrentIndex(count);
-}
-
-// Returns Diff/Expo/Weight/Offset adjustment value as either a percentage or a global variable name.
-QString Helpers::getAdjustmentString(int16_t val, const ModelData * model, bool sign)
-{
-  QString ret;
-  if (val >= -10000 && val <= 10000) {
-    ret = "%1%";
-    if (sign && val > 0)
-      ret.prepend("+");
-    ret = ret.arg(val);
-  }
-  else {
-    ret = RawSource(SOURCE_TYPE_GVAR, abs(val) - 10001).toString(model);
-    if (val < 0)
-      ret.prepend("-");
-    else if (sign)
-      ret.prepend("+");
-  }
-  return ret;
-}
 
 // TODO: Move lookup to GVarData class (w/out combobox)
 void Helpers::populateGvarUseCB(QComboBox * b, unsigned int phase)
@@ -742,7 +546,8 @@ GpsCoord extractGpsCoordinates(const QString & position)
   return result;
 }
 
-TableLayout::TableLayout(QWidget * parent, int rowCount, const QStringList & headerLabels)
+TableLayout::TableLayout(QWidget * parent, int rowCount, const QStringList & headerLabels) :
+  QObject(parent)
 {
 #if defined(TABLE_LAYOUT)
   tableWidget = new QTableWidget(parent);

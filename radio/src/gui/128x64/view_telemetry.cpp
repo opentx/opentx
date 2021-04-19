@@ -68,27 +68,20 @@ bool displayGaugesTelemetryScreen(TelemetryScreenData & screen)
       barMin = calc100toRESX(barMin);
       barMax = calc100toRESX(barMax);
     }
-    if (source && barMax > barMin) {
+    if (source) {
       uint8_t y = barHeight+6+i*(barHeight+6);
       drawSource(0, y+barHeight/2-3, source, SMLSIZE);
       lcdDrawRect(BAR_LEFT, y, BAR_WIDTH+1, barHeight+2);
       getvalue_t value = getValue(source);
-
       uint8_t thresholdX = 0;
-
-
-      uint8_t width = barCoord(value, barMin, barMax);
-
+      uint8_t width = (barMin < barMax) ? barCoord(value, barMin, barMax) : 99 - barCoord(value, barMax, barMin);
       uint8_t barShade = SOLID;
-
       lcdDrawFilledRect(BAR_LEFT+1, y+1, width, barHeight, barShade);
-
       for (uint8_t j=24; j<99; j+=25) {
         if (j>thresholdX || j>width) {
           lcdDrawSolidVerticalLine(j*BAR_WIDTH/100+BAR_LEFT+1, y+1, barHeight);
         }
       }
-
       if (thresholdX) {
         lcdDrawVerticalLine(BAR_LEFT+1+thresholdX, y-2, barHeight+3, DOTTED);
         lcdDrawSolidHorizontalLine(BAR_LEFT+thresholdX, y-2, 3);

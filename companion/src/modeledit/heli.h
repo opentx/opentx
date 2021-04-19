@@ -23,7 +23,8 @@
 
 #include "modeledit.h"
 
-class RawSourceFilterItemModel;
+class CompoundItemModelFactory;
+class FilteredItemModel;
 
 namespace Ui {
   class Heli;
@@ -34,17 +35,19 @@ class HeliPanel : public ModelPanel
     Q_OBJECT
 
   public:
-    HeliPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware);
-    ~HeliPanel();
+    HeliPanel(QWidget *parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware, CompoundItemModelFactory * sharedItemModels);
+    virtual ~HeliPanel();
     void update();
 
   private slots:
-    void updateDataModels();
     void edited();
+    void onItemModelAboutToBeUpdated();
+    void onItemModelUpdateComplete();
 
   private:
     Ui::Heli *ui;
-    RawSourceFilterItemModel * rawSourceItemModel;
+    FilteredItemModel * rawSourceFilteredModel;
+    void connectItemModelEvents(const FilteredItemModel * itemModel);
 };
 
 #endif // _HELI_H_

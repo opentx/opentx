@@ -60,7 +60,7 @@ RawSourceRange RawSource::getRange(const ModelData * model, const GeneralSetting
         result.min = -30000 * result.step;
         result.max = +30000 * result.step;
         result.decimals = sensor.prec;
-        result.unit = sensor.unitString();
+        result.unit = SensorData::unitToString(qr.quot);
         break;
       }
 
@@ -140,32 +140,17 @@ QString RawSource::toString(const ModelData * model, const GeneralSettings * con
     tr("Batt"), tr("Time"), tr("Timer1"), tr("Timer2"), tr("Timer3"),
   };
 
-  static const QString telemetry[] = {
-    tr("Batt"), tr("Time"), tr("Timer1"), tr("Timer2"), tr("Timer3"),
-    tr("RAS"), tr("RSSI Tx"), tr("RSSI Rx"),
-    tr("A1"), tr("A2"), tr("A3"), tr("A4"),
-    tr("Alt"), tr("Rpm"), tr("Fuel"), tr("T1"), tr("T2"),
-    tr("Speed"), tr("Dist"), tr("GPS Alt"),
-    tr("Cell"), tr("Cells"), tr("Vfas"), tr("Curr"), tr("Cnsp"), tr("Powr"),
-    tr("AccX"), tr("AccY"), tr("AccZ"),
-    tr("Hdg "), tr("VSpd"), tr("AirSpeed"), tr("dTE"),
-    tr("A1-"),  tr("A2-"), tr("A3-"),  tr("A4-"),
-    tr("Alt-"), tr("Alt+"), tr("Rpm+"), tr("T1+"), tr("T2+"), tr("Speed+"), tr("Dist+"), tr("AirSpeed+"),
-    tr("Cell-"), tr("Cells-"), tr("Vfas-"), tr("Curr+"), tr("Powr+"),
-    tr("ACC"), tr("GPS Time"),
-  };
-
   static const QString rotary[]  = { tr("REa"), tr("REb") };
 
   if (index<0) {
-    return tr("???");
+    return QString(CPN_STR_UNKNOWN_ITEM);
   }
 
   QString result;
   int genAryIdx = 0;
   switch (type) {
     case SOURCE_TYPE_NONE:
-      return tr("----");
+      return QString(CPN_STR_NONE_ITEM);
 
     case SOURCE_TYPE_VIRTUAL_INPUT:
     {
@@ -176,7 +161,7 @@ QString RawSource::toString(const ModelData * model, const GeneralSettings * con
     }
 
     case SOURCE_TYPE_LUA_OUTPUT:
-      return tr("LUA%1%2").arg(index/16+1).arg(QChar('a'+index%16));
+      return tr("LUA%1%2").arg(index / 16 + 1).arg(QChar('a' + index % 16));
 
     case SOURCE_TYPE_STICK:
       if (generalSettings) {
@@ -208,10 +193,10 @@ QString RawSource::toString(const ModelData * model, const GeneralSettings * con
       return result;
 
     case SOURCE_TYPE_CUSTOM_SWITCH:
-      return RawSwitch(SWITCH_TYPE_VIRTUAL, index+1).toString();
+      return RawSwitch(SWITCH_TYPE_VIRTUAL, index + 1).toString();
 
     case SOURCE_TYPE_CYC:
-      return tr("CYC%1").arg(index+1);
+      return tr("CYC%1").arg(index + 1);
 
     case SOURCE_TYPE_PPM:
       return RadioData::getElementName(tr("TR", "as in Trainer"), index + 1);
@@ -223,7 +208,16 @@ QString RawSource::toString(const ModelData * model, const GeneralSettings * con
         return LimitData().nameToString(index);
 
     case SOURCE_TYPE_SPECIAL:
-      return CHECK_IN_ARRAY(special, index);
+      if (index >= SOURCE_TYPE_SPECIAL_TIMER1_IDX && index <= SOURCE_TYPE_SPECIAL_TIMER1_IDX + CPN_MAX_TIMERS - 1) {
+        if (model)
+          result = model->timers[index - SOURCE_TYPE_SPECIAL_TIMER1_IDX].nameToString(index - SOURCE_TYPE_SPECIAL_TIMER1_IDX);
+        else
+          result = TimerData().nameToString(index - SOURCE_TYPE_SPECIAL_TIMER1_IDX);
+      }
+      else
+        result = CHECK_IN_ARRAY(special, index);
+
+      return result;
 
     case SOURCE_TYPE_TELEMETRY:
       {
@@ -244,7 +238,7 @@ QString RawSource::toString(const ModelData * model, const GeneralSettings * con
         return GVarData().nameToString(index);
 
     default:
-      return tr("???");
+      return QString(CPN_STR_UNKNOWN_ITEM);
   }
 }
 
@@ -347,111 +341,40 @@ RawSource RawSource::convert(RadioDataConversionState & cstate)
   RadioDataConversionState::LogField oldData(index, toString(cstate.fromModel(), cstate.fromGS(), cstate.fromType));
 
   if (type == SOURCE_TYPE_STICK) {
-    if (cstate.toBoard.getCapability(Board::Sliders)) {
-      if (index >= cstate.fromBoard.getCapability(Board::Sticks) + cstate.fromBoard.getCapability(Board::Pots)) {
-        // 1st slider alignment
-        index += cstate.toBoard.getCapability(Board::Pots) - cstate.fromBoard.getCapability(Board::Pots);
-      }
-
-      if (isSlider(0, cstate.fromType)) {
-        // LS and RS sliders are after 2 aux sliders on X12 and X9E
-        if ((IS_HORUS_X12S(cstate.toType) || IS_TARANIS_X9E(cstate.toType)) && !IS_HORUS_X12S(cstate.fromType) && !IS_TARANIS_X9E(cstate.fromType)) {
-          if (index >= 7) {
-            index += 2;  // LS/RS to LS/RS
-          }
-        }
-        else if (!IS_TARANIS_X9E(cstate.toType) && !IS_HORUS_X12S(cstate.toType) && (IS_HORUS_X12S(cstate.fromType) || IS_TARANIS_X9E(cstate.fromType))) {
-          if (index >= 7 && index <= 8) {
-            index += 2;   // aux sliders to spare analogs (which may not exist, this is validated later)
-            evt = RadioDataConversionState::EVT_CVRT;
-          }
-          else if (index >= 9 && index <= 10) {
-            index -= 2;  // LS/RS to LS/RS
-          }
-        }
-      }
-    }
-
-    if (IS_TARANIS(cstate.toType) && IS_FAMILY_HORUS_OR_T16(cstate.fromType)) {
-      if (index == 6)
-        index = 5;  // pot S2 to S2
-      else if (index == 5)
-        index = -1;  //  6P on Horus doesn't exist on Taranis
-    }
-    else  if (IS_FAMILY_HORUS_OR_T16(cstate.toType) && IS_TARANIS(cstate.fromType) && index == 5)
-    {
-      index = 6;  // pot S2 to S2
-    }
-
-  }  // SOURCE_TYPE_STICK
+    QStringList fromStickList(getStickList(cstate.fromBoard));
+    QStringList toStickList(getStickList(cstate.toBoard));
+    index = toStickList.indexOf(fromStickList.at(oldData.id));
+    // index set to -1 if no match found
+    // perform forced mapping
+  }
 
   if (type == SOURCE_TYPE_SWITCH) {
-    // SWI to SWR don't exist on !X9E board
-    if (!IS_TARANIS_X9E(cstate.toType) && IS_TARANIS_X9E(cstate.fromType)) {
-      if (index >= 8) {
-        index = index % 8;
-        evt = RadioDataConversionState::EVT_CVRT;
+    QStringList fromSwitchList(getSwitchList(cstate.fromBoard));
+    QStringList toSwitchList(getSwitchList(cstate.toBoard));
+    index = toSwitchList.indexOf(fromSwitchList.at(oldData.id));
+    // index set to -1 if no match found
+    // perform forced mapping
+    if (index < 0) {
+      if (IS_TARANIS_X7(cstate.toType) && (IS_TARANIS_X9(cstate.fromType) || IS_FAMILY_HORUS_OR_T16(cstate.fromType))) {
+        // No SE and SG on X7 board
+        index = toSwitchList.indexOf("SD");
+        if (index >= 0)
+          evt = RadioDataConversionState::EVT_CVRT;
+      }
+      else if (IS_FAMILY_T12(cstate.toType) && (IS_TARANIS_X9(cstate.fromType) || IS_FAMILY_HORUS_OR_T16(cstate.fromType))) {
+        // No SE and SG on T12 board
+        index = toSwitchList.indexOf("SD");
+        if (index >= 0)
+          evt = RadioDataConversionState::EVT_CVRT;
       }
     }
-
-    if (IS_TARANIS_X7(cstate.toType) && (IS_TARANIS_X9(cstate.fromType) || IS_FAMILY_HORUS_OR_T16(cstate.fromType))) {
-      // No SE and SG on X7 board
-      if (index == 4 || index == 6) {
-        index = 3;  // SG and SE to SD
-        evt = RadioDataConversionState::EVT_CVRT;
-      }
-      else if (index == 5) {
-        index = 4;  // SF to SF
-      }
-      else if (index == 7) {
-        index = 5;  // SH to SH
-      }
-    }
-    else if (IS_JUMPER_T12(cstate.toType) && (IS_TARANIS_X9(cstate.fromType) || IS_FAMILY_HORUS_OR_T16(cstate.fromType))) {
-      // No SE and SG on T12 board
-      if (index == 4 || index == 6) {
-        index = 3;  // SG and SE to SD
-        evt = RadioDataConversionState::EVT_CVRT;
-      }
-      else if (index == 5) {
-        index = 4;  // SF to SF
-      }
-      else if (index == 7) {
-        index = 5;  // SH to SH
-      }
-    }
-    // Compensate for SE and SG on X9/Horus board if converting from X7
-    else if ((IS_TARANIS_X9(cstate.toType) || IS_FAMILY_HORUS_OR_T16(cstate.toType)) && IS_TARANIS_X7(cstate.fromType)) {
-      if (index == 4) {
-        index = 5;  // SF to SF
-      }
-      else if (index == 5) {
-        index = 7;  // SH to SH
-      }
-    }
-    else if ((IS_TARANIS_X9(cstate.toType) || IS_FAMILY_HORUS_OR_T16(cstate.toType)) && IS_JUMPER_T12(cstate.fromType)) {
-      if (index == 4) {
-        index = 5;  // SF to SF
-      }
-      else if (index == 5) {
-        index = 7;  // SH to SH
-      }
-    }
-    else if ((IS_TARANIS_X9(cstate.toType) || IS_FAMILY_HORUS_OR_T16(cstate.toType)) && IS_JUMPER_T12(cstate.fromType)) {
-      if (index == 4) {
-        index = 5;  // SF to SF
-      }
-      else if (index == 5) {
-        index = 7;  // SH to SH
-      }
-    }
-  }  // SOURCE_TYPE_SWITCH
+  }
 
   // final validation (we do not pass model to isAvailable() because we don't know what has or hasn't been converted)
-  if (!isAvailable(NULL, cstate.toGS(), cstate.toType)) {
+  if (index < 0 || !isAvailable(NULL, cstate.toGS(), cstate.toType)) {
     cstate.setInvalid(oldData);
-    index = -1;  // TODO: better way to flag invalid sources?
-    type = MAX_SOURCE_TYPE;
+    // no source is safer than an invalid one
+    clear();
   }
   else if (evt == RadioDataConversionState::EVT_CVRT) {
     cstate.setConverted(oldData, RadioDataConversionState::LogField(index, toString(cstate.toModel(), cstate.toGS(), cstate.toType)));
@@ -462,4 +385,24 @@ RawSource RawSource::convert(RadioDataConversionState & cstate)
   }
 
   return *this;
+}
+
+QStringList RawSource::getStickList(Boards board) const
+{
+  QStringList ret;
+
+  for (int i = 0; i < board.getCapability(Board::MaxAnalogs); i++) {
+    ret.append(board.getAnalogInputName(i));
+  }
+  return ret;
+}
+
+QStringList RawSource::getSwitchList(Boards board) const
+{
+  QStringList ret;
+
+  for (int i = 0; i < board.getCapability(Board::Switches); i++) {
+    ret.append(board.getSwitchInfo(i).name);
+  }
+  return ret;
 }

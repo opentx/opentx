@@ -18,8 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _HELPERS_H_
-#define _HELPERS_H_
+#pragma once
 
 #include "eeprominterface.h"
 #include <QCheckBox>
@@ -60,12 +59,15 @@ class CompanionIcon: public QIcon {
     void addImage(const QString &baseimage, Mode mode = Normal, State state = Off);
 };
 
+class FilteredItemModel;
+
 class GVarGroup: public QObject {
 
   Q_OBJECT
 
   public:
-    GVarGroup(QCheckBox * weightGV, QAbstractSpinBox * weightSB, QComboBox * weightCB, int & weight, const ModelData & model, const int deflt, const int mini, const int maxi, const double step=1.0, bool allowGVars=true);
+    GVarGroup(QCheckBox * weightGV, QAbstractSpinBox * weightSB, QComboBox * weightCB, int & weight, const ModelData & model,
+              const int deflt, const int mini, const int maxi, const double step = 1.0, FilteredItemModel * gvarModel = nullptr);
 
     void setWeight(int val);
 
@@ -98,40 +100,9 @@ class GVarGroup: public QObject {
     bool lock;
 };
 
-#define HIDE_DIFF             0x01
-#define HIDE_EXPO             0x02
-#define HIDE_NEGATIVE_CURVES  0x04
-
-class CurveGroup : public QObject {
-
-  Q_OBJECT
-
-  public:
-    CurveGroup(QComboBox *curveTypeCB, QCheckBox *curveGVarCB, QComboBox *curveValueCB, QSpinBox *curveValueSB, CurveReference & curve, const ModelData & model, unsigned int flags=0);
-    void update();
-
-  protected slots:
-    void gvarCBChanged(int);
-    void typeChanged(int);
-    void valuesChanged();
-
-  protected:
-    QComboBox *curveTypeCB;
-    QCheckBox *curveGVarCB;
-    QComboBox *curveValueCB;
-    QSpinBox *curveValueSB;
-    CurveReference & curve;
-    const ModelData & model;
-    unsigned int flags;
-    bool lock;
-    int lastType;
-};
-
 namespace Helpers
 {
   void populateGvarUseCB(QComboBox *b, unsigned int phase);
-  void populateGVCB(QComboBox & b, int value, const ModelData & model);
-  QString getAdjustmentString(int16_t val, const ModelData * model = NULL, bool sign = false);
 
   void populateFileComboBox(QComboBox * b, const QSet<QString> & set, const QString & current);
   void getFileComboBoxValue(QComboBox * b, char * dest, int length);
@@ -208,8 +179,9 @@ private:
 
 GpsCoord extractGpsCoordinates(const QString & position);
 
-class TableLayout
+class TableLayout: public QObject
 {
+    Q_OBJECT
 public:
   TableLayout(QWidget * parent, int rowCount, const QStringList & headerLabels);
   // ~TableLayout() ;
@@ -263,5 +235,3 @@ private:
 };
 
 extern Stopwatch gStopwatch;
-
-#endif // _HELPERS_H_

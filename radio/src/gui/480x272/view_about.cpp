@@ -128,7 +128,7 @@ bool menuAboutView(event_t event)
       break;
 
     case ABOUT_HARDWARE:
-      lcdDrawText(ABOUT_X, MENU_CONTENT_TOP, "FrSky", INVERS);
+      lcdDrawText(ABOUT_X, MENU_CONTENT_TOP, STR_ABOUT_HARDWARE_1, INVERS);
       lcdDrawText(ABOUT_X+ABOUT_INDENT, MENU_CONTENT_TOP + FH, STR_ABOUT_HARDWARE_2);
       lcdDrawText(ABOUT_X+ABOUT_INDENT, MENU_CONTENT_TOP + 2*FH, STR_ABOUT_HARDWARE_3);
       break;

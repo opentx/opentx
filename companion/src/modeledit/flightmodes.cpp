@@ -20,18 +20,19 @@
 
 #include "flightmodes.h"
 #include "ui_flightmode.h"
-#include "rawitemfilteredmodel.h"
+#include "filtereditemmodels.h"
 #include "helpers.h"
 #include "customdebug.h"
 
-FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseIdx, GeneralSettings & generalSettings, Firmware * firmware, RawSwitchFilterItemModel * switchModel):
+FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseIdx, GeneralSettings & generalSettings, Firmware * firmware,
+                                 FilteredItemModel * rawSwitchFilteredModel):
   ModelPanel(parent, model, generalSettings, firmware),
   ui(new Ui::FlightMode),
   phaseIdx(phaseIdx),
-  phase(model.flightModeData[phaseIdx]),
-  rawSwitchItemModel(NULL)
+  phase(model.flightModeData[phaseIdx])
 {
   ui->setupUi(this);
+  connectItemModelEvents(rawSwitchFilteredModel);
 
   ui->labelName->setContextMenuPolicy(Qt::CustomContextMenu);
   ui->labelName->setToolTip(tr("Popup menu available"));
@@ -56,8 +57,8 @@ FlightModePanel::FlightModePanel(QWidget * parent, ModelData & model, int phaseI
 
   // Flight mode switch
   if (phaseIdx > 0) {
-    ui->swtch->setModel(switchModel);
-    connect(ui->swtch, SIGNAL(activated(int)), this, SLOT(phaseSwitchChanged(int)));
+    ui->swtch->setModel(rawSwitchFilteredModel);
+    connect(ui->swtch, SIGNAL(currentIndexChanged(int)), this, SLOT(phaseSwitch_currentIndexChanged(int)));
   }
   else {
     ui->swtch->hide();
@@ -316,8 +317,6 @@ void FlightModePanel::update()
   for (int i = 0; i < reCount; i++) {
     updateRotaryEncoder(i);
   }
-
-  emit nameModified();
 }
 
 void FlightModePanel::updateGVar(int index)
@@ -390,17 +389,18 @@ void FlightModePanel::phaseName_editingFinished()
 {
   QLineEdit *lineEdit = qobject_cast<QLineEdit*>(sender());
   strcpy(phase.name, lineEdit->text().toLatin1());
+  emit phaseNameChanged();
   emit modified();
-  emit nameModified();
 }
 
-void FlightModePanel::phaseSwitchChanged(int index)
+void FlightModePanel::phaseSwitch_currentIndexChanged(int index)
 {
   if (!lock) {
     bool ok;
     const RawSwitch rs(ui->swtch->itemData(index).toInt(&ok));
     if (ok && phase.swtch.toValue() != rs.toValue()) {
       phase.swtch = rs;
+      emit phaseSwitchChanged();
       emit modified();
     }
   }
@@ -457,7 +457,7 @@ void FlightModePanel::phaseGVValue_editingFinished()
     QDoubleSpinBox *spinBox = qobject_cast<QDoubleSpinBox*>(sender());
     int gvar = spinBox->property("index").toInt();
     phase.gvars[gvar] = spinBox->value() * model->gvarData[gvar].multiplierSet();
-    emit datachanged();
+    updateGVar(gvar);
     emit modified();
   }
 }
@@ -469,7 +469,7 @@ void FlightModePanel::GVName_editingFinished()
     int gvar = lineedit->property("index").toInt();
     memset(&model->gvarData[gvar].name, 0, sizeof(model->gvarData[gvar].name));
     strcpy(model->gvarData[gvar].name, lineedit->text().toLatin1());
-    emit datachanged();
+    emit gvNameChanged();
     emit modified();
   }
 }
@@ -488,7 +488,7 @@ void FlightModePanel::phaseGVUse_currentIndexChanged(int index)
     }
     if (model->isGVarLinkedCircular(phaseIdx, gvar))
       QMessageBox::warning(this, "Companion", tr("Warning: Global variable links back to itself. Flight Mode 0 value used."));
-    emit datachanged();
+    updateGVar(gvar);
     emit modified();
     lock = false;
   }
@@ -500,7 +500,7 @@ void FlightModePanel::phaseGVUnit_currentIndexChanged(int index)
     QComboBox *comboBox = qobject_cast<QComboBox*>(sender());
     int gvar = comboBox->property("index").toInt();
     model->gvarData[gvar].unit = index;
-    emit datachanged();
+    updateGVar(gvar);
     emit modified();
   }
 }
@@ -511,7 +511,7 @@ void FlightModePanel::phaseGVPrec_currentIndexChanged(int index)
     QComboBox *comboBox = qobject_cast<QComboBox*>(sender());
     int gvar = comboBox->property("index").toInt();
     model->gvarData[gvar].prec = index;
-    emit datachanged();
+    updateGVar(gvar);
     emit modified();
   }
 }
@@ -534,7 +534,7 @@ void FlightModePanel::phaseGVMin_editingFinished()
         }
       }
     }
-    emit datachanged();
+    updateGVar(gvar);
     emit modified();
   }
 }
@@ -557,7 +557,7 @@ void FlightModePanel::phaseGVMax_editingFinished()
         }
       }
     }
-    emit datachanged();
+    updateGVar(gvar);
     emit modified();
   }
 }
@@ -708,10 +708,12 @@ bool FlightModePanel::moveUpAllowed() const
   return phaseIdx > 0;
 }
 
-void FlightModePanel::cmClear()
+void FlightModePanel::cmClear(bool prompt)
 {
-  if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Clear Flight Mode. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
-    return;
+  if (prompt) {
+    if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Clear Flight Mode. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+      return;
+  }
 
   phase.clear(phaseIdx);
 
@@ -739,7 +741,8 @@ void FlightModePanel::cmClear()
 
   model->updateAllReferences(ModelData::REF_UPD_TYPE_FLIGHT_MODE, ModelData::REF_UPD_ACT_CLEAR, phaseIdx);
 
-  emit datachanged();
+  update();
+  emit phaseDataChanged();
   emit modified();
 }
 
@@ -765,7 +768,7 @@ void FlightModePanel::cmClearAll()
     model->updateAllReferences(ModelData::REF_UPD_TYPE_GLOBAL_VARIABLE, ModelData::REF_UPD_ACT_CLEAR, i);
   }
 
-  emit datachanged();
+  emit phaseDataChanged();
   emit modified();
 }
 
@@ -780,8 +783,10 @@ void FlightModePanel::cmCopy()
 
 void FlightModePanel::cmCut()
 {
+  if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Cut Flight Mode. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+    return;
   cmCopy();
-  cmClear();
+  cmClear(false);
 }
 
 void FlightModePanel::cmDelete()
@@ -842,7 +847,7 @@ void FlightModePanel::cmDelete()
 
   model->updateAllReferences(ModelData::REF_UPD_TYPE_FLIGHT_MODE, ModelData::REF_UPD_ACT_SHIFT, phaseIdx, 0, -1);
 
-  emit datachanged();
+  emit phaseDataChanged();
   emit modified();
 }
 
@@ -893,7 +898,7 @@ void FlightModePanel::cmInsert()
 
   model->updateAllReferences(ModelData::REF_UPD_TYPE_FLIGHT_MODE, ModelData::REF_UPD_ACT_SHIFT, phaseIdx, 0, 1);
 
-  emit datachanged();
+  emit phaseDataChanged();
   emit modified();
 }
 
@@ -942,7 +947,7 @@ void FlightModePanel::cmPaste()
       }
     }
 
-    emit datachanged();
+    emit phaseDataChanged();
     emit modified();
   }
 }
@@ -1031,7 +1036,7 @@ void FlightModePanel::swapData(int idx1, int idx2)
   }
 
   model->updateAllReferences(ModelData::REF_UPD_TYPE_FLIGHT_MODE, ModelData::REF_UPD_ACT_SWAP, idx1, idx2);
-  emit datachanged();
+  emit phaseDataChanged();
   emit modified();
 }
 
@@ -1059,7 +1064,7 @@ void FlightModePanel::gvOnCustomContextMenuRequested(QPoint pos)
 
 bool FlightModePanel::gvHasClipboardData() const
 {
-  if (gvHasDefnClipboardData() || gvHasValueClipboardData())
+  if ((phaseIdx == 0  && gvHasDefnClipboardData() && gvHasAllValuesClipboardData()) || (phaseIdx > 0 && gvHasValueClipboardData()))
     return true;
   return false;
 }
@@ -1086,6 +1091,20 @@ bool FlightModePanel::gvHasValueClipboardData(QByteArray * data) const
     if (data) {
       data->clear();
       data->append(mimeData->data(MIMETYPE_GVAR_VALUE));
+    }
+    return true;
+  }
+  return false;
+}
+
+bool FlightModePanel::gvHasAllValuesClipboardData(QByteArray * data) const
+{
+  const QClipboard * clipboard = QApplication::clipboard();
+  const QMimeData * mimeData = clipboard->mimeData();
+  if (phaseIdx == 0 && mimeData->hasFormat(MIMETYPE_GVAR_ALL_VALUES)) {
+    if (data) {
+      data->clear();
+      data->append(mimeData->data(MIMETYPE_GVAR_ALL_VALUES));
     }
     return true;
   }
@@ -1124,11 +1143,13 @@ bool FlightModePanel::gvMoveUpAllowed() const
   return (phaseIdx == 0 && gvIdx > 0);
 }
 
-void FlightModePanel::gvCmClear()
+void FlightModePanel::gvCmClear(bool prompt)
 {
   if (phaseIdx == 0) {
-    if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Clear selected Global Variable across all Flight Modes. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
-      return;
+    if (prompt) {
+      if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Clear Global Variable across all Flight Modes. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+        return;
+    }
     model->gvarData[gvIdx].clear();
     for (int i = 0; i < fmCount; i++) {
       model->flightModeData[i].gvars[gvIdx] = model->flightModeData[i].linkedGVarFlightModeZero(i);
@@ -1136,9 +1157,14 @@ void FlightModePanel::gvCmClear()
     model->updateAllReferences(ModelData::REF_UPD_TYPE_GLOBAL_VARIABLE, ModelData::REF_UPD_ACT_CLEAR, gvIdx);
   }
   else {
+    if (prompt) {
+      if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Clear Global Variable. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+        return;
+    }
     phase.gvars[gvIdx] = phase.linkedGVarFlightModeZero(phaseIdx);
   }
-  emit datachanged();
+  updateGVar(gvIdx);
+  emit gvNameChanged();
   emit modified();
 }
 
@@ -1162,7 +1188,10 @@ void FlightModePanel::gvCmClearAll()
       phase.gvars[i] = phase.linkedGVarFlightModeZero(phaseIdx);
     }
   }
-  emit datachanged();
+  for (int i = 0; i < gvCount; i++) {
+    updateGVar(i);
+  }
+  emit gvNameChanged();
   emit modified();
 }
 
@@ -1173,38 +1202,58 @@ void FlightModePanel::gvCmCopy()
   if (phaseIdx == 0) {
     data.append((char*)&model->gvarData[gvIdx], sizeof(GVarData));
     mimeData->setData(MIMETYPE_GVAR_PARAMS, data);
+    QApplication::clipboard()->setMimeData(mimeData, QClipboard::Clipboard);
+
+    data.clear();
+    for (int j = 0; j < fmCount; j++) {
+      data.append((char*)&model->flightModeData[j].gvars[gvIdx], sizeof(phase.gvars[0]));
+    }
+    mimeData->setData(MIMETYPE_GVAR_ALL_VALUES, data);
+    QApplication::clipboard()->setMimeData(mimeData, QClipboard::Clipboard);
+
+    mimeData->removeFormat(MIMETYPE_GVAR_VALUE);
+    QApplication::clipboard()->setMimeData(mimeData, QClipboard::Clipboard);
   }
   else {
     mimeData->removeFormat(MIMETYPE_GVAR_PARAMS);
+    QApplication::clipboard()->setMimeData(mimeData, QClipboard::Clipboard);
+
+    mimeData->removeFormat(MIMETYPE_GVAR_ALL_VALUES);
+    QApplication::clipboard()->setMimeData(mimeData, QClipboard::Clipboard);
+
+    data.clear();
+    int val = phase.gvars[gvIdx];
+    if (model->isGVarLinked(phaseIdx, gvIdx))
+      val = GVAR_MAX_VALUE + 1 + model->getGVarFlightModeIndex(phaseIdx, gvIdx);  //  store index in case paste is to another flight mode
+    data.setNum(val);
+    mimeData->setData(MIMETYPE_GVAR_VALUE, data);
+    QApplication::clipboard()->setMimeData(mimeData, QClipboard::Clipboard);
   }
-  QApplication::clipboard()->setMimeData(mimeData, QClipboard::Clipboard);
-  int val = phase.gvars[gvIdx];
-  if (model->isGVarLinked(phaseIdx, gvIdx))
-    val = GVAR_MAX_VALUE + 1 + model->getGVarFlightModeIndex(phaseIdx, gvIdx);  //  store index in case paste is to another flight mode
-  data.setNum(val);
-  mimeData->setData(MIMETYPE_GVAR_VALUE, data);
-  QApplication::clipboard()->setMimeData(mimeData, QClipboard::Clipboard);
 }
 
 void FlightModePanel::gvCmCut()
 {
-  gvCmCopy();
-  if (phaseIdx > 0) {
-    gvCmClear();
+  if (phaseIdx == 0) {
+    if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Cut Global Variable across all Flight Modes. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+      return;
   }
   else {
-    model->gvarData[gvIdx].clear();
-    phase.gvars[gvIdx] = 0;
-    model->updateAllReferences(ModelData::REF_UPD_TYPE_GLOBAL_VARIABLE, ModelData::REF_UPD_ACT_CLEAR, gvIdx);
-    emit datachanged();
-    emit modified();
+    if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Cut Global Variable. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+      return;
   }
+
+  gvCmCopy();
+  gvCmClear(false);
 }
 
 void FlightModePanel::gvCmDelete()
 {
   if (phaseIdx > 0)
     return;
+
+  if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Delete Global Variable. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+    return;
+
   int maxidx = gvCount - 1;
   for (int i = gvIdx; i < maxidx; i++) {
     memcpy(&model->gvarData[i], &model->gvarData[i + 1], sizeof(GVarData));
@@ -1217,8 +1266,13 @@ void FlightModePanel::gvCmDelete()
   for (int j = 0; j < fmCount; j++) {
     model->flightModeData[j].gvars[maxidx] = model->flightModeData[j].linkedGVarFlightModeZero(j);
   }
+
   model->updateAllReferences(ModelData::REF_UPD_TYPE_GLOBAL_VARIABLE, ModelData::REF_UPD_ACT_SHIFT, gvIdx, 0, -1);
-  emit datachanged();
+
+  for (int i = 0; i < gvCount; i++) {
+    updateGVar(i);
+  }
+  emit gvNameChanged();
   emit modified();
 }
 
@@ -1235,7 +1289,10 @@ void FlightModePanel::gvCmInsert()
     model->flightModeData[j].gvars[gvIdx] = model->flightModeData[j].linkedGVarFlightModeZero(j);
   }
   model->updateAllReferences(ModelData::REF_UPD_TYPE_GLOBAL_VARIABLE, ModelData::REF_UPD_ACT_SHIFT, gvIdx, 0, 1);
-  emit datachanged();
+  for (int i = 0; i < gvCount; i++) {
+    updateGVar(i);
+  }
+  emit gvNameChanged();
   emit modified();
 }
 
@@ -1254,11 +1311,20 @@ void FlightModePanel::gvCmMoveUp()
 void FlightModePanel::gvCmPaste()
 {
   QByteArray data;
-  if (phaseIdx == 0 && gvHasDefnClipboardData(&data)) {
-    GVarData *gvd = &model->gvarData[gvIdx];
-    memcpy(gvd, data.constData(), sizeof(GVarData));
+  if (phaseIdx == 0) {
+    if (QMessageBox::question(this, CPN_STR_APP_NAME, tr("Paste to selected Global Variable across all Flight Modes. Are you sure?"), QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+      return;
+    if (gvHasDefnClipboardData(&data)) {
+      memcpy(&model->gvarData[gvIdx], data.constData(), sizeof(GVarData));
+    }
+    if (gvHasAllValuesClipboardData(&data)) {
+      for (int j = 0; j < fmCount; j++) {
+        int *gvar = &model->flightModeData[j].gvars[gvIdx];
+        memcpy(gvar, data.mid(j * sizeof(phase.gvars[0]), sizeof(phase.gvars[0])).constData(), sizeof(phase.gvars[0]));
+      }
+    }
   }
-  if (gvHasValueClipboardData(&data)) {
+  else if (gvHasValueClipboardData(&data)) {
     int val = data.toInt();
     if (val > GVAR_MAX_VALUE) {
       if (phaseIdx > 0)
@@ -1269,7 +1335,8 @@ void FlightModePanel::gvCmPaste()
     else
       phase.gvars[gvIdx] = val;
   }
-  emit datachanged();
+  updateGVar(gvIdx);
+  emit gvNameChanged();
   emit modified();
 }
 
@@ -1287,37 +1354,65 @@ void FlightModePanel::gvSwapData(int idx1, int idx2)
       model->flightModeData[j].gvars[idx1] = valtmp;
     }
     model->updateAllReferences(ModelData::REF_UPD_TYPE_GLOBAL_VARIABLE, ModelData::REF_UPD_ACT_SWAP, idx1, idx2);
-    emit datachanged();
+    updateGVar(idx1);
+    updateGVar(idx2);
+    emit gvNameChanged();
     emit modified();
   }
 }
 
+void FlightModePanel::connectItemModelEvents(const FilteredItemModel * itemModel)
+{
+  connect(itemModel, &FilteredItemModel::aboutToBeUpdated, this, &FlightModePanel::onItemModelAboutToBeUpdated);
+  connect(itemModel, &FilteredItemModel::updateComplete, this, &FlightModePanel::onItemModelUpdateComplete);
+}
+
+void FlightModePanel::onItemModelAboutToBeUpdated()
+{
+  lock = true;
+}
+
+void FlightModePanel::onItemModelUpdateComplete()
+{
+  update();
+  lock = false;
+}
+
 /**********************************************************/
 
-FlightModesPanel::FlightModesPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware):
+FlightModesPanel::FlightModesPanel(QWidget * parent, ModelData & model, GeneralSettings & generalSettings, Firmware * firmware,
+                                   CompoundItemModelFactory * sharedItemModels):
   ModelPanel(parent, model, generalSettings, firmware),
-  modesCount(firmware->getCapability(FlightModes))
+  sharedItemModels(sharedItemModels)
 {
+  rawSwitchFilteredModel = new FilteredItemModel(sharedItemModels->getItemModel(AbstractItemModel::IMID_RawSwitch), RawSwitch::MixesContext);
+  connectItemModelEvents(rawSwitchFilteredModel);
 
-  RawSwitchFilterItemModel * swModel = new RawSwitchFilterItemModel(&generalSettings, &model, RawSwitch::MixesContext, this);
-  connect(this, &FlightModesPanel::updated, swModel, &RawSwitchFilterItemModel::update);
+  modesCount = firmware->getCapability(FlightModes);
 
   QGridLayout * gridLayout = new QGridLayout(this);
   tabWidget = new QTabWidget(this);
   for (int i = 0; i < modesCount; i++) {
-    FlightModePanel * tab = new FlightModePanel(tabWidget, model, i, generalSettings, firmware, swModel);
+    FlightModePanel * tab = new FlightModePanel(tabWidget, model, i, generalSettings, firmware, rawSwitchFilteredModel);
     tab->setProperty("index", i);
-    connect(tab,  &FlightModePanel::datachanged,  this, &FlightModesPanel::update);
-    connect(tab,  &FlightModePanel::modified,     this, &FlightModesPanel::modified);
-    connect(tab,  &FlightModePanel::nameModified, this, &FlightModesPanel::onPhaseNameChanged);
-    connect(this, &FlightModesPanel::updated,     tab,  &FlightModePanel::update);
+    connect(tab, &FlightModePanel::modified,           this, &FlightModesPanel::modified);
+    connect(tab, &FlightModePanel::phaseDataChanged,   this, &FlightModesPanel::onPhaseNameChanged);
+    connect(tab, &FlightModePanel::phaseNameChanged,   this, &FlightModesPanel::onPhaseNameChanged);
+    connect(tab, &FlightModePanel::phaseSwitchChanged, this, &FlightModesPanel::updateItemModels);
+    connect(tab, &FlightModePanel::gvNameChanged,      this, &FlightModesPanel::updateItemModels);
+
+    connect(this, &FlightModesPanel::updated,          tab, &FlightModePanel::update);
     tabWidget->addTab(tab, getTabName(i));
+    panels << tab;
   }
+  connect(tabWidget, &QTabWidget::currentChanged, this, &FlightModesPanel::onTabIndexChanged);
   gridLayout->addWidget(tabWidget, 0, 0, 1, 1);
+  onTabIndexChanged(0);
 }
 
 FlightModesPanel::~FlightModesPanel()
 {
+  delete rawSwitchFilteredModel;
 }
 
 QString FlightModesPanel::getTabName(int index)
@@ -1338,9 +1433,36 @@ void FlightModesPanel::onPhaseNameChanged()
 {
   int index = sender()->property("index").toInt();
   tabWidget->setTabText(index, getTabName(index));
+  updateItemModels();
 }
 
 void FlightModesPanel::update()
 {
   emit updated();
+}
+
+void FlightModesPanel::connectItemModelEvents(const FilteredItemModel * itemModel)
+{
+  connect(itemModel, &FilteredItemModel::aboutToBeUpdated, this, &FlightModesPanel::onItemModelAboutToBeUpdated);
+  connect(itemModel, &FilteredItemModel::updateComplete, this, &FlightModesPanel::onItemModelUpdateComplete);
+}
+
+void FlightModesPanel::onItemModelAboutToBeUpdated()
+{
+}
+
+void FlightModesPanel::onItemModelUpdateComplete()
+{
+}
+
+void FlightModesPanel::updateItemModels()
+{
+  sharedItemModels->update(AbstractItemModel::IMUE_FlightModes);
+  sharedItemModels->update(AbstractItemModel::IMUE_GVars);
+}
+
+void FlightModesPanel::onTabIndexChanged(int index)
+{
+  if (index < panels.size())
+    panels.at(index)->update();
 }

@@ -4,7 +4,6 @@
 
 from tts_common import filename
 
-
 systemSounds = []
 sounds = []
 
@@ -14,82 +13,78 @@ systemSounds.append(("ein", filename(100)))
 systemSounds.append(("eine", filename(101)))
 systemSounds.append(("hundert", filename(102)))
 systemSounds.append(("tausend", filename(103)))
+    
 for i, s in enumerate(["komma", "und", "minus", "uhr", "minute", "minuten", "sekunde", "sekunden", "stunde", "stunden"]):
-    systemSounds.append((s, filename(104 + i)))
+	systemSounds.append((s, filename(104 + i)))
+    
 for i, (s, f) in enumerate([("Wolt", "volt0"),
                             ("Ampär", "amp0"),
                             ("MilliAmpär", "mamp0"),
                             ("Knoten", "knot0"),
                             ("Meter pro sekunde", "mps0"),
-                            ("Fuss pro sekunde", "fps0"),
+                            ("Fuß pro sekunde", "fps0"),
                             ("Kilometer pro stunde", "kph0"),
                             ("Meilen pro Stunde", "mph0"),
                             ("Meter", "meter0"),
-                            ("Fuesse", "foot0"),
+                            ("Fuß", "foot0"),
                             ("Grad Celsius", "celsius0"),
                             ("Grad Fahrenheit", "fahr0"),
                             ("Prozent", "percent0"),
-                            ("Milliampär pro stunde", "mamph0"),
+                            ("Milliampärstunde", "mamph0"), ("Milliampärstunden", "mamph1"),
                             ("Watt", "watt0"),
                             ("Milli Watt", "mwatt0"),
                             ("D B", "db0"),
-                            ("Drehzahl", "rpm0"),
+                            ("Umdrehungen pro Minute", "rpm0"),
                             ("g", "g0"),
                             ("Grad", "degree0"),
-                            ("radians", "rad0"),
+                            ("radiant", "rad0"), ("radianten", "rad1"),
                             ("Milliliter", "ml0"),
-                            ("Unze", "founce0"),
-                            ("Milliliter pro minute", "mlpm0"), ("Milliliter pro minuten", "mlpm1"),
+                            ("Unze", "founce0"),("Unzen", "founce1"),
+                            ("Milliliter pro minute", "mlpm0"),
+                            ("Hertz", "hertz0"),
+                            ("Millisekunde", "ms0"), ("Millisekunden", "ms1"),
+                            ("Mikrosekunde", "us0"), ("Mikrosekunden", "us1"), 
                             ("Stunde", "hour0"), ("Stunden", "hour1"),
                             ("Minute", "minute0"), ("Minuten", "minute1"),
                             ("Sekunde", "second0"), ("Sekunden", "second1"),
                             ]):
     systemSounds.append((s, filename(f)))
-for s, f in [("Inaktivitätsalarm", "inactiv"),
+    
+for s, f in [("Trimmung zentriert", "midtrim"),
+             ("Obere Trimmungsgrenze erreicht", "maxtrim"),
+             ("Untere Trimmungsgrenze erreicht", "mintrim"),
+             ("timer eins abgelaufen", "timovr1"),
+             ("timer zwei abgelaufen", "timovr2"),
+             ("timer drei abgelaufen", "timovr3"),
              ("Senderspannung schwach", "lowbatt"),
+             ("Inaktivitätsalarm", "inactiv"),
              ("Gaskanal nicht Null, bitte prüfen", "thralert"),
              ("Schalter fehlpositioniert, bitte prüfen", "swalert"),
              ("EEPROM fehlerhaft", "eebad"),
-             ("EEPROM formatiert", "eeformat"),
-             ("Fehler", "error"),
-             ("Trim zentriert", "midtrim"),
-             ("Poti zentriert", "midpot"),
-             ("Obere Trimmungsgrenze erreicht", "maxtrim"),
-             ("Untere Trimmungsgrenze erreicht", "mintrim"),
-             ("20 Sekunden", "timer20"),
-             ("30 Sekunden", "timer30"),
-             ("Senderstrom zu hoch!", "highmah"),
-             ("Sendertemperatur zu hoch!", "hightemp"),
-             ("A1 schwach!", "a1_org"),
-             ("A1 kritisch!", "a1_red"),
-             ("A2 schwach!", "a2_org"),
-             ("A2 kritisch!", "a2_red"),
-             ("A3 schwach!", "a3_org"),
-             ("A3 kritisch!", "a3_red"),
-             ("A4 schwach!", "a4_org"),
-             ("A4 kritisch!", "a4_red"),
+             ("Willkommen bei open t x", "hello"),
              ("Funksignal schwach!", "rssi_org"),
              ("Funksignal kritisch!", "rssi_red"),
-             ("Problem mit der Sender Antenne", "swr_red"),
+             ("Senderantenne fehlerhaft", "swr_red"),
              ("Telemetrie verloren", "telemko"),
              ("Telemetrie wiederhergestellt", "telemok"),
              ("Schülersignal verloren", "trainko"),
              ("Schülersignal wiederhergestellt", "trainok"),
-             ("servo overload", "servoko"),
-             ("power overload", "rxko"),
-             ("Empfänger noch verbunden", "modelpwr"),
-             ("timer eins abgelaufen", "timovr1"),
-             ("timer zwei abgelaufen", "timovr2"),
-             ("timer drei abgelaufen", "timovr3"),
              ("Sensor verloren", "sensorko"),
-             ("Willkommen bei open te ix", "hello"),
+             ("servo Überlast", "servoko"),
+             ("power Überlast", "rxko"),
+             ("Empfänger noch verbunden", "modelpwr"),
+             ("Fehler", "error"),                       # Not shure if this is needed
+             ("Senderstrom zu hoch!", "highmah"),       # Not shure if this is needed. Only used in PCBX9E
+             ("Sendertemperatur zu hoch!", "hightemp"), # Not shure if this is needed. Only used in PCBX9E      
              ]:
     systemSounds.append((s, filename(f)))
+    
 for i, s in enumerate(["Uhr", "Uhr", "Sender", "Empfang", "A1", "A2", "Hoehe", "Motor",
                        "Treibstoff", "Temperatur", "Temperatur", "Geschwindigkeit", "Entfernung", "Höhe", "Lipo-Zelle",
                        "Zellen gesamt", "Spannung", "Strom", "Verbrauch", "Power", "Beschleunigung X", "Beschleunigung Y", "Beschleunigung Z",
                        "Richtung", "Variometer", "Minimum", "Maximum"]):
     systemSounds.append((s, filename(134 + i)))
+    
 for i, (s, f) in enumerate([("Fahrwerk eingezogen", "gearup"),
                             ("Fahrwerk ausgefahren", "geardn"),
                             ("Klappen eingefahren", "flapup"),

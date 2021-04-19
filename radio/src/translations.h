@@ -161,6 +161,9 @@ extern const char STR_R9M_PXX2_RF_PROTOCOLS[];
 extern const char STR_DSM_PROTOCOLS[];
 extern const char STR_MULTI_PROTOCOLS[];
 extern const char STR_MULTI_POWER[];
+extern const char STR_MULTI_TELEMETRY_MODE[];
+extern const char STR_MULTI_WBUS_MODE[];
+extern const char STR_SPORT_MODES[];
 
 #if defined(AFHDS3)
 extern const char STR_AFHDS3_ONE_TO_ONE_TELEMETRY[];
@@ -215,6 +218,7 @@ extern const char STR_TRIMINC[];
 extern const char STR_DISPLAY_TRIMS[];
 extern const char STR_TTRACE[];
 extern const char STR_TTRIM[];
+extern const char STR_TTRIM_SW[];
 extern const char STR_BEEPCTR[];
 extern const char STR_USE_GLOBAL_FUNCS[];
 
@@ -227,6 +231,7 @@ extern const char STR_REFRESHRATE[];
 extern const char STR_MS[];
 extern const char STR_SWITCH[];
 extern const char STR_TRIMS[];
+extern const char STR_MIRROR[];
 extern const char STR_FADEIN[];
 extern const char STR_FADEOUT[];
 extern const char STR_DEFAULT[];
@@ -298,6 +303,7 @@ extern const char STR_MINUTEBEEP[];
 extern const char STR_BEEPCOUNTDOWN[];
 extern const char STR_PERSISTENT[];
 extern const char STR_BACKLIGHT_LABEL[];
+extern const char STR_GHOST_MENU_LABEL[];
 extern const char STR_BLDELAY[];
 
 #if defined(PWM_BACKLIGHT) || defined(COLORLCD)
@@ -399,6 +405,7 @@ extern const char STR_MULTI_OPTION[];
 extern const char STR_MULTI_VIDFREQ[];
 extern const char STR_MULTI_RFTUNE[];
 extern const char STR_MULTI_RFPOWER[];
+extern const char STR_MULTI_WBUS[];
 extern const char STR_MULTI_TELEMETRY[];
 extern const char STR_MULTI_AUTOBIND[];
 extern const char STR_DISABLE_CH_MAP[];
@@ -541,6 +548,7 @@ extern const char STR_SPECTRUM_ANALYSER_EXT[];
 extern const char STR_SPECTRUM_ANALYSER_INT[];
 extern const char STR_WAITING_FOR_RX[];
 extern const char STR_WAITING_FOR_TX[];
+extern const char STR_WAITING_FOR_MODULE[];
 extern const char STR_WARN_5VOLTS[];
 
 #if defined(SDCARD)
@@ -659,8 +667,10 @@ extern const char STR_VIEW_TEXT[];
 extern const char STR_FLASH_BOOTLOADER[];
 extern const char STR_FLASH_EXTERNAL_DEVICE[];
 extern const char STR_FLASH_RECEIVER_OTA[];
-extern const char STR_FLASH_RECEIVER_OTA_BY_EXTERNAL[];
-extern const char STR_FLASH_RECEIVER_OTA_BY_INTERNAL[];
+extern const char STR_FLASH_RECEIVER_BY_EXTERNAL_MODULE_OTA[];
+extern const char STR_FLASH_RECEIVER_BY_INTERNAL_MODULE_OTA[];
+extern const char STR_FLASH_FLIGHT_CONTROLLER_BY_EXTERNAL_MODULE_OTA[];
+extern const char STR_FLASH_FLIGHT_CONTROLLER_BY_INTERNAL_MODULE_OTA[];
 extern const char STR_FLASH_BLUETOOTH_MODULE[];
 extern const char STR_FLASH_POWER_MANAGEMENT_UNIT[];
 extern const char STR_CURRENT_VERSION[];
@@ -668,6 +678,7 @@ extern const char STR_FLASH_INTERNAL_MODULE[];
 extern const char STR_FLASH_INTERNAL_MULTI[];
 extern const char STR_FLASH_EXTERNAL_MODULE[];
 extern const char STR_FLASH_EXTERNAL_MULTI[];
+extern const char STR_FLASH_EXTERNAL_ELRS[];
 extern const char STR_FIRMWARE_UPDATE_ERROR[];
 extern const char STR_FIRMWARE_UPDATE_SUCCESS[];
 extern const char STR_WRITING[];
@@ -836,6 +847,9 @@ extern const char STR_LAYOUT[];
 extern const char STR_ADDMAINVIEW[];
 extern const char STR_BACKGROUND_COLOR[];
 extern const char STR_MAIN_COLOR[];
+extern const char STR_BAR2_COLOR[];
+extern const char STR_BAR1_COLOR[];
+extern const char STR_TEXT_COLOR[];
 extern const char STR_TEXT_VIEWER[];
 extern const char STR_RFPOWER[];
 
@@ -848,7 +862,6 @@ extern const char STR_MIN[];
 extern const char STR_MAX[];
 extern const char STR_CURVE_PRESET[];
 extern const char STR_PRESET[];
-extern const char STR_MIRROR[];
 extern const char STR_CLEAR[];
 extern const char STR_RESET[];
 extern const char STR_COUNT[];
@@ -955,6 +968,8 @@ extern const char STR_ABOUT_PARENTS_3[];
 extern const char STR_ABOUT_PARENTS_4[];
 
 extern const char STR_AUTH_FAILURE[];
+extern const char STR_PROTOCOL[];
+extern const char STR_RACING_MODE[];
 
 #define CHR_HOUR   TR_CHR_HOUR
 #define CHR_INPUT  TR_CHR_INPUT

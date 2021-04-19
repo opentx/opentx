@@ -275,11 +275,12 @@ void FlashFirmwareDialog::startFlash(const QString &filename)
   ProgressDialog progressDialog(this, tr("Write Firmware to Radio"), CompanionIcon("write_flash.png"));
 
   // check hardware compatibility if requested
+  bool checkPassed = true;
   if (g.checkHardwareCompatibility()) {
     QString tempFirmware = generateProcessUniqueTempFileName("flash-check.bin");
     if (!readFirmware(tempFirmware, progressDialog.progress())) {
       QMessageBox::warning(this, tr("Firmware check failed"), tr("Could not check firmware from radio"));
-      return;
+      checkPassed = false;
     }
     FirmwareInterface previousFirmware(tempFirmware);
     qunlink(tempFirmware);
@@ -291,41 +292,44 @@ void FlashFirmwareDialog::startFlash(const QString &filename)
         qDebug() << "startFlash: removing temporary file" << filename;
         qunlink(filename);
       }
-      return;
+      checkPassed = false;
     }
   }
 
-  // backup if requested
-  bool result = true;
-  QString backupFilename;
-  QString backupPath;
-  if (backup) {
-    backupPath = g.profile[g.id()].pBackupDir();
-    if (backupPath.isEmpty()) {
-      backupPath=g.backupDir();
+  if (checkPassed) {
+    // backup if requested
+    bool result = true;
+    QString backupFilename;
+    QString backupPath;
+    if (backup) {
+      backupPath = g.profile[g.id()].pBackupDir();
+      if (backupPath.isEmpty()) {
+        backupPath=g.backupDir();
+      }
+      backupFilename = backupPath + "/backup-" + QDateTime().currentDateTime().toString("yyyy-MM-dd-HHmmss") + ".bin";
+      result = readEeprom(backupFilename, progressDialog.progress());
+      sleep(2);
     }
-    backupFilename = backupPath + "/backup-" + QDateTime().currentDateTime().toString("yyyy-MM-dd-HHmmss") + ".bin";
-    result = readEeprom(backupFilename, progressDialog.progress());
-    sleep(2);
+
+    // flash
+    result = (result && writeFirmware(filename, progressDialog.progress()));
+
+    // restore if backup requested
+    if (backup && result) {
+      sleep(2);
+      QString restoreFilename = generateProcessUniqueTempFileName("restore.bin");
+      if (!convertEEprom(backupFilename, restoreFilename, filename)) {
+        QMessageBox::warning(this, tr("Conversion failed"), tr("Cannot convert Models and Settings for use with this firmware, original data will be used"));
+        restoreFilename = backupFilename;
+      }
+      if (!writeEeprom(restoreFilename, progressDialog.progress())) {
+        QMessageBox::warning(this, tr("Restore failed"), tr("Could not restore Models and Settings to Radio. The models and settings data file can be found at: %1").arg(backupFilename));
+      }
+    }
+
+    progressDialog.progress()->setInfo(tr("Flashing done"));
   }
-
-  // flash
-  result = (result && writeFirmware(filename, progressDialog.progress()));
-
-  // restore if backup requested
-  if (backup && result) {
-    sleep(2);
-    QString restoreFilename = generateProcessUniqueTempFileName("restore.bin");
-    if (!convertEEprom(backupFilename, restoreFilename, filename)) {
-      QMessageBox::warning(this, tr("Conversion failed"), tr("Cannot convert Models and Settings for use with this firmware, original data will be used"));
-      restoreFilename = backupFilename;
-    }
-    if (!writeEeprom(restoreFilename, progressDialog.progress())) {
-      QMessageBox::warning(this, tr("Restore failed"), tr("Could not restore Models and Settings to Radio. The models and settings data file can be found at: %1").arg(backupFilename));
-    }
-  }
-
-  progressDialog.progress()->setInfo(tr("Flashing done"));
+  
   progressDialog.exec();
 
   if (isTempFileName(filename)) {

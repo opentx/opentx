@@ -180,6 +180,8 @@ void menuModelCurveOne(event_t event)
   }
 
   drawCurve(FW);
+  if (s_currSrcRaw != MIXSRC_NONE)
+    drawCursor(applyCurrentCurve, FW);
 
   uint8_t posY = FH+1;
   attr = (s_editMode > 0 ? INVERS|BLINK : INVERS);

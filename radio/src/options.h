@@ -26,8 +26,14 @@ static const char * const options[] = {
 #if defined(AUTOUPDATE)
   "autoupdate",
 #endif
+#if defined(BLUETOOTH)
+  "bluetooth",
+#endif
 #if defined(CROSSFIRE)
   "crossfire",
+#endif
+#if defined(GHOST)
+  "ghost",
 #endif
 #if !defined(MODULE_PROTOCOL_D8)
   "eu",
@@ -40,6 +46,9 @@ static const char * const options[] = {
 #endif
 #if defined(MODULE_PROTOCOL_FLEX)
   "flexr9m",
+#endif
+#if defined(AFHDS3)
+  "afhds3",
 #endif
 #if !defined(GVARS)
   "nogvars",
@@ -85,6 +94,12 @@ static const char * const options[] = {
 #endif
 #if defined(SHUTDOWN_CONFIRMATION)
   "shutdownconfirm",
+#endif
+#if defined(HARDWARE_EXTERNAL_ACCESS_MOD)
+  "externalaccessmod",
+#endif
+#if defined(BIND_KEY)
+  "bindkey",
 #endif
   nullptr //sentinel
 };

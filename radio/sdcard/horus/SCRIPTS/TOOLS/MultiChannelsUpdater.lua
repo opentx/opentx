@@ -249,13 +249,13 @@ local function Multi_Init()
 
   --Exceptions on first 4 channels...
   local stick_names = { "Rud", "Ele", "Thr", "Ail" }
-  if ( protocol == 4 and sub_protocol ==1 ) or protocol == 19  or protocol == 52 then -- Hisky/HK310, Shenqi, ZSX
+  if ( protocol == 4 and sub_protocol == 1 ) or protocol == 19  or protocol == 52 then -- Hisky/HK310, Shenqi, ZSX
     stick_names[2] = "n-a"
     stick_names[4] = "n-a"
   elseif protocol == 43 then -- Traxxas
     stick_names[2] = "Aux4"
     stick_names[4] = "Aux3"
-  elseif protocol == 48 then -- V761
+  elseif ( protocol == 48 and sub_protocol == 0 ) then -- V761 3CH
     stick_names[4] = "n-a"
   elseif protocol == 47 or  protocol == 49 or  protocol == 58 then -- GD00x, KF606, FX816
     stick_names[1] = "n-a"
@@ -278,6 +278,15 @@ local function Multi_Init()
     ch_order = math.floor(ch_order/4)
     channel_names[bitand(ch_order,3)+1] = stick_names[1]
   end
+ 
+  --Exceptions on first 4 channels...
+  if ( protocol == 73 or (protocol == 74 and sub_protocol == 0) ) then -- Kyosho or RadioLink Surface
+    channel_names[1] = "ST"
+    channel_names[2] = "THR"
+    channel_names[3] = "CH3"
+    channel_names[4] = "CH4"
+  end
+ 
   --Check MultiChan.txt
   local f = io.open("/SCRIPTS/TOOLS/MultiChan.txt", "r")
   if f == nil then return end

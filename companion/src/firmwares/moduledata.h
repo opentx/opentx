@@ -59,6 +59,7 @@ enum PulsesProtocol {
   PULSES_XJT_LITE_D8,
   PULSES_XJT_LITE_LR12,
   PULSES_AFHDS3,
+  PULSES_GHOST,
   PULSES_PROTOCOL_LAST
 };
 
@@ -83,7 +84,7 @@ enum MultiModuleRFProtocols {
   MODULE_SUBTYPE_MULTI_MJXQ,
   MODULE_SUBTYPE_MULTI_SHENQI,
   MODULE_SUBTYPE_MULTI_FY326,
-  MODULE_SUBTYPE_MULTI_SFHSS,
+  MODULE_SUBTYPE_MULTI_FUTABA,
   MODULE_SUBTYPE_MULTI_J6PRO,
   MODULE_SUBTYPE_MULTI_FQ777,
   MODULE_SUBTYPE_MULTI_ASSAN,
@@ -114,7 +115,7 @@ enum MultiModuleRFProtocols {
   MODULE_SUBTYPE_MULTI_REDPINE,
   MODULE_SUBTYPE_MULTI_POTENSIC,
   MODULE_SUBTYPE_MULTI_ZSX,
-  MODULE_SUBTYPE_MULTI_FLYZONE,
+  MODULE_SUBTYPE_MULTI_HEIGHT,
   MODULE_SUBTYPE_MULTI_SCANNER,
   MODULE_SUBTYPE_MULTI_FRSKYX_RX,
   MODULE_SUBTYPE_MULTI_AFHDS2A_RX,
@@ -134,7 +135,15 @@ enum MultiModuleRFProtocols {
   MODULE_SUBTYPE_MULTI_DSM_RX,
   MODULE_SUBTYPE_MULTI_JJRC345,
   MODULE_SUBTYPE_MULTI_Q90C,
-  MODULE_SUBTYPE_MULTI_LAST = MODULE_SUBTYPE_MULTI_Q90C
+  MODULE_SUBTYPE_MULTI_KYOSHO,
+  MODULE_SUBTYPE_MULTI_RLINK,
+  MODULE_SUBTYPE_MULTI_ELRS,
+  MODULE_SUBTYPE_MULTI_REALACC,
+  MODULE_SUBTYPE_MULTI_OMP,
+  MODULE_SUBTYPE_MULTI_MLINK,
+  MODULE_SUBTYPE_MULTI_WFLY2,
+  MODULE_SUBTYPE_MULTI_E016HV2,
+  MODULE_SUBTYPE_MULTI_LAST = MODULE_SUBTYPE_MULTI_E016HV2
 };
 
 enum TrainerProtocol {
@@ -206,12 +215,12 @@ class ModuleData {
     struct Access {
       unsigned int receivers;
       char         receiverName[PXX2_MAX_RECEIVERS_PER_MODULE][PXX2_LEN_RX_NAME+1];
+      unsigned int racingMode;
     } access;
 
     void clear() { memset(this, 0, sizeof(ModuleData)); }
     void convert(RadioDataConversionState & cstate);
     bool isPxx2Module() const;
-    bool isPxx1Module() const;
     bool supportRxNum() const;
     QString polarityToString() const { return ppm.pulsePol ? tr("Positive") : tr("Negative"); }
     QString rfProtocolToString() const;

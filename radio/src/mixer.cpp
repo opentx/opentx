@@ -527,26 +527,37 @@ int getStickTrimValue(int stick, int stickValue)
     return 0;
 
   int trim = trims[stick];
-  if (stick == THR_STICK) {
-    if (g_model.thrTrim) {
-      int trimMin = g_model.extendedTrims ? 2*TRIM_EXTENDED_MIN : 2*TRIM_MIN;
-      trim = ((g_model.throttleReversed ? (trim+trimMin) : (trim-trimMin)) * (RESX-stickValue)) >> (RESX_SHIFT+1);
-    }
-    if (g_model.throttleReversed) {
+  uint8_t thrTrimSw = g_model.getThrottleStickTrimSource() - MIXSRC_FIRST_TRIM;
+  if (stick == thrTrimSw) {
+    if (g_model.throttleReversed)
       trim = -trim;
+    if (g_model.thrTrim) {
+      trim = (g_model.extendedTrims) ? 2*TRIM_EXTENDED_MAX + trim : 2*TRIM_MAX + trim;
+      trim = trim * (1024 - stickValue) / (2*RESX);
     }
   }
   return trim;
 }
 
-int getSourceTrimValue(int source, int stickValue=0)
+int getSourceTrimOrigin(int source)
 {
   if (source >= MIXSRC_Rud && source <= MIXSRC_Ail)
-    return getStickTrimValue(source - MIXSRC_Rud, stickValue);
+    return source - MIXSRC_Rud;
   else if (source >= MIXSRC_FIRST_INPUT && source <= MIXSRC_LAST_INPUT)
-    return getStickTrimValue(virtualInputsTrims[source - MIXSRC_FIRST_INPUT], stickValue);
+    return virtualInputsTrims[source - MIXSRC_FIRST_INPUT];
   else
+    return -1;
+}
+
+int getSourceTrimValue(int source, int stickValue=0)
+{
+  auto origin = getSourceTrimOrigin(source);
+  if (origin >= 0) {
+    return getStickTrimValue(origin, stickValue);
+  }
+  else {
     return 0;
+  }
 }
 
 uint8_t mixerCurrentFlightMode;
@@ -741,12 +752,15 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
       }
 
       if (applyOffsetAndCurve) {
-
-        //========== TRIMS ================
-        if (!(mode & e_perout_mode_notrims)) {
-          if (md->carryTrim == 0) {
-            v += getSourceTrimValue(md->srcRaw, v);
+        bool applyTrims = !(mode & e_perout_mode_notrims);
+        if (!applyTrims && g_model.thrTrim) {
+          auto origin = getSourceTrimOrigin(md->srcRaw);
+          if (origin == g_model.getThrottleStickTrimSource() - MIXSRC_FIRST_TRIM) {
+            applyTrims = true;
           }
+        }
+        if (applyTrims && md->carryTrim == 0) {
+          v += getSourceTrimValue(md->srcRaw, v);
         }
       }
 
@@ -964,6 +978,7 @@ void evalMixes(uint8_t tick10ms)
   // must be done before limits because of the applyLimit function: it checks for safety switches which would be not initialized otherwise
   if (tick10ms) {
     requiredSpeakerVolume = g_eeGeneral.speakerVolume + VOLUME_LEVEL_DEF;
+    requiredBacklightBright = g_eeGeneral.backlightBright;
 
     if (!g_model.noGlobalFunctions) {
       evalFunctions(g_eeGeneral.customFn, globalFunctionsContext);

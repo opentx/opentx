@@ -25,6 +25,8 @@
 #include "eeprominterface.h"
 #include "genericpanel.h"
 
+class CompoundItemModelFactory;
+
 namespace Ui {
   class GeneralEdit;
 }
@@ -56,7 +58,7 @@ class GeneralEdit : public QDialog
     void getGeneralSwitchDefPos(int i, bool val);
     void setSwitchDefPos();
     void updateVarioPitchRange();
-    
+
   signals:
     void modified();
 
@@ -71,7 +73,7 @@ class GeneralEdit : public QDialog
     QVector<GenericPanel *> panels;
     void addTab(GenericPanel *panel, QString text);
     void closeEvent(QCloseEvent *event);
-
+    CompoundItemModelFactory *sharedItemModels;
 };
 
 #endif // _GENERALEDIT_H_

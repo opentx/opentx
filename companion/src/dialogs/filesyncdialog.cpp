@@ -39,6 +39,8 @@
 #include <QLineEdit>
 #include <QMenu>
 #include <QSpinBox>
+#include <QMessageBox>
+#include <QPushButton>
 
 FileSyncDialog::FileSyncDialog(QWidget * parent, const SyncProcess::SyncOptions & syncOptions) :
   QDialog(parent),
