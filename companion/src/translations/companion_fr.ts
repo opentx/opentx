@@ -8982,7 +8982,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../modeledit/setup_module.ui" line="1090"/>
         <source>Racing Mode</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Mode Course/Racing</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="1110"/>
