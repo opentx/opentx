@@ -306,7 +306,7 @@ struct ModuleSyncStatus
   }
 
   // Set feedback from RF module
-  void update(uint16_t newRefreshRate, uint16_t newInputLag);
+  void update(uint16_t newRefreshRate, int16_t newInputLag);
 
   // Get computed settings for scheduler
   uint16_t getAdjustedRefreshRate();
