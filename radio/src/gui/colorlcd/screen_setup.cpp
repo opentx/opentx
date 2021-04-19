@@ -257,8 +257,6 @@ void ScreenUserInterfacePage::build(FormWindow * window)
 
   // Top Bar
   new StaticText(window, grid.getLabelSlot(), STR_TOP_BAR, 0, 0);
-  // TODO: enable settings topbar widgets
-  grid.nextLine();
 
   auto menu = this->menu;
   auto setupTopbarWidgets = new TextButton(window, grid.getFieldSlot(), STR_SETUP_WIDGETS);
