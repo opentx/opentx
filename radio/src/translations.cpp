@@ -22,6 +22,9 @@
 
 #define ISTR(x) const char STR_##x[] = LEN_##x TR_##x
 
+#if defined(COLORLCD)
+ISTR(FONT_SIZES);
+#endif
 ISTR(OFFON);
 ISTR(MMMINV);
 ISTR(VBEEPMODE);

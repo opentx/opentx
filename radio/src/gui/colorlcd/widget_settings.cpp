@@ -83,14 +83,22 @@ WidgetSettings::WidgetSettings(Window * parent, Widget * widget) :
         break;
 
       case ZoneOption::String:
+        new ModelTextEdit(form, grid.getFieldSlot(),  widget->getOptionValue(optIdx)->stringValue, sizeof( widget->getOptionValue(optIdx)->stringValue));
         break;
 
       case ZoneOption::File:
         break;
 
-      case ZoneOption::TextSize:
+      case ZoneOption::TextSize: {
+        new Choice(form, grid.getFieldSlot(), STR_FONT_SIZES, 0, FONTS_COUNT - 1,
+                                   [=]() -> int {        // getValue
+                                       return (int) widget->getOptionValue(optIdx)->unsignedValue;
+                                   },
+                                   [=](int newValue) {   // setValue
+                                       widget->getOptionValue(optIdx)->unsignedValue = (uint32_t) newValue;
+                                   });
         break;
-
+      }
       case ZoneOption::Timer: // Unsigned
       {
         auto tmChoice = new Choice(form, grid.getFieldSlot(), 0, TIMERS - 1,

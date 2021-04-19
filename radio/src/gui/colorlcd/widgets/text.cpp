@@ -33,9 +33,6 @@ class TextWidget: public Widget
 
     void paint(BitmapBuffer * dc) override
     {
-      // clear the background
-      dc->clear(DEFAULT_BGCOLOR);
-
       // get font color from options[1]
       lcdSetColor(persistentData->options[1].value.unsignedValue);
 
