@@ -2238,3 +2238,6 @@ Michael Jakob
 Dean Berg
 David Hankins
 Gary Cripps
+Devin Crumb
+Daniel Naude
+James Miller
