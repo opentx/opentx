@@ -19,6 +19,7 @@
  */
 
 #include "opentx.h"
+#include "widget.h"
 
 std::list<const WidgetFactory *> & getRegisteredWidgets()
 {
@@ -34,7 +35,7 @@ void registerWidget(const WidgetFactory * factory)
 
 const WidgetFactory * getWidgetFactory(const char * name)
 {
-  std::list<const WidgetFactory *>::const_iterator it = getRegisteredWidgets().cbegin();
+  auto it = getRegisteredWidgets().cbegin();
   for (; it != getRegisteredWidgets().cend();++it) {
     if (!strcmp(name, (*it)->getName())) {
       return (*it);
@@ -43,7 +44,7 @@ const WidgetFactory * getWidgetFactory(const char * name)
   return nullptr;
 }
 
-Widget * loadWidget(const char * name, FormGroup * parent, const rect_t & rect, Widget::PersistentData * persistentData)
+Widget * loadWidget(const char * name, FormGroup * parent, const rect_t & rect, WidgetPersistentData * persistentData)
 {
   const WidgetFactory * factory = getWidgetFactory(name);
   if (factory) {

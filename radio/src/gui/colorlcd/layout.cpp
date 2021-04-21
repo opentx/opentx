@@ -20,8 +20,8 @@
 
 #include "opentx.h"
 #include "view_main.h"
-#include "layouts/trims.h"
-#include "layouts/sliders.h"
+
+WidgetsContainer * customScreens[MAX_CUSTOM_SCREENS] = {};
 
 std::list<const LayoutFactory *> & getRegisteredLayouts()
 {
@@ -46,7 +46,11 @@ const LayoutFactory * getLayoutFactory(const char * name)
   return nullptr;
 }
 
-Layout * loadLayout(const char * name, Layout::PersistentData * persistentData)
+//
+// Loads a layout, but does not attach it to any window
+//
+WidgetsContainer *
+loadLayout(const char * name, LayoutPersistentData * persistentData)
 {
   const LayoutFactory * factory = getLayoutFactory(name);
   if (factory) {
@@ -55,13 +59,14 @@ Layout * loadLayout(const char * name, Layout::PersistentData * persistentData)
   return nullptr;
 }
 
+//
+// Detaches and deletes all custom screens
+//
 void deleteCustomScreens()
 {
-  for (unsigned int i = 0; i < MAX_CUSTOM_SCREENS; i++) {
-    auto& screen = customScreens[i];
+  for (auto& screen : customScreens) {
     if (screen) {
-      screen->detach();
-      delete screen;
+      screen->deleteLater();
       screen = nullptr;
     }
   }
@@ -75,206 +80,109 @@ void loadDefaultLayout()
   auto& screenData = g_model.screenData[0];
 
   if (screen == nullptr && defaultLayout != nullptr) {
+
     strcpy(screenData.LayoutId, defaultLayout->getId());
     screen = defaultLayout->create(&screenData.layoutData);
+    //
+    // TODO:
+    // -> attach a few default widgets
+    //    - ModelBmp
+    //    - Timer
+    //    - ???
+    //
     if (screen) {
       screen->attach(ViewMain::instance());
     }
   }
 }
 
+//
+// Loads and attaches all configured custom screens
+//
 void loadCustomScreens()
 {
-  for (unsigned int i = 0; i < MAX_CUSTOM_SCREENS; i++) {
+  unsigned i = 0;
+  auto viewMain = ViewMain::instance();
+
+  while (i < MAX_CUSTOM_SCREENS) {
 
     auto& screen = customScreens[i];
     screen = loadLayout(g_model.screenData[i].LayoutId,
                         &g_model.screenData[i].layoutData);
 
-    if (screen) {
-      screen->attach(ViewMain::instance());
+    if (!screen) {
+      // no more layouts
+      break;
     }
+
+    // layout is ok, let's add it
+    screen->attach(viewMain);
+    viewMain->setMainViewsCount(i + 1);
+    screen->setLeft(viewMain->getMainViewLeftPos(i));
+    i++;
   }
+
+  auto topbar = viewMain->getTopbar();
+
+  // TODO: how to reload this guy?
+  topbar->load();
+  
+  viewMain->setCurrentMainView(0);
+  viewMain->updateTopbarVisibility();
 }
 
-void Layout::decorate()
+//
+// Creates a new customer screen from factory:
+//  - the old screen is detached & deleted (including children)
+//  - new screen is configured into g_model
+//  - the new screen is returned (not attached)
+//
+WidgetsContainer *
+createCustomScreen(const LayoutFactory* factory, unsigned customScreenIndex)
 {
-  // check if deco setting are still up-to-date
-  uint8_t checkSettings =
-    (hasTopbar() ? 1 << 0 : 0) |
-    (hasSliders() ? 1 << 1 : 0) |
-    (hasTrims() ? 1 << 2 : 0) |
-    (hasFlightMode() ? 1 << 3 : 0);
+  if (!factory || (customScreenIndex >= MAX_CUSTOM_SCREENS))
+    return nullptr;
 
-  if (checkSettings == decorationSettings) {
-    // everything ok, exit!
+  if (customScreens[customScreenIndex]) {
+    customScreens[customScreenIndex]->deleteLater(true, false);
+    delete customScreens[customScreenIndex];
+  }
+
+  auto screen = factory->create(&g_model.screenData[customScreenIndex].layoutData);
+  customScreens[customScreenIndex] = screen;
+
+  if (screen) {
+    auto dst = g_model.screenData[customScreenIndex].LayoutId;
+    auto src = factory->getId();
+    strncpy(dst, src, sizeof(CustomScreenData::LayoutId));
+
+    return screen;
+  }
+
+  return nullptr;
+}
+
+void disposeCustomScreen(unsigned idx)
+{
+  // move custom screen data
+  if (idx >= MAX_CUSTOM_SCREENS) {
     return;
   }
 
-  // kill all decorations & re-decorate
-  for (auto deco: decorations) {
-    deco->deleteLater();
-  }
-  decorations.clear();
-  topBar = nullptr;
+  auto dst = &g_model.screenData[idx];
+  auto src = dst + 1;
+  auto len = sizeof(CustomScreenData) * (MAX_CUSTOM_SCREENS - idx - 1);
+  memmove(dst, src, len);
 
-  // effect a full redraw
-  invalidate();
-
-  // save settings
-  decorationSettings = checkSettings;
-
-  if (hasTopbar()) {
-    topBar = new TopBar(this);
-    topBar->load();
-    decorations.push_back(topBar);
-  }
-
-  if (hasSliders()) {
-#if defined(HARDWARE_EXT1) || defined(HARDWARE_EXT2)
-    coord_t yOffset = (hasTrims() ? - TRIM_SQUARE_SIZE : 0) + (hasTopbar() ? TOPBAR_HEIGHT / 2 : 0);
-#endif
-
-    decorations.push_back(
-      new MainViewHorizontalSlider(this, {HMARGIN, LCD_H - TRIM_SQUARE_SIZE, HORIZONTAL_SLIDERS_WIDTH, TRIM_SQUARE_SIZE},
-                                   [=] { return calibratedAnalogs[CALIBRATED_POT1]; })
-    );
-
-    if (IS_POT_MULTIPOS(POT2)) {
-      decorations.push_back(
-        new MainView6POS(this, {LCD_W / 2 - MULTIPOS_W / 2, LCD_H - TRIM_SQUARE_SIZE, MULTIPOS_W + 1, MULTIPOS_H},
-                         [=] { return (1 + (potsPos[1] & 0x0f)); })
-      );
-    }
-    else if (IS_POT(POT2)) {
-      decorations.push_back(
-        new MainViewHorizontalSlider(this, {LCD_W - HORIZONTAL_SLIDERS_WIDTH - HMARGIN, LCD_H - TRIM_SQUARE_SIZE, HORIZONTAL_SLIDERS_WIDTH, TRIM_SQUARE_SIZE},
-                                     [=] { return calibratedAnalogs[CALIBRATED_POT2]; })
-      );
-    }
-
-#if defined(HARDWARE_POT3)
-    decorations.push_back(
-      new MainViewHorizontalSlider(this, {LCD_W - HORIZONTAL_SLIDERS_WIDTH - HMARGIN, LCD_H - TRIM_SQUARE_SIZE, HORIZONTAL_SLIDERS_WIDTH, TRIM_SQUARE_SIZE},
-                                   [=] { return calibratedAnalogs[CALIBRATED_POT3]; })
-    );
-#endif
-
-#if defined(HARDWARE_EXT1)
-    if (IS_POT_SLIDER_AVAILABLE(EXT1)) {
-      decorations.push_back(
-        new MainViewVerticalSlider(this, {HMARGIN, LCD_H / 2 - VERTICAL_SLIDERS_HEIGHT(hasTopbar()) / 2 + yOffset, TRIM_SQUARE_SIZE, VERTICAL_SLIDERS_HEIGHT(hasTopbar()) / 2},
-                                   [=] { return calibratedAnalogs[CALIBRATED_SLIDER_REAR_LEFT]; })
-      );
-      decorations.push_back(
-        new MainViewVerticalSlider(this, {HMARGIN, LCD_H / 2 + yOffset, TRIM_SQUARE_SIZE, VERTICAL_SLIDERS_HEIGHT(hasTopbar()) / 2},
-                                   [=] { return calibratedAnalogs[CALIBRATED_POT_EXT1]; })
-      );
-    }
-    else {
-      decorations.push_back(
-        new MainViewVerticalSlider(this, {HMARGIN, LCD_H / 2 - VERTICAL_SLIDERS_HEIGHT(hasTopbar()) / 2 + yOffset, TRIM_SQUARE_SIZE, VERTICAL_SLIDERS_HEIGHT(hasTopbar())},
-                                   [=] { return calibratedAnalogs[CALIBRATED_SLIDER_REAR_LEFT]; })
-      );
-    }
-#endif
-
-#if defined(HARDWARE_EXT2)
-    if (IS_POT_SLIDER_AVAILABLE(EXT2)) {
-      decorations.push_back(
-        new MainViewVerticalSlider(this, {LCD_W - HMARGIN - TRIM_SQUARE_SIZE, LCD_H / 2 - VERTICAL_SLIDERS_HEIGHT(hasTopbar()) / 2 + yOffset, TRIM_SQUARE_SIZE,
-                                        VERTICAL_SLIDERS_HEIGHT(hasTopbar()) / 2},
-                                   [=] { return calibratedAnalogs[CALIBRATED_SLIDER_REAR_RIGHT]; })
-      );
-      decorations.push_back(
-        new MainViewVerticalSlider(this, {LCD_W - HMARGIN - TRIM_SQUARE_SIZE, LCD_H / 2 + yOffset, TRIM_SQUARE_SIZE,
-                                        VERTICAL_SLIDERS_HEIGHT(hasTopbar()) / 2},
-                                   [=] { return calibratedAnalogs[CALIBRATED_POT_EXT2]; })
-      );
-    }
-    else {
-      decorations.push_back(
-        new MainViewVerticalSlider(this, {LCD_W - HMARGIN - TRIM_SQUARE_SIZE, LCD_H / 2 - VERTICAL_SLIDERS_HEIGHT(hasTopbar()) / 2 + yOffset, TRIM_SQUARE_SIZE,
-                                        VERTICAL_SLIDERS_HEIGHT(hasTopbar())},
-                                   [=] { return calibratedAnalogs[CALIBRATED_SLIDER_REAR_RIGHT]; })
-      );
-    }
-#endif
-  }
-
-  if (hasTrims()) {
-#if defined(HARDWARE_POT3) || defined(HARDWARE_EXT1)
-    coord_t xOffset = hasSliders() ? TRIM_SQUARE_SIZE : 0;
-#else
-    coord_t xOffset = 0;
-#endif
-    coord_t yOffset = (hasTrims() ? - TRIM_SQUARE_SIZE : 0);
-
-    // Trim order TRIM_LH, TRIM_LV, TRIM_RV, TRIM_RH
-
-    // Left
-    decorations.push_back(
-      new MainViewHorizontalTrim(this, {HMARGIN, LCD_H - TRIM_SQUARE_SIZE + yOffset, HORIZONTAL_SLIDERS_WIDTH, TRIM_SQUARE_SIZE},
-                                 [=] { return getTrimValue(mixerCurrentFlightMode, 0); })
-    );
-
-    // Right
-    decorations.push_back(
-      new MainViewHorizontalTrim(this, {LCD_W - HORIZONTAL_SLIDERS_WIDTH - HMARGIN, LCD_H - TRIM_SQUARE_SIZE + yOffset, HORIZONTAL_SLIDERS_WIDTH, TRIM_SQUARE_SIZE},
-                                 [=] { return getTrimValue(mixerCurrentFlightMode, 3); })
-    );
-
-    // Left
-    decorations.push_back(
-      new MainViewVerticalTrim(this, {HMARGIN + xOffset, LCD_H /2 - VERTICAL_SLIDERS_HEIGHT(hasTopbar()) / 2 + yOffset + (hasTopbar() ? TOPBAR_HEIGHT / 2 : 0), TRIM_SQUARE_SIZE, VERTICAL_SLIDERS_HEIGHT(hasTopbar())},
-                               [=] { return getTrimValue(mixerCurrentFlightMode, 1); })
-    );
-
-    // Right
-    decorations.push_back(
-      new MainViewVerticalTrim(this, {LCD_W - HMARGIN - TRIM_SQUARE_SIZE - xOffset, LCD_H /2 - VERTICAL_SLIDERS_HEIGHT(hasTopbar()) / 2 + yOffset + (hasTopbar() ? TOPBAR_HEIGHT / 2 : 0), TRIM_SQUARE_SIZE, VERTICAL_SLIDERS_HEIGHT(hasTopbar())},
-                               [=] { return getTrimValue(mixerCurrentFlightMode, 2); })
-    );
-  }
-
-  if (hasFlightMode()) {
-    decorations.push_back(
-      new DynamicText(this, {50, LCD_H - 4 - (hasSliders() ? 2 * TRIM_SQUARE_SIZE: TRIM_SQUARE_SIZE), LCD_W - 100, 20}, [=] {
-        return g_model.flightModeData[mixerCurrentFlightMode].name;
-      }, CENTERED)
-    );
-  }
+  dst = &g_model.screenData[MAX_CUSTOM_SCREENS - 1];
+  len = sizeof(CustomScreenData);
+  memset(dst, 0, len);
 }
 
-rect_t Layout::getMainZone(rect_t zone) const
+LayoutFactory::LayoutFactory(const char * id, const char * name):
+  id(id),
+  name(name)
 {
-  if (hasTopbar()) {
-    zone.y += MENU_HEADER_HEIGHT;
-    zone.h -= MENU_HEADER_HEIGHT;
-  }
+  registerLayout(this);
+}
 
-  if (hasFlightMode() || hasTrims()) {
-    zone.h -= TRIM_SQUARE_SIZE;
-  }
-
-  if (hasSliders()) {
-#if NUM_SLIDERS + NUM_POTS > 2
-    zone.h -= TRIM_SQUARE_SIZE;
-#endif
-    zone.w -= 2 * TRIM_SQUARE_SIZE;
-    zone.x += TRIM_SQUARE_SIZE;
-  }
-
-  if (hasTrims()) {
-    zone.w -= 2 * TRIM_SQUARE_SIZE;
-    zone.x += TRIM_SQUARE_SIZE;
-  }
-
-  if (zone.w % 2 != 0)
-    zone.w -= 1;
-
-  if (zone.h % 2 != 0)
-    zone.h -= 1;
-
-  return zone;
-}    

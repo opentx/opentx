@@ -21,22 +21,29 @@
 #include "opentx.h"
 #include "menu_screen.h"
 #include "screen_setup.h"
+#include "view_main.h"
+#include "storage/storage.h"
 
 ScreenMenu::ScreenMenu():
   TabsGroup(ICON_THEME)
 {
   updateTabs();
+
+  setCloseHandler([]{
+      ViewMain::instance()->updateTopbarVisibility();
+      storageDirty(EE_MODEL);
+  });
 }
 
 void ScreenMenu::updateTabs()
 {
   removeAllTabs();
 
-  addTab(new ScreenUserInterfacePage());
+  addTab(new ScreenUserInterfacePage(this));
 
   for (int index = 0; index < MAX_CUSTOM_SCREENS; index++) {
     if (customScreens[index]) {
-      auto tab = new ScreenSetupPage(this, customScreens[index], g_model.screenData[index]);
+      auto tab = new ScreenSetupPage(this, getTabs(), index);
       std::string title(STR_MAIN_VIEW_X);
       title.back() = index + '1';
       tab->setTitle(title);
@@ -45,7 +52,7 @@ void ScreenMenu::updateTabs()
       addTab(tab);
     }
     else {
-      addTab(new ScreenAddPage(this, index));
+      addTab(new ScreenAddPage(this, getTabs()));
       break;
     }
   }

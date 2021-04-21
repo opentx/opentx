@@ -20,6 +20,7 @@
 
 #include "model_flightmodes.h"
 #include "opentx.h"
+#include "libopenui.h"
 
 #define SET_DIRTY()     storageDirty(EE_MODEL)
 
@@ -88,7 +89,7 @@ void ModelFlightModesPage::build(FormWindow * window)
 
     // Flight mode name
     new StaticText(group, grid.getLabelSlot(true), STR_NAME);
-    new TextEdit(group, grid.getFieldSlot(), g_model.flightModeData[i].name, LEN_FLIGHT_MODE_NAME);
+    new ModelTextEdit(group, grid.getFieldSlot(), g_model.flightModeData[i].name, LEN_FLIGHT_MODE_NAME);
     grid.nextLine();
 
     // Flight mode switch

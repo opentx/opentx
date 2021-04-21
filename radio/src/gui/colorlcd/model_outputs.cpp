@@ -54,7 +54,7 @@ class OutputEditWindow : public Page {
 
       // Name
       new StaticText(window, grid.getLabelSlot(), STR_NAME);
-      new TextEdit(window, grid.getFieldSlot(), output->name, sizeof(output->name));
+      new RadioTextEdit(window, grid.getFieldSlot(), output->name, sizeof(output->name));
       grid.nextLine();
 
       // Offset

@@ -398,11 +398,11 @@ PACK(struct TelemetrySensor_218 {
 #if defined(PCBHORUS)
   PACK(struct CustomScreenData_v218 {
     char LayoutId[10];
-    Layout::PersistentData layoutData;
+    LayoutPersistentData layoutData;
   });
   #define VIEW_DATA \
     CustomScreenData screenData[MAX_CUSTOM_SCREENS]; \
-    TopBar::PersistentData topbarData; \
+    TopBarPersistentData topbarData; \
     uint8_t view;
 #elif defined(PCBTARANIS)
   #define VIEW_DATA   uint8_t view;

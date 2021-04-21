@@ -18,9 +18,8 @@
  * GNU General Public License for more details.
  */
 
-#include "opentx.h"
-
-constexpr coord_t border = 10;
+#include "layout.h"
+#include "layout_factory_impl.h"
 
 const uint8_t LBM_LAYOUT_2x4[] = {
 #include "mask_layout2x4.lbm"
@@ -40,7 +39,7 @@ class Layout2x4: public Layout
   public:
 
     enum {
-      OPTION_PANEL1_BACKGROUND = OPTION_LAST_DEFAULT + 1,
+      OPTION_PANEL1_BACKGROUND = LAYOUT_OPTION_LAST_DEFAULT + 1,
       OPTION_PANEL1_COLOR,
       OPTION_PANEL2_BACKGROUND,
       OPTION_PANEL2_COLOR
@@ -54,10 +53,10 @@ class Layout2x4: public Layout
     void create() override
     {
       Layout::create();
-      setOptionValue(OPTION_PANEL1_BACKGROUND, OPTION_VALUE_BOOL(true));
-      setOptionValue(OPTION_PANEL1_COLOR, OPTION_VALUE_UNSIGNED( RGB(77,112,203)));
-      setOptionValue(OPTION_PANEL2_BACKGROUND, OPTION_VALUE_BOOL(true));
-      setOptionValue(OPTION_PANEL2_COLOR, OPTION_VALUE_UNSIGNED( RGB(77,112,203)));
+      getOptionValue(OPTION_PANEL1_BACKGROUND)->boolValue = true;
+      getOptionValue(OPTION_PANEL1_COLOR)->unsignedValue  =  RGB(77,112,203);
+      getOptionValue(OPTION_PANEL2_BACKGROUND)->boolValue = true;
+      getOptionValue(OPTION_PANEL2_COLOR)->unsignedValue  =  RGB(77,112,203);
     }
 
     unsigned int getZonesCount() const override
@@ -67,7 +66,7 @@ class Layout2x4: public Layout
 
     rect_t getZone(unsigned int index) const override
     {
-      rect_t zone = getMainZone({border, border, LCD_W - 2 * border, LCD_H - 2 * border});
+      rect_t zone = getMainZone();
 
       zone.w /= 2;
       zone.h /= 4;

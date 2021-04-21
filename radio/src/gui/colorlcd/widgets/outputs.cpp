@@ -19,11 +19,15 @@
  */
 
 #include "opentx.h"
+#include "widgets_container_impl.h"
 
 #define RECT_BORDER                    1
 #define ROW_HEIGHT                     17
 
 #define VIEW_CHANNELS_LIMIT_PCT        (g_model.extendedLimits ? LIMIT_EXT_PERCENT : 100)
+
+constexpr uint32_t OUTPUTS_REFRESH = 1000 / 5; // 5 Hz
+
 
 class OutputsWidget: public Widget
 {
@@ -100,11 +104,23 @@ class OutputsWidget: public Widget
     void checkEvents() override
     {
       Widget::checkEvents();
+
+      // Last time we refreshed the window
+      uint32_t now = RTOS_GET_MS();
+      if (now - lastRefresh >= OUTPUTS_REFRESH) {
+        lastRefresh = now;
+        invalidate();
+      }
+      
       invalidate();
     }
 
 
     static const ZoneOption options[];
+
+  protected:
+    // Last time we refreshed the window
+    uint32_t lastRefresh = 0;
 };
 
 const ZoneOption OutputsWidget::options[] = {

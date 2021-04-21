@@ -19,6 +19,7 @@
  */
 
 #include "opentx.h"
+#include "widgets_container_impl.h"
 
 #define TEXT_WIDGET_DEFAULT_LABEL  'M', 'y', ' ', 'L', 'a', 'b', 'e', 'l' // "My Label"
 
@@ -32,9 +33,6 @@ class TextWidget: public Widget
 
     void paint(BitmapBuffer * dc) override
     {
-      // clear the background
-      dc->clear(DEFAULT_BGCOLOR);
-
       // get font color from options[1]
       lcdSetColor(persistentData->options[1].value.unsignedValue);
 

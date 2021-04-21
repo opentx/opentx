@@ -19,6 +19,8 @@
  */
 
 #include "opentx.h"
+#include "libopenui.h"
+
 //#include "checkbox.h"
 //#include "modal_window.h"
 

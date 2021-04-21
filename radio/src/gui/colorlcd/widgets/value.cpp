@@ -19,6 +19,7 @@
  */
 
 #include "opentx.h"
+#include "widgets_container_impl.h"
 
 const coord_t NUMBERS_PADDING = 4;
 
@@ -32,10 +33,6 @@ class ValueWidget: public Widget
 
     void paint(BitmapBuffer * dc) override
     {
-      // draw the background and border
-      dc->clear(DEFAULT_BGCOLOR);
-      dc->drawFilledRect(0,0, width(), height(), SOLID, MAINVIEW_PANES_COLOR | OPACITY(5));
-
       // get source from options[0]
       mixsrc_t field = persistentData->options[0].value.unsignedValue;
 
@@ -50,8 +47,8 @@ class ValueWidget: public Widget
         yValue = 14;
         xLabel = 0;
         yLabel = 0;
-        attrValue = LEFT | NO_UNIT | FONT(XS);
-        attrLabel = FONT(XS);
+        attrValue = LEFT | NO_UNIT | FONT(L);
+        attrLabel = LEFT;
       }
       else if (height() < 50) {
         xValue = width() - NUMBERS_PADDING;

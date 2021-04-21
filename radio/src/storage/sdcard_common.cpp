@@ -60,6 +60,7 @@ void storageFormat()
   sdCheckAndCreateDirectory(RADIO_PATH);
   sdCheckAndCreateDirectory(MODELS_PATH);
   storageCreateModelsList();
+  generalDefault();
 }
 
 void storageCheck(bool immediately)
@@ -148,6 +149,19 @@ void storageReadAll()
     }
   }
 
+  // Current model filename is empty...
+  // Let's fix it!
+  if (strlen(g_eeGeneral.currModelFilename) == 0) {
+
+    // sizeof(currModelFilename) == LEN_MODEL_FILENAME + 1
+    // make sure it is terminated (see doc for strncpy())
+    strncpy(g_eeGeneral.currModelFilename, DEFAULT_MODEL_FILENAME, LEN_MODEL_FILENAME);
+    g_eeGeneral.currModelFilename[LEN_MODEL_FILENAME] = '\0';
+
+    storageDirty(EE_GENERAL);
+    storageCheck(true);
+  }
+  
   if (loadModel(g_eeGeneral.currModelFilename, false) != nullptr) {
     TRACE("No current model or SD card error");
   }

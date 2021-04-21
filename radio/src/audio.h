@@ -25,6 +25,7 @@
 #include <string.h>
 #include "ff.h"
 #include "opentx_types.h"
+#include "dataconstants.h"
 
 /*
   Implements a bit field, number of bits is set by the template,

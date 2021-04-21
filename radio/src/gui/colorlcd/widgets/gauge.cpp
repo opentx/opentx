@@ -19,6 +19,7 @@
  */
 
 #include "opentx.h"
+#include "widgets_container_impl.h"
 
 class GaugeWidget: public Widget
 {

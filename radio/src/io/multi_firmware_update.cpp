@@ -25,6 +25,12 @@
 #include "stk500.h"
 #include "debug.h"
 
+#if defined(LIBOPENUI)
+  #include "libopenui.h"
+#else
+  #include "libopenui/src/libopenui_file.h"
+#endif
+
 #define UPDATE_MULTI_EXT_BIN ".bin"
 
 class MultiFirmwareUpdateDriver

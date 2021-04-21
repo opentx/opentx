@@ -152,6 +152,7 @@ extern const char STR_USBMODES[];
 extern const char STR_JACK_MODES[];
 extern const char STR_VFAILSAFE[];
 
+extern const char STR_FONT_SIZES[];
 extern const char STR_VTRAINERMODES[];
 extern const char STR_EXTERNAL_MODULE_PROTOCOLS[];
 extern const char STR_INTERNAL_MODULE_PROTOCOLS[];

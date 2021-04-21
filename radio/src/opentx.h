@@ -27,10 +27,6 @@
 #include "opentx_helpers.h"
 #include "touch.h"
 
-#if defined(LIBOPENUI)
-#include "libopenui.h"
-#endif
-
 #if defined(SIMU)
 #include "targets/simu/simpgmspace.h"
 #endif

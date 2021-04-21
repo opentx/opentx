@@ -242,7 +242,7 @@ void GVarEditWindow::buildBody(FormWindow * window)
   grid.spacer(8);
 
   new StaticText(window, grid.getLabelSlot(), STR_NAME);
-  new TextEdit(window, grid.getFieldSlot(), gvar->name, LEN_GVAR_NAME);
+  new RadioTextEdit(window, grid.getFieldSlot(), gvar->name, LEN_GVAR_NAME);
 
   grid.nextLine();
 

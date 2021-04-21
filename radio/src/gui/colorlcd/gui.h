@@ -47,7 +47,7 @@ void drawCurveHorizontalScale();
 void drawCurveCoord(int x, int y, const char * text, bool active=false);
 void drawCurvePoint(int x, int y, LcdFlags color);
 
-extern Layout * customScreens[MAX_CUSTOM_SCREENS];
+extern WidgetsContainer * customScreens[MAX_CUSTOM_SCREENS];
 
 void drawAlertBox(const char * title, const char * text, const char * action);
 void showAlertBox(const char * title, const char * text, const char * action, uint8_t sound);

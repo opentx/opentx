@@ -27,7 +27,12 @@
 #include "bin_allocator.h"
 #include "lua_api.h"
 #include "sdcard.h"
-#include "libopenui/src/libopenui_file.h"
+
+#if defined(LIBOPENUI)
+  #include "libopenui.h"
+#else
+  #include "libopenui/src/libopenui_file.h"
+#endif
 
 extern "C" {
   #include <lundump.h>

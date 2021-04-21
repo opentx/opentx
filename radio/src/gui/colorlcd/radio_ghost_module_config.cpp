@@ -20,6 +20,7 @@
 
 #include "opentx.h"
 #include "radio_ghost_module_config.h"
+#include "libopenui.h"
 
 class GhostModuleConfigWindow: public Window
 {

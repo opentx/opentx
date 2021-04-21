@@ -21,6 +21,7 @@
 #define _GVAR_NUMBEREDIT_H_
 
 #include "form.h"
+#include "choice.h"
 #include "numberedit.h"
 #include "gvars.h"
 

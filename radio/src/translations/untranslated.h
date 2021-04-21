@@ -100,6 +100,16 @@
 #define TR_MODULE_R9M_LITE "R9MLite\0    "
 #endif
 
+#if defined(COLORLCD)
+#if defined(BOLD)
+#define LEN_FONT_SIZES                "\003"
+#define TR_FONT_SIZES                 "STD"
+#else
+#define LEN_FONT_SIZES                "\004"
+#define TR_FONT_SIZES                 "STD\0""BOLD""XXS\0""XS\0 ""L\0  ""XL\0 ""XXL\0"
+#endif
+#endif
+
 #define LEN_EXTERNAL_MODULE_PROTOCOLS  "\014"
 #define TR_EXTERNAL_MODULE_PROTOCOLS   "OFF\0        ""PPM\0        ""XJT\0        ""ISRM\0       ""DSM2\0       ""CRSF\0       ""MULTI\0      ""R9M\0        ""R9M ACCESS\0 " TR_MODULE_R9M_LITE "R9ML ACCESS\0""GHST\0       ""R9MLP ACCESS""SBUS\0       ""XJT Lite\0   ""AFHDS3\0  "
 

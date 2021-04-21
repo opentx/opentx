@@ -18,32 +18,48 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _TOPBAR_H_
-#define _TOPBAR_H_
+#pragma once
 
-#include "widgets_container.h"
+#include "layout.h"
 
-#define MAX_TOPBAR_ZONES               4
-#define MAX_TOPBAR_OPTIONS             1 // just because of VC++ which doesn't like 0-size arrays :(
-#define TOPBAR_ZONE_WIDTH              70
+constexpr coord_t TOPBAR_ZONE_WIDTH  = 70;
 constexpr coord_t TOPBAR_ZONE_MARGIN = 3;
 constexpr coord_t TOPBAR_HEIGHT = MENU_HEADER_HEIGHT - 2 * TOPBAR_ZONE_MARGIN;
 
-class TopBar: public WidgetsContainer<MAX_TOPBAR_ZONES, MAX_TOPBAR_OPTIONS>
+class ScreenMenu;
+class TopbarImpl;
+
+class Topbar
 {
   public:
-    explicit TopBar(Window * parent);
-
-    unsigned int getZonesCount() const override;
-
-    rect_t getZone(unsigned int index) const override;
-
-    void paint(BitmapBuffer * dc) override;
-
-    void checkEvents() override
-    {
-      invalidate();
-    }
+    virtual void load() = 0;
 };
 
-#endif // _TOPBAR_H_
+class TopbarFactory
+{
+public:
+  static Topbar * create(Window * parent);
+};
+
+class SetupTopBarWidgetsPage: public FormWindow
+{
+  public:
+    explicit SetupTopBarWidgetsPage(ScreenMenu* menu);
+
+#if defined(DEBUG_WINDOWS)
+    std::string getName() const override
+    {
+      return "SetupTopBarWidgetsPage";
+    }
+#endif
+
+    void deleteLater(bool detach = true, bool trash = true) override;
+
+#if defined(HARDWARE_KEYS)
+    void onEvent(event_t event) override;
+#endif
+
+  protected:
+    ScreenMenu* menu;
+    unsigned savedView = 0;
+};

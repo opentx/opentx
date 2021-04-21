@@ -21,6 +21,10 @@
 #include "opentx.h"
 #include "ff.h"
 
+#if defined(LIBOPENUI)
+  #include "libopenui.h"
+#endif
+
 FIL g_oLogFile __DMA;
 const char * g_logError = nullptr;
 uint8_t logDelay;

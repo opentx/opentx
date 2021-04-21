@@ -13,10 +13,10 @@
   #define OPTION_VALUE_BOOL(x)        {  bool(x) }
   #define OPTION_VALUE_STRING(...)    { *(ZoneOptionValue *)(const char *) #__VA_ARGS__ }
 #else
-  #define OPTION_VALUE_UNSIGNED(x) { .unsignedValue = (x) }
-  #define OPTION_VALUE_SIGNED(x)   { .signedValue = (x) }
-  #define OPTION_VALUE_BOOL(x)     { .boolValue = (x) }
-  #define OPTION_VALUE_STRING(...) { .stringValue = { __VA_ARGS__ } }
+  #define OPTION_VALUE_UNSIGNED(x) ZoneOptionValue{ .unsignedValue = (x) }
+  #define OPTION_VALUE_SIGNED(x)   ZoneOptionValue{ .signedValue = (x) }
+  #define OPTION_VALUE_BOOL(x)     ZoneOptionValue{ .boolValue = (x) }
+  #define OPTION_VALUE_STRING(...) ZoneOptionValue{ .stringValue = { __VA_ARGS__ } }
 #endif
 
 union ZoneOptionValue

@@ -21,6 +21,12 @@
 #include "opentx.h"
 #include "bootloader_flash.h"
 
+#if defined(LIBOPENUI)
+  #include "libopenui.h"
+#else
+  #include "libopenui/src/libopenui_file.h"
+#endif
+
 bool isBootloader(const char * filename)
 {
   FIL file;

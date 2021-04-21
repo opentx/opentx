@@ -18,35 +18,32 @@
  * GNU General Public License for more details.
  */
 
-#include "layout.h"
-#include "layout_factory_impl.h"
+#pragma once
 
-const uint8_t LBM_LAYOUT_1x1[] = {
-#include "mask_layout1x1.lbm"
-};
+#include "libopenui.h"
+#include "textedit.h"
+#include "storage/storage.h"
 
-const ZoneOption OPTIONS_LAYOUT_1x1[] = {
-  LAYOUT_COMMON_OPTIONS,
-  LAYOUT_OPTIONS_END
-};
-
-class Layout1x1: public Layout
+class ModelTextEdit: public TextEdit
 {
   public:
-    Layout1x1(const LayoutFactory * factory, Layout::PersistentData * persistentData):
-      Layout(factory, persistentData)
+    ModelTextEdit(Window * parent, const rect_t & rect, char * value, uint8_t length, LcdFlags windowFlags = 0):
+      TextEdit(parent, rect, value, length, windowFlags)
     {
-    }
-
-    unsigned int getZonesCount() const override
-    {
-      return 1;
-    }
-
-    rect_t getZone(unsigned int index) const override
-    {
-      return getMainZone();
+      setChangeHandler([](){
+          storageDirty(EE_MODEL);
+      });
     }
 };
 
-BaseLayoutFactory<Layout1x1> layout1x1("Layout1x1", "Fullscreen", LBM_LAYOUT_1x1, OPTIONS_LAYOUT_1x1);
+class RadioTextEdit: public TextEdit
+{
+  public:
+    RadioTextEdit(Window * parent, const rect_t & rect, char * value, uint8_t length, LcdFlags windowFlags = 0):
+      TextEdit(parent, rect, value, length, windowFlags)
+    {
+      setChangeHandler([](){
+          storageDirty(EE_GENERAL);
+      });
+    }
+};

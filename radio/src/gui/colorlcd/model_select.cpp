@@ -22,6 +22,7 @@
 #include "model_select.h"
 #include "opentx.h"
 #include "storage/modelslist.h"
+#include "libopenui.h"
 
 #define CATEGORIES_WIDTH               120
 #define MODELS_LEFT                    123

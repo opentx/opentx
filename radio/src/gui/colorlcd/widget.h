@@ -23,10 +23,8 @@
 #include <list>
 #include <string.h>
 #include "form.h"
-#include "zone.h"
+#include "widgets_container.h"
 #include "debug.h"
-
-#define MAX_WIDGET_OPTIONS             5
 
 // YAML_GENERATOR defs
 #if !defined(USE_IDX)
@@ -34,15 +32,15 @@
 #endif
 
 class WidgetFactory;
-class Widget : public FormField
+
+class Widget : public Window
 {
   public:
-    struct PersistentData {
-      ZoneOptionValueTyped options[MAX_WIDGET_OPTIONS] USE_IDX;
-    };
 
-    Widget(const WidgetFactory * factory, FormGroup * parent, const rect_t & rect, PersistentData * persistentData):
-      FormField(parent, rect),
+    typedef WidgetPersistentData PersistentData;
+
+    Widget(const WidgetFactory * factory, FormGroup * parent, const rect_t & rect, WidgetPersistentData * persistentData):
+      Window(parent, rect),
       factory(factory),
       persistentData(persistentData)
     {
@@ -71,24 +69,29 @@ class Widget : public FormField
       return &persistentData->options[index].value;
     }
 
-    inline void setOptionValue(unsigned int index, const ZoneOptionValue& value)
-    {
-      persistentData->options[index].value = value;
-    }
+    // 
+    // TODO: for some reason, this one crashes on the radio...
+    //
+    // inline void setOptionValue(unsigned int index, const ZoneOptionValue& value)
+    // {
+    //   persistentData->options[index].value = value;
+    // }
 
     inline PersistentData * getPersistentData()
     {
       return persistentData;
     }
     
-    void paint(BitmapBuffer * dc) override
-    {
-      FormField::paint(dc);
-    }
-  
     virtual void background()
     {
     }
+
+#if defined(DEBUG_WINDOWS)
+    std::string getName() const override
+    {
+      return "Widget";
+    }
+#endif
 
   protected:
     const WidgetFactory * factory;
@@ -122,11 +125,11 @@ class WidgetFactory
       memset(persistentData, 0, sizeof(Widget::PersistentData));
       if (options) {
         int i = 0;
-        for (const ZoneOption * option = options; option->name; option++) {
+        for (const ZoneOption * option = options; option->name; option++, i++) {
           TRACE("WidgetFactory::initPersistentData() setting option '%s'", option->name);
           // TODO compiler bug? The CPU freezes ... persistentData->options[i++] = option->deflt;
-          memcpy(&persistentData->options[i++].value, &option->deflt, sizeof(ZoneOptionValue));
-          persistentData->options[i++].type = zoneValueEnumFromType(option->type);
+          memcpy(&persistentData->options[i].value, &option->deflt, sizeof(ZoneOptionValue));
+          persistentData->options[i].type = zoneValueEnumFromType(option->type);
         }
       }
     }
@@ -136,25 +139,6 @@ class WidgetFactory
   protected:
     const char * name;
     const ZoneOption * options;
-};
-
-template<class T>
-class BaseWidgetFactory: public WidgetFactory
-{
-  public:
-    BaseWidgetFactory(const char * name, const ZoneOption * options):
-      WidgetFactory(name, options)
-    {
-    }
-
-    Widget * create(FormGroup * parent, const rect_t & rect, Widget::PersistentData * persistentData, bool init = true) const override
-    {
-      if (init) {
-        initPersistentData(persistentData);
-      }
-
-      return new T(this, parent, rect, persistentData);
-    }
 };
 
 inline const ZoneOption * Widget::getOptions() const

@@ -20,6 +20,7 @@
 
 #include "opentx.h"
 #include "radio_diaganas.h"
+#include "libopenui.h"
 
 constexpr coord_t ANA_OFFSET = 150;
 

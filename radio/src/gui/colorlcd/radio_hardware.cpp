@@ -23,6 +23,7 @@
 #include "radio_diagkeys.h"
 #include "radio_diaganas.h"
 #include "opentx.h"
+#include "libopenui.h"
 
 #define SET_DIRTY() storageDirty(EE_GENERAL)
 
@@ -135,7 +136,7 @@ class BluetoothConfigWindow : public FormGroup
 
         // BT radio name
         new StaticText(this, grid.getLabelSlot(true), STR_NAME);
-        new TextEdit(this, grid.getFieldSlot(), g_eeGeneral.bluetoothName, LEN_BLUETOOTH_NAME);
+        new RadioTextEdit(this, grid.getFieldSlot(), g_eeGeneral.bluetoothName, LEN_BLUETOOTH_NAME);
         grid.nextLine();
       }
 
@@ -174,7 +175,7 @@ void RadioHardwarePage::build(FormWindow * window)
   grid.nextLine();
   for (int i = 0; i < NUM_STICKS; i++) {
     new StaticText(window, grid.getLabelSlot(true), TEXT_AT_INDEX(STR_VSRCRAW, (i + 1)));
-    new TextEdit(window, grid.getFieldSlot(2,0), g_eeGeneral.anaNames[i], LEN_ANA_NAME);
+    new RadioTextEdit(window, grid.getFieldSlot(2,0), g_eeGeneral.anaNames[i], LEN_ANA_NAME);
     grid.nextLine();
   }
 
@@ -183,7 +184,7 @@ void RadioHardwarePage::build(FormWindow * window)
   grid.nextLine();
   for (int i = 0; i < NUM_POTS; i++) {
     new StaticText(window, grid.getLabelSlot(true), TEXT_AT_INDEX(STR_VSRCRAW, (i + NUM_STICKS + 1)));
-    new TextEdit(window, grid.getFieldSlot(2,0), g_eeGeneral.anaNames[i + NUM_STICKS], LEN_ANA_NAME);
+    new RadioTextEdit(window, grid.getFieldSlot(2,0), g_eeGeneral.anaNames[i + NUM_STICKS], LEN_ANA_NAME);
     new Choice(window, grid.getFieldSlot(2,1), STR_POTTYPES, POT_NONE, POT_WITHOUT_DETENT,
                [=]() -> int {
                    return bfGet<uint32_t>(g_eeGeneral.potsConfig, 2*i, 2);
@@ -200,7 +201,7 @@ void RadioHardwarePage::build(FormWindow * window)
   grid.nextLine();
   for (int i = 0; i < NUM_SLIDERS; i++) {
     new StaticText(window, grid.getLabelSlot(true), TEXT_AT_INDEX(STR_VSRCRAW, (i + NUM_STICKS + NUM_POTS + 1)));
-    new TextEdit(window, grid.getFieldSlot(2,0), g_eeGeneral.anaNames[i + NUM_STICKS], LEN_ANA_NAME);
+    new RadioTextEdit(window, grid.getFieldSlot(2,0), g_eeGeneral.anaNames[i + NUM_STICKS], LEN_ANA_NAME);
     new Choice(window, grid.getFieldSlot(2,1), STR_SLIDERTYPES, SLIDER_NONE, SLIDER_WITH_DETENT,
                [=]() -> int {
                    uint8_t mask = (0x01 << i);
@@ -220,7 +221,7 @@ void RadioHardwarePage::build(FormWindow * window)
   grid.nextLine();
   for (int i = 0; i < NUM_SWITCHES; i++) {
     new SwitchDynamicLabel(window, grid.getLabelSlot(true), i);
-    new TextEdit(window, grid.getFieldSlot(2, 0), g_eeGeneral.switchNames[i], LEN_SWITCH_NAME);
+    new RadioTextEdit(window, grid.getFieldSlot(2, 0), g_eeGeneral.switchNames[i], LEN_SWITCH_NAME);
     new Choice(window, grid.getFieldSlot(2, 1), STR_SWTYPES, SWITCH_NONE, SWITCH_TYPE_MAX(i),
                [=]() -> int {
                    return SWITCH_CONFIG(i);

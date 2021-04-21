@@ -20,6 +20,10 @@
 
 #include "opentx.h"
 
+#if defined(LIBOPENUI)
+  #include "libopenui.h"
+#endif
+
 void processGetHardwareInfoFrame(uint8_t module, const uint8_t * frame)
 {
   if (moduleState[module].mode != MODULE_MODE_GET_HARDWARE_INFO) {

@@ -20,36 +20,41 @@
 
 #pragma once
 
-#include "libopenui.h"
+#include "topbar.h"
+#include "layouts/layout_factory_impl.h"
 
-class MainViewTrim : public Window
+typedef WidgetsContainerImpl<MAX_TOPBAR_ZONES, MAX_TOPBAR_OPTIONS> TopbarImplBase;
+
+class TopbarImpl:
+  public TopbarImplBase,
+  public Topbar
 {
   public:
-    MainViewTrim(Window * parent, const rect_t & rect, uint8_t idx):
-      Window(parent, rect),
-      idx(idx)
+    explicit TopbarImpl(Window * parent);
+
+#if defined(DEBUG_WINDOWS)
+    std::string getName() const override
     {
+      return "TopBar";
     }
+#endif
+
+    void load() override
+    {
+        TopbarImplBase::load();
+    }
+    
+    unsigned int getZonesCount() const override;
+
+    rect_t getZone(unsigned int index) const override;
+
+    void setVisible(float visible);
+    coord_t getVisibleHeight(float visible) const; // 0.0 -> 1.0
+  
+    void paint(BitmapBuffer * dc) override;
 
     void checkEvents() override;
-
+    
   protected:
-    uint8_t idx;
-    int value = 0;
-};
-
-class MainViewHorizontalTrim : public MainViewTrim
-{
-  public:
-    using MainViewTrim::MainViewTrim;
-
-    void paint(BitmapBuffer * dc) override;
-};
-
-class MainViewVerticalTrim : public MainViewTrim
-{
-  public:
-    using MainViewTrim::MainViewTrim;
-
-    void paint(BitmapBuffer * dc) override;
+    uint32_t lastRefresh = 0;
 };

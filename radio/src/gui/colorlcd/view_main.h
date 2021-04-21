@@ -21,9 +21,15 @@
 #ifndef _VIEW_MAIN_H_
 #define _VIEW_MAIN_H_
 
+#include <memory>
 #include "form.h"
+#include "topbar.h"
 
-class ViewMain: public FormWindow
+
+class SetupWidgetsPage;
+class SetupTopBarWidgetsPage;
+
+class ViewMain: public Window
 {
     // singleton
     explicit ViewMain();
@@ -46,13 +52,53 @@ class ViewMain: public FormWindow
     }
 #endif
 
+    void updateTopbarVisibility();
+
+    // Get the available space in the middle of the screen
+    // (without topbar)
+    rect_t getMainZone(rect_t zone, bool hasTopbar) const;
+
+    unsigned getMainViewsCount() const;
+    void setMainViewsCount(unsigned views);
+
+    coord_t getMainViewLeftPos(unsigned view) const;
+  
+    unsigned getCurrentMainView() const;
+    void setCurrentMainView(unsigned view);
+
+    void nextMainView();
+    void previousMainView();
+
+    Topbar* getTopbar();
+  
   protected:
     static ViewMain * _instance;
+
+    unsigned    views = 0;
+    TopbarImpl* topbar = nullptr;
+
+    // Widget setup requires special permissions ;-)
+    friend class SetupWidgetsPage;
+    friend class SetupTopBarWidgetsPage;
+
+    // Set topbar visibility [0.0 -> 1.0]
+    void setTopbarVisible(float visible);
+
+    void setScrollPositionX(coord_t value) override;
+    void setScrollPositionY(coord_t value) override;
+
+#if defined(HARDWARE_TOUCH)
+    unsigned char prevSlideState = 0;
+    unsigned int  startSlidePage = 0;
+
+    bool onTouchSlide(coord_t x, coord_t y, coord_t startX, coord_t startY, coord_t slideX, coord_t slideY) override;
+#endif
 
 #if defined(HARDWARE_KEYS)
     void onEvent(event_t event) override;
 #endif
     void paint(BitmapBuffer * dc) override;
+
     void openMenu();
 };
 
