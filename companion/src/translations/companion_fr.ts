@@ -1631,7 +1631,7 @@ Si vous avez un fichier de sauvegarde des paramètres, vous pouvez l&apos;import
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="67"/>
         <source>Trainer Sticks</source>
-        <translation>Manches Écolage</translation>
+        <translation>Écolage Manches</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="69"/>
@@ -1656,7 +1656,7 @@ Si vous avez un fichier de sauvegarde des paramètres, vous pouvez l&apos;import
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="77"/>
         <source>Trainer Channels</source>
-        <translation>Écolage Channels</translation>
+        <translation>Écolage Canaux</translation>
     </message>
     <message>
         <location filename="../firmwares/customfunctiondata.cpp" line="79"/>
@@ -8982,7 +8982,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../modeledit/setup_module.ui" line="1090"/>
         <source>Racing Mode</source>
-        <translation type="unfinished">Mode Course/Racing</translation>
+        <translation>Mode Course/Racing</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="1110"/>
