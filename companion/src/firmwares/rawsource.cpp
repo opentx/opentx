@@ -60,7 +60,7 @@ RawSourceRange RawSource::getRange(const ModelData * model, const GeneralSetting
         result.min = -30000 * result.step;
         result.max = +30000 * result.step;
         result.decimals = sensor.prec;
-        result.unit = SensorData::unitToString(qr.quot);
+        result.unit = sensor.unitToString();
         break;
       }
 
