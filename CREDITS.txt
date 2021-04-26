@@ -2243,3 +2243,6 @@ Daniel Naude
 James Miller
 Pascal Cayol
 eDefine
+Mario Sette
+Hans-Georg Böhm
+Robert Oats
