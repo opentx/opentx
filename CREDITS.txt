@@ -2247,3 +2247,4 @@ Mario Sette
 Hans-Georg Böhm
 Robert Oats
 Helmut Suhrbier
+Johannes Vorster
