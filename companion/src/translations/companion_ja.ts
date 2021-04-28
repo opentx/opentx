@@ -2626,22 +2626,22 @@ If blank then the input is considered to be &quot;ON&quot; all the time.</source
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="144"/>
-        <source>%1%2 Both directions, to destination folder first</source>
+        <source>%1%2 Both directions, to radio folder first</source>
         <translation>%1%2の両方を最初の移動先フォルダへ</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="145"/>
-        <source>%1%2 Both directions, to source folder first</source>
+        <source>%1%2 Both directions, to local folder first</source>
         <translation>%1%2の両方を最初の移動元フォルダへ</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="146"/>
-        <source> %1  Only from source folder to destination folder</source>
+        <source> %1  Only from local folder to radio folder</source>
         <translation> %1  移動元フォルダから移動先フォルダのみ</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="147"/>
-        <source> %1  Only from destination folder to source folder</source>
+        <source> %1  Only from radio folder to local folder</source>
         <translation> %1  移動先フォルダから移動元フォルダのみ</translation>
     </message>
     <message>

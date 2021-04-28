@@ -143,10 +143,10 @@ void FileSyncDialog::setupUi()
   QWidget * wdgDst = folderSelectorWidget(leDst, this);
 
   AutoComboBox * syncDir = new AutoComboBox(this);
-  syncDir->addItem(tr("%1%2 Both directions, to destination folder first").arg(dstArw, srcArw), SyncProcess::SYNC_A2B_B2A);
-  syncDir->addItem(tr("%1%2 Both directions, to source folder first").arg(srcArw, dstArw), SyncProcess::SYNC_B2A_A2B);
-  syncDir->addItem(tr(" %1  Only from source folder to destination folder").arg(dstArw), SyncProcess::SYNC_A2B);
-  syncDir->addItem(tr(" %1  Only from destination folder to source folder").arg(srcArw), SyncProcess::SYNC_B2A);
+  syncDir->addItem(tr("%1%2 Both directions, to radio folder first").arg(dstArw, srcArw), SyncProcess::SYNC_A2B_B2A);
+  syncDir->addItem(tr("%1%2 Both directions, to local folder first").arg(srcArw, dstArw), SyncProcess::SYNC_B2A_A2B);
+  syncDir->addItem(tr(" %1  Only from local folder to radio folder").arg(dstArw), SyncProcess::SYNC_A2B);
+  syncDir->addItem(tr(" %1  Only from radio folder to local folder").arg(srcArw), SyncProcess::SYNC_B2A);
   syncDir->setCurrentIndex(-1);  // we set the default option later
 
   AutoComboBox * copyMode = new AutoComboBox(this);

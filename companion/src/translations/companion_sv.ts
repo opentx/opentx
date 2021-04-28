@@ -2034,19 +2034,19 @@ Om fältet lämnas tomt så är raden aktivt hela tiden.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>%1%2 Both directions, to destination folder first</source>
+        <source>%1%2 Both directions, to radio folder first</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>%1%2 Both directions, to source folder first</source>
+        <source>%1%2 Both directions, to local folder first</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source> %1  Only from source folder to destination folder</source>
+        <source> %1  Only from local folder to radio folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source> %1  Only from destination folder to source folder</source>
+        <source> %1  Only from radio folder to local folder</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

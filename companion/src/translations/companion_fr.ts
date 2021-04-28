@@ -2749,22 +2749,22 @@ Si vide, la ligne est toujours active.</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="146"/>
-        <source>%1%2 Both directions, to destination folder first</source>
+        <source>%1%2 Both directions, to radio folder first</source>
         <translation>%1%2 Bidirectionnel, en commençant par &quot;Radio&quot;</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="147"/>
-        <source>%1%2 Both directions, to source folder first</source>
+        <source>%1%2 Both directions, to local folder first</source>
         <translation>%1%2 Bidirectionnel, en commençant par &quot;Local&quot;</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="148"/>
-        <source> %1  Only from source folder to destination folder</source>
+        <source> %1  Only from local folder to radio folder</source>
         <translation> %1 Uniquement de &quot;Local&quot; vers &quot;Radio&quot;</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="149"/>
-        <source> %1  Only from destination folder to source folder</source>
+        <source> %1  Only from radio folder to local folder</source>
         <translation> %1 Uniquement de &quot;Radio&quot; vers &quot;Local&quot;</translation>
     </message>
     <message>

@@ -3080,22 +3080,22 @@ Si está en blanco entonces las entradas son consideradas ON todo el tiempo.</tr
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="144"/>
-        <source>%1%2 Both directions, to destination folder first</source>
+        <source>%1%2 Both directions, to radio folder first</source>
         <translation>%1%2 ambas direcciones, a la carpeta de destino primero</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="145"/>
-        <source>%1%2 Both directions, to source folder first</source>
+        <source>%1%2 Both directions, to local folder first</source>
         <translation>%1%2 ambas direcciones, a la carpeta de origen primero</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="146"/>
-        <source> %1  Only from source folder to destination folder</source>
+        <source> %1  Only from local folder to radio folder</source>
         <translation> %1  Sólo de la carpeta de origen a la carpeta de destino</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="147"/>
-        <source> %1  Only from destination folder to source folder</source>
+        <source> %1  Only from radio folder to local folder</source>
         <translation> %1  Sólo de la carpeta de destino a la carpeta de origen</translation>
     </message>
     <message>
