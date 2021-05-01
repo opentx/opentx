@@ -18,8 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _BOARDS_H_
-#define _BOARDS_H_
+#pragma once
 
 #include <QtCore>
 #include <QObject>
@@ -362,4 +361,7 @@ inline bool IS_ACCESS_RADIO(Board::Type board, const QString & id)
           (IS_FAMILY_HORUS_OR_T16(board) && id.contains("internalaccess")));
 }
 
-#endif // _BOARDS_H_
+inline bool HAS_EEPROM_YAML(Board::Type board)
+{
+  return IS_FAMILY_HORUS_OR_T16(board);
+}
