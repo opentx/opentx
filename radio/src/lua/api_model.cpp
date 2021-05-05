@@ -179,10 +179,11 @@ that parameter remains unchanged.
 static int luaModelSetModule(lua_State *L)
 {
   unsigned int idx = luaL_checkunsigned(L, 1);
-  int protocol = 0xFFFF;
-  int subprotocol = 0xFFFF;
 
   if (idx < NUM_MODULES) {
+    int protocol = -1;
+    int subprotocol = -1;
+
     ModuleData & module = g_model.moduleData[idx];
     luaL_checktype(L, -1, LUA_TTABLE);
     for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1)) {
@@ -213,7 +214,7 @@ static int luaModelSetModule(lua_State *L)
 #endif
     }
 #if defined(MULTIMODULE)
-    if (protocol != 0xFFFF && subprotocol != 0xFFFF) {  // Both are needed to compute otx protocol
+    if (protocol > 0 && subprotocol >= 0) {  // Both are needed to compute otx protocol
       convertMultiProtocolToOtx(&protocol, &subprotocol);
       g_model.moduleData[idx].setMultiProtocol(protocol - 1);
       g_model.moduleData[idx].subType = subprotocol;

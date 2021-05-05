@@ -271,7 +271,7 @@ void convertMultiProtocolToOtx(int *protocol, int *subprotocol)
 
   if (*protocol == 25) {
     *protocol = MODULE_SUBTYPE_MULTI_FRSKY + 1;
-    *subprotocol = MM_RF_FRSKY_SUBTYPE_D8_CLONED;
+    *subprotocol = MM_RF_FRSKY_SUBTYPE_V8;
     return;
   }
 
@@ -336,10 +336,10 @@ void convertOtxProtocolToMulti(int *protocol, int *subprotocol)
     // 15  for Multimodule is FrskyX or D16 which we map as a protocol of 3 (FrSky)
     // all protos > frskyx are therefore also off by one
     if (*protocol >= 15)
-      *protocol = *protocol + 1;
+      *protocol += 1;
     // 25 is again a FrSky *protocol (FrskyV) so shift again
     if (*protocol >= 25)
-      *protocol = *protocol + 1;
+      *protocol += 1;
   }
 }
 
