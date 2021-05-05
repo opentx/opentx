@@ -118,6 +118,7 @@ extern uint8_t telemetryProtocol;
                                          || (g_model.moduleData[module].getMultiProtocol() == MODULE_SUBTYPE_MULTI_FRSKYX2))
   #define IS_R9_MULTI(module)            (g_model.moduleData[module].getMultiProtocol() == MODULE_SUBTYPE_MULTI_FRSKY_R9)
   #define IS_HOTT_MULTI(module)          (g_model.moduleData[module].getMultiProtocol() == MODULE_SUBTYPE_MULTI_HOTT)
+  #define IS_CONFIG_MULTI(module)        (g_model.moduleData[module].getMultiProtocol() == MODULE_SUBTYPE_MULTI_CONFIG)
   #define IS_DSM_MULTI(module)           (g_model.moduleData[module].getMultiProtocol() == MODULE_SUBTYPE_MULTI_DSM2)
   #define IS_RX_MULTI(module)            ((g_model.moduleData[module].getMultiProtocol() == MODULE_SUBTYPE_MULTI_AFHDS2A_RX) || (g_model.moduleData[module].getMultiProtocol() == MODULE_SUBTYPE_MULTI_FRSKYX_RX) \
                                          || (g_model.moduleData[module].getMultiProtocol() == MODULE_SUBTYPE_MULTI_BAYANG_RX) || (g_model.moduleData[module].getMultiProtocol() == MODULE_SUBTYPE_MULTI_DSM_RX))
@@ -130,6 +131,7 @@ extern uint8_t telemetryProtocol;
   #define IS_D16_MULTI(module)           false
   #define IS_R9_MULTI(module)            false
   #define IS_HOTT_MULTI(module)          false
+  #define IS_CONFIG_MULTI(module)        false
   #define IS_DSM_MULTI(module)           false
   #define IS_FRSKY_SPORT_PROTOCOL()      (telemetryProtocol == PROTOCOL_TELEMETRY_FRSKY_SPORT)
   #define IS_RX_MULTI(module)            false
