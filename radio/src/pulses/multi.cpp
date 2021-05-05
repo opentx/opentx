@@ -460,12 +460,12 @@ void sendConfig(uint8_t moduleIdx)
   // Multi_Buffer[5..11]=7 bytes of TX to Module data
   // Multi_Buffer[12] -> Current page
   // Multi_Buffer[13..172]=8*20=160 bytes of Module to TX data
-  if (Multi_Buffer && memcmp(Multi_Buffer, "Conf", 4) == 0 && Multi_Buffer[4]==0x01) {
+  if (Multi_Buffer && memcmp(Multi_Buffer, "Conf", 4) == 0 && Multi_Buffer[4] == 0x01) {
     // Config Lua script is running and sending
-    for(uint8_t i = 0; i < 7; i++) {
-        sendMulti(moduleIdx, Multi_Buffer[5+i]);
+    for (uint8_t i = 0; i < 7; i++) {
+      sendMulti(moduleIdx, Multi_Buffer[5 + i]);
     }
-    Multi_Buffer[4]=0x00;   // Send data only once
+    Multi_Buffer[4] = 0x00;   // Send data only once
   }
 }
 

@@ -293,6 +293,7 @@ static void processMultiRxChannels(const uint8_t * data, uint8_t len)
 #endif
 
 #if defined(LUA)
+
 static void processConfigPacket(const uint8_t * packet, uint8_t len)
 {
   // Multi_Buffer[0..3]=="Conf" -> Lua script is running
@@ -305,14 +306,13 @@ static void processConfigPacket(const uint8_t * packet, uint8_t len)
     // HoTT Lua script is running
     if (Multi_Buffer[4] == 0xFF) {
       // Init
-      memset(&Multi_Buffer[4],0x00,1 + 7 + 1 + 160);           // Clear the buffer
+      memset(&Multi_Buffer[4], 0x00, 1 + 7 + 1 + 160);           // Clear the buffer
     }
-    if ((packet[0]>>4) != Multi_Buffer[12])
-    {// page change
-      memset(&Multi_Buffer[13],0x00,160);                      // Clear the buffer
-      Multi_Buffer[12] = (packet[0]>>4);                       //Save the page number
+    if ((packet[0] >> 4) != Multi_Buffer[12]) {// page change
+      memset(&Multi_Buffer[13], 0x00, 160);                      // Clear the buffer
+      Multi_Buffer[12] = (packet[0] >> 4);                       //Save the page number
     }
-    memcpy(&Multi_Buffer[13 + (packet[0]&0x0F) * 20], &packet[1], 20); // Store the received page in the buffer
+    memcpy(&Multi_Buffer[13 + (packet[0] & 0x0F) * 20], &packet[1], 20); // Store the received page in the buffer
   }
 }
 #endif
