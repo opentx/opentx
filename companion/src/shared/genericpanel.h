@@ -34,13 +34,14 @@ class GenericPanel : public QWidget
 
   friend class AutoComboBox;
   friend class AutoDoubleSpinBox;
-  friend class AutoCheckBox;
   friend class AutoHexSpinBox;
   friend class AutoLineEdit;
   friend class GVarGroup;
   friend class AutoPrecisionComboBox;
   friend class AutoBitsetCheckBox;
   friend class AutoTimeEdit;
+  //  this should be the only auto friend required excl GVArGroup
+  friend class AutoWidget;
 
   public:
     GenericPanel(QWidget *parent, ModelData * model, GeneralSettings & generalSettings, Firmware * firmware);

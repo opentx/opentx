@@ -18,30 +18,41 @@
  * GNU General Public License for more details.
  */
 
-#pragma once
+#include "autocheckbox.h"
 
-#include "autowidget.h"
-
-#include <QCheckBox>
-
-class AutoCheckBox : public QCheckBox, AutoWidget
+AutoCheckBox::AutoCheckBox(QWidget * parent):
+  QCheckBox(parent),
+  AutoWidget(),
+  m_field(nullptr)
 {
-  Q_OBJECT
+  connect(this, &QCheckBox::toggled, this, &AutoCheckBox::onToggled);
+}
 
-  public:
-    explicit AutoCheckBox(QWidget * parent = nullptr);
-    ~AutoCheckBox();
+AutoCheckBox::~AutoCheckBox()
+{
+}
 
-    virtual void updateValue() override;
+void AutoCheckBox::setField(bool & field, GenericPanel * panel)
+{
+  m_field = &field;
+  setPanel(panel);
+  updateValue();
+}
 
-    void setField(bool & field, GenericPanel * panel = nullptr);
+void AutoCheckBox::onToggled(bool checked)
+{
+  if (!lock() && m_field) {
+    *m_field = checked;
+    emit currentDataChanged(checked);
+    dataChanged();
+  }
+}
 
-  signals:
-    void currentDataChanged(bool value);
-
-  protected slots:
-    void onToggled(bool checked);
-
-  private:
-    bool *m_field;
-};
+void AutoCheckBox::updateValue()
+{
+  if (m_field) {
+    setLock(true);
+    setChecked(*m_field);
+    setLock(false);
+  }
+}
