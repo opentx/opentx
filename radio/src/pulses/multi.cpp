@@ -257,13 +257,13 @@ void sendChannels(uint8_t moduleIdx)
 
 void convertMultiProtocolToOtx(int *protocol, int *subprotocol)
 {
-  if (*protocol == 3 and *subprotocol == 0) {
+  if (*protocol == 3 && *subprotocol == 0) {
     *protocol = MODULE_SUBTYPE_MULTI_FRSKY + 1;
     *subprotocol = MM_RF_FRSKY_SUBTYPE_D8;
     return;
   }
 
-  if (*protocol == 3 and *subprotocol == 1) {
+  if (*protocol == 3 && *subprotocol == 1) {
     *protocol = MODULE_SUBTYPE_MULTI_FRSKY + 1;
     *subprotocol = MM_RF_FRSKY_SUBTYPE_D8_CLONED;
     return;
