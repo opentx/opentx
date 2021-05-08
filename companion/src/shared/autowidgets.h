@@ -20,30 +20,13 @@
 
 #pragma once
 
-#include "autowidget.h"
-
-#include <QCheckBox>
-
-class AutoCheckBox : public QCheckBox, AutoWidget
-{
-  Q_OBJECT
-
-  public:
-    explicit AutoCheckBox(QWidget * parent = nullptr);
-    ~AutoCheckBox();
-
-    virtual void updateValue() override;
-
-    void setField(bool & field, GenericPanel * panel = nullptr, bool invert = false);
-    void setInvert(bool invert);
-
-  signals:
-    void currentDataChanged(bool value);
-
-  protected slots:
-    void onToggled(bool checked);
-
-  private:
-    bool *m_field;
-    bool m_invert;
-};
+#include "autobitsetcheckbox.h"
+#include "autocheckbox.h"
+#include "autocombobox.h"
+#include "autodoublespinbox.h"
+#include "autohexspinbox.h"
+#include "autolineedit.h"
+#include "autoprecisioncombobox.h"
+#include "autoslider.h"
+#include "autospinbox.h"
+#include "autotimeedit.h"

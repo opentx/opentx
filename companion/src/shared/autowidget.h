@@ -20,30 +20,26 @@
 
 #pragma once
 
-#include "autowidget.h"
+class GenericPanel;
 
-#include <QCheckBox>
-
-class AutoCheckBox : public QCheckBox, AutoWidget
+// Note: cannot be a Qt object as it will create a compiler ambiguity in the inheriting class
+class AutoWidget
 {
-  Q_OBJECT
-
   public:
-    explicit AutoCheckBox(QWidget * parent = nullptr);
-    ~AutoCheckBox();
+    explicit AutoWidget();
+    ~AutoWidget();
 
-    virtual void updateValue() override;
+  protected:
+    virtual void updateValue() = 0;
 
-    void setField(bool & field, GenericPanel * panel = nullptr, bool invert = false);
-    void setInvert(bool invert);
+    bool lock();
+    void setLock(bool lock);
+    void setPanel(GenericPanel * panel);
 
-  signals:
-    void currentDataChanged(bool value);
-
-  protected slots:
-    void onToggled(bool checked);
+    void dataChanged();
+    bool panelLock();
 
   private:
-    bool *m_field;
-    bool m_invert;
+    GenericPanel *m_panel;
+    bool m_lock;
 };
