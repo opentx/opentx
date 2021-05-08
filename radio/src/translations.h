@@ -509,6 +509,7 @@ extern const char STR_ABOUT_US[];
 extern const char STR_USB_JOYSTICK[];
 extern const char STR_USB_MASS_STORAGE[];
 extern const char STR_USB_SERIAL[];
+extern const char STR_USB_TELEMETRY[];
 extern const char STR_SETUP_SCREENS[];
 extern const char STR_MONITOR_SCREENS[];
 extern const char STR_RESET_BTN[];

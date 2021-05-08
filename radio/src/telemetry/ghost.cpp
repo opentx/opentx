@@ -295,6 +295,13 @@ void processGhostTelemetryFrame()
 
 void processGhostTelemetryData(uint8_t data)
 {
+
+#if defined(USB_SERIAL)
+  if (getSelectedUsbMode() == USB_TELEMETRY_MIRROR_MODE) {
+    usbSerialPutc(data);
+  }
+#endif
+
 #if defined(AUX_SERIAL)
   if (g_eeGeneral.auxSerialMode == UART_MODE_TELEMETRY_MIRROR) {
     auxSerialPutc(data);

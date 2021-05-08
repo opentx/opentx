@@ -87,7 +87,7 @@
 #define TR_COUNTRYCODES        TR("US""JP""EU", "América""Japón\0 ""Europa\0")
 
 #define LEN_USBMODES           "\010"
-#define TR_USBMODES            "Pregunta""Joystick""SDCard\0 ""Serie\0  "
+#define TR_USBMODES            "Pregunta""Joystick""SDCard\0 ""Telem\0  ""Serie\0  "
 
 #define LEN_JACKMODES          "\010"
 #define TR_JACKMODES           "Pregunta""Audio\0  ""Entrena."
@@ -910,6 +910,7 @@
 #define TR_USB_JOYSTICK        "Joystick USB (HID)"
 #define TR_USB_MASS_STORAGE    "Almaz. USB (SD)"
 #define TR_USB_SERIAL          "Serie USB (Debug)"
+#define TR_USB_TELEMETRY       "USB Telem mirror"
 #define TR_SETUP_SCREENS       "Pantallas config"
 #define TR_MONITOR_SCREENS     "Monitores"
 #define TR_AND_SWITCH          TR("Inter. AND", "Interruptor AND")

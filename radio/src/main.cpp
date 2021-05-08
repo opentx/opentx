@@ -35,6 +35,9 @@ void onUSBConnectMenu(const char *result)
   else if (result == STR_USB_JOYSTICK) {
     setSelectedUsbMode(USB_JOYSTICK_MODE);
   }
+  else if (result == STR_USB_TELEMETRY) {
+    setSelectedUsbMode(USB_TELEMETRY_MIRROR_MODE);
+  }
   else if (result == STR_USB_SERIAL) {
     setSelectedUsbMode(USB_SERIAL_MODE);
   }
@@ -51,6 +54,9 @@ void handleUsbConnection()
         POPUP_MENU_ADD_ITEM(STR_USB_MASS_STORAGE);
 #if defined(DEBUG)
         POPUP_MENU_ADD_ITEM(STR_USB_SERIAL);
+#endif
+#if defined(USB_SERIAL)
+        POPUP_MENU_ADD_ITEM(STR_USB_TELEMETRY);
 #endif
         POPUP_MENU_TITLE(STR_SELECT_MODE);
         POPUP_MENU_START(onUSBConnectMenu);

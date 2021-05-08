@@ -87,7 +87,7 @@
 #define TR_COUNTRYCODES        			TR("US""JP""EU", "Amerika""Japan\0 ""Europa\0")
 
 #define LEN_USBMODES           			TR("\006", "\010")
-#define TR_USBMODES            			TR("Fragen""Joyst\0""SDCard""Serial", "Fragen\0 ""Joystick""Speicher""Seriell\0")
+#define TR_USBMODES            			TR("Fragen""Joyst\0""SDCard""Telem\0""Serial", "Fragen\0 ""Joystick""Speicher""Seriell\0")
 
 #define LEN_JACKMODES                  "\007"
 #define TR_JACKMODES                   "Popup\0 ""Audio\0 ""Trainer"
@@ -909,6 +909,7 @@
 #define TR_USB_JOYSTICK                "USB Joystick (HID)"
 #define TR_USB_MASS_STORAGE            "USB Speicher (SD)"
 #define TR_USB_SERIAL                  "USB Seriell (Debug)"
+#define TR_USB_TELEMETRY               "USB Telem mirror"
 #define TR_SETUP_SCREENS               "Setup Hautbildschirme"
 #define TR_MONITOR_SCREENS             "Monitore Mischer Kanal Logik"
 #define TR_AND_SWITCH                  "UND Schalt" //UND mit weiterem Schaltern
