@@ -30,7 +30,7 @@ class AutoCheckBox : public QCheckBox, AutoWidget
 
   public:
     explicit AutoCheckBox(QWidget * parent = nullptr);
-    ~AutoCheckBox();
+    virtual ~AutoCheckBox();
 
     virtual void updateValue() override;
 

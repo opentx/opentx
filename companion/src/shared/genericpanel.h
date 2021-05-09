@@ -32,17 +32,7 @@ class GenericPanel : public QWidget
 {
   Q_OBJECT
 
-  friend class AutoComboBox;
-  friend class AutoDoubleSpinBox;
-  friend class AutoHexSpinBox;
-  friend class AutoLineEdit;
   friend class GVarGroup;
-  friend class AutoPrecisionComboBox;
-  friend class AutoBitsetCheckBox;
-  friend class AutoTimeEdit;
-  friend class AutoSpinBox;
-  friend class AutoSlider;
-  //  this should be the only auto friend required excl GVArGroup
   friend class AutoWidget;
 
   public:

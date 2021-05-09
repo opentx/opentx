@@ -20,62 +20,31 @@
 
 #pragma once
 
+#include "autowidget.h"
+
 #include <QSpinBox>
 
-#include "genericpanel.h"
-
-class AutoSpinBox : public QSpinBox
+class AutoSpinBox : public QSpinBox, AutoWidget
 {
   Q_OBJECT
 
   public:
-    explicit AutoSpinBox(QWidget * parent = nullptr):
-      QSpinBox(parent),
-      field(nullptr),
-      panel(nullptr),
-      lock(false)
-    {
-      connect(this, QOverload<int>::of(&AutoSpinBox::valueChanged), this, &AutoSpinBox::onValueChanged);
-    }
+    explicit AutoSpinBox(QWidget * parent = nullptr);
+    virtual ~AutoSpinBox();
 
-    void setField(int & field, GenericPanel * panel = nullptr)
-    {
-      this->field = &field;
-      this->panel = panel;
-      updateValue();
-    }
+    virtual void updateValue() override;
 
-    void setField(unsigned int & field, GenericPanel * panel = nullptr)
-    {
-      this->field = (int *)&field;
-      this->panel = panel;
-      updateValue();
-    }
+    void setField(int & field, GenericPanel * panel = nullptr);
+    void setField(unsigned int & field, GenericPanel * panel = nullptr);
 
-    void updateValue()
-    {
-      lock = true;
-      if (field) {
-        setValue(*field);
-      }
-      lock = false;
-    }
+  signals:
+    void currentDataChanged(int value);
 
   protected slots:
-    void onValueChanged(int value)
-    {
-      if (panel && panel->lock)
-        return;
-      if (field && !lock) {
-        *field = value;
-        if (panel) {
-          emit panel->modified();
-        }
-      }
-    }
+    void onValueChanged(int value);
 
-  protected:
-    int * field;
-    GenericPanel * panel;
-    bool lock;
+  private:
+    int *m_field;
+
+    void setFieldInit(GenericPanel * panel);
 };

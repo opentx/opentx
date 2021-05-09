@@ -20,95 +20,38 @@
 
 #pragma once
 
+#include "autowidget.h"
+
 #include <QDoubleSpinBox>
-#include "genericpanel.h"
+
 #if __GNUC__
   #include <math.h>
 #endif
 
-class AutoDoubleSpinBox: public QDoubleSpinBox
+class AutoDoubleSpinBox : public QDoubleSpinBox, AutoWidget
 {
   Q_OBJECT
 
   public:
-    explicit AutoDoubleSpinBox(QWidget * parent = nullptr):
-      QDoubleSpinBox(parent),
-      field(nullptr),
-      panel(nullptr),
-      lock(false),
-      offset(0)
-    {
-      connect(this, SIGNAL(valueChanged(double)), this, SLOT(onValueChanged(double)));
-    }
+    explicit AutoDoubleSpinBox(QWidget * parent = nullptr);
+    virtual ~AutoDoubleSpinBox();
 
-    void setField(int & field, GenericPanel * panel = nullptr)
-    {
-      this->field = &field;
-      this->panel = panel;
-      updateValue();
-    }
+    virtual void updateValue() override;
 
-    void setField(unsigned int & field, GenericPanel * panel = nullptr)
-    {
-      this->field = (int *)&field;
-      this->panel = panel;
-      updateValue();
-    }
-
-    void updateValue()
-    {
-      if (field) {
-        lock = true;
-        setValue(float(*field + offset) / multiplier());
-        lock = false;
-      }
-    }
-
-    void setDecimals(int prec)
-    {
-      QDoubleSpinBox::setDecimals(prec);
-      updateValue();
-    }
-
-    void setOffset(int offset)
-    {
-      this->offset = offset;
-      updateValue();
-    }
-
-  protected:
-    int multiplier()
-    {
-      switch (decimals()) {
-        case 1:
-          return 10;
-        case 2:
-          return 100;
-        default:
-          return 1;
-       }
-     }
+    void setField(int & field, GenericPanel * panel = nullptr);
+    void setField(unsigned int & field, GenericPanel * panel = nullptr);
+    void setDecimals(int prec);
+    void setOffset(int offset);
 
   signals:
     void currentDataChanged(double value);
 
   protected slots:
-    void onValueChanged(double value)
-    {
-      if (panel && panel->lock)
-        return;
-      if (field && !lock) {
-        *field = round(value * multiplier() - offset);
-        emit currentDataChanged(*field);
-        if (panel) {
-          emit panel->modified();
-        }
-      }
-    }
+    void onValueChanged(double value);
 
-  protected:
-    int * field = nullptr;
-    GenericPanel * panel = nullptr;
-    bool lock = false;
-    int offset = 0;
+  private:
+    int *m_field;
+    int m_offset;
+
+    int multiplier();
 };

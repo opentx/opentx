@@ -22,7 +22,7 @@
 
 class GenericPanel;
 
-// Note: cannot be a Qt object as it will create a compiler ambiguity in the inheriting class
+// Note: cannot be a Qt object otherwise it will create a compiler ambiguity in the inheriting class
 class AutoWidget
 {
   public:

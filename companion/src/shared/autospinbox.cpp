@@ -18,50 +18,54 @@
  * GNU General Public License for more details.
  */
 
-#include "autocheckbox.h"
+#include "autospinbox.h"
 
-AutoCheckBox::AutoCheckBox(QWidget * parent):
-  QCheckBox(parent),
+AutoSpinBox::AutoSpinBox(QWidget * parent):
+  QSpinBox(parent),
   AutoWidget(),
-  m_field(nullptr),
-  m_invert(false)
+  m_field(nullptr)
 {
-  connect(this, &QCheckBox::toggled, this, &AutoCheckBox::onToggled);
+  connect(this, QOverload<int>::of(&QSpinBox::valueChanged), this, &AutoSpinBox::onValueChanged);
 }
 
-AutoCheckBox::~AutoCheckBox()
+AutoSpinBox::~AutoSpinBox()
 {
 }
 
-void AutoCheckBox::setField(bool & field, GenericPanel * panel, bool invert)
+void AutoSpinBox::setField(int & field, GenericPanel * panel)
 {
   m_field = &field;
-  m_invert = invert;
+  setFieldInit(panel);
+}
+
+void AutoSpinBox::setField(unsigned int & field, GenericPanel * panel)
+{
+  m_field = (int *)&field;
+  setFieldInit(panel);
+}
+
+void AutoSpinBox::setFieldInit(GenericPanel * panel)
+{
   setPanel(panel);
   updateValue();
 }
 
-void AutoCheckBox::setInvert(bool invert)
-{
-  m_invert = invert;
-  updateValue();
-}
-
-void AutoCheckBox::onToggled(bool checked)
-{
-  if (m_field && !lock()) {
-    const bool val = m_invert ? !checked : checked;
-    *m_field = val;
-    emit currentDataChanged(val);
-    dataChanged();
-  }
-}
-
-void AutoCheckBox::updateValue()
+void AutoSpinBox::updateValue()
 {
   if (m_field) {
     setLock(true);
-    setChecked(m_invert ? !(*m_field) : *m_field);
+    setValue(*m_field);
     setLock(false);
+  }
+}
+
+void AutoSpinBox::onValueChanged(int value)
+{
+  if (m_field && !lock()) {
+    if (*m_field != value) {
+      *m_field = value;
+      emit currentDataChanged(value);
+      dataChanged();
+    }
   }
 }

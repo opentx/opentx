@@ -20,85 +20,34 @@
 
 #pragma once
 
-#include "genericpanel.h"
+#include "autowidget.h"
 
 #include <QSlider>
 
-class AutoSlider : public QSlider
+class AutoSlider : public QSlider, AutoWidget
 {
   Q_OBJECT
 
   public:
-    explicit AutoSlider(QWidget * parent = nullptr):
-      QSlider(parent)
-    {
-      init();
-    }
+    explicit AutoSlider(QWidget * parent = nullptr);
+    explicit AutoSlider(Qt::Orientation orientation, QWidget * parent = nullptr);
+    virtual ~AutoSlider();
 
-    explicit AutoSlider(Qt::Orientation orientation, QWidget * parent = nullptr):
-      QSlider(orientation, parent)
-    {
-      init();
-    }
+    virtual void updateValue() override;
 
-    void setField(int & field, int min, int max, GenericPanel * panel = nullptr)
-    {
-      this->field = &field;
-      setFieldInit(min, max, panel);
-    }
-
-    void setField(unsigned int & field, int min, int max, GenericPanel * panel = nullptr)
-    {
-      this->field = reinterpret_cast<int *>(&field);
-      setFieldInit(min, max, panel);
-    }
-
-    void setTick(int interval, QSlider::TickPosition position)
-    {
-      setTickInterval(interval);
-      setTickPosition(position);
-    }
-
-    void updateValue()
-    {
-      if (field) {
-        lock = true;
-        setValue(*field);
-        lock = false;
-      }
-    }
+    void setField(int & field, int min, int max, GenericPanel * panel = nullptr);
+    void setField(unsigned int & field, int min, int max, GenericPanel * panel = nullptr);
+    void setTick(int interval, QSlider::TickPosition position);
 
   signals:
     void currentDataChanged(int value);
 
   protected slots:
-    void init()
-    {
-      connect(this, &AutoSlider::valueChanged, this, &AutoSlider::onValueChanged);
-    }
+    void onValueChanged(int value);
 
-    void onValueChanged(int value)
-    {
-      if (panel && panel->lock)
-        return;
-      if (field && !lock) {
-        *field = value;
-        emit currentDataChanged(value);
-        if (panel) {
-          emit panel->modified();
-        }
-      }
-    }
+  private:
+    int *m_field = nullptr;
 
-  protected:
-    void setFieldInit(int min, int max, GenericPanel * panel)
-    {
-      this->panel = panel;
-      setRange(min, max);
-      updateValue();
-    }
-
-    int *field = nullptr;
-    GenericPanel *panel = nullptr;
-    bool lock = false;
+    void init();
+    void setFieldInit(int min, int max, GenericPanel * panel);
 };

@@ -1,26 +1,18 @@
 include_directories(${CMAKE_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 
 set(shared_NAMES
+  genericpanel
+  verticalscrollarea
+  autobitsetcheckbox
   autocheckbox
-)
-set(shared_SRCS
-  genericpanel.cpp
-  hexspinbox.cpp
-  verticalscrollarea.cpp
-)
-
-set(shared_HDRS
-  autobitsetcheckbox.h
-  autocombobox.h
-  autodoublespinbox.h
-  autohexspinbox.h
-  autolineedit.h
-  genericpanel.h
-  hexspinbox.h
-  autoprecisioncombobox.h
-  autotimeedit.h
-  autospinbox.h
-  autoslider.h
+  autocombobox
+  autodoublespinbox
+  autohexspinbox
+  autolineedit
+  autoprecisioncombobox
+  autoslider
+  autospinbox
+  autotimeedit
 )
 
 foreach(name ${shared_NAMES})
