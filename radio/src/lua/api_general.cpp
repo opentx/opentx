@@ -1536,7 +1536,7 @@ static int luaGetUsage(lua_State * L)
   return 1;
 }
 /*luadoc
-@function getMemory()
+@function getAvailableMemory()
 
 Get available memory remaining in the Heap for Lua.
 
@@ -1544,7 +1544,7 @@ Get available memory remaining in the Heap for Lua.
 
 @status current Introduced in 2.4
 */
-static int luaGetMemory(lua_State * L)
+static int luaGetAvailableMemory()(lua_State * L)
 {
   lua_pushunsigned(L, availableMemory());
   return 1;
@@ -1776,7 +1776,7 @@ const luaL_Reg opentxLib[] = {
   { "chdir", luaChdir },
   { "loadScript", luaLoadScript },
   { "getUsage", luaGetUsage },
-  { "getMemory", luaGetMemory },
+  { "getAvailableMemory", luaGetAvailableMemory },
   { "resetGlobalTimer", luaResetGlobalTimer },
 #if LCD_DEPTH > 1 && !defined(COLORLCD)
   { "GREY", luaGrey },
