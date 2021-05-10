@@ -1535,7 +1535,20 @@ static int luaGetUsage(lua_State * L)
   lua_pushinteger(L, instructionsPercent);
   return 1;
 }
+/*luadoc
+@function getMemory()
 
+Get available memory remaining in the Heap for Lua.
+
+@retval usage (number) a value returned in b
+
+@status current Introduced in 2.4
+*/
+static int luaGetMemory(lua_State * L)
+{
+  lua_pushinteger(L, availableMemory());
+  return 1;
+}
 /*luadoc
 @function resetGlobalTimer([type])
 
@@ -1763,6 +1776,7 @@ const luaL_Reg opentxLib[] = {
   { "chdir", luaChdir },
   { "loadScript", luaLoadScript },
   { "getUsage", luaGetUsage },
+  { "getMemory", luaGetMemory },
   { "resetGlobalTimer", luaResetGlobalTimer },
 #if LCD_DEPTH > 1 && !defined(COLORLCD)
   { "GREY", luaGrey },
