@@ -1546,7 +1546,7 @@ Get available memory remaining in the Heap for Lua.
 */
 static int luaGetMemory(lua_State * L)
 {
-  lua_pushinteger(L, availableMemory());
+  lua_pushunsigned(L, availableMemory());
   return 1;
 }
 /*luadoc
