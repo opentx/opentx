@@ -1544,7 +1544,7 @@ Get available memory remaining in the Heap for Lua.
 
 @status current Introduced in 2.4
 */
-static int luaGetAvailableMemory()(lua_State * L)
+static int luaGetAvailableMemory(lua_State * L)
 {
   lua_pushunsigned(L, availableMemory());
   return 1;
