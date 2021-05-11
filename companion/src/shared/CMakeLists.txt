@@ -8,6 +8,7 @@ set(shared_NAMES
   autocombobox
   autodoublespinbox
   autohexspinbox
+  autolabel
   autolineedit
   autoprecisioncombobox
   autoslider
