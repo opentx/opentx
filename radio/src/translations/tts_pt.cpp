@@ -96,16 +96,16 @@ I18N_PLAY_FUNCTION(pt, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
     number = -number;
   }
 
-  int8_t mode = MODE(att);
-  if (mode > 0) {
-    if (mode == 2) {
+  int8_t prec = FLAGS_TO_PREC(att);
+  if (prec > 0) {
+    if (prec == 2) {
       number /= 10;
     }
     div_t qr = div((int)number, 10);
     if (qr.rem > 0) {
       PLAY_NUMBER(qr.quot, 0, 0);
       PUSH_NUMBER_PROMPT(PT_PROMPT_VIRGULA);
-      if (mode==2 && qr.rem < 10)
+      if (prec == 2 && qr.rem < 10)
         PUSH_NUMBER_PROMPT(PT_PROMPT_ZERO);
       PLAY_NUMBER(qr.rem, unit, 0);
     }

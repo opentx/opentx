@@ -97,9 +97,9 @@ I18N_PLAY_FUNCTION(pl, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
   }
 
 
-  int8_t mode = MODE(att);
-  if (mode > 0) {
-    if (mode == 2) {
+  int8_t prec = FLAGS_TO_PREC(att);
+  if (prec > 0) {
+    if (prec == 2) {
       number /= 10;
     }
     div_t qr = div((int)number, 10);

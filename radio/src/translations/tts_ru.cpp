@@ -78,9 +78,9 @@ I18N_PLAY_FUNCTION(ru, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
   }
 
   div_t qr = div((int)number, 10);
-  int8_t mode = MODE(att);
-  if (mode > 0 && att != RU_FEMALE_UNIT) {
-    if (mode == 2) {
+  int8_t prec = FLAGS_TO_PREC(att);
+  if (prec > 0 && att != RU_FEMALE_UNIT) {
+    if (prec == 2) {
       number /= 10;
     }
     if (qr.rem) {
@@ -146,7 +146,7 @@ I18N_PLAY_FUNCTION(ru, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
   }
 
   if (unit) {
-    if (mode > 0 && qr.rem) // number with decimal point
+    if (prec > 0 && qr.rem) // number with decimal point
       RU_PUSH_UNIT_PROMPT(unit, -1); // force 2 units form, if float value
     else
       RU_PUSH_UNIT_PROMPT(unit, tmp);

@@ -453,7 +453,7 @@ void lcdDrawNumber(coord_t x, coord_t y, int32_t val, LcdFlags flags, uint8_t le
   char *s = str+16;
   *s = '\0';
   int idx = 0;
-  int mode = MODE(flags);
+  int prec = FLAGS_TO_PREC(flags);
   bool neg = false;
 
   if (val == INT_MAX) {
@@ -475,14 +475,14 @@ void lcdDrawNumber(coord_t x, coord_t y, int32_t val, LcdFlags flags, uint8_t le
     *--s = '0' + (val % 10);
     ++idx;
     val /= 10;
-    if (mode!=0 && idx==mode) {
-      mode = 0;
+    if (prec != 0 && idx == prec) {
+      prec = 0;
       *--s = '.';
       if (val==0) {
         *--s = '0';
       }
     }
-  } while (val!=0 || mode>0 || (mode==MODE(LEADING0) && idx<len));
+  } while (val!=0 || prec > 0 || (prec == FLAGS_TO_PREC(LEADING0) && idx < len));
   if (neg) {
     *--s = '-';
   }
