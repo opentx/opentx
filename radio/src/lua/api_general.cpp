@@ -1535,6 +1535,7 @@ static int luaGetUsage(lua_State * L)
   lua_pushinteger(L, instructionsPercent);
   return 1;
 }
+
 /*luadoc
 @function getAvailableMemory()
 
@@ -1549,6 +1550,7 @@ static int luaGetAvailableMemory(lua_State * L)
   lua_pushunsigned(L, availableMemory());
   return 1;
 }
+
 /*luadoc
 @function resetGlobalTimer([type])
 
