@@ -25,7 +25,7 @@
 #include <QLineEdit>
 #include <QRegExpValidator>
 
-class AutoLineEdit: public QLineEdit, AutoWidget
+class AutoLineEdit: public QLineEdit, public AutoWidget
 {
   Q_OBJECT
 

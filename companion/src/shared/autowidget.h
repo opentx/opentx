@@ -25,6 +25,8 @@ class GenericPanel;
 // Note: cannot be a Qt object otherwise it will create a compiler ambiguity in the inheriting class
 class AutoWidget
 {
+  friend class GenericPanel;
+
   public:
     explicit AutoWidget();
     ~AutoWidget();

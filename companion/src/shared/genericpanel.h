@@ -58,4 +58,5 @@ class GenericPanel : public QWidget
     virtual bool eventFilter(QObject *obj, QEvent *event);
     void setFocusFilter(QWidget * w);
     void disableMouseScrolling();
+    void updateAutoWidgets();
 };

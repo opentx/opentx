@@ -24,7 +24,7 @@
 
 #include <QSpinBox>
 
-class AutoSpinBox : public QSpinBox, AutoWidget
+class AutoSpinBox : public QSpinBox, public AutoWidget
 {
   Q_OBJECT
 

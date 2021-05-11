@@ -26,7 +26,7 @@
 
 #include <QComboBox>
 
-class AutoComboBox : public QComboBox, AutoWidget
+class AutoComboBox : public QComboBox, public AutoWidget
 {
   Q_OBJECT
 

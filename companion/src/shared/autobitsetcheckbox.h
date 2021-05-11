@@ -24,7 +24,7 @@
 
 #include <QCheckBox>
 
-class AutoBitsetCheckBox: public QCheckBox, AutoWidget
+class AutoBitsetCheckBox: public QCheckBox, public AutoWidget
 {
     Q_OBJECT
 

@@ -24,7 +24,7 @@
 
 #include <QLabel>
 
-class AutoLabel: public QLabel, AutoWidget
+class AutoLabel: public QLabel, public AutoWidget
 {
   Q_OBJECT
 

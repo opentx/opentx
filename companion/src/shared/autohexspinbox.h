@@ -27,7 +27,7 @@
 
 class QRegExpValidator;
 
-class AutoHexSpinBox : public QSpinBox, AutoWidget
+class AutoHexSpinBox : public QSpinBox, public AutoWidget
 {
   Q_OBJECT
 

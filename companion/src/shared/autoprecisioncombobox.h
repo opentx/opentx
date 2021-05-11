@@ -25,7 +25,7 @@
 #include <QComboBox>
 #include <QString>
 
-class AutoPrecisionComboBox : public QComboBox, AutoWidget
+class AutoPrecisionComboBox : public QComboBox, public AutoWidget
 {
   Q_OBJECT
 

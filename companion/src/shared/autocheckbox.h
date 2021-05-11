@@ -24,7 +24,7 @@
 
 #include <QCheckBox>
 
-class AutoCheckBox : public QCheckBox, AutoWidget
+class AutoCheckBox : public QCheckBox, public AutoWidget
 {
   Q_OBJECT
 

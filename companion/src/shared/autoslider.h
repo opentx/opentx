@@ -24,7 +24,7 @@
 
 #include <QSlider>
 
-class AutoSlider : public QSlider, AutoWidget
+class AutoSlider : public QSlider, public AutoWidget
 {
   Q_OBJECT
 

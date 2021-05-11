@@ -28,7 +28,7 @@
   #include <math.h>
 #endif
 
-class AutoDoubleSpinBox : public QDoubleSpinBox, AutoWidget
+class AutoDoubleSpinBox : public QDoubleSpinBox, public AutoWidget
 {
   Q_OBJECT
 

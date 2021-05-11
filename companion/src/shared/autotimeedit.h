@@ -24,7 +24,7 @@
 
 #include <QTimeEdit>
 
-class AutoTimeEdit : public QTimeEdit, AutoWidget
+class AutoTimeEdit : public QTimeEdit, public AutoWidget
 {
   Q_OBJECT
 
