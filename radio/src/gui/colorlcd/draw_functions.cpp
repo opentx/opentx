@@ -416,12 +416,7 @@ void drawSourceCustomValue(BitmapBuffer * dc, coord_t x, coord_t y, source_t sou
 
 void drawValueWithUnit(BitmapBuffer * dc, coord_t x, coord_t y, int val, uint8_t unit, LcdFlags flags)
 {
-  if ((flags & NO_UNIT) || unit == UNIT_RAW) {
-    dc->drawNumber(x, y, val, flags & (~NO_UNIT));
-  }
-  else {
-    dc->drawNumber(x, y, val, flags & (~NO_UNIT), 0, nullptr, TEXT_AT_INDEX(STR_VTELEMUNIT, unit).c_str());
-  }
+  dc->drawNumber(x, y, val, flags, 0, nullptr, unit == UNIT_RAW ? nullptr : TEXT_AT_INDEX(STR_VTELEMUNIT, unit).c_str());
 }
 
 void drawHexNumber(BitmapBuffer * dc, coord_t x, coord_t y, uint32_t val, LcdFlags flags)

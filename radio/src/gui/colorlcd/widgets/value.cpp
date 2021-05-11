@@ -47,7 +47,7 @@ class ValueWidget: public Widget
         yValue = 14;
         xLabel = 0;
         yLabel = 0;
-        attrValue = LEFT | NO_UNIT | FONT(L);
+        attrValue = LEFT | FONT(L);
         attrLabel = LEFT;
       }
       else if (height() < 50) {
@@ -55,7 +55,7 @@ class ValueWidget: public Widget
         yValue = -2;
         xLabel = NUMBERS_PADDING;
         yLabel = +2;
-        attrValue = RIGHT | NO_UNIT | FONT(XL);
+        attrValue = RIGHT | FONT(XL);
       }
       else {
         xValue = NUMBERS_PADDING;
