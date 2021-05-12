@@ -156,7 +156,6 @@ TASK_FUNCTION(mixerTask)
 #endif
 
 #if !defined(PCBSKY9X)
-    // re-enable trigger
     mixerSchedulerClearTrigger();
     mixerSchedulerEnableTrigger();
 #endif
