@@ -143,8 +143,8 @@ TASK_FUNCTION(mixerTask)
 
   while (true) {
     for (int timeout = 0; timeout < MIXER_MAX_PERIOD; timeout += MIXER_FREQUENT_ACTIONS_PERIOD) {
-      bool interruptedByTimeout = mixerSchedulerWaitForTrigger(MIXER_FREQUENT_ACTIONS_PERIOD);
       execMixerFrequentActions();
+      bool interruptedByTimeout = mixerSchedulerWaitForTrigger(MIXER_FREQUENT_ACTIONS_PERIOD);
       if (!interruptedByTimeout) {
         break;
       }
