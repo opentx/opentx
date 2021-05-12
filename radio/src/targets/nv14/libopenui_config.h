@@ -18,8 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _LIBOPENUI_CONFIG_H_
-#define _LIBOPENUI_CONFIG_H_
+#pragma once
 
 #include "debug.h"
 #include "libopenui_defines.h"
@@ -175,4 +174,11 @@ constexpr LcdFlags TABLE_BODY_FONT = FONT(STD);
 constexpr int CJK_FIRST_LETTER_INDEX = 128 - 32 + 21;
 constexpr coord_t CHAR_SPACING = 0;
 
-#endif // _LIBOPENUI_CONFIG_H_
+constexpr uint8_t SLIDE_RANGE = 6;
+
+static const charSuite charsSuite[] = {
+  {'Z', 'a'},
+  {'z', '0'},
+  {'>', ' '},
+  {'>', 0},
+};

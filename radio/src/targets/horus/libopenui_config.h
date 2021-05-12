@@ -173,6 +173,8 @@ constexpr coord_t CHAR_SPACING = 0;
 
 #define ROTARY_ENCODER_SPEED() rotencSpeed
 
+constexpr uint8_t SLIDE_RANGE = 6;
+
 static const charSuite charsSuite[] = {
   {'Z', 'a'},
   {'z', '0'},
