@@ -39,8 +39,10 @@ void mixerSchedulerStart()
   NVIC_SetPriority(MIXER_SCHEDULER_TIMER_IRQn, 8);
 
   MIXER_SCHEDULER_TIMER->SR   &= TIM_SR_UIF;   // clear interrupt flag
-  MIXER_SCHEDULER_TIMER->DIER |= TIM_DIER_UIE; // enable interrupt
   MIXER_SCHEDULER_TIMER->CR1  |= TIM_CR1_CEN;
+
+  mixerSchedulerClearTrigger();
+  mixerSchedulerEnableTrigger();
 }
 
 void mixerSchedulerStop()
@@ -53,6 +55,7 @@ void mixerSchedulerResetTimer()
 {
   mixerSchedulerDisableTrigger();
   MIXER_SCHEDULER_TIMER->CNT = 0;
+  mixerSchedulerClearTrigger();
   mixerSchedulerEnableTrigger();
 }
 

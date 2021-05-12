@@ -136,14 +136,15 @@ TASK_FUNCTION(mixerTask)
   s_pulses_paused = true;
 
   mixerSchedulerInit();
+
 #if !defined(PCBSKY9X)
   mixerSchedulerStart();
 #endif
 
   while (true) {
     for (int timeout = 0; timeout < MIXER_MAX_PERIOD; timeout += MIXER_FREQUENT_ACTIONS_PERIOD) {
-      bool interruptedByTimeout = mixerSchedulerWaitForTrigger(MIXER_FREQUENT_ACTIONS_PERIOD);
       execMixerFrequentActions();
+      bool interruptedByTimeout = mixerSchedulerWaitForTrigger(MIXER_FREQUENT_ACTIONS_PERIOD);
       if (!interruptedByTimeout) {
         break;
       }
@@ -155,7 +156,7 @@ TASK_FUNCTION(mixerTask)
 #endif
 
 #if !defined(PCBSKY9X)
-    // re-enable trigger
+    mixerSchedulerClearTrigger();
     mixerSchedulerEnableTrigger();
 #endif
 
