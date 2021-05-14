@@ -19,3 +19,64 @@
  */
 
 #include "heli_data.h"
+#include "compounditemmodels.h"
+
+QString SwashRingData::typeToString() const
+{
+  return typeToString(type);
+}
+
+// static
+FieldRange SwashRingData::getValueRange()
+{
+  FieldRange result;
+
+  result.min = 0;
+  result.max = 100;
+
+  return result;
+}
+
+// static
+FieldRange SwashRingData::getWeightRange()
+{
+  FieldRange result;
+
+  result.min = -100;
+  result.max = 100;
+
+  return result;
+}
+
+//  static
+QString SwashRingData::typeToString(const int value)
+{
+  switch(value) {
+    case SWASHRING_TYPE_OFF:
+      return tr("OFF");
+    case SWASHRING_TYPE_120:
+      return tr("120");
+    case SWASHRING_TYPE_120X:
+      return tr("120X");
+    case SWASHRING_TYPE_140:
+      return tr("140");
+    case SWASHRING_TYPE_90:
+      return tr("90");
+    default:
+      return CPN_STR_UNKNOWN_ITEM;
+  }
+}
+
+//  static
+AbstractStaticItemModel * SwashRingData::typeItemModel()
+{
+  AbstractStaticItemModel * mdl = new AbstractStaticItemModel();
+  mdl->setName("swashringdata.type");
+
+  for (int i = 0; i < SWASHRING_TYPE_COUNT; i++) {
+    mdl->appendToItemList(typeToString(i), i);
+  }
+
+  mdl->loadItemList();
+  return mdl;
+}

@@ -18,8 +18,7 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _MODELEDIT_H_
-#define _MODELEDIT_H_
+#pragma once
 
 #include <QtWidgets>
 #include "genericpanel.h"
@@ -69,5 +68,3 @@ class ModelEdit : public QDialog
     void launchSimulation();
 
 };
-
-#endif // _MODELEDIT_H_
