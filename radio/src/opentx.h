@@ -32,6 +32,10 @@
 
 #include "board.h"
 
+#if defined(HARDWARE_TOUCH)
+#include "touch.h"
+#endif
+
 #if defined(STM32)
 #include "usbd_conf.h"
 #endif
