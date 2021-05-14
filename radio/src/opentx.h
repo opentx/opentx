@@ -25,7 +25,6 @@
 #include "opentx_types.h"
 #include "debounce.h"
 #include "opentx_helpers.h"
-#include "touch.h"
 
 #if defined(SIMU)
 #include "targets/simu/simpgmspace.h"

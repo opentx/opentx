@@ -64,7 +64,6 @@ I18N_PLAY_FUNCTION(cz, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
     number = -number;
   }
 
-
   int8_t prec = FLAGS_TO_PREC(att);
   if (prec > 0) {
     if (prec == 2) {

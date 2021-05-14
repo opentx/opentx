@@ -53,7 +53,7 @@ typedef uint8_t pixel_t;
 #define LEADING0                       0x10
 #define PREC1                          0x20
 #define PREC2                          0x30
-#define MODE(flags)                    ((((int8_t)(flags) & 0x30) - 0x10) >> 4)
+#define FLAGS_TO_PREC(flags)           ((((int8_t)(flags) & 0x30) - 0x10) >> 4)
 
 /* line, rect, square flags */
 #define FORCE                          0x02
