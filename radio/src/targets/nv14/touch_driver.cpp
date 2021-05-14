@@ -468,27 +468,27 @@ void handleTouch()
     touchState.x = touchX;
     touchState.y = touchY;
 
-    if (touchState.event == TE_NONE || touchState.event == TE_UP) {
+    if (touchState.state == TE_NONE || touchState.state == TE_UP) {
       touchState.startX = touchState.x;
       touchState.startY = touchState.y;
-      touchState.event = TE_DOWN;
+      touchState.setState(TE_DOWN);
       if (g_eeGeneral.backlightMode & e_backlight_mode_keys)
         backlightOn(); // TODO is that the best place ?
     }
-    else if (touchState.event == TE_DOWN) {
+    else if (touchState.state == TE_DOWN) {
       if (dx >= SLIDE_RANGE || dx <= -SLIDE_RANGE || dy >= SLIDE_RANGE || dy <= -SLIDE_RANGE) {
-        touchState.event = TE_SLIDE;
+        touchState.setState(TE_SLIDE);
         touchState.deltaX = (short) dx;
         touchState.deltaY = (short) dy;
       }
       else {
-        touchState.event = TE_DOWN;
+        touchState.setState(TE_DOWN);
         touchState.deltaX = 0;
         touchState.deltaY = 0;
       }
     }
-    else if (touchState.event == TE_SLIDE) {
-      touchState.event = TE_SLIDE; //no change
+    else if (touchState.state == TE_SLIDE) {
+      touchState.setState(TE_SLIDE); // no change
       touchState.deltaX = (short) dx;
       touchState.deltaY = (short) dy;
     }
@@ -520,13 +520,13 @@ void touchPanelRead()
     handleTouch();
   }
   else {
-    if (touchState.event == TE_DOWN) {
-      touchState.event = TE_UP;
+    if (touchState.state == TE_DOWN) {
+      touchState.setState(TE_UP);
     }
     else {
       touchState.x = LCD_WIDTH;
       touchState.y = LCD_HEIGHT;
-      touchState.event = TE_SLIDE_END;
+      touchState.setState(TE_SLIDE_END);
     }
   }
 }

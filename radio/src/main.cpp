@@ -328,6 +328,12 @@ void guiMain(event_t evt)
 
   bool screenshotRequested = (mainRequestFlags & (1u << REQUEST_SCREENSHOT));
 
+#if defined(HARDWARE_TOUCH)
+  if (touchPanelEventOccured()) {
+    touchPanelRead();
+  }
+#endif
+
 #if defined(LIBOPENUI)
   MainWindow::instance()->run();
 #else

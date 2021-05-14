@@ -215,7 +215,7 @@ uint8_t touchGT911Flag = 0;
 uint8_t touchEventOccured = 0;
 struct TouchData touchData;
 
-static void TOUCH_AF_ExtiStop(void)
+static void TOUCH_AF_ExtiStop()
 {
   SYSCFG_EXTILineConfig(TOUCH_INT_EXTI_PortSource, TOUCH_INT_EXTI_PinSource1);
 
@@ -514,15 +514,15 @@ void touchPanelRead()
   if (pointsCount > 0 && pointsCount < GT911_MAX_TP) {
     I2C_GT911_ReadRegister(GT911_READ_XY_REG + 1, touchData.data, pointsCount * sizeof(TouchPoint));
     if (touchData.pointsCount == 0) {
-      touchState.event = TE_DOWN;
+      touchState.setState(TE_DOWN);
       touchState.startX = touchState.x = touchData.points[0].x;
       touchState.startY = touchState.y = touchData.points[0].y;
     }
     else {
       touchState.deltaX = touchData.points[0].x - touchState.x;
       touchState.deltaY = touchData.points[0].y - touchState.y;
-      if (touchState.event == TE_SLIDE || abs(touchState.deltaX) >= SLIDE_RANGE || abs(touchState.deltaY) >= SLIDE_RANGE) {
-        touchState.event = TE_SLIDE;
+      if (touchState.state == TE_SLIDE || abs(touchState.deltaX) >= SLIDE_RANGE || abs(touchState.deltaY) >= SLIDE_RANGE) {
+        touchState.setState(TE_SLIDE);
         touchState.x = touchData.points[0].x;
         touchState.y = touchData.points[0].y;
       }
@@ -532,10 +532,10 @@ void touchPanelRead()
   else {
     if (touchData.pointsCount > 0) {
       touchData.pointsCount = 0;
-      if (touchState.event == TE_SLIDE)
-        touchState.event = TE_SLIDE_END;
-      else
-        touchState.event = TE_UP;
+      if (touchState.state == TE_SLIDE)
+        touchState.setState(TE_SLIDE_END);
+      else if (touchState.state != TE_NONE)
+        touchState.setState(TE_UP);
     }
   }
 

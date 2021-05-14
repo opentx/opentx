@@ -260,7 +260,7 @@ long OpenTxSim::onMouseDown(FXObject *, FXSelector, void * v)
   TRACE_WINDOWS("[Mouse Press] %d %d", evt->win_x, evt->win_y);
 
 #if defined(HARDWARE_TOUCH)
-  touchState.event = TE_DOWN;
+  touchState.setState(TE_DOWN);
   touchState.startX = touchState.x = evt->win_x;
   touchState.startY = touchState.y = evt->win_y;
 #endif
@@ -276,13 +276,13 @@ long OpenTxSim::onMouseUp(FXObject*,FXSelector,void*v)
   TRACE_WINDOWS("[Mouse Release] %d %d", evt->win_x, evt->win_y);
 
 #if defined(HARDWARE_TOUCH)
-  if (touchState.event == TE_DOWN) {
-    touchState.event = TE_UP;
+  if (touchState.state == TE_SLIDE) {
+    touchState.setState(TE_SLIDE_END);
+  }
+  else if (touchState.state != TE_NONE) {
+    touchState.setState(TE_UP);
     touchState.x = touchState.startX;
     touchState.y = touchState.startY;
-  }
-  else {
-    touchState.event = TE_SLIDE_END;
   }
 #endif
 
