@@ -1,8 +1,8 @@
-name: Do Linux nightly Companion
+name: Linux nightly Companion
 
 on:
   workflow_run:
-    workflows: ["Do MacOSX nightly Companion"]
+    workflows: ["MacOSX nightly Companion"]
     types:
       - completed
      
