@@ -160,6 +160,7 @@ constexpr coord_t MODEL_SELECT_FOOTER_HEIGHT = 24;
 constexpr coord_t SCROLLBAR_WIDTH = 3;
 constexpr coord_t TABLE_LINE_HEIGHT = 50;
 constexpr coord_t TABLE_HEADER_HEIGHT = 48;
+constexpr coord_t TABLE_HORIZONTAL_PADDING = 8;
 
 constexpr coord_t ROLLER_LINE_HEIGHT = 40;
 
