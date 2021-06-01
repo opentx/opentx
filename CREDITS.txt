@@ -2281,3 +2281,4 @@ Jan-Steffen Baare
 Thomas Dyke
 Goran Steiner
 Michael Hauschild
+Guy Lamaison
