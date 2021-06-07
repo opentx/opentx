@@ -2446,7 +2446,12 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, Board::Type board, unsig
 
   if (version >= 219) {
     // Trainer PPM settings
-    internalField.Append(new UnsignedField<3>(this,  modelData.trainerMode));
+    if (IS_RADIOMASTER_TX16S(board))
+      internalField.Append(new ConversionField< UnsignedField<3> >(this,  modelData.trainerMode, -2));
+    else if (IS_FAMILY_HORUS_OR_T16(board))
+      internalField.Append(new ConversionField< UnsignedField<3> >(this,  modelData.trainerMode, -3));
+    else
+      internalField.Append(new UnsignedField<3>(this,  modelData.trainerMode));
     internalField.Append(new SpareBitsField<5>(this));
     internalField.Append(new UnsignedField<8>(this, modelData.moduleData[2].channelsStart));
     internalField.Append(new ConversionField<SignedField<8> >(this, modelData.moduleData[2].channelsCount, -8));
