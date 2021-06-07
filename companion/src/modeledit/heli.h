@@ -18,12 +18,12 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _HELI_H_
-#define _HELI_H_
+#pragma once
 
 #include "modeledit.h"
 
 class CompoundItemModelFactory;
+class FilteredItemModelFactory;
 class FilteredItemModel;
 
 namespace Ui {
@@ -46,8 +46,6 @@ class HeliPanel : public ModelPanel
 
   private:
     Ui::Heli *ui;
-    FilteredItemModel * rawSourceFilteredModel;
+    FilteredItemModelFactory * tabFilteredModels;
     void connectItemModelEvents(const FilteredItemModel * itemModel);
 };
-
-#endif // _HELI_H_

@@ -21,13 +21,27 @@
 #pragma once
 
 #include "rawsource.h"
+#include "datahelpers.h"
 
 #include <QtCore>
 
+class AbstractStaticItemModel;
+
 class SwashRingData {
+
   Q_DECLARE_TR_FUNCTIONS(SwashRingData)
 
   public:
+    enum
+    {
+      SWASHRING_TYPE_OFF,
+      SWASHRING_TYPE_120,
+      SWASHRING_TYPE_120X,
+      SWASHRING_TYPE_140,
+      SWASHRING_TYPE_90,
+      SWASHRING_TYPE_COUNT
+    };
+
     SwashRingData() { clear(); }
 
     int elevatorWeight;
@@ -40,5 +54,11 @@ class SwashRingData {
     unsigned int  value;
 
     void clear() { memset(reinterpret_cast<void *>(this), 0, sizeof(SwashRingData)); }
+    QString typeToString() const;
+
+    static FieldRange getValueRange();
+    static FieldRange getWeightRange();
+    static QString typeToString(const int value);
+    static AbstractStaticItemModel * typeItemModel();
 };
 
