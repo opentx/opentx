@@ -390,7 +390,7 @@ PACK(struct TelemetrySensor {
  */
 
 PACK(struct TrainerModuleData {
-  uint8_t mode:3;
+  uint8_t mode:3;         //  TODO: simplify value at an eeprom change refer compile driven enum handling in dataconstants.h
   uint8_t spare1:5;
   uint8_t channelsStart;
   int8_t  channelsCount; // 0=8 channels
@@ -970,4 +970,4 @@ static inline void check_struct()
 
 #undef CHKSIZE
 }
-#endif /* BACKUP */ 
+#endif /* BACKUP */

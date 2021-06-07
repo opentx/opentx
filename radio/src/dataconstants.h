@@ -186,6 +186,9 @@ enum ModuleIndex {
   EXTERNAL_MODULE,
   SPORT_MODULE,
 };
+
+//  TODO: simplify at an eeprom change to a single master list and use ui filters. Simplies radio conversions and both radio and companion code
+//        Companion opentxeeprom.cpp will require after import and before export manipulation removed
 enum TrainerMode {
   TRAINER_MODE_MASTER_TRAINER_JACK,
   TRAINER_MODE_SLAVE,
@@ -208,6 +211,7 @@ enum TrainerMode {
   };
 #endif
 
+//  TODO: simplify at an eeprom change to a single master list and use ui filters
 #define TRAINER_MODE_MIN()               TRAINER_MODE_MASTER_TRAINER_JACK
 
 #if !defined(HARDWARE_EXTERNAL_MODULE)

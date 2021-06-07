@@ -66,7 +66,8 @@ class ModulePanel : public ModelPanel
   Q_OBJECT
 
   public:
-    ModulePanel(QWidget * parent, ModelData & model, ModuleData & module, GeneralSettings & generalSettings, Firmware * firmware, int moduleIdx);
+    ModulePanel(QWidget * parent, ModelData & model, ModuleData & module, GeneralSettings & generalSettings, Firmware * firmware, int moduleIdx,
+                FilteredItemModelFactory * panelFilteredItemModels = nullptr);
     virtual ~ModulePanel();
     virtual void update();
 
@@ -81,7 +82,6 @@ class ModulePanel : public ModelPanel
 
   private slots:
     void setupFailsafes();
-    void on_trainerMode_currentIndexChanged(int index);
     void onProtocolChanged(int index);
     void on_ppmDelay_editingFinished();
     void on_channelsCount_editingFinished();
