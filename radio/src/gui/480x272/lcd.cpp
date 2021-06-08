@@ -586,9 +586,9 @@ void lcdDrawHudRectangle(float pitch, float roll, coord_t xmin, coord_t xmax, co
     if (roll > 0.0f) {
       for (int32_t s = 0; s < ywidth; s++) {
         int32_t yy = ymin + s;
-        int32_t xx = ox + ((float)yy - oy) / angle; // + 0.5f; rounding not needed
+        int32_t xx = ox + ((float)yy - oy) / angle;
         if (xx >= xmin && xx <= xmax) {
-       	  lcd->drawSolidHorizontalLine(xx, yy, xmax - xx + 1, flags);
+       	  lcdDrawSolidHorizontalLine(xx, yy, xmax - xx + 1, flags);
         }
         else if (xx < xmin) {
           ybot = (inverted) ? max(yy, ybot) + 1 : min(yy, ybot);
@@ -599,9 +599,9 @@ void lcdDrawHudRectangle(float pitch, float roll, coord_t xmin, coord_t xmax, co
     else {
       for (int32_t s = 0; s < ywidth; s++) {
         int32_t yy = ymin + s;
-        int32_t xx = ox + ((float)yy - oy) / angle; // + 0.5f; rounding not needed
+        int32_t xx = ox + ((float)yy - oy) / angle;
         if (xx >= xmin && xx <= xmax) {
-          lcd->drawSolidHorizontalLine(xmin, yy, xx - xmin, flags);
+          lcdDrawSolidHorizontalLine(xmin, yy, xx - xmin, flags);
         }
         else if (xx > xmax) {
           ybot = (inverted) ? max(yy, ybot) + 1 : min(yy, ybot);
