@@ -911,7 +911,6 @@ static int luaRGB(lua_State *L)
   lua_pushinteger(L, RGB(r, g, b));
   return 1;
 }
-#endif
 
 /*luadoc
 @function lcd.drawHudRectangleLine(pitch, roll, xmin, xmax, ymin, ymax, flags)
@@ -941,6 +940,7 @@ static int luaLcdDrawHudRectangle(lua_State *L)
   lcdDrawHudRectangle(pitch, roll, xmin, xmax, ymin, ymax, flags);
   return 0;
 }
+#endif
 
 const luaL_Reg lcdLib[] = {
   { "refresh", luaLcdRefresh },
@@ -962,6 +962,7 @@ const luaL_Reg lcdLib[] = {
   { "setColor", luaLcdSetColor },
   { "getColor", luaLcdGetColor },
   { "RGB", luaRGB },
+  { "drawHudRectangle", luaLcdDrawHudRectangle },
 #else
   { "getLastPos", luaLcdGetLastPos },
   { "getLastRightPos", luaLcdGetLastPos },
@@ -970,6 +971,5 @@ const luaL_Reg lcdLib[] = {
   { "drawScreenTitle", luaLcdDrawScreenTitle },
   { "drawCombobox", luaLcdDrawCombobox },
 #endif
-  { "drawHudRectangle", luaLcdDrawHudRectangle },
   { NULL, NULL }  /* sentinel */
 };
