@@ -261,4 +261,6 @@ inline void lcdDrawBitmapPattern(coord_t x, coord_t y, const uint8_t * img, LcdF
   #define SLOW_BLINK_ON_PHASE          (g_blinkTmr10ms & (1<<7))
 #endif
 
+void lcdDrawHudRectangle(float pitch, float roll, coord_t xmin, coord_t xmax, coord_t ymin, coord_t ymax, LcdFlags flags=0);
+
 #endif // _LCD_H_
