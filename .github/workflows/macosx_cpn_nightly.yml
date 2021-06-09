@@ -69,11 +69,6 @@ jobs:
           ./configure --without-x &&
           make install
 
-      - name: install lftp
-        working-directory: ${{github.workspace}}
-        shell: bash
-        run:  brew install lftp
-
       - name: Configure CMake
         # Use a bash shell so we can use the same syntax for environment variable
         # access regardless of the host operating system
