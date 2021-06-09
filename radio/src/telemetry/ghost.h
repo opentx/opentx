@@ -80,9 +80,11 @@ enum GhstRFProfile
   GHST_RF_PROFILE_PureRace    = 3,
   GHST_RF_PROFILE_LongRange   = 4,
   GHST_RF_PROFILE_Reserved    = 5,
-  GHST_RF_PROFILE_Race2       = 6,
-  GHST_RF_PROFILE_PureRace2   = 7,
-  GHST_RF_PROFILE_MAX = GHST_RF_PROFILE_PureRace2,
+  GHST_RF_PROFILE_Race250     = 6,
+  GHST_RF_PROFILE_Race500     = 7,
+  GHST_RF_PROFILE_Solid125    = 8,
+  GHST_RF_PROFILE_Solid250    = 9,
+  GHST_RF_PROFILE_MAX = GHST_RF_PROFILE_Solid250,
   GHST_RF_PROFILE_COUNT
 };
 
