@@ -931,7 +931,7 @@ const char STR_SUBTYPE_HUBSAN[] =     "\004""H107""H301""H501";
 const char STR_SUBTYPE_FRSKY[] =      "\011""D16\0     ""D8\0      ""D16 8ch\0 ""V8\0      ""LBT(EU)\0 ""LBT 8ch\0 ""D8Cloned\0""D16Cloned";
 const char STR_SUBTYPE_HISKY[] =      "\005""Std\0 ""HK310";
 const char STR_SUBTYPE_V2X2[] =       "\006""Std\0  ""JXD506""MR101\0";
-const char STR_SUBTYPE_DSM[] =        "\004""2 1F""2 2F""X 1F""X 2F";
+const char STR_SUBTYPE_DSM[] =        "\004""2 1F""2 2F""X 1F""X 2F""Auto""R 1F";
 const char STR_SUBTYPE_DEVO[] =       "\004""8ch\0""10ch""12ch""6ch\0""7ch\0";
 const char STR_SUBTYPE_YD717[] =      "\007""Std\0   ""SkyWlkr""Syma X4""XINXUN\0""NIHUI\0 ";
 const char STR_SUBTYPE_KN[] =         "\006""WLtoys""FeiLun";
@@ -941,7 +941,7 @@ const char STR_SUBTYPE_CX10[] =       "\007""Green\0 ""Blue\0  ""DM007\0 ""-\0  
 const char STR_SUBTYPE_CG023[] =      "\005""Std\0 ""YD829";
 const char STR_SUBTYPE_BAYANG[] =     "\007""Std\0   ""H8S3D\0 ""X16 AH\0""IRDrone""DHD D4\0""QX100\0 ";
 const char STR_SUBTYPE_ESky[] =       "\003""Std""ET4";
-const char STR_SUBTYPE_MT99[] =       "\006""MT99\0 ""H7\0   ""YZ\0   ""LS\0   ""FY805";
+const char STR_SUBTYPE_MT99[] =       "\006""MT99\0 ""H7\0   ""YZ\0   ""LS\0   ""FY805\0""A180\0 ""Dragon";
 const char STR_SUBTYPE_MJXQ[] =       "\007""WLH08\0 ""X600\0  ""X800\0  ""H26D\0  ""E010\0  ""H26WH\0 ""Phoenix";
 const char STR_SUBTYPE_FY326[] =      "\005""Std\0 ""FY319";
 const char STR_SUBTYPE_FUTABA[] =     "\005""SFHSS";
@@ -958,7 +958,7 @@ const char STR_SUBTYPE_HITEC[] =      "\007""Optima\0""Opt Hub""Minima\0";
 const char STR_SUBTYPE_WFLY[] =       "\005""WFR0x";
 const char STR_SUBTYPE_BUGS_MINI[] =  "\006""Std\0  ""Bugs3H";
 const char STR_SUBTYPE_TRAXXAS[] =    "\004""6519";
-const char STR_SUBTYPE_E01X[] =       "\005""E012\0""E015\0""E016H";
+const char STR_SUBTYPE_E01X[] =       "\004""E012""E015";
 const char STR_SUBTYPE_V911S[] =      "\004""Std\0""E119";
 const char STR_SUBTYPE_GD00X[] =      "\005""GD_V1""GD_V2";
 const char STR_SUBTYPE_V761[] =       "\003""3ch""4ch";
@@ -969,9 +969,9 @@ const char STR_SUBTYPE_HEIGHT[] =     "\003""5ch""8ch";
 const char STR_SUBTYPE_FRSKYX_RX[] =  "\007""RX\0    ""CloneTX";
 const char STR_SUBTYPE_HOTT[] =       "\007""Sync\0  ""No_Sync";
 const char STR_SUBTYPE_FX816[] =      "\003""P38";
-const char STR_SUBTYPE_PELIKAN[] =    "\004""Pro\0""Lite";
+const char STR_SUBTYPE_PELIKAN[] =    "\005""Pro\0 ""Lite\0""SCX24";
 const char STR_SUBTYPE_XK[] =         "\004""X450""X420";
-const char STR_SUBTYPE_XN297DUMP[] =  "\004""250K""1M\0 ""2M\0 ""AUTO""NRF\0";
+const char STR_SUBTYPE_XN297DUMP[] =  "\006""250K\0 ""1M\0   ""2M\0   ""AUTO\0 ""NRF\0  ""CC2500";
 const char STR_SUBTYPE_FRSKYX2[] =    "\010""D16\0    ""D16 8ch\0""LBT(EU)\0""LBT 8ch\0""Cloned\0 ""Clone8ch";
 const char STR_SUBTYPE_FRSKYR9[] =    "\007""915MHz\0""868MHz\0""915 8ch""868 8ch""FCC\0   ""---\0   ""FCC 8ch";
 const char STR_SUBTYPE_PROPEL[] =     "\004""74-Z";
@@ -983,6 +983,7 @@ const char STR_SUBTYPE_RLINK[] =      "\007""Surface""Air\0   ""DumboRC";
 const char STR_SUBTYPE_ELRS[] =       "\007""N/A WIP";
 const char STR_SUBTYPE_REALACC[] =    "\003""R11";
 const char STR_SUBTYPE_WFLY2[] =      "\005""RF20x";
+const char STR_SUBTYPE_MOULDKG[] =    "\007""Analog\0""Digital";
 
 const char* mm_options_strings::options[] = {
   nullptr,
@@ -1008,10 +1009,10 @@ const mm_protocol_definition multi_protocols[] = {
   {MODULE_SUBTYPE_MULTI_FLYSKY,     4, false, true,   STR_SUBTYPE_FLYSKY,    nullptr},
   {MODULE_SUBTYPE_MULTI_HUBSAN,     2, false, false,  STR_SUBTYPE_HUBSAN,    STR_MULTI_VIDFREQ},
   {MODULE_SUBTYPE_MULTI_FRSKY,      7, false, false,  STR_SUBTYPE_FRSKY,     STR_MULTI_RFTUNE},
-  {MODULE_SUBTYPE_MULTI_HISKY,      1, false, true,   STR_SUBTYPE_HISKY,     nullptr},
+  {MODULE_SUBTYPE_MULTI_HISKY,      1, true,  true,   STR_SUBTYPE_HISKY,     nullptr},
   {MODULE_SUBTYPE_MULTI_V2X2,       2, false, false,  STR_SUBTYPE_V2X2,      nullptr},
-  {MODULE_SUBTYPE_MULTI_DSM2,       3, false, true,   STR_SUBTYPE_DSM,       STR_MULTI_MAX_THROW},
-  {MODULE_SUBTYPE_MULTI_DEVO,       4, false, true,   STR_SUBTYPE_DEVO,      STR_MULTI_FIXEDID},
+  {MODULE_SUBTYPE_MULTI_DSM2,       5, false, true,   STR_SUBTYPE_DSM,       STR_MULTI_MAX_THROW},
+  {MODULE_SUBTYPE_MULTI_DEVO,       4, true,  true,   STR_SUBTYPE_DEVO,      STR_MULTI_FIXEDID},
   {MODULE_SUBTYPE_MULTI_YD717,      4, false, false,  STR_SUBTYPE_YD717,     nullptr},
   {MODULE_SUBTYPE_MULTI_KN,         1, false, false,  STR_SUBTYPE_KN,        nullptr},
   {MODULE_SUBTYPE_MULTI_SYMAX,      1, false, false,  STR_SUBTYPE_SYMAX,     nullptr},
@@ -1020,8 +1021,8 @@ const mm_protocol_definition multi_protocols[] = {
   {MODULE_SUBTYPE_MULTI_CG023,      1, false, false,  STR_SUBTYPE_CG023,     nullptr},
   {MODULE_SUBTYPE_MULTI_BAYANG,     5, false, false,  STR_SUBTYPE_BAYANG,    STR_MULTI_TELEMETRY},
   {MODULE_SUBTYPE_MULTI_ESky,       1, false, true,   STR_SUBTYPE_ESky,      nullptr},
-  {MODULE_SUBTYPE_MULTI_MT99XX,     4, false, false,  STR_SUBTYPE_MT99,      nullptr},
-  {MODULE_SUBTYPE_MULTI_MJXQ,       6, false, false,  STR_SUBTYPE_MJXQ,      STR_MULTI_RFTUNE},
+  {MODULE_SUBTYPE_MULTI_MT99XX,     6, false, false,  STR_SUBTYPE_MT99,      nullptr},
+  {MODULE_SUBTYPE_MULTI_MJXQ,       6, false, false,  STR_SUBTYPE_MJXQ,      nullptr},
   {MODULE_SUBTYPE_MULTI_FY326,      1, false, false,  STR_SUBTYPE_FY326,     nullptr},
   {MODULE_SUBTYPE_MULTI_FUTABA,     0, true,  true,   STR_SUBTYPE_FUTABA,    STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_J6PRO,      0, false, true,   NO_SUBTYPE,            nullptr},
@@ -1029,17 +1030,17 @@ const mm_protocol_definition multi_protocols[] = {
   {MODULE_SUBTYPE_MULTI_OLRS,       0, false, false,  NO_SUBTYPE,            STR_RFPOWER},
   {MODULE_SUBTYPE_MULTI_FS_AFHDS2A, 5, true,  true,   STR_SUBTYPE_AFHDS2A,   STR_MULTI_SERVOFREQ},
   {MODULE_SUBTYPE_MULTI_Q2X2,       2, false, false,  STR_SUBTYPE_Q2X2,      nullptr},
-  {MODULE_SUBTYPE_MULTI_WK_2X01,    5, false, true,   STR_SUBTYPE_WK2x01,    nullptr},
+  {MODULE_SUBTYPE_MULTI_WK_2X01,    5, true,  true,   STR_SUBTYPE_WK2x01,    nullptr},
   {MODULE_SUBTYPE_MULTI_Q303,       3, false, false,  STR_SUBTYPE_Q303,      nullptr},
   {MODULE_SUBTYPE_MULTI_CABELL,     7, false, false,  STR_SUBTYPE_CABELL,    STR_MULTI_OPTION},
   {MODULE_SUBTYPE_MULTI_ESKY150,    1, false, false,  STR_SUBTYPE_ESKY150,   nullptr},
   {MODULE_SUBTYPE_MULTI_H83D,       3, false, false,  STR_SUBTYPE_H83D,      nullptr},
   {MODULE_SUBTYPE_MULTI_CORONA,     2, false, false,  STR_SUBTYPE_CORONA,    STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_HITEC,      2, false, false,  STR_SUBTYPE_HITEC,     STR_MULTI_RFTUNE},
-  {MODULE_SUBTYPE_MULTI_WFLY,       0, false, false,  STR_SUBTYPE_WFLY,      nullptr},
+  {MODULE_SUBTYPE_MULTI_WFLY,       0, true,  false,  STR_SUBTYPE_WFLY,      nullptr},
   {MODULE_SUBTYPE_MULTI_BUGS_MINI,  1, false, false,  STR_SUBTYPE_BUGS_MINI, nullptr},
   {MODULE_SUBTYPE_MULTI_TRAXXAS,    0, false, false,  STR_SUBTYPE_TRAXXAS,   nullptr},
-  {MODULE_SUBTYPE_MULTI_E01X,       2, false, false,  STR_SUBTYPE_E01X,      STR_MULTI_OPTION},
+  {MODULE_SUBTYPE_MULTI_E01X,       1, false, false,  STR_SUBTYPE_E01X,      STR_MULTI_OPTION},
   {MODULE_SUBTYPE_MULTI_V911S,      1, false, false,  STR_SUBTYPE_V911S,     STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_GD00X,      1, false, false,  STR_SUBTYPE_GD00X,     STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_V761,       1, false, false,  STR_SUBTYPE_V761,      nullptr},
@@ -1051,14 +1052,14 @@ const mm_protocol_definition multi_protocols[] = {
   {MODULE_SUBTYPE_MULTI_FRSKYX_RX,  1, false, false,  STR_SUBTYPE_FRSKYX_RX, STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_HOTT,       1, true,  false,  STR_SUBTYPE_HOTT,      STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_FX816,      0, false, false,  STR_SUBTYPE_FX816,     nullptr},
-  {MODULE_SUBTYPE_MULTI_PELIKAN,    1, false, true,   STR_SUBTYPE_PELIKAN,   nullptr},
+  {MODULE_SUBTYPE_MULTI_PELIKAN,    2, false, true,   STR_SUBTYPE_PELIKAN,   nullptr},
   {MODULE_SUBTYPE_MULTI_XK,         1, false, false,  STR_SUBTYPE_XK,        STR_MULTI_RFTUNE},
-  {MODULE_SUBTYPE_MULTI_XN297DUMP,  4, false, false,  STR_SUBTYPE_XN297DUMP, STR_MULTI_RFCHAN},
+  {MODULE_SUBTYPE_MULTI_XN297DUMP,  5, false, false,  STR_SUBTYPE_XN297DUMP, STR_MULTI_RFCHAN},
   {MODULE_SUBTYPE_MULTI_FRSKYX2,    5, true,  false,  STR_SUBTYPE_FRSKYX2,   STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_FRSKY_R9,   6, true,  false,  STR_SUBTYPE_FRSKYR9,   nullptr},
   {MODULE_SUBTYPE_MULTI_PROPEL,     0, false, false,  STR_SUBTYPE_PROPEL,    nullptr},
   {MODULE_SUBTYPE_MULTI_FRSKYL,     1, false, false,  STR_SUBTYPE_FRSKYL,    STR_MULTI_RFTUNE},
-  {MODULE_SUBTYPE_MULTI_SKYARTEC,   0, false, false,  NO_SUBTYPE,            STR_MULTI_RFTUNE},
+  {MODULE_SUBTYPE_MULTI_SKYARTEC,   0, false, true,   NO_SUBTYPE,            STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_ESKY150V2,  0, false, true,   STR_SUBTYPE_ESKY150V2, STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_JJRC345,    1, false, false,  STR_SUBTYPE_JJRC345,   nullptr},
   {MODULE_SUBTYPE_MULTI_Q90C,       0, false, false,  NO_SUBTYPE,            STR_MULTI_RFTUNE},
@@ -1066,9 +1067,12 @@ const mm_protocol_definition multi_protocols[] = {
   {MODULE_SUBTYPE_MULTI_RLINK,      2, false, false,  STR_SUBTYPE_RLINK,     STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_ELRS,       0, false, false,  STR_SUBTYPE_ELRS,      nullptr},
   {MODULE_SUBTYPE_MULTI_REALACC,    0, false, false,  STR_SUBTYPE_REALACC,   nullptr},
-  {MODULE_SUBTYPE_MULTI_OMP,        0, false, false,  NO_SUBTYPE,            STR_MULTI_RFTUNE},
-  {MODULE_SUBTYPE_MULTI_WFLY2,      0, false, false,  STR_SUBTYPE_WFLY2,     STR_MULTI_OPTION},
+  {MODULE_SUBTYPE_MULTI_OMP,        0, false, false,  NO_SUBTYPE,            nullptr},
+  {MODULE_SUBTYPE_MULTI_MLINK,      0, true,  false,  NO_SUBTYPE,            nullptr},
+  {MODULE_SUBTYPE_MULTI_WFLY2,      0, true,  false,  STR_SUBTYPE_WFLY2,     STR_MULTI_OPTION},
   {MODULE_SUBTYPE_MULTI_E016HV2,    0, false, false,  NO_SUBTYPE,            STR_MULTI_RFTUNE},
+  {MODULE_SUBTYPE_MULTI_LOLI,       0, true,  false,  NO_SUBTYPE,            nullptr},
+  {MODULE_SUBTYPE_MULTI_MOULDKG,    1, false, false,  STR_SUBTYPE_MOULDKG,   nullptr},
   {MM_RF_CUSTOM_SELECTED,           7, true,  true,   NO_SUBTYPE,            STR_MULTI_OPTION},
 
   // Sentinel and default for protocols not listed above (MM_RF_CUSTOM is 0xff)
