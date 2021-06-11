@@ -1532,7 +1532,7 @@ void MdiChild::writeEeprom()  // write to Tx
 {
   if (g.confirmWriteModelsAndSettings()) {
     QMessageBox msgbox;
-    msgbox.setText(tr("You are about to overwrite ALL models on the Radio."));
+    msgbox.setText(tr("You are about to overwrite ALL models and settings on the Radio."));
     msgbox.setInformativeText(tr("Do you want to continue?"));
     msgbox.setIcon(QMessageBox::Icon::Question);
     msgbox.setStandardButtons(QMessageBox::Yes | QMessageBox::Abort);
