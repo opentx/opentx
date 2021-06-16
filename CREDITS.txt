@@ -2292,3 +2292,9 @@ Allan Leon
 Stuart Olson
 Martin Fawcett
 Asaf Meshulam
+Bernd Koehler
+Klaus Kernstock
+Gerhard Weixelbaumer
+Dieter Siegel
+Matthias Sell
+Frédéric Devillard
