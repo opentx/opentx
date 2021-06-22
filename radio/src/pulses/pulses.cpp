@@ -487,7 +487,7 @@ static void enablePulsesInternalModule(uint8_t protocol)
 #if defined(INTMODULE_HEARTBEAT)
       // use backup trigger (1 ms later)
       init_intmodule_heartbeat();
-      mixerSchedulerSetPeriod(INTERNAL_MODULE, PXX2_PERIOD + 1000/*us*/);
+      mixerSchedulerSetPeriod(INTERNAL_MODULE, PXX2_HEARTBEAT_PERIOD);
 #else
       mixerSchedulerSetPeriod(INTERNAL_MODULE, PXX2_PERIOD);
 #endif
@@ -547,7 +547,7 @@ bool setupPulsesInternalModule(uint8_t protocol)
       else {
 #if defined(INTMODULE_HEARTBEAT)
         mixerSchedulerResetTimer();
-        mixerSchedulerSetPeriod(INTERNAL_MODULE, PXX2_PERIOD + 2000 /* backup */);
+        mixerSchedulerSetPeriod(INTERNAL_MODULE, PXX2_HEARTBEAT_PERIOD);
 #else
         mixerSchedulerSetPeriod(INTERNAL_MODULE, PXX2_PERIOD);
 #endif
