@@ -180,6 +180,8 @@ TASK_FUNCTION(mixerTask)
 
 #if defined(PCBSKY9X)
       sendSynchronousPulses(1 << EXTERNAL_MODULE);
+#elif !defined(HARDWARE_EXTERNAL_MODULE)
+      sendSynchronousPulses((1 << INTERNAL_MODULE));
 #else
       sendSynchronousPulses((1 << INTERNAL_MODULE) | (1 << EXTERNAL_MODULE));
 #endif
