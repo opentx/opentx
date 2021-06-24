@@ -178,7 +178,6 @@ TASK_FUNCTION(mixerTask)
 
       doMixerCalculations();
 
-
 #if defined(HARDWARE_INTERNAL_MODULE) && defined(HARDWARE_EXTERNAL_MODULE)
       sendSynchronousPulses((1 << INTERNAL_MODULE) | (1 << EXTERNAL_MODULE));
 #elif defined(HARDWARE_INTERNAL_MODULE)
