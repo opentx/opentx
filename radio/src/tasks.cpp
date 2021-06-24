@@ -178,10 +178,12 @@ TASK_FUNCTION(mixerTask)
 
       doMixerCalculations();
 
-#if defined(PCBSKY9X)
-      sendSynchronousPulses(1 << EXTERNAL_MODULE);
-#else
+#if defined(HARDWARE_INTERNAL_MODULE) && defined(HARDWARE_EXTERNAL_MODULE)
       sendSynchronousPulses((1 << INTERNAL_MODULE) | (1 << EXTERNAL_MODULE));
+#elif defined(HARDWARE_INTERNAL_MODULE)
+      sendSynchronousPulses((1 << INTERNAL_MODULE));
+#elif defined(HARDWARE_EXTERNAL_MODULE)
+      sendSynchronousPulses(1 << EXTERNAL_MODULE);
 #endif
 
       doMixerPeriodicUpdates();
