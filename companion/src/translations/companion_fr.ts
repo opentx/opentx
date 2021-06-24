@@ -777,42 +777,42 @@ Manche Droit:  Profondeur, Direction
         <location filename="../firmwares/boards.cpp" line="630"/>
         <location filename="../firmwares/boards.cpp" line="643"/>
         <source>None</source>
-        <translation type="unfinished">Aucun</translation>
+        <translation>Aucun</translation>
     </message>
     <message>
         <location filename="../firmwares/boards.cpp" line="614"/>
         <source>Pot with detent</source>
-        <translation type="unfinished">Potentiomètre avec centre</translation>
+        <translation>Potentiomètre avec centre</translation>
     </message>
     <message>
         <location filename="../firmwares/boards.cpp" line="616"/>
         <source>Multi pos switch</source>
-        <translation type="unfinished"></translation>
+        <translation>Inter multi positions</translation>
     </message>
     <message>
         <location filename="../firmwares/boards.cpp" line="618"/>
         <source>Pot without detent</source>
-        <translation type="unfinished">Potentiomètre sans centre</translation>
+        <translation>Potentiomètre sans centre</translation>
     </message>
     <message>
         <location filename="../firmwares/boards.cpp" line="632"/>
         <source>Slider with detent</source>
-        <translation type="unfinished">Curseur avec centre</translation>
+        <translation>Slider avec centre</translation>
     </message>
     <message>
         <location filename="../firmwares/boards.cpp" line="645"/>
         <source>2 Positions Toggle</source>
-        <translation type="unfinished">2 Positions momentané</translation>
+        <translation>2 Positions momentané</translation>
     </message>
     <message>
         <location filename="../firmwares/boards.cpp" line="647"/>
         <source>2 Positions</source>
-        <translation type="unfinished">2 Positions</translation>
+        <translation>2 Positions</translation>
     </message>
     <message>
         <location filename="../firmwares/boards.cpp" line="649"/>
         <source>3 Positions</source>
-        <translation type="unfinished">3 Positions</translation>
+        <translation>3 Positions</translation>
     </message>
     <message>
         <location filename="../firmwares/boards.cpp" line="462"/>
@@ -4385,78 +4385,78 @@ Communs à tous les modèles d&apos;une même EEPROM.</translation>
     <message>
         <location filename="../firmwares/generalsettings.cpp" line="419"/>
         <source>Internal</source>
-        <translation type="unfinished">Interne</translation>
+        <translation>Interne</translation>
     </message>
     <message>
         <location filename="../firmwares/generalsettings.cpp" line="421"/>
         <source>Ask</source>
-        <translation type="unfinished">Demander</translation>
+        <translation>Demander</translation>
     </message>
     <message>
         <location filename="../firmwares/generalsettings.cpp" line="423"/>
         <source>Per model</source>
-        <translation type="unfinished">Par modèle</translation>
+        <translation>Par modèle</translation>
     </message>
     <message>
         <location filename="../firmwares/generalsettings.cpp" line="426"/>
         <source>Internal + External</source>
-        <translation type="unfinished">Interne + Externe</translation>
+        <translation>Interne + Externe</translation>
     </message>
     <message>
         <location filename="../firmwares/generalsettings.cpp" line="426"/>
         <source>External</source>
-        <translation type="unfinished">Externe</translation>
+        <translation>Externe</translation>
     </message>
     <message>
         <location filename="../firmwares/generalsettings.cpp" line="439"/>
         <location filename="../firmwares/generalsettings.cpp" line="455"/>
         <source>OFF</source>
-        <translation type="unfinished">Eteint</translation>
+        <translation>Eteint</translation>
     </message>
     <message>
         <location filename="../firmwares/generalsettings.cpp" line="442"/>
         <source>Enabled</source>
-        <translation type="unfinished">Activé</translation>
+        <translation>Activé</translation>
     </message>
     <message>
         <location filename="../firmwares/generalsettings.cpp" line="442"/>
         <source>Telemetry</source>
-        <translation type="unfinished"></translation>
+        <translation>Télémétrie</translation>
     </message>
     <message>
         <location filename="../firmwares/generalsettings.cpp" line="444"/>
         <source>Trainer</source>
-        <translation type="unfinished">Écolage</translation>
+        <translation>Écolage</translation>
     </message>
     <message>
         <location filename="../firmwares/generalsettings.cpp" line="457"/>
         <source>Telemetry Mirror</source>
-        <translation type="unfinished"></translation>
+        <translation>Miroir de télémétrie</translation>
     </message>
     <message>
         <location filename="../firmwares/generalsettings.cpp" line="459"/>
         <source>Telemetry In</source>
-        <translation type="unfinished"></translation>
+        <translation>Entrées télémétrie</translation>
     </message>
     <message>
         <location filename="../firmwares/generalsettings.cpp" line="461"/>
         <source>SBUS Trainer</source>
-        <translation type="unfinished">Écolage SBUS</translation>
+        <translation>Écolage SBUS</translation>
     </message>
     <message>
         <location filename="../firmwares/generalsettings.cpp" line="463"/>
         <source>LUA</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/generalsettings.cpp" line="505"/>
         <source>v</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/generalsettings.cpp" line="517"/>
         <source>mA</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -5492,53 +5492,53 @@ Cette fonction ne peut pas être désactivée sur la radio.
     <message>
         <location filename="../generaledit/hardware.cpp" line="89"/>
         <source>Battery Offset</source>
-        <translation type="unfinished">Correction tension </translation>
+        <translation>Correction tension</translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.cpp" line="99"/>
         <source>RTC Battery Check</source>
-        <translation type="unfinished"></translation>
+        <translation>Vérifier batterie RTC</translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.cpp" line="106"/>
         <source>Bluetooth</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.cpp" line="119"/>
         <source>Device Name:</source>
-        <translation type="unfinished">Nom de l&apos;appareil:</translation>
+        <translation>Nom de l&apos;appareil:</translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.cpp" line="131"/>
         <source>Antenna</source>
-        <translation type="unfinished">Antenne</translation>
+        <translation>Antenne</translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.cpp" line="142"/>
         <location filename="../generaledit/hardware.cpp" line="153"/>
         <source>%1</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.cpp" line="161"/>
         <source>ADC Filter</source>
-        <translation type="unfinished">Filtre ADC</translation>
+        <translation>Filtre ADC</translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.cpp" line="168"/>
         <source>S.Port Power</source>
-        <translation type="unfinished">Alimentation S.Port</translation>
+        <translation>Alimentation S.Port</translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.cpp" line="175"/>
         <source>Maximum Baud</source>
-        <translation type="unfinished"></translation>
+        <translation>Baud Maximum</translation>
     </message>
     <message>
         <location filename="../generaledit/hardware.cpp" line="183"/>
         <source>Current Offset</source>
-        <translation type="unfinished">Correction  courant</translation>
+        <translation>Correction  courant</translation>
     </message>
 </context>
 <context>
@@ -7998,42 +7998,42 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../firmwares/modeldata.cpp" line="1565"/>
         <source>Master/Jack</source>
-        <translation type="unfinished">Maître/Jack</translation>
+        <translation>Maître/Jack</translation>
     </message>
     <message>
         <location filename="../firmwares/modeldata.cpp" line="1567"/>
         <source>Slave/Jack</source>
-        <translation type="unfinished">Elève/Jack</translation>
+        <translation>Elève/Jack</translation>
     </message>
     <message>
         <location filename="../firmwares/modeldata.cpp" line="1569"/>
         <source>Master/SBUS Module</source>
-        <translation type="unfinished">Maître/SBUS module</translation>
+        <translation>Maître/SBUS module</translation>
     </message>
     <message>
         <location filename="../firmwares/modeldata.cpp" line="1571"/>
         <source>Master/CPPM Module</source>
-        <translation type="unfinished">Maître/CPPM Module</translation>
+        <translation>Maître/CPPM Module</translation>
     </message>
     <message>
         <location filename="../firmwares/modeldata.cpp" line="1573"/>
         <source>Master/Battery</source>
-        <translation type="unfinished"></translation>
+        <translation>Maître/Batterie</translation>
     </message>
     <message>
         <location filename="../firmwares/modeldata.cpp" line="1575"/>
         <source>Master/Bluetooth</source>
-        <translation type="unfinished">Maître/Bluetooth</translation>
+        <translation>Maître/Bluetooth</translation>
     </message>
     <message>
         <location filename="../firmwares/modeldata.cpp" line="1577"/>
         <source>Slave/Bluetooth</source>
-        <translation type="unfinished">Elève/Bluetooth</translation>
+        <translation>Elève/Bluetooth</translation>
     </message>
     <message>
         <location filename="../firmwares/modeldata.cpp" line="1579"/>
         <source>Master/Multi</source>
-        <translation type="unfinished">Maître/Multi</translation>
+        <translation>Maître/Multi</translation>
     </message>
 </context>
 <context>
@@ -9493,12 +9493,12 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../firmwares/multiprotocols.cpp" line="34"/>
         <source>Enable Max Throw</source>
-        <translation type="unfinished"></translation>
+        <translation>Activer Courses Maximales</translation>
     </message>
     <message>
         <location filename="../firmwares/multiprotocols.cpp" line="35"/>
         <source>RF Channel Number</source>
-        <translation type="unfinished"></translation>
+        <translation>Numéro Canal HF</translation>
     </message>
     <message>
         <location filename="../firmwares/multiprotocols.cpp" line="36"/>
@@ -11832,27 +11832,27 @@ Erreur: %2</translation>
     <message>
         <location filename="../firmwares/heli_data.cpp" line="56"/>
         <source>OFF</source>
-        <translation type="unfinished">Eteint</translation>
+        <translation>Eteint</translation>
     </message>
     <message>
         <location filename="../firmwares/heli_data.cpp" line="58"/>
         <source>120</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/heli_data.cpp" line="60"/>
         <source>120X</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/heli_data.cpp" line="62"/>
         <source>140</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/heli_data.cpp" line="64"/>
         <source>90</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -13126,22 +13126,22 @@ Utilisez CTRL + le défilement de la souris ou les touches PAGE HAUT/PAGE BAS po
     <message>
         <location filename="../firmwares/generalsettings.cpp" line="610"/>
         <source>OFF</source>
-        <translation type="unfinished">Eteint</translation>
+        <translation>Eteint</translation>
     </message>
     <message>
         <location filename="../firmwares/generalsettings.cpp" line="612"/>
         <source>+= (Sum)</source>
-        <translation type="unfinished">+= (Additionner)</translation>
+        <translation>+= (Additionner)</translation>
     </message>
     <message>
         <location filename="../firmwares/generalsettings.cpp" line="614"/>
         <source>:= (Replace)</source>
-        <translation type="unfinished">:= (Remplacer)</translation>
+        <translation>:= (Remplacer)</translation>
     </message>
     <message>
         <location filename="../firmwares/generalsettings.cpp" line="623"/>
         <source>CH%1</source>
-        <translation type="unfinished">VOIE%1</translation>
+        <translation>VOIE%1</translation>
     </message>
 </context>
 <context>
@@ -13149,27 +13149,27 @@ Utilisez CTRL + le défilement de la souris ou les touches PAGE HAUT/PAGE BAS po
     <message>
         <location filename="../generaledit/trainer.cpp" line="49"/>
         <source>Mode</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../generaledit/trainer.cpp" line="50"/>
         <source>Weight</source>
-        <translation type="unfinished">Ratio</translation>
+        <translation>Ratio</translation>
     </message>
     <message>
         <location filename="../generaledit/trainer.cpp" line="51"/>
         <source>Source</source>
-        <translation type="unfinished">Source</translation>
+        <translation>Source</translation>
     </message>
     <message>
         <location filename="../generaledit/trainer.cpp" line="77"/>
         <source>Multiplier</source>
-        <translation type="unfinished">Multiplicateur</translation>
+        <translation>Multiplicateur</translation>
     </message>
     <message>
         <location filename="../generaledit/trainer.cpp" line="91"/>
         <source>Calibration</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
