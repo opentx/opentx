@@ -1340,7 +1340,7 @@ void registerOpenTxFirmwares()
   addOpenTxRfOptions(firmware, FLEX);
 
   /* Radiomaster T8 board */
-  firmware = new OpenTxFirmware("opentx-t8", QCoreApplication::translate("Firmware", "Radiomaster T8"), BOARD_RADIOMASTER_T8);
+  firmware = new OpenTxFirmware("opentx-t8", QCoreApplication::translate("Firmware", "Radiomaster T8 / T8 Pro"), BOARD_RADIOMASTER_T8);
   addOpenTxCommonOptions(firmware);
   firmware->addOption("noheli", Firmware::tr("Disable HELI menu and cyclic mix support"));
   firmware->addOption("nogvars", Firmware::tr("Disable Global variables"));
