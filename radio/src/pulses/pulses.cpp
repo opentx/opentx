@@ -400,7 +400,7 @@ bool setupPulsesExternalModule(uint8_t protocol)
       else
         mixerSchedulerSetPeriod(EXTERNAL_MODULE, GHOST_PERIOD);
       setupPulsesGhost();
-#if defined(PCBSKPCBSKY9X)
+#if defined(PCBSKY9X)
       scheduleNextMixerCalculation(EXTERNAL_MODULE, GHOST_PERIOD);
 #endif
       return true;

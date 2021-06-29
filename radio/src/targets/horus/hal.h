@@ -431,7 +431,20 @@
   #define AUX_SERIAL_RCC_APB2Periph           0
 #endif
 
-#if defined(AUX2_SERIAL)
+#if defined(AUX2_DEBUG)
+  #undef  AUX2_SERIAL
+  #define AUX2_SERIAL_RCC_AHB1Periph           (RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOG)
+  #define AUX2_SERIAL_RCC_APB1Periph           0
+  #define AUX2_SERIAL_RCC_APB2Periph           0
+  #define AUX2_DEBUG_GPIO1                     GPIOB
+  #define AUX2_DEBUG_PIN1                      GPIO_Pin_0  // PB.00
+  #define AUX2_DEBUG_GPIO2                     GPIOG
+  #define AUX2_DEBUG_PIN2                      GPIO_Pin_14 // PG.14
+  #define AUX2_DEBUG_GPIO3                     GPIOG
+  #define AUX2_DEBUG_PIN3                      GPIO_Pin_9  // PG.09
+  #define AUX2_DEBUG_GPIO4                     GPIOG
+  #define AUX2_DEBUG_PIN4                      GPIO_Pin_10  // PG.10
+#elif defined(AUX2_SERIAL)
   #define AUX2_SERIAL_RCC_AHB1Periph           (RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOG | RCC_AHB1Periph_DMA2)
   #define AUX2_SERIAL_RCC_APB1Periph           0
   #define AUX2_SERIAL_RCC_APB2Periph           RCC_APB2Periph_USART6
@@ -474,6 +487,7 @@
   #define AUX2_SERIAL_RCC_APB1Periph           0
   #define AUX2_SERIAL_RCC_APB2Periph           0
 #endif
+
 
 // Telemetry
 #define TELEMETRY_RCC_AHB1Periph        (RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_DMA1)

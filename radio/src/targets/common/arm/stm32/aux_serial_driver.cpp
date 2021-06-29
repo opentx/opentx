@@ -413,3 +413,24 @@ extern "C" void AUX2_SERIAL_USART_IRQHandler(void)
 }
 #endif // SIMU
 #endif // AUX2_SERIAL
+
+#if defined(AUX2_DEBUG)
+void aux2DebugInit()
+{
+  GPIO_InitTypeDef GPIO_InitStructure;
+
+  GPIO_InitStructure.GPIO_Pin = AUX2_DEBUG_PIN1;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+  GPIO_Init(AUX2_DEBUG_GPIO1, &GPIO_InitStructure);
+
+  GPIO_InitStructure.GPIO_Pin = AUX2_DEBUG_PIN2 | AUX2_DEBUG_PIN3 | AUX2_DEBUG_PIN4;
+  GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
+  GPIO_InitStructure.GPIO_Mode = GPIO_Mode_OUT;
+  GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+  GPIO_Init(AUX2_DEBUG_GPIO2, &GPIO_InitStructure);
+}
+#endif

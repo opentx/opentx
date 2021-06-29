@@ -412,8 +412,9 @@ void ModuleSyncStatus::update(uint16_t newRefreshRate, int16_t newInputLag)
   inputLag    = newInputLag;
   currentLag  = newInputLag;
   lastUpdate  = get_tmr10ms();
-
+#if defined(DEBUG_MIXER_SCHEDULER)
   TRACE("[SYNC] update rate = %dus; lag = %dus",refreshRate,currentLag);
+#endif
 }
 
 uint16_t ModuleSyncStatus::getAdjustedRefreshRate()
@@ -435,8 +436,9 @@ uint16_t ModuleSyncStatus::getAdjustedRefreshRate()
   }
 
   currentLag -= newRefreshRate - refreshRate;
+#if defined(DEBUG_MIXER_SCHEDULER)
   TRACE("[SYNC] mod rate = %dus; lag = %dus",newRefreshRate,currentLag);
-  
+#endif
   return (uint16_t)newRefreshRate;
 }
 

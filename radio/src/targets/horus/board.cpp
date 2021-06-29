@@ -165,10 +165,13 @@ void boardInit()
 #if defined(DEBUG) && defined(AUX_SERIAL)
   auxSerialInit(UART_MODE_DEBUG, 0); // default serial mode (None if DEBUG not defined)
 #endif
-#if defined(DEBUG) && defined(AUX2_SERIAL)
+#if defined(DEBUG)
+#if defined(AUX2_SERIAL)
   aux2SerialInit(UART_MODE_DEBUG, 0); // default serial mode (None if DEBUG not defined)
+#elif defined(AUX2_DEBUG)
+  aux2DebugInit();
 #endif
-
+#endif
   TRACE("\nHorus board started :)");
   TRACE("RCC->CSR = %08x", RCC->CSR);
 
