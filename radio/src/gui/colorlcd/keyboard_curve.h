@@ -18,14 +18,14 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _KEYBOARD_CURVE_H_
-#define _KEYBOARD_CURVE_H_
+#pragma once
 
 #include "keyboard_base.h"
 
 class Button;
 
-class CurveKeyboard : public Keyboard {
+class CurveKeyboard: public Keyboard
+{
   public:
     CurveKeyboard();
 
@@ -37,6 +37,11 @@ class CurveKeyboard : public Keyboard {
       return "CurveKeyboard";
     }
 #endif
+
+    static void setInstance(CurveKeyboard * keyboard)
+    {
+      _instance = keyboard;
+    }
 
     void enableRightLeft(bool enable);
 
@@ -55,5 +60,3 @@ class CurveKeyboard : public Keyboard {
     Button * left = nullptr;
     Button * right = nullptr;
 };
-
-#endif // _KEYBOARD_CURVE_H_
