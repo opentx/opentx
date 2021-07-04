@@ -2330,3 +2330,4 @@ Motor Home Stopover
 Bogdan Treichel
 Stefan Stiasny
 Benjamin McArdle
+Laurent Lapassade
