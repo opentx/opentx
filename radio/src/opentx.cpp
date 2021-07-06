@@ -877,11 +877,9 @@ void checkMultiLowPower()
 #if defined(STM32)
 static void checkRTCBattery()
 {
-  if (isVBatBridgeEnabled()) {
-    if (getRTCBatteryVoltage() < 200) {
-      ALERT(STR_BATTERY, STR_WARN_RTC_BATTERY_LOW, AU_ERROR);
-    }
-    disableVBatBridge();
+  GET_ADC_IF_MIXER_NOT_RUNNING();
+  if (getRTCBatteryVoltage() < 200) {
+    ALERT(STR_BATTERY, STR_WARN_RTC_BATTERY_LOW, AU_ERROR);
   }
 }
 #endif
@@ -941,8 +939,11 @@ void checkAll()
 #endif
 
 #if defined(STM32)
-  if (!g_eeGeneral.disableRtcWarning)
+  if (isVBatBridgeEnabled() && !g_eeGeneral.disableRtcWarning) {
+    // only done once at board start
     checkRTCBattery();
+  }
+  disableVBatBridge();
 #endif
 
   if (g_model.displayChecklist && modelHasNotes()) {
