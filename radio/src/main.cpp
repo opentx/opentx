@@ -500,6 +500,10 @@ void perMain()
 
   event_t evt = getEvent(false);
 
+#if defined(HARDWARE_TOUCH)
+  touchPanelRead();
+#endif
+
 #if defined(RTC_BACKUP_RAM)
   if (globalData.unexpectedShutdown) {
     drawFatalErrorScreen(STR_EMERGENCY_MODE);

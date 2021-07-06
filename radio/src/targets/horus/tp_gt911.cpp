@@ -542,6 +542,45 @@ void touchPanelRead()
 
   uint8_t zero = 0;
   I2C_GT911_WriteRegister(GT911_READ_XY_REG, &zero, 1);
+
+#define TE_WIPE_LOCK   10
+#define TE_WIPE_SPEED  35
+
+  touchState._deltaX = touchState.deltaX;
+  touchState._deltaY = touchState.deltaY;
+
+  if (touchState.extEvent != TE_EXT_NONE) return; // previous not expired
+
+  tmr10ms_t now = get_tmr10ms();
+
+  if ((now - touchState._last) < 25) return; // previous not expired
+
+  if (touchState.event == TE_UP) {
+    touchState.extEvent = TE_TAP;
+    touchState._last = now;
+  }
+  else if (touchState.event == TE_SLIDE) {
+    if (touchState._deltaY > -TE_WIPE_LOCK && touchState._deltaY < TE_WIPE_LOCK) {
+      if (touchState._deltaX > TE_WIPE_SPEED) {
+        touchState.extEvent = TE_WIPE_RIGHT;
+        touchState._last = now;
+      }
+      if (touchState._deltaX < -TE_WIPE_SPEED) {
+        touchState.extEvent = TE_WIPE_LEFT;
+        touchState._last = now;
+      }
+    }
+    if (touchState._deltaX > -TE_WIPE_LOCK && touchState._deltaX < TE_WIPE_LOCK) {
+      if (touchState._deltaY > TE_WIPE_SPEED) {
+        touchState.extEvent = TE_WIPE_DOWN;
+        touchState._last = now;
+      }
+      if (touchState._deltaY < -TE_WIPE_SPEED) {
+        touchState.extEvent = TE_WIPE_UP;
+        touchState._last = now;
+      }
+    }
+  }
 }
 
 extern "C" void TOUCH_INT_EXTI_IRQHandler1(void)
@@ -560,3 +599,10 @@ bool touchPanelEventOccured()
 {
   return touchEventOccured;
 }
+
+void checkTouchTmo(void)
+{
+  tmr10ms_t now = get_tmr10ms();
+  if ((now - touchState._last) > 25) touchState.extEvent = TE_EXT_NONE; //expire
+}
+

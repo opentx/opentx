@@ -29,6 +29,7 @@ extern void touchPanelDeInit(void);
 
 void touchPanelRead();
 bool touchPanelEventOccured();
+void checkTouchTmo(void);
 
 #define GT911_MAX_TP            5
 #define GT911_CFG_NUMER         0x6A

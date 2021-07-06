@@ -32,16 +32,6 @@ bool menuRadioDiagAnalogs(event_t event)
 {
   SIMPLE_SUBMENU(STR_MENU_RADIO_ANALOGS, ICON_MODEL_SETUP, 0);
 
-#if defined(HARDWARE_TOUCH)
-  if (event == EVT_ENTRY || event == EVT_ENTRY_UP) {
-    touchPanelInit();
-  }
-  else if (menuEvent) {
-    touchPanelDeInit();
-    return false;
-  }
-#endif
-
   for (uint8_t i = 0; i < NUM_ANALOGS; i++) {
     coord_t y = MENU_HEADER_HEIGHT + 1 + (i / 2) * FH;
     uint8_t x = i & 1 ? LCD_W / 2 + 10 : LEFT_NAME_COLUMN;
@@ -71,14 +61,11 @@ bool menuRadioDiagAnalogs(event_t event)
     lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + 7 * FH, STR_TOUCH_PANEL);
   }
 
-  if (touchPanelEventOccured()) {
-    touchPanelRead();
-    lcdDrawNumber(lcdNextPos + 1, MENU_CONTENT_TOP + 7 * FH, touchState.x);
-    lcdDrawText(lcdNextPos, MENU_CONTENT_TOP + 7 * FH, ", ");
-    lcdDrawNumber(lcdNextPos + 1, MENU_CONTENT_TOP + 7 * FH, touchState.y);
-    lcdDrawLine(touchState.x - 10, touchState.y - 8, touchState.x + 10, touchState.y + 8, SOLID);
-    lcdDrawLine(touchState.x - 10, touchState.y + 8, touchState.x + 10, touchState.y - 8, SOLID);
-  }
+  lcdDrawNumber(lcdNextPos + 1, MENU_CONTENT_TOP + 7 * FH, touchState.x);
+  lcdDrawText(lcdNextPos, MENU_CONTENT_TOP + 7 * FH, ", ");
+  lcdDrawNumber(lcdNextPos + 1, MENU_CONTENT_TOP + 7 * FH, touchState.y);
+  lcdDrawLine(touchState.x - 10, touchState.y - 8, touchState.x + 10, touchState.y + 8, SOLID);
+  lcdDrawLine(touchState.x - 10, touchState.y + 8, touchState.x + 10, touchState.y - 8, SOLID);
 #endif
 
   return true;
