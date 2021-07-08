@@ -79,6 +79,8 @@ void check_intmodule_heartbeat()
 #endif
     EXTI_ClearITPendingBit(INTMODULE_HEARTBEAT_EXTI_LINE);
 
+    mixerSchedulerResetTimer();
+
     mixerSchedulerISRTrigger();
   }
 }
