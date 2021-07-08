@@ -87,7 +87,7 @@ Return OpenTX version
 
 @retval string OpenTX version (ie "2.1.5")
 
-@retval multiple (available since 2.1.7) returns 5 values:
+@retval multiple (available since 2.1.7) returns 6 values:
  * (string) OpenTX version (ie "2.1.5")
  * (string) radio type: `x12s`, `x10`, `x9e`, `x9d+`, `x9d` or `x7`.
 If running in simulator the "-simu" is added
@@ -104,12 +104,13 @@ This example also runs in OpenTX versions where the function returned only one v
 
 ```lua
 local function run(event)
-  local ver, radio, maj, minor, rev = getVersion()
+  local ver, radio, maj, minor, rev, osname = getVersion()
   print("version: "..ver)
   if radio then print ("radio: "..radio) end
   if maj then print ("maj: "..maj) end
   if minor then print ("minor: "..minor) end
   if rev then print ("rev: "..rev) end
+  if osname then print ("osname: "..osname) end
   return 1
 end
 
