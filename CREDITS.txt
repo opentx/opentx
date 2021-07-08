@@ -2331,3 +2331,6 @@ Bogdan Treichel
 Stefan Stiasny
 Benjamin McArdle
 Laurent Lapassade
+Patrick Bordas
+Reinhard Otto
+Mansell Models
