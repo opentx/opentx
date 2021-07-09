@@ -571,6 +571,10 @@ void usbJoystickUpdate();
   #define USB_NAME                     "Jumper T18"
   #define USB_MANUFACTURER             'J', 'u', 'm', 'p', 'e', 'r', ' ', ' '  /* 8 bytes */
   #define USB_PRODUCT                  'T', '1', '8', ' ', ' ', ' ', ' ', ' '  /* 8 Bytes */
+#elif defined(RADIO_TX18S)
+  #define USB_NAME                     "RK TX18S"
+  #define USB_MANUFACTURER             'R', 'K', '_', 'T', 'X', '', ' ', ' '  /* 8 bytes */
+  #define USB_PRODUCT                  'R', 'K', ' ', 'T', 'X', '1', '8', 'S'  /* 8 Bytes */
 #elif defined(RADIO_TX16S)
   #define USB_NAME                     "RM TX16S"
   #define USB_MANUFACTURER             'R', 'M', '_', 'T', 'X', ' ', ' ', ' '  /* 8 bytes */

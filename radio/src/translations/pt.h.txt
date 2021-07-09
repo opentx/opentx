@@ -1143,6 +1143,10 @@
   #define TR_ABOUT_HARDWARE_1          "Radiomaster"
   #define TR_ABOUT_HARDWARE_2          TR("Hardware design/producer", "Hardware designer/producer")
   #define TR_ABOUT_HARDWARE_3          "Firmware contributor"
+#elif defined(MANUFACTURER_RADIOKING)
+  #define TR_ABOUT_HARDWARE_1          "RadioKing"
+  #define TR_ABOUT_HARDWARE_2          TR("Hardware design/producer", "Hardware designer/producer")
+  #define TR_ABOUT_HARDWARE_3          "Firmware contributor"
 #elif defined(MANUFACTURER_JUMPER)
   #define TR_ABOUT_HARDWARE_1          "JumperRC"
   #define TR_ABOUT_HARDWARE_2          TR("Hardware design/producer", "Hardware designer/producer")

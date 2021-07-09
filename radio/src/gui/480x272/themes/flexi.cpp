@@ -157,7 +157,7 @@ class FlexiTheme: public Theme
       delete calibHorus;
 #if defined(RADIO_T16)
       calibHorus = BitmapBuffer::load(getThemePath("t16.bmp"));
-#elif defined(RADIO_T18)
+#elif defined(RADIO_T18) || defined(RADIO_TX18S)
       calibHorus = BitmapBuffer::load(getThemePath("t18.bmp"));
 #elif defined(RADIO_TX16S)
       calibHorus = BitmapBuffer::load(getThemePath("tx16s.bmp"));

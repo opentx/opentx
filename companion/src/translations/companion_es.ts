@@ -3534,7 +3534,7 @@ Vacío significa incluir todos. Comodines ?, *, y [...] aceptados.</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1308"/>
-        <source>Jumper T18</source>
+	<source>Jumper T18 / Radioking TX18S - TX18S Lite</source>
         <translation></translation>
     </message>
     <message>
