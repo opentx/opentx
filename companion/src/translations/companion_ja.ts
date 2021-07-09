@@ -3192,7 +3192,7 @@ Blank means include all. ?, *, and [...] wildcards accepted.</source>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1353"/>
-        <source>Jumper T18</source>
+        <source>Jumper T18 / Radioking TX18S - TX18S Lite</source>
         <translation>Jumper T18</translation>
     </message>
     <message>

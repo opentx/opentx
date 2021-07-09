@@ -20,7 +20,7 @@
 
 #include "opentx.h"
 
-#if defined(RADIO_T18)
+#if defined(RADIO_T18) || defined(RADIO_TX18S)
   #define HBP  43
   #define VBP  12
 
@@ -143,7 +143,7 @@ static void LCD_NRSTConfig(void)
 
 static void lcd_reset(void)
 {
-#if defined(RADIO_T18)     // T18 screen has issues if NRST is ever brought low
+#if defined(RADIO_T18) || defined(RADIO_TX18S)     // Jumper T18 and Radioking TX18S screen has issues if NRST is ever brought low
   NRST_HIGH();
 #else
   NRST_HIGH();

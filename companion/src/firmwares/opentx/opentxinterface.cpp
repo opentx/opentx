@@ -66,6 +66,8 @@ const char * OpenTxEepromInterface::getName()
       return "OpenTX for Jumper T16";
     case BOARD_JUMPER_T18:
       return "OpenTX for Jumper T18";
+    case BOARD_RADIOKING_TX18S:
+      return "OpenTX for Radioking TX18S";
     case BOARD_RADIOMASTER_TX16S:
       return "OpenTX for Radiomaster TX16S";
     case BOARD_RADIOMASTER_TX12:
@@ -771,7 +773,7 @@ bool OpenTxFirmware::isAvailable(PulsesProtocol proto, int port)
           case PULSES_ACCST_ISRM_D16:
             return IS_ACCESS_RADIO(board, id);
           case PULSES_MULTIMODULE:
-            return id.contains("internalmulti") || IS_RADIOMASTER_TX16S(board) || IS_JUMPER_T18(board) || IS_RADIOMASTER_TX12(board) || IS_JUMPER_TLITE(board);
+            return id.contains("internalmulti") || IS_RADIOMASTER_TX16S(board) || IS_JUMPER_T18(board) || IS_RADIOKING_TX18S(board) || IS_RADIOMASTER_TX12(board) || IS_JUMPER_TLITE(board);
           default:
             return false;
         }
@@ -1367,6 +1369,13 @@ void registerOpenTxFirmwares()
   firmware->addOption("externalaccessmod", Firmware::tr("Support hardware mod: R9M ACCESS"));
   registerOpenTxFirmware(firmware);
   addOpenTxRfOptions(firmware, FLEX);
+
+  /* Radioking TX18S board */
+  firmware = new OpenTxFirmware("opentx-tx18s", Firmware::tr("Radioking TX18S"), BOARD_RADIOKING_TX18S);
+  addOpenTxFrskyOptions(firmware);
+  addOpenTxRfOptions(firmware, FLEX);
+  firmware->addOption("externalaccessmod", Firmware::tr("Support hardware mod: R9M ACCESS"));
+  registerOpenTxFirmware(firmware);
 
   /* 9XR-Pro */
   firmware = new OpenTxFirmware("opentx-9xrpro", Firmware::tr("Turnigy 9XR-PRO"), BOARD_9XRPRO);

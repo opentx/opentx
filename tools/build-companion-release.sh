@@ -127,6 +127,11 @@ cmake ${COMMON_OPTIONS} -DPCB=X10 -DPCBREV=T18 ${SRCDIR}
 make -j${JOBS} libsimulator
 rm CMakeCache.txt
 
+cmake ${COMMON_OPTIONS} -DPCB=X10 -DPCBREV=TX18S ${SRCDIR}
+make -j${JOBS} libsimulator
+rm CMakeCache.txt
+
+
 cmake ${COMMON_OPTIONS} -DPCB=X10 -DPCBREV=EXPRESS ${SRCDIR}
 make -j${JOBS} libsimulator
 rm CMakeCache.txt

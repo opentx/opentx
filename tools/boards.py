@@ -53,6 +53,11 @@ boards = {
         "PCBREV": "T18",
         "INTERNAL_MODULE_MULTI": "YES"
     },
+    "TX18S": {
+        "PCB": "X10",
+        "PCBREV": "TX18S",
+        "INTERNAL_MODULE_MULTI": "YES"
+    },
     "TX16S": {
         "PCB": "X10",
         "PCBREV": "TX16S",
