@@ -40,7 +40,7 @@ static void dumpBody(const void *data, unsigned int size)
   for (unsigned int i=0; i<size; i++) {
     dumpPrintf("%.2X ", ((uint8_t *)data)[i]);
     dumpPosition++;
-    if ((dumpPosition & 31) == 0) {
+    if ((dumpPosition & (32 - 1)) == 0) {
       dumpPrintf(CRLF);
     }
   }
