@@ -543,8 +543,10 @@ void touchPanelRead()
   uint8_t zero = 0;
   I2C_GT911_WriteRegister(GT911_READ_XY_REG, &zero, 1);
 
-#define TE_WIPE_LOCK   10
-#define TE_WIPE_SPEED  35
+#define TE_WIPE_LOCK_X   10
+#define TE_WIPE_SPEED_X  35
+#define TE_WIPE_LOCK_Y   ((TE_WIPE_LOCK_X * LCD_H)/LCD_W)
+#define TE_WIPE_SPEED_Y  ((TE_WIPE_SPEED_X * LCD_H)/LCD_W)
 
   touchState._deltaX = touchState.deltaX;
   touchState._deltaY = touchState.deltaY;
@@ -560,22 +562,22 @@ void touchPanelRead()
     touchState._last = now;
   }
   else if (touchState.event == TE_SLIDE) {
-    if (touchState._deltaY > -TE_WIPE_LOCK && touchState._deltaY < TE_WIPE_LOCK) {
-      if (touchState._deltaX > TE_WIPE_SPEED) {
+    if (touchState._deltaY > -TE_WIPE_LOCK_X && touchState._deltaY < TE_WIPE_LOCK_X) {
+      if (touchState._deltaX > TE_WIPE_SPEED_X) {
         touchState.extEvent = TE_WIPE_RIGHT;
         touchState._last = now;
       }
-      if (touchState._deltaX < -TE_WIPE_SPEED) {
+      if (touchState._deltaX < -TE_WIPE_SPEED_X) {
         touchState.extEvent = TE_WIPE_LEFT;
         touchState._last = now;
       }
     }
-    if (touchState._deltaX > -TE_WIPE_LOCK && touchState._deltaX < TE_WIPE_LOCK) {
-      if (touchState._deltaY > TE_WIPE_SPEED) {
+    if (touchState._deltaX > -TE_WIPE_LOCK_Y && touchState._deltaX < TE_WIPE_LOCK_Y) {
+      if (touchState._deltaY > TE_WIPE_SPEED_Y) {
         touchState.extEvent = TE_WIPE_DOWN;
         touchState._last = now;
       }
-      if (touchState._deltaY < -TE_WIPE_SPEED) {
+      if (touchState._deltaY < -TE_WIPE_SPEED_Y) {
         touchState.extEvent = TE_WIPE_UP;
         touchState._last = now;
       }
