@@ -72,7 +72,7 @@ local function redrawFieldsPage(event)
     end
 
     local attr = current == (index) and ((edit == true and BLINK or 0) + INVERS) or 0
-    attr = attr 
+    attr = attr
 
     if field[4] == 1 then
       if field[3] == VALUE then
@@ -105,7 +105,6 @@ local function runFieldsPage(event)
   elseif edit then
     if event == EVT_VIRTUAL_INC or event == EVT_VIRTUAL_INC_REPT then
       addField(1)
-
     elseif event == EVT_VIRTUAL_DEC or event == EVT_VIRTUAL_DEC_REPT then
       addField(-1)
     end
@@ -151,12 +150,11 @@ local function runTypeConfig(event)
   if fields[1][5] == 1 then
     lcd.drawText(30, 100, "Specify your Swash Type")
     lcd.drawFilledRectangle(40, 122, 100, 30, TEXT_BGCOLOR)
-    fields[2][4] = 1  
+    fields[2][4] = 1
   end
   local result = runFieldsPage(event)
   return result
 end
-
 
 local StyleFields = {
   {50, 50, COMBO, 1, 0, { "Sport", "Light 3D","Full 3D" } },
@@ -180,13 +178,14 @@ local function runStyleConfig(event)
   return result
 end
 
-local SwitchBackground
-
 local SwitchFields = {
   {50, 50, COMBO, 1, 1, { "SA", "SB", "SC", "SD", "SE", "SF" } },
   {50, 110, COMBO, 1, 5, { "SA", "SB", "SC", "SD", "SE", "SF","SG" } },
   {50, 190, COMBO, 1, 0, { "SA", "SB", "SC", "SD", "SE", "SF","SG" } },
 }
+
+local SwitchBackground
+
 local function runSwitchConfig(event)
   lcd.clear()
   if SwitchBackground == nil then
@@ -212,11 +211,12 @@ local function runSwitchConfig(event)
   return result
 end
 
-local ThrBackground
-
 local ThrFields = {
   {50, 50, COMBO, 1, 2, { "CH1", "CH2", "CH3", "CH4", "CH5", "CH6", "CH7", "CH8" } },
 }
+
+local ThrBackground
+
 local function runThrConfig(event)
   lcd.clear()
   if ThrBackground == nil then
@@ -263,11 +263,12 @@ local function runCurveConfig(event)
   return result
 end
 
-local AilerBackground
-
 local AilerFields = {
   {50, 50, COMBO, 1, 0, { "CH1", "CH2", "CH3", "CH4", "CH5", "CH6", "CH7", "CH8" } },
 }
+
+local AilerBackground
+
 local function runAilerConfig(event)
   lcd.clear()
   if AilerBackground == nil then
@@ -306,11 +307,12 @@ local function runEleConfig(event)
   return result
 end
 
-local RudBackground
-
 local RudFields = {
   {50, 50, COMBO, 1, 3, { "CH1", "CH2", "CH3", "CH4", "CH5", "CH6", "CH7", "CH8" } },
 }
+
+local RudBackground
+
 local function runRudConfig(event)
   lcd.clear()
   if RudBackground == nil then
@@ -357,14 +359,13 @@ local ConfigSummaryFields = {
   {110, 250, COMBO, 1, 0, { "No, I need to change something", "Yes, all is well, create the model !"} },
 }
 
-local ImgSummary
-
 local function runConfigSummary(event)
   lcd.clear()
   fields = ConfigSummaryFields
   lcd.drawBitmap(BackgroundImg, 0, 0)
   lcd.drawBitmap(ImgPageUp, 0, 95)
   lineIndex = 10
+
   -- Type
   if TypeFields[1][5]==0 then
     drawNextTextLine("Type","FBL")
@@ -375,44 +376,60 @@ local function runConfigSummary(event)
     elseif TypeFields[2][5]==1 then
       lcd.drawText(290,10,"Swash 120X")
     elseif TypeFields[2][5]==2 then
-      lcd.drawText(290,10,"Swash 140") else
+      lcd.drawText(290,10,"Swash 140")
+    else
       lcd.drawText(290,10,"Swash 90")
     end
   end
+
   -- Style
   if StyleFields[1][5]==0 then
     drawNextTextLine("Primary Style","Sport")
   elseif StyleFields[1][5]==1 then
-    drawNextTextLine("Primary Style","Light 3D")else
+    drawNextTextLine("Primary Style","Light 3D")
+  else
     drawNextTextLine("Primary Style","Full 3D")
   end
+
   -- Switch
   drawNextSwitchLine("FM Switch",SwitchFields[1][5])
   drawNextSwitchLine("Th Hold Switch",SwitchFields[2][5])
   if TypeFields[1][5]==1 then
     drawNextSwitchLine("Gyro Rate Switch",SwitchFields[3][5])
   end
+
   -- thr
   drawNextChanelLine("Throttle Channel",ThrFields[1][5])
-  -- Curves
+
+  -- FM0 Curve
   if CurveFields[1][5]==0 then
     drawNextTextLine("FM0 Curve","Throttle Up")
   elseif CurveFields[1][5]==1 then
-    drawNextTextLine("FM0 Curve","V Style")else
+    drawNextTextLine("FM0 Curve","V Style")
+  else
     drawNextTextLine("FM0 Curve","Flat Style")
   end
+
+  -- FM1 Curve
   if CurveFields[2][5]==0 then
-    drawNextTextLine("FM1 Curve","V Style")else
+    drawNextTextLine("FM1 Curve","V Style")
+  else
     drawNextTextLine("FM1 Curve","Flat Style")
   end
+
+  -- FM3 Curve
   if CurveFields[3][5]==0 then
-    drawNextTextLine("FM2 Curve","V Style")  else 
+    drawNextTextLine("FM2 Curve","V Style")
+  else
     drawNextTextLine("FM2 Curve","Flat Style")
   end
+
   -- Ail
   drawNextChanelLine("Aileron Channel",AilerFields[1][5])
+
   -- Elev
   drawNextChanelLine("Elevator Channel",EleFields[1][5])
+
   -- Rudder
   drawNextChanelLine("Rudder Channel",RudFields[1][5])
 
@@ -434,126 +451,142 @@ local function createModel(event)
   model.defaultInputs()
   model.deleteMixes()
 
--- Curve Fm0
-  if StyleFields[1][5]==0 and CurveFields[1][5]==0 then 
-    model.setCurve(0,{name="TC0",y={-100, 0, 20, 40, 40}}) 
+  -- Curve Fm0
+  if StyleFields[1][5]==0 and CurveFields[1][5]==0 then
+    model.setCurve(0,{name="TC0",y={-100, 0, 20, 40, 40}})
   elseif StyleFields[1][5]==1 and CurveFields[1][5]==0 then
-    model.setCurve(0,{name="TC0",y={-100, 0, 35, 50, 50}}) 
+    model.setCurve(0,{name="TC0",y={-100, 0, 35, 50, 50}})
   elseif StyleFields[1][5]==2 and CurveFields[1][5]==0 then
-    model.setCurve(0,{name="TC0",y={-100, 0, 40, 80, 80}}) 
-  elseif StyleFields[1][5]==0 and CurveFields[1][5]==1 then 
-    model.setCurve(0,{name="TC0",y={50, 40, 50}})  
-  elseif StyleFields[1][5]==1 and CurveFields[1][5]==1 then 
-    model.setCurve(0,{name="TC0",y={65, 55, 65}})  
+    model.setCurve(0,{name="TC0",y={-100, 0, 40, 80, 80}})
+  elseif StyleFields[1][5]==0 and CurveFields[1][5]==1 then
+    model.setCurve(0,{name="TC0",y={50, 40, 50}})
+  elseif StyleFields[1][5]==1 and CurveFields[1][5]==1 then
+    model.setCurve(0,{name="TC0",y={65, 55, 65}})
   elseif StyleFields[1][5]==2 and CurveFields[1][5]==1 then
-    model.setCurve(0,{name="TC0",y={70, 60, 70}}) 
-  elseif  StyleFields[1][5]==0 and CurveFields[1][5]==2 then 
-    model.setCurve(0,{name="TC0",y={60,60,60}}) 
-  elseif  StyleFields[1][5]==1 and CurveFields[1][5]==2 then 
-    model.setCurve(0,{name="TC0",y={65,65,65}}) else
-    model.setCurve(0,{name="TC0",y={70,70,70}}) 
+    model.setCurve(0,{name="TC0",y={70, 60, 70}})
+  elseif  StyleFields[1][5]==0 and CurveFields[1][5]==2 then
+    model.setCurve(0,{name="TC0",y={60,60,60}})
+  elseif  StyleFields[1][5]==1 and CurveFields[1][5]==2 then
+    model.setCurve(0,{name="TC0",y={65,65,65}})
+  else
+    model.setCurve(0,{name="TC0",y={70,70,70}})
   end
---Curve FM1
-  if StyleFields[1][5]==0 and CurveFields[2][5]==0 then 
-    model.setCurve(1,{name="TC1",y={60, 50, 60}}) 
+
+  --Curve FM1
+  if StyleFields[1][5]==0 and CurveFields[2][5]==0 then
+    model.setCurve(1,{name="TC1",y={60, 50, 60}})
   elseif  StyleFields[1][5]==1 and CurveFields[2][5]==0 then
-    model.setCurve(1,{name="TC1",y={70, 60, 70}}) 
+    model.setCurve(1,{name="TC1",y={70, 60, 70}})
   elseif StyleFields[1][5]==2 and CurveFields[2][5]==0 then
-    model.setCurve(1,{name="TC1",y={85, 75, 85}}) 
+    model.setCurve(1,{name="TC1",y={85, 75, 85}})
   elseif StyleFields[1][5]==0 and CurveFields[2][5]==1 then
     model.setCurve(1,{name="TC1",y={65,65,65}})
-  elseif StyleFields[1][5]==1 and CurveFields[2][5]==1 then 
-    model.setCurve(1,{name="TC1",y={70,70,70}}) else
+  elseif StyleFields[1][5]==1 and CurveFields[2][5]==1 then
+    model.setCurve(1,{name="TC1",y={70,70,70}})
+  else
     model.setCurve(1,{name="TC1",y={85 ,85,85}})
   end
---Curve FM2
-  if StyleFields[1][5]>=0 and CurveFields[3][5]==0 then 
-    model.setCurve(2,{name="Tc2",y={70, 60, 70}}) 
-  elseif StyleFields[1][5]==1 and CurveFields[3][5]==0 then 
+
+  --Curve FM2
+  if StyleFields[1][5]>=0 and CurveFields[3][5]==0 then
+    model.setCurve(2,{name="Tc2",y={70, 60, 70}})
+  elseif StyleFields[1][5]==1 and CurveFields[3][5]==0 then
     model.setCurve(2,{name="TC2",y={85, 70, 85}})
-  elseif StyleFields[1][5]==2 and CurveFields[3][5]==0 then 
+  elseif StyleFields[1][5]==2 and CurveFields[3][5]==0 then
     model.setCurve(2,{name="TC2",y={100, 90, 100}})
   elseif StyleFields[1][5]==0 and CurveFields[3][5]==1 then
     model.setCurve(2,{name="TC2",y={75 ,75,75}})
   elseif StyleFields[1][5]==1 and CurveFields[3][5]==1 then
-    model.setCurve(2,{name="TC2",y={85 ,85, 85}}) else
+    model.setCurve(2,{name="TC2",y={85 ,85, 85}})
+  else
     model.setCurve(2,{name="TC2",y={95 ,95, 95}})
   end
---Curve TH Hold
+
+  --Curve TH Hold
   model.setCurve(3,{name="THD",y={-100,-100,-100}})
--- Throttle
+
+  -- Throttle
   model.insertMix(ThrFields[1][5], 0,{name="Th0",weight=100,curveType=3,curveValue=1})
   model.insertMix(ThrFields[1][5], 1,{name="Th1",weight=100,switch=tUp,multiplex=2,curveType=3,curveValue=2})
   model.insertMix(ThrFields[1][5], 2,{name="Th2",weight=100,switch=tUp-1,multiplex=2,curveType=3,curveValue=3})
   model.insertMix(ThrFields[1][5], 3,{name="Hld",weight=100,offset=-15,switch=hold+1,multiplex=2,curveType=3,curveValue=4})
+
   -- Ail
   if TypeFields[1][5] == 0 then
-    model.insertMix(AilerFields[1][5], 0,{name="Ail",weight=100})else
+    model.insertMix(AilerFields[1][5], 0,{name="Ail",weight=100})
+  else
     model.insertMix(AilerFields[1][5], 0,{source=102,name="Ail",weight=100})
   end
+
   -- Elev
   if TypeFields[1][5] == 0 then
-    model.insertMix(EleFields[1][5], 0,{name="Ele",weight=100})else
+    model.insertMix(EleFields[1][5], 0,{name="Ele",weight=100})
+  else
     model.insertMix(EleFields[1][5], 0,{source=101,name="Ele",weight=100})
   end
--- Rudder
+
+  -- Rudder
   model.insertMix(RudFields[1][5], 0,{name="Rud",weight=100})
--- Gyro
+
+  -- Gyro
   if TypeFields[1][5] == 0 then
-    model.insertMix(4, 0,{source=100,name="Gyr",weight=25})else
+    model.insertMix(4, 0,{source=100,name="Gyr",weight=25})
+  else
     model.insertMix( 4, 0,{source=100,name="HH",weight=25})
     model.insertMix( 4, 1,{source=100,name="Rat",weight=-25,switch=gyRate+1,multiplex=2})
   end
--- Pitch
+
+  -- Pitch
   if TypeFields[1][5] == 0 then
-    model.insertMix(5, 0,{source=89,name="Pch",weight=100})else
+    model.insertMix(5, 0,{source=89,name="Pch",weight=100})
+  else
     model.insertMix(5, 0,{source=103,name="Pch",weight=100})
   end
+
   --Set Swash Parameters
   if TypeFields[1][5]==1 and TypeFields[2][5]==0 then
-    model.swashRingData(0,0,{type="1",collectiveSource=89,aileronSource=90,elevatorSource=88,collectiveWeight=60,aileronWeight=60,elevatorWeight=60})elseif
-    TypeFields[2][5]==1 then
-      model.swashRingData(0,0,{type="2",collectiveSource=89,aileronSource=90,elevatorSource=88,collectiveWeight=60,aileronWeight=60,elevatorWeight=60})elseif  
-      TypeFields[2][5]==2 then
-        model.swashRingData(0,0,{type="3",collectiveSource=89,aileronSource=90,elevatorSource=88,collectiveWeight=40,aileronWeight=40,elevatorWeight=60})elseif 
-        TypeFields[2][5]==2 then
-        model.swashRingData(0,0,{type="4",collectiveSource=89,aileronSource=90,elevatorSource=88,collectiveWeight=35,aileronWeight=35,elevatorWeight=60})else
+    model.swashRingData(0,0,{type="1",collectiveSource=89,aileronSource=90,elevatorSource=88,collectiveWeight=60,aileronWeight=60,elevatorWeight=60})
+  elseif TypeFields[2][5]==1 then
+    model.swashRingData(0,0,{type="2",collectiveSource=89,aileronSource=90,elevatorSource=88,collectiveWeight=60,aileronWeight=60,elevatorWeight=60})
+  elseif TypeFields[2][5]==2 then
+    model.swashRingData(0,0,{type="3",collectiveSource=89,aileronSource=90,elevatorSource=88,collectiveWeight=40,aileronWeight=40,elevatorWeight=60})
+  elseif TypeFields[2][5]==2 then
+    model.swashRingData(0,0,{type="4",collectiveSource=89,aileronSource=90,elevatorSource=88,collectiveWeight=35,aileronWeight=35,elevatorWeight=60})
+  else
   end
-
-      lcd.drawText(70, 90, "Model successfully created !")
+  lcd.drawText(70, 90, "Model successfully created !")
 end
 
 -- Init
-    local function init()
-      current, edit = 1, false
-      pages = {
-        runTypeConfig,
-        runStyleConfig,
-        runSwitchConfig,
-        runThrConfig,
-        runCurveConfig,
-        runAilerConfig,
-        runEleConfig,
-        runRudConfig,
-        runConfigSummary,
-        createModel,
-      }
-    end
+local function init()
+  current, edit = 1, false
+  pages = {
+    runTypeConfig,
+    runStyleConfig,
+    runSwitchConfig,
+    runThrConfig,
+    runCurveConfig,
+    runAilerConfig,
+    runEleConfig,
+    runRudConfig,
+    runConfigSummary,
+    createModel,
+  }
+end
 
 -- Main
-    local function run(event)
-      if event == nil then
-        error("Cannot be run as a model script!")
-        return 2
-      elseif event == EVT_VIRTUAL_NEXT_PAGE and page < #pages-1 then
-        selectPage(1)
-      elseif event == EVT_VIRTUAL_PREV_PAGE and page > 1 then
-        killEvents(event);
-        selectPage(-1)
-      end
+local function run(event)
+  if event == nil then
+    error("Cannot be run as a model script!")
+    return 2
+  elseif event == EVT_VIRTUAL_NEXT_PAGE and page < #pages-1 then
+    selectPage(1)
+  elseif event == EVT_VIRTUAL_PREV_PAGE and page > 1 then
+    killEvents(event);
+    selectPage(-1)
+  end
+  local result = pages[page](event)
+  return result
+end
 
-      local result = pages[page](event)
-      return result
-    end
-
-    return { init=init, run=run }
+return { init=init, run=run }
