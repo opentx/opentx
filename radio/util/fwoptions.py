@@ -105,6 +105,7 @@ options_taranis_x7 = {
     "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
     "eu": ("MODULE_PROTOCOL_D8", "NO", "YES"),
     "flexr9m": ("MODULE_PROTOCOL_FLEX", "YES", None),
+    "afhds3": ("AFHDS3", "YES", "NO")
 }
 
 options_taranis_x9lite = {
@@ -216,6 +217,7 @@ options_jumper_tlite = {
     "faichoice": ("FAI", "CHOICE", None),
     "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
     "flexr9m": ("MODULE_PROTOCOL_FLEX", "YES", None),
+    "afhds3": ("AFHDS3", "YES", "NO")
 }
 
 
