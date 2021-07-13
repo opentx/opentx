@@ -1595,9 +1595,9 @@ static int luaModelResetSensor(lua_State *L)
 
 Set heli swash parameters
 
-@param swash (unsigned number) number (use 0)
+@param swash (number) 0 required!
 
-@param line (unsigned number) number (use 0 for first line(swash))
+@param line (number) 0 required!
 
 @param value (table):
 * `type` (number in quotes) "1"=120, "2"=120X, "3"=140, "4"=90
@@ -1643,7 +1643,6 @@ static int luaModelSwashRingData(lua_State *L)
     if (!strcmp(key, "elevatorWeight")) {
       g_model.swashR.elevatorWeight = luaL_checkinteger(L, -1);
     }
-    
     storageDirty(EE_MODEL);
   }
   return 0;
