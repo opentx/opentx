@@ -211,8 +211,8 @@ const uint8_t TOUCH_GT911_Cfg[] =
     0x00                 // 0x80FE Reserved
   };
 
-uint8_t touchGT911Flag = 0;
-uint8_t touchEventOccured = 0;
+bool touchGT911Flag = false;
+bool touchEventOccured = false;
 struct TouchData touchData;
 struct TouchState touchState;
 
@@ -592,7 +592,7 @@ extern "C" void TOUCH_INT_EXTI_IRQHandler1(void)
       // on touch turn the light on
       resetBacklightTimeout();
     }
-    touchEventOccured = 1;
+    touchEventOccured = true;
     EXTI_ClearITPendingBit(TOUCH_INT_EXTI_LINE1);
   }
 }

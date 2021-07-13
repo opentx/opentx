@@ -22,7 +22,6 @@
 #if defined(HARDWARE_TOUCH)
 #include "touch.h"
 #include "tp_gt911.h"
-#include <math.h>
 #endif
 
 constexpr coord_t LEFT_NAME_COLUMN = MENUS_MARGIN_LEFT;
@@ -57,13 +56,10 @@ bool menuRadioDiagAnalogs(event_t event)
 #endif
 
 #if defined(HARDWARE_TOUCH)
-  if (HAS_TOUCH_PANEL()) {
-    lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + 7 * FH, STR_TOUCH_PANEL);
-  }
-
-  lcdDrawNumber(lcdNextPos + 1, MENU_CONTENT_TOP + 7 * FH, touchState.x);
-  lcdDrawText(lcdNextPos, MENU_CONTENT_TOP + 7 * FH, ", ");
-  lcdDrawNumber(lcdNextPos + 1, MENU_CONTENT_TOP + 7 * FH, touchState.y);
+  lcdDrawText(MENUS_MARGIN_LEFT, MENU_CONTENT_TOP + 7 * FH, STR_TOUCH_PANEL);
+  lcdDrawNumber(lcdNextPos + 4, MENU_CONTENT_TOP + 7 * FH, touchState.x);
+  lcdDrawText(lcdNextPos, MENU_CONTENT_TOP + 7 * FH, ",");
+  lcdDrawNumber(lcdNextPos + 4, MENU_CONTENT_TOP + 7 * FH, touchState.y);
   lcdDrawLine(touchState.x - 10, touchState.y - 8, touchState.x + 10, touchState.y + 8, SOLID);
   lcdDrawLine(touchState.x - 10, touchState.y + 8, touchState.x + 10, touchState.y - 8, SOLID);
 #endif
