@@ -46,6 +46,7 @@ const CrossfireSensor crossfireSensors[] = {
   {ATTITUDE_ID,    2, ZSTR_YAW,           UNIT_RADIANS,           3},
   {FLIGHT_MODE_ID, 0, ZSTR_FLIGHT_MODE,   UNIT_TEXT,              0},
   {CF_VARIO_ID,    0, ZSTR_VSPD,          UNIT_METERS_PER_SECOND, 2},
+  {CF_VARIO_ID,    1, ZSTR_BARO_ALT,      UNIT_METERS_PER_SECOND, 2},
   {0,              0, "UNKNOWN",          UNIT_RAW,               0},
 };
 
@@ -58,7 +59,7 @@ const CrossfireSensor & getCrossfireSensor(uint8_t id, uint8_t subId)
   else if (id == GPS_ID)
     return crossfireSensors[GPS_LATITUDE_INDEX+subId];
   else if (id == CF_VARIO_ID)
-    return crossfireSensors[VERTICAL_SPEED_INDEX];
+    return crossfireSensors[VERTICAL_SPEED_INDEX+subId];
   else if (id == ATTITUDE_ID)
     return crossfireSensors[ATTITUDE_PITCH_INDEX+subId];
   else if (id == FLIGHT_MODE_ID)
@@ -116,6 +117,8 @@ void processCrossfireTelemetryFrame()
     case CF_VARIO_ID:
       if (getCrossfireTelemetryValue<2>(3, value))
         processCrossfireTelemetryValue(VERTICAL_SPEED_INDEX, value);
+      if (getCrossfireTelemetryValue<2>(5, value))
+        processCrossfireTelemetryValue(VARIO_ALTITUDE_INDEX,  value - 1000);
       break;
 
     case GPS_ID:
