@@ -50,6 +50,8 @@ char lua_warning_info[LUA_WARNING_INFO_LEN+1];
 struct our_longjmp * global_lj = 0;
 #if defined(COLORLCD)
 uint32_t luaExtraMemoryUsage = 0;
+#else
+bool disableTelemetryPopup = 0;
 #endif
 
 #if defined(LUA_ALLOCATOR_TRACER)
@@ -1180,3 +1182,13 @@ bool isRadioScriptTool(const char * filename)
   const char * ext = getFileExtension(filename);
   return ext && !strcasecmp(ext, SCRIPT_EXT);
 }
+#if !defined(COLORLCD)
+bool isTelemetryPopupDisabled(event_t event)
+{
+   bool ret;
+   ret=disableTelemetryPopup && event==EVT_KEY_LONG(KEY_ENTER);
+   disableTelemetryPopup=false;
+   return (ret);
+}
+#endif
+

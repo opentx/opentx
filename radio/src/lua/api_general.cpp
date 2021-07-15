@@ -1741,6 +1741,24 @@ static int luaSerialRead(lua_State * L)
 
   return 1;
 }
+#if !defined(COLORLCD)
+/*luadoc
+@function disableTelemetryPopup()
+ 
+This function disables the Telemetry Popup Menu for the current key event.
+It is intended for Key Long Enter event handlers in telemtry foreground scripts.
+
+@status current Introduced in X.X.X
+
+@notice Only available on Taranis
+*/
+static int luaDisableTelemetryPopup(lua_State *L)
+{
+  disableTelemetryPopup= true;
+  return 0;
+}
+#endif
+
 
 const luaL_Reg opentxLib[] = {
   { "getTime", luaGetTime },
@@ -1793,6 +1811,9 @@ const luaL_Reg opentxLib[] = {
   { "setSerialBaudrate", luaSetSerialBaudrate },
   { "serialWrite", luaSerialWrite },
   { "serialRead", luaSerialRead },
+#if !defined(COLORLCD)
+  { "disableTelemetryPopup",luaDisableTelemetryPopup },
+#endif
   { nullptr, nullptr }  /* sentinel */
 };
 

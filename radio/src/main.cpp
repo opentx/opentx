@@ -384,8 +384,11 @@ void handleGui(event_t event) {
     // standalone script is active
   }
   else if (luaTask(event, RUN_TELEM_FG_SCRIPT, true)) {
-    // the telemetry screen is active
-    menuHandlers[menuLevel](event);
+    // the telemetry screen is active, do not call menu handler for KEY_LONG_ENTER
+    // events, if disabled by LUA function 'disableTelemetryPopup()'
+    if(!isTelemetryPopupDisabled(event)) {
+       menuHandlers[menuLevel](event);
+    }
   }
   else
 #endif

@@ -138,6 +138,11 @@ void luaDoGc(lua_State * L, bool full);
 void luaError(lua_State * L, uint8_t error, bool acknowledge=true);
 uint32_t luaGetMemUsed(lua_State * L);
 void luaGetValueAndPush(lua_State * L, int src);
+#if !defined(COLORLCD)
+extern bool disableTelemetryPopup;
+bool isTelemetryPopupDisabled(event_t event);
+#endif
+
 #define luaGetCpuUsed(idx) scriptInternalData[idx].instructions
 uint8_t isTelemetryScriptAvailable(uint8_t index);
 #define LUA_LOAD_MODEL_SCRIPTS()   luaState |= INTERPRETER_RELOAD_PERMANENT_SCRIPTS
