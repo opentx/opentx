@@ -91,17 +91,20 @@ static uint8_t rxByte;
 // single bit length expresses in half us
 static uint16_t bitLength;
 static uint16_t probeTimeFromStartBit;
-
+uint32_t oldPriority = 0xFFFF;
 void telemetryPortInvertedInit(uint32_t baudrate)
 {
-  if (baudrate == 0) {
+  // TODO
+  // - handle conflict with HEARTBEAT disabled for trainer input...
+  // - probably need to stop trainer input/output and restore after this is closed
+  // - There is no need to stop trainer - we need to just enable EXT IRQ if not enabled by HEARTBEAT handling
+  //   see code below, but it is always necessary to configure EXTI_Line for software uart.
 
-    //TODO:
-    // - handle conflict with HEARTBEAT disabled for trainer input...
-    // - probably need to stop trainer input/output and restore after this is closed
-#if !defined(TELEMETRY_EXTI_REUSE_INTERRUPT_ROTARY_ENCODER) && !defined(TELEMETRY_EXTI_REUSE_INTERRUPT_INTMODULE_HEARTBEAT)
-    NVIC_DisableIRQ(TELEMETRY_EXTI_IRQn);
-#endif
+  if (baudrate == 0) {
+    if (oldPriority != 0xFFFF) {
+      NVIC_SetPriority(TELEMETRY_EXTI_IRQn, oldPriority);
+    }
+
     NVIC_DisableIRQ(TELEMETRY_TIMER_IRQn);
 
     EXTI_InitTypeDef EXTI_InitStructure;
@@ -119,7 +122,7 @@ void telemetryPortInvertedInit(uint32_t baudrate)
   switch(baudrate) {
     case 115200:
       bitLength = 17;
-      probeTimeFromStartBit = 25;
+      probeTimeFromStartBit = 23; // because pin is not probed immediately
       break;
     case 57600:
       bitLength = 35;
@@ -163,16 +166,17 @@ void telemetryPortInvertedInit(uint32_t baudrate)
   EXTI_InitStructure.EXTI_LineCmd = ENABLE;
   EXTI_Init(&EXTI_InitStructure);
 
-  //TODO:
-  // - handle conflict with HEARTBEAT disabled for trainer input...
-  // - probably need to stop trainer input/output and restore after this is closed
-#if !defined(TELEMETRY_EXTI_REUSE_INTERRUPT_ROTARY_ENCODER) && !defined(TELEMETRY_EXTI_REUSE_INTERRUPT_INTMODULE_HEARTBEAT)
+  // Overwrite priority
+  oldPriority = NVIC_GetPriority(TELEMETRY_EXTI_IRQn);
   NVIC_SetPriority(TELEMETRY_EXTI_IRQn, 0);
-  NVIC_EnableIRQ(TELEMETRY_EXTI_IRQn);
-#endif
+
+  // In case shared IRQ is not enabled
+  if ((NVIC->ISER[(uint32_t)((int32_t)TELEMETRY_EXTI_IRQn) >> 5] & (uint32_t)(1 << ((uint32_t)((int32_t)TELEMETRY_EXTI_IRQn) & (uint32_t)0x1F))) == 0) {
+    NVIC_EnableIRQ(TELEMETRY_EXTI_IRQn);
+  }
 }
 
-void telemetryPortInvertedRxBit()
+inline void telemetryPortInvertedRxBit()
 {
   if (rxBitCount < 8) {
     if (rxBitCount == 0) {
@@ -189,15 +193,12 @@ void telemetryPortInvertedRxBit()
     ++rxBitCount;
   }
   else if (rxBitCount == 8) {
-
-    telemetryFifo.push(rxByte);
-    rxBitCount = 0;
-
     // disable timer
     TELEMETRY_TIMER->CR1 &= ~TIM_CR1_CEN;
-
+    telemetryFifo.push(rxByte);
+    rxBitCount = 0;
     // re-enable start bit interrupt
-    EXTI->IMR |= EXTI_IMR_MR6;
+    EXTI->IMR |= TELEMETRY_EXTI_LINE;
   }
 }
 
@@ -361,7 +362,7 @@ void check_telemetry_exti()
       TELEMETRY_TIMER->CR1 |= TIM_CR1_CEN;
     
       // disable start bit interrupt
-      EXTI->IMR &= ~EXTI_IMR_MR6;
+      EXTI->IMR &= ~TELEMETRY_EXTI_LINE;
     }
 
     EXTI_ClearITPendingBit(TELEMETRY_EXTI_LINE);
