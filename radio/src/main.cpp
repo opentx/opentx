@@ -264,7 +264,7 @@ void guiMain(event_t evt)
 
   // run Lua scripts that don't use LCD (to use CPU time while LCD DMA is running)
   DEBUG_TIMER_START(debugTimerLuaBg);
-  luaTask(0, RUN_MIX_SCRIPT | RUN_FUNC_SCRIPT | RUN_TELEM_BG_SCRIPT, false);
+  luaTask(0, false);
   DEBUG_TIMER_STOP(debugTimerLuaBg);
   // wait for LCD DMA to finish before continuing, because code from this point
   // is allowed to change the contents of LCD buffer
@@ -279,10 +279,7 @@ void guiMain(event_t evt)
   // run Lua scripts that use LCD
 
   DEBUG_TIMER_START(debugTimerLuaFg);
-  refreshNeeded = luaTask(evt, RUN_STNDAL_SCRIPT, true);
-  if (!refreshNeeded) {
-    refreshNeeded = luaTask(evt, RUN_TELEM_FG_SCRIPT, true);
-  }
+  refreshNeeded = luaTask(evt, true);
   DEBUG_TIMER_STOP(debugTimerLuaFg);
 
   t0 = get_tmr10ms() - t0;
@@ -295,7 +292,7 @@ void guiMain(event_t evt)
 
   bool screenshotRequested = (mainRequestFlags & (1u << REQUEST_SCREENSHOT));
 
-  if (!refreshNeeded) {
+  if (scriptInternalData[0].reference != SCRIPT_STANDALONE) {
     DEBUG_TIMER_START(debugTimerMenus);
     while (true) {
       // normal GUI from menus
@@ -375,29 +372,28 @@ void guiMain(event_t evt)
   }
 }
 #elif defined(GUI)
-void handleGui(event_t event) {
-  // if Lua standalone, run it and don't clear the screen (Lua will do it)
-  // else if Lua telemetry view, run it and don't clear the screen
-  // else clear scren and show normal menus
+bool handleGui(event_t event) {
+  bool refreshNeeded;
 #if defined(LUA)
-  if (luaTask(event, RUN_STNDAL_SCRIPT, true)) {
-    // standalone script is active
+  refreshNeeded = luaTask(event, true);
+  if (menuHandlers[menuLevel] == menuViewTelemetry && TELEMETRY_SCREEN_TYPE(s_frsky_view) == TELEMETRY_SCREEN_TYPE_SCRIPT) {
+      menuHandlers[menuLevel](event);
   }
-  else if (luaTask(event, RUN_TELEM_FG_SCRIPT, true)) {
-    // the telemetry screen is active
-    menuHandlers[menuLevel](event);
-  }
-  else
+  else if (scriptInternalData[0].reference != SCRIPT_STANDALONE)
 #endif
+  // No foreground Lua script is running - clear the screen show normal menu
   {
     lcdClear();
     menuHandlers[menuLevel](event);
     drawStatusLine();
+    refreshNeeded = true;
   }
+  return refreshNeeded;
 }
 
 void guiMain(event_t evt)
 {
+  bool refreshNeeded = menuEvent || warningText || (popupMenuItemsCount > 0);
 #if defined(LUA)
   // TODO better lua stopwatch
   uint32_t t0 = get_tmr10ms();
@@ -409,7 +405,7 @@ void guiMain(event_t evt)
   }
 
   // run Lua scripts that don't use LCD (to use CPU time while LCD DMA is running)
-  luaTask(0, RUN_MIX_SCRIPT | RUN_FUNC_SCRIPT | RUN_TELEM_BG_SCRIPT, false);
+  luaTask(0, false);
 
   t0 = get_tmr10ms() - t0;
   if (t0 > maxLuaDuration) {
@@ -433,10 +429,10 @@ void guiMain(event_t evt)
   }
 
   if (isEventCaughtByPopup()) {
-    handleGui(0);
+    refreshNeeded |= handleGui(0);
   }
   else {
-    handleGui(evt);
+    refreshNeeded |= handleGui(evt);
     evt = 0;
   }
 
@@ -456,7 +452,7 @@ void guiMain(event_t evt)
     }
   }
 
-  lcdRefresh();
+  if (refreshNeeded) lcdRefresh();
 
   if (mainRequestFlags & (1u << REQUEST_SCREENSHOT)) {
     writeScreenshot();

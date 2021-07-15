@@ -611,7 +611,6 @@ extern const char STR_NO_BITMAPS_ON_SD[];
 extern const char STR_NO_SCRIPTS_ON_SD[];
 extern const char STR_SCRIPT_SYNTAX_ERROR[];
 extern const char STR_SCRIPT_PANIC[];
-extern const char STR_SCRIPT_KILLED[];
 extern const char STR_SCRIPT_ERROR[];
 extern const char STR_PLAY_FILE[];
 extern const char STR_ASSIGN_BITMAP[];

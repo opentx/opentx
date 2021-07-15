@@ -807,7 +807,6 @@
 #define TR_NO_SCRIPTS_ON_SD    "Brak skryptów na SD"
 #define TR_SCRIPT_SYNTAX_ERROR TR("Syntax error", "Skrypt:syntax error")
 #define TR_SCRIPT_PANIC        "Skrypt:panic"
-#define TR_SCRIPT_KILLED       "Skrypt:killed"
 #define TR_SCRIPT_ERROR        "Nieznany błąd"
 #define TR_PLAY_FILE           "Odtwórz"
 #define TR_DELETE_FILE         "Skasuj"

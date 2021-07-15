@@ -789,7 +789,6 @@
 #define TR_NO_SCRIPTS_ON_SD             "Keine Skripte" BREAKSPACE "auf SD"
 #define TR_SCRIPT_SYNTAX_ERROR          TR("Syntaxfehler", "Skript Syntaxfehler")
 #define TR_SCRIPT_PANIC                 "Skript Panik"
-#define TR_SCRIPT_KILLED                "Skript beendet"
 #define TR_SCRIPT_ERROR                 "Unbekannter Fehler"
 #define TR_PLAY_FILE                    "Abspielen"
 #define TR_DELETE_FILE                  "Löschen"

@@ -787,7 +787,6 @@
 #define TR_NO_SCRIPTS_ON_SD            "žádný skript" BREAKSPACE "na SD"
 #define TR_SCRIPT_SYNTAX_ERROR         TR("Syntaktická chyba", "Syntaktická chyba skriptu")
 #define TR_SCRIPT_PANIC                "Script zmaten"
-#define TR_SCRIPT_KILLED               "Script ukončen"
 #define TR_SCRIPT_ERROR                "Neznámá chyba"
 #define TR_PLAY_FILE                   "Přehrát"
 #define TR_DELETE_FILE                 "Odstranit"
