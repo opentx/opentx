@@ -25,6 +25,7 @@
 #include "lua_api.h"
 #include "telemetry/frsky.h"
 #include "telemetry/multi.h"
+#include "touch.h"
 
 #if defined(PCBX12S)
   #include "lua/lua_exports_x12s.inc"   // this line must be after lua headers
@@ -1742,7 +1743,26 @@ static int luaSerialRead(lua_State * L)
   return 1;
 }
 
+static int luaGetTouchState(lua_State * L)
+{
+#if defined(HARDWARE_TOUCH)
+  TouchState touch = touchState;
+  lua_newtable(L);
+  lua_pushtableinteger(L, "event", touch.event);
+  lua_pushtableinteger(L, "x", touch.x);
+  lua_pushtableinteger(L, "y", touch.y);
+  lua_pushtableinteger(L, "startX", touch.startX);
+  lua_pushtableinteger(L, "startY", touch.startY);
+  lua_pushtableinteger(L, "extEvent", touch.extEvent);
+  touchState.extEvent = TE_EXT_NONE; // clear event
+#else
+  lua_pushnil(L);
+#endif
+  return 1;
+}
+
 const luaL_Reg opentxLib[] = {
+  { "getTouchState", luaGetTouchState },
   { "getTime", luaGetTime },
   { "getDateTime", luaGetDateTime },
 #if defined(RTCLOCK)
@@ -1992,6 +2012,15 @@ const luaR_value_entry opentxConstants[] = {
 
 #if defined(KEYS_GPIO_REG_DOWN) && defined(NAVIGATION_HORUS)
   { "EVT_RTN_FIRST", EVT_KEY_BREAK(KEY_EXIT) },
+  { "EVT_TOUCH_DOWN", TE_DOWN },
+  { "EVT_TOUCH_UP", TE_UP },
+  { "EVT_TOUCH_SLIDE", TE_SLIDE },
+  { "EVT_TOUCH_SLIDE_END", TE_SLIDE_END },
+  { "EVT_TOUCH_TAP", TE_TAP },
+  { "EVT_TOUCH_WIPE_LEFT", TE_WIPE_LEFT },
+  { "EVT_TOUCH_WIPE_RIGHT", TE_WIPE_RIGHT },
+  { "EVT_TOUCH_WIPE_UP", TE_WIPE_UP },
+  { "EVT_TOUCH_WIPE_DOWN", TE_WIPE_DOWN },
 #else
   KEY_EVENTS(DOWN, KEY_DOWN),
 #endif

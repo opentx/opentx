@@ -211,8 +211,8 @@ const uint8_t TOUCH_GT911_Cfg[] =
     0x00                 // 0x80FE Reserved
   };
 
-uint8_t touchGT911Flag = 0;
-uint8_t touchEventOccured = 0;
+bool touchGT911Flag = false;
+bool touchEventOccured = false;
 struct TouchData touchData;
 struct TouchState touchState;
 
@@ -542,6 +542,47 @@ void touchPanelRead()
 
   uint8_t zero = 0;
   I2C_GT911_WriteRegister(GT911_READ_XY_REG, &zero, 1);
+
+#define TE_WIPE_LOCK_X   10
+#define TE_WIPE_SPEED_X  35
+#define TE_WIPE_LOCK_Y   ((TE_WIPE_LOCK_X * LCD_H)/LCD_W)
+#define TE_WIPE_SPEED_Y  ((TE_WIPE_SPEED_X * LCD_H)/LCD_W)
+
+  touchState._deltaX = touchState.deltaX;
+  touchState._deltaY = touchState.deltaY;
+
+  if (touchState.extEvent != TE_EXT_NONE) return; // previous not expired
+
+  tmr10ms_t now = get_tmr10ms();
+
+  if ((now - touchState._last) < 25) return; // previous not expired
+
+  if (touchState.event == TE_UP) {
+    touchState.extEvent = TE_TAP;
+    touchState._last = now;
+  }
+  else if (touchState.event == TE_SLIDE) {
+    if (touchState._deltaY > -TE_WIPE_LOCK_X && touchState._deltaY < TE_WIPE_LOCK_X) {
+      if (touchState._deltaX > TE_WIPE_SPEED_X) {
+        touchState.extEvent = TE_WIPE_RIGHT;
+        touchState._last = now;
+      }
+      if (touchState._deltaX < -TE_WIPE_SPEED_X) {
+        touchState.extEvent = TE_WIPE_LEFT;
+        touchState._last = now;
+      }
+    }
+    if (touchState._deltaX > -TE_WIPE_LOCK_Y && touchState._deltaX < TE_WIPE_LOCK_Y) {
+      if (touchState._deltaY > TE_WIPE_SPEED_Y) {
+        touchState.extEvent = TE_WIPE_DOWN;
+        touchState._last = now;
+      }
+      if (touchState._deltaY < -TE_WIPE_SPEED_Y) {
+        touchState.extEvent = TE_WIPE_UP;
+        touchState._last = now;
+      }
+    }
+  }
 }
 
 extern "C" void TOUCH_INT_EXTI_IRQHandler1(void)
@@ -551,7 +592,7 @@ extern "C" void TOUCH_INT_EXTI_IRQHandler1(void)
       // on touch turn the light on
       resetBacklightTimeout();
     }
-    touchEventOccured = 1;
+    touchEventOccured = true;
     EXTI_ClearITPendingBit(TOUCH_INT_EXTI_LINE1);
   }
 }
@@ -560,3 +601,10 @@ bool touchPanelEventOccured()
 {
   return touchEventOccured;
 }
+
+void checkTouchTmo(void)
+{
+  tmr10ms_t now = get_tmr10ms();
+  if ((now - touchState._last) > 25) touchState.extEvent = TE_EXT_NONE; //expire
+}
+
