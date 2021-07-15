@@ -558,3 +558,63 @@ void DMABitmapConvert(uint16_t * dest, const uint8_t * src, uint16_t w, uint16_t
   }
 }
 #endif
+
+void lcdDrawHudRectangle(float pitch, float roll, coord_t xmin, coord_t xmax, coord_t ymin, coord_t ymax, LcdFlags flags)
+{
+  constexpr float GRADTORAD = 0.017453293f;
+
+  float dx = sinf(GRADTORAD*roll) * pitch;
+  float dy = cosf(GRADTORAD*roll) * pitch * 1.85f;
+  float angle = tanf(-GRADTORAD*roll);
+  float ox = 0.5f * (xmin + xmax) + dx;
+  float oy = 0.5f * (ymin + ymax) + dy;
+  int32_t ywidth = (ymax - ymin);
+
+  if (roll == 0.0f) { // prevent divide by zero
+	lcdDrawFilledRect(
+      xmin, max(ymin, ymin + (coord_t)(ywidth/2 + (int32_t)dy)),
+      xmax - xmin, min(ywidth, ywidth/2 - (int32_t)dy + (dy != 0.0f ? 1 : 0)), SOLID, flags);
+  }
+  else if (fabs(roll) >= 180.0f) {
+    lcdDrawFilledRect(xmin, ymin, xmax - xmin, min(ywidth, ywidth/2 + (int32_t)fabsf(dy)), SOLID, flags);
+  }
+  else {
+    bool inverted = (fabsf(roll) > 90.0f);
+    bool fillNeeded = false;
+    int32_t ybot = (inverted) ? 0 : LCD_H;
+
+    if (roll > 0.0f) {
+      for (int32_t s = 0; s < ywidth; s++) {
+        int32_t yy = ymin + s;
+        int32_t xx = ox + ((float)yy - oy) / angle;
+        if (xx >= xmin && xx <= xmax) {
+       	  lcdDrawSolidHorizontalLine(xx, yy, xmax - xx + 1, flags);
+        }
+        else if (xx < xmin) {
+          ybot = (inverted) ? max(yy, ybot) + 1 : min(yy, ybot);
+          fillNeeded = true;
+        }
+      }
+    }
+    else {
+      for (int32_t s = 0; s < ywidth; s++) {
+        int32_t yy = ymin + s;
+        int32_t xx = ox + ((float)yy - oy) / angle;
+        if (xx >= xmin && xx <= xmax) {
+          lcdDrawSolidHorizontalLine(xmin, yy, xx - xmin, flags);
+        }
+        else if (xx > xmax) {
+          ybot = (inverted) ? max(yy, ybot) + 1 : min(yy, ybot);
+          fillNeeded = true;
+        }
+      }
+    }
+
+    if (fillNeeded) {
+      int32_t ytop = (inverted) ? ymin : ybot;
+      int32_t height = (inverted) ? ybot - ymin : ymax - ybot;
+      lcdDrawFilledRect(xmin, ytop, xmax - xmin, height, SOLID, flags);
+    }
+  }
+}
+

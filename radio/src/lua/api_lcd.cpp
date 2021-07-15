@@ -911,6 +911,35 @@ static int luaRGB(lua_State *L)
   lua_pushinteger(L, RGB(r, g, b));
   return 1;
 }
+
+/*luadoc
+@function lcd.drawHudRectangleLine(pitch, roll, xmin, xmax, ymin, ymax, flags)
+
+Draw a HUD
+
+@param pitch,roll (real numbers) pitch and roll angles in degrees
+
+@param xmin,xmax,ymin,ymax (positive numbers) drawing rectangle
+
+@param flags lcdflags
+
+@notice The flags specify the color of the earth. The sky is not drawn and should be created by drawing an appropriately sized rectangle with the sky's color before the HUD is drawn.
+
+@status current Introduced in 2.3.12
+*/
+static int luaLcdDrawHudRectangle(lua_State *L)
+{
+  if (!luaLcdAllowed) return 0;
+  float pitch = luaL_checknumber(L, 1);
+  float roll = luaL_checknumber(L, 2);
+  coord_t xmin = luaL_checkunsigned(L, 3);
+  coord_t xmax = luaL_checkunsigned(L, 4);
+  coord_t ymin = luaL_checkunsigned(L, 5);
+  coord_t ymax = luaL_checkunsigned(L, 6);
+  LcdFlags flags = luaL_checkunsigned(L, 7);
+  lcdDrawHudRectangle(pitch, roll, xmin, xmax, ymin, ymax, flags);
+  return 0;
+}
 #endif
 
 const luaL_Reg lcdLib[] = {
@@ -933,6 +962,7 @@ const luaL_Reg lcdLib[] = {
   { "setColor", luaLcdSetColor },
   { "getColor", luaLcdGetColor },
   { "RGB", luaRGB },
+  { "drawHudRectangle", luaLcdDrawHudRectangle },
 #else
   { "getLastPos", luaLcdGetLastPos },
   { "getLastRightPos", luaLcdGetLastPos },
