@@ -53,9 +53,7 @@ void stop_intmodule_heartbeat()
 {
   heartbeatCapture.valid = false;
 
-#if !defined(INTMODULE_HEARTBEAT_REUSE_INTERRUPT_ROTARY_ENCODER)
-  NVIC_DisableIRQ(INTMODULE_HEARTBEAT_EXTI_IRQn);
-#endif
+  // Never disable EXTI_IRQ, just remove INTMODULE_HEARTBEAT_EXTI_LINE from configuration as EXTI can be reused
 
   EXTI_InitTypeDef EXTI_InitStructure;
   EXTI_StructInit(&EXTI_InitStructure);
@@ -89,9 +87,11 @@ void check_intmodule_heartbeat()
 #if defined(INTMODULE_HEARTBEAT) && !defined(INTMODULE_HEARTBEAT_REUSE_INTERRUPT_ROTARY_ENCODER)
 extern "C" void INTMODULE_HEARTBEAT_EXTI_IRQHandler()
 {
+  // Check as first because it is the most critical one
+#if defined(TELEMETRY_EXTI_REUSE_INTERRUPT_INTMODULE_HEARTBEAT)
+  check_telemetry_exti();
+#endif
+
   check_intmodule_heartbeat();
-  #if defined(TELEMETRY_EXTI_REUSE_INTERRUPT_INTMODULE_HEARTBEAT)
-    check_telemetry_exti();
-  #endif
 }
 #endif

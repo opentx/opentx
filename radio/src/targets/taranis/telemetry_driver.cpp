@@ -166,13 +166,15 @@ void telemetryPortInvertedInit(uint32_t baudrate)
   //TODO:
   // - handle conflict with HEARTBEAT disabled for trainer input...
   // - probably need to stop trainer input/output and restore after this is closed
-#if !defined(TELEMETRY_EXTI_REUSE_INTERRUPT_ROTARY_ENCODER) && !defined(TELEMETRY_EXTI_REUSE_INTERRUPT_INTMODULE_HEARTBEAT)
   NVIC_SetPriority(TELEMETRY_EXTI_IRQn, 0);
-  NVIC_EnableIRQ(TELEMETRY_EXTI_IRQn);
-#endif
+
+  // In case shared IRQ is not enabled
+  if ((NVIC->ISER[(uint32_t)((int32_t)TELEMETRY_EXTI_IRQn) >> 5] & (uint32_t)(1 << ((uint32_t)((int32_t)TELEMETRY_EXTI_IRQn) & (uint32_t)0x1F))) == 0) {
+    NVIC_EnableIRQ(TELEMETRY_EXTI_IRQn);
+  }
 }
 
-void telemetryPortInvertedRxBit()
+inline void telemetryPortInvertedRxBit()
 {
   if (rxBitCount < 8) {
     if (rxBitCount == 0) {
@@ -189,15 +191,14 @@ void telemetryPortInvertedRxBit()
     ++rxBitCount;
   }
   else if (rxBitCount == 8) {
+    // disable timer
+    TELEMETRY_TIMER->CR1 &= ~TIM_CR1_CEN;
 
     telemetryFifo.push(rxByte);
     rxBitCount = 0;
 
-    // disable timer
-    TELEMETRY_TIMER->CR1 &= ~TIM_CR1_CEN;
-
     // re-enable start bit interrupt
-    EXTI->IMR |= EXTI_IMR_MR6;
+    EXTI->IMR |= TELEMETRY_EXTI_LINE;
   }
 }
 
@@ -361,7 +362,7 @@ void check_telemetry_exti()
       TELEMETRY_TIMER->CR1 |= TIM_CR1_CEN;
     
       // disable start bit interrupt
-      EXTI->IMR &= ~EXTI_IMR_MR6;
+      EXTI->IMR &= ~TELEMETRY_EXTI_LINE;
     }
 
     EXTI_ClearITPendingBit(TELEMETRY_EXTI_LINE);
