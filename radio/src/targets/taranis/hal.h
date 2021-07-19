@@ -1672,7 +1672,7 @@
   #define INTMODULE_HEARTBEAT
   #define INTMODULE_HEARTBEAT_RCC_AHB1Periph      RCC_AHB1Periph_GPIOC
   #define INTMODULE_HEARTBEAT_GPIO                GPIOC
-  #define INTMODULE_HEARTBEAT_GPIO_PIN            GPIO_Pin_7
+  #define INTMODULE_HEARTBEAT_GPIO_PIN            GPIO_Pin_7  // PC.07
   #define INTMODULE_HEARTBEAT_EXTI_PortSource     EXTI_PortSourceGPIOC
   #define INTMODULE_HEARTBEAT_EXTI_PinSource      GPIO_PinSource7
   #define INTMODULE_HEARTBEAT_EXTI_LINE           EXTI_Line7
