@@ -86,6 +86,8 @@ constexpr uint32_t ALERT_BUTTON_TOP =              300;
 constexpr uint32_t PAGE_TITLE_TOP =                2;
 constexpr uint32_t PAGE_TITLE_LEFT =               50;
 
+constexpr coord_t NUMBER_KEYBOARD_HEIGHT = 90;
+
 // TODO common code, not in target
 enum LcdColorIndex
 {

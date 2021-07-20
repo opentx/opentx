@@ -85,6 +85,8 @@ constexpr uint32_t ALERT_BUTTON_TOP =              300;
 constexpr uint32_t PAGE_TITLE_TOP =                4;
 constexpr uint32_t PAGE_TITLE_LEFT =               70;
 
+constexpr coord_t NUMBER_KEYBOARD_HEIGHT = 90;
+
 enum LcdColorIndex
 {
   DEFAULT_COLOR_INDEX,
