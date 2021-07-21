@@ -2343,3 +2343,8 @@ Vincenzo Desiderio
 Alain Gouby
 Andoni de Quadra
 Bernd Ehlers
+Andreas Neumeier
+James Ray
+Mark Snow
+Francis Watkins
+Fernando Rimoldi

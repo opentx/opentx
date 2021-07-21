@@ -1692,7 +1692,7 @@
 #endif
 
 // Trainer / Trainee from the module bay
-#if defined(PCBX9LITE) ||  defined(PCBXLITE)
+#if defined(PCBX9LITE) || defined(PCBXLITE) || defined(RADIO_X9DP2019) || defined(RADIO_X7ACCESS)
   #define TRAINER_MODULE_CPPM
   #define TRAINER_MODULE_SBUS
   #define TRAINER_MODULE_RCC_AHB1Periph      0
@@ -1709,7 +1709,9 @@
   #define TRAINER_MODULE_CPPM_CCMR1            (TIM_CCMR1_IC2F_0 | TIM_CCMR1_IC2F_1 | TIM_CCMR1_CC2S_0)
   #define TRAINER_MODULE_CPPM_CCER             TIM_CCER_CC2E
   #define TRAINER_MODULE_CPPM_TIMER_IRQn       TIM3_IRQn
+#if defined(PCBX9LITE) || defined(PCBXLITE)
   #define TRAINER_MODULE_CPPM_TIMER_IRQHandler TIM3_IRQHandler
+#endif
   #define TRAINER_MODULE_SBUS_GPIO             EXTMODULE_USART_GPIO
   #define TRAINER_MODULE_SBUS_GPIO_PIN         EXTMODULE_RX_GPIO_PIN
   #define TRAINER_MODULE_SBUS_GPIO_AF          EXTMODULE_USART_GPIO_AF
