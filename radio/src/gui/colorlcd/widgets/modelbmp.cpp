@@ -79,7 +79,7 @@ class ModelBitmapWidget: public Widget
       std::string filename = std::string(g_model.header.bitmap);
       std::string fullpath = std::string(BITMAPS_PATH PATH_SEPARATOR) + filename;
 
-      buffer.reset(BitmapBuffer::loadBitmap(fullpath.c_str()));
+      buffer.reset(BitmapBuffer::load(fullpath.c_str()));
       if (!buffer) {
         TRACE("could not load bitmap '%s'", filename.c_str());
         return;

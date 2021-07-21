@@ -65,11 +65,11 @@ void OpenTxTheme::init() const
 void OpenTxTheme::load() const
 {
   if (!asterisk)
-    asterisk = BitmapBuffer::loadBitmap(getFilePath("asterisk.bmp"));
+    asterisk = BitmapBuffer::load(getFilePath("asterisk.bmp"));
   if (!question)
-    question = BitmapBuffer::loadBitmap(getFilePath("question.bmp"));
+    question = BitmapBuffer::load(getFilePath("question.bmp"));
   if (!busy)
-    busy = BitmapBuffer::loadBitmap(getFilePath("busy.bmp"));
+    busy = BitmapBuffer::load(getFilePath("busy.bmp"));
 }
 
 ZoneOptionValue * OpenTxTheme::getOptionValue(unsigned int index) const
@@ -92,7 +92,7 @@ void OpenTxTheme::drawThumb(BitmapBuffer * dc, coord_t x, coord_t y, uint32_t fl
   #define THUMB_WIDTH   51
   #define THUMB_HEIGHT  31
   if (!thumb) {
-    thumb = BitmapBuffer::loadBitmap(getFilePath("thumb.bmp"));
+    thumb = BitmapBuffer::load(getFilePath("thumb.bmp"));
   }
   lcd->drawBitmap(x, y, thumb);
   if (flags == LINE_COLOR) {
@@ -177,7 +177,7 @@ void OpenTxTheme::drawChoice(BitmapBuffer * dc, ChoiceBase * choice, const char 
     textColor = DEFAULT_COLOR;
 
   dc->drawText(FIELD_PADDING_LEFT, FIELD_PADDING_TOP, str[0] == '\0' ? "---" : str, textColor);
-  dc->drawBitmapPattern(choice->getRect().w - 20, (choice->getRect().h - 11) / 2, choice->getType() == CHOICE_TYPE_FOLDER ? LBM_FOLDER : LBM_DROPDOWN, textColor);
+  dc->drawMask(choice->getRect().w - 20, (choice->getRect().h - 11) / 2, choice->getType() == CHOICE_TYPE_FOLDER ? LBM_FOLDER : LBM_DROPDOWN, textColor);
 }
 
 void OpenTxTheme::drawSlider(BitmapBuffer * dc, int vmin, int vmax, int value, const rect_t & rect, bool edit, bool focus) const
@@ -186,21 +186,21 @@ void OpenTxTheme::drawSlider(BitmapBuffer * dc, int vmin, int vmax, int value, c
   int w = divRoundClosest((rect.w - 16) * (val - vmin), vmax - vmin);
 
   if (edit) {
-    dc->drawBitmapPattern(0, 11, LBM_SLIDER_BAR_LEFT, FOCUS_BGCOLOR);
+    dc->drawMask(0, 11, LBM_SLIDER_BAR_LEFT, FOCUS_BGCOLOR);
     dc->drawSolidFilledRect(4, 11, rect.w - 8, 4, FOCUS_BGCOLOR);
-    dc->drawBitmapPattern(rect.w - 4, 11, LBM_SLIDER_BAR_RIGHT, FOCUS_BGCOLOR);
+    dc->drawMask(rect.w - 4, 11, LBM_SLIDER_BAR_RIGHT, FOCUS_BGCOLOR);
   }
   else {
-    dc->drawBitmapPattern(0, 11, LBM_SLIDER_BAR_LEFT, LINE_COLOR);
+    dc->drawMask(0, 11, LBM_SLIDER_BAR_LEFT, LINE_COLOR);
     dc->drawSolidFilledRect(4, 11, rect.w - 8, 4, LINE_COLOR);
-    dc->drawBitmapPattern(rect.w - 4, 11, LBM_SLIDER_BAR_RIGHT, LINE_COLOR);
+    dc->drawMask(rect.w - 4, 11, LBM_SLIDER_BAR_RIGHT, LINE_COLOR);
   }
 
-  dc->drawBitmapPattern(w, 5, LBM_SLIDER_POINT_OUT, DEFAULT_COLOR);
-  dc->drawBitmapPattern(w, 5, LBM_SLIDER_POINT_MID, DEFAULT_BGCOLOR);
+  dc->drawMask(w, 5, LBM_SLIDER_POINT_OUT, DEFAULT_COLOR);
+  dc->drawMask(w, 5, LBM_SLIDER_POINT_MID, DEFAULT_BGCOLOR);
   // if ((options & INVERS) && (!(options & BLINK) || !BLINK_ON_PHASE))
   if (focus) {
-    dc->drawBitmapPattern(w, 5, LBM_SLIDER_POINT_IN, FOCUS_BGCOLOR);
+    dc->drawMask(w, 5, LBM_SLIDER_POINT_IN, FOCUS_BGCOLOR);
   }
 }
 

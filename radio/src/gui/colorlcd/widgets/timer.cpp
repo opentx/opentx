@@ -37,10 +37,10 @@ class TimerWidget: public Widget
 
       if (width() >= 180 && height() >= 70) {
         if (timerState.val >= 0 || !(timerState.val % 2)) {
-          dc->drawBitmapPattern(0, 0, LBM_TIMER_BACKGROUND, MAINVIEW_PANES_COLOR);
+          dc->drawMask(0, 0, LBM_TIMER_BACKGROUND, MAINVIEW_PANES_COLOR);
         }
         else {
-          dc->drawBitmapPattern(0, 0, LBM_TIMER_BACKGROUND, MENU_BGCOLOR);
+          dc->drawMask(0, 0, LBM_TIMER_BACKGROUND, MENU_BGCOLOR);
         }
         if (timerData.start && timerState.val >= 0) {
           dc->drawBitmapPatternPie(
@@ -48,7 +48,7 @@ class TimerWidget: public Widget
             timerState.val <= 0 ? 360 : 360 * (timerData.start - timerState.val) / timerData.start);
         }
         else {
-          dc->drawBitmapPattern(3, 4, LBM_TIMER, MAINVIEW_GRAPHICS_COLOR);
+          dc->drawMask(3, 4, LBM_TIMER, MAINVIEW_GRAPHICS_COLOR);
         }
         if (abs(timerState.val) >= 3600) {
           drawTimer(dc, 70, 31, abs(timerState.val), DEFAULT_COLOR | FONT(STD) | LEFT | TIMEHOUR);

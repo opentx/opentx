@@ -128,17 +128,16 @@ const uint8_t * fontsTable[FONTS_COUNT] = { font_std, font_bold, font_xxs, font_
 
 uint8_t * decompressFont(const uint8_t * font)
 {
-  uint16_t width = *((uint16_t *)font);
-  uint16_t height = *(((uint16_t *)font)+1);
+  auto bitmap = (BitmapData *)font;
 
-  size_t font_size = width * height;
-  uint8_t * dec_buf = (uint8_t *)malloc(font_size + 4);
+  size_t fontSize = bitmap->width() * bitmap->height();
+  auto buffer = (uint8_t *)malloc(fontSize + 4);
 
   // copy width / height
-  memcpy(dec_buf, font,4);
+  memcpy(buffer, font, 4);
 
-  RLEBitmap::decode(dec_buf+4, font_size, font+4);
-  return dec_buf;
+  RLEBitmap::decode(buffer + 4, fontSize, font + 4);
+  return buffer;
 }
 
 void loadFonts()

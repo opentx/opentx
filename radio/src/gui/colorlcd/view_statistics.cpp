@@ -64,17 +64,17 @@ class ThrottleCurveWindow : public Window
         if (prev_yv != (coord_t)-1) {
           if (prev_yv < yv) {
             for (int y=prev_yv; y<=yv; y++) {
-              dc->drawBitmapPattern(i, y, LBM_POINT, DEFAULT_COLOR);
+              dc->drawMask(i, y, LBM_POINT, DEFAULT_COLOR);
             }
           }
           else {
             for (int y=yv; y<=prev_yv; y++) {
-              dc->drawBitmapPattern(i, y, LBM_POINT, DEFAULT_COLOR);
+              dc->drawMask(i, y, LBM_POINT, DEFAULT_COLOR);
             }
           }
         }
         else {
-          dc->drawBitmapPattern(i, yv, LBM_POINT, DEFAULT_COLOR);
+          dc->drawMask(i, yv, LBM_POINT, DEFAULT_COLOR);
         }
         prev_yv = yv;
       }

@@ -70,7 +70,7 @@ bool checkScreenshot_colorlcd(const BitmapBuffer* dc, const char* test)
 
   std::string fullpath = TESTS_PATH "/" + filename;
   
-  std::unique_ptr<BitmapBuffer> testPict(BitmapBuffer::loadBitmap(fullpath.c_str()));
+  std::unique_ptr<BitmapBuffer> testPict(BitmapBuffer::load(fullpath.c_str()));
   if (!testPict || testPict->width() != LCD_W || testPict->height() != LCD_H) {
     dumpImage(filename, dc);
     return false;
@@ -241,7 +241,7 @@ TEST(Lcd_colorlcd, bitmap)
   dc.clear(DEFAULT_BGCOLOR);
 
   dc.setClippingRect(100, 400, 50, 200);
-  std::unique_ptr<BitmapBuffer> bmp(BitmapBuffer::loadBitmap(TESTS_PATH "/opentx.png"));
+  std::unique_ptr<BitmapBuffer> bmp(BitmapBuffer::load(TESTS_PATH "/opentx.png"));
   dc.drawBitmap(  0,   0, bmp.get());
   dc.drawBitmap(320,   0, bmp.get());
   dc.drawBitmap(  0, 150, bmp.get());

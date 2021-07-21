@@ -123,7 +123,7 @@ class BaseLayoutFactory: public LayoutFactory
 
     void drawThumb(BitmapBuffer * dc, uint16_t x, uint16_t y, uint32_t flags) const override
     {
-      dc->drawBitmapPattern(x, y, bitmap, flags);
+      dc->drawMask(x, y, bitmap, flags);
     }
 
     const ZoneOption * getOptions() const override

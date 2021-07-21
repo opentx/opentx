@@ -77,7 +77,7 @@ class Theme480: public OpenTxTheme
     void loadMenuIcon(uint8_t index, const char * filename, uint32_t color=MENU_COLOR) const
     {
       TRACE("loadMenuIcon %s", getFilePath(filename));
-      BitmapBuffer * mask = BitmapBuffer::loadMask(getFilePath(filename));
+      auto * mask = BitmapMask::load(getFilePath(filename));
       if (mask) {
         delete iconMask[index];
         iconMask[index] = mask;
@@ -152,9 +152,9 @@ class Theme480: public OpenTxTheme
       loadMenuIcon(ICON_MONITOR_CHANNELS4, "mask_monitor_channels4.png");
       loadMenuIcon(ICON_MONITOR_LOGICAL_SWITCHES, "mask_monitor_logsw.png");
 
-      BitmapBuffer * background = BitmapBuffer::loadMask(getFilePath("mask_currentmenu_bg.png"));
-      BitmapBuffer * shadow = BitmapBuffer::loadMask(getFilePath("mask_currentmenu_shadow.png"));
-      BitmapBuffer * dot = BitmapBuffer::loadMask(getFilePath("mask_currentmenu_dot.png"));
+      auto * background = BitmapMask::load(getFilePath("mask_currentmenu_bg.png"));
+      auto * shadow = BitmapMask::load(getFilePath("mask_currentmenu_shadow.png"));
+      auto * dot = BitmapMask::load(getFilePath("mask_currentmenu_dot.png"));
 
       if (!currentMenuBackground) {
         currentMenuBackground = new BitmapBuffer(BMP_RGB565, 36, 53);
@@ -181,52 +181,52 @@ class Theme480: public OpenTxTheme
     {
       // Calibration screen
       delete calibStick;
-      calibStick = BitmapBuffer::loadBitmap(getFilePath("stick_pointer.png"));
+      calibStick = BitmapBuffer::load(getFilePath("stick_pointer.png"));
 
       delete calibStickBackground;
-      calibStickBackground = BitmapBuffer::loadBitmap(getFilePath("stick_background.png"));
+      calibStickBackground = BitmapBuffer::load(getFilePath("stick_background.png"));
 
       delete calibTrackpBackground;
-      calibTrackpBackground = BitmapBuffer::loadBitmap(getFilePath("trackp_background.png"));
+      calibTrackpBackground = BitmapBuffer::load(getFilePath("trackp_background.png"));
 
       delete calibRadioPict;
 #if defined(PCBX10)
       if(STICKS_PWM_ENABLED()) {
-        calibRadioPict = BitmapBuffer::loadBitmap(getFilePath("X10S.bmp"));
+        calibRadioPict = BitmapBuffer::load(getFilePath("X10S.bmp"));
       }
       else {
-        calibRadioPict = BitmapBuffer::loadBitmap(getFilePath("X10.bmp"));
+        calibRadioPict = BitmapBuffer::load(getFilePath("X10.bmp"));
       }
 #else
-      calibRadioPict = BitmapBuffer::loadBitmap(getFilePath("horus.bmp"));
+      calibRadioPict = BitmapBuffer::load(getFilePath("horus.bmp"));
 #endif
 
       // Model Selection screen
       delete modelselIconBitmap;
       modelselIconBitmap = BitmapBuffer::loadMaskOnBackground("modelsel/mask_iconback.png", TITLE_BGCOLOR, DEFAULT_BGCOLOR);
       if (modelselIconBitmap) {
-        BitmapBuffer * bitmap = BitmapBuffer::loadBitmap(getFilePath("modelsel/icon_default.png"));
+        BitmapBuffer * bitmap = BitmapBuffer::load(getFilePath("modelsel/icon_default.png"));
         modelselIconBitmap->drawBitmap(20, 8, bitmap);
         delete bitmap;
       }
 
       delete modelselSdFreeBitmap;
-      modelselSdFreeBitmap = BitmapBuffer::loadMask(getFilePath("modelsel/mask_sdfree.png"));
+      modelselSdFreeBitmap = BitmapMask::load(getFilePath("modelsel/mask_sdfree.png"));
 
       delete modelselModelQtyBitmap;
-      modelselModelQtyBitmap = BitmapBuffer::loadMask(getFilePath("modelsel/mask_modelqty.png"));
+      modelselModelQtyBitmap = BitmapMask::load(getFilePath("modelsel/mask_modelqty.png"));
 
       delete modelselModelNameBitmap;
-      modelselModelNameBitmap = BitmapBuffer::loadMask(getFilePath("modelsel/mask_modelname.png"));
+      modelselModelNameBitmap = BitmapMask::load(getFilePath("modelsel/mask_modelname.png"));
 
       delete modelselModelMoveBackground;
-      modelselModelMoveBackground = BitmapBuffer::loadMask(getFilePath("modelsel/mask_moveback.png"));
+      modelselModelMoveBackground = BitmapMask::load(getFilePath("modelsel/mask_moveback.png"));
 
       delete modelselModelMoveIcon;
-      modelselModelMoveIcon = BitmapBuffer::loadMask(getFilePath("modelsel/mask_moveico.png"));
+      modelselModelMoveIcon = BitmapMask::load(getFilePath("modelsel/mask_moveico.png"));
 
       delete modelselWizardBackground;
-      modelselWizardBackground = BitmapBuffer::loadBitmap(getFilePath("wizard/background.png"));
+      modelselWizardBackground = BitmapBuffer::load(getFilePath("wizard/background.png"));
 
       // Channels monitor screen
       delete chanMonLockedBitmap;
@@ -255,25 +255,25 @@ class Theme480: public OpenTxTheme
       mixerSetupReplaceBitmap = BitmapBuffer::loadMaskOnBackground(getFilePath("mask_mplex_replace.png"), DEFAULT_COLOR, DEFAULT_BGCOLOR);
 
       delete mixerSetupLabelIcon;
-      mixerSetupLabelIcon = BitmapBuffer::loadMask(getFilePath("mask_textline_label.png"));
+      mixerSetupLabelIcon = BitmapMask::load(getFilePath("mask_textline_label.png"));
 
       delete mixerSetupCurveIcon;
-      mixerSetupCurveIcon = BitmapBuffer::loadMask(getFilePath("mask_textline_curve.png"));
+      mixerSetupCurveIcon = BitmapMask::load(getFilePath("mask_textline_curve.png"));
 
       delete mixerSetupSwitchIcon;
-      mixerSetupSwitchIcon = BitmapBuffer::loadMask(getFilePath("mask_textline_switch.png"));
+      mixerSetupSwitchIcon = BitmapMask::load(getFilePath("mask_textline_switch.png"));
 
       delete mixerSetupFlightmodeIcon;
-      mixerSetupFlightmodeIcon = BitmapBuffer::loadMask(getFilePath("mask_textline_fm.png"));
+      mixerSetupFlightmodeIcon = BitmapMask::load(getFilePath("mask_textline_fm.png"));
 
 //      delete mixerSetupSlowIcon;
-//      mixerSetupSlowIcon = BitmapBuffer::loadMask(getFilePath("mask_textline_slow.png"));
+//      mixerSetupSlowIcon = BitmapMask::load(getFilePath("mask_textline_slow.png"));
 //
 //      delete mixerSetupDelayIcon;
-//      mixerSetupDelayIcon = BitmapBuffer::loadMask(getFilePath("mask_textline_delay.png"));
+//      mixerSetupDelayIcon = BitmapMask::load(getFilePath("mask_textline_delay.png"));
 //
 //      delete mixerSetupDelaySlowIcon;
-//      mixerSetupDelaySlowIcon = BitmapBuffer::loadMask(getFilePath("mask_textline_delayslow.png"));
+//      mixerSetupDelaySlowIcon = BitmapMask::load(getFilePath("mask_textline_delayslow.png"));
     }
 
     void load() const override
@@ -281,7 +281,7 @@ class Theme480: public OpenTxTheme
       loadColors();
       OpenTxTheme::load();
       if (!backgroundBitmap) {
-        backgroundBitmap = BitmapBuffer::loadBitmap(getFilePath("background.png"));
+        backgroundBitmap = BitmapBuffer::load(getFilePath("background.png"));
       }
       update();
     }
@@ -357,7 +357,7 @@ class Theme480: public OpenTxTheme
       drawMenuDatetime(dc);
     }
 
-    const BitmapBuffer * getIconMask(uint8_t index) const override
+    const BitmapMask * getIconMask(uint8_t index) const override
     {
       return iconMask[index];
     }
@@ -410,13 +410,13 @@ class Theme480: public OpenTxTheme
     static BitmapBuffer * topleftBitmap;
     static BitmapBuffer * menuIconNormal[MENUS_ICONS_COUNT];
     static BitmapBuffer * menuIconSelected[MENUS_ICONS_COUNT];
-    static BitmapBuffer * iconMask[MENUS_ICONS_COUNT];
+    static BitmapMask * iconMask[MENUS_ICONS_COUNT];
     static BitmapBuffer * currentMenuBackground;
 };
 
 const BitmapBuffer * Theme480::backgroundBitmap = nullptr;
 BitmapBuffer * Theme480::topleftBitmap = nullptr;
-BitmapBuffer * Theme480::iconMask[MENUS_ICONS_COUNT] = { nullptr };
+BitmapMask * Theme480::iconMask[MENUS_ICONS_COUNT] = { nullptr };
 BitmapBuffer * Theme480::menuIconNormal[MENUS_ICONS_COUNT] = { nullptr };
 BitmapBuffer * Theme480::menuIconSelected[MENUS_ICONS_COUNT] = { nullptr };
 BitmapBuffer * Theme480::currentMenuBackground = nullptr;

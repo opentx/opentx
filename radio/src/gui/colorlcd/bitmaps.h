@@ -74,11 +74,11 @@ extern const uint8_t LBM_SWIPE_LEFT[];
 extern const uint8_t LBM_SWIPE_RIGHT[];
 
 extern BitmapBuffer * modelselIconBitmap;
-extern BitmapBuffer * modelselSdFreeBitmap;
-extern BitmapBuffer * modelselModelQtyBitmap;
-extern BitmapBuffer * modelselModelNameBitmap;
-extern BitmapBuffer * modelselModelMoveBackground;
-extern BitmapBuffer * modelselModelMoveIcon;
+extern BitmapMask * modelselSdFreeBitmap;
+extern BitmapMask * modelselModelQtyBitmap;
+extern BitmapMask * modelselModelNameBitmap;
+extern BitmapMask * modelselModelMoveBackground;
+extern BitmapMask * modelselModelMoveIcon;
 extern BitmapBuffer * modelselWizardBackground;
 
 // calibration bitmaps
@@ -98,10 +98,10 @@ extern BitmapBuffer * mixerSetupOutputBitmap;
 extern BitmapBuffer * mixerSetupAddBitmap;
 extern BitmapBuffer * mixerSetupMultiBitmap;
 extern BitmapBuffer * mixerSetupReplaceBitmap;
-extern BitmapBuffer * mixerSetupLabelIcon;
-extern BitmapBuffer * mixerSetupFlightmodeIcon;
-extern BitmapBuffer * mixerSetupCurveIcon;
-extern BitmapBuffer * mixerSetupSwitchIcon;
+extern BitmapMask * mixerSetupLabelIcon;
+extern BitmapMask * mixerSetupFlightmodeIcon;
+extern BitmapMask * mixerSetupCurveIcon;
+extern BitmapMask * mixerSetupSwitchIcon;
 //extern BitmapBuffer * mixerSetupDelayIcon;
 //extern BitmapBuffer * mixerSetupSlowIcon;
 //extern BitmapBuffer * mixerSetupDelaySlowIcon;

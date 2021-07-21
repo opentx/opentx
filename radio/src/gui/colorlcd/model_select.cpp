@@ -146,7 +146,7 @@ class ModelButton: public Button {
 
       if (error) {
         buffer->drawText(5, 2, "(Invalid Model)", DEFAULT_COLOR);
-        buffer->drawBitmapPattern(5, 23, LBM_LIBRARY_SLOT, DEFAULT_COLOR);
+        buffer->drawMask(5, 23, LBM_LIBRARY_SLOT, DEFAULT_COLOR);
       }
       else {
         char timerName[LEN_TIMER_STRING];
@@ -160,16 +160,16 @@ class ModelButton: public Button {
         }
         buffer->drawText(101, 40, timerName, DEFAULT_COLOR);
         for (int i = 0; i < 4; i++) {
-          buffer->drawBitmapPattern(104+i*11, 25, LBM_SCORE0, TITLE_BGCOLOR);
+          buffer->drawMask(104+i*11, 25, LBM_SCORE0, TITLE_BGCOLOR);
         }
         GET_FILENAME(filename, BITMAPS_PATH, partialModel.header.bitmap, "");
-        const BitmapBuffer * bitmap = BitmapBuffer::loadBitmap(filename);
+        const BitmapBuffer * bitmap = BitmapBuffer::load(filename);
         if (bitmap) {
           buffer->drawScaledBitmap(bitmap, 5, 24, 56, 32);
           delete bitmap;
         }
         else {
-          buffer->drawBitmapPattern(5, 23, LBM_LIBRARY_SLOT, DEFAULT_COLOR);
+          buffer->drawMask(5, 23, LBM_LIBRARY_SLOT, DEFAULT_COLOR);
         }
       }
       buffer->drawSolidHorizontalLine(5, 19, 143, LINE_COLOR);
@@ -180,7 +180,7 @@ class ModelButton: public Button {
       FormField::paint(dc);
       dc->drawBitmap(10, 2, buffer);
       if (modelCell == modelslist.getCurrentModel()) {
-        dc->drawBitmapPattern(112, 71, LBM_ACTIVE_MODEL, TITLE_BGCOLOR);
+        dc->drawMask(112, 71, LBM_ACTIVE_MODEL, TITLE_BGCOLOR);
       }
     }
 

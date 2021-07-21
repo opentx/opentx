@@ -54,12 +54,12 @@ void drawFunction(BitmapBuffer * dc, FnFuncP fn, int x, int y, int width)
     if (prev_yv != (coord_t)-1) {
       if (prev_yv < yv) {
         for (int y=prev_yv; y<=yv; y+=1) {
-          dc->drawBitmapPattern(x+xv-2, y-2, LBM_POINT, DEFAULT_COLOR);
+          dc->drawMask(x+xv-2, y-2, LBM_POINT, DEFAULT_COLOR);
         }
       }
       else {
         for (int y=yv; y<=prev_yv; y+=1) {
-          dc->drawBitmapPattern(x+xv-2, y-2, LBM_POINT, DEFAULT_COLOR);
+          dc->drawMask(x+xv-2, y-2, LBM_POINT, DEFAULT_COLOR);
         }
       }
     }
@@ -86,12 +86,12 @@ void drawCurveCoord(BitmapBuffer * dc, int x, int y, const char * text, bool act
   dc->drawSolidFilledRect(x, y, CURVE_COORD_WIDTH, CURVE_COORD_HEIGHT, CURVE_CURSOR_COLOR);
   dc->drawText(x+3+(CURVE_COORD_WIDTH - 1 - getTextWidth(text, 0, FONT(XS))) / 2, y + 1, text, LEFT|FONT(XS)|DEFAULT_BGCOLOR);
   if (active) {
-    dc->drawBitmapPattern(x, y, LBM_CURVE_COORD_SHADOW, DEFAULT_COLOR);
+    dc->drawMask(x, y, LBM_CURVE_COORD_SHADOW, DEFAULT_COLOR);
   }
 }
 
 void drawCurvePoint(BitmapBuffer * dc, int x, int y, LcdFlags color)
 {
-  dc->drawBitmapPattern(x, y, LBM_CURVE_POINT, color);
-  dc->drawBitmapPattern(x, y, LBM_CURVE_POINT_CENTER, DEFAULT_BGCOLOR);
+  dc->drawMask(x, y, LBM_CURVE_POINT, color);
+  dc->drawMask(x, y, LBM_CURVE_POINT_CENTER, DEFAULT_BGCOLOR);
 }

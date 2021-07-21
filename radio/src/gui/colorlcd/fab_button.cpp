@@ -42,7 +42,7 @@ FabButton::FabButton(FormGroup * parent, coord_t x, coord_t y, uint8_t icon, std
 void FabButton::paint(BitmapBuffer * dc)
 {
   dc->drawBitmap(0, 0, checked() ? &ALPHA_BUTTON_ON : &ALPHA_BUTTON_OFF);
-  const BitmapBuffer * mask = theme->getIconMask(icon);
+  auto * mask = theme->getIconMask(icon);
   if (mask) {
     dc->drawMask((68 - mask->width()) / 2, (68 - mask->height()) / 2, mask, DEFAULT_BGCOLOR);
   }

@@ -51,7 +51,7 @@ void drawVerticalScrollbar(BitmapBuffer * dc, coord_t x, coord_t y, coord_t h, u
 void drawTrimSquare(BitmapBuffer * dc, coord_t x, coord_t y, LcdFlags color)
 {
   dc->drawSolidFilledRect(x, y, 15, 15, color);
-  dc->drawBitmapPattern(x, y, LBM_TRIM_SHADOW, TRIM_SHADOW_COLOR);
+  dc->drawMask(x, y, LBM_TRIM_SHADOW, TRIM_SHADOW_COLOR);
 }
 
 void drawGVarValue(BitmapBuffer * dc, coord_t x, coord_t y, uint8_t gvar, gvar_t value, LcdFlags flags)
@@ -80,7 +80,7 @@ void drawSleepBitmap()
   lcd->reset();
   lcd->clear();
 
-  const BitmapBuffer * bitmap = BitmapBuffer::loadBitmap(OpenTxTheme::instance()->getFilePath("sleep.bmp"));
+  const BitmapBuffer * bitmap = BitmapBuffer::load(OpenTxTheme::instance()->getFilePath("sleep.bmp"));
   if (bitmap) {
     lcd->drawBitmap((LCD_W-bitmap->width())/2, (LCD_H-bitmap->height())/2, bitmap);
     delete bitmap;
@@ -95,7 +95,7 @@ void drawShutdownAnimation(uint32_t duration, uint32_t totalDuration, const char
   if (totalDuration == 0)
     return;
 
-  static const BitmapBuffer * shutdown = BitmapBuffer::loadBitmap(OpenTxTheme::instance()->getFilePath("shutdown.bmp"));
+  static const BitmapBuffer * shutdown = BitmapBuffer::load(OpenTxTheme::instance()->getFilePath("shutdown.bmp"));
 
   lcdNextLayer();
   lcd->reset();
@@ -104,10 +104,10 @@ void drawShutdownAnimation(uint32_t duration, uint32_t totalDuration, const char
     OpenTxTheme::instance()->drawBackground(lcd);
     lcd->drawBitmap((LCD_W - shutdown->width()) / 2, (LCD_H - shutdown->height()) / 2, shutdown);
     int quarter = duration / (totalDuration / 5);
-    if (quarter >= 1) lcd->drawBitmapPattern(LCD_W/2,                            (LCD_H-SHUTDOWN_CIRCLE_DIAMETER)/2, LBM_SHUTDOWN_CIRCLE, DEFAULT_COLOR, 0, SHUTDOWN_CIRCLE_DIAMETER/2);
-    if (quarter >= 2) lcd->drawBitmapPattern(LCD_W/2,                            LCD_H/2,                            LBM_SHUTDOWN_CIRCLE, DEFAULT_COLOR, SHUTDOWN_CIRCLE_DIAMETER/2, SHUTDOWN_CIRCLE_DIAMETER/2);
-    if (quarter >= 3) lcd->drawBitmapPattern((LCD_W-SHUTDOWN_CIRCLE_DIAMETER)/2, LCD_H/2,                            LBM_SHUTDOWN_CIRCLE, DEFAULT_COLOR, SHUTDOWN_CIRCLE_DIAMETER, SHUTDOWN_CIRCLE_DIAMETER/2);
-    if (quarter >= 4) lcd->drawBitmapPattern((LCD_W-SHUTDOWN_CIRCLE_DIAMETER)/2, (LCD_H-SHUTDOWN_CIRCLE_DIAMETER)/2, LBM_SHUTDOWN_CIRCLE, DEFAULT_COLOR, SHUTDOWN_CIRCLE_DIAMETER*3/2, SHUTDOWN_CIRCLE_DIAMETER/2);
+    if (quarter >= 1) lcd->drawMask(LCD_W/2,                            (LCD_H-SHUTDOWN_CIRCLE_DIAMETER)/2, LBM_SHUTDOWN_CIRCLE, DEFAULT_COLOR, 0, SHUTDOWN_CIRCLE_DIAMETER/2);
+    if (quarter >= 2) lcd->drawMask(LCD_W/2,                            LCD_H/2,                            LBM_SHUTDOWN_CIRCLE, DEFAULT_COLOR, SHUTDOWN_CIRCLE_DIAMETER/2, SHUTDOWN_CIRCLE_DIAMETER/2);
+    if (quarter >= 3) lcd->drawMask((LCD_W-SHUTDOWN_CIRCLE_DIAMETER)/2, LCD_H/2,                            LBM_SHUTDOWN_CIRCLE, DEFAULT_COLOR, SHUTDOWN_CIRCLE_DIAMETER, SHUTDOWN_CIRCLE_DIAMETER/2);
+    if (quarter >= 4) lcd->drawMask((LCD_W-SHUTDOWN_CIRCLE_DIAMETER)/2, (LCD_H-SHUTDOWN_CIRCLE_DIAMETER)/2, LBM_SHUTDOWN_CIRCLE, DEFAULT_COLOR, SHUTDOWN_CIRCLE_DIAMETER*3/2, SHUTDOWN_CIRCLE_DIAMETER/2);
   }
   else {
     lcd->clear();

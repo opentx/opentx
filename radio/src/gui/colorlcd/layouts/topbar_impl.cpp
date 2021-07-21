@@ -90,12 +90,12 @@ void TopbarImpl::paint(BitmapBuffer * dc)
 
   // USB icon
   if (usbPlugged()) {
-    dc->drawBitmapPattern(LCD_W - 98, 8, LBM_TOPMENU_USB, MENU_COLOR);
+    dc->drawMask(LCD_W - 98, 8, LBM_TOPMENU_USB, MENU_COLOR);
   }
 
   // Logs
   if (isFunctionActive(FUNCTION_LOGS) && !usbPlugged() && BLINK_ON_PHASE) {
-    dc->drawBitmapPattern(LCD_W - 98, 6, LBM_DOT, MENU_COLOR);
+    dc->drawMask(LCD_W - 98, 6, LBM_DOT, MENU_COLOR);
   }
 
   // RSSI
@@ -108,34 +108,34 @@ void TopbarImpl::paint(BitmapBuffer * dc)
 
 #if defined(INTERNAL_MODULE_PXX1) && defined(EXTERNAL_ANTENNA)
   if (isModuleXJT(INTERNAL_MODULE) && isExternalAntennaEnabled()) {
-    dc->drawBitmapPattern(LCD_W-94, 4, LBM_TOPMENU_ANTENNA, MENU_COLOR);
+    dc->drawMask(LCD_W-94, 4, LBM_TOPMENU_ANTENNA, MENU_COLOR);
   }
 #endif
 
   /* Audio volume */
-  dc->drawBitmapPattern(LCD_W - 130, 4, LBM_TOPMENU_VOLUME_SCALE, MENU_TITLE_DISABLE_COLOR);
+  dc->drawMask(LCD_W - 130, 4, LBM_TOPMENU_VOLUME_SCALE, MENU_TITLE_DISABLE_COLOR);
   if (requiredSpeakerVolume == 0 || g_eeGeneral.beepMode == e_mode_quiet)
-    dc->drawBitmapPattern(LCD_W - 130, 4, LBM_TOPMENU_VOLUME_0, MENU_COLOR);
+    dc->drawMask(LCD_W - 130, 4, LBM_TOPMENU_VOLUME_0, MENU_COLOR);
   else if (requiredSpeakerVolume < 7)
-    dc->drawBitmapPattern(LCD_W - 130, 4, LBM_TOPMENU_VOLUME_1, MENU_COLOR);
+    dc->drawMask(LCD_W - 130, 4, LBM_TOPMENU_VOLUME_1, MENU_COLOR);
   else if (requiredSpeakerVolume < 13)
-    dc->drawBitmapPattern(LCD_W - 130, 4, LBM_TOPMENU_VOLUME_2, MENU_COLOR);
+    dc->drawMask(LCD_W - 130, 4, LBM_TOPMENU_VOLUME_2, MENU_COLOR);
   else if (requiredSpeakerVolume < 19)
-    dc->drawBitmapPattern(LCD_W - 130, 4, LBM_TOPMENU_VOLUME_3, MENU_COLOR);
+    dc->drawMask(LCD_W - 130, 4, LBM_TOPMENU_VOLUME_3, MENU_COLOR);
   else
-    dc->drawBitmapPattern(LCD_W - 130, 4, LBM_TOPMENU_VOLUME_4, MENU_COLOR);
+    dc->drawMask(LCD_W - 130, 4, LBM_TOPMENU_VOLUME_4, MENU_COLOR);
 
   /* Tx battery */
   uint8_t bars = GET_TXBATT_BARS(5);
 #if defined(USB_CHARGER)
   if (usbChargerLed()) {
-    dc->drawBitmapPattern(LCD_W - 130, 25, LBM_TOPMENU_TXBATT_CHARGING, MENU_COLOR);
+    dc->drawMask(LCD_W - 130, 25, LBM_TOPMENU_TXBATT_CHARGING, MENU_COLOR);
   }
   else {
-    dc->drawBitmapPattern(LCD_W - 130, 25, LBM_TOPMENU_TXBATT, MENU_COLOR);
+    dc->drawMask(LCD_W - 130, 25, LBM_TOPMENU_TXBATT, MENU_COLOR);
   }
 #else
-  dc->drawBitmapPattern(LCD_W - 130, 25, LBM_TOPMENU_TXBATT, MENU_COLOR);
+  dc->drawMask(LCD_W - 130, 25, LBM_TOPMENU_TXBATT, MENU_COLOR);
 #endif
   for (unsigned int i = 0; i < 5; i++) {
     dc->drawSolidFilledRect(LCD_W - 128 + 4 * i, 30, 2, 8, i >= bars ? MENU_TITLE_DISABLE_COLOR : MENU_COLOR);

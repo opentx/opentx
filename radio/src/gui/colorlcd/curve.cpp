@@ -67,12 +67,12 @@ void Curve::drawCurve(BitmapBuffer * dc)
     if (prev >= 0) {
       if (prev < y) {
         for (int tmp = prev; tmp <= y; tmp++) {
-          dc->drawBitmapPattern(x - 2, tmp - 2, LBM_POINT, DEFAULT_COLOR);
+          dc->drawMask(x - 2, tmp - 2, LBM_POINT, DEFAULT_COLOR);
         }
       }
       else {
         for (int tmp = y; tmp <= prev; tmp++) {
-          dc->drawBitmapPattern(x - 2, tmp - 2, LBM_POINT, DEFAULT_COLOR);
+          dc->drawMask(x - 2, tmp - 2, LBM_POINT, DEFAULT_COLOR);
         }
       }
     }
@@ -93,8 +93,8 @@ void Curve::drawPosition(BitmapBuffer * dc)
   dc->drawSolidVerticalLine(x, 0, height(), CURVE_CURSOR_COLOR);
 
   // the point (white inside)
-  dc->drawBitmapPattern(x-4, y-4, LBM_CURVE_POINT, CURVE_CURSOR_COLOR);
-  dc->drawBitmapPattern(x-4, y-4, LBM_CURVE_POINT_CENTER, DEFAULT_BGCOLOR);
+  dc->drawMask(x-4, y-4, LBM_CURVE_POINT, CURVE_CURSOR_COLOR);
+  dc->drawMask(x-4, y-4, LBM_CURVE_POINT_CENTER, DEFAULT_BGCOLOR);
 
   char coords[16];
   strAppendSigned(strAppend(strAppendSigned(coords, calcRESXto100(valueX)), ","), calcRESXto100(valueY));
@@ -107,8 +107,8 @@ void Curve::drawPoint(BitmapBuffer * dc, const CurvePoint & point)
   coord_t x = getPointX(point.coords.x);
   coord_t y = getPointY(point.coords.y);
 
-  dc->drawBitmapPattern(x-4, y-4, LBM_CURVE_POINT, point.flags);
-  dc->drawBitmapPattern(x-4, y-4, LBM_CURVE_POINT_CENTER, DEFAULT_BGCOLOR);
+  dc->drawMask(x-4, y-4, LBM_CURVE_POINT, point.flags);
+  dc->drawMask(x-4, y-4, LBM_CURVE_POINT_CENTER, DEFAULT_BGCOLOR);
 }
 
 void Curve::paint(BitmapBuffer * dc)

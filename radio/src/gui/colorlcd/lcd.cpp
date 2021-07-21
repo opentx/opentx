@@ -89,7 +89,7 @@ void lcdSetContrast()
 BitmapBuffer _lcd(BMP_RGB565, LCD_W, LCD_H, displayBuf);
 BitmapBuffer * lcd = &_lcd;
 
-void DMAFillRect(uint16_t * dest, uint16_t destw, uint16_t desth, uint16_t x, uint16_t y, uint16_t w, uint16_t h, uint16_t color)
+void DMAFillRect(uint16_t * dest, int destw, int desth, int x, int y, int w, int h, uint16_t color)
 {
 #if defined(LCD_VERTICAL_INVERT)
   x = destw - (x + w);
@@ -103,7 +103,7 @@ void DMAFillRect(uint16_t * dest, uint16_t destw, uint16_t desth, uint16_t x, ui
   }
 }
 
-void DMACopyBitmap(uint16_t * dest, uint16_t destw, uint16_t desth, uint16_t x, uint16_t y, const uint16_t * src, uint16_t srcw, uint16_t srch, uint16_t srcx, uint16_t srcy, uint16_t w, uint16_t h)
+void DMACopyBitmap(uint16_t * dest, int destw, int desth, int x, int y, const uint16_t * src, int srcw, int srch, int srcx, int srcy, int w, int h)
 {
 #if defined(LCD_VERTICAL_INVERT)
   x = destw - (x + w);
@@ -117,7 +117,7 @@ void DMACopyBitmap(uint16_t * dest, uint16_t destw, uint16_t desth, uint16_t x, 
   }
 }
 
-void DMACopyAlphaBitmap(uint16_t * dest, uint16_t destw, uint16_t desth, uint16_t x, uint16_t y, const uint16_t * src, uint16_t srcw, uint16_t srch, uint16_t srcx, uint16_t srcy, uint16_t w, uint16_t h)
+void DMACopyAlphaBitmap(uint16_t * dest, int destw, int desth, int x, int y, const uint16_t * src, int srcw, int srch, int srcx, int srcy, int w, int h)
 {
 #if defined(LCD_VERTICAL_INVERT)
   x = destw - (x + w);
@@ -140,7 +140,35 @@ void DMACopyAlphaBitmap(uint16_t * dest, uint16_t destw, uint16_t desth, uint16_
   }
 }
 
-void DMABitmapConvert(uint16_t * dest, const uint8_t * src, uint16_t w, uint16_t h, uint32_t format)
+void DMACopyAlphaMask(uint16_t * dest, int destw, int desth, int x, int y, const uint8_t * src, int srcw, int srch, int srcx, int srcy, int w, int h, uint16_t color)
+{
+#if defined(LCD_VERTICAL_INVERT)
+  x = destw - (x + w);
+  y = desth - (y + h);
+  srcx = srcw - (srcx + w);
+  srcy = srch - (srcy + h);
+#endif
+
+  RGB_SPLIT(color, red, green, blue);
+
+  for (coord_t line = 0; line < h; line++) {
+    uint16_t * p = dest + (y + line) * destw + x;
+    const uint8_t * q = src + (srcy + line) * srcw + srcx;
+    for (coord_t col = 0; col < w; col++) {
+      auto alpha = *q >> 4;  // convert to 4 bits (stored in 8bit for DMA)
+      auto bgAlpha = ALPHA_MAX - alpha;
+      RGB_SPLIT(*p, bgRed, bgGreen, bgBlue);
+      uint8_t r = (bgRed * bgAlpha + red * alpha) / ALPHA_MAX;
+      uint8_t g = (bgGreen * bgAlpha + green * alpha) / ALPHA_MAX;
+      uint8_t b = (bgBlue * bgAlpha + blue * alpha) / ALPHA_MAX;
+      *p = RGB_JOIN(r, g, b);
+      p++;
+      q++;
+    }
+  }
+}
+
+void DMABitmapConvert(uint16_t * dest, const uint8_t * src, int w, int h, uint32_t format)
 {
   if (format == DMA2D_ARGB4444) {
     for (int row = 0; row < h; ++row) {
