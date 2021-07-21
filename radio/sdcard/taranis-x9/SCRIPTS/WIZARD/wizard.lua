@@ -22,32 +22,34 @@ local modelType = 0
 local MODELTYPE_PLANE = 0
 local MODELTYPE_DELTA = 1
 local MODELTYPE_QUAD = 2
+local MODELTYPE_HELI = 3
 
 -- Common functions
 local function fieldIncDec(event, value, max)
   if event == EVT_VIRTUAL_DEC or event == EVT_VIRTUAL_DEC_REPT then
-    value = (value + max)
+    value = (value + max +1)
     dirty = true
   elseif event == EVT_VIRTUAL_INC or event == EVT_VIRTUAL_INC_REPT then
-    value = (value + max + 2)
+    value = (value + max + 3)
     dirty = true
   end
-  value = (value % (max+1))
+  value = (value % (max+2))
   return value
 end
 
 -- Model Type Menu
 local function modelTypeSurround(index)
-  lcd.drawRectangle(17+65*index, 14, 48, 48)
-  lcd.drawPixmap(22+65*index, 9, "mark.bmp")
+  lcd.drawRectangle(6+50*index, 14, 48, 82, 82)
+  lcd.drawPixmap(22+50*index, 9, "img/mark.bmp")
 end
 
 local function drawModelChoiceMenu()
   lcd.clear()
   lcd.drawScreenTitle("Select model type", 0, 0)
-  lcd.drawPixmap(21, 18, "plane.bmp")
-  lcd.drawPixmap(86, 18, "delta.bmp")
-  lcd.drawPixmap(151, 18, "quadri.bmp")
+  lcd.drawPixmap(10, 18, "img/plane.bmp")
+  lcd.drawPixmap(60, 18, "img/delta.bmp")
+  lcd.drawPixmap(110, 18, "img/quadri.bmp")
+  lcd.drawPixmap(160, 18, "img/heli.bmp")
   modelTypeSurround(modelType)
 end
 
@@ -58,11 +60,13 @@ local function modelTypeMenu(event)
   end
   if event == EVT_VIRTUAL_ENTER then
     if modelType == MODELTYPE_PLANE then
-      return "plane.lua"
+      return "img/plane.lua"
     elseif modelType == MODELTYPE_DELTA then
-      return "delta.lua"
+      return "img/delta.lua"
     elseif modelType == MODELTYPE_QUAD then
-      return "multi.lua"
+      return "img/multi.lua"
+    elseif modelType == MODELTYPE_HELI then
+      return "img/heli.lua"
     end
     dirty = true
   else

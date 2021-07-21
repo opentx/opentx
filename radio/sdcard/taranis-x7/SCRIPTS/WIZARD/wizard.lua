@@ -20,15 +20,15 @@ local modelType = 0
 local MODELTYPE_PLANE = 0
 local MODELTYPE_DELTA = 1
 local MODELTYPE_QUAD = 2
-
+local MODELTYPE_HELI = 3
 -- Common functions
 local function fieldIncDec(event, value, max)
   if event == EVT_VIRTUAL_DEC or event == EVT_VIRTUAL_DEC_REPT then
-    value = (value + max)
+    value = (value - 1)
   elseif event == EVT_VIRTUAL_INC or event == EVT_VIRTUAL_INC_REPT then
-    value = (value + max + 2)
+    value = (value + max + 3)
   end
-  value = (value % (max+1))
+  value = (value % (max+2))
   return value
 end
 
@@ -47,6 +47,7 @@ local function drawModelChoiceMenu()
     lcd.drawText( 20, 20, "Plane")
     lcd.drawText( 78, 20, "Delta")
     lcd.drawText( 20, 40, "Multi")
+    lcd.drawText( 78, 40, "Heli")
   modelTypeSurround(modelType)
   fieldsMax = 0
 end
@@ -60,6 +61,8 @@ local function modelTypeMenu(event)
       return "delta.lua"
     elseif modelType == MODELTYPE_QUAD then
       return "multi.lua"
+    elseif modelType == MODELTYPE_HELI then
+      return "heli.lua"
     end
   else
     modelType = fieldIncDec(event, modelType, 2)
