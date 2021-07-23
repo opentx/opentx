@@ -266,7 +266,7 @@ void displayTopBar()
       x -= 12;
     }
   }
-  else if (IS_TRAINER_INPUT_VALID()) {
+  else if (isTrainerInputValid()) {
     LCD_NOTIF_ICON(x, ICON_TRAINER);
     x -= 12;
   }
