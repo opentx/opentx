@@ -21,7 +21,9 @@
 
 #pragma once
 
+#if !defined(PCBSKY9X)
 #include "board_common.h"
+#endif
 
 #define configUSE_PREEMPTION            1
 #define configUSE_IDLE_HOOK             0

@@ -6,15 +6,6 @@
 
 #define _FFCONF 68020	/* Revision ID */
 
-#if !defined(SIMU)
-#ifdef __cplusplus
-extern "C" {
-#endif
-#include "../CoOS/kernel/CoOS.h"
-#ifdef __cplusplus
-}
-#endif
-#endif
 
 /*---------------------------------------------------------------------------/
 / Function Configurations

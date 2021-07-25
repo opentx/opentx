@@ -999,7 +999,6 @@ void sdInit(void)
 void sdInit(void)
 {
   TRACE("sdInit");
-
   RTOS_CREATE_MUTEX(ioMutex);
   sdMount();
 }
