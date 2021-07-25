@@ -1,5 +1,6 @@
 name: OpenTX Commit Tests
 on:
+  workflow_dispatch
   push:
     branches: [ 2.3 ]
   pull_request:
