@@ -139,13 +139,7 @@ TASK_FUNCTION(mixerTask)
   s_pulses_paused = true;
 
   mixerSchedulerInit();
-
-#if !defined(PCBSKY9X)
   mixerSchedulerStart();
-#endif
-
-  // clear the flag before first loop
-  //mixerSchedulerClearTrigger();
 
   while (true) {
     for (int timeout = 0; timeout < MIXER_MAX_PERIOD; timeout += MIXER_FREQUENT_ACTIONS_PERIOD) {
@@ -161,13 +155,8 @@ TASK_FUNCTION(mixerTask)
     GPIO_ResetBits(EXTMODULE_TX_GPIO, EXTMODULE_TX_GPIO_PIN);
 #endif
 
-#if !defined(PCBSKY9X)
-    // clear the flag ASAP to avoid missing a tick
-    //mixerSchedulerClearTrigger();
-
     // re-enable trigger
     mixerSchedulerEnableTrigger();
-#endif
 
 #if defined(SIMU)
     if (pwrCheck() == e_power_off) {
@@ -208,10 +197,6 @@ TASK_FUNCTION(mixerTask)
       }
 #endif
 
-#if defined(PCBSKY9X) && !defined(SIMU)
-      usbJoystickUpdate();
-#endif
-
       DEBUG_TIMER_START(debugTimerTelemetryWakeup);
       telemetryWakeup();
       DEBUG_TIMER_STOP(debugTimerTelemetryWakeup);
@@ -224,10 +209,6 @@ TASK_FUNCTION(mixerTask)
       t0 = getTmr2MHz() - t0;
       if (t0 > maxMixerDuration)
         maxMixerDuration = t0;
-
-      // TODO:
-      // - check the cause of timeouts when switching
-      //    between protocols with multi-proto RF
     }
   }
 }
