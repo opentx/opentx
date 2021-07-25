@@ -18,10 +18,20 @@
  * GNU General Public License for more details.
  */
 
-#include <OsConfig.h>
 #include "board.h"
 #if defined(STM32F2)
   #include "dwt.h"    // the old ST library that we use does not define DWT register for STM32F2xx
+#endif
+
+/*!<
+System frequency (Hz).
+*/
+#if defined(STM32F4)
+#define CFG_CPU_FREQ            (168000000)
+#elif defined(STM32)
+#define CFG_CPU_FREQ            (120000000)
+#else
+#define CFG_CPU_FREQ            (36000000)  // TODO check if really correct for sky9x?
 #endif
 
 #define SYSTEM_TICKS_1US    ((CFG_CPU_FREQ + 500000)  / 1000000)      // number of system ticks in 1us

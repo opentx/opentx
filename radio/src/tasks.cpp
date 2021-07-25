@@ -22,12 +22,15 @@
 #include "mixer_scheduler.h"
 
 RTOS_TASK_HANDLE menusTaskId;
+StaticTask_t menusTaskStruct;
 RTOS_DEFINE_STACK(menusStack, MENUS_STACK_SIZE);
 
 RTOS_TASK_HANDLE mixerTaskId;
+StaticTask_t mixerTaskStruct;
 RTOS_DEFINE_STACK(mixerStack, MIXER_STACK_SIZE);
 
 RTOS_TASK_HANDLE audioTaskId;
+StaticTask_t audioTaskStruct;
 RTOS_DEFINE_STACK(audioStack, AUDIO_STACK_SIZE);
 
 RTOS_MUTEX_HANDLE audioMutex;
@@ -141,6 +144,9 @@ TASK_FUNCTION(mixerTask)
   mixerSchedulerStart();
 #endif
 
+  // clear the flag before first loop
+  //mixerSchedulerClearTrigger();
+
   while (true) {
     for (int timeout = 0; timeout < MIXER_MAX_PERIOD; timeout += MIXER_FREQUENT_ACTIONS_PERIOD) {
       execMixerFrequentActions();
@@ -156,7 +162,10 @@ TASK_FUNCTION(mixerTask)
 #endif
 
 #if !defined(PCBSKY9X)
-    mixerSchedulerClearTrigger();
+    // clear the flag ASAP to avoid missing a tick
+    //mixerSchedulerClearTrigger();
+
+    // re-enable trigger
     mixerSchedulerEnableTrigger();
 #endif
 
@@ -250,6 +259,13 @@ bool perMainEnabled = true;
 
 TASK_FUNCTION(menusTask)
 {
+#if defined(SPLASH) && !defined(STARTUP_ANIMATION)
+  if (!UNEXPECTED_SHUTDOWN()) {
+    drawSplash();
+    TRACE("drawSplash() completed");
+  }
+#endif
+
   opentxInit();
 
 #if defined(PWR_BUTTON_PRESS)
@@ -303,21 +319,22 @@ TASK_FUNCTION(menusTask)
 
 void tasksStart()
 {
-  RTOS_INIT();
+  RTOS_CREATE_MUTEX(audioMutex);
+  RTOS_CREATE_MUTEX(mixerMutex);
 
 #if defined(CLI)
   cliStart();
 #endif
 
-  RTOS_CREATE_TASK(mixerTaskId, mixerTask, "mixer", mixerStack, MIXER_STACK_SIZE, MIXER_TASK_PRIO);
-  RTOS_CREATE_TASK(menusTaskId, menusTask, "menus", menusStack, MENUS_STACK_SIZE, MENUS_TASK_PRIO);
+  RTOS_CREATE_TASK(mixerTaskId, mixerTask, "mixer", mixerStack,
+                   MIXER_STACK_SIZE, MIXER_TASK_PRIO);
+  RTOS_CREATE_TASK(menusTaskId, menusTask, "menus", menusStack,
+                   MENUS_STACK_SIZE, MENUS_TASK_PRIO);
 
 #if !defined(SIMU)
-  RTOS_CREATE_TASK(audioTaskId, audioTask, "audio", audioStack, AUDIO_STACK_SIZE, AUDIO_TASK_PRIO);
+  RTOS_CREATE_TASK(audioTaskId, audioTask, "audio", audioStack,
+                   AUDIO_STACK_SIZE, AUDIO_TASK_PRIO);
 #endif
-
-  RTOS_CREATE_MUTEX(audioMutex);
-  RTOS_CREATE_MUTEX(mixerMutex);
 
   RTOS_START();
 }

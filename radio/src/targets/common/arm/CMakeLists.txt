@@ -192,7 +192,8 @@ add_definitions(-DGPS)
 add_definitions(-DBOLD_FONT -DBATTGRAPH -DTHRTRACE)
 add_definitions(-DREQUIRED_SDCARD_VERSION="${SDCARD_VERSION}")
 
-include_directories(${COOS_DIR} ${COOS_DIR}/kernel ${COOS_DIR}/portable)
+include_directories(${RTOS_DIR}/include)
+
 foreach(LANGUAGE ${TTS_LANGUAGES})
   string(TOLOWER ${LANGUAGE} lang_lower)
   set(SRC ${SRC} translations/tts_${lang_lower}.cpp)
@@ -222,18 +223,26 @@ set(FIRMWARE_TARGET_SRC
 
 set(FIRMWARE_SRC
   ${FIRMWARE_SRC}
-  ${COOS_DIR}/kernel/core.c
-  ${COOS_DIR}/kernel/hook.c
-  ${COOS_DIR}/kernel/task.c
-  ${COOS_DIR}/kernel/event.c
-  ${COOS_DIR}/kernel/time.c
-  ${COOS_DIR}/kernel/timer.c
-  ${COOS_DIR}/kernel/flag.c
-  ${COOS_DIR}/kernel/mutex.c
-  ${COOS_DIR}/kernel/serviceReq.c
-  ${COOS_DIR}/portable/GCC/port.c
-  ${COOS_DIR}/portable/arch.c
+  ${RTOS_DIR}/list.c
+  ${RTOS_DIR}/queue.c
+  ${RTOS_DIR}/tasks.c
+  ${RTOS_DIR}/event_groups.c
+  ${RTOS_DIR}/timers.c
+  rtos.c
   )
+if(CPU_TYPE STREQUAL STM32F4)
+  set(FIRMWARE_SRC
+    ${FIRMWARE_SRC}
+    ${RTOS_DIR}/portable/GCC/ARM_CM4F/port.c
+    )
+  include_directories(${RTOS_DIR}/portable/GCC/ARM_CM4F)
+else()
+  set(FIRMWARE_SRC
+    ${FIRMWARE_SRC}
+    ${RTOS_DIR}/portable/GCC/ARM_CM3/port.c
+    )
+  include_directories(${RTOS_DIR}/portable/GCC/ARM_CM3)
+endif()
 
 set(PULSES_SRC
   ${PULSES_SRC}
