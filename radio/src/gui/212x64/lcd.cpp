@@ -20,7 +20,7 @@
 
 #include <limits.h>
 #include "opentx.h"
-#include "../timers.h"
+#include "timers.h"
 
 #if (defined(PCBX9E) || defined(PCBX9DP)) && defined(LCD_DUAL_BUFFER)
   display_t displayBuf1[DISPLAY_BUFFER_SIZE] __DMA;
