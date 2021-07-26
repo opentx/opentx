@@ -19,38 +19,48 @@
  */
 
 #include "board.h"
+#if defined(STM32F2)
+#include "dwt.h"    // the old ST library that we use does not define DWT register for STM32F2xx
+#endif
 
-void delaysInit()
+/*!<
+System frequency (Hz).
+*/
+#if defined(STM32F4)
+#define CFG_CPU_FREQ            (168000000)
+#elif defined(STM32)
+#define CFG_CPU_FREQ            (120000000)
+#else
+#define CFG_CPU_FREQ            (36000000)  // TODO check if really correct for sky9x?
+#endif
+
+#define SYSTEM_TICKS_1US    ((CFG_CPU_FREQ + 500000)  / 1000000)      // number of system ticks in 1us
+#define SYSTEM_TICKS_01US   ((CFG_CPU_FREQ + 5000000) / 10000000)     // number of system ticks in 0.1us (rounding needed for sys frequencies that are not multiple of 10MHz)
+
+void delaysInit(void)
 {
   CoreDebug->DEMCR |= CoreDebug_DEMCR_TRCENA_Msk;
   DWT->CYCCNT = 0;
   DWT->CTRL |= DWT_CTRL_CYCCNTENA_Msk;
 }
 
-void delay_01us(uint32_t count)
+void delay_01us(uint32_t  nb)
 {
-  volatile uint32_t dwtStart = ticksNow();
-  volatile uint32_t dwtTotal = (SYSTEM_TICKS_01US * count) - 10;
-  while ((ticksNow() - dwtStart) < dwtTotal);
+  volatile uint32_t dwtStart = DWT->CYCCNT;
+  volatile uint32_t dwtTotal = (SYSTEM_TICKS_01US * nb) - 10;
+  while ((DWT->CYCCNT - dwtStart) < dwtTotal);
 }
 
-void delay_us(uint32_t count)
+void delay_us(uint32_t  nb)
 {
-  volatile uint32_t dwtStart = ticksNow();
-  volatile uint32_t dwtTotal = (SYSTEM_TICKS_1US * count) - 10;
-  while ((ticksNow() - dwtStart) < dwtTotal);
+  volatile uint32_t dwtStart = DWT->CYCCNT;
+  volatile uint32_t dwtTotal = (SYSTEM_TICKS_1US * nb) - 10;
+  while ((DWT->CYCCNT - dwtStart) < dwtTotal);
 }
 
-void delay_1ms()
+void delay_ms(uint32_t ms)
 {
-  volatile uint32_t dwtStart = ticksNow();
-  volatile uint32_t dwtTotal = SYSTEM_TICKS_1MS - 10;
-  while ((ticksNow() - dwtStart) < dwtTotal);
-}
-
-void delay_ms(uint32_t count)
-{
-  while (count--) {
-    delay_1ms();
+  while (ms--) {
+    delay_us(1000);
   }
 }
