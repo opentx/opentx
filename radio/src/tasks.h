@@ -32,11 +32,17 @@
 #define MIXER_STACK_SIZE       400
 #define AUDIO_STACK_SIZE       400
 #define CLI_STACK_SIZE         1000  // only consumed with CLI build option
+#if defined(INTERNAL_MODULE_CRSF)
+#define CROSSFIRE_STACK_SIZE   64
+#define SYSTEM_STACK_SIZE      504
+#endif
 
 #define MIXER_TASK_PRIO        5
 #define AUDIO_TASK_PRIO        7
 #define MENUS_TASK_PRIO        10
 #define CLI_TASK_PRIO          10
+#define CROSSFIRE_TASK_PRIO    0
+#define RTOS_SYS_TASK_PRIO     10
 
 extern RTOS_TASK_HANDLE menusTaskId;
 extern RTOS_DEFINE_STACK(menusStack, MENUS_STACK_SIZE);
@@ -49,6 +55,17 @@ extern RTOS_DEFINE_STACK(audioStack, AUDIO_STACK_SIZE);
 
 extern RTOS_MUTEX_HANDLE mixerMutex;
 extern RTOS_FLAG_HANDLE openTxInitCompleteFlag;
+
+#if defined(INTERNAL_MODULE_CRSF)
+extern RTOS_TASK_HANDLE crossfireTaskId;
+extern RTOS_DEFINE_STACK(crossfireStack, CROSSFIRE_STACK_SIZE);
+
+extern RTOS_TASK_HANDLE systemTaskId;
+extern RTOS_DEFINE_STACK(systemStack, SYSTEM_STACK_SIZE);
+
+void crossfireTasksStop();
+void crossfireTasksCreate();
+#endif
 
 void stackPaint();
 void tasksStart();

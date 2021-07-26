@@ -367,8 +367,10 @@ void Pxx2Pulses::sendOtaUpdate(uint8_t module, const char * rxName, uint32_t add
 
   if (module == EXTERNAL_MODULE)
     extmoduleSendNextFrame();
+#if !defined(RADIO_FAMILY_TBS)
   else if (module == INTERNAL_MODULE)
     intmoduleSendNextFrame();
+#endif
 }
 
 void Pxx2Pulses::setupAuthenticationFrame(uint8_t module, uint8_t mode, const uint8_t * outputMessage)

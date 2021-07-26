@@ -677,7 +677,7 @@
 
 #if defined(RADIO_TX16S)
 // Only slight noise with 868MHz > 1W, if complaints later remove and set AUDIO_UNMUTE_DELAY to 150
-  #undef AUDIO_MUTE_GPIO_PIN            
+  #undef AUDIO_MUTE_GPIO_PIN
 #endif
 
 // Touch

@@ -856,6 +856,14 @@ void printTaskSwitchLog()
     else if (audioTaskId == n) {
       serialPrint("%d: audio", n);
     }
+#if defined(INTERNAL_MODULE_CRSF)
+    else if (crossfireTaskId == n) {
+      serialPrint("%d: crossfire", n);
+    }
+    else if (systemTaskId == n) {
+      serialPrint("%d: system", n);
+    }
+#endif
   }
   serialCrlf();
 

@@ -400,23 +400,6 @@ void startRegisterDialog(uint8_t module)
   POPUP_INPUT("", runPopupRegister);
 }
 
-void checkModelIdUnique(uint8_t moduleIdx)
-{
-  if (isModuleXJTD8(moduleIdx))
-    return;
-
-  char * warn_buf = reusableBuffer.moduleSetup.msg;
-
-  // cannot rely exactly on WARNING_LINE_LEN so using WARNING_LINE_LEN-2
-  size_t warn_buf_len = sizeof(reusableBuffer.moduleSetup.msg) - WARNING_LINE_LEN - 2;
-  if (!modelslist.isModelIdUnique(moduleIdx, warn_buf, warn_buf_len)) {
-    if (warn_buf[0] != 0) {
-      POPUP_WARNING(STR_MODELIDUSED);
-      SET_WARNING_INFO(warn_buf, sizeof(reusableBuffer.moduleSetup.msg), 0);
-    }
-  }
-}
-
 void onModelSetupBitmapMenu(const char * result)
 {
   if (result == STR_UPDATE_LIST) {

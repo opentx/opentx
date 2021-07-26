@@ -22,6 +22,10 @@
 #include "modelslist.h"
 #include "conversions/conversions.h"
 
+#if defined(EEPROM_SDCARD)
+ModelHeader modelHeaders[MAX_MODELS];
+#endif
+
 void getModelPath(char * path, const char * filename)
 {
   strcpy(path, STR_MODELS_PATH);
@@ -147,6 +151,7 @@ const char * loadModel(const char * filename, bool alarms)
     storageCheck(true);
     alarms = false;
   }
+
   else if (version < EEPROM_VER) {
     convertModelData(version);
   }
@@ -211,6 +216,9 @@ void storageReadAll()
 
   if (loadRadioSettings() != nullptr) {
     storageEraseAll(true);
+#if defined(RADIO_FAMILY_TBS)
+    bkregSetStatusFlag(STORAGE_ERASE_STATUS);
+#endif
   }
 
   for (uint8_t i = 0; languagePacks[i] != nullptr; i++) {

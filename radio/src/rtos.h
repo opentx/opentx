@@ -158,7 +158,7 @@ template<int SIZE>
   {
     return (uint32_t)(simuTimerMicros() / 1000);
   }
-  
+
 #elif defined(RTOS_COOS)
 #ifdef __cplusplus
   extern "C" {
@@ -201,6 +201,8 @@ template<int SIZE>
 
   #define RTOS_CREATE_TASK(taskId, task, name, stackStruct, stackSize, priority)   \
                                         taskId = CoCreateTask(task, NULL, priority, &stackStruct.stack[stackSize-1], stackSize)
+
+  #define RTOS_DEL_TASK(taskId) CoDelTask(taskId)
 
 #ifdef __cplusplus
   static inline void RTOS_CREATE_MUTEX(OS_MutexID &mutex)
@@ -248,13 +250,17 @@ template<int SIZE>
 
   static inline void RTOS_ISR_SET_FLAG(RTOS_FLAG_HANDLE flag)
   {
+  #if !defined(INTERNAL_MODULE_CRSF)
     CoEnterISR();
     CoSchedLock();
+  #endif
     isr_SetFlag(flag);
+  #if !defined(INTERNAL_MODULE_CRSF)
     CoSchedUnlock();
     CoExitISR();
+  #endif
   }
-  
+
 #ifdef __cplusplus
   template<int SIZE>
   class TaskStack
