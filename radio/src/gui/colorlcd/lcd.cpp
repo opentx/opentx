@@ -117,7 +117,7 @@ void DMACopyBitmap(uint16_t * dest, int destw, int desth, int x, int y, const ui
   }
 }
 
-void DMACopyAlphaBitmap(uint16_t * dest, int destw, int desth, int x, int y, const uint16_t * src, int srcw, int srch, int srcx, int srcy, int w, int h)
+void DMACopyAlphaBitmap(uint16_t * dest, bool destAlpha, int destw, int desth, int x, int y, const uint16_t * src, int srcw, int srch, int srcx, int srcy, int w, int h)
 {
 #if defined(LCD_VERTICAL_INVERT)
   x = destw - (x + w);
@@ -140,7 +140,7 @@ void DMACopyAlphaBitmap(uint16_t * dest, int destw, int desth, int x, int y, con
   }
 }
 
-void DMACopyAlphaMask(uint16_t * dest, int destw, int desth, int x, int y, const uint8_t * src, int srcw, int srch, int srcx, int srcy, int w, int h, uint16_t color)
+void DMACopyAlphaMask(uint16_t * dest, bool destAlpha, int destw, int desth, int x, int y, const uint8_t * src, int srcw, int srch, int srcx, int srcy, int w, int h, uint16_t color)
 {
 #if defined(LCD_VERTICAL_INVERT)
   x = destw - (x + w);
