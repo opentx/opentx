@@ -22,7 +22,7 @@
 #include <stdio.h>
 #include "opentx.h"
 #include "lua_api.h"
-#include "timers.h"
+#include "../timers.h"
 
 /*luadoc
 @function model.getInfo()

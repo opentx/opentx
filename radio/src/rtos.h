@@ -22,13 +22,14 @@
 #define _RTOS_H_
 
 #include "definitions.h"
+#include "board.h"
 
 #ifdef __cplusplus
 extern "C++" {
 #endif
 
 #if defined(SIMU)
-  #include <pthread.h>
+#include <pthread.h>
   #include <semaphore.h>
 
   #define SIMU_SLEEP_OR_EXIT_MS(x)       simuSleep(x)
@@ -98,9 +99,9 @@ extern "C++" {
   };
   #define RTOS_DEFINE_STACK(name, size) FakeTaskStack<size> name
 
-  #define TASK_FUNCTION(task)           void task(void *)
+  #define TASK_FUNCTION(task)           void* task(void *)
 
-  inline void RTOS_CREATE_TASK(pthread_t &taskId, void * task(void *), const char * name)
+  inline void RTOS_CREATE_TASK(pthread_t &taskId, void * (*task)(void *), const char * name)
   {
     pthread_create(&taskId, nullptr, task, nullptr);
 #ifdef __linux__
@@ -109,7 +110,7 @@ extern "C++" {
   }
 
 template<int SIZE>
-  inline void RTOS_CREATE_TASK(pthread_t &taskId, void * task(void *), const char * name, FakeTaskStack<SIZE> &, unsigned size = 0, unsigned priority = 0)
+inline void RTOS_CREATE_TASK(pthread_t &taskId, void * (*task)(void *), const char * name, FakeTaskStack<SIZE> &, unsigned size = 0, unsigned priority = 0)
   {
     UNUSED(size);
     UNUSED(priority);
@@ -135,7 +136,7 @@ template<int SIZE>
     return (uint32_t)(simuTimerMicros() / 1000);
   }
 
-#elif defined(RTOS_COOS)
+#elif defined(FREE_RTOS)
 #ifdef __cplusplus
   extern "C" {
 #endif
@@ -158,9 +159,7 @@ template<int SIZE>
     StaticSemaphore_t mutex_struct;
   } RTOS_MUTEX_HANDLE;
 
-
   typedef RTOS_MUTEX_HANDLE RTOS_FLAG_HANDLE;
-
 
   static inline void RTOS_START()
   {
@@ -196,8 +195,6 @@ template<int SIZE>
 
   #define RTOS_CREATE_TASK(h,task,name,stackStruct,stackSize,prio) \
     _RTOS_CREATE_TASK(&h,task,name,stackStruct.stack,stackSize,prio)
-
-
 
   static inline void _RTOS_CREATE_MUTEX(RTOS_MUTEX_HANDLE* h)
   {
@@ -310,23 +307,24 @@ template<int SIZE>
     return (RTOS_GET_TIME() * RTOS_MS_PER_TICK);
   }
 
-  #define RTOS_DEFINE_STACK(name, size) TaskStack<size> __ALIGNED(8) name // stack must be aligned to 8 bytes otherwise printf for %f does not work!
+  // stack must be aligned to 8 bytes otherwise printf for %f does not work!
+  #define RTOS_DEFINE_STACK(name, size) TaskStack<size> __ALIGNED(8) name
 
   #define TASK_FUNCTION(task)           void task(void *)
-  #define TASK_RETURN()                 return
+  #define TASK_RETURN()                 vTaskDelete(nullptr)
 
 #else // no RTOS
-  static inline void RTOS_START()
-  {
-  }
+static inline void RTOS_START()
+{
+}
 
-  static inline void RTOS_WAIT_MS(unsigned x)
-  {
-  }
+static inline void RTOS_WAIT_MS(unsigned x)
+{
+}
 
-  static inline void RTOS_WAIT_TICKS(unsigned x)
-  {
-  }
+static inline void RTOS_WAIT_TICKS(unsigned x)
+{
+}
 #endif  // RTOS type
 
 #ifdef __cplusplus

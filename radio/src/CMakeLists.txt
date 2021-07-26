@@ -528,7 +528,7 @@ if(NOT MSVC)
       endif()
     endif()
 
-    add_definitions(-DRTOS_COOS)
+    add_definitions(-DFREE_RTOS)
 
     add_executable(firmware ${SRC} ${FIRMWARE_HEADERS})
     link_libraries(firmware -lstdc++)
