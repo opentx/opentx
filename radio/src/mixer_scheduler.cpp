@@ -22,9 +22,6 @@
 #include "mixer_scheduler.h"
 
 #if !defined(SIMU)
-
-// Global trigger flag
-
 // Mixer schedule
 struct MixerSchedule {
 
@@ -96,8 +93,7 @@ void mixerSchedulerISRTrigger()
   configASSERT( mixerTaskId.rtos_handle != NULL );
 
   /* Notify the task that the transmission is complete. */
-  vTaskNotifyGiveFromISR( mixerTaskId.rtos_handle,
-                          &xHigherPriorityTaskWoken );
+  vTaskNotifyGiveFromISR( mixerTaskId.rtos_handle,&xHigherPriorityTaskWoken );
 
   /* If xHigherPriorityTaskWoken is now set to pdTRUE then a
      context switch should be performed to ensure the interrupt

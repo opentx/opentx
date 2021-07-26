@@ -1320,6 +1320,5 @@ void cliTask(void * pdata)
 
 void cliStart()
 {
-  RTOS_CREATE_TASK(cliTaskId, cliTask, "CLI", cliStack,
-                   CLI_STACK_SIZE, CLI_TASK_PRIO);
+  RTOS_CREATE_TASK(cliTaskId, cliTask, "CLI", cliStack, CLI_STACK_SIZE, CLI_TASK_PRIO);
 }

@@ -29,7 +29,7 @@ extern "C++" {
 #endif
 
 #if defined(SIMU)
-#include <pthread.h>
+  #include <pthread.h>
   #include <semaphore.h>
 
   #define SIMU_SLEEP_OR_EXIT_MS(x)       simuSleep(x)
@@ -181,12 +181,7 @@ inline void RTOS_CREATE_TASK(pthread_t &taskId, void * (*task)(void *), const ch
     vTaskDelay(x);
   }
 
-  static inline void _RTOS_CREATE_TASK(RTOS_TASK_HANDLE *h,
-                                       TaskFunction_t pxTaskCode,
-                                       const char *name,
-                                       StackType_t *const puxStackBuffer,
-                                       const uint32_t ulStackDepth,
-                                       UBaseType_t uxPriority)
+  static inline void _RTOS_CREATE_TASK(RTOS_TASK_HANDLE *h,TaskFunction_t pxTaskCode, const char *name, StackType_t *const puxStackBuffer, const uint32_t ulStackDepth, UBaseType_t uxPriority)
   {
     h->rtos_handle = xTaskCreateStatic(
         pxTaskCode, name, ulStackDepth, 0, uxPriority,
@@ -314,17 +309,17 @@ inline void RTOS_CREATE_TASK(pthread_t &taskId, void * (*task)(void *), const ch
   #define TASK_RETURN()                 vTaskDelete(nullptr)
 
 #else // no RTOS
-static inline void RTOS_START()
-{
-}
+  static inline void RTOS_START()
+  {
+  }
 
-static inline void RTOS_WAIT_MS(unsigned x)
-{
-}
+  static inline void RTOS_WAIT_MS(unsigned x)
+  {
+  }
 
-static inline void RTOS_WAIT_TICKS(unsigned x)
-{
-}
+  static inline void RTOS_WAIT_TICKS(unsigned x)
+  {
+  }
 #endif  // RTOS type
 
 #ifdef __cplusplus

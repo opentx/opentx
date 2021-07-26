@@ -22,7 +22,6 @@
 #include "mixer_scheduler.h"
 
 #if defined(INTMODULE_HEARTBEAT_GPIO)
-
 #include "FreeRTOSConfig.h"
 
 volatile HeartbeatCapture heartbeatCapture;
@@ -47,9 +46,7 @@ void init_intmodule_heartbeat()
   EXTI_InitStructure.EXTI_LineCmd = ENABLE;
   EXTI_Init(&EXTI_InitStructure);
 
-  NVIC_SetPriority(INTMODULE_HEARTBEAT_EXTI_IRQn,
-                   // Highest priority interrupt
-                   configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY);
+  NVIC_SetPriority(INTMODULE_HEARTBEAT_EXTI_IRQn, configLIBRARY_MAX_SYSCALL_INTERRUPT_PRIORITY);
 
   NVIC_EnableIRQ(INTMODULE_HEARTBEAT_EXTI_IRQn);
   heartbeatCapture.valid = true;
