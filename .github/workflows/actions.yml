@@ -12,12 +12,23 @@ jobs:
       matrix:
         target:
           - COMPANION
-          - ARM9X
-          - X9LITE
           - X7
+          - X9LITE
+          - X9LITES
           - XLITE
-          - X9
-          - COLORLCD
+          - XLITES
+          - T12
+          - TLITE
+          - TX12
+          - T8
+          - X9D
+          - X9DP
+          - X9DP2019
+          - TX16S
+          - T16
+          - T18
+          - X10
+          - X12S
     container:
       image: ghcr.io/raphaelcoeffic/opentx-commit-tests
       volumes:
