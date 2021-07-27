@@ -27,11 +27,14 @@
 extern int16_t ppmInput[MAX_TRAINER_CHANNELS];
 
 // Timer gets decremented in per10ms()
-#define PPM_IN_VALID_TIMEOUT 100 // 1s
+constexpr uint8_t PPM_IN_VALID_TIMEOUT = 100; // 1s
 extern uint8_t ppmInputValidityTimer;
 
 extern uint8_t currentTrainerMode;
-#define IS_TRAINER_INPUT_VALID() (ppmInputValidityTimer != 0)
+inline bool isTrainerInputValid()
+{
+  return ppmInputValidityTimer != 0;
+}
 
 void checkTrainerSignalWarning();
 void checkTrainerSettings();

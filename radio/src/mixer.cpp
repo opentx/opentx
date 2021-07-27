@@ -157,7 +157,7 @@ void applyExpos(int16_t * anas, uint8_t mode, uint8_t ovwrIdx, int16_t ovwrValue
       continue;
     if (ed->flightModes & (1<<mixerCurrentFlightMode))
       continue;
-    if (ed->srcRaw >= MIXSRC_FIRST_TRAINER && ed->srcRaw <= MIXSRC_LAST_TRAINER && !IS_TRAINER_INPUT_VALID())
+    if (ed->srcRaw >= MIXSRC_FIRST_TRAINER && ed->srcRaw <= MIXSRC_LAST_TRAINER && !isTrainerInputValid())
       continue;
     if (getSwitch(ed->swtch)) {
       int32_t v;
@@ -231,7 +231,7 @@ int16_t applyLimits(uint8_t channel, int32_t value)
   }
 #endif
 
-  if (isFunctionActive(FUNCTION_TRAINER_CHANNELS) && IS_TRAINER_INPUT_VALID()) {
+  if (isFunctionActive(FUNCTION_TRAINER_CHANNELS) && isTrainerInputValid()) {
     return ppmInput[channel] * 2;
   }
 
@@ -473,7 +473,7 @@ void evalInputs(uint8_t mode)
         v = 0;
       }
 
-      if (mode <= e_perout_mode_inactive_flight_mode && isFunctionActive(FUNCTION_TRAINER_STICK1+ch) && IS_TRAINER_INPUT_VALID()) {
+      if (mode <= e_perout_mode_inactive_flight_mode && isFunctionActive(FUNCTION_TRAINER_STICK1+ch) && isTrainerInputValid()) {
         // trainer mode
         TrainerMix* td = &g_eeGeneral.trainer.mix[ch];
         if (td->mode) {
@@ -670,7 +670,7 @@ void evalFlightModeMixes(uint8_t mode, uint8_t tick10ms)
 
 #define MIXER_LINE_DISABLE()   (mixCondition = true, mixEnabled = 0)
 
-      if (mixEnabled && md->srcRaw >= MIXSRC_FIRST_TRAINER && md->srcRaw <= MIXSRC_LAST_TRAINER && !IS_TRAINER_INPUT_VALID()) {
+      if (mixEnabled && md->srcRaw >= MIXSRC_FIRST_TRAINER && md->srcRaw <= MIXSRC_LAST_TRAINER && !isTrainerInputValid()) {
         MIXER_LINE_DISABLE();
       }
 
