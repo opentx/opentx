@@ -208,7 +208,7 @@ bool adcSingleRead()
 #endif
 
 #if defined(PCBX9E)
-  for (i=0; i <= ADC_DMA_MAX_LOOP; i++) {
+  for (i = 0; i <= ADC_DMA_MAX_LOOP; i++) {
     if (ADC_TRANSFER_COMPLETE() && ADC_EXT_TRANSFER_COMPLETE()) {
       break;
     }
@@ -216,7 +216,7 @@ bool adcSingleRead()
   ADC_DMA_Stream->CR &= ~DMA_SxCR_EN; // Disable DMA
   ADC_EXT_DMA_Stream->CR &= ~DMA_SxCR_EN; // Disable DMA
 #else
-  for (i=0; i <= ADC_DMA_MAX_LOOP; i++) {
+  for (i = 0; i <= ADC_DMA_MAX_LOOP; i++) {
     if (ADC_TRANSFER_COMPLETE()) {
       break;
     }
@@ -237,7 +237,7 @@ void adcRead()
 {
   uint16_t temp[NUM_ANALOGS] = { 0 };
 
-  for (int i=0; i<4; i++) {
+  for (int i = 0; i < 4; i++) {
     while (!adcSingleRead());
     for (uint8_t x=FIRST_ANALOG_ADC; x<NUM_ANALOGS; x++) {
       uint16_t val = adcValues[x];
