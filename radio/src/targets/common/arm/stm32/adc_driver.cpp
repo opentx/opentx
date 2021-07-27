@@ -205,7 +205,7 @@ void adcSingleRead()
 #endif
 
 #if defined(PCBX9E)
-  for (unsigned int i=0; i<10000; i++) {
+  while (true) {
     if (ADC_TRANSFER_COMPLETE() && ADC_EXT_TRANSFER_COMPLETE()) {
       break;
     }
@@ -213,7 +213,7 @@ void adcSingleRead()
   ADC_DMA_Stream->CR &= ~DMA_SxCR_EN; // Disable DMA
   ADC_EXT_DMA_Stream->CR &= ~DMA_SxCR_EN; // Disable DMA
 #else
-  for (unsigned int i = 0; i < 10000; i++) {
+  while (true) {
     if (ADC_TRANSFER_COMPLETE()) {
       break;
     }
