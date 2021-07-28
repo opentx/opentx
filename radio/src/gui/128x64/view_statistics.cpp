@@ -247,11 +247,11 @@ void menuStatisticsDebug(event_t event)
   y += FH;
 
   lcdDrawTextAlignedLeft(y, STR_FREE_STACK);
-  lcdDrawNumber(MENU_DEBUG_COL1_OFS, y, uxTaskGetStackHighWaterMark(menusTaskId.rtos_handle), LEFT);
+  lcdDrawNumber(MENU_DEBUG_COL1_OFS, y, RTOS_GET_TASK_STACK(menusTaskId), LEFT);
   lcdDrawText(lcdLastRightPos, y, "/");
-  lcdDrawNumber(lcdLastRightPos, y, uxTaskGetStackHighWaterMark(mixerTaskId.rtos_handle), LEFT);
+  lcdDrawNumber(lcdLastRightPos, y, RTOS_GET_TASK_STACK(mixerTaskId), LEFT);
   lcdDrawText(lcdLastRightPos, y, "/");
-  lcdDrawNumber(lcdLastRightPos, y, uxTaskGetStackHighWaterMark(audioTaskId.rtos_handle), LEFT);
+  lcdDrawNumber(lcdLastRightPos, y, RTOS_GET_TASK_STACK(audioTaskId), LEFT);
   y += FH;
 
 #if defined(DEBUG_LATENCY)
