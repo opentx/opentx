@@ -20,7 +20,6 @@
 
 #include "opentx.h"
 #include "stamp.h"
-#include "tasks.h"
 
 #define MENU_STATS_COLUMN1    (MENUS_MARGIN_LEFT + 120)
 #define MENU_STATS_COLUMN2    (LCD_W/2)
