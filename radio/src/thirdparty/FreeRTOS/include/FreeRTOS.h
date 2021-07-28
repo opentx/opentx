@@ -175,7 +175,7 @@
 #endif
 
 #ifndef INCLUDE_uxTaskGetStackHighWaterMark
-    #define INCLUDE_uxTaskGetStackHighWaterMark    0
+    #define INCLUDE_uxTaskGetStackHighWaterMark    1
 #endif
 
 #ifndef INCLUDE_uxTaskGetStackHighWaterMark2

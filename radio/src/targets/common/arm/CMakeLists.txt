@@ -236,7 +236,7 @@ if(CPU_TYPE STREQUAL STM32F4)
     ${RTOS_DIR}/portable/GCC/ARM_CM4F/port.c
     )
   include_directories(${RTOS_DIR}/portable/GCC/ARM_CM4F)
-elseif(CPU_TYPE STREQUAL STM32F2)
+else()
   set(FIRMWARE_SRC
     ${FIRMWARE_SRC}
     ${RTOS_DIR}/portable/GCC/ARM_CM3/port.c

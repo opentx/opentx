@@ -136,7 +136,10 @@ TASK_FUNCTION(mixerTask)
   s_pulses_paused = true;
 
   mixerSchedulerInit();
+
+#if !defined(PCBSKY9X)
   mixerSchedulerStart();
+#endif
 
   while (true) {
     for (int timeout = 0; timeout < MIXER_MAX_PERIOD; timeout += MIXER_FREQUENT_ACTIONS_PERIOD) {
@@ -152,8 +155,9 @@ TASK_FUNCTION(mixerTask)
     GPIO_ResetBits(EXTMODULE_TX_GPIO, EXTMODULE_TX_GPIO_PIN);
 #endif
 
-    // re-enable trigger
+#if !defined(PCBSKY9X)
     mixerSchedulerEnableTrigger();
+#endif
 
 #if defined(SIMU)
     if (pwrCheck() == e_power_off) {

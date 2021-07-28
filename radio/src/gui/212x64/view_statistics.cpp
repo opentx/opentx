@@ -197,11 +197,11 @@ void menuStatisticsDebug(event_t event)
 
   lcdDrawTextAlignedLeft(y, STR_FREE_STACK);
   lcdDrawText(MENU_DEBUG_COL1_OFS, y+1, "[M]", SMLSIZE);
-  lcdDrawNumber(lcdLastRightPos, y, menusStack.available(), LEFT);
+  lcdDrawNumber(lcdLastRightPos, y, uxTaskGetStackHighWaterMark(menusTaskId.rtos_handle), LEFT);
   lcdDrawText(lcdLastRightPos+2, y+1, "[X]", SMLSIZE);
-  lcdDrawNumber(lcdLastRightPos, y, mixerStack.available(), LEFT);
+  lcdDrawNumber(lcdLastRightPos, y, uxTaskGetStackHighWaterMark(mixerTaskId.rtos_handle), LEFT);
   lcdDrawText(lcdLastRightPos+2, y+1, "[A]", SMLSIZE);
-  lcdDrawNumber(lcdLastRightPos, y, audioStack.available(), LEFT);
+  lcdDrawNumber(lcdLastRightPos, y, uxTaskGetStackHighWaterMark(audioTaskId.rtos_handle), LEFT);
   lcdDrawText(lcdLastRightPos+2, y+1, "[I]", SMLSIZE);
   lcdDrawNumber(lcdLastRightPos, y, stackAvailable(), LEFT);
   y += FH;

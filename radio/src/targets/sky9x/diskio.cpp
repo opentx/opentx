@@ -95,7 +95,7 @@ int ff_req_grant (_SYNC_t mutex)
 
 void ff_rel_grant (_SYNC_t mutex)
 {
-  CoLeaveMutexSection(mutex);
+  RTOS_UNLOCK_MUTEX(mutex);
 }
 
 int ff_del_syncobj (_SYNC_t mutex)

@@ -24,6 +24,8 @@
 #include "i2c_driver.h"
 #endif
 
+uint32_t SystemCoreClock = 36000000;
+
 uint16_t ResetReason;
 uint32_t Master_frequency ;
 volatile uint8_t lcdLock;

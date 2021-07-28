@@ -20,6 +20,7 @@
 
 #include "opentx.h"
 #include "stamp.h"
+#include "tasks.h"
 
 #define MENU_STATS_COLUMN1    (MENUS_MARGIN_LEFT + 120)
 #define MENU_STATS_COLUMN2    (LCD_W/2)
@@ -146,11 +147,11 @@ bool menuStatsDebug(event_t event)
 
   lcdDrawText(MENUS_MARGIN_LEFT, y, STR_FREE_STACK);
   lcdDrawText(MENU_STATS_COLUMN1, y+1, "[Menus]", HEADER_COLOR|SMLSIZE);
-  lcdDrawNumber(lcdNextPos+5, y, menusStack.available(), LEFT);
+  lcdDrawNumber(lcdNextPos+5, y, uxTaskGetStackHighWaterMark(menusTaskId.rtos_handle), LEFT);
   lcdDrawText(lcdNextPos+20, y+1, "[Mix]", HEADER_COLOR|SMLSIZE);
-  lcdDrawNumber(lcdNextPos+5, y, mixerStack.available(), LEFT);
+  lcdDrawNumber(lcdNextPos+5, y, uxTaskGetStackHighWaterMark(mixerTaskId.rtos_handle), LEFT);
   lcdDrawText(lcdNextPos+20, y+1, "[Audio]", HEADER_COLOR|SMLSIZE);
-  lcdDrawNumber(lcdNextPos+5, y, audioStack.available(), LEFT);
+  lcdDrawNumber(lcdNextPos+5, y, uxTaskGetStackHighWaterMark(audioTaskId.rtos_handle), LEFT);
   y += FH;
 
 #if defined(DISK_CACHE) && defined(DEBUG)
