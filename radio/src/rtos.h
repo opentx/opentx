@@ -44,7 +44,13 @@ extern "C++" {
   extern uint64_t simuTimerMicros(void);
   extern uint8_t simuSleep(uint32_t ms);
 
-  static inline void RTOS_START()
+  // TODO return FakeStack size
+  static inline uint16_t RTOS_GET_TASK_STACK(pthread_t handle)
+  {
+    return 555;
+  }
+
+static inline void RTOS_START()
   {
   }
 
@@ -211,6 +217,13 @@ inline void RTOS_CREATE_TASK(pthread_t &taskId, void * (*task)(void *), const ch
   }
 
   #define RTOS_UNLOCK_MUTEX(handle) _RTOS_UNLOCK_MUTEX(&handle)
+
+  static inline uint16_t _RTOS_GET_TASK_STACK(RTOS_TASK_HANDLE* h)
+  {
+      return uxTaskGetStackHighWaterMark(h->rtos_handle);
+  }
+
+  #define RTOS_GET_TASK_STACK(handle) _RTOS_GET_TASK_STACK(&handle)
 
   //TODO: replace with FreeRTOS functions
   static inline uint32_t getStackAvailable(void * address, uint32_t size)

@@ -146,11 +146,11 @@ bool menuStatsDebug(event_t event)
 
   lcdDrawText(MENUS_MARGIN_LEFT, y, STR_FREE_STACK);
   lcdDrawText(MENU_STATS_COLUMN1, y+1, "[Menus]", HEADER_COLOR|SMLSIZE);
-  lcdDrawNumber(lcdNextPos+5, y, uxTaskGetStackHighWaterMark(menusTaskId.rtos_handle), LEFT);
+  lcdDrawNumber(lcdNextPos+5, y, RTOS_GET_TASK_STACK(menusTaskId), LEFT);
   lcdDrawText(lcdNextPos+20, y+1, "[Mix]", HEADER_COLOR|SMLSIZE);
-  lcdDrawNumber(lcdNextPos+5, y, uxTaskGetStackHighWaterMark(mixerTaskId.rtos_handle), LEFT);
+  lcdDrawNumber(lcdNextPos+5, y, RTOS_GET_TASK_STACK(mixerTaskId), LEFT);
   lcdDrawText(lcdNextPos+20, y+1, "[Audio]", HEADER_COLOR|SMLSIZE);
-  lcdDrawNumber(lcdNextPos+5, y, uxTaskGetStackHighWaterMark(audioTaskId.rtos_handle), LEFT);
+  lcdDrawNumber(lcdNextPos+5, y, RTOS_GET_TASK_STACK(audioTaskId), LEFT);
   y += FH;
 
 #if defined(DISK_CACHE) && defined(DEBUG)
