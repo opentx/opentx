@@ -1615,6 +1615,9 @@
   #define SPORT_UPDATE_PWR_GPIO_PIN     GPIO_Pin_14 // PA.14
   #define GPIO_SPORT_UPDATE_PWR_GPIO_ON  GPIO_SetBits
   #define GPIO_SPORT_UPDATE_PWR_GPIO_OFF GPIO_ResetBits
+#elif defined(PCBX9D) || defined(PCBX9D)
+  #define SPORT_MAX_BAUDRATE            250000 // < 400000 some x9d have sloopy inverted and cannot sustain 400k
+  #define SPORT_UPDATE_RCC_AHB1Periph   0
 #else
   #define SPORT_MAX_BAUDRATE            400000
   #define SPORT_UPDATE_RCC_AHB1Periph   0
