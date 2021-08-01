@@ -174,8 +174,8 @@ void processGhostTelemetryFrame()
 #if SPORT_MAX_BAUDRATE < 400000
       // Ghost telemetry frame are longer when in Ghost menu
       // If telem baudrate is only at 115k, and pulse interval is less than 3ms, pulse and telem will conflict
-      if (isModuleGhost(EXTERNAL_MODULE) && g_eeGeneral.telemetryBaudrate == GHST_TELEMETRY_RATE_115K
-      && menuHandlers[menuLevel] == menuGhostModuleConfig && update_interval < 3000) {
+      if (isModuleGhost(EXTERNAL_MODULE) && g_eeGeneral.telemetryBaudrate == GHST_TELEMETRY_RATE_115K &&
+          menuHandlers[menuLevel] == menuGhostModuleConfig && update_interval < 3000) {
         update_interval = 3000;
       }
 #endif
