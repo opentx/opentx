@@ -530,6 +530,10 @@ void audioTask(void * pdata)
 #endif
 
   if (!globalData.unexpectedShutdown) {
+    while (!s_mixer_first_run_done) { // wait until the first mixer run was completed
+      RTOS_WAIT_MS(25);
+    }
+    RTOS_WAIT_MS(25);
     AUDIO_HELLO();
   }
 
