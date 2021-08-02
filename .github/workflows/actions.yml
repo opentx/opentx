@@ -20,6 +20,7 @@ jobs:
           - COLORLCD
     container:
       image: ghcr.io/edgetx/edgetx-commit-tests
+      volumes:
         - ${{ github.workspace }}:/src
     steps:
       -
