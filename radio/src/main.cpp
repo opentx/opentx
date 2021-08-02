@@ -35,13 +35,16 @@ void onUSBConnectMenu(const char *result)
   else if (result == STR_USB_JOYSTICK) {
     setSelectedUsbMode(USB_JOYSTICK_MODE);
   }
-  else if (result == STR_USB_TELEMETRY) {
-    setSelectedUsbMode(USB_TELEMETRY_MIRROR_MODE);
-  }
+#if defined(DEBUG)
   else if (result == STR_USB_SERIAL) {
     setSelectedUsbMode(USB_SERIAL_MODE);
   }
+#else
+  else if (result == STR_USB_TELEMETRY) {
+    setSelectedUsbMode(USB_TELEMETRY_MIRROR_MODE);
+  }
 }
+#endif
 #endif
 
 void handleUsbConnection()

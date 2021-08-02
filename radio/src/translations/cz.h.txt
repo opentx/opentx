@@ -86,7 +86,11 @@
 #define TR_COUNTRYCODES                TR("US""JP""EU", "Amerika\0""Japonsko""Evropa\0 ")
 
 #define LEN_USBMODES                   TR("\007", "\011")
-#define TR_USBMODES                    TR("Zeptat\0""Joyst\0 ""SDkarta""Telem\0 ""Serial\0", "Zeptat se""Joystick\0""Úložiště\0""Telem\0   ""Serial\0  ")
+#if defined(DEBUG)
+#define TR_USBMODES                    TR("Zeptat\0""Joyst\0 ""SDkarta""Serial\0", "Zeptat se""Joystick\0""Úložiště\0""Serial\0  ")
+#else
+#define TR_USBMODES                    TR("Zeptat\0""Joyst\0 ""SDkarta""Telem\0 ", "Zeptat se""Joystick\0""Úložiště\0""Telem\0   ")
+#endif
 
 #define LEN_JACKMODES                  "\007"
 #define TR_JACKMODES                   "Zeptat\0""Audio\0 ""Trenér"

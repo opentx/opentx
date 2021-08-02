@@ -87,7 +87,11 @@
 #define TR_COUNTRYCODES        TR("US""JP""EU", "Amerikk""Japani\0""Euroopp")
 
 #define LEN_USBMODES           TR("\006", "\010")
-#define TR_USBMODES            TR("Ask\0  ""Joyst\0""SDCard""Telem\0""Serial", "Ask\0    ""Joystick""Storage\0""Telem\0  ""Serial\0 ")
+#if defined(DEBUG)
+#define TR_USBMODES            TR("Ask\0  ""Joyst\0""SDCard"""Serial", "Ask\0    ""Joystick""Storage\0""Serial\0 ")
+#else
+#define TR_USBMODES            TR("Ask\0  ""Joyst\0""SDCard""Telem\0", "Ask\0    ""Joystick""Storage\0""Telem\0  ")
+#endif
 
 #define LEN_JACKMODES                  "\007"
 #define TR_JACKMODES                   "Ask\0   ""Audio\0 ""Trainer"
