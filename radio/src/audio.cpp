@@ -531,10 +531,9 @@ void audioTask(void * pdata)
 
   if (!globalData.unexpectedShutdown) {
     while (!s_mixer_first_run_done) { // wait until the first mixer run was completed
-      RTOS_WAIT_MS(25);
+      RTOS_WAIT_MS(1);
     }
-    RTOS_WAIT_MS(25);
-    AUDIO_HELLO();
+    RTOS_WAIT_MS(100); // give it some time to update currentSpeakerVolume
   }
 
   while (1) {

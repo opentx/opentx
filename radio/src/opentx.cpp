@@ -2028,6 +2028,9 @@ void opentxInit()
 #endif
 
   referenceSystemAudioFiles();
+  if (!globalData.unexpectedShutdown) {
+    AUDIO_HELLO();
+  }
   audioQueue.start();
   BACKLIGHT_ENABLE();
 
