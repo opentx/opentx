@@ -19,8 +19,7 @@ jobs:
           - X9
           - COLORLCD
     container:
-      image: ghcr.io/raphaelcoeffic/opentx-commit-tests
-      volumes:
+      image: ghcr.io/edgetx/edgetx-commit-tests
         - ${{ github.workspace }}:/src
     steps:
       -
