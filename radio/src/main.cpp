@@ -45,6 +45,7 @@ void onUSBConnectMenu(const char *result)
   }
 }
 #endif
+}
 #endif
 
 void handleUsbConnection()

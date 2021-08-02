@@ -27,7 +27,7 @@ void processFrskyTelemetryData(uint8_t data)
   btPushByte(data);
 #endif
 
-#if defined(USB_SERIAL)
+#if !defined(DEBUG)
   if (getSelectedUsbMode() == USB_TELEMETRY_MIRROR_MODE) {
     usbSerialPutc(data);
   }
