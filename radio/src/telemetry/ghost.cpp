@@ -296,7 +296,7 @@ void processGhostTelemetryFrame()
 void processGhostTelemetryData(uint8_t data)
 {
 
-#if !defined(DEBUG)
+#if !defined(DEBUG) && defined(USB_SERIAL)
   if (getSelectedUsbMode() == USB_TELEMETRY_MIRROR_MODE) {
     usbSerialPutc(data);
   }

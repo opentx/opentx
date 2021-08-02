@@ -1664,7 +1664,11 @@ static int luaSerialWrite(lua_State * L)
     return 0;
 
 #if defined(USB_SERIAL)
+#if defined(DEBUG)
   if (getSelectedUsbMode() == USB_SERIAL_MODE) {
+#else
+  if (getSelectedUsbMode() == USB_TELEMETRY_MIRROR_MODE) {
+#endif
     size_t wr_len = len;
     const char* p = str;
     while(wr_len--) usbSerialPutc(*p++);
