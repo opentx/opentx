@@ -261,19 +261,6 @@ inline void RTOS_CREATE_TASK(pthread_t &taskId, void * (*task)(void *), const ch
 
   #define RTOS_WAIT_FLAG(flag,timeout) _RTOS_WAIT_FLAG(&flag,timeout)
 
-  static inline void _RTOS_ISR_SET_FLAG(RTOS_FLAG_HANDLE* flag)
-  {
-    BaseType_t xHigherPriorityTaskWoken = pdFALSE;
-
-    // Give semaphore back from ISR to trigger a task waiting for it
-    xSemaphoreGiveFromISR( flag->rtos_handle, &xHigherPriorityTaskWoken );
-
-    // If xHigherPriorityTaskWoken was set to true we should yield
-    portYIELD_FROM_ISR( xHigherPriorityTaskWoken );
-  }
-
-  #define RTOS_ISR_SET_FLAG(flag) _RTOS_ISR_SET_FLAG(&flag)
-
 #ifdef __cplusplus
   template<int SIZE>
   class TaskStack
