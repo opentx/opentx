@@ -72,7 +72,7 @@ extern uint32_t SystemCoreClock;
 
 /* Set the following definitions to 1 to include the API function, or zero
 to exclude the API function. */
-#define INCLUDE_vTaskDelete             1
+#define INCLUDE_vTaskDelete             0
 #define INCLUDE_vTaskSuspend            1
 #define INCLUDE_vTaskDelayUntil         1
 #define INCLUDE_vTaskDelay              1
