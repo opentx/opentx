@@ -573,8 +573,6 @@ void touchPanelRead()
     TRACE("GT911 ERROR: clearing XY register failed");
   }
 
-  TRACE("touch event = %s", event2str(touchState.event));
-
 //OW
 #define TE_WIPE_LOCK_X   40
 #define TE_WIPE_RANGE_X  90
