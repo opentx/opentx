@@ -216,10 +216,6 @@ void per10ms()
 
   outputTelemetryBuffer.per10ms();
 
-#if defined(HARDWARE_TOUCH)
-  checkTouchTmo();
-#endif
-
   heartbeat |= HEART_TIMER_10MS;
 }
 

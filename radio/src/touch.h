@@ -55,7 +55,6 @@ struct TouchState
   unsigned char extEvent;
   short _deltaX;
   short _deltaY;
-  tmr10ms_t _last;
 };
 
 constexpr uint8_t SLIDE_RANGE = 6;
