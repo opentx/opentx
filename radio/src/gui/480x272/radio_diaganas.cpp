@@ -62,6 +62,12 @@ bool menuRadioDiagAnalogs(event_t event)
   lcdDrawNumber(lcdNextPos + 4, MENU_CONTENT_TOP + 7 * FH, touchState.y);
   lcdDrawLine(touchState.x - 10, touchState.y - 8, touchState.x + 10, touchState.y + 8, SOLID);
   lcdDrawLine(touchState.x - 10, touchState.y + 8, touchState.x + 10, touchState.y - 8, SOLID);
+#if !defined(SIMU)
+    lcdDrawText(LCD_W/2, MENU_CONTENT_TOP + 7 * FH, "Touch GT911 FW ver:");
+    lcdDrawNumber(lcdNextPos + 4, MENU_CONTENT_TOP + 7 * FH, touchGT911fwver) ;
+    lcdDrawText(LCD_W/2, MENU_CONTENT_TOP + 8 * FH, "TSI2CEvents:");
+    lcdDrawNumber(lcdNextPos + 4, MENU_CONTENT_TOP + 8 * FH, touchGT911hiccups);
+#endif
 #endif
 
   return true;

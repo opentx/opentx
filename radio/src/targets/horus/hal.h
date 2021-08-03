@@ -712,7 +712,7 @@
 #define I2C_GPIO_AF                     GPIO_AF_I2C1
 #define I2C_SCL_GPIO_PinSource          GPIO_PinSource8
 #define I2C_SDA_GPIO_PinSource          GPIO_PinSource9
-#define I2C_SPEED                       400000
+#define I2C_CLK_RATE                    400000
 
 // Haptic
 #define HAPTIC_PWM

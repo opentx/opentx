@@ -258,6 +258,7 @@ set(TARGET_SRC
 if(HARDWARE_TOUCH)
   set(TARGET_SRC ${TARGET_SRC}
     tp_gt911.cpp
+    i2c_driver.cpp
     )
   add_definitions(-DHARDWARE_TOUCH)
 endif()
