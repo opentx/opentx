@@ -44,6 +44,10 @@ bool simu_running = false;
 
 uint32_t telemetryErrors = 0;
 
+#if !defined(HARDWARE_TRIMS)
+uint8_t  g_trimState = 0;
+#endif
+
 #if defined(STM32)
 GPIO_TypeDef gpioa, gpiob, gpioc, gpiod, gpioe, gpiof, gpiog, gpioh, gpioi, gpioj;
 TIM_TypeDef tim1, tim2, tim3, tim4, tim5, tim6, tim7, tim8, tim9, tim10;
@@ -586,6 +590,9 @@ uint32_t readTrims()
 #if defined(PCBXLITE)
   if (IS_SHIFT_PRESSED())
     result = ((result & 0x03) << 6) | ((result & 0x0c) << 2);
+#elif !defined(HARDWARE_TRIMS)
+  result = g_trimState;
+  g_trimState = 0;
 #endif
 
   return result;
@@ -638,6 +645,7 @@ void USART_Init(USART_TypeDef* USARTx, USART_InitTypeDef* USART_InitStruct) { }
 void USART_Cmd(USART_TypeDef* USARTx, FunctionalState NewState) { }
 void USART_ClearITPendingBit(USART_TypeDef*, unsigned short) { }
 void USART_SendData(USART_TypeDef* USARTx, uint16_t Data) { }
+void USART_OverSampling8Cmd(USART_TypeDef* USARTx, FunctionalState NewState) { }
 uint16_t USART_ReceiveData(USART_TypeDef*) { return 0; }
 void USART_DMACmd(USART_TypeDef* USARTx, uint16_t USART_DMAReq, FunctionalState NewState) { }
 void USART_ITConfig(USART_TypeDef* USARTx, uint16_t USART_IT, FunctionalState NewState) { }
@@ -751,6 +759,12 @@ uint16_t getBatteryVoltage()
 void boardOff()
 {
 }
+
+#if defined(RADIO_FAMILY_TBS)
+void intmoduleStop()
+{
+}
+#endif
 
 #if defined(PCBHORUS) || defined(PCBTARANIS)
 HardwareOptions hardwareOptions;
