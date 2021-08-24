@@ -771,6 +771,14 @@ PACK(struct TrainerData {
   #define ROTARY_MODE
 #endif
 
+#if defined(RADIO_FAMILY_TBS)
+  #define POWER_ON_SPEED    (1 + pwrOnSpeed)
+  #define POWER_OFF_SPEED   (1 + pwrOffSpeed)
+#else
+  #define POWER_ON_SPEED    (2 - pwrOnSpeed)
+  #define POWER_OFF_SPEED   (2 - pwrOffSpeed)
+#endif
+
 PACK(struct RadioData {
   NOBACKUP(uint8_t version);
   NOBACKUP(uint16_t variant);
@@ -851,20 +859,12 @@ PACK(struct RadioData {
 
   NOBACKUP(uint8_t getPwrOnSpeed() const
   {
-#if defined(RADIO_FAMILY_TBS)
-    return 1 + pwrOnSpeed;
-#else
-    return 2 - pwrOnSpeed;
-#endif
+    return POWER_ON_SPEED;
   });
 
   NOBACKUP(uint8_t getPwrOffSpeed() const
   {
-#if defined(RADIO_FAMILY_TBS)
-    return 1 + pwrOffSpeed;
-#else
-    return 2 - pwrOffSpeed;
-#endif
+    return POWER_OFF_SPEED;
   });
 });
 
