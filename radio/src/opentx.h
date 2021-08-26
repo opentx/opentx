@@ -260,7 +260,14 @@
 
 void memswap(void * a, void * b, uint8_t size);
 
-#if defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E) || defined(PCBHORUS)
+#if NUM_POTS == 0
+  #define POT_CONFIG(x)                (false)
+  #define IS_POT_MULTIPOS(x)           (false)
+  #define IS_POT_WITHOUT_DETENT(x)     (false)
+  #define IS_POT_AVAILABLE(x)          (false)
+  #define IS_POT_SLIDER_AVAILABLE(x)   (false)
+  #define IS_MULTIPOS_CALIBRATED(cal)  (false)
+#elif defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E) || defined(PCBHORUS)
   #define POT_CONFIG(x)                ((g_eeGeneral.potsConfig >> (2*((x)-POT1)))&0x03)
   #define IS_POT_MULTIPOS(x)           (IS_POT(x) && POT_CONFIG(x)==POT_MULTIPOS_SWITCH)
   #define IS_POT_WITHOUT_DETENT(x)     (IS_POT(x) && POT_CONFIG(x)==POT_WITHOUT_DETENT)
@@ -292,6 +299,12 @@ void memswap(void * a, void * b, uint8_t size);
   #define pwrOffPressed()              pwrPressed()
 #else
   #define pwrOffPressed()              (!pwrPressed())
+#endif
+
+#if defined(RADIO_FAMILY_TBS)
+  #define PWR_PRESS_SHUTDOWN_THRESHOD  300 // 3s
+#else
+  #define PWR_PRESS_SHUTDOWN_THRESHOD  0   // 0s
 #endif
 
 #define GET_LOWRES_POT_POSITION(i)     (getValue(MIXSRC_FIRST_POT+(i)) >> 4)
@@ -562,6 +575,8 @@ bool setTrimValue(uint8_t phase, uint8_t idx, int trim);
   #define ROTARY_ENCODER_GRANULARITY (1)
 #elif defined(RADIO_TX12)
   #define ROTARY_ENCODER_GRANULARITY (1)
+#elif  defined(RADIO_FAMILY_TBS)
+  #define ROTARY_ENCODER_GRANULARITY (1)
 #else
   #define ROTARY_ENCODER_GRANULARITY (2)
 #endif
@@ -661,6 +676,8 @@ void modelDefault(uint8_t id);
 #if defined(EEPROM)
 void checkModelIdUnique(uint8_t index, uint8_t module);
 uint8_t findNextUnusedModelId(uint8_t index, uint8_t module);
+#elif defined(EEPROM_SDCARD)
+void checkModelIdUnique(uint8_t module);
 #endif
 
 uint32_t hash(const void * ptr, uint32_t size);
@@ -938,6 +955,17 @@ enum AUDIO_SOUNDS {
   AU_STICK2_MIDDLE,
   AU_STICK3_MIDDLE,
   AU_STICK4_MIDDLE,
+#if !defined(HARDWARE_TRIMS)
+  AU_AILERON_TRIM,
+  AU_ELEVATOR_TRIM,
+  AU_THROTTLE_TRIM,
+  AU_RUDDER_TRIME,
+  AU_MAIN_MENU,
+#endif
+#if defined(RADIO_FAMILY_TBS)
+  AU_CATEGORY_ENABLED,
+  AU_CATEGORY_DISABLED,
+#endif
 #if defined(PCBTARANIS) || defined(PCBHORUS)
   AU_POT1_MIDDLE,
   AU_POT2_MIDDLE,
@@ -1258,6 +1286,13 @@ inline bool IS_TXBATT_WARNING()
   return g_vbat100mV <= g_eeGeneral.vBatWarn;
 }
 
+#if defined(BATT_CRITICAL_SHUTDOWN)
+inline bool IS_TXBATT_CRITICAL()
+{
+  return g_vbat100mV <= BATTERY_CRITICAL;
+}
+#endif
+
 enum TelemetryViews {
   TELEMETRY_CUSTOM_SCREEN_1,
   TELEMETRY_CUSTOM_SCREEN_2,
@@ -1365,7 +1400,29 @@ inline bool isAsteriskDisplayed()
   return globalData.unexpectedShutdown;
 }
 
+#if defined(INTERNAL_MODULE_CRSF)
+#include "./io/crsf/crsf_write.h"
+#include "./io/crsf/crsf_utilities.h"
+#include "./io/crsf/crossfire.h"
+#endif
+
 #if defined(ACCESS_LIB)
 #include "thirdparty/libACCESS/libAccess.h"
+#endif
+
+#define VBAT_MIN_OFFSET 90
+#define VBAT_MAX_OFFSET 120
+#define VBAT_MIN_DELTA (VBAT_MAX_OFFSET - VBAT_MIN_OFFSET - 1)
+
+#if defined(BATTERY_TYPE_FIXED)
+#define VBAT_MIN_ALLOWED  BATTERY_MIN
+#define VBAT_MAX_ALLOWED  BATTERY_MAX
+#define VBAT_WARNING_MIN_ALLOWED  BATTERY_MIN
+#define VBAT_WARNING_MAX_ALLOWED  (BATTERY_MIN + 5)
+#else
+#define VBAT_WARNING_MIN_ALLOWED  30  // 3.0v
+  #define VBAT_WARNING_MAX_ALLOWED  120 // 12v
+  #define VBAT_MIN_ALLOWED  30  // 3.0v
+  #define VBAT_MAX_ALLOWED  160 // 16v
 #endif
 

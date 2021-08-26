@@ -27,6 +27,10 @@
 enum usbMode {
   USB_UNSELECTED_MODE,
   USB_JOYSTICK_MODE,
+#if defined(RADIO_FAMILY_TBS)
+  USB_AGENT_MODE,
+  USB_CHARGING_MODE,
+#endif
   USB_MASS_STORAGE_MODE,
   USB_SERIAL_MODE,
 #if defined(USB_SERIAL)
@@ -45,6 +49,10 @@ int getSelectedUsbMode();
 void setSelectedUsbMode(int mode);
 
 void usbSerialPutc(uint8_t c);
+
+#if defined(RADIO_FAMILY_TBS)
+void agentHandler();
+#endif
 
 // Used in view_statistics.cpp
 #if defined(DEBUG) && !defined(BOOT)

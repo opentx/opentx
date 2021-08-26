@@ -22,6 +22,7 @@ set(PPM_LIMITS_SYMETRICAL YES)
 set(USB_SERIAL ON CACHE BOOL "Enable USB serial (CDC)")
 set(ROTARY_ENCODER YES)
 set(EXTERNAL_MODULE YES)
+add_definitions(-DHARDWARE_TRIMS)
 
 # for size report script
 set(CPU_TYPE_FULL STM32F429xI)

@@ -263,6 +263,13 @@ void menuStatisticsDebug(event_t event)
   y += FH;
 #endif
 
+#if defined(INTERNAL_MODULE_CRSF)
+  lcdDrawNumber(MENU_DEBUG_COL1_OFS, y, crossfireStack.available(), LEFT);
+  lcdDrawText(lcdLastRightPos, y, "/");
+  lcdDrawNumber(lcdLastRightPos, y, systemStack.available(), LEFT);
+  y += FH;
+#endif
+
   lcdDrawText(LCD_W/2, 7*FH+1, STR_MENUTORESET, CENTERED);
   lcdInvertLastLine();
 }

@@ -444,7 +444,7 @@
   #define AUX2_SERIAL_GPIO_PinSource_TX        GPIO_PinSource14
   #define AUX2_SERIAL_GPIO_PinSource_RX        GPIO_PinSource9
   #define AUX2_SERIAL_USART_IRQHandler         USART6_IRQHandler
-  #define AUX2_SERIAL_DMA_Stream_RX            DMA2_Stream6
+  #define AUX2_SERIAL_DMA_Stream_RX            DMA2_Stream1
   #define AUX2_SERIAL_DMA_Channel_RX           DMA_Channel_5
   #define AUX2_SERIAL_PWR_GPIO                 GPIOB
   #define AUX2_SERIAL_PWR_GPIO_PIN             GPIO_Pin_0  // PB.00
@@ -677,7 +677,7 @@
 
 #if defined(RADIO_TX16S)
 // Only slight noise with 868MHz > 1W, if complaints later remove and set AUDIO_UNMUTE_DELAY to 150
-  #undef AUDIO_MUTE_GPIO_PIN            
+  #undef AUDIO_MUTE_GPIO_PIN
 #endif
 
 // Touch
