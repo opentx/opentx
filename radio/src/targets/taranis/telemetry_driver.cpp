@@ -64,6 +64,7 @@ void telemetryPortInit(uint32_t baudrate, uint8_t mode)
 
   USART_DeInit(TELEMETRY_USART);
   USART_InitTypeDef USART_InitStructure;
+  USART_OverSampling8Cmd(TELEMETRY_USART, ENABLE);
   USART_InitStructure.USART_BaudRate = baudrate;
   if (mode & TELEMETRY_SERIAL_8E2) {
     USART_InitStructure.USART_WordLength = USART_WordLength_9b;
@@ -166,13 +167,15 @@ void telemetryPortInvertedInit(uint32_t baudrate)
   //TODO:
   // - handle conflict with HEARTBEAT disabled for trainer input...
   // - probably need to stop trainer input/output and restore after this is closed
-#if !defined(TELEMETRY_EXTI_REUSE_INTERRUPT_ROTARY_ENCODER) && !defined(TELEMETRY_EXTI_REUSE_INTERRUPT_INTMODULE_HEARTBEAT)
   NVIC_SetPriority(TELEMETRY_EXTI_IRQn, 0);
-  NVIC_EnableIRQ(TELEMETRY_EXTI_IRQn);
-#endif
+
+  // In case shared IRQ is not enabled
+  if ((NVIC->ISER[(uint32_t)((int32_t)TELEMETRY_EXTI_IRQn) >> 5] & (uint32_t)(1 << ((uint32_t)((int32_t)TELEMETRY_EXTI_IRQn) & (uint32_t)0x1F))) == 0) {
+    NVIC_EnableIRQ(TELEMETRY_EXTI_IRQn);
+  }
 }
 
-void telemetryPortInvertedRxBit()
+inline void telemetryPortInvertedRxBit()
 {
   if (rxBitCount < 8) {
     if (rxBitCount == 0) {
@@ -189,15 +192,14 @@ void telemetryPortInvertedRxBit()
     ++rxBitCount;
   }
   else if (rxBitCount == 8) {
+    // disable timer
+    TELEMETRY_TIMER->CR1 &= ~TIM_CR1_CEN;
 
     telemetryFifo.push(rxByte);
     rxBitCount = 0;
 
-    // disable timer
-    TELEMETRY_TIMER->CR1 &= ~TIM_CR1_CEN;
-
     // re-enable start bit interrupt
-    EXTI->IMR |= EXTI_IMR_MR6;
+    EXTI->IMR |= TELEMETRY_EXTI_LINE;
   }
 }
 
@@ -315,7 +317,6 @@ extern "C" void TELEMETRY_DMA_TX_IRQHandler(void)
   }
 }
 
-#define USART_FLAG_ERRORS (USART_FLAG_ORE | USART_FLAG_NE | USART_FLAG_FE | USART_FLAG_PE)
 extern "C" void TELEMETRY_USART_IRQHandler(void)
 {
   DEBUG_INTERRUPT(INT_TELEM_USART);
@@ -361,7 +362,7 @@ void check_telemetry_exti()
       TELEMETRY_TIMER->CR1 |= TIM_CR1_CEN;
     
       // disable start bit interrupt
-      EXTI->IMR &= ~EXTI_IMR_MR6;
+      EXTI->IMR &= ~TELEMETRY_EXTI_LINE;
     }
 
     EXTI_ClearITPendingBit(TELEMETRY_EXTI_LINE);

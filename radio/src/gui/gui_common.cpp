@@ -493,6 +493,10 @@ bool isAssignableFunctionAvailable(int function)
 #endif
     case FUNC_RESERVE5:
       return false;
+#if defined(RADIO_FAMILY_TBS)
+    case FUNC_SET_FAILSAFE:
+      return false;
+#endif
 
     default:
       return true;
@@ -599,6 +603,13 @@ bool isInternalModuleAvailable(int moduleType)
 {
   if (moduleType == MODULE_TYPE_NONE)
     return true;
+
+#if defined(INTERNAL_MODULE_CRSF)
+  if (moduleType == MODULE_TYPE_CROSSFIRE) {
+    if (g_model.moduleData[EXTERNAL_MODULE].type != MODULE_TYPE_CROSSFIRE)
+      return true;
+  }
+#endif
 
 #if defined(INTERNAL_MODULE_MULTI)
   if (moduleType == MODULE_TYPE_MULTIMODULE)
@@ -773,6 +784,11 @@ bool isTelemetryProtocolAvailable(int protocol)
 
 bool isTrainerModeAvailable(int mode)
 {
+#if defined(RADIO_FAMILY_TBS)
+  if (mode != TRAINER_MODE_MULTI)
+    return false;
+#endif
+
 #if defined(PCBTARANIS)
   if (IS_EXTERNAL_MODULE_ENABLED() && (mode == TRAINER_MODE_MASTER_SBUS_EXTERNAL_MODULE || mode == TRAINER_MODE_MASTER_CPPM_EXTERNAL_MODULE))
     return false;
@@ -799,7 +815,7 @@ bool isTrainerModeAvailable(int mode)
 #if defined(BLUETOOTH) && !defined(PCBX9E)
   if (g_eeGeneral.bluetoothMode != BLUETOOTH_TRAINER && (mode == TRAINER_MODE_MASTER_BLUETOOTH || mode == TRAINER_MODE_SLAVE_BLUETOOTH))
     return false;
-#elif !defined(PCBSKY9X)
+#elif !defined(PCBSKY9X) && !defined(RADIO_FAMILY_TBS)
   if (mode == TRAINER_MODE_MASTER_BLUETOOTH || mode == TRAINER_MODE_SLAVE_BLUETOOTH)
     return false;
 #endif

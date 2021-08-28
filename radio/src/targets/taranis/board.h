@@ -154,7 +154,7 @@ void extmoduleSendInvertedByte(uint8_t byte);
 
 #if defined(TRAINER_DETECT_GPIO)
   // Trainer detect is a switch on the jack
-  #define TRAINER_CONNECTED()           (GPIO_ReadInputDataBit(TRAINER_DETECT_GPIO, TRAINER_DETECT_GPIO_PIN) == Bit_RESET)
+  #define TRAINER_CONNECTED()           (GPIO_ReadInputDataBit(TRAINER_DETECT_GPIO, TRAINER_DETECT_GPIO_PIN) == TRAINER_DETECT_GPIO_PIN_VALUE)
 #elif defined(PCBXLITES)
   // Trainer is on the same connector than Headphones
   enum JackState
@@ -500,6 +500,7 @@ enum EnumSwitchesPositions
 
 void keysInit();
 uint32_t switchState(uint8_t index);
+static const uint8_t switchReOrder[] = {0, 1, 2, 3, 4, 5};
 uint32_t readKeys();
 uint32_t readTrims();
 #define TRIMS_PRESSED()                 (readTrims())
@@ -663,11 +664,13 @@ extern uint16_t adcValues[NUM_ANALOGS];
   #define BATTERY_WARN                  66 // 6.6V
   #define BATTERY_MIN                   67 // 6.7V
   #define BATTERY_MAX                   83 // 8.3V
+  #define BATTERY_TYPE_FIXED
 #elif defined(RADIO_T8) || defined(RADIO_TLITE)
   // 1S Li-ion /  Lipo, LDO for 3.3V
   #define BATTERY_WARN                  35 // 3.5V
   #define BATTERY_MIN                   34 // 3.4V
   #define BATTERY_MAX                   42 // 4.2V
+  #define BATTERY_TYPE_FIXED
 #else
   // NI-MH 7.2V
   #define BATTERY_WARN                  65 // 6.5V

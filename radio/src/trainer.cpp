@@ -24,6 +24,7 @@ int16_t ppmInput[MAX_TRAINER_CHANNELS];
 uint8_t ppmInputValidityTimer;
 uint8_t currentTrainerMode = 0xff;
 
+#if defined(TRAINER_GPIO)
 void checkTrainerSignalWarning()
 {
   enum {
@@ -34,14 +35,14 @@ void checkTrainerSignalWarning()
 
   static uint8_t ppmInputValidState = PPM_IN_IS_NOT_USED;
 
-  if (ppmInputValidityTimer && (ppmInputValidState == PPM_IN_IS_NOT_USED)) {
+  if (ppmInputValidityTimer && ppmInputValidState == PPM_IN_IS_NOT_USED) {
     ppmInputValidState = PPM_IN_IS_VALID;
   }
-  else if (!ppmInputValidityTimer && (ppmInputValidState == PPM_IN_IS_VALID)) {
+  else if (!ppmInputValidityTimer && ppmInputValidState == PPM_IN_IS_VALID) {
     ppmInputValidState = PPM_IN_INVALID;
     AUDIO_TRAINER_LOST();
   }
-  else if (ppmInputValidityTimer && (ppmInputValidState == PPM_IN_INVALID)) {
+  else if (ppmInputValidityTimer && ppmInputValidState == PPM_IN_INVALID) {
     ppmInputValidState = PPM_IN_IS_VALID;
     AUDIO_TRAINER_BACK();
   }
@@ -173,4 +174,5 @@ void checkTrainerSettings()
 #endif
   }
 }
+#endif
 #endif

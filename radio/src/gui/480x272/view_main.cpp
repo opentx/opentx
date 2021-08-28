@@ -76,7 +76,7 @@ void drawTrims(uint8_t flightMode, bool sliderdisplayed)
     }
     else {
       if (g_model.extendedTrims == 1) {
-        drawHorizontalSlider(xm, sliderdisplayed ? TRIM_H_Y : TRIM_H_Y + 22, 160, trim, TRIM_EXTENDED_MIN, TRIM_EXTENDED_MAX, 0, OPTION_SLIDER_EMPTY_BAR|OPTION_SLIDER_TRIM_BUTTON);
+        drawHorizontalSlider(xm, sliderdisplayed ? TRIM_H_Y : TRIM_H_Y + 20, 160, trim, TRIM_EXTENDED_MIN, TRIM_EXTENDED_MAX, 0, OPTION_SLIDER_EMPTY_BAR|OPTION_SLIDER_TRIM_BUTTON);
       }
       else {
         drawHorizontalSlider(xm, sliderdisplayed ? TRIM_H_Y : TRIM_H_Y + 20, 160, trim, TRIM_MIN, TRIM_MAX, 0, OPTION_SLIDER_EMPTY_BAR|OPTION_SLIDER_TRIM_BUTTON);

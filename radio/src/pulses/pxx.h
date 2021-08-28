@@ -29,7 +29,8 @@
 
 #define PXX2_LOWSPEED_BAUDRATE             230400
 #define PXX2_HIGHSPEED_BAUDRATE            450000
-#define PXX2_PERIOD                        4000/*us*/
+#define PXX2_NO_HEARTBEAT_PERIOD           4000/*us*/
+#define PXX2_MAX_HEARTBEAT_PERIOD          (9000 + 1000)/*us longest period (isrm/accst) + 1ms heartbeat backup*/
 #define PXX2_TOOLS_PERIOD                  1000/*us*/
 #define PXX2_FRAME_MAXLENGTH               64
 
@@ -37,12 +38,17 @@
 #define EXTMODULE_PXX1_SERIAL_PERIOD       4000/*us*/
 #define EXTMODULE_PXX1_SERIAL_BAUDRATE     420000
 
+#if defined(INTMODULE_HEARTBEAT)
+#define HEARTBEAT_BACKUP                    1000/*us*/
+#else
+#define HEARTBEAT_BACKUP                    0/*us*/
+#endif
 #if defined(PXX_FREQUENCY_HIGH)
   #define INTMODULE_PXX1_SERIAL_BAUDRATE   450000
-  #define INTMODULE_PXX1_SERIAL_PERIOD     4000/*us*/
+  #define INTMODULE_PXX1_SERIAL_PERIOD     4000/*us*/ + HEARTBEAT_BACKUP
 #else
   #define INTMODULE_PXX1_SERIAL_BAUDRATE   115200
-  #define INTMODULE_PXX1_SERIAL_PERIOD     9000/*us*/
+  #define INTMODULE_PXX1_SERIAL_PERIOD     9000/*us*/ + HEARTBEAT_BACKUP
 #endif
 
 // Used by the Sky9x family boards
