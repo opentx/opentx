@@ -74,9 +74,7 @@ enum MenuModelSetupItems {
   ITEM_MODEL_SETUP_CHECKLIST_DISPLAY,
   ITEM_MODEL_SETUP_THROTTLE_WARNING,
   ITEM_MODEL_SETUP_SWITCHES_WARNING1,
-#if NUM_SWITCHES > 5
   ITEM_MODEL_SETUP_SWITCHES_WARNING2,
-#endif
   ITEM_MODEL_SETUP_POTS_WARNING,
   ITEM_MODEL_SETUP_BEEP_CENTER,
   ITEM_MODEL_SETUP_USE_GLOBAL_FUNCTIONS,
@@ -202,7 +200,7 @@ enum MenuModelSetupItems {
 #endif
 
 #define MAX_SWITCH_PER_LINE             (getSwitchWarningsCount() > 5 ? 4 : 5)
-#if NUM_SWITCHES > 5
+#if defined(PCBXLITE)
   #define SW_WARN_ROWS                    uint8_t(NAVIGATION_LINE_BY_LINE|getSwitchWarningsCount()), uint8_t(getSwitchWarningsCount() > 4 ? TITLE_ROW : HIDDEN_ROW) // X-Lite needs an additional column for full line selection (<])
 #else
   #define SW_WARN_ROWS                    uint8_t(NAVIGATION_LINE_BY_LINE|(getSwitchWarningsCount()-1)), uint8_t(getSwitchWarningsCount() > MAX_SWITCH_PER_LINE ? TITLE_ROW : HIDDEN_ROW)
@@ -647,7 +645,6 @@ void menuModelSetup(event_t event)
         g_model.disableThrottleWarning = !editCheckBox(!g_model.disableThrottleWarning, MODEL_SETUP_2ND_COLUMN, y, STR_THROTTLEWARNING, attr, event);
         break;
 
-#if NUM_SWITCHES > 5
       case ITEM_MODEL_SETUP_SWITCHES_WARNING2:
         if (i==0) {
           if (CURSOR_MOVED_LEFT(event))
@@ -656,7 +653,6 @@ void menuModelSetup(event_t event)
             menuVerticalOffset++;
         }
         break;
-#endif
 
       case ITEM_MODEL_SETUP_SWITCHES_WARNING1:
 #if defined(PCBTARANIS)
@@ -785,7 +781,7 @@ void menuModelSetup(event_t event)
         break;
       }
 
-#if NUM_POTS > 0
+#if defined(PCBTARANIS)
       case ITEM_MODEL_SETUP_POTS_WARNING:
         lcdDrawTextAlignedLeft(y, STR_POTWARNING);
         lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, "\004""OFF\0""Man\0""Auto", g_model.potsWarnMode, (menuHorizontalPosition == 0) ? attr : 0);
