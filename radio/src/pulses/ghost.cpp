@@ -120,3 +120,4 @@ void setupPulsesGhost()
     moduleState[EXTERNAL_MODULE].counter = GHST_FRAME_CHANNEL;
   }
 }
+
