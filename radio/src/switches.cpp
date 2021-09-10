@@ -145,6 +145,11 @@ void getSwitchesPosition(bool startup)
   CHECK_2POS(SW_SA);
   CHECK_3POS(0, SW_SB);
   CHECK_3POS(1, SW_SC);
+#elif defined(RADIO_TPRO)
+  CHECK_3POS(0, SW_SA);
+  CHECK_3POS(1, SW_SB);
+  CHECK_2POS(SW_SC);
+  CHECK_2POS(SW_SD);
 #else
   CHECK_3POS(0, SW_SA);
   CHECK_3POS(1, SW_SB);
@@ -171,6 +176,13 @@ void getSwitchesPosition(bool startup)
   CHECK_2POS(SW_SD);
   CHECK_3POS(2, SW_SE);
   CHECK_3POS(3, SW_SF);
+#elif defined(RADIO_TPRO)
+  CHECK_2POS(SW_SE);
+  CHECK_2POS(SW_SF);
+  CHECK_2POS(SW_SG);
+  CHECK_2POS(SW_SH);
+  CHECK_2POS(SW_SI);
+  CHECK_2POS(SW_SJ);
 #elif defined(PCBX7)
   CHECK_3POS(3, SW_SD);
   CHECK_2POS(SW_SF);

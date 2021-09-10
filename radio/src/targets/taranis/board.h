@@ -333,7 +333,16 @@ enum EnumSwitches
   SW_SE,
   SW_SF,
   SW_SG,
-  SW_SH
+  SW_SH,
+  SW_SI,
+  SW_SJ,
+  SW_SK,
+  SW_SL,
+  SW_SM,
+  SW_SO,
+  SW_SP,
+  SW_SQ,
+  SW_SR,
 };
 #if defined(RADIO_TX12)
   #define IS_3POS(x)                      ((x) != SW_SA && (x) != SW_SD)
@@ -354,22 +363,22 @@ enum EnumSwitchesPositions
   SW_SD0,
   SW_SD1,
   SW_SD2,
-#if defined(PCBX9) || defined(PCBXLITES) || defined(PCBX9LITES) || defined(RADIO_TX12)
+#if defined(PCBX9) || defined(PCBXLITES) || defined(PCBX9LITES) || defined(RADIO_TX12) || defined(RADIO_TPRO)
   SW_SE0,
   SW_SE1,
   SW_SE2,
 #endif
-#if defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E) || defined(PCBX7) || defined(PCBXLITES) || defined(PCBX9LITES) || defined(RADIO_T8)
+#if defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E) || defined(PCBX7) || defined(PCBXLITES) || defined(PCBX9LITES) || defined(RADIO_T8) || defined(RADIO_TPRO)
   SW_SF0,
   SW_SF1,
   SW_SF2,
 #endif
-#if defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E) || defined(PCBX9LITES)
+#if defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E) || defined(PCBX9LITES) || defined(RADIO_TPRO)
   SW_SG0,
   SW_SG1,
   SW_SG2,
 #endif
-#if defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E) || (defined(PCBX7) && !defined(RADIO_TX12)) || defined(RADIO_T8)
+#if defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E) || (defined(PCBX7) && !defined(RADIO_TX12)) || defined(RADIO_T8) || defined(RADIO_TPRO)
   SW_SH0,
   SW_SH1,
   SW_SH2,
@@ -441,6 +450,14 @@ enum EnumSwitchesPositions
   #define STORAGE_NUM_SWITCHES          8
   #define DEFAULT_SWITCH_CONFIG         (SWITCH_2POS << 6) + (SWITCH_2POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0);
   #define DEFAULT_POTS_CONFIG           (0)
+#elif defined(RADIO_TPRO)
+  #define NUM_SWITCHES                  10
+  #define NUM_FUNCTIONS_SWITCHES        6
+  #define NUM_REGULAR_SWITCHES          (NUM_SWITCHES - NUM_FUNCTIONS_SWITCHES)
+  #define STORAGE_NUM_SWITCHES          10
+  #define DEFAULT_SWITCH_CONFIG         (SWITCH_2POS << 6) + (SWITCH_2POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0);
+  #define DEFAULT_FS_CONFIG             (SWITCH_TOGGLE << 10) + (SWITCH_TOGGLE << 8) + (SWITCH_TOGGLE << 6) + (SWITCH_TOGGLE << 4) + (SWITCH_TOGGLE << 2) + (SWITCH_TOGGLE << 0)
+#define DEFAULT_POTS_CONFIG           (POT_WITHOUT_DETENT << 0) + (POT_WITH_DETENT << 2); // S1 = pot without detent, S2 = pot with detent
 #elif defined(RADIO_FAMILY_JUMPER_T12)
   #define NUM_SWITCHES                  8
   #define STORAGE_NUM_SWITCHES          NUM_SWITCHES
@@ -914,6 +931,10 @@ void ledOff();
 void ledRed();
 void ledGreen();
 void ledBlue();
+#if defined(FUNCTION_SWITCHES)
+void fsLedOff(uint8_t);
+void fsLedOn(uint8_t);
+#endif
 
 // LCD driver
 #if defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E)
@@ -930,7 +951,7 @@ void ledBlue();
 #define IS_LCD_RESET_NEEDED()           true
 #define LCD_CONTRAST_MIN                10
 #define LCD_CONTRAST_MAX                30
-#if defined(RADIO_TX12) || defined(RADIO_FAMILY_JUMPER_T12)
+#if defined(RADIO_TX12)  || defined(RADIO_TPRO) || defined(RADIO_FAMILY_JUMPER_T12) || defined(RADIO_TPRO)
   #define LCD_CONTRAST_DEFAULT          25
 #else
   #define LCD_CONTRAST_DEFAULT          15

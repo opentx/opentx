@@ -169,6 +169,15 @@ void per10ms()
 
   readKeysAndTrims();
 
+#if defined(FUNCTION_SWITCHES)
+  for(uint8_t i = 0; i < NUM_FUNCTIONS_SWITCHES; i++) {
+    if (getValue(MIXSRC_FIRST_SWITCH + NUM_REGULAR_SWITCHES + i) == 1024)
+      fsLedOn(i);
+    else
+      fsLedOff(i);
+  }
+#endif
+
 #if defined(ROTARY_ENCODER_NAVIGATION)
   if (IS_ROTARY_ENCODER_NAVIGATION_ENABLE()) {
     static rotenc_t rePreviousValue;
@@ -431,6 +440,10 @@ void defaultInputs()
 void applyDefaultTemplate()
 {
   defaultInputs(); // calls storageDirty internally
+
+#if defined(FUNCTION_SWITCHES)
+  g_model.functionSwitchConfig = DEFAULT_FS_CONFIG;
+#endif
 
   for (int i=0; i<NUM_STICKS; i++) {
     MixData * mix = mixAddress(i);

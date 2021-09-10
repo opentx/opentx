@@ -573,6 +573,17 @@ PACK(struct CustomScreenData {
   #define SCRIPT_DATA
 #endif
 
+#if defined(FUNCTION_SWITCHES)
+  #define FUNCTION_SWITCHS_FIELDS \
+    uint16_t functionSwitchConfig;  \
+    uint16_t functionSwitchGroup; \
+    uint8_t functionSwitchSate;  \
+    char switchNames[NUM_FUNCTIONS_SWITCHES][LEN_SWITCH_NAME];
+#else
+  #define FUNCTION_SWITCHS_FIELDS
+#endif
+
+
 PACK(struct ModelData {
   ModelHeader header;
   TimerData timers[MAX_TIMERS];
@@ -634,6 +645,8 @@ PACK(struct ModelData {
   CUSTOM_SCREENS_DATA
 
   char modelRegistrationID[PXX2_LEN_REGISTRATION_ID];
+
+  FUNCTION_SWITCHS_FIELDS
 
 
   uint8_t getThrottleStickTrimSource() const
@@ -728,7 +741,7 @@ PACK(struct TrainerData {
     uint8_t  backlightColor; \
     swarnstate_t switchUnlockStates; \
     swconfig_t switchConfig; \
-    char switchNames[STORAGE_NUM_SWITCHES][LEN_SWITCH_NAME]; \
+    char switchNames[STORAGE_NUM_SWITCHES - NUM_FUNCTIONS_SWITCHES][LEN_SWITCH_NAME]; \
     char anaNames[NUM_STICKS+STORAGE_NUM_POTS+STORAGE_NUM_SLIDERS][LEN_ANA_NAME]; \
     MODEL_FILE_NAME_FIELD \
     BLUETOOTH_FIELDS
@@ -994,6 +1007,9 @@ static inline void check_struct()
 #elif defined(RADIO_MAMBO)
   CHKSIZE(RadioData, 865);
   CHKSIZE(ModelData, 6157);
+#elif defined(RADIO_TPRO)
+  CHKSIZE(RadioData, 841);
+  CHKSIZE(ModelData, 6180);
 #elif defined(PCBX7)
   CHKSIZE(RadioData, 864);
   CHKSIZE(ModelData, 6157);

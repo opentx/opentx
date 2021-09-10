@@ -47,6 +47,9 @@
 #elif defined(PCBXLITE)
   #define TR_POTS_VSRCRAW              "\310S1\0""\310S2\0"
   #define TR_SW_VSRCRAW                "\312SA\0""\312SB\0""\312SC\0""\312SD\0""\312SE\0""\312SF\0"
+#elif defined(RADIO_TPRO)
+  #define TR_POTS_VSRCRAW              "\310S1\0""\310S2\0"
+  #define TR_SW_VSRCRAW                "\312SA\0""\312SB\0""\312SC\0""\312SD\0""\312SW1""\312SW2""\312SW3""\312SW4""\312SW5""\312SW6"
 #elif defined(RADIO_FAMILY_JUMPER_T12)
   #define TR_POTS_VSRCRAW              "\310S1\0""\310S2\0"
   #define TR_SW_VSRCRAW                "\312SA\0""\312SB\0""\312SC\0""\312SD\0""\312SG\0""\312SH\0""\312SI\0""\312SJ\0"
@@ -153,3 +156,6 @@
 
 #define LEN_AFHDS3_POWERS              "\006"
 #define TR_AFHDS3_POWERS               "25 mW\0""100 mW""500 mW""1 W\0  ""2 W\0  "
+
+#define LEN_FSGROUPS                    "\001"
+#define TR_FSGROUPS                     "-""1""2""3"

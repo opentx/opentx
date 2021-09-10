@@ -36,7 +36,7 @@ uint8_t g_moduleIdx;
 uint8_t getSwitchWarningsCount()
 {
   uint8_t count = 0;
-  for (int i=0; i<NUM_SWITCHES; ++i) {
+  for (int i=0; i<NUM_SWITCHES - NUM_FUNCTIONS_SWITCHES; ++i) {
     if (SWITCH_WARNING_ALLOWED(i)) {
       ++count;
     }
@@ -62,6 +62,15 @@ enum MenuModelSetupItems {
   ITEM_MODEL_SETUP_TIMER3_PERSISTENT,
   ITEM_MODEL_SETUP_TIMER3_MINUTE_BEEP,
   ITEM_MODEL_SETUP_TIMER3_COUNTDOWN_BEEP,
+#if defined(FUNCTION_SWITCHES)
+  ITEM_MODEL_SETUP_LABEL,
+  ITEM_MODEL_SETUP_SW1,
+  ITEM_MODEL_SETUP_SW2,
+  ITEM_MODEL_SETUP_SW3,
+  ITEM_MODEL_SETUP_SW4,
+  ITEM_MODEL_SETUP_SW5,
+  ITEM_MODEL_SETUP_SW6,
+#endif
   ITEM_MODEL_SETUP_EXTENDED_LIMITS,
   ITEM_MODEL_SETUP_EXTENDED_TRIMS,
   ITEM_MODEL_SETUP_DISPLAY_TRIMS,
@@ -255,6 +264,12 @@ inline uint8_t MODULE_SUBTYPE_ROWS(int moduleIdx)
   #define EXTRA_MODULE_ROWS
 #endif
 
+#if defined(FUNCTION_SWITCHES)
+  #define FUNCTION_SWITCHES_ROWS       READONLY_ROW, NAVIGATION_LINE_BY_LINE|2, NAVIGATION_LINE_BY_LINE|2, NAVIGATION_LINE_BY_LINE|2, NAVIGATION_LINE_BY_LINE|2, NAVIGATION_LINE_BY_LINE|2, NAVIGATION_LINE_BY_LINE|2,
+#else
+  #define FUNCTION_SWITCHES_ROWS
+#endif
+
 #define TRAINER_CHANNELS_ROW           (IS_SLAVE_TRAINER() ? (IS_BLUETOOTH_TRAINER() ? (uint8_t)0 : (uint8_t)1) : HIDDEN_ROW)
 #define TRAINER_PPM_PARAMS_ROW         (g_model.trainerData.mode == TRAINER_MODE_SLAVE ? (uint8_t)2 : HIDDEN_ROW)
 #define TRAINER_BLUETOOTH_M_ROW        ((bluetooth.distantAddr[0] == '\0' || bluetooth.state == BLUETOOTH_STATE_CONNECTED) ? (uint8_t)0 : (uint8_t)1)
@@ -419,6 +434,7 @@ void menuModelSetup(event_t event)
     HEADER_LINE_COLUMNS
     0,
     TIMERS_ROWS,
+    FUNCTION_SWITCHES_ROWS
     0, // Extended limits
     1, // Extended trims
     0, // Show trims
@@ -576,7 +592,41 @@ void menuModelSetup(event_t event)
         timer->persistent = editChoice(MODEL_SETUP_2ND_COLUMN, y, STR_PERSISTENT, STR_VPERSISTENT, timer->persistent, 0, 2, attr, event);
         break;
       }
+#if defined(FUNCTION_SWITCHES)
 
+      case ITEM_MODEL_SETUP_LABEL:
+        lcdDrawTextAlignedLeft(y, "Function Switches");
+        break;
+
+      case ITEM_MODEL_SETUP_SW1:
+      case ITEM_MODEL_SETUP_SW2:
+      case ITEM_MODEL_SETUP_SW3:
+      case ITEM_MODEL_SETUP_SW4:
+      case ITEM_MODEL_SETUP_SW5:
+      case ITEM_MODEL_SETUP_SW6:
+      {
+        int index = k - ITEM_MODEL_SETUP_SW1;
+        int config = FSWITCH_CONFIG(index);
+        lcdDrawTextAtIndex(INDENT_WIDTH, y, STR_VSRCRAW, MIXSRC_FIRST_SWITCH + NUM_REGULAR_SWITCHES - MIXSRC_Rud + index + 1, menuHorizontalPosition < 0 ? attr : 0);
+        if (ZEXIST(g_model.switchNames[index]) || (attr && s_editMode > 0 && menuHorizontalPosition == 0))
+          editName(30, y, g_model.switchNames[index], LEN_SWITCH_NAME, event, menuHorizontalPosition == 0 ? attr : 0);
+        else
+          lcdDrawMMM(300, y, menuHorizontalPosition == 0 ? attr : 0);
+        config = editChoice(30 + 5*FW, y, "", STR_SWTYPES, config, SWITCH_NONE, SWITCH_2POS, menuHorizontalPosition == 1 ? attr : 0, event);
+        if (attr && checkIncDec_Ret) {
+          swconfig_t mask = (swconfig_t)0x03 << (2*index);
+          g_model.functionSwitchConfig = (g_model.functionSwitchConfig & ~mask) | ((swconfig_t(config) & 0x03) << (2*index));
+        }
+
+        config = FSWITCH_GROUP(index);
+        config = editChoice(30 + 15*FW, y, "", STR_FSGROUPS, config, 0, 3, menuHorizontalPosition == 2 ? attr : 0, event);
+        if (attr && checkIncDec_Ret && menuHorizontalPosition == 2) {
+          swconfig_t mask = (swconfig_t) 0x03 << (2 * index);
+          g_model.functionSwitchGroup = (g_model.functionSwitchGroup & ~mask) | ((swconfig_t(config) & 0x03) << (2 * index));
+        }
+        break;
+      }
+#endif
       case ITEM_MODEL_SETUP_EXTENDED_LIMITS:
         ON_OFF_MENU_ITEM(g_model.extendedLimits, MODEL_SETUP_2ND_COLUMN, y, STR_ELIMITS, attr, event);
         break;
@@ -705,7 +755,7 @@ void menuModelSetup(event_t event)
           }
 
           int current = 0;
-          for (int i = 0; i < NUM_SWITCHES; i++) {
+          for (int i = 0; i < NUM_SWITCHES - NUM_FUNCTIONS_SWITCHES; i++) {
             if (SWITCH_WARNING_ALLOWED(i)) {
               div_t qr = div(current, MAX_SWITCH_PER_LINE);
               if (!READ_ONLY() && event==EVT_KEY_BREAK(KEY_ENTER) && attr && l_posHorz == current && old_posHorz >= 0) {
