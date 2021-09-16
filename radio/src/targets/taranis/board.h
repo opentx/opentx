@@ -456,8 +456,9 @@ enum EnumSwitchesPositions
   #define NUM_REGULAR_SWITCHES          (NUM_SWITCHES - NUM_FUNCTIONS_SWITCHES)
   #define STORAGE_NUM_SWITCHES          10
   #define DEFAULT_SWITCH_CONFIG         (SWITCH_2POS << 6) + (SWITCH_2POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0);
-  #define DEFAULT_FS_CONFIG             (SWITCH_TOGGLE << 10) + (SWITCH_TOGGLE << 8) + (SWITCH_TOGGLE << 6) + (SWITCH_TOGGLE << 4) + (SWITCH_TOGGLE << 2) + (SWITCH_TOGGLE << 0)
-#define DEFAULT_POTS_CONFIG           (POT_WITHOUT_DETENT << 0) + (POT_WITH_DETENT << 2); // S1 = pot without detent, S2 = pot with detent
+  #define DEFAULT_FS_CONFIG             (SWITCH_2POS << 10) + (SWITCH_2POS << 8) + (SWITCH_2POS << 6) + (SWITCH_2POS << 4) + (SWITCH_2POS << 2) + (SWITCH_2POS << 0)
+  #define DEFAULT_FS_GROUPS             (1 << 10) + (1 << 8) + (1 << 6) + (1 << 4) + (1 << 2) + (1 << 0)  // Set all FS to group 1 to act like a 6pos
+  #define DEFAULT_POTS_CONFIG             (POT_WITHOUT_DETENT << 0) + (POT_WITH_DETENT << 2); // S1 = pot without detent, S2 = pot with detent
 #elif defined(RADIO_FAMILY_JUMPER_T12)
   #define NUM_SWITCHES                  8
   #define STORAGE_NUM_SWITCHES          NUM_SWITCHES
@@ -513,6 +514,10 @@ enum EnumSwitchesPositions
   #define DEFAULT_SLIDERS_CONFIG        (SLIDER_WITH_DETENT << 1) + (SLIDER_WITH_DETENT << 0)
 #endif
 
+#if !defined(NUM_FUNCTIONS_SWITCHES)
+  #define NUM_FUNCTIONS_SWITCHES        0
+#endif
+
 #define STORAGE_NUM_SWITCHES_POSITIONS  (STORAGE_NUM_SWITCHES * 3)
 
 void keysInit();
@@ -520,6 +525,14 @@ uint32_t switchState(uint8_t index);
 static const uint8_t switchReOrder[] = {0, 1, 2, 3, 4, 5};
 uint32_t readKeys();
 uint32_t readTrims();
+#if defined(FUNCTION_SWITCHES)
+extern uint8_t fsPreviousState;
+void evalFunctionSwitches();
+void setFSStartupPosition();
+uint8_t getFSLogicalState(uint8_t index);
+uint8_t getFSPhysicalState(uint8_t index);
+#endif
+
 #define TRIMS_PRESSED()                 (readTrims())
 #define KEYS_PRESSED()                  (readKeys())
 

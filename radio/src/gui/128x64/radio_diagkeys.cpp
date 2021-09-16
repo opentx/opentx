@@ -87,6 +87,16 @@ void menuRadioDiagKeys(event_t event)
 #endif
   }
 
+#if defined(FUNCTION_SWITCHES) && defined(DEBUG)
+  lcdDrawText(LCD_W / 2 , LCD_H - 2 * FH, "Phys");
+  lcdDrawText(LCD_W / 2 , LCD_H - 1 * FH, "Log");
+
+  for (uint8_t i = 0; i < NUM_FUNCTIONS_SWITCHES; i++) {
+    lcdDrawNumber(LCD_W / 2 + 20 + (i + 1) * FW , LCD_H - 2 * FH, getFSPhysicalState(i));
+    lcdDrawNumber(LCD_W / 2 + 20 + (i + 1) * FW , LCD_H - 1 * FH, getFSLogicalState(i));
+  }
+#endif
+
 #if defined(ROTARY_ENCODER_NAVIGATION)
   coord_t y = LCD_H - FH - 1;
   lcdDrawText(0, y, STR_ROTARY_ENCODER);

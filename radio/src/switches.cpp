@@ -67,6 +67,91 @@ uint8_t   potsPos[NUM_XPOTS];
 #define SWITCH_POSITION(sw)  (switchesPos & ((MASK_CFN_TYPE)1<<(sw)))
 #define POT_POSITION(sw)     ((potsPos[(sw)/XPOTS_MULTIPOS_COUNT] & 0x0f) == ((sw) % XPOTS_MULTIPOS_COUNT))
 
+#if defined(FUNCTION_SWITCHES)
+// Non pushed : SWSRC_Sx0 = -1024 = Sx(up) = state 0
+// Pushed : SWSRC_Sx2 = +1024 = Sx(down) = state 1
+
+enum fsStartPositionType {
+  FS_START_UP,
+  FS_START_DOWN,
+  FS_START_PREVIOUS
+};
+
+uint8_t fsPreviousState = 0;
+
+void setFSStartupPosition()
+{
+  for (uint8_t i = 0; i < NUM_FUNCTIONS_SWITCHES; i++) {
+    uint8_t startPos = (g_model.functionSwitchStartState >> 2 * i) & 0x03;
+    switch(startPos) {
+      case FS_START_DOWN:
+        g_model.functionSwitchLogicalSate &= ~(1 << i);   // clear state
+        break;
+
+      case FS_START_UP:
+        g_model.functionSwitchLogicalSate |= 1 << i;
+        break;
+
+      case FS_START_PREVIOUS:
+      default:
+        // Do nothing, use existing g_model.functionSwitchLogicalSate value
+        break;
+    }
+  }
+}
+
+uint8_t getFSLogicalState(uint8_t index)
+{
+  return (uint8_t )(bfSingleBitGet(g_model.functionSwitchLogicalSate, index) >> (index));
+}
+
+uint8_t getFSPhysicalState(uint8_t index)
+{
+  return switchState((index + NUM_REGULAR_SWITCHES) * 3) ? 0 : 1;
+}
+
+uint8_t getFSPreviousPhysicalState(uint8_t index)
+{
+  return (uint8_t )(bfSingleBitGet(fsPreviousState, index) >> (index));
+}
+
+void evalFunctionSwitches()
+{
+  for (uint8_t i = 0; i < NUM_FUNCTIONS_SWITCHES; i++) {
+    if (FSWITCH_CONFIG(i) == SWITCH_NONE) {
+      fsLedOff(i);
+      continue;
+    }
+
+    uint8_t physicalState = getFSPhysicalState(i);
+    if (physicalState != getFSPreviousPhysicalState(i)) {      // FS was moved
+      if (FSWITCH_CONFIG(i) == SWITCH_2POS && physicalState == 0) {
+        g_model.functionSwitchLogicalSate ^= 1 << i;   // Toggle bit
+      }
+      else if (FSWITCH_CONFIG(i) == SWITCH_TOGGLE) {
+        g_model.functionSwitchLogicalSate ^= (-physicalState ^ g_model.functionSwitchLogicalSate) & (1 << i);   // Set bit to switch value
+      }
+      if (FSWITCH_GROUP(i) && physicalState == 0) {    // switch is in a group, other in group need to be turned off
+        for (uint8_t j = 0; j < NUM_FUNCTIONS_SWITCHES; j++) {
+          if (i ==  j)
+            continue;
+          if (FSWITCH_GROUP(j) == FSWITCH_GROUP(i)) {
+            g_model.functionSwitchLogicalSate &= ~(1 << j);   // clear state
+          }
+        }
+      }
+      fsPreviousState ^= 1 << i;    // Toggle state
+      storageDirty(EE_MODEL);
+    }
+
+    if (getFSLogicalState(i))
+      fsLedOn(i);
+    else
+      fsLedOff(i);
+  }
+}
+#endif
+
 div_t switchInfo(int switchPosition)
 {
   return div(switchPosition-SWSRC_FIRST_SWITCH, 3);
@@ -543,6 +628,7 @@ void evalLogicalSwitches(bool isCurrentFlightmode)
 }
 
 swarnstate_t switches_states = 0;
+uint8_t fsswitches_states = 0;
 swsrc_t getMovedSwitch()
 {
   static tmr10ms_t s_move_last_time = 0;
@@ -550,7 +636,7 @@ swsrc_t getMovedSwitch()
 
 #if defined(PCBTARANIS) || defined(PCBHORUS)
   // Switches
-  for (int i = 0; i < NUM_SWITCHES; i++) {
+  for (int i = 0; i < NUM_SWITCHES - NUM_FUNCTIONS_SWITCHES; i++) {
     if (SWITCH_EXISTS(i)) {
       swarnstate_t mask = ((swarnstate_t) 0x03 << (i * 2));
       uint8_t prev = (switches_states & mask) >> (i * 2);
@@ -561,6 +647,20 @@ swsrc_t getMovedSwitch()
       }
     }
   }
+
+#if defined(FUNCTION_SWITCHES)
+  for (int i = 0; i < NUM_FUNCTIONS_SWITCHES; i++) {
+    if (FSWITCH_CONFIG(i) != SWITCH_NONE) {
+      auto prev = (uint8_t )(bfSingleBitGet(fsswitches_states, i) >> (i));
+      uint8_t next = getFSLogicalState(i);
+      if (prev != next) {
+        switches_states ^= (-next ^ switches_states) & (1 << i);
+        result = (3 * (i + NUM_REGULAR_SWITCHES)) + next;
+      }
+    }
+  }
+#endif
+
 #if NUM_XPOTS > 0
   // Multipos
   for (int i = 0; i < NUM_XPOTS; i++) {

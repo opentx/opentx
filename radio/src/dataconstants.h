@@ -820,11 +820,15 @@ enum MixSources {
 static_assert(MIXSRC_FIRST_LOGICAL_SWITCH == MIXSRC_FIRST_SWITCH + STORAGE_NUM_SWITCHES, "Wrong switches definition in MIXSRC list");
 #endif
 
-#define MIXSRC_FIRST        (MIXSRC_NONE + 1)
-#define MIXSRC_LAST         MIXSRC_LAST_CH
-#define MIXSRC_LAST_SWITCH  (MIXSRC_FIRST_SWITCH + STORAGE_NUM_SWITCHES - 1)
-#define INPUTSRC_FIRST      MIXSRC_Rud
-#define INPUTSRC_LAST       MIXSRC_LAST_TELEM
+#define MIXSRC_FIRST                (MIXSRC_NONE + 1)
+#define MIXSRC_LAST                 MIXSRC_LAST_CH
+#define MIXSRC_LAST_SWITCH          (MIXSRC_FIRST_SWITCH + STORAGE_NUM_SWITCHES - 1)
+#define INPUTSRC_FIRST              MIXSRC_Rud
+#define INPUTSRC_LAST               MIXSRC_LAST_TELEM
+#if defined(FUNCTION_SWITCHES)
+#define MIXSRC_LAST_REGULAR_SWITCH  (MIXSRC_FIRST_SWITCH + NUM_REGULAR_SWITCHES - 1)
+#define MIXSRC_FIRST_FS_SWITCH      (MIXSRC_LAST_REGULAR_SWITCH + 1)
+#endif
 
 enum BacklightMode {
   e_backlight_mode_off  = 0,

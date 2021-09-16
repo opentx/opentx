@@ -336,6 +336,10 @@ enum Analogs {
 #define STICKS_PWM_ENABLED()            false
 #endif
 
+#if !defined(NUM_FUNCTIONS_SWITCHES)
+  #define NUM_FUNCTIONS_SWITCHES          0
+#endif
+
 PACK(typedef struct {
   uint8_t pcbrev:4;
   uint8_t sticksPwmDisabled:1;

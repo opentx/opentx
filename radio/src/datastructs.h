@@ -573,11 +573,12 @@ PACK(struct CustomScreenData {
   #define SCRIPT_DATA
 #endif
 
-#if defined(FUNCTION_SWITCHES)
+#if defined(FUNCTION_SWITCHES) && NUM_FUNCTIONS_SWITCHES < 8
   #define FUNCTION_SWITCHS_FIELDS \
     uint16_t functionSwitchConfig;  \
     uint16_t functionSwitchGroup; \
-    uint8_t functionSwitchSate;  \
+    uint16_t functionSwitchStartState; \
+    uint8_t functionSwitchLogicalSate;  \
     char switchNames[NUM_FUNCTIONS_SWITCHES][LEN_SWITCH_NAME];
 #else
   #define FUNCTION_SWITCHS_FIELDS
@@ -1009,7 +1010,7 @@ static inline void check_struct()
   CHKSIZE(ModelData, 6157);
 #elif defined(RADIO_TPRO)
   CHKSIZE(RadioData, 841);
-  CHKSIZE(ModelData, 6180);
+  CHKSIZE(ModelData, 6182);
 #elif defined(PCBX7)
   CHKSIZE(RadioData, 864);
   CHKSIZE(ModelData, 6157);

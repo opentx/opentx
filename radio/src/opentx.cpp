@@ -170,12 +170,7 @@ void per10ms()
   readKeysAndTrims();
 
 #if defined(FUNCTION_SWITCHES)
-  for(uint8_t i = 0; i < NUM_FUNCTIONS_SWITCHES; i++) {
-    if (getValue(MIXSRC_FIRST_SWITCH + NUM_REGULAR_SWITCHES + i) == 1024)
-      fsLedOn(i);
-    else
-      fsLedOff(i);
-  }
+  evalFunctionSwitches();
 #endif
 
 #if defined(ROTARY_ENCODER_NAVIGATION)
@@ -443,6 +438,7 @@ void applyDefaultTemplate()
 
 #if defined(FUNCTION_SWITCHES)
   g_model.functionSwitchConfig = DEFAULT_FS_CONFIG;
+  g_model.functionSwitchGroup = DEFAULT_FS_GROUPS;
 #endif
 
   for (int i=0; i<NUM_STICKS; i++) {
@@ -1706,6 +1702,12 @@ void opentxStart(const uint8_t startOptions = OPENTX_START_DEFAULT_ARGS)
 
 #if defined(TEST_BUILD_WARNING)
   ALERT(STR_TEST_WARNING, TR_TEST_NOTSAFE, AU_ERROR);
+#endif
+
+#if defined(FUNCTION_SWITCHES)
+  if (!UNEXPECTED_SHUTDOWN()) {
+    setFSStartupPosition();
+  }
 #endif
 
 #if defined(GUI)
