@@ -577,8 +577,8 @@ PACK(struct CustomScreenData {
   #define FUNCTION_SWITCHS_FIELDS \
     uint16_t functionSwitchConfig;  \
     uint16_t functionSwitchGroup; \
-    uint16_t functionSwitchStartState; \
-    uint8_t functionSwitchLogicalSate;  \
+    uint16_t functionSwitchStartConfig; \
+    uint8_t functionSwitchLogicalState;  \
     char switchNames[NUM_FUNCTIONS_SWITCHES][LEN_SWITCH_NAME];
 #else
   #define FUNCTION_SWITCHS_FIELDS

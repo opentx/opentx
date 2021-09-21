@@ -82,19 +82,19 @@ uint8_t fsPreviousState = 0;
 void setFSStartupPosition()
 {
   for (uint8_t i = 0; i < NUM_FUNCTIONS_SWITCHES; i++) {
-    uint8_t startPos = (g_model.functionSwitchStartState >> 2 * i) & 0x03;
+    uint8_t startPos = (g_model.functionSwitchStartConfig >> 2 * i) & 0x03;
     switch(startPos) {
       case FS_START_DOWN:
-        g_model.functionSwitchLogicalSate &= ~(1 << i);   // clear state
+        g_model.functionSwitchLogicalState &= ~(1 << i);   // clear state
         break;
 
       case FS_START_UP:
-        g_model.functionSwitchLogicalSate |= 1 << i;
+        g_model.functionSwitchLogicalState |= 1 << i;
         break;
 
       case FS_START_PREVIOUS:
       default:
-        // Do nothing, use existing g_model.functionSwitchLogicalSate value
+        // Do nothing, use existing g_model.functionSwitchLogicalState value
         break;
     }
   }
@@ -102,7 +102,7 @@ void setFSStartupPosition()
 
 uint8_t getFSLogicalState(uint8_t index)
 {
-  return (uint8_t )(bfSingleBitGet(g_model.functionSwitchLogicalSate, index) >> (index));
+  return (uint8_t )(bfSingleBitGet(g_model.functionSwitchLogicalState, index) >> (index));
 }
 
 uint8_t getFSPhysicalState(uint8_t index)
@@ -126,17 +126,17 @@ void evalFunctionSwitches()
     uint8_t physicalState = getFSPhysicalState(i);
     if (physicalState != getFSPreviousPhysicalState(i)) {      // FS was moved
       if (FSWITCH_CONFIG(i) == SWITCH_2POS && physicalState == 0) {
-        g_model.functionSwitchLogicalSate ^= 1 << i;   // Toggle bit
+        g_model.functionSwitchLogicalState ^= 1 << i;   // Toggle bit
       }
       else if (FSWITCH_CONFIG(i) == SWITCH_TOGGLE) {
-        g_model.functionSwitchLogicalSate ^= (-physicalState ^ g_model.functionSwitchLogicalSate) & (1 << i);   // Set bit to switch value
+        g_model.functionSwitchLogicalState ^= (-physicalState ^ g_model.functionSwitchLogicalState) & (1 << i);   // Set bit to switch value
       }
       if (FSWITCH_GROUP(i) && physicalState == 0) {    // switch is in a group, other in group need to be turned off
         for (uint8_t j = 0; j < NUM_FUNCTIONS_SWITCHES; j++) {
           if (i ==  j)
             continue;
           if (FSWITCH_GROUP(j) == FSWITCH_GROUP(i)) {
-            g_model.functionSwitchLogicalSate &= ~(1 << j);   // clear state
+            g_model.functionSwitchLogicalState &= ~(1 << j);   // clear state
           }
         }
       }
