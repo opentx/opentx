@@ -5,11 +5,14 @@
 
 local options = {
   { "TextColor", COLOR, YELLOW },
-  { "Timer", VALUE, 1, 1, 3}
+  { "Timer", VALUE, 1, 1, 3},
+  { "use_days", BOOL, 0 }   -- if greater than 24 hours: 0=still show as hours, 1=use days
+
 }
 
 local function create(zone, options)
   local wgt  = { zone=zone, options=options}
+  wgt.options.use_days = wgt.options.use_days % 2 -- modulo due to bug that cause the value to be other than 0|1
   return wgt
 end
 
@@ -25,7 +28,7 @@ end
 
 ------------------------------------------------------------
 
-local function formatTime(t1)
+local function formatTime(wgt, t1)
   local dd_raw = t1.value/86400 -- 24*3600
   local dd = math.floor(dd_raw)
   local hh_raw = (dd_raw - dd) * 24
@@ -35,18 +38,28 @@ local function formatTime(t1)
   local ss_raw = (mm_raw - mm) * 60
   local ss = math.floor(ss_raw)
   if dd ==0 and hh ==0 then
-    -- 59:59
+    -- less then 1 hour, 59:59
     time_str = string.format("%02d:%02d",mm, ss)
-  elseif dd ==0 then
-    -- 23:59:59
+  elseif dd == 0 then
+    -- lass then 24 hours, 23:59:59
     time_str = string.format("%02d:%02d:%02d",hh, mm, ss)
   else
-    -- 5d 23:59:59
-    time_str = string.format("%dd %02d:%02d:%02d",dd, hh, mm, ss)
+    -- more than 24 hours
+
+    if wgt.options.use_days == 0 then
+      -- 25:59:59
+      time_str = string.format("%02d:%02d:%02d",dd*24 + hh, mm, ss)
+    else
+      -- 5d 23:59:59
+      time_str = string.format("%dd %02d:%02d:%02d",dd, hh, mm, ss)
+    end
+
+
   end
   --print("test: " .. time_str)
   return time_str
 end
+
 local function getTimerHeader(wgt, t1)
   local timerInfo = ""
   if (string.len(t1.name) ==0) then
@@ -56,6 +69,7 @@ local function getTimerHeader(wgt, t1)
   end
   return timerInfo
 end
+
 -- Zone size: top bar widgets
 local function refreshZoneTiny(wgt)
 end
@@ -66,7 +80,7 @@ local function refreshZoneSmall(wgt)
   local timerInfo = getTimerHeader(wgt, t1)
   lcd.drawText(wgt.zone.x, wgt.zone.y, timerInfo, SMLSIZE + CUSTOM_COLOR)
 
-  local time_str = formatTime(t1)
+  local time_str = formatTime(wgt, t1)
   local font_size = DBLSIZE
   if (string.len(time_str) > 9) then
     font_size = MIDSIZE
@@ -83,7 +97,7 @@ local function refreshZoneMedium(wgt)
   local timerInfo = getTimerHeader(wgt, t1)
   lcd.drawText (wgt.zone.x, wgt.zone.y, timerInfo, SMLSIZE + CUSTOM_COLOR)
 
-  local time_str = formatTime(t1)
+  local time_str = formatTime(wgt, t1)
   local font_size = XXLSIZE
   if (string.len(time_str) > 9) then
     font_size = MIDSIZE
@@ -106,7 +120,7 @@ local function refreshZoneXLarge(wgt)
   local timerInfo = getTimerHeader(wgt, t1)
   lcd.drawText(wgt.zone.x, wgt.zone.y, timerInfo, SMLSIZE + CUSTOM_COLOR)
 
-  local time_str = formatTime(t1)
+  local time_str = formatTime(wgt, t1)
   lcd.drawText(wgt.zone.x, wgt.zone.y+15, time_str, XXLSIZE + CUSTOM_COLOR)
 end
 
