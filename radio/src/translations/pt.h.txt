@@ -1405,3 +1405,4 @@
 #define ZSTR_LOSS                      "Loss"
 #define ZSTR_SPEED                     "Spd "
 #define ZSTR_FLOW                      "Flow"
+#define ZSTR_VPACK                     "VPck"

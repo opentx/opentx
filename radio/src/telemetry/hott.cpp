@@ -75,7 +75,6 @@ enum
   HOTT_ID_TEMP1      = 0x0005,  // RX Temperature sensor
   HOTT_ID_VARIO      = 0x0006,  // Vario sensor
   HOTT_ID_ALT        = 0x0007,  // Alt sensor
-  HOTT_ID_HDG        = 0x0008,  // Heading sensor
   HOTT_ID_GSPD       = 0x0008,  // Ground speed sensor
   HOTT_ID_GPS_LAT_LONG = 0x0009,  // GPS sensor
   HOTT_ID_GPS_COUNT  = 0x000A,  // GPS sat count
@@ -94,9 +93,11 @@ enum
   HOTT_ID_ESC_VBEC   = 0x0017,  // BEC Volt
   HOTT_ID_BCAPA      = 0x0018,  // Batt capacity
   HOTT_ID_TEMP2      = 0x0019,  // Temperature sensor 2
-  HOTT_ID_AIR_SPEED  = 0x001A,
+  HOTT_ID_AIR_SPEED  = 0x001A,  // Air speed (Pito)
   HOTT_ID_VOLT3      = 0x001B,  // Voltage sensor
   HOTT_ID_FUEL       = 0x001C,  // Fuel percentage
+  HOTT_ID_HDG        = 0x001D,  // Heading sensor
+  HOTT_ID_VPCK       = 0x001E,  // VPack
 
   HOTT_TX_RSSI_ID    = 0xFF00,  // Pseudo id outside 1 byte range of Hott sensors
   HOTT_TX_LQI_ID     = 0xFF01,  // Pseudo id outside 1 byte range of Hott sensors
@@ -132,6 +133,7 @@ const HottSensor hottSensors[] = {
   {HOTT_ID_CELS_H,       ZSTR_CELLS,              UNIT_CELLS,             2},  // Batt H cells
   {HOTT_ID_AIR_SPEED,    ZSTR_ASPD,               UNIT_KMH,               0},  // Air speed
   {HOTT_ID_FUEL,         ZSTR_FUEL,               UNIT_PERCENT,           0},  // Fuel
+  {HOTT_ID_VPCK,         ZSTR_VPACK,              UNIT_MS,                0},  // VPack
 
   {HOTT_TX_RSSI_ID,      ZSTR_TX_RSSI,            UNIT_DB,                0},  // Pseudo id outside 1 byte range of Hott sensors
   {HOTT_TX_LQI_ID,       ZSTR_TX_QUALITY,         UNIT_RAW,               0},  // Pseudo id outside 1 byte range of Hott sensors
@@ -220,6 +222,10 @@ void processHottPacket(const uint8_t * packet)
         if (packet[8] > 0)
           telemetryStreaming = TELEMETRY_TIMEOUT10ms;
         setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_RX_LQI_ID, 0, 0, packet[8], UNIT_RAW, 0);
+        // RX_VPACK
+        value = packet[10] + (packet[11] << 8);
+        sensor = getHottSensor(HOTT_ID_VPCK);
+        setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_VPCK, 0, 0, value, sensor->unit, sensor->precision);  
       }
       break;
 
