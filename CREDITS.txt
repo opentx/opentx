@@ -2399,3 +2399,4 @@ Rodney Seiler
 David Jannke
 Mohamed Belazrag
 Lawrence Davids
+James Thompson
