@@ -82,6 +82,8 @@ uint32_t Boards::getFourCC(Type board)
       return 0x3D78746F;
     case BOARD_JUMPER_TLITE:
       return 0x4278746F;
+    case BOARD_JUMPER_TPRO:
+      return 0x4678746F;
     case BOARD_JUMPER_T16:
       return 0x3F78746F;
     case BOARD_JUMPER_T18:
@@ -117,6 +119,7 @@ int Boards::getEEpromSize(Board::Type board)
     case BOARD_TARANIS_X9E:
     case BOARD_JUMPER_T12:
     case BOARD_JUMPER_TLITE:
+    case BOARD_JUMPER_TPRO:
     case BOARD_RADIOMASTER_TX12:
     case BOARD_RADIOMASTER_T8:
       return EESIZE_TARANIS;
@@ -154,6 +157,7 @@ int Boards::getFlashSize(Type board)
     case BOARD_TARANIS_X9E:
     case BOARD_JUMPER_T12:
     case BOARD_JUMPER_TLITE:
+    case BOARD_JUMPER_TPRO:
     case BOARD_RADIOMASTER_TX12:
     case BOARD_RADIOMASTER_T8:
       return FSIZE_TARANIS;
@@ -188,7 +192,7 @@ SwitchInfo Boards::getSwitchInfo(Board::Type board, int index)
     if (index < DIM(switches))
       return switches[index];
   }
-  else if (IS_TARANIS_XLITE(board) || IS_JUMPER_TLITE(board)) {
+  else if (IS_TARANIS_XLITE(board) || IS_JUMPER_TLITE(board) || IS_JUMPER_TPRO(board)) {
     const Board::SwitchInfo switches[] = {
       {SWITCH_3POS,   "SA"},
       {SWITCH_3POS,   "SB"},
@@ -329,7 +333,7 @@ int Boards::getCapability(Board::Type board, Board::Capability capability)
         return 1;
       else if (IS_JUMPER_TLITE(board))
         return 0;
-      else if (IS_TARANIS_SMALL(board))
+      else if (IS_TARANIS_SMALL(board) || IS_JUMPER_TPRO(board))
         return 2;
       else if (IS_TARANIS_X9E(board))
         return 4;
@@ -386,7 +390,7 @@ int Boards::getCapability(Board::Type board, Board::Capability capability)
         return 7;
       else if (board == BOARD_TARANIS_X7)
         return 8;
-      else if (board == BOARD_JUMPER_TLITE)
+      else if (board == BOARD_JUMPER_TLITE || board == BOARD_JUMPER_TPRO)
         return 4;
       else if (IS_FAMILY_T12(board))
         return 8;
@@ -404,7 +408,7 @@ int Boards::getCapability(Board::Type board, Board::Capability capability)
     case FactoryInstalledSwitches:
       if (IS_TARANIS_X9E(board))
         return 8;
-      else if (IS_JUMPER_TLITE(board))
+      else if (IS_JUMPER_TLITE(board) || IS_JUMPER_TPRO(board))
         return 4;
       else if (IS_FAMILY_T12(board))
         return 6;
@@ -589,6 +593,8 @@ QString Boards::getBoardName(Board::Type board)
       return "Jumper T12";
     case BOARD_JUMPER_TLITE:
       return "Jumper T-Lite";
+    case BOARD_JUMPER_TPRO:
+      return "Jumper T-Pro";
     case BOARD_JUMPER_T16:
       return "Jumper T16";
     case BOARD_JUMPER_T18:
