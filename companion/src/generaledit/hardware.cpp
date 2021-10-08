@@ -92,6 +92,7 @@ HardwarePanel::HardwarePanel(QWidget * parent, GeneralSettings & generalSettings
   txVoltageCalibration->setDecimals(txVCRng.decimals);
   txVoltageCalibration->setSingleStep(txVCRng.step);
   txVoltageCalibration->setSuffix(txVCRng.unit);
+  txVoltageCalibration->setRange(txVCRng.min, txVCRng.max);
   txVoltageCalibration->setField(generalSettings.txVoltageCalibration);
   addParams(row, txVoltageCalibration);
 

@@ -498,10 +498,10 @@ FieldRange GeneralSettings::getTxVoltageCalibrationRange()
 {
   FieldRange result;
 
-  result.decimals = 1;
-  result.max = 9.9;
+  result.decimals = 2;
+  result.max = 1.27;
   result.min = -result.max;
-  result.step = 0.1;
+  result.step = 0.01;
   result.unit = tr("v");
 
   return result;
