@@ -435,6 +435,9 @@ int Boards::getCapability(Board::Type board, Board::Capability capability)
     case HasRTC:
       return IS_STM32(board) ? true : false;
 
+    case NumFunctionSwitches:
+      return IS_JUMPER_TPRO(board) ? 6 : 0;
+
     default:
       return 0;
   }
