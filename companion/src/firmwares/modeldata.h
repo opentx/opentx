@@ -207,6 +207,7 @@ class ModelData {
     bool isEmpty() const;
     void setDefaultInputs(const GeneralSettings & settings);
     void setDefaultMixes(const GeneralSettings & settings);
+    void setDefaultFunctionSwitches(int functionSwitchCount);
     void setDefaultValues(unsigned int id, const GeneralSettings & settings);
 
     int getTrimValue(int phaseIdx, int trimIdx);
