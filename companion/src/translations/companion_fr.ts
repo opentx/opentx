@@ -638,7 +638,7 @@ Manche Droit:  Profondeur, Direction
     <message>
         <location filename="../apppreferencesdialog.cpp" line="121"/>
         <source>&lt;p&gt;&lt;b&gt;You cannot switch Radio Type or change Build Options while there are unsaved file changes. What do you wish to do?&lt;/b&gt;&lt;/p&gt; &lt;ul&gt;&lt;li&gt;&lt;i&gt;Save All&lt;/i&gt; - Save any open file(s) before saving Settings.&lt;li&gt;&lt;li&gt;&lt;i&gt;Reset&lt;/i&gt; - Revert to the previous Radio Type and Build Options before saving Settings.&lt;/li&gt;&lt;li&gt;&lt;i&gt;Cancel&lt;/i&gt; - Return to the Settings editor dialog.&lt;/li&gt;&lt;/ul&gt;</source>
-        <translation>&lt;p&gt;&lt;b&gt;Vous ne pouvez pas changer de type de radio ou modifier les options de compilation tant que les changements ne sont pas sauvegardés. Que souhaitez-vous faire?&lt;/b&gt;&lt;/p&gt; &lt;ul&gt;&lt;li&gt;&lt;i&gt;Sauvegarder tout&lt;/i&gt; - Enregistrez le(s) fichier(s) ouvert(s) avant d&apos;enregistrer les paramètres.&lt;li&gt;&lt;li&gt;&lt;i&gt;Réinitialiser&lt;/i&gt; - Revenir aux précédentes options de type et de compilation de la radio avant d&apos;enregistrer les paramètres&lt;/li&gt;&lt;li&gt;&lt;i&gt;Annuler&lt;/i&gt; - Retournez dans la boîte de dialogue de l&apos;éditeur de paramètres.&lt;/li&gt;&lt;/ul&gt;</translation>
+        <translation>&lt;p&gt;&lt;b&gt;Vous ne pouvez pas changer de type de radio ou modifier les options de compilation tant que les changements ne sont pas sauvegardés. Que souhaitez-vous faire ?&lt;/b&gt;&lt;/p&gt; &lt;ul&gt;&lt;li&gt;&lt;i&gt;Sauvegarder tout&lt;/i&gt; - Enregistrez le(s) fichier(s) ouvert(s) avant d&apos;enregistrer les paramètres.&lt;li&gt;&lt;li&gt;&lt;i&gt;Réinitialiser&lt;/i&gt; - Revenir aux précédentes options de type et de compilation de la radio avant d&apos;enregistrer les paramètres&lt;/li&gt;&lt;li&gt;&lt;i&gt;Annuler&lt;/i&gt; - Retournez dans la boîte de dialogue de l&apos;éditeur de paramètres.&lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.cpp" line="155"/>
@@ -940,13 +940,13 @@ Manche Droit:  Profondeur, Direction
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="323"/>
-        <source>Delete Channel. Are you sure?</source>
-        <translation>Supprimer la Voie. Êtes-vous sûr?</translation>
+        <source>Delete Channel. Are you sure ?</source>
+        <translation>Supprimer la Voie. Êtes-vous sûr ?</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="345"/>
-        <source>Cut Channel. Are you sure?</source>
-        <translation>Couper la Voie. Êtes-vous sûr?</translation>
+        <source>Cut Channel. Are you sure ?</source>
+        <translation>Couper la Voie. Êtes-vous sûr ?</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="359"/>
@@ -995,13 +995,13 @@ Manche Droit:  Profondeur, Direction
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="420"/>
-        <source>Clear Channel. Are you sure?</source>
-        <translation>Effacer la Voie. Êtes-vous sûr?</translation>
+        <source>Clear Channel. Are you sure ?</source>
+        <translation>Effacer la Voie. Êtes-vous sûr ?</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="431"/>
-        <source>Clear all Channels. Are you sure?</source>
-        <translation>Effacer toutes les Voies. Êtes-vous sûr?</translation>
+        <source>Clear all Channels. Are you sure ?</source>
+        <translation>Effacer toutes les Voies. Êtes-vous sûr ?</translation>
     </message>
 </context>
 <context>
@@ -1151,7 +1151,7 @@ Manche Droit:  Profondeur, Direction
     <message>
         <location filename="../warnings.h" line="45"/>
         <source>&lt;p&gt;The radio type in the selected profile does not exist. Using the default type instead.&lt;/p&gt; &lt;p&gt;&lt;b&gt;Please update your profile settings!&lt;/b&gt;&lt;/p&gt;</source>
-        <translation>&lt;p&gt; Le type de radio sélectionnée dans le profil n&apos;existe pas. Utilisez plutôt le type par défaut. &lt;/p&gt; &lt;p&gt;&lt;b&gt;Veuillez mettre à jour les paramètres de votre profil!&lt;/b&gt;&lt;/p&gt;</translation>
+        <translation>&lt;p&gt; Le type de radio sélectionnée dans le profil n&apos;existe pas. Utilisez plutôt le type par défaut. &lt;/p&gt; &lt;p&gt;&lt;b&gt;Veuillez mettre à jour les paramètres de votre profil !&lt;/b&gt;&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../helpers.cpp" line="293"/>
@@ -1211,9 +1211,9 @@ Manche Droit:  Profondeur, Direction
     <message>
         <location filename="../companion.cpp" line="79"/>
         <source>We have found possible Companion settings backup file(s).
-Do you want to import settings from a file?</source>
+Do you want to import settings from a file ?</source>
         <translation>Nous avons trouvé un ou plusieurs fichiers de sauvegarde des paramètres Companion.
-Voulez-vous importer les paramètres depuis un fichier?</translation>
+Voulez-vous importer les paramètres depuis un fichier ?</translation>
     </message>
     <message>
         <location filename="../companion.cpp" line="81"/>
@@ -1227,7 +1227,7 @@ Do you want to import them?
 
 If you have a settings backup file, you may import that instead.</source>
         <translation>Nous avons trouvé des paramètres existants pour la version Companion: %1.
-Voulez-vous les importer?
+Voulez-vous les importer ?
 
 Si vous avez un fichier de sauvegarde des paramètres, vous pouvez l&apos;importer à la place.</translation>
     </message>
@@ -1269,12 +1269,12 @@ Si vous avez un fichier de sauvegarde des paramètres, vous pouvez l&apos;import
     <message>
         <location filename="../companion.cpp" line="179"/>
         <source>Reset ALL application settings to default values and remove radio profiles, are you sure?</source>
-        <translation>Réinitialiser TOUS les paramètres de l&apos;application aux valeurs par défaut et supprimer les profils radio, êtes-vous sûr?</translation>
+        <translation>Réinitialiser TOUS les paramètres de l&apos;application aux valeurs par défaut et supprimer les profils radio, êtes-vous sûr ?</translation>
     </message>
     <message>
         <location filename="../companion.cpp" line="184"/>
         <source>Would you like to perform a backup first?</source>
-        <translation>Voulez-vous d&apos;abord effectuer une sauvegarde?</translation>
+        <translation>Voulez-vous d&apos;abord effectuer une sauvegarde ?</translation>
     </message>
     <message>
         <location filename="../companion.cpp" line="191"/>
@@ -1629,22 +1629,22 @@ Si vous avez un fichier de sauvegarde des paramètres, vous pouvez l&apos;import
     <message>
         <location filename="../modeledit/curves.cpp" line="722"/>
         <source>Clear Curve. Are you sure?</source>
-        <translation>Effacer la Courbe. Êtes-vous sûr?</translation>
+        <translation>Effacer la Courbe. Êtes-vous sûr ?</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="735"/>
         <source>Clear all Curves. Are you sure?</source>
-        <translation>Effacer toutes les Courbes. Êtes-vous sûr?</translation>
+        <translation>Effacer toutes les Courbes. Êtes-vous sûr ?</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="758"/>
         <source>Cut Curve. Are you sure?</source>
-        <translation>Couper la Courbe. Êtes-vous sûr?</translation>
+        <translation>Couper la Courbe. Êtes-vous sûr ?</translation>
     </message>
     <message>
         <location filename="../modeledit/curves.cpp" line="766"/>
         <source>Delete Curve. Are you sure?</source>
-        <translation>Supprimer la Courbe. Êtes-vous sûr?</translation>
+        <translation>Supprimer la Courbe. Êtes-vous sûr ?</translation>
     </message>
 </context>
 <context>
@@ -2002,12 +2002,12 @@ Si vous avez un fichier de sauvegarde des paramètres, vous pouvez l&apos;import
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="568"/>
         <source>Delete Function. Are you sure?</source>
-        <translation>Supprimer la Fonction. Êtes-vous sûr?</translation>
+        <translation>Supprimer la Fonction. Êtes-vous sûr ?</translation>
     </message>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="591"/>
         <source>Cut Special Function. Are you sure?</source>
-        <translation>Couper la Fonction. Êtes-vous sûr?</translation>
+        <translation>Couper la Fonction. Êtes-vous sûr ?</translation>
     </message>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="604"/>
@@ -2057,12 +2057,12 @@ Si vous avez un fichier de sauvegarde des paramètres, vous pouvez l&apos;import
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="677"/>
         <source>Clear Function. Are you sure?</source>
-        <translation>Effacer la Fonction. Êtes-vous sûr?</translation>
+        <translation>Effacer la Fonction. Êtes-vous sûr ?</translation>
     </message>
     <message>
         <location filename="../modeledit/customfunctions.cpp" line="688"/>
         <source>Clear all Functions. Are you sure?</source>
-        <translation>Effacer toutes les Fonctions. Êtes-vous sûr?</translation>
+        <translation>Effacer toutes les Fonctions. Êtes-vous sûr ?</translation>
     </message>
 </context>
 <context>
@@ -2070,22 +2070,22 @@ Si vous avez un fichier de sauvegarde des paramètres, vous pouvez l&apos;import
     <message>
         <location filename="../modeledit/telemetry_customscreens.cpp" line="96"/>
         <source>None</source>
-        <translation type="unfinished">Aucun</translation>
+        <translation>Aucun</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_customscreens.cpp" line="97"/>
         <source>Numbers</source>
-        <translation type="unfinished">Chiffres</translation>
+        <translation>Chiffres</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_customscreens.cpp" line="98"/>
         <source>Bars</source>
-        <translation type="unfinished">Barres</translation>
+        <translation>Barres</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_customscreens.cpp" line="100"/>
         <source>Script</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -2427,7 +2427,7 @@ Pour &lt;b&gt;retirer un filtre de l&apos;historique&lt;/b&gt;, sélectionnez-le
     <message>
         <location filename="../simulation/debugoutput.cpp" line="266"/>
         <source>&lt;html&gt;&lt;head&gt;&lt;style&gt;kbd {background-color: palette(alternate-base); font-size: large; white-space: nowrap;}&lt;/style&gt;&lt;/head&gt;&lt;body&gt;&lt;p&gt;The filter supports two syntax types: basic matching with common wildcards as well as full Perl-style (&lt;code&gt;pcre&lt;/code&gt;) Regular Expressions.&lt;/p&gt;&lt;p&gt;By default a filter will only show lines which match (&lt;b&gt;inclusive&lt;/b&gt;). To make an &lt;b&gt;exclusive&lt;/b&gt; filter which removes matching lines, prefix the filter expression with a &lt;kbd&gt;!&lt;/kbd&gt; (exclamation mark).&lt;/p&gt;&lt;p&gt;To use &lt;b&gt;Regular Expressions&lt;/b&gt; (RegEx), prefix the filter text with a &lt;kbd&gt;/&lt;/kbd&gt; (slash) or &lt;kbd&gt;^&lt;/kbd&gt; (up caret). &lt;ul&gt;&lt;li&gt;Put the &lt;kbd&gt;/&lt;/kbd&gt; or &lt;kbd&gt;^&lt;/kbd&gt; after the exclusive &lt;kbd&gt;!&lt;/kbd&gt; indicator if you&apos;re using one.&lt;/li&gt;&lt;li&gt;By default the match is case-sensitive. To make it insensitive, add the typical &lt;kbd&gt;/i&lt;/kbd&gt; (slash i) operator at the end of your RegEx.&lt;/li&gt;&lt;li&gt;If you use a caret (^) to denote a RegEx, it will become part of the Reg. Ex. (that is, matches from start of line).&lt;/li&gt;&lt;li&gt;If the RegEx is invalid, the filter edit field should show a red border and you will not be able to enable the filter.&lt;/li&gt;&lt;li&gt;A useful resource for testing REs (with a full reference) can be found at &lt;a href=&quot;http://www.regexr.com/&quot;&gt;http://www.regexr.com/&lt;/a&gt;&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;p&gt;To use &lt;b&gt;basic matching&lt;/b&gt; just type any text.&lt;ul&gt;&lt;li&gt;Wildcards: &lt;kbd&gt;*&lt;/kbd&gt; (asterisk) matches zero or more of any character(s), and &lt;kbd&gt;?&lt;/kbd&gt; (question mark) matches any single character.&lt;/li&gt;&lt;li&gt;The match is always case-insensitive.&lt;/li&gt;&lt;li&gt;The match always starts from the beginning of a log line. To ignore characters at the start, use a leading &lt;kbd&gt;*&lt;/kbd&gt; wildcard.&lt;/li&gt;&lt;li&gt;A trailing &lt;kbd&gt;*&lt;/kbd&gt; is always implied (that is, matches anything to the end of the log line). To avoid this, use a RegEx.&lt;/li&gt;&lt;li&gt;You can match literal wildcard characters by prefixing them with a &lt;kbd&gt;\&lt;/kbd&gt; (backslash) character (eg. &quot;foo\*bar&quot; matches &quot;foo*bar&quot;).&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;p&gt;After &lt;b&gt;editing text&lt;/b&gt;, press ENTER or TAB key (or click anywhere outside the box) to update the filter.&lt;/p&gt;&lt;p&gt;To &lt;b&gt;remove an entry&lt;/b&gt; from the filter selector list, first choose it, and while in the line editor press &lt;kbd&gt;Shift-Delete&lt;/kbd&gt; (or &lt;kbd&gt;Shift-Backspace&lt;/kbd&gt;) key combination. The default filters cannot be removed. Up to 50 filters are stored.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;head&gt;&lt;style&gt;kbd {background-color: palette(alternate-base); font-size: large; white-space: nowrap;}&lt;/style&gt;&lt;/head&gt;&lt;body&gt;&lt;p&gt;Le filtre supporte deux types de syntaxes: la recherche simple utilisant les métacaractères ou la recherche avancée utilisant les expressions régulières (&lt;code&gt;RegEx&lt;/code&gt;) de type Perl.&lt;/p&gt;&lt;p&gt;Par défaut, un filtre ne montre que les lignes qui correspondent (&lt;b&gt;inclusif&lt;/b&gt;). Pour faire un filtre &lt;b&gt;exclusif&lt;/b&gt; qui supprime les lignes de correspondance, préfixez l&apos;expression du filtre avec un &lt;kbd&gt;!&lt;/kbd&gt; (point d&apos;exclamation).&lt;/p&gt;&lt;p&gt;Pour utiliser les &lt;b&gt;Expressions Régulières&lt;/b&gt; (RegEx), préfixez le texte du filtre avec un &lt;kbd&gt;/&lt;/kbd&gt; (slash) ou &lt;kbd&gt;^&lt;/kbd&gt; (accent circonflexe).&lt;ul&gt;&lt;li&gt;Il faut mettre le &lt;kbd&gt;!&lt;/kbd&gt; &lt;u&gt;avant&lt;/u&gt; le &lt;kbd&gt;/&lt;/kbd&gt; ou &lt;kbd&gt;^&lt;/kbd&gt; dans le cas d&apos;un filtre exclusif.&lt;/li&gt;&lt;li&gt;Par défaut, la correspondance est sensible à la casse (ex: a &amp;ne; A). Pour la rendre insensible (ex: a = A), ajoutez l&apos;opérateur typique &lt;kbd&gt;/i&lt;/kbd&gt; (slash i) à la fin de votre RegEx.&lt;/li&gt;&lt;li&gt;Si vous utilisez un &lt;kbd&gt;^&lt;/kbd&gt; pour désigner une RegEx, il deviendra une partie de la RegEx (&lt;kbd&gt;^&lt;/kbd&gt; est le caractère de début de chaîne).&lt;/li&gt;&lt;li&gt;Si la RegEx n&apos;est pas valide, le champ d&apos;édition du filtre affichera une bordure rouge et vous ne pourrez pas activer le filtre.&lt;/li&gt;&lt;li&gt;Une ressource utile pour tester les RegExs (avec une référence complète) peut être trouvée sur le site &lt;a href=&quot;http://www.regexr.com/&quot;&gt;http://www.regexr.com/&lt;/a&gt; (tutoriel en français: &lt;a href=&quot;http://perl.mines-albi.fr/DocFr/perlretut.html&quot;&gt;Expressions rationnelles/régulières en Perl&lt;/a&gt;)&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;p&gt;Pour utiliser la &lt;b&gt;recherche simple&lt;/b&gt;, tapez simplement le texte recherché.&lt;ul&gt;&lt;li&gt;Métacaractères: le quantificateur &lt;kbd&gt;*&lt;/kbd&gt; (astérisque) correspond à zéro ou plus de n&apos;importe quel caractère, et le quantificateur &lt;kbd&gt;?&lt;/kbd&gt; (point d&apos;interrogation) correspond à un caractère unique.&lt;/li&gt;&lt;li&gt;La correspondance est toujours sensible à la casse.&lt;/li&gt;&lt;li&gt;La correspondance commence toujours au début du Log. Pour ignorer les caractères au début, utilisez le métacaractère &lt;kbd&gt;*&lt;/kbd&gt;.&lt;/li&gt;&lt;li&gt;Un métacaractère &lt;kbd&gt;*&lt;/kbd&gt; est implicitement ajouté à la fin (ainsi, toutes les correspondances valides soient bien affichées jusqu&apos;à la fin du Log). Si vous voulez éviter ce métacaractère implicite, il faut utiliser une RegEx.&lt;/li&gt;&lt;li&gt;Pour rechercher un caractère qui est lui-même un métacaractère, il faut préfixer avec un &lt;kbd&gt;\&lt;/kbd&gt; (backslash) (ex: &quot;&lt;i&gt;toto\*titi&lt;/i&gt;&quot; correspond à &quot;&lt;i&gt;toto*titi&lt;/i&gt;&quot;).&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;p&gt;Quand l&apos;&lt;b&gt;édition&lt;/b&gt; est terminée, appuyez sur la touche ENTRER ou TAB (ou cliquez n&apos;importe où à l&apos;extérieur du champ du filtre) afin de mettre à jour le filtre.&lt;/p&gt;&lt;p&gt;Pour &lt;b&gt;retirer un filtre de l&apos;historique&lt;/b&gt;, sélectionnez-le d&apos;abord, puis faite le raccourci clavier &lt;kbd&gt;Shift-Suppr&lt;/kbd&gt; (ou &lt;kbd&gt;Shift-Retour Arrière&lt;/kbd&gt;). Les filtres par défaut ne peuvent pas être effacés. Jusqu&apos;à 50 filtres peuvent être mémorisés.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;head&gt;&lt;style&gt;kbd {background-color: palette(alternate-base); font-size: large; white-space: nowrap;}&lt;/style&gt;&lt;/head&gt;&lt;body&gt;&lt;p&gt;Le filtre supporte deux types de syntaxes: la recherche simple utilisant les métacaractères ou la recherche avancée utilisant les expressions régulières (&lt;code&gt;RegEx&lt;/code&gt;) de type Perl.&lt;/p&gt;&lt;p&gt;Par défaut, un filtre ne montre que les lignes qui correspondent (&lt;b&gt;inclusif&lt;/b&gt;). Pour faire un filtre &lt;b&gt;exclusif&lt;/b&gt; qui supprime les lignes de correspondance, préfixez l&apos;expression du filtre avec un &lt;kbd&gt; !&lt;/kbd&gt; (point d&apos;exclamation).&lt;/p&gt;&lt;p&gt;Pour utiliser les &lt;b&gt;Expressions Régulières&lt;/b&gt; (RegEx), préfixez le texte du filtre avec un &lt;kbd&gt;/&lt;/kbd&gt; (slash) ou &lt;kbd&gt;^&lt;/kbd&gt; (accent circonflexe).&lt;ul&gt;&lt;li&gt;Il faut mettre le &lt;kbd&gt; !&lt;/kbd&gt; &lt;u&gt;avant&lt;/u&gt; le &lt;kbd&gt;/&lt;/kbd&gt; ou &lt;kbd&gt;^&lt;/kbd&gt; dans le cas d&apos;un filtre exclusif.&lt;/li&gt;&lt;li&gt;Par défaut, la correspondance est sensible à la casse (ex: a &amp;ne; A). Pour la rendre insensible (ex: a = A), ajoutez l&apos;opérateur typique &lt;kbd&gt;/i&lt;/kbd&gt; (slash i) à la fin de votre RegEx.&lt;/li&gt;&lt;li&gt;Si vous utilisez un &lt;kbd&gt;^&lt;/kbd&gt; pour désigner une RegEx, il deviendra une partie de la RegEx (&lt;kbd&gt;^&lt;/kbd&gt; est le caractère de début de chaîne).&lt;/li&gt;&lt;li&gt;Si la RegEx n&apos;est pas valide, le champ d&apos;édition du filtre affichera une bordure rouge et vous ne pourrez pas activer le filtre.&lt;/li&gt;&lt;li&gt;Une ressource utile pour tester les RegExs (avec une référence complète) peut être trouvée sur le site &lt;a href=&quot;http://www.regexr.com/&quot;&gt;http://www.regexr.com/&lt;/a&gt; (tutoriel en français: &lt;a href=&quot;http://perl.mines-albi.fr/DocFr/perlretut.html&quot;&gt;Expressions rationnelles/régulières en Perl&lt;/a&gt;)&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;p&gt;Pour utiliser la &lt;b&gt;recherche simple&lt;/b&gt;, tapez simplement le texte recherché.&lt;ul&gt;&lt;li&gt;Métacaractères: le quantificateur &lt;kbd&gt;*&lt;/kbd&gt; (astérisque) correspond à zéro ou plus de n&apos;importe quel caractère, et le quantificateur &lt;kbd&gt; ?&lt;/kbd&gt; (point d&apos;interrogation) correspond à un caractère unique.&lt;/li&gt;&lt;li&gt;La correspondance est toujours sensible à la casse.&lt;/li&gt;&lt;li&gt;La correspondance commence toujours au début du Log. Pour ignorer les caractères au début, utilisez le métacaractère &lt;kbd&gt;*&lt;/kbd&gt;.&lt;/li&gt;&lt;li&gt;Un métacaractère &lt;kbd&gt;*&lt;/kbd&gt; est implicitement ajouté à la fin (ainsi, toutes les correspondances valides soient bien affichées jusqu&apos;à la fin du Log). Si vous voulez éviter ce métacaractère implicite, il faut utiliser une RegEx.&lt;/li&gt;&lt;li&gt;Pour rechercher un caractère qui est lui-même un métacaractère, il faut préfixer avec un &lt;kbd&gt;\&lt;/kbd&gt; (backslash) (ex: &quot;&lt;i&gt;toto\*titi&lt;/i&gt;&quot; correspond à &quot;&lt;i&gt;toto*titi&lt;/i&gt;&quot;).&lt;/li&gt;&lt;/ul&gt;&lt;/p&gt;&lt;p&gt;Quand l&apos;&lt;b&gt;édition&lt;/b&gt; est terminée, appuyez sur la touche ENTRER ou TAB (ou cliquez n&apos;importe où à l&apos;extérieur du champ du filtre) afin de mettre à jour le filtre.&lt;/p&gt;&lt;p&gt;Pour &lt;b&gt;retirer un filtre de l&apos;historique&lt;/b&gt;, sélectionnez-le d&apos;abord, puis faite le raccourci clavier &lt;kbd&gt;Shift-Suppr&lt;/kbd&gt; (ou &lt;kbd&gt;Shift-Retour Arrière&lt;/kbd&gt;). Les filtres par défaut ne peuvent pas être effacés. Jusqu&apos;à 50 filtres peuvent être mémorisés.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../simulation/debugoutput.cpp" line="292"/>
@@ -2523,7 +2523,7 @@ Vérifier la sélection (M64/M128)</translation>
         <location filename="../firmwares/eeprominterface.cpp" line="111"/>
         <source>- Your eeprom is from an old version of OpenTX, upgrading!
  To keep your original file as a backup, please choose File -&gt; Save As specifying a different name.</source>
-        <translation>- Votre eeprom provient d&apos;une ancienne version d&apos;OpenTX, mettez à niveau!
+        <translation>- Votre eeprom provient d&apos;une ancienne version d&apos;OpenTX, mettez à niveau !
  Pour conserver une sauvegarde de votre fichier d&apos;origine, choisissez &quot;Fichier → Enregistrer sous&quot; en spécifiant un autre nom.</translation>
     </message>
 </context>
@@ -2569,12 +2569,12 @@ Vérifier la sélection (M64/M128)</translation>
         <location filename="../firmwares/input_data.cpp" line="42"/>
         <location filename="../firmwares/input_data.cpp" line="47"/>
         <source>OFF</source>
-        <translation type="unfinished">Eteint</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/input_data.cpp" line="45"/>
         <source>ON</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -2681,7 +2681,7 @@ Si vide, la ligne est toujours active.</translation>
     <message>
         <location filename="../modeledit/expodialog.ui" line="448"/>
         <source>unit</source>
-        <translation type="unfinished"></translation>
+        <translation>unité</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.cpp" line="50"/>
@@ -2800,17 +2800,17 @@ Si vide, la ligne est toujours active.</translation>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="64"/>
         <source>Are you sure you wish to abort the sync?</source>
-        <translation>Êtes-vous sûr de vouloir annuler la synchronisation?</translation>
+        <translation>Êtes-vous sûr de vouloir annuler la synchronisation ?</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="126"/>
         <source>Folder A</source>
-        <translation type="unfinished"></translation>
+        <translation>Dossier A</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="127"/>
         <source>Folder B</source>
-        <translation type="unfinished"></translation>
+        <translation>Dossier B</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="150"/>
@@ -3038,24 +3038,24 @@ Blanc signifie &quot;inclure tous&quot;.Les métacaractères ?, * et [...] sont 
         <location filename="../dialogs/filesyncdialog.cpp" line="489"/>
         <location filename="../dialogs/filesyncdialog.cpp" line="491"/>
         <source>%1 not found.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 non trouvé.</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="493"/>
         <source>Folders are the same.</source>
-        <translation type="unfinished"></translation>
+        <translation>Les dossiers sont les mêmes.</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="511"/>
         <location filename="../dialogs/filesyncdialog.cpp" line="512"/>
         <source>%1%2 Both directions, to %3 first</source>
-        <translation type="unfinished"></translation>
+        <translation>%1%2 Dans les deux sens, vers %3 en premier</translation>
     </message>
     <message>
         <location filename="../dialogs/filesyncdialog.cpp" line="513"/>
         <location filename="../dialogs/filesyncdialog.cpp" line="514"/>
         <source> %1  Only from %2 to %3</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 Uniquement de %2 vers %3 </translation>
     </message>
 </context>
 <context>
@@ -3324,7 +3324,7 @@ Blanc signifie &quot;inclure tous&quot;.Les métacaractères ?, * et [...] sont 
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1357"/>
         <source>Radiomaster T8 / T8 Pro</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1368"/>
@@ -3949,62 +3949,62 @@ Vous utilisez actuellement:
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="714"/>
         <source>Clear Flight Mode. Are you sure?</source>
-        <translation>Effacer la Phase de Vol. Êtes-vous sûr?</translation>
+        <translation>Effacer la Phase de Vol. Êtes-vous sûr ?</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="751"/>
         <source>Clear all Flight Modes. Are you sure?</source>
-        <translation>Effacer toutes les Phases de Vol. Êtes-vous sûr?</translation>
+        <translation>Effacer toutes les Phases de Vol. Êtes-vous sûr ?</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="786"/>
         <source>Cut Flight Mode. Are you sure?</source>
-        <translation>Couper la Phase de Vol. Êtes-vous sûr?</translation>
+        <translation>Couper la Phase de Vol. Êtes-vous sûr ?</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="794"/>
         <source>Delete Flight Mode. Are you sure?</source>
-        <translation>Supprimer la Phase de Vol. Êtes-vous sûr?</translation>
+        <translation>Supprimer la Phase de Vol. Êtes-vous sûr ?</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="1150"/>
         <source>Clear Global Variable across all Flight Modes. Are you sure?</source>
-        <translation>Effacer la Variable Globale pour toutes les Phases de Vol. Êtes-vous sûr?</translation>
+        <translation>Effacer la Variable Globale pour toutes les Phases de Vol. Êtes-vous sûr ?</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="1161"/>
         <source>Clear Global Variable. Are you sure?</source>
-        <translation>Effacer la Variable Globale. Êtes-vous sûr?</translation>
+        <translation>Effacer la Variable Globale. Êtes-vous sûr ?</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="1237"/>
         <source>Cut Global Variable across all Flight Modes. Are you sure?</source>
-        <translation>Couper la Variable Globale pour toutes les Phases de Vol. Êtes-vous sûr?</translation>
+        <translation>Couper la Variable Globale pour toutes les Phases de Vol. Êtes-vous sûr ?</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="1241"/>
         <source>Cut Global Variable. Are you sure?</source>
-        <translation>Couper la Variable Globale. Êtes-vous sûr?</translation>
+        <translation>Couper la Variable Globale. Êtes-vous sûr ?</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="1254"/>
         <source>Delete Global Variable. Are you sure?</source>
-        <translation>Supprimer la Variable Globale. Êtes-vous sûr?</translation>
+        <translation>Supprimer la Variable Globale. Êtes-vous sûr ?</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="1315"/>
         <source>Paste to selected Global Variable across all Flight Modes. Are you sure?</source>
-        <translation>Coller la Variable Globale pour toutes les Phases de Vol. Êtes-vous sûr?</translation>
+        <translation>Coller la Variable Globale pour toutes les Phases de Vol. Êtes-vous sûr ?</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="1174"/>
         <source>Clear all Global Variables for all Flight Modes. Are you sure?</source>
-        <translation>Effacer toutes les Variables Globales pour toutes les Phases de Vol. Êtes-vous sûr?</translation>
+        <translation>Effacer toutes les Variables Globales pour toutes les Phases de Vol. Êtes-vous sûr ?</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="1185"/>
         <source>Clear all Global Variables for this Flight Mode. Are you sure?</source>
-        <translation>Effacer toutes les Variables Globales pour cette Phase de Vol. Êtes-vous sûr?</translation>
+        <translation>Effacer toutes les Variables Globales pour cette Phase de Vol. Êtes-vous sûr ?</translation>
     </message>
     <message>
         <location filename="../modeledit/flightmodes.cpp" line="212"/>
@@ -4428,7 +4428,7 @@ Communs à tous les modèles d&apos;une même EEPROM.</translation>
         <location filename="../firmwares/generalsettings.cpp" line="439"/>
         <location filename="../firmwares/generalsettings.cpp" line="455"/>
         <source>OFF</source>
-        <translation>Eteint</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/generalsettings.cpp" line="442"/>
@@ -5677,17 +5677,17 @@ Cette fonction ne peut pas être désactivée sur la radio.
     <message>
         <location filename="../modeledit/inputs.cpp" line="161"/>
         <source>Not enough available Inputs!</source>
-        <translation>Pas assez d&apos;Entrées disponibles!</translation>
+        <translation>Pas assez d&apos;Entrées disponibles !</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="247"/>
         <source>Delete selected Input lines. Are you sure?</source>
-        <translation>Supprimer les lignes Entrée sélectionnées. Êtes-vous sûr?</translation>
+        <translation>Supprimer les lignes Entrée sélectionnées. Êtes-vous sûr ?</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="259"/>
         <source>Cut selected Input lines. Are you sure?</source>
-        <translation>Couper les lignes Entrée sélectionnées. Êtes-vous sûr?</translation>
+        <translation>Couper les lignes Entrée sélectionnées. Êtes-vous sûr ?</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="405"/>
@@ -5788,17 +5788,17 @@ Cette fonction ne peut pas être désactivée sur la radio.
     <message>
         <location filename="../modeledit/inputs.cpp" line="538"/>
         <source>Clear all Input lines. Are you sure?</source>
-        <translation>Effacer toutes les lignes Entrée. Êtes-vous sûr?</translation>
+        <translation>Effacer toutes les lignes Entrée. Êtes-vous sûr ?</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="583"/>
         <source>Clear all lines for the selected Input. Are you sure?</source>
-        <translation>Effacer toutes les lignes Entrée sélectionnées. Êtes-vous sûr?</translation>
+        <translation>Effacer toutes les lignes Entrée sélectionnées. Êtes-vous sûr ?</translation>
     </message>
     <message>
         <location filename="../modeledit/inputs.cpp" line="601"/>
         <source>Delete all lines for the selected Input. Are you sure?</source>
-        <translation>Supprimer toutes les lignes Entrée sélectionnées. Êtes-vous sûr?</translation>
+        <translation>Supprimer toutes les lignes Entrée sélectionnées. Êtes-vous sûr ?</translation>
     </message>
 </context>
 <context>
@@ -6000,12 +6000,12 @@ Cette fonction ne peut pas être désactivée sur la radio.
     <message>
         <location filename="../modeledit/logicalswitches.cpp" line="504"/>
         <source>Delete Logical Switch. Are you sure?</source>
-        <translation>Supprimer l&apos;Interrupteur Logique. Êtes-vous sûr?</translation>
+        <translation>Supprimer l&apos;Interrupteur Logique. Êtes-vous sûr ?</translation>
     </message>
     <message>
         <location filename="../modeledit/logicalswitches.cpp" line="527"/>
         <source>Cut Logical Switch. Are you sure?</source>
-        <translation>Couper l&apos;Interrupteur Logique. Êtes-vous sûr?</translation>
+        <translation>Couper l&apos;Interrupteur Logique. Êtes-vous sûr ?</translation>
     </message>
     <message>
         <location filename="../modeledit/logicalswitches.cpp" line="540"/>
@@ -6055,12 +6055,12 @@ Cette fonction ne peut pas être désactivée sur la radio.
     <message>
         <location filename="../modeledit/logicalswitches.cpp" line="595"/>
         <source>Clear Logical Switch. Are you sure?</source>
-        <translation>Effacer l&apos;Interrupteur Logique. Êtes-vous sûr?</translation>
+        <translation>Effacer l&apos;Interrupteur Logique. Êtes-vous sûr ?</translation>
     </message>
     <message>
         <location filename="../modeledit/logicalswitches.cpp" line="608"/>
         <source>Clear all Logical Switches. Are you sure?</source>
-        <translation>Effacer tous les Interrupteurs Logiques. Êtes-vous sûr?</translation>
+        <translation>Effacer tous les Interrupteurs Logiques. Êtes-vous sûr ?</translation>
     </message>
 </context>
 <context>
@@ -6792,7 +6792,7 @@ Nous recommandons de lire attentivement les notes de version à l&apos;aide du b
     <message>
         <location filename="../mainwindow.cpp" line="485"/>
         <source>Release candidate builds are now available for this version, would you like to switch to using them?</source>
-        <translation>Une version &quot;candidate&quot; est maintenant disponible pour cette version, voulez-vous commuter de canal afin de l&apos;utiliser?</translation>
+        <translation>Une version &quot;candidate&quot; est maintenant disponible pour cette version, voulez-vous commuter de canal afin de l&apos;utiliser ?</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="491"/>
@@ -6802,7 +6802,7 @@ Nous recommandons de lire attentivement les notes de version à l&apos;aide du b
     <message>
         <location filename="../mainwindow.cpp" line="497"/>
         <source>Official release builds are now available for this version, would you like to switch to using them?</source>
-        <translation>Une version &quot;officielle&quot; est maintenant disponible pour cette version, voulez-vous commuter de canal afin de l&apos;utiliser?</translation>
+        <translation>Une version &quot;officielle&quot; est maintenant disponible pour cette version, voulez-vous commuter de canal afin de l&apos;utiliser ?</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="503"/>
@@ -6823,19 +6823,19 @@ Do you want to download it now?
 We recommend you view the release notes using the button below to learn about any changes that may be important to you.</source>
         <translation>Le firmware %1 ne semble pas avoir été téléchargé.
 La version %2 est disponible.
-Voulez-vous le télécharger maintenant?
+Voulez-vous le télécharger maintenant ?
 
 Nous vous recommandons de consulter les notes de mise à jour à l&apos;aide du bouton ci-dessous pour en savoir plus sur les modifications susceptibles de vous intéresser.</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="555"/>
         <source>Do you want to download version %1 now ?</source>
-        <translation>Voulez-vous télécharger la version %1 maintenant?</translation>
+        <translation>Voulez-vous télécharger la version %1 maintenant ?</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="569"/>
         <source>Ignore this version %1?</source>
-        <translation>Ignorer cette version %1?</translation>
+        <translation>Ignorer cette version %1 ?</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="800"/>
@@ -7019,7 +7019,7 @@ Do you wish to continue?</source>
     <message>
         <location filename="../mainwindow.cpp" line="1667"/>
         <source>Are you sure you wish to delete the &quot;%1&quot; radio profile? There is no way to undo this action!</source>
-        <translation>Etes-vous sûr de vouloir supprimer le profil radio %1? Cette action est irréversible!</translation>
+        <translation>Etes-vous sûr de vouloir supprimer le profil radio %1 ? Cette action est irréversible !</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1688"/>
@@ -7029,7 +7029,7 @@ Do you wish to continue?</source>
     <message>
         <location filename="../mainwindow.cpp" line="1691"/>
         <source>&lt;html&gt;&lt;p&gt;%1 and Simulator settings can be imported (restored) from a previosly saved export (backup) file. This will replace current settings with any settings found in the file.&lt;/p&gt;&lt;p&gt;An automatic backup of the current settings will be attempted. But if the current settings are useful then it is recommended that you make a manual backup first.&lt;/p&gt;&lt;p&gt;For best results when importing settings, &lt;b&gt;close any other %1 windows you may have open, and make sure the standalone Simulator application is not running.&lt;/p&gt;&lt;p&gt;Do you wish to continue?&lt;/p&gt;&lt;/html&gt;</source>
-        <translation>&lt;html&gt;&lt;p&gt;%1 et les paramètres du simulateur peuvent être importés (restaurés) à partir d’un fichier d’exportation (sauvegarde) préalablement sauvegardé. Ceci remplacera les paramètres actuels par tous les paramètres trouvés dans le fichier.&lt;/p&gt;&lt;p&gt;Une sauvegarde automatique des paramètres actuels sera tentée. Mais si les paramètres actuels sont utiles, il est recommandé de commencer par une sauvegarde manuelle.&lt;/p&gt;&lt;p&gt;Pour obtenir de meilleurs résultats lors de l&apos;importation des paramètres,&lt;b&gt; fermez les autres fenêtres %1 que vous avez éventuellement ouvertes et assurez-vous que l&apos;application autonome Simulator n&apos;est pas en cours d&apos;exécution. &lt;/p&gt;&lt;p&gt;Souhaitez-vous continuer? &lt;/p&gt;&lt;/html&gt;</translation>
+        <translation>&lt;html&gt;&lt;p&gt;%1 et les paramètres du simulateur peuvent être importés (restaurés) à partir d’un fichier d’exportation (sauvegarde) préalablement sauvegardé. Ceci remplacera les paramètres actuels par tous les paramètres trouvés dans le fichier.&lt;/p&gt;&lt;p&gt;Une sauvegarde automatique des paramètres actuels sera tentée. Mais si les paramètres actuels sont utiles, il est recommandé de commencer par une sauvegarde manuelle.&lt;/p&gt;&lt;p&gt;Pour obtenir de meilleurs résultats lors de l&apos;importation des paramètres,&lt;b&gt; fermez les autres fenêtres %1 que vous avez éventuellement ouvertes et assurez-vous que l&apos;application autonome Simulator n&apos;est pas en cours d&apos;exécution. &lt;/p&gt;&lt;p&gt;Souhaitez-vous continuer ? &lt;/p&gt;&lt;/html&gt;</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1699"/>
@@ -7490,17 +7490,17 @@ Do you wish to continue?</source>
     <message>
         <location filename="../mdichild.cpp" line="1535"/>
         <source>You are about to overwrite ALL models and settings on the Radio.</source>
-        <translation type="unfinished"></translation>
+        <translation>Vous êtes sur le point d&apos;écraser TOUS les modèles et paramètres de la radio.</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="1536"/>
         <source>Do you want to continue?</source>
-        <translation type="unfinished"></translation>
+        <translation>Voulez-vous continuer ?</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="1541"/>
         <source>Don&apos;t show this message again</source>
-        <translation type="unfinished"></translation>
+        <translation>Ne plus afficher ce message</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="1559"/>
@@ -7571,7 +7571,7 @@ Do you wish to continue?</source>
     <message>
         <location filename="../mdichild.cpp" line="1555"/>
         <source>Unable to find radio SD card!</source>
-        <translation>Impossible de trouver la carte SD de la radio!</translation>
+        <translation>Impossible de trouver la carte SD de la radio !</translation>
     </message>
     <message>
         <location filename="../mdichild.cpp" line="1579"/>
@@ -7898,12 +7898,12 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../modeledit/mixes.cpp" line="272"/>
         <source>Delete selected Mix lines. Are you sure?</source>
-        <translation>Supprimer les lignes Mixeur sélectionnées. Êtes-vous sûr?</translation>
+        <translation>Supprimer les lignes Mixeur sélectionnées. Êtes-vous sûr ?</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="283"/>
         <source>Cut selected Mix lines. Are you sure?</source>
-        <translation>Couper les lignes Mixeur sélectionnées. Êtes-vous sûr?</translation>
+        <translation>Couper les lignes Mixeur sélectionnées. Êtes-vous sûr ?</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="429"/>
@@ -8084,7 +8084,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../modeledit/modeledit.cpp" line="109"/>
         <source>Custom Screens</source>
-        <translation type="unfinished"></translation>
+        <translation>Écrans Personnalisés</translation>
     </message>
     <message>
         <location filename="../modeledit/modeledit.cpp" line="73"/>
@@ -8306,7 +8306,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../modelprinter.cpp" line="356"/>
         <source>Scale(%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Échelle(%1)</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="359"/>
@@ -8323,7 +8323,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../modelprinter.cpp" line="373"/>
         <source>No Trim</source>
-        <translation type="unfinished"></translation>
+        <translation>Pas de Trim</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="408"/>
@@ -8588,7 +8588,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../modelprinter.cpp" line="1123"/>
         <source>Error: Unable to open or read file!</source>
-        <translation>Erreur: Impossible d&apos;ouvrir ou de lire le fichier!</translation>
+        <translation>Erreur: Impossible d&apos;ouvrir ou de lire le fichier !</translation>
     </message>
     <message>
         <location filename="../modelprinter.cpp" line="254"/>
@@ -8876,7 +8876,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../modeledit/setup_module.ui" line="941"/>
         <source>WARNING: Requires non-certified firmware!</source>
-        <translation>ATTENTION: Nécessite un firmware non certifié!</translation>
+        <translation>ATTENTION: Nécessite un firmware non certifié !</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_module.ui" line="829"/>
@@ -9676,12 +9676,12 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../printdialog.cpp" line="70"/>
         <source>Select output file</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélectionnez le fichier de sortie</translation>
     </message>
     <message>
         <location filename="../printdialog.cpp" line="70"/>
         <source>PDF files(*.pdf);;HTML files (*.htm *.html);;All files (*)</source>
-        <translation type="unfinished"></translation>
+        <translation>Fichiers PDF(*.pdf);;Fichiers HTML(*.htm *.html);;Tous les Fichiers (*)</translation>
     </message>
 </context>
 <context>
@@ -9734,7 +9734,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../helpers.cpp" line="246"/>
         <source>&lt;p&gt;Importing JumperTX data into OpenTX 2.3 is &lt;b&gt;not supported and dangerous.&lt;/b&gt;&lt;/p&gt;                       &lt;p&gt;It is unfortunately not possible for us to differentiate JumperTX data from legitimate FrSky X10 data, but &lt;b&gt;You should only continue here if the file you opened comes from a real FrSky X10.&lt;/b&gt;&lt;/p&gt;                       &lt;p&gt;Do you really want to continue?&lt;/p&gt;</source>
-        <translation>&lt;p&gt;L&apos;importation de données JumperTX dans OpenTX 2.3 est &lt;b&gt; non prise en charge et dangereuse.&lt;/b&gt;&lt;/p&gt;                       &lt;p&gt;Il n&apos;est malheureusement pas possible pour nous de différencier les données JumperTX des données légitimes FrSky X10, donc &lt;b&gt;Vous devez continuer uniquement si le fichier que vous avez ouvert provient d’une véritable radio FrSky X10.&lt;/b&gt;&lt;/p&gt;                       &lt;p&gt;Voulez-vous vraiment continuer?&lt;/p&gt;</translation>
+        <translation>&lt;p&gt;L&apos;importation de données JumperTX dans OpenTX 2.3 est &lt;b&gt; non prise en charge et dangereuse.&lt;/b&gt;&lt;/p&gt;                       &lt;p&gt;Il n&apos;est malheureusement pas possible pour nous de différencier les données JumperTX des données légitimes FrSky X10, donc &lt;b&gt;Vous devez continuer uniquement si le fichier que vous avez ouvert provient d’une véritable radio FrSky X10.&lt;/b&gt;&lt;/p&gt;                       &lt;p&gt;Voulez-vous vraiment continuer ?&lt;/p&gt;</translation>
     </message>
 </context>
 <context>
@@ -9861,7 +9861,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../radiointerface.cpp" line="194"/>
         <source>Unable to find radio SD card!</source>
-        <translation>Impossible de trouver la carte SD de la radio!</translation>
+        <translation>Impossible de trouver la carte SD de la radio !</translation>
     </message>
 </context>
 <context>
@@ -10908,22 +10908,22 @@ Si cette option est cochée, la voie des gaz est inversée: le ralenti  est &apo
     <message>
         <location filename="../modeledit/setup.cpp" line="1586"/>
         <source>Clear Timer. Are you sure?</source>
-        <translation>Effacer le Chrono. Êtes-vous sûr?</translation>
+        <translation>Effacer le Chrono. Êtes-vous sûr ?</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="1598"/>
         <source>Clear all Timers. Are you sure?</source>
-        <translation>Effacer tous les Chronos. Êtes-vous sûr?</translation>
+        <translation>Effacer tous les Chronos. Êtes-vous sûr ?</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="1620"/>
         <source>Cut Timer. Are you sure?</source>
-        <translation>Couper le Chrono. Êtes-vous sûr?</translation>
+        <translation>Couper le Chrono. Êtes-vous sûr ?</translation>
     </message>
     <message>
         <location filename="../modeledit/setup.cpp" line="1628"/>
         <source>Delete Timer. Are you sure?</source>
-        <translation>Supprimer le Chrono. Êtes-vous sûr?</translation>
+        <translation>Supprimer le Chrono. Êtes-vous sûr ?</translation>
     </message>
 </context>
 <context>
@@ -11864,7 +11864,7 @@ Erreur: %2</translation>
     <message>
         <location filename="../firmwares/heli_data.cpp" line="56"/>
         <source>OFF</source>
-        <translation>Eteint</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/heli_data.cpp" line="58"/>
@@ -12380,7 +12380,7 @@ Trop d&apos;erreurs, abandon.</translation>
     <message>
         <location filename="../modeledit/telemetry_customscreen.ui" line="34"/>
         <source>Type</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry_customscreen.ui" line="82"/>
@@ -12408,7 +12408,7 @@ Trop d&apos;erreurs, abandon.</translation>
     <message>
         <location filename="../modeledit/telemetry_customscreens.cpp" line="360"/>
         <source>Telemetry screen %1</source>
-        <translation type="unfinished">Ecran de télémesure %1</translation>
+        <translation>Ecran de télémesure %1</translation>
     </message>
 </context>
 <context>
@@ -12456,7 +12456,7 @@ Trop d&apos;erreurs, abandon.</translation>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="704"/>
         <source>Delete Sensor. Are you sure?</source>
-        <translation>Supprimer le Capteur. Êtes-vous sûr?</translation>
+        <translation>Supprimer le Capteur. Êtes-vous sûr ?</translation>
     </message>
 </context>
 <context>
@@ -12629,17 +12629,17 @@ Trop d&apos;erreurs, abandon.</translation>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="304"/>
         <source>Cut Telemetry Sensor. Are you sure?</source>
-        <translation>Couper le capteur de télémétrie. Êtes-vous sûr?</translation>
+        <translation>Couper le capteur de télémétrie. Êtes-vous sûr ?</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="323"/>
         <source>Clear Telemetry Sensor. Are you sure?</source>
-        <translation>Effacer le capteur de télémétrie. Êtes-vous sûr?</translation>
+        <translation>Effacer le capteur de télémétrie. Êtes-vous sûr ?</translation>
     </message>
     <message>
         <location filename="../modeledit/telemetry.cpp" line="334"/>
         <source>Clear all Telemetry Sensors. Are you sure?</source>
-        <translation>Effacez tous les capteurs de télémétrie. Êtes-vous sûr?</translation>
+        <translation>Effacez tous les capteurs de télémétrie. Êtes-vous sûr ?</translation>
     </message>
 </context>
 <context>
@@ -13141,7 +13141,7 @@ Utilisez CTRL + le défilement de la souris ou les touches PAGE HAUT/PAGE BAS po
     <message>
         <location filename="../firmwares/generalsettings.cpp" line="596"/>
         <source>OFF</source>
-        <translation>Eteint</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/generalsettings.cpp" line="598"/>
