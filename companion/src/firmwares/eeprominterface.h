@@ -53,7 +53,10 @@ enum Capability {
   VoicesAsNumbers,
   VoicesMaxLength,
   MultiLangVoice,
-  ModelImage,
+  HasModelImage,
+  ModelImageNameLen,
+  ModelImageFilters,
+  ModelImageKeepExtn,
   CustomFunctions,
   SafetyChannelCustomFunction,
   LogicalSwitches,
@@ -346,6 +349,8 @@ class Firmware
     }
 
     virtual int getCapability(Capability) = 0;
+
+    virtual QString getCapabilityStr(Capability) = 0;
 
     virtual QString getAnalogInputName(unsigned int index) = 0;
 
