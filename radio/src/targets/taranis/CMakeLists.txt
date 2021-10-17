@@ -163,6 +163,26 @@ elseif(PCB STREQUAL X7)
     add_definitions(-DRADIO_TX12)
     add_definitions(-DEEPROM_VARIANT=0x4002)
     add_definitions(-DMANUFACTURER_RADIOMASTER)
+  elseif(PCBREV STREQUAL ZORRO)
+    option(INTERNAL_MODULE_MULTI "Support for MULTI internal module" ON)
+    set(FLAVOUR zorro)
+    set(NAVIGATION_TYPE x7)
+    set(CPU_TYPE STM32F4)
+    set(CPU_TYPE_FULL STM32F407xE)  # for size report
+    set(LINKER_SCRIPT targets/taranis/stm32f4_flash.ld)
+    set(FIRMWARE_TARGET_SRC
+      ${FIRMWARE_TARGET_SRC}
+      startup_stm32f40_41xxx.s
+      )
+    add_definitions(-DSTM32F40_41xxx)
+    set(ROTARY_ENCODER YES)
+    set(LUA_EXPORT lua_export_zorro)
+    set(BLUETOOTH NO)
+    set(USB_CHARGER YES)
+    set(AUX_SERIAL_DRIVER ../common/arm/stm32/aux_serial_driver.cpp)
+    add_definitions(-DRADIO_ZORRO)
+    add_definitions(-DEEPROM_VARIANT=0x4006)
+    add_definitions(-DMANUFACTURER_RADIOMASTER)
   elseif(PCBREV STREQUAL T8)
     option(INTERNAL_MODULE_MULTI "Support for MULTI internal module" ON)
     set(EXTERNAL_MODULE NO)
@@ -483,6 +503,16 @@ if(INTERNAL_MODULE_PXX2)
   set(PXX2 ON)
   add_definitions(-DHARDWARE_INTERNAL_MODULE)
   add_definitions(-DINTERNAL_MODULE_PXX2)
+endif()
+
+if(INTERNAL_MODULE_ELRS)
+  add_definitions(-DHARDWARE_INTERNAL_MODULE)
+  add_definitions(-DINTERNAL_MODULE_ELRS)
+  set(INTERNAL_MODULE_MULTI NO)
+  set(TARGET_SRC
+    ${TARGET_SRC}
+    ../common/arm/stm32/intmodule_serial_driver.cpp
+    )
 endif()
 
 if(INTERNAL_MODULE_MULTI)

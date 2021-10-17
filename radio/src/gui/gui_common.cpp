@@ -611,6 +611,11 @@ bool isInternalModuleAvailable(int moduleType)
   }
 #endif
 
+#if defined(INTERNAL_MODULE_ELRS)
+  if (moduleType == MODULE_TYPE_CROSSFIRE)
+    return true;
+#endif
+
 #if defined(INTERNAL_MODULE_MULTI)
   if (moduleType == MODULE_TYPE_MULTIMODULE)
     return true;
