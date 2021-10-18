@@ -30,21 +30,47 @@ Telemetry page:
 
 Description of the RX telemetry page 0x00:
  [0] = TX RSSI value, downlink signal strength (rx --> tx as seen by tx)
- [1] = TX LQI value, downlink signal quality (rx --> tx s seen by tx)
+       CC2500 formated (a<128:a/2-71dBm, a>=128:(a-256)/2-71dBm)
+ [1] = TX LQI value, downlink signal quality (rx --> tx as seen by tx)
  [2] = ID of device that sent the packet, see telemetry devices ID above 
  [3] = telemetry page number. 
  [4] = ?? looks to be a copy of [7]
  [5] = RX_Voltage*10 in V
  [6] = Temperature-20 in °C
- [7] = uplink strength: RX_RSSI CC2500 formated (a<128:a/2-71dBm, a>=128:(a-256)/2-71dBm)
- [8] = Uplink quality: RX_LQI in % (100% = -40dbm, 0% = -92dbm)
+ [7] = Uplink signal strength (tx --> rx as seen by the rx): 
+       CC2500 formated (a<128:a/2-71dBm, a>=128:(a-256)/2-71dBm)
+ [8] = Uplink signal quality (tx --> rx as seen by the tx) in percent
  [9] = RX_MIN_Voltage*10 in V
  [10,11] = [11]*256+[10]=max lost packet time in ms, max value seems 2s=0x7D0
- [12] = 0x00 ??, mlst likely RX Event (=1 e.g. when battery voltage is < rx internally set threshold)
+ [12] = 0x00 ??, most likely RX Event (= 1 e.g. when battery voltage is < rx internally set threshold)
  [13] = ?? looks to be a copy of [7]
+
+RSSI:
+The packet[0] TX RSSI and packet[7] RX RSSI values describe estimates of the signal level in the
+currently active channel from TX to RX (RX values, uplinked control data) and RX to TX (TX values, 
+downlinked telemetry data). RSSI values are based on the current gain setting in the RX chain 
+and telemetry frames. The downlink (telemetry) uses lower transmission power. Therefore TX RSSI
+and RX RSSI values are not comparable as different gain values may be used.
+Usually TX RSSI even indicates stronger downlink signal strength compared to uplink signal strength
+because the TX amplifies the signal higher due to the lower power of the downlink signal.
+
+LQI:
+LQI (link quality) values in packet[1] and packet[8] also take decodability, i.e. the possibility 
+to extract meaningful data in account and are because of this the best indicator to judge the quality of the link.
+relative numbers (0-100%). 
+
+OpenTX RSSI value:
+For Graupner HoTT OpenTX doesn't use the RX RSSI value but instead uses the more 
+meaningful RX_LQI value in packet[8]. Hence the default OpenTX RSSI warnig and critical thresholds can
+be adjusted to more appropriate values to indicate link problems, e.g. 30 for warning and 1 for critical.
+
+Failsafe trigger:
+Graupner receivers do not trigger failsafe based on RSSI and LQI. They do trigger
+failsafe based on the maximum time no decodable packet has been received. The default threshhold
+seems to be 250ms
 */
 
-// telemetry frames
+
 enum
 {
   HOTT_PAGE_00 = 0x00,
@@ -230,12 +256,19 @@ const HottSensor * getHottSensor(uint16_t id)
   return nullptr;
 }
 
-int16_t processHoTTdBm(uint8_t value)
+// CC2500 data sheet:
+// The RSSI value read from the RSSI status register is a 2’s complement number. The following
+// procedure can be used to convert the RSSI reading to an absolute power level (RSSI_dBm).
+// 1) Read the RSSI status register
+// 2) Convert the reading from a hexadecimal number to a decimal number (RSSI_dec)
+// 3) If RSSI_dec ≥ 128 then RSSI_dBm = (RSSI_dec - 256)/2 – RSSI_offset
+// 4) Else if RSSI_dec < 128 then RSSI_dBm = (RSSI_dec)/2 – RSSI_offset
+int16_t processHoTTdBm(int16_t value)
 {
   if (value >= 128) {
-    value = 256 - value;
+    value -= 256;
   }
-  return value / 2 -71;
+  return value/2 - 71;
 }
 
 void processHottPacket(const uint8_t * packet)
