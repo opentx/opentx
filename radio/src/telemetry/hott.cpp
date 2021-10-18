@@ -383,16 +383,16 @@ void processHottPacket(const uint8_t * packet)
           break;
 
         case HOTT_PAGE_02:
-          // Vario heading
-          value = packet[12] * 2;
-          sensor = getHottSensor(HOTT_ID_VARIO_HDG);
-          setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_VARIO_HDG, 0, HOTT_TELEM_VARIO, value, sensor->unit, sensor->precision);
           break;
 
         case HOTT_PAGE_03:
           break;
 
         case HOTT_PAGE_04:
+          // Vario heading
+          value = packet[12] * 2;
+          sensor = getHottSensor(HOTT_ID_VARIO_HDG);
+          setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_VARIO_HDG, 0, HOTT_TELEM_VARIO, value, sensor->unit, sensor->precision);
           break;
       }
       break;
