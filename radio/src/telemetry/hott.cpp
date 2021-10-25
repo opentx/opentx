@@ -41,9 +41,10 @@ Description of the RX telemetry page 0x00:
        CC2500 formated (a<128:a/2-71dBm, a>=128:(a-256)/2-71dBm)
  [8] = Uplink signal quality (tx --> rx as seen by the tx) in percent
  [9] = RX_MIN_Voltage*10 in V
- [10,11] = [11]*256+[10]=max lost packet time in ms, max value seems 2s=0x7D0
- [12] = 0x00 ??, most likely RX Event (= 1 e.g. when battery voltage is < rx internally set threshold)
+ [10,11] = [11]*256+[10]=max lost packet time in ms, max value is 2s=0x7D0
+ [12] = RX Event (1 = low battery voltage, 2 low/high temp warning, other = general event)
  [13] = ?? looks to be a copy of [7]
+ [14] = GAM, EAM, ESC, GPS, VARIO warnings
 
 RSSI:
 The packet[0] TX RSSI and packet[7] RX RSSI values describe estimates of the signal level in the
@@ -67,9 +68,8 @@ be adjusted to more appropriate values to indicate link problems, e.g. 30 for wa
 Failsafe trigger:
 Graupner receivers do not trigger failsafe based on RSSI and LQI. They do trigger
 failsafe based on the maximum time no decodable packet has been received. The default threshhold
-seems to be 250ms
+seems to be 1000ms
 */
-
 
 enum
 {
@@ -106,7 +106,7 @@ enum TelemetrySensorID
   HOTT_ID_RX_TMP      = (HOTT_TELEM_RX << 8) + 4,    // RX temperature
   HOTT_ID_RX_BAT_MIN  = (HOTT_TELEM_RX << 8) + 5,    // RX lowest rx voltage
   HOTT_ID_RX_VPCK     = (HOTT_TELEM_RX << 8) + 6,    // RX VPack
-  HOTT_ID_RX_EVENT 	  = (HOTT_TELEM_RX << 8) + 7,    // RX event
+  HOTT_ID_RX_EVENT 	  = (HOTT_TELEM_RX << 8) + 7,    // RX event + GAM, EAM, VARIO, GPS, ESC warnings
 
   // Vario from 0x0901
   HOTT_ID_VARIO_ALT   = (HOTT_TELEM_VARIO << 8) + 1, // Vario altitude
@@ -185,7 +185,7 @@ const HottSensor hottSensors[] = {
   { HOTT_ID_RX_TMP,       ZSTR_HOTT_ID_RX_TMP,      UNIT_CELSIUS, 0 },          // RX temperature
   { HOTT_ID_RX_BAT_MIN,   ZSTR_HOTT_ID_RX_BAT_MIN,  UNIT_VOLTS, 1 },            // RX lowest rx voltage
   { HOTT_ID_RX_VPCK,      ZSTR_HOTT_ID_RX_VPCK,     UNIT_MS, 0 },               // RX VPack
-  { HOTT_ID_RX_EVENT,     ZSTR_HOTT_ID_RX_EVENT,    UNIT_RAW, 0 },              // RX event
+  { HOTT_ID_RX_EVENT,     ZSTR_HOTT_ID_RX_EVENT,    UNIT_RAW, 0 },              // RX event and other devices warnings
   
   // Vario 
   { HOTT_ID_VARIO_ALT,    ZSTR_HOTT_ID_VARIO_ALT,   UNIT_METERS, 0 },           // Vario altitude
@@ -311,6 +311,52 @@ void processHottPacket(const uint8_t * packet)
   static HottGPSMinutes min = {};
   int16_t deg = 0, sec = 0;
 
+  // transfer rx events and GAM, EAM, GPS, VARIO, ESC warnings
+  // 
+  // Two types of warnings have to be considered:
+  //
+  // 1. Rx events - these are critical events and should be treated with priority
+  // 0 = no event
+  // 1 = rx low battery warning based on the threshold set in the rx configuration
+  // 2 = rx temp warning based on the threshold set in the rx configuration
+  // others = not sure, make it known as general event
+  //
+  // 2. GAM, EAM, VARIO, GPS, EAM - these may be informational but also flight critical
+  // 0 = no warning
+  // other = warnings based on device specific setting either set by HoTT device configuration
+  //         or external software, e.g. third party devices like YGE ESC's or SM Unisens/GPS Logger
+  // for list of warnings see HoTT_warnings.txt
+  //
+  // Rx events are passed from MPM in page 0, packet[12]
+  // Other device warnings are passed in packet[14] for all devices
+  // Rx events are priorized and will suppress warnings from other devices
+  // 
+  // The final result is passed to the user for further processing in the HOTT_ID_RX_EVENT telemetry sensor 
+  // Users may process warnings by a combination of logical switch and special funtion to announce the warning or
+  // lua scripts
+
+  static uint8_t rxEvent = 0;
+
+  if (packet[2] == HOTT_TELEM_RX) {// sending device is RX
+    switch (packet[12]) {          // fetch RX event parameter from RX telemetry data
+      case 0:   rxEvent = 0;  	   // rx doesn't indicate an event       
+                break;             
+
+      case 1:   rxEvent = 64;      // low rx battery event -> translate to warning 64
+                break;
+
+      case 2:   (packet[6] - 20) >= 50 ?    // rx temperature event, find reason
+                  rxEvent = 44:    // high temperature warning -> translate to warning 44
+                  rxEvent = 43;    // low temperature warning  -> translate to warning 43
+                break;
+      
+      default:  rxEvent = 53;      // other rx events -> translate to general receiver warning
+    }
+  }
+
+  value = rxEvent == 0 ? packet[14] : rxEvent; // warnings, prioritze rx warnings
+  sensor = getHottSensor(HOTT_ID_RX_EVENT);
+  setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_RX_EVENT, 0, 0, value, sensor->unit, sensor->precision);
 
   // Set TX RSSI Value
   value = processHoTTdBm(packet[0]);
@@ -358,12 +404,7 @@ void processHottPacket(const uint8_t * packet)
         // RX_VPACK
         value = packet[10] + (packet[11] << 8);
         sensor = getHottSensor(HOTT_ID_RX_VPCK);
-        setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_RX_VPCK, 0, 0, value, sensor->unit, sensor->precision);  
-
-		    // RX_Event
-        value = packet[12];
-        sensor = getHottSensor(HOTT_ID_RX_EVENT);
-		    setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_RX_EVENT, 0, 0, value, sensor->unit, sensor->precision);  
+        setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_RX_VPCK, 0, 0, value, sensor->unit, sensor->precision);    
       }
       break;
 
