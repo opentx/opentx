@@ -271,6 +271,88 @@ int16_t processHoTTdBm(int16_t value)
   return value/2 - 71;
 }
 
+uint8_t processHoTTWarnings(const uint8_t * packet) {
+  // transfers rx events and GAM, EAM, GPS, VARIO, ESC warnings
+  // 
+  // Two types of warnings have to be considered:
+  //
+  // 1. Rx events - these are critical events and should be treated with priority
+  // 0 = no event
+  // 1 = rx low battery warning based on the threshold set in the rx configuration
+  // 2 = rx temp warning based on the threshold set in the rx configuration
+  // others = not sure, make it known as general event
+  //
+  // 2. GAM, EAM, VARIO, GPS, EAM - these may be informational but also flight critical
+  // 0 = no warning
+  // other = warnings based on device specific setting either set by HoTT device configuration
+  //         or external software, e.g. third party devices like YGE ESC's or SM Unisens/GPS Logger
+  // for list of warnings see HoTT_warnings.txt
+  //
+  // Rx events are passed from MPM in page 0, packet[12]
+  // Other device warnings are passed in packet[14] for all devices
+  // Rx events are priorized and will suppress warnings from other devices
+  // 
+  // The final result is passed to the user for further processing in the HOTT_ID_RX_EVENT telemetry sensor 
+  // Users may process warnings by a combination of logical switch and special funtion to announce the warning or
+  // lua scripts
+
+  #define DEVICE  (packet[2])
+  #define RXTEMP  (packet[6] - 20)
+  #define RXEVENT (packet[12])
+  #define WARN    (packet[14])
+
+  enum HoTTWarnDevices {
+    HOTT_WARN_RX = 0,
+    HOTT_WARN_ESC,
+    HOTT_WARN_GAM,
+    HOTT_WARN_EAM, 
+    HOTT_WARN_VARIO,
+    HOTT_WARN_GPS,
+    HOTT_WARN_LAST                                // delimiter
+  };
+
+  static uint8_t warnings[HOTT_WARN_LAST] = {};   // list of device specific memorized warnings
+
+  if (DEVICE == HOTT_TELEM_RX) {                  // sending device is RX
+    switch (RXEVENT) {                            // fetch RX event parameter from RX telemetry data
+      case 0:   warnings[HOTT_WARN_RX] = 0;       // rx doesn't indicate an event -> translate to warning 0   
+                break;     	                        
+      case 1:   warnings[HOTT_WARN_RX] = 64;      // low rx battery event -> translate to warning 64
+                break;
+      case 2:   warnings[HOTT_WARN_RX] =          // rx temperature event, find reason
+                  RXTEMP >= 50 ? 44: 43;          // high temperature warning -> translate to warning 44       
+                break;                            // low temperature warning  -> translate to warning 43 
+                                      
+      default: warnings[HOTT_WARN_RX] = 53;       // other rx events -> translate to general receiver warning
+    }
+  }
+  else
+  if (DEVICE == HOTT_TELEM_ESC)                   // sending device is ESC
+    warnings[HOTT_WARN_ESC] = WARN;
+  else
+  if (DEVICE == HOTT_TELEM_GAM)                   // sending device is GAM
+    warnings[HOTT_WARN_GAM] = WARN;
+  else
+  if (DEVICE == HOTT_TELEM_EAM)                   // sending device is EAM
+    warnings[HOTT_WARN_EAM] = WARN;
+    else
+  if (DEVICE == HOTT_TELEM_VARIO)                 // sending device is VARIO
+    warnings[HOTT_WARN_VARIO] = WARN;
+  else
+  if (DEVICE == HOTT_TELEM_GPS)                   // sending device is GPS
+    warnings[HOTT_WARN_GPS] = WARN; 
+
+  for(uint8_t i = 0; i < HOTT_WARN_LAST; i++) {   // go through list of devices and see if warning was issued 
+    uint8_t deviceWarn = warnings[i];             // using device priorities in the order of the HoTTWarnDevice enum
+    
+    if (deviceWarn > 0 &&                         // if warning was issued by device #i
+        (deviceWarn < 27 || deviceWarn > 36))     // always exclude climb rate beeps (meant for tx's without voice output)
+      return  deviceWarn;                         // return warning
+  }                                                
+
+  return 0;                                       // no warning found
+}
+
 void processHottPacket(const uint8_t * packet)
 {
   #if defined(LUA)
@@ -311,50 +393,8 @@ void processHottPacket(const uint8_t * packet)
   static HottGPSMinutes min = {};
   int16_t deg = 0, sec = 0;
 
-  // transfer rx events and GAM, EAM, GPS, VARIO, ESC warnings
-  // 
-  // Two types of warnings have to be considered:
-  //
-  // 1. Rx events - these are critical events and should be treated with priority
-  // 0 = no event
-  // 1 = rx low battery warning based on the threshold set in the rx configuration
-  // 2 = rx temp warning based on the threshold set in the rx configuration
-  // others = not sure, make it known as general event
-  //
-  // 2. GAM, EAM, VARIO, GPS, EAM - these may be informational but also flight critical
-  // 0 = no warning
-  // other = warnings based on device specific setting either set by HoTT device configuration
-  //         or external software, e.g. third party devices like YGE ESC's or SM Unisens/GPS Logger
-  // for list of warnings see HoTT_warnings.txt
-  //
-  // Rx events are passed from MPM in page 0, packet[12]
-  // Other device warnings are passed in packet[14] for all devices
-  // Rx events are priorized and will suppress warnings from other devices
-  // 
-  // The final result is passed to the user for further processing in the HOTT_ID_RX_EVENT telemetry sensor 
-  // Users may process warnings by a combination of logical switch and special funtion to announce the warning or
-  // lua scripts
-
-  static uint8_t rxEvent = 0;
-
-  if (packet[2] == HOTT_TELEM_RX) {// sending device is RX
-    switch (packet[12]) {          // fetch RX event parameter from RX telemetry data
-      case 0:   rxEvent = 0;  	   // rx doesn't indicate an event       
-                break;             
-
-      case 1:   rxEvent = 64;      // low rx battery event -> translate to warning 64
-                break;
-
-      case 2:   (packet[6] - 20) >= 50 ?    // rx temperature event, find reason
-                  rxEvent = 44:    // high temperature warning -> translate to warning 44
-                  rxEvent = 43;    // low temperature warning  -> translate to warning 43
-                break;
-      
-      default:  rxEvent = 53;      // other rx events -> translate to general receiver warning
-    }
-  }
-
-  value = rxEvent == 0 ? packet[14] : rxEvent; // warnings, prioritze rx warnings
+  // Set RX Event (HoTT warnings) 
+  value = processHoTTWarnings(packet);
   sensor = getHottSensor(HOTT_ID_RX_EVENT);
   setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_RX_EVENT, 0, 0, value, sensor->unit, sensor->precision);
 
