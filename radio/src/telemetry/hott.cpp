@@ -154,7 +154,7 @@ int16_t processHoTTdBm(int16_t value)
   if (value >= 128) {
     value -= 256;
   }
-  return value/2 - 71;
+  return value / 2 - 71;
 }
 
 void processHottPacket(const uint8_t * packet)
