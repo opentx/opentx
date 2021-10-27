@@ -106,7 +106,7 @@ enum TelemetrySensorID
   HOTT_ID_RX_TMP      = (HOTT_TELEM_RX << 8) + 4,    // RX temperature
   HOTT_ID_RX_BAT_MIN  = (HOTT_TELEM_RX << 8) + 5,    // RX lowest rx voltage
   HOTT_ID_RX_VPCK     = (HOTT_TELEM_RX << 8) + 6,    // RX VPack
-  HOTT_ID_RX_EVENT 	  = (HOTT_TELEM_RX << 8) + 7,    // RX event + GAM, EAM, VARIO, GPS, ESC warnings
+  HOTT_ID_RX_EVENT    = (HOTT_TELEM_RX << 8) + 7,    // RX event + GAM, EAM, VARIO, GPS, ESC warnings
 
   // Vario from 0x0901
   HOTT_ID_VARIO_ALT   = (HOTT_TELEM_VARIO << 8) + 1, // Vario altitude
@@ -320,15 +320,21 @@ uint8_t processHoTTWarnings(const uint8_t * packet) {
   switch DEVICE {
     case HOTT_TELEM_RX:                             // sending device is RX
       switch (RXEVENT) {                            // fetch RX event parameter from RX telemetry data
-        case 0:   warnings[HOTT_WARN_RX] = 0;       // rx doesn't indicate an event -> translate to warning 0   
-                  break;     	                        
-        case 1:   warnings[HOTT_WARN_RX] = 64;      // low rx battery event -> translate to warning 64
-                  break;
-        case 2:   warnings[HOTT_WARN_RX] =          // rx temperature event, find reason
-                  RXTEMP >= 50 ? 44: 43;            // high temperature warning -> translate to warning 44       
-                  break;                            // low temperature warning  -> translate to warning 43 
-                                      
-        default: warnings[HOTT_WARN_RX] = 53;       // other rx events -> translate to general receiver warning
+        case 0:                                     // rx doesn't indicate an event
+          warnings[HOTT_WARN_RX] = 0;               // translate to warning 0   
+          break;     	                        
+        
+        case 1:                                     // low rx battery event
+          warnings[HOTT_WARN_RX] = 64;              //translate to warning 64
+          break;
+
+        case 2:                                     // rx temperature event, find reason
+          warnings[HOTT_WARN_RX] =                  // check rx temp
+            RXTEMP >= 50 ? 44: 43;                  // > 50 degrees, high temperature warning, translate to warning 44       
+            break;                                  // < 50 degrees, low temperature warning, translate to warning 43 
+
+        default: 
+          warnings[HOTT_WARN_RX] = 53;              // other rx events -> translate to general receiver warning
     }
 
     case HOTT_TELEM_ESC:                            // sending device is ESC
