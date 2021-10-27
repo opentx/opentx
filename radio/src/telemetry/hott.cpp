@@ -149,12 +149,12 @@ const HottSensor * getHottSensor(uint16_t id)
   return nullptr;
 }
 
-int16_t processHoTTdBm(uint8_t value)
+int16_t processHoTTdBm(int16_t value)
 {
   if (value >= 128) {
-    value = 256 - value;
+    value -= 256;
   }
-  return value / 2 -71;
+  return value/2 - 71;
 }
 
 void processHottPacket(const uint8_t * packet)
