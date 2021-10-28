@@ -522,7 +522,11 @@ enum EnumSwitchesPositions
 
 void keysInit();
 uint32_t switchState(uint8_t index);
+#if defined(RADIO_TPRO)
+static const uint8_t switchReOrder[] = {0, 2, 1, 3, 4, 5};
+#else
 static const uint8_t switchReOrder[] = {0, 1, 2, 3, 4, 5};
+#endif
 uint32_t readKeys();
 uint32_t readTrims();
 #if defined(FUNCTION_SWITCHES)
