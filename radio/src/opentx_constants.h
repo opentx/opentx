@@ -40,6 +40,12 @@ enum SliderConfig {
   SLIDER_WITH_DETENT,
 };
 
+enum fsStartPositionType {
+  FS_START_UP,
+  FS_START_DOWN,
+  FS_START_PREVIOUS
+};
+
 enum CalibrationState {
   CALIB_START = 0,
 #if defined(RADIO_CALIBRATION_HALL)

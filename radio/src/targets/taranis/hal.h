@@ -360,9 +360,9 @@
   #define STORAGE_SWITCH_A
   #define HARDWARE_SWITCH_A
   #define SWITCHES_GPIO_REG_A_L         GPIOE->IDR
-  #define SWITCHES_GPIO_PIN_A_L         GPIO_Pin_13  // PE.13
+  #define SWITCHES_GPIO_PIN_A_L         GPIO_Pin_13 // PE.13
   #define SWITCHES_GPIO_REG_A_H         GPIOE->IDR
-  #define SWITCHES_GPIO_PIN_A_H         GPIO_Pin_7 // PE.07
+  #define SWITCHES_GPIO_PIN_A_H         GPIO_Pin_7  // PE.07
 #elif defined(PCBX7)
   #define STORAGE_SWITCH_A
   #define HARDWARE_SWITCH_A
@@ -2133,7 +2133,7 @@
   #define AUDIO_MUTE_GPIO               GPIOE
   #define AUDIO_MUTE_GPIO_PIN           GPIO_Pin_12  // PE.12
   #define AUDIO_MUTE_DELAY              500  // ms
-#if defined(RADIO_TLITE)
+#if defined(RADIO_TLITE) || defined(RADIO_TPRO)
   #define AUDIO_UNMUTE_DELAY            250  // ms
 #else
   #define AUDIO_UNMUTE_DELAY            150  // ms

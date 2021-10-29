@@ -439,6 +439,8 @@ void applyDefaultTemplate()
 #if defined(FUNCTION_SWITCHES)
   g_model.functionSwitchConfig = DEFAULT_FS_CONFIG;
   g_model.functionSwitchGroup = DEFAULT_FS_GROUPS;
+  g_model.functionSwitchStartConfig = DEFAULT_FS_STARTUP_CONFIG;
+  g_model.functionSwitchLogicalState = 0;
 #endif
 
   for (int i=0; i<NUM_STICKS; i++) {

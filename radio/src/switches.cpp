@@ -71,12 +71,6 @@ uint8_t   potsPos[NUM_XPOTS];
 // Non pushed : SWSRC_Sx0 = -1024 = Sx(up) = state 0
 // Pushed : SWSRC_Sx2 = +1024 = Sx(down) = state 1
 
-enum fsStartPositionType {
-  FS_START_UP,
-  FS_START_DOWN,
-  FS_START_PREVIOUS
-};
-
 uint8_t fsPreviousState = 0;
 
 void setFSStartupPosition()
@@ -140,6 +134,7 @@ void evalFunctionSwitches()
           }
         }
       }
+      TRACE("LS:%x", g_model.functionSwitchLogicalState);
       fsPreviousState ^= 1 << i;    // Toggle state
       storageDirty(EE_MODEL);
     }
