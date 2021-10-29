@@ -1013,7 +1013,7 @@ void setTopBatteryState(int state, uint8_t blinking);
 void setTopBatteryValue(uint32_t volts);
 #endif
 
-#define USART_FLAG_ERRORS (USART_FLAG_ORE | USART_FLAG_NE | USART_FLAG_FE | USART_FLAG_PE)does tracer work at
+#define USART_FLAG_ERRORS (USART_FLAG_ORE | USART_FLAG_NE | USART_FLAG_FE | USART_FLAG_PE)
 
 #if defined(__cplusplus)
 #include "fifo.h"
