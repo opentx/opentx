@@ -11,23 +11,21 @@ SimulatedUIWidgetJumperTPRO::SimulatedUIWidgetJumperTPRO(SimulatorInterface *sim
 
   ui->setupUi(this);
 
-  act = new RadioUiAction(3, QList<int>() << Qt::Key_Up << Qt::Key_PageUp, SIMU_STR_HLP_KEYS_GO_UP, SIMU_STR_HLP_ACT_UP);
-  addRadioWidget(ui->rightbuttons->addArea(QRect(40, 15, 70, 50), "JumperTPRO/right_top.png", act));
+  act = new RadioUiAction(0, QList<int>() << Qt::Key_PageUp << Qt::Key_Up, SIMU_STR_HLP_KEYS_GO_UP, SIMU_STR_HLP_ACT_MENU_ICN);
+  addRadioWidget(ui->leftbuttons->addArea(QRect(70, 85, 110, 90), "JumperTPRO/left.png", act));
 
-  act = new RadioUiAction(2, QList<int>() << Qt::Key_Down << Qt::Key_PageDown, SIMU_STR_HLP_KEYS_GO_DN, SIMU_STR_HLP_ACT_DN);
-  addRadioWidget(ui->rightbuttons->addArea(QRect(47, 65, 70, 50), "JumperTPRO/right_bottom.png", act));
+  act = new RadioUiAction(3, QList<int>() << Qt::Key_PageDown << Qt::Key_Down, SIMU_STR_HLP_KEYS_GO_DN, SIMU_STR_HLP_ACT_PAGE);
+  addRadioWidget(ui->leftbuttons->addArea(QRect(53, 174, 110, 90), "JumperTPRO/left.png", act));
 
-  act = new RadioUiAction(4, QList<int>() << Qt::Key_Right << Qt::Key_Plus, SIMU_STR_HLP_KEY_RGT % "|" % SIMU_STR_HLP_KEY_PLS, SIMU_STR_HLP_ACT_PLS);
-  addRadioWidget(ui->bottombuttons->addArea(QRect(150, 73, 80, 30), "JumperTPRO/bottom_right.png", act));
+  act = new RadioUiAction(1, QList<int>() << Qt::Key_Delete << Qt::Key_Escape << Qt::Key_Backspace, SIMU_STR_HLP_KEYS_EXIT, SIMU_STR_HLP_ACT_EXIT);
+  addRadioWidget(ui->leftbuttons->addArea(QRect(11, 257, 110, 90), "JumperTPRO/left.png", act));
 
-  act = new RadioUiAction(5, QList<int>() << Qt::Key_Left << Qt::Key_Minus, SIMU_STR_HLP_KEY_LFT % "|" % SIMU_STR_HLP_KEY_MIN, SIMU_STR_HLP_ACT_MIN);
-  addRadioWidget(ui->bottombuttons->addArea(QRect(24, 73, 80, 30), "JumperTPRO/bottom_left.png", act));
+  m_mouseMidClickAction = new RadioUiAction(2, QList<int>() << Qt::Key_Enter << Qt::Key_Return, SIMU_STR_HLP_KEYS_ACTIVATE, SIMU_STR_HLP_ACT_ROT_DN);
+  addRadioWidget(ui->rightbuttons->addArea(QRect(10, 96, 200, 220), "JumperTPRO/right.png", m_mouseMidClickAction));
 
-  m_mouseMidClickAction = new RadioUiAction(1, QList<int>() << Qt::Key_Enter << Qt::Key_Return, SIMU_STR_HLP_KEYS_ACTIVATE, SIMU_STR_HLP_ACT_ENT);
-  addRadioWidget(ui->leftbuttons->addArea(QRect(5, 15, 70, 50), "JumperTPRO/left_top.png", m_mouseMidClickAction));
-
-  act = new RadioUiAction(0, QList<int>() << Qt::Key_Delete << Qt::Key_Escape << Qt::Key_Backspace, SIMU_STR_HLP_KEYS_EXIT, SIMU_STR_HLP_ACT_EXIT);
-  addRadioWidget(ui->leftbuttons->addArea(QRect(10, 65, 70, 50), "JumperTPRO/left_bottom.png", act));
+  // Function switches
+  act = new RadioUiAction(0, QList<int>() << Qt::Key_1);
+  addRadioWidget(ui->leftbuttons->addArea(QRect(82, 7, 82, 48), "JumperTPRO/left.png", act));
 
   //addRadioWidget(ui->leftbuttons->addArea(QRect(10, 65, 70, 50), "JumperTPRO/left_scrnshot.png", m_screenshotAction));
 

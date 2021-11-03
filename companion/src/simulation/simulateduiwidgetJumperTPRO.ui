@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>663</width>
+    <width>725</width>
     <height>389</height>
    </rect>
   </property>
@@ -18,7 +18,7 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>663</width>
+    <width>725</width>
     <height>389</height>
    </size>
   </property>
@@ -60,13 +60,13 @@
      </property>
      <property name="minimumSize">
       <size>
-       <width>212</width>
+       <width>234</width>
        <height>368</height>
       </size>
      </property>
      <property name="maximumSize">
       <size>
-       <width>212</width>
+       <width>234</width>
        <height>368</height>
       </size>
      </property>
@@ -85,13 +85,13 @@
      </property>
      <property name="minimumSize">
       <size>
-       <width>800</width>
+       <width>256</width>
        <height>231</height>
       </size>
      </property>
      <property name="maximumSize">
       <size>
-       <width>800</width>
+       <width>256</width>
        <height>231</height>
       </size>
      </property>
@@ -110,13 +110,13 @@
      </property>
      <property name="minimumSize">
       <size>
-       <width>212</width>
+       <width>236</width>
        <height>368</height>
       </size>
      </property>
      <property name="maximumSize">
       <size>
-       <width>212</width>
+       <width>236</width>
        <height>368</height>
       </size>
      </property>
@@ -135,13 +135,13 @@
      </property>
      <property name="minimumSize">
       <size>
-       <width>239</width>
+       <width>255</width>
        <height>85</height>
       </size>
      </property>
      <property name="maximumSize">
       <size>
-       <width>239</width>
+       <width>255</width>
        <height>85</height>
       </size>
      </property>
@@ -160,13 +160,13 @@
      </property>
      <property name="minimumSize">
       <size>
-       <width>239</width>
+       <width>255</width>
        <height>131</height>
       </size>
      </property>
      <property name="maximumSize">
       <size>
-       <width>239</width>
+       <width>255</width>
        <height>131</height>
       </size>
      </property>
