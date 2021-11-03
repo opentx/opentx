@@ -101,7 +101,7 @@ uint8_t getFSLogicalState(uint8_t index)
 
 uint8_t getFSPhysicalState(uint8_t index)
 {
-  return switchState((index + NUM_REGULAR_SWITCHES) * 3) ? 0 : 1;
+  return switchState(((index + NUM_REGULAR_SWITCHES) * 3) + 2) ? 1 : 0;
 }
 
 uint8_t getFSPreviousPhysicalState(uint8_t index)
@@ -119,13 +119,13 @@ void evalFunctionSwitches()
 
     uint8_t physicalState = getFSPhysicalState(i);
     if (physicalState != getFSPreviousPhysicalState(i)) {      // FS was moved
-      if (FSWITCH_CONFIG(i) == SWITCH_2POS && physicalState == 0) {
+      if (FSWITCH_CONFIG(i) == SWITCH_2POS && physicalState == 1) {
         g_model.functionSwitchLogicalState ^= 1 << i;   // Toggle bit
       }
       else if (FSWITCH_CONFIG(i) == SWITCH_TOGGLE) {
-        g_model.functionSwitchLogicalState ^= (-physicalState ^ g_model.functionSwitchLogicalState) & (1 << i);   // Set bit to switch value
+        g_model.functionSwitchLogicalState ^= (physicalState ^ g_model.functionSwitchLogicalState) & (1 << i);   // Set bit to switch value
       }
-      if (FSWITCH_GROUP(i) && physicalState == 0) {    // switch is in a group, other in group need to be turned off
+      if (FSWITCH_GROUP(i) && physicalState == 1) {    // switch is in a group, other in group need to be turned off
         for (uint8_t j = 0; j < NUM_FUNCTIONS_SWITCHES; j++) {
           if (i ==  j)
             continue;
@@ -134,7 +134,6 @@ void evalFunctionSwitches()
           }
         }
       }
-      TRACE("LS:%x", g_model.functionSwitchLogicalState);
       fsPreviousState ^= 1 << i;    // Toggle state
       storageDirty(EE_MODEL);
     }
@@ -553,7 +552,7 @@ bool getSwitch(swsrc_t swtch, uint8_t flags)
     result = latencyToggleSwitch;
   }
 #endif
-  else if (cs_idx <= SWSRC_LAST_SWITCH) {
+  else if (cs_idx <= (SWSRC_LAST_SWITCH - 3 * NUM_FUNCTIONS_SWITCHES)) {
 #if defined(PCBTARANIS) || defined(PCBHORUS)
     if (flags & GETSWITCH_MIDPOS_DELAY)
       result = SWITCH_POSITION(cs_idx-SWSRC_FIRST_SWITCH);
@@ -564,6 +563,13 @@ bool getSwitch(swsrc_t swtch, uint8_t flags)
 #endif
 
   }
+#if defined(FUNCTION_SWITCHES)
+  else if (cs_idx <= SWSRC_LAST_SWITCH) {
+    div_t qr = div(cs_idx - 3 * NUM_FUNCTIONS_SWITCHES, 3);
+    auto value = getFSLogicalState(qr.quot + 1);
+    result = qr.rem == -2 ? 1 - value : value;
+  }
+#endif
 #if NUM_XPOTS > 0
   else if (cs_idx <= SWSRC_LAST_MULTIPOS_SWITCH) {
     result = POT_POSITION(cs_idx-SWSRC_FIRST_MULTIPOS_SWITCH);
@@ -650,7 +656,7 @@ swsrc_t getMovedSwitch()
       uint8_t next = getFSLogicalState(i);
       if (prev != next) {
         switches_states ^= (-next ^ switches_states) & (1 << i);
-        result = (3 * (i + NUM_REGULAR_SWITCHES)) + next;
+        result = 2 + (3 * (i + NUM_REGULAR_SWITCHES)) + next;
       }
     }
   }
