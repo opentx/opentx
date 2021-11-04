@@ -23,10 +23,6 @@ SimulatedUIWidgetJumperTPRO::SimulatedUIWidgetJumperTPRO(SimulatorInterface *sim
   m_mouseMidClickAction = new RadioUiAction(2, QList<int>() << Qt::Key_Enter << Qt::Key_Return, SIMU_STR_HLP_KEYS_ACTIVATE, SIMU_STR_HLP_ACT_ROT_DN);
   addRadioWidget(ui->rightbuttons->addArea(QRect(10, 96, 200, 220), "JumperTPRO/right.png", m_mouseMidClickAction));
 
-  // Function switches
-  act = new RadioUiAction(0, QList<int>() << Qt::Key_1);
-  addRadioWidget(ui->leftbuttons->addArea(QRect(82, 7, 82, 48), "JumperTPRO/left.png", act));
-
   //addRadioWidget(ui->leftbuttons->addArea(QRect(10, 65, 70, 50), "JumperTPRO/left_scrnshot.png", m_screenshotAction));
 
   m_backlightColors << QColor(215, 243, 255);  // X7 Blue
