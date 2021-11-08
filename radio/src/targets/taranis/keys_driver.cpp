@@ -244,6 +244,7 @@ uint32_t switchState(uint8_t index)
 #elif defined(RADIO_ZORRO)
     ADD_2POS_CASE(D);
     ADD_2POS_CASE(E);
+    ADD_2POS_CASE(F);
     ADD_2POS_CASE(G);
     ADD_2POS_CASE(H);
 #elif defined(RADIO_TX12) || defined(RADIO_ZORRO)

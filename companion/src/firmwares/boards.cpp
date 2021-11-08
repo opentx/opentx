@@ -249,8 +249,8 @@ SwitchInfo Boards::getSwitchInfo(Board::Type board, int index)
       {SWITCH_3POS,     "SB"},
       {SWITCH_3POS,     "SC"},
       {SWITCH_TOGGLE,   "SD"},
-      {SWITCH_3POS,     "SE"},
-      {SWITCH_3POS,     "SF"},
+      {SWITCH_2POS,     "SE"},
+      {SWITCH_2POS,     "SF"},
       {SWITCH_TOGGLE,   "SG"},
       {SWITCH_TOGGLE,   "SH"}
     };
