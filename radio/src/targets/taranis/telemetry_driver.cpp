@@ -64,7 +64,6 @@ void telemetryPortInit(uint32_t baudrate, uint8_t mode)
 
   USART_DeInit(TELEMETRY_USART);
   USART_InitTypeDef USART_InitStructure;
-  USART_OverSampling8Cmd(TELEMETRY_USART, ENABLE);
   USART_InitStructure.USART_BaudRate = baudrate;
   if (mode & TELEMETRY_SERIAL_8E2) {
     USART_InitStructure.USART_WordLength = USART_WordLength_9b;
