@@ -341,6 +341,8 @@ enum EnumSwitches
 };
 #if defined(RADIO_TX12)
   #define IS_3POS(x)                      ((x) != SW_SA && (x) != SW_SD)
+#elif defined(RADIO_ZORRO)
+  #define IS_3POS(x)                      ((x) == SW_SB || (x) == SW_SC)
 #else
   #define IS_3POS(x)                      ((x) != SW_SF && (x) != SW_SH)
 #endif
