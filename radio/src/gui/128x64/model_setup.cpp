@@ -19,6 +19,9 @@
  */
 
 #include "opentx.h"
+#if defined(EEPROM_SDCARD)
+#include "storage/modelslist.h"
+#endif
 
 // TODO find why we need this (for REGISTER at least)
 #if defined(PCBXLITE)
@@ -71,10 +74,8 @@ enum MenuModelSetupItems {
   ITEM_MODEL_SETUP_CHECKLIST_DISPLAY,
   ITEM_MODEL_SETUP_THROTTLE_WARNING,
   ITEM_MODEL_SETUP_SWITCHES_WARNING1,
-#if defined(PCBTARANIS)
   ITEM_MODEL_SETUP_SWITCHES_WARNING2,
   ITEM_MODEL_SETUP_POTS_WARNING,
-#endif
   ITEM_MODEL_SETUP_BEEP_CENTER,
   ITEM_MODEL_SETUP_USE_GLOBAL_FUNCTIONS,
 
@@ -221,6 +222,10 @@ inline uint8_t MODULE_TYPE_ROWS(int moduleIdx)
 {
   if (isModuleXJT(moduleIdx) || isModuleR9MNonAccess(moduleIdx) || isModuleDSM2(moduleIdx))
     return 1;
+#if defined(RADIO_TANGO)
+  else if (IS_PCBREV_01())
+    return HIDDEN_ROW;
+#endif
   else
     return 0;
 }
@@ -236,7 +241,11 @@ inline uint8_t MODULE_SUBTYPE_ROWS(int moduleIdx)
   return HIDDEN_ROW;
 }
 
-#define POT_WARN_ROWS                  ((g_model.potsWarnMode) ? (uint8_t)(NUM_POTS+NUM_SLIDERS) : (uint8_t)0)
+#if NUM_POTS > 0
+  #define POT_WARN_ROWS                  ((g_model.potsWarnMode) ? (uint8_t)(NUM_POTS+NUM_SLIDERS) : (uint8_t)0)
+#else
+  #define POT_WARN_ROWS                  HIDDEN_ROW
+#endif
 #define TIMER_ROWS(x)                  2, 0, 0, 0, g_model.timers[x].countdownBeep != COUNTDOWN_SILENT ? (uint8_t)1 : (uint8_t)0
 #define TIMERS_ROWS                    TIMER_ROWS(0), TIMER_ROWS(1), TIMER_ROWS(2)
 
@@ -636,7 +645,6 @@ void menuModelSetup(event_t event)
         g_model.disableThrottleWarning = !editCheckBox(!g_model.disableThrottleWarning, MODEL_SETUP_2ND_COLUMN, y, STR_THROTTLEWARNING, attr, event);
         break;
 
-#if defined(PCBTARANIS)
       case ITEM_MODEL_SETUP_SWITCHES_WARNING2:
         if (i==0) {
           if (CURSOR_MOVED_LEFT(event))
@@ -645,7 +653,6 @@ void menuModelSetup(event_t event)
             menuVerticalOffset++;
         }
         break;
-#endif
 
       case ITEM_MODEL_SETUP_SWITCHES_WARNING1:
 #if defined(PCBTARANIS)
@@ -880,6 +887,21 @@ void menuModelSetup(event_t event)
             g_model.moduleData[INTERNAL_MODULE].subType = checkIncDec(event, g_model.moduleData[INTERNAL_MODULE].subType, 0, MODULE_SUBTYPE_ISRM_PXX2_ACCST_D16, EE_MODEL, isRfProtocolAvailable);
           }
         }
+#elif defined(INTERNAL_MODULE_CRSF)
+        lcdDrawTextAtIndex(MODEL_SETUP_2ND_COLUMN, y, STR_INTERNAL_MODULE_PROTOCOLS, g_model.moduleData[INTERNAL_MODULE].type, menuHorizontalPosition==0 ? attr : 0);
+        if (attr) {
+          if (menuHorizontalPosition == 0) {
+            uint8_t moduleType = checkIncDec(event, g_model.moduleData[INTERNAL_MODULE].type, MODULE_TYPE_NONE, MODULE_TYPE_MAX, EE_MODEL, isInternalModuleAvailable);
+            if (checkIncDec_Ret) {
+              setModuleType(INTERNAL_MODULE, moduleType);
+              if (g_model.moduleData[moduleIdx].type == MODULE_TYPE_NONE)
+                crossfireTurnOffRf(false);
+              else
+                crossfireTurnOnRf();
+            }
+          }
+        }
+        break;
 #else
       uint8_t index = 0;
       if (g_model.moduleData[INTERNAL_MODULE].type == MODULE_TYPE_ISRM_PXX2) {
@@ -1378,13 +1400,25 @@ void menuModelSetup(event_t event)
               if (s_editMode > 0) {
                 CHECK_INCDEC_MODELVAR_ZERO(event, g_model.header.modelId[moduleIdx], getMaxRxNum(moduleIdx));
                 if (checkIncDec_Ret) {
-                  if (isModuleCrossfire(moduleIdx))
+                  if (isModuleCrossfire(moduleIdx)) {
+#if defined(INTERNAL_MODULE_CRSF)
+                    if (moduleIdx == INTERNAL_MODULE)
+                      bkregSetStatusFlag(CRSF_SET_MODEL_ID_PENDING);
+                    else
+                      moduleState[EXTERNAL_MODULE].counter = CRSF_FRAME_MODELID;
+#else
                     moduleState[EXTERNAL_MODULE].counter = CRSF_FRAME_MODELID;
+#endif
+                  }
                   modelHeaders[g_eeGeneral.currModel].modelId[moduleIdx] = g_model.header.modelId[moduleIdx];
                 }
                 else if (event == EVT_KEY_LONG(KEY_ENTER)) {
                   killEvents(event);
+#if defined(EEPROM_SDCARD)
+                  uint8_t newVal = modelslist.findNextUnusedModelId(moduleIdx);
+#else
                   uint8_t newVal = findNextUnusedModelId(g_eeGeneral.currModel, moduleIdx);
+#endif
                   if (newVal != g_model.header.modelId[moduleIdx]) {
                     modelHeaders[g_eeGeneral.currModel].modelId[moduleIdx] = g_model.header.modelId[moduleIdx] = newVal;
                     storageDirty(EE_MODEL);
@@ -1865,6 +1899,37 @@ void menuModelSetup(event_t event)
 
   // some field just finished being edited
   if (old_editMode > 0 && s_editMode == 0) {
+#if defined(EEPROM_SDCARD)
+    ModelCell * mod_cell = modelslist.getCurrentModel();
+    if (mod_cell) {
+      switch(menuVerticalPosition) {
+        case ITEM_MODEL_SETUP_NAME:
+          mod_cell->setModelName(g_model.header.name);
+          break;
+#if defined(HARDWARE_INTERNAL_MODULE)
+        case ITEM_MODEL_SETUP_INTERNAL_MODULE_NOT_ACCESS_RXNUM_BIND_RANGE:
+        case ITEM_MODEL_SETUP_INTERNAL_MODULE_PXX2_MODEL_NUM:
+        case ITEM_MODEL_SETUP_INTERNAL_MODULE_TYPE:
+          if (menuHorizontalPosition == 0) {
+            mod_cell->setRfData(&g_model);
+            checkModelIdUnique(INTERNAL_MODULE);
+          }
+          break;
+#endif
+#if defined(HARDWARE_EXTERNAL_MODULE)
+        case ITEM_MODEL_SETUP_EXTERNAL_MODULE_NOT_ACCESS_RXNUM_BIND_RANGE:
+        case ITEM_MODEL_SETUP_EXTERNAL_MODULE_PXX2_MODEL_NUM:
+        case ITEM_MODEL_SETUP_EXTERNAL_MODULE_TYPE:
+          if (menuHorizontalPosition == 0) {
+            mod_cell->setRfData(&g_model);
+            if (g_model.moduleData[EXTERNAL_MODULE].type != MODULE_TYPE_NONE)
+              checkModelIdUnique(EXTERNAL_MODULE);
+          }
+          break;
+#endif
+      }
+    }
+#else
     switch(menuVerticalPosition) {
 #if defined(HARDWARE_INTERNAL_MODULE)
       case ITEM_MODEL_SETUP_INTERNAL_MODULE_NOT_ACCESS_RXNUM_BIND_RANGE:
@@ -1887,5 +1952,6 @@ void menuModelSetup(event_t event)
         break;
 #endif
     }
+#endif
   }
 }

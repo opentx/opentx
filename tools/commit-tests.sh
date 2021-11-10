@@ -166,6 +166,24 @@ if [[ " TX12 X7 ALL " =~ \ ${FLAVOR}\  ]] ; then
   make -j"${CORES}" tests-radio
 fi
 
+if [[ " TANGO ALL " =~ \ ${FLAVOR}\  ]] ; then
+  # OpenTX on Tango
+  rm -rf ./*
+  cmake "${COMMON_OPTIONS}" -DPCB=TANGO -DHELI=YES -DLUA=YES -DGVARS=YES ${SRCDIR}
+  make -j"${CORES}" ${FIRMARE_TARGET}
+  make -j"${CORES}" libsimulator
+  #make -j"${CORES}" tests-radio
+fi
+
+if [[ " MAMBO ALL " =~ \ ${FLAVOR}\  ]] ; then
+  # OpenTX on Mambo
+  rm -rf ./*
+  cmake "${COMMON_OPTIONS}" -DPCB=MAMBO -DHELI=YES -DLUA=YES -DGVARS=YES ${SRCDIR}
+  make -j"${CORES}" ${FIRMARE_TARGET}
+  make -j"${CORES}" libsimulator
+  #make -j"${CORES}" tests-radio
+fi
+
 if [[ " XLITE ALL " =~ \ ${FLAVOR}\  ]] ; then
   # OpenTX on X-Lite
   rm -rf ./*

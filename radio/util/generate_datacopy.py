@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+from __future__ import print_function
 
 import sys
 import clang.cindex
@@ -18,7 +19,7 @@ def find_libclang():
             if os.path.exists(path):
                 return path
     elif sys.platform.startswith("linux"):
-        for version in ("7", "6.0", "3.8"):
+        for version in ("10", "7", "6.0", "3.8"):
             path = "/usr/lib/x86_64-linux-gnu/libclang-%s.so.1" % version
             if os.path.exists(path):
                 return path

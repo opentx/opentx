@@ -24,7 +24,11 @@ using std::list;
 ModelsList modelslist;
 
 ModelCell::ModelCell(const char * name)
+#if !defined(MODEL_HAVE_NO_BITMAP)
   : buffer(NULL), valid_rfData(false)
+#else
+  : valid_rfData(false)
+#endif
 {
   strncpy(modelFilename, name, sizeof(modelFilename));
   memset(modelName, 0, sizeof(modelName));
@@ -54,6 +58,7 @@ void ModelCell::setModelId(uint8_t moduleIdx, uint8_t id)
   modelId[moduleIdx] = id;
 }
 
+#if !defined(MODEL_HAVE_NO_BITMAP)
 void ModelCell::resetBuffer()
 {
   if (buffer) {
@@ -131,6 +136,12 @@ void ModelCell::loadBitmap()
   }
   buffer->drawSolidHorizontalLine(5, 19, 143, LINE_COLOR);
 }
+#else
+void ModelCell::resetBuffer()
+{
+  return;
+}
+#endif
 
 void ModelCell::save(FIL* file)
 {
@@ -302,6 +313,60 @@ void ModelsList::clear()
   init();
 }
 
+#if defined(RADIO_FAMILY_TBS)
+bool ModelsList::load()
+{
+  char line[LEN_MODELS_IDX_LINE+1];
+  ModelsCategory * category = NULL;
+
+  //load models every time for TBS radios
+  categories.clear();
+  FRESULT result = f_open(&file, RADIO_MODELSLIST_PATH, FA_OPEN_EXISTING | FA_READ);
+  if (result == FR_OK) {
+    while (readNextLine(line, LEN_MODELS_IDX_LINE)) {
+      int len = strlen(line); // TODO could be returned by readNextLine
+      if (len > 2 && line[0] == '[' && line[len-1] == ']') {
+        line[len-1] = '\0';
+        category = new ModelsCategory(&line[1]);
+        categories.push_back(category);
+      }
+      else if (len > 0) {
+
+        //char* rf_data_str = cutModelFilename(line);
+        ModelCell * model = new ModelCell(line);
+        if (!category) {
+          category = new ModelsCategory("Models");
+          categories.push_back(category);
+        }
+        if (!strncmp(line, g_eeGeneral.currModelFilename, LEN_MODEL_FILENAME)) {
+          currentCategory = category;
+          currentModel = model;
+        }
+        if (model->fetchRfData()) {
+          category->push_back(model);
+          modelsCount += 1;
+        }
+        else {
+          category->removeModel(model);
+        }
+      }
+    }
+    f_close(&file);
+
+    if (!getCurrentModel()) {
+      TRACE("currentModel is NULL");
+    }
+  }
+
+  if (categories.size() == 0) {
+    category = new ModelsCategory("Models");
+    categories.push_back(category);
+  }
+
+  save();
+  return true;
+}
+#else
 bool ModelsList::load()
 {
   char line[LEN_MODELS_IDX_LINE+1];
@@ -352,7 +417,9 @@ bool ModelsList::load()
 
   loaded = true;
   return true;
+
 }
+#endif
 
 void ModelsList::save()
 {

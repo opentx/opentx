@@ -376,7 +376,7 @@ void drawDate(coord_t x, coord_t y, TelemetryItem & telemetryItem, LcdFlags att)
   }
 }
 
-void drawGPSCoord(coord_t x, coord_t y, int32_t value, const char * direction, LcdFlags flags, bool seconds=true)
+void drawGPSCoord(coord_t x, coord_t y, int32_t value, const char * direction, LcdFlags flags, bool seconds)
 {
   char s[32];
   uint32_t absvalue = abs(value);

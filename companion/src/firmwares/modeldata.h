@@ -111,6 +111,7 @@ enum TrainerMode {
 };
 
 #define INPUT_NAME_LEN 4
+#define CPN_MAX_BITMAP_LEN 14
 
 class ModelData {
   Q_DECLARE_TR_FUNCTIONS(ModelData)
@@ -176,7 +177,7 @@ class ModelData {
     unsigned int  rssiSource;
     RSSIAlarmData rssiAlarms;
 
-    char bitmap[10+1];
+    char bitmap[CPN_MAX_BITMAP_LEN + 1];
 
     unsigned int trainerMode;  // TrainerMode
 

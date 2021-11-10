@@ -27,6 +27,11 @@ end
 
 -- Zone size: top bar widgets
 local function refreshZoneTiny(wgt)
+  local t1 = model.getTimer(wgt.options.Timer-1)
+  local timerInfo = string.format("-- T%s --", wgt.options.Timer)
+  lcd.drawText(wgt.zone.x+14, wgt.zone.y, timerInfo, SMLSIZE + CUSTOM_COLOR)
+  lcd.drawTimer(wgt.zone.x+4, wgt.zone.y+12, t1.value, MIDSIZE + CUSTOM_COLOR)
+  return
 end
 
 --- Zone size: 160x32 1/8th

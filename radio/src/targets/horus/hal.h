@@ -444,7 +444,7 @@
   #define AUX2_SERIAL_GPIO_PinSource_TX        GPIO_PinSource14
   #define AUX2_SERIAL_GPIO_PinSource_RX        GPIO_PinSource9
   #define AUX2_SERIAL_USART_IRQHandler         USART6_IRQHandler
-  #define AUX2_SERIAL_DMA_Stream_RX            DMA2_Stream6
+  #define AUX2_SERIAL_DMA_Stream_RX            DMA2_Stream1
   #define AUX2_SERIAL_DMA_Channel_RX           DMA_Channel_5
   #define AUX2_SERIAL_PWR_GPIO                 GPIOB
   #define AUX2_SERIAL_PWR_GPIO_PIN             GPIO_Pin_0  // PB.00
@@ -677,7 +677,7 @@
 
 #if defined(RADIO_TX16S)
 // Only slight noise with 868MHz > 1W, if complaints later remove and set AUDIO_UNMUTE_DELAY to 150
-  #undef AUDIO_MUTE_GPIO_PIN            
+  #undef AUDIO_MUTE_GPIO_PIN
 #endif
 
 // Touch
@@ -703,6 +703,18 @@
 #endif
 
 // I2C Bus
+#if defined(RADIO_T18)
+#define I2C_RCC_AHB1Periph              RCC_AHB1Periph_GPIOH
+#define I2C_RCC_APB1Periph              RCC_APB1Periph_I2C3
+#define I2C                             I2C3
+#define I2C_GPIO                        GPIOH
+#define I2C_SCL_GPIO_PIN                GPIO_Pin_7  // PH.07
+#define I2C_SDA_GPIO_PIN                GPIO_Pin_8  // PH.08
+#define I2C_GPIO_AF                     GPIO_AF_I2C3
+#define I2C_SCL_GPIO_PinSource          GPIO_PinSource7
+#define I2C_SDA_GPIO_PinSource          GPIO_PinSource8
+#define I2C_SPEED                       400000
+#else
 #define I2C_RCC_AHB1Periph              RCC_AHB1Periph_GPIOB
 #define I2C_RCC_APB1Periph              RCC_APB1Periph_I2C1
 #define I2C                             I2C1
@@ -713,6 +725,7 @@
 #define I2C_SCL_GPIO_PinSource          GPIO_PinSource8
 #define I2C_SDA_GPIO_PinSource          GPIO_PinSource9
 #define I2C_SPEED                       400000
+#endif
 
 // Haptic
 #define HAPTIC_PWM

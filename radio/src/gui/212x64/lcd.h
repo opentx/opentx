@@ -56,6 +56,9 @@ typedef uint8_t display_t;
 #define PREC2                          0x30
 #define MODE(flags)                    ((((int8_t)(flags) & 0x30) - 0x10) >> 4)
 
+#define IS_RIGHT_ALIGNED(att)          ((att) & RIGHT)
+#define IS_LEFT_ALIGNED(att)           (!((att) & (RIGHT | CENTERED)))
+
 /* line, rect, square flags */
 #define FORCE                          0x02
 #define ERASE                          0x04

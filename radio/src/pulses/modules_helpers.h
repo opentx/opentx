@@ -144,7 +144,7 @@ inline bool isModuleISRMAccess(uint8_t idx)
 #if defined(CROSSFIRE)
 inline bool isModuleCrossfire(uint8_t idx)
 {
-  return idx == EXTERNAL_MODULE && g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_CROSSFIRE;
+  return g_model.moduleData[idx].type == MODULE_TYPE_CROSSFIRE;
 }
 #else
 inline bool isModuleCrossfire(uint8_t idx)

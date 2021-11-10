@@ -46,6 +46,10 @@
   #include "lua/lua_exports_tx12.inc"
 #elif defined(RADIO_T8)
   #include "lua/lua_exports_t8.inc"
+#elif defined(RADIO_TANGO)
+  #include "lua/lua_exports_tango.inc"
+#elif defined(RADIO_MAMBO)
+  #include "lua/lua_exports_mambo.inc"
 #elif defined(PCBX9LITES)
   #include "lua/lua_exports_x9lites.inc"
 #elif defined(PCBX9LITE)
@@ -66,6 +70,8 @@
   #define RADIO_VERSION FLAVOUR
 #endif
 
+#define VERSION_OSNAME "OpenTX"
+
 #define FIND_FIELD_DESC  0x01
 
 #define KEY_EVENTS(xxx, yyy)  \
@@ -85,15 +91,16 @@ Return OpenTX version
 
 @retval string OpenTX version (ie "2.1.5")
 
-@retval multiple (available since 2.1.7) returns 5 values:
+@retval multiple (available since 2.1.7) returns 6 values:
  * (string) OpenTX version (ie "2.1.5")
  * (string) radio type: `x12s`, `x10`, `x9e`, `x9d+`, `x9d` or `x7`.
 If running in simulator the "-simu" is added
  * (number) major version (ie 2 if version 2.1.5)
  * (number) minor version (ie 1 if version 2.1.5)
  * (number) revision number (ie 5 if version 2.1.5)
+ * (string) OS name (ie "OpenTX" if OpenTX)
 
-@status current Introduced in 2.0.0, expanded in 2.1.7, radio type strings changed in 2.2.0
+@status current Introduced in 2.0.0, expanded in 2.1.7, radio type strings changed in 2.2.0, OS name added in 2.3.14
 
 ### Example
 
@@ -101,12 +108,13 @@ This example also runs in OpenTX versions where the function returned only one v
 
 ```lua
 local function run(event)
-  local ver, radio, maj, minor, rev = getVersion()
+  local ver, radio, maj, minor, rev, osname = getVersion()
   print("version: "..ver)
   if radio then print ("radio: "..radio) end
   if maj then print ("maj: "..maj) end
   if minor then print ("minor: "..minor) end
   if rev then print ("rev: "..rev) end
+  if osname then print ("osname: "..osname) end
   return 1
 end
 
@@ -114,11 +122,12 @@ return {  run=run }
 ```
 Output of the above script in simulator:
 ```
-version: 2.1.7
+version: 2.3.14
 radio: taranis-simu
 maj: 2
-minor: 1
-rev: 7
+minor: 3
+rev: 14
+osname: OpenTX
 ```
 */
 static int luaGetVersion(lua_State * L)
@@ -128,7 +137,8 @@ static int luaGetVersion(lua_State * L)
   lua_pushnumber(L, VERSION_MAJOR);
   lua_pushnumber(L, VERSION_MINOR);
   lua_pushnumber(L, VERSION_REVISION);
-  return 5;
+  lua_pushstring(L, VERSION_OSNAME);
+  return 6;
 }
 
 /*luadoc
@@ -681,6 +691,37 @@ When called without parameters, it will only return the status of the output buf
 */
 static int luaCrossfireTelemetryPush(lua_State * L)
 {
+#if defined(RADIO_FAMILY_TBS)
+  if (IS_INTERNAL_MODULE_ENABLED()) {
+    if (lua_gettop(L) == 0) {
+      lua_pushboolean(L, outputTelemetryBuffer.isAvailable());
+    }
+    else if (outputTelemetryBuffer.isAvailable()) {
+      uint8_t command = luaL_checkunsigned(L, 1);
+      luaL_checktype(L, 2, LUA_TTABLE);
+      uint8_t length = luaL_len(L, 2);
+      outputTelemetryBuffer.pushByte(MODULE_ADDRESS);
+      outputTelemetryBuffer.pushByte(2 + length); // 1(COMMAND) + data length + 1(CRC)
+      outputTelemetryBuffer.pushByte(command); // COMMAND
+      for (int i = 0; i < length; i++) {
+        lua_rawgeti(L, 2, i + 1);
+        outputTelemetryBuffer.pushByte(luaL_checkunsigned(L, -1));
+      }
+      outputTelemetryBuffer.pushByte(crc8(outputTelemetryBuffer.data + 2, 1 + length));
+      telemetryOutputSetTrigger(command);
+#if !defined(SIMU)
+      libCrsfRouting(DEVICE_INTERNAL, outputTelemetryBuffer.data);
+      outputTelemetryBuffer.reset();
+      outputTelemetryBufferTrigger = 0x00;
+#endif
+      lua_pushboolean(L, true);
+    }
+    else {
+      lua_pushboolean(L, false);
+    }
+    return 1;
+  }
+#endif
   if (telemetryProtocol != PROTOCOL_TELEMETRY_CROSSFIRE) {
     lua_pushnil(L);
     return 1;
@@ -711,6 +752,20 @@ static int luaCrossfireTelemetryPush(lua_State * L)
   else {
     lua_pushboolean(L, false);
   }
+  return 1;
+}
+#endif
+
+#if defined(RADIO_FAMILY_TBS)
+static uint8_t devId = 0;
+int luaSetDevId(lua_State* L){
+  devId = lua_tointeger(L, -1);
+  lua_pop(L, 1);
+  return 1;
+}
+
+int luaGetDevId(lua_State* L){
+  lua_pushnumber(L, devId);
   return 1;
 }
 #endif
@@ -1787,6 +1842,10 @@ const luaL_Reg opentxLib[] = {
   { "crossfireTelemetryPop", luaCrossfireTelemetryPop },
   { "crossfireTelemetryPush", luaCrossfireTelemetryPush },
 #endif
+#if defined(RADIO_FAMILY_TBS)
+  { "SetDevId", luaSetDevId },
+  { "GetDevId", luaGetDevId },
+#endif
 #if defined(MULTIMODULE)
   { "multiBuffer", luaMultiBuffer },
 #endif
@@ -1826,12 +1885,14 @@ const luaR_value_entry opentxConstants[] = {
   { "MIXSRC_SB", MIXSRC_SB },
   { "MIXSRC_SC", MIXSRC_SC },
   { "MIXSRC_SD", MIXSRC_SD },
-#if !defined(PCBX7) && !defined(PCBXLITE) && !defined(PCBX9LITE)
+#if defined(HARDWARE_SWITCH_E)
   { "MIXSRC_SE", MIXSRC_SE },
-  { "MIXSRC_SG", MIXSRC_SG },
 #endif
 #if defined(HARDWARE_SWITCH_F)
   { "MIXSRC_SF", MIXSRC_SF },
+#endif
+#if defined(HARDWARE_SWITCH_G)
+  { "MIXSRC_SG", MIXSRC_SG },
 #endif
 #if defined(HARDWARE_SWITCH_H)
   { "MIXSRC_SH", MIXSRC_SH },
