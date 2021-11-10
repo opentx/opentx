@@ -1,7 +1,7 @@
 include(CMakeForceCompiler)
 include(Bitmaps)
 
-set(PCB_TYPES X9LITE X9LITES X7 XLITE XLITES X9D X9D+ X9E X10 X12S SKY9X 9XRPRO AR9X)
+set(PCB_TYPES X9LITE X9LITES X7 XLITE XLITES X9D X9D+ X9E X10 X12S SKY9X 9XRPRO AR9X TANGO MAMBO)
 set(GUI_LANGUAGES CZ DE EN ES FR IT PT SK SE PL HU NL)
 set(TTS_LANGUAGES CZ DE EN ES FR IT PT SK SE PL HU NL RU)
 
@@ -55,7 +55,7 @@ option(MODULE_PROTOCOL_D8 "Add support for D8 modules" ON)
 option(FRSKY_RELEASE "Used to build FrSky released firmware" OFF)
 option(TBS_RELEASE "Used to build TBS released firmware" OFF)
 option(IMRC_RELEASE "Used to build IMRC released firmware" OFF)
-option(ALLOW_TRAINER_MULTI "Allow multi trainer" OFF)
+option(HARDWARE_TRAINER_MULTI_MOD "Allow multi trainer" OFF)
 
 # since we reset all default CMAKE compiler flags for firmware builds, provide an alternate way for user to specify additional flags.
 set(FIRMWARE_C_FLAGS "" CACHE STRING "Additional flags for firmware target c compiler (note: all CMAKE_C_FLAGS[_*] are ignored for firmware/bootloader).")
@@ -94,6 +94,8 @@ elseif(PCB STREQUAL X9E OR PCB STREQUAL X9D+ OR PCB STREQUAL X9D OR PCB STREQUAL
   include(targets/taranis/CMakeLists.txt)
 elseif(PCB STREQUAL SKY9X OR PCB STREQUAL 9XRPRO OR PCB STREQUAL AR9X)
   include(targets/sky9x/CMakeLists.txt)
+elseif(PCB STREQUAL TANGO OR PCB STREQUAL MAMBO)
+  include(targets/tbs/CMakeLists.txt)
 else()
   message(FATAL_ERROR "Unknown PCB '${PCB}'")
 endif()
@@ -133,6 +135,7 @@ set(SRC ${SRC} debug.cpp)
 
 if(${EEPROM} STREQUAL SDCARD)
   set(SRC ${SRC} storage/storage_common.cpp storage/sdcard_raw.cpp storage/modelslist.cpp)
+  add_definitions(-DEEPROM_SDCARD)
 elseif(${EEPROM} STREQUAL EEPROM_RLC)
   set(SRC ${SRC} storage/storage_common.cpp storage/eeprom_common.cpp storage/eeprom_rlc.cpp)
   add_definitions(-DEEPROM -DEEPROM_RLC)
@@ -362,8 +365,8 @@ if(FRSKY_RELEASE)
   set(POPUP_LEVEL 3)
 endif()
 
-if(ALLOW_TRAINER_MULTI)
-  add_definitions(-DALLOW_TRAINER_MULTI)
+if(HARDWARE_TRAINER_MULTI_MOD)
+  add_definitions(-DHARDWARE_TRAINER_MULTI_MOD)
 endif()
 
 add_definitions(-DPOPUP_LEVEL=${POPUP_LEVEL})

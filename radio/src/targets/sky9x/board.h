@@ -222,6 +222,7 @@ void flashWrite(uint32_t * address, const uint32_t * buffer);
 
 // Keys driver
 uint32_t switchState(uint8_t index);
+static const uint8_t switchReOrder[] = {0, 1, 2, 3, 4, 5};
 uint32_t readKeys();
 uint32_t readTrims();
 #define NUM_TRIMS                      4
@@ -269,7 +270,7 @@ extern "C" {
 #endif
 
 // Backlight driver
-#define backlightEnable()              (PWM->PWM_CH_NUM[0].PWM_CDTY = currentBacklightBright)
+#define backlightEnable(x)             (PWM->PWM_CH_NUM[0].PWM_CDTY = currentBacklightBright)
 #define backlightDisable()             (PWM->PWM_CH_NUM[0].PWM_CDTY = 100)
 #define isBacklightEnabled()           (PWM->PWM_CH_NUM[0].PWM_CDTY != 100)
 #define BACKLIGHT_ENABLE()             backlightEnable()

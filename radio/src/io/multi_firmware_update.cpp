@@ -356,7 +356,11 @@ const char * MultiFirmwareUpdateDriver::flashFirmware(FIL * file, const char * l
   const char * result = nullptr;
   moduleOn();
 
+#if defined(RADIO_FAMILY_TBS)
+  bool inverted = false;
+#else
   bool inverted = true; //false; // true
+#endif
   init(inverted);
 
   /* wait 500ms for power on */
@@ -588,16 +592,19 @@ bool multiFlashFirmware(uint8_t moduleIdx, const char * filename, MultiModuleTyp
 
 #if defined(HARDWARE_INTERNAL_MODULE)
   uint8_t intPwr = IS_INTERNAL_MODULE_ON();
-  INTERNAL_MODULE_OFF();
+  if (intPwr)
+    INTERNAL_MODULE_OFF();
 #endif
 
 #if defined(HARDWARE_EXTERNAL_MODULE)
   uint8_t extPwr = IS_EXTERNAL_MODULE_ON();
-  EXTERNAL_MODULE_OFF();
+  if (extPwr)
+    EXTERNAL_MODULE_OFF();
 #endif
 
   uint8_t spuPwr = IS_SPORT_UPDATE_POWER_ON();
-  SPORT_UPDATE_POWER_OFF();
+  if (spuPwr)
+    SPORT_UPDATE_POWER_OFF();
 
   drawProgressScreen(getBasename(filename), STR_DEVICE_RESET, 0, 0);
 
@@ -623,6 +630,7 @@ bool multiFlashFirmware(uint8_t moduleIdx, const char * filename, MultiModuleTyp
   INTERNAL_MODULE_OFF();
 #endif
   EXTERNAL_MODULE_OFF();
+
   SPORT_UPDATE_POWER_OFF();
 
   /* wait 2s off */
@@ -634,8 +642,12 @@ bool multiFlashFirmware(uint8_t moduleIdx, const char * filename, MultiModuleTyp
 
 #if defined(HARDWARE_INTERNAL_MODULE)
   if (intPwr) {
+  #if defined(INTERNAL_MODULE_CRSF)
+    crossfireTurnOnRf();
+  #else
     INTERNAL_MODULE_ON();
     setupPulsesInternalModule();
+  #endif
   }
 #endif
 

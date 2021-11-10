@@ -24,7 +24,11 @@ void menuModelNotes(event_t event)
 {
   if (event == EVT_ENTRY) {
     strcpy(reusableBuffer.viewText.filename, MODELS_PATH "/");
+#if defined(EEPROM)
     char *buf = strcat_modelname(&reusableBuffer.viewText.filename[sizeof(MODELS_PATH)], g_eeGeneral.currModel);
+#else
+    char *buf = strcat_currentmodelname(&reusableBuffer.viewText.filename[sizeof(MODELS_PATH)]);
+#endif
     strcpy(buf, TEXT_EXT);
   }
 

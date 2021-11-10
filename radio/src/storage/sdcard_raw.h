@@ -37,5 +37,8 @@ const char * createModel();
 
 const char * loadRadioSettings(const char * path);
 const char * loadRadioSettings();
+#if defined(EEPROM_SDCARD)
+extern ModelHeader modelHeaders[MAX_MODELS];
+#endif
 
 #endif // _SDCARD_RAW_H_
