@@ -623,6 +623,14 @@ bool isInternalModuleAvailable(int moduleType)
     return false;
 #endif
 
+#if defined(INTERNAL_MODULE_ELRS)
+  if (moduleType == MODULE_TYPE_CROSSFIRE)
+    return true;
+  else
+    return false;
+#endif
+
+
   if (moduleType == MODULE_TYPE_XJT_PXX1) {
 #if defined(PXX1) && defined(INTERNAL_MODULE_PXX1)
     return !isModuleUsingSport(EXTERNAL_MODULE, g_model.moduleData[EXTERNAL_MODULE].type);
