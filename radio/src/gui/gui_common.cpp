@@ -604,7 +604,7 @@ bool isInternalModuleAvailable(int moduleType)
   if (moduleType == MODULE_TYPE_NONE)
     return true;
 
-#if defined(INTERNAL_MODULE_CRSF)
+#if defined(INTERNAL_MODULE_CRSF) || defined(INTERNAL_MODULE_ELRS)
   if (moduleType == MODULE_TYPE_CROSSFIRE) {
     if (g_model.moduleData[EXTERNAL_MODULE].type != MODULE_TYPE_CROSSFIRE)
       return true;
@@ -622,14 +622,6 @@ bool isInternalModuleAvailable(int moduleType)
   else
     return false;
 #endif
-
-#if defined(INTERNAL_MODULE_ELRS)
-  if (moduleType == MODULE_TYPE_CROSSFIRE)
-    return true;
-  else
-    return false;
-#endif
-
 
   if (moduleType == MODULE_TYPE_XJT_PXX1) {
 #if defined(PXX1) && defined(INTERNAL_MODULE_PXX1)

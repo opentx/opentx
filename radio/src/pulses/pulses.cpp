@@ -460,7 +460,7 @@ static void enablePulsesInternalModule(uint8_t protocol)
   // start new protocol hardware here
 
   switch (protocol) {
-#if defined(INTERNAL_MODULE_CRSF)
+#if defined(INTERNAL_MODULE_CRSF) || defined(INTERNAL_MODULE_ELRS)
     case PROTOCOL_CHANNELS_CROSSFIRE:
       break;
 #elif defined(PXX1) && !defined(INTMODULE_USART)
@@ -571,7 +571,7 @@ bool setupPulsesInternalModule(uint8_t protocol)
       return true;
 #endif
 
-#if defined(INTERNAL_MODULE_CRSF)
+#if defined(INTERNAL_MODULE_CRSF) || defined(INTERNAL_MODULE_ELRS)
     case PROTOCOL_CHANNELS_CROSSFIRE:
       mixerSchedulerSetPeriod(INTERNAL_MODULE, CROSSFIRE_PERIOD);
       return true;
