@@ -323,6 +323,14 @@ static void processMultiTelemetryPaket(const uint8_t * packet, uint8_t module)
   uint8_t len = packet[1];
   const uint8_t * data = packet + 2;
 
+
+#if !defined(DEBUG) && defined(USB_SERIAL)
+  if (getSelectedUsbMode() == USB_TELEMETRY_MIRROR_MODE) {
+    for (uint8_t c = 0; c < len + 2; c++)
+      usbSerialPutc(packet[c]);
+  }
+#endif
+
 #if defined(AUX_SERIAL)
   if (g_eeGeneral.auxSerialMode == UART_MODE_TELEMETRY_MIRROR) {
     for (uint8_t c = 0; c < len + 2; c++)

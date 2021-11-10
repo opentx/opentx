@@ -284,6 +284,13 @@ void processCrossfireTelemetryData(uint8_t data, uint8_t module)
 {
   uint8_t * rxBuffer = getRxBuffer(module);
   uint8_t &rxBufferCount = getRxBufferCount(module);
+
+#if !defined(DEBUG) && defined(USB_SERIAL)
+  if (getSelectedUsbMode() == USB_TELEMETRY_MIRROR_MODE) {
+    usbSerialPutc(data);
+  }
+#endif
+
 #if defined(AUX_SERIAL)
   if (g_eeGeneral.auxSerialMode == UART_MODE_TELEMETRY_MIRROR) {
     auxSerialPutc(data);

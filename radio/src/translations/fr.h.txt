@@ -86,8 +86,17 @@
 #define LEN_COUNTRYCODES               TR("\002", "\006")
 #define TR_COUNTRYCODES                TR("US""JP""EU", "USA\0  ""Japon\0""Europe")
 
+#if defined(RADIO_FAMILY_TBS)
 #define LEN_USBMODES                   TR("\006", "\010")
-#define TR_USBMODES                    TR("Popup\0""Joyst\0""SDCard""Série\0", "Demander""Joystick""Stockage""Série\0  ")
+#define TR_USBMODES                    TR("Ask\0  ""Joyst\0""Agent\0""SDCard""Serial", "Ask\0    ""Joystick""Agent\0 ""Storage\0""Serial\0 ")
+#else
+#define LEN_USBMODES                   TR("\006", "\010")
+#if defined(DEBUG)
+#define TR_USBMODES                    TR("Popup\0""Joyst\0""SDCard""Telem\0""Série\0", "Demander""Joystick""Stockage""Telem\0   ""Série\0  ")
+#else
+#define TR_USBMODES                    TR("Popup\0""Joyst\0""SDCard""Telem\0""Série\0", "Demander""Joystick""Stockage""Telem\0   ""S-Telem\0 ")
+#endif
+#endif
 
 #define LEN_JACKMODES                  "\007"
 #define TR_JACKMODES                   "Demander""Audio\0 ""Ecolage"
@@ -929,6 +938,7 @@
 #define TR_USB_JOYSTICK                "USB Joystick (HID)"
 #define TR_USB_MASS_STORAGE            "Stockage USB (SD)"
 #define TR_USB_SERIAL                  "Port série (Debug)"
+#define TR_USB_TELEMETRY               "USB Telem mirror"
 #define TR_SETUP_SCREENS               "Configuration écrans"
 #define TR_MONITOR_SCREENS             "Moniteurs"
 #define TR_AND_SWITCH                  "ET suppl."

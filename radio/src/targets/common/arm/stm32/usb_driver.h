@@ -32,11 +32,12 @@ enum usbMode {
   USB_CHARGING_MODE,
 #endif
   USB_MASS_STORAGE_MODE,
+#if defined(DEBUG)
   USB_SERIAL_MODE,
-#if defined(USB_SERIAL)
   USB_MAX_MODE=USB_SERIAL_MODE
 #else
-  USB_MAX_MODE=USB_MASS_STORAGE_MODE
+  USB_TELEMETRY_MIRROR_MODE,                  // Todo : increase EEprom storage to allow more mode
+  USB_MAX_MODE=USB_TELEMETRY_MIRROR_MODE
 #endif
 };
 

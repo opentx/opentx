@@ -85,8 +85,17 @@
 #define LEN_COUNTRYCODES               TR("\002", "\010")
 #define TR_COUNTRYCODES                TR("US""JP""EU", "Amerika\0""Japonsko""Evropa\0 ")
 
+#if defined(RADIO_FAMILY_TBS)
+#define LEN_USBMODES                   TR("\006", "\010")
+#define TR_USBMODES                    TR("Ask\0  ""Joyst\0""Agent\0""SDCard""Serial", "Ask\0    ""Joystick""Agent\0 ""Storage\0""Serial\0 ")
+#else
 #define LEN_USBMODES                   TR("\007", "\011")
+#if defined(DEBUG)
 #define TR_USBMODES                    TR("Zeptat\0""Joyst\0 ""SDkarta""Serial\0", "Zeptat se""Joystick\0""Úložiště\0""Serial\0  ")
+#else
+#define TR_USBMODES                    TR("Zeptat\0""Joyst\0 ""SDkarta""Telem\0 ", "Zeptat se""Joystick\0""Úložiště\0""Telem\0   ")
+#endif
+#endif
 
 #define LEN_JACKMODES                  "\007"
 #define TR_JACKMODES                   "Zeptat\0""Audio\0 ""Trenér"
@@ -908,6 +917,7 @@
 #define TR_USB_JOYSTICK                "USB Joystick (HID)"
 #define TR_USB_MASS_STORAGE            "USB Disk (SD)"
 #define TR_USB_SERIAL                  "USB Serial (Debug)"
+#define TR_USB_TELEMETRY               "USB Telem mirror"
 #define TR_SETUP_SCREENS               "Obrazovky nastavení"
 #define TR_MONITOR_SCREENS             "Monitory"
 #define TR_AND_SWITCH                  "AND Spínač"

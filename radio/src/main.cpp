@@ -35,6 +35,7 @@ void onUSBConnectMenu(const char *result)
   else if (result == STR_USB_JOYSTICK) {
     setSelectedUsbMode(USB_JOYSTICK_MODE);
   }
+
 #if defined(RADIO_FAMILY_TBS)
   else if (result == STR_USB_AGENT) {
     setSelectedUsbMode(USB_AGENT_MODE);
@@ -43,9 +44,15 @@ void onUSBConnectMenu(const char *result)
     setSelectedUsbMode(USB_CHARGING_MODE);
   }
 #endif
+#if defined(DEBUG)
   else if (result == STR_USB_SERIAL) {
     setSelectedUsbMode(USB_SERIAL_MODE);
   }
+#else
+  else if (result == STR_USB_TELEMETRY) {
+    setSelectedUsbMode(USB_TELEMETRY_MIRROR_MODE);
+  }
+#endif
 }
 #endif
 
@@ -72,6 +79,9 @@ void handleUsbConnection()
           POPUP_MENU_ADD_ITEM(STR_USB_MASS_STORAGE);
 #if defined(DEBUG)
           POPUP_MENU_ADD_ITEM(STR_USB_SERIAL);
+#endif
+#if defined(USB_SERIAL)
+        POPUP_MENU_ADD_ITEM(STR_USB_TELEMETRY);
 #endif
           POPUP_MENU_TITLE(STR_SELECT_MODE);
           POPUP_MENU_START(onUSBConnectMenu);
@@ -256,7 +266,7 @@ void checkBatteryAlarms()
       last_warning_time = get_tmr10ms();
       counter = DOWNCOUNT_PERIOD;
     }
-    
+
     while (counter){
       if ((get_tmr10ms() - last_warning_time) / 100 < DOWNCOUNT_PERIOD) {
         counter = DOWNCOUNT_PERIOD - (get_tmr10ms() - last_warning_time) / 100;

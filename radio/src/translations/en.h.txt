@@ -91,8 +91,13 @@
 #define TR_USBMODES                    TR("Ask\0  ""Joyst\0""Agent\0""SDCard""Serial", "Ask\0    ""Joystick""Agent\0 ""Storage\0""Serial\0 ")
 #else
 #define LEN_USBMODES                   TR("\006", "\010")
+#if defined(DEBUG)
 #define TR_USBMODES                    TR("Ask\0  ""Joyst\0""SDCard""Serial", "Ask\0    ""Joystick""Storage\0""Serial\0 ")
+#else
+#define TR_USBMODES                    TR("Ask\0  ""Joyst\0""SDCard""Telem\0", "Ask\0    ""Joystick""Storage\0""SerTelem")
 #endif
+#endif
+
 #define LEN_JACKMODES                  "\007"
 #define TR_JACKMODES                   "Ask\0   ""Audio\0 ""Trainer"
 
@@ -955,6 +960,7 @@
 #endif
 #define TR_USB_MASS_STORAGE            "USB Storage (SD)"
 #define TR_USB_SERIAL                  "USB Serial (Debug)"
+#define TR_USB_TELEMETRY               "USB Telem mirror"
 #define TR_SETUP_SCREENS               "Setup screens"
 #define TR_MONITOR_SCREENS             "Monitors"
 #define TR_AND_SWITCH                  "AND switch"
