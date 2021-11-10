@@ -86,13 +86,17 @@
 #define LEN_COUNTRYCODES       			TR("\002", "\007")
 #define TR_COUNTRYCODES        			TR("US""JP""EU", "Amerika""Japan\0 ""Europa\0")
 
+#if defined(RADIO_FAMILY_TBS)
+#define LEN_USBMODES                   TR("\006", "\010")
+#define TR_USBMODES                    TR("Ask\0  ""Joyst\0""Agent\0""SDCard""Serial", "Ask\0    ""Joystick""Agent\0 ""Storage\0""Serial\0 ")
+#else
 #define LEN_USBMODES           			TR("\006", "\010")
 #if defined(DEBUG)
 #define TR_USBMODES            			TR("Fragen""Joyst\0""SDCard""Serial", "Fragen\0 ""Joystick""Speicher""Seriell\0")
 #else
 #define TR_USBMODES            			TR("Fragen""Joyst\0""SDCard""Telem\0", "Fragen\0 ""Joystick""Speicher""Telem\0 ")
 #endif
-
+#endif
 #define LEN_JACKMODES                  "\007"
 #define TR_JACKMODES                   "Popup\0 ""Audio\0 ""Trainer"
 

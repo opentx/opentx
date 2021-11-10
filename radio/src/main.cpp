@@ -44,7 +44,6 @@ void onUSBConnectMenu(const char *result)
     setSelectedUsbMode(USB_CHARGING_MODE);
   }
 #endif
-#else
 #if defined(DEBUG)
   else if (result == STR_USB_SERIAL) {
     setSelectedUsbMode(USB_SERIAL_MODE);
@@ -53,8 +52,8 @@ void onUSBConnectMenu(const char *result)
   else if (result == STR_USB_TELEMETRY) {
     setSelectedUsbMode(USB_TELEMETRY_MIRROR_MODE);
   }
-}
 #endif
+}
 #endif
 
 void handleUsbConnection()

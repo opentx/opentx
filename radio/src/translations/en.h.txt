@@ -96,6 +96,7 @@
 #else
 #define TR_USBMODES                    TR("Ask\0  ""Joyst\0""SDCard""Telem\0", "Ask\0    ""Joystick""Storage\0""SerTelem")
 #endif
+#endif
 
 #define LEN_JACKMODES                  "\007"
 #define TR_JACKMODES                   "Ask\0   ""Audio\0 ""Trainer"
