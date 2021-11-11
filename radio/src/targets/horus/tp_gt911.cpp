@@ -207,7 +207,7 @@ const uint8_t TOUCH_GT911_Cfg[] =
     0xFF,                // 0x80F9 Reserved
     0xFF,                // 0x80FA Reserved
     0xFF,                // 0x80FB Reserved
-    0xFF                 // 0x80FC Reserved
+    0xFF,                // 0x80FC Reserved
     0xFF,                // 0x80FD Reserved
     0xFF                 // 0x80FE Reserved
   };
