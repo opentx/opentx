@@ -449,6 +449,13 @@
   #define SWITCHES_GPIO_PIN_C_L         GPIO_Pin_11  // PD.11
   #define SWITCHES_GPIO_REG_C_H         GPIOE->IDR
   #define SWITCHES_GPIO_PIN_C_H         GPIO_Pin_0  // PE.00
+#elif defined(RADIO_ZORRO)
+  #define STORAGE_SWITCH_C
+  #define HARDWARE_SWITCH_C
+  #define SWITCHES_GPIO_REG_C_L         GPIOE->IDR
+  #define SWITCHES_GPIO_PIN_C_L         GPIO_Pin_0  // PE.00
+  #define SWITCHES_GPIO_REG_C_H         GPIOD->IDR
+  #define SWITCHES_GPIO_PIN_C_H         GPIO_Pin_11  // PD.11
 #elif defined(RADIO_T8)
   #define STORAGE_SWITCH_C
   #define HARDWARE_SWITCH_C
