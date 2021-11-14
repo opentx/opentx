@@ -319,7 +319,12 @@ class LuaWidgetFactory: public WidgetFactory
       lua_newtable(lsWidgets);
       int i = 0;
       for (const ZoneOption * option = options; option->name; option++, i++) {
-        l_pushtableint(option->name, persistentData->options[i].signedValue);
+        if (option->type == ZoneOption::String) {
+          lua_pushtablezstring(lsWidgets, option->name, persistentData->options[i].stringValue);
+        }
+        else {
+          l_pushtableint(option->name, persistentData->options[i].signedValue);
+        }
       }
 
       if (lua_pcall(lsWidgets, 2, 1, 0) != 0) {
@@ -349,7 +354,12 @@ void LuaWidget::update()
   lua_newtable(lsWidgets);
   int i = 0;
   for (const ZoneOption * option = getOptions(); option->name; option++, i++) {
-    l_pushtableint(option->name, persistentData->options[i].signedValue);
+    if (option->type == ZoneOption::String) {
+      lua_pushtablezstring(lsWidgets, option->name, persistentData->options[i].stringValue);
+    }
+    else {
+      l_pushtableint(option->name, persistentData->options[i].signedValue);
+    }
   }
 
   if (lua_pcall(lsWidgets, 2, 0, 0) != 0) {
