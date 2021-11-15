@@ -244,8 +244,8 @@ ModelCell * ModelsCategory::addModel(const char * name)
 
 void ModelsCategory::removeModel(ModelCell * model)
 {
-  delete model;
   remove(model);
+  delete model;  
 }
 
 void ModelsCategory::moveModel(ModelCell * model, int8_t step)
@@ -483,8 +483,8 @@ ModelCell * ModelsList::addModel(ModelsCategory * category, const char * name)
 void ModelsList::removeCategory(ModelsCategory * category)
 {
   modelsCount -= category->size();
-  delete category;
   categories.remove(category);
+  delete category;  
 }
 
 void ModelsList::removeModel(ModelsCategory * category, ModelCell * model)
