@@ -47,7 +47,7 @@
 #elif defined(RADIO_TX12)
   const int8_t adcDirection[NUM_ANALOGS] = {-1,1,-1,1,  -1,-1,  1,  1};
 #elif defined(RADIO_ZORRO)
-  const int8_t adcDirection[NUM_ANALOGS] = {-1, 1, 1, -1, -1,-1, 1, 1};
+  const int8_t adcDirection[NUM_ANALOGS] = {-1, 1, 1, -1, -1, 1, 1, 1};
 #elif defined(RADIO_TANGO)
   const int8_t adcDirection[NUM_ANALOGS] = {1,1,1,1,  1,1};
 #elif defined(RADIO_MAMBO)
