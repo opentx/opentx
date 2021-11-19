@@ -416,8 +416,10 @@ extern "C" void TELEMETRY_TIMER_IRQHandler()
 // TODO we should have telemetry in an higher layer, functions above should move to a sport_driver.cpp
 bool telemetryGetByte(uint8_t * byte)
 {
+#if defined(TRAINER_SPORT_SBUS)
   if (g_model.trainerData.mode == TRAINER_MODE_MASTER_SBUS_SPORT)
     return 0;
+#endif
 #if defined(PCBX12S)
   if (telemetryFifoMode & TELEMETRY_SERIAL_WITHOUT_DMA)
     return telemetryNoDMAFifo.pop(*byte);
