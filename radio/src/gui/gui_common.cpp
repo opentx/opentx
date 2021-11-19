@@ -788,6 +788,11 @@ bool isTelemetryProtocolAvailable(int protocol)
 
 bool isTrainerModeAvailable(int mode)
 {
+#if defined(TRAINER_SPORT_SBUS)
+  if (mode == TRAINER_MODE_MASTER_SBUS_SPORT)
+    return g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_NONE;
+#endif
+
 #if defined(RADIO_FAMILY_TBS)
   if (mode != TRAINER_MODE_MULTI)
     return false;
@@ -827,11 +832,6 @@ bool isTrainerModeAvailable(int mode)
 #if defined(PCBXLITE) && !defined(PCBXLITES)
   if (mode == TRAINER_MODE_MASTER_TRAINER_JACK || mode == TRAINER_MODE_SLAVE)
     return false;
-#endif
-
-#if defined(TRAINER_SPORT_SBUS)
-  if (mode == TRAINER_MODE_MASTER_SBUS_SPORT)
-    return !isModuleUsingSport(EXTERNAL_MODULE, g_model.moduleData[EXTERNAL_MODULE].type);
 #endif
   return true;
 }
