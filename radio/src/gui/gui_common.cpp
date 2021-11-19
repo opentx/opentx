@@ -641,6 +641,10 @@ bool isInternalModuleAvailable(int moduleType)
 
 bool isExternalModuleAvailable(int moduleType)
 {
+#if defined(TRAINER_SPORT_SBUS)
+  if (g_model.trainerData.mode == TRAINER_MODE_MASTER_SBUS_SPORT)
+    return false;
+#endif
 #if !defined(HARDWARE_EXTERNAL_MODULE_SIZE_SML)
   if (isModuleTypeR9MLite(moduleType) || moduleType == MODULE_TYPE_XJT_LITE_PXX2)
     return false;
@@ -825,6 +829,10 @@ bool isTrainerModeAvailable(int mode)
     return false;
 #endif
 
+#if defined(TRAINER_SPORT_SBUS)
+  if (mode == TRAINER_MODE_MASTER_SBUS_SPORT)
+    return !isModuleUsingSport(EXTERNAL_MODULE, g_model.moduleData[EXTERNAL_MODULE].type);
+#endif
   return true;
 }
 
