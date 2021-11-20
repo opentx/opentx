@@ -508,6 +508,8 @@ static const uint8_t switchReOrder[] = {0, 1, 3, 2, 4, 5};
 static const uint8_t switchReOrder[] = {0, 4, 2, 1, 5, 3};
 #elif defined(RADIO_X7)
 static const uint8_t switchReOrder[] = {0, 1, 4, 2, 3, 5};
+#elif defined(RADIO_TX12)
+static const uint8_t switchReOrder[] = {0, 1, 4, 2, 3, 5};
 #else
 static const uint8_t switchReOrder[] = {0, 1, 2, 3, 4, 5};
 #endif
