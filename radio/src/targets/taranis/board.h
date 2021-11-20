@@ -500,7 +500,17 @@ enum EnumSwitchesPositions
 
 void keysInit();
 uint32_t switchState(uint8_t index);
+#if defined(RADIO_TLITE)
+static const uint8_t switchReOrder[] = {0, 2, 1, 3, 4, 5};
+#elif defined(PCBX9LITE)
+static const uint8_t switchReOrder[] = {0, 1, 3, 2, 4, 5};
+#elif defined(PCBXLITES)
+static const uint8_t switchReOrder[] = {0, 4, 2, 1, 5, 3};
+#elif defined(RADIO_X7)
+static const uint8_t switchReOrder[] = {0, 1, 4, 2, 3, 5};
+#else
 static const uint8_t switchReOrder[] = {0, 1, 2, 3, 4, 5};
+#endif
 uint32_t readKeys();
 uint32_t readTrims();
 #define TRIMS_PRESSED()                 (readTrims())
