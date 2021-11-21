@@ -362,11 +362,11 @@ local function createModel(event)
   -- throttle
   addMix(ThrottleFields[1][5], MIXSRC_FIRST_INPUT+defaultChannel(2), "Thr")
   -- roll
-  addMix(RollFields[1][5], MIXSRC_FIRST_INPUT+defaultChannel(0), "Roll")
+  addMix(RollFields[1][5], MIXSRC_FIRST_INPUT+defaultChannel(3), "Roll")
   -- pitch
   addMix(PitchFields[1][5], MIXSRC_FIRST_INPUT+defaultChannel(1), "Pitch")
   -- yaw
-  addMix(YawFields[1][5], MIXSRC_FIRST_INPUT+defaultChannel(3), "Yaw")
+  addMix(YawFields[1][5], MIXSRC_FIRST_INPUT+defaultChannel(0), "Yaw")
   addMix(4, MIXSRC_SA + ArmFields[1][5], "Arm")
   addMix(5, MIXSRC_SA + BeeperFields[1][5], "Beeper")
   addMix(6, MIXSRC_SA + ModeFields[1][5], "Mode")
