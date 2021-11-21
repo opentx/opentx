@@ -225,7 +225,7 @@ local function runYawConfig(event)
 end
 
 local ArmFields = {
-  {50, 50, COMBO, 1, 5, { "SA", "SB", "SC", "SD", "SE", "SF"} },
+  {50, 50, COMBO, 1, 5, { "SA", "SB", "SC", "SD", "SE", "SF", "SG"} },
 }
 
 local ArmBackground
@@ -247,7 +247,7 @@ local function runArmConfig(event)
 end
 
 local BeeperFields = {
-  {50, 50, COMBO, 1, 3, { "SA", "SB", "SC", "SD", "SE", "SF"} },
+  {50, 50, COMBO, 1, 3, { "SA", "SB", "SC", "SD", "SE", "SF", "SG"} },
 }
 
 local BeeperBackground
@@ -269,7 +269,7 @@ local function runBeeperConfig(event)
 end
 
 local ModeFields = {
-  {50, 50, COMBO, 1, 0, { "SA", "SB", "SC", "SD", "SE", "SF"} },
+  {50, 50, COMBO, 1, 0, { "SA", "SB", "SC", "SD", "SE", "SF", "SG"} },
 }
 
 local ModeBackground
