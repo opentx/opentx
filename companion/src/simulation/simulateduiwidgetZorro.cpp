@@ -14,25 +14,25 @@ SimulatedUIWidgetZorro::SimulatedUIWidgetZorro(SimulatorInterface *simulator, QW
   // add actions in order of appearance on the help menu
 
   act = new RadioUiAction(5, QList<int>() << Qt::Key_Up, SIMU_STR_HLP_KEY_UP, SIMU_STR_HLP_ACT_MDL);
-  addRadioWidget(ui->rightbuttons->addArea(QRect(60, 5, 90, 60), "Zorro/right-mdl.png", act));
+  addRadioWidget(ui->rightbuttons->addArea(QRect(65, 35, 90, 45), "Zorro/right-mdl.png", act));
 
   m_mouseMidClickAction = new RadioUiAction(1, QList<int>() << Qt::Key_Enter << Qt::Key_Return, SIMU_STR_HLP_KEYS_ACTIVATE, SIMU_STR_HLP_ACT_ROT_DN);
-  addRadioWidget(ui->rightbuttons->addArea(QRect(45, 100, 70, 120), "Zorro/right-ent.png", m_mouseMidClickAction));
+  addRadioWidget(ui->rightbuttons->addArea(QRect(7, 84, 110, 90), "Zorro/right-ent.png", m_mouseMidClickAction));
 
   act = new RadioUiAction(4, QList<int>() << Qt::Key_Left, SIMU_STR_HLP_KEY_LFT, SIMU_STR_HLP_ACT_SYS);
-  addRadioWidget(ui->leftbuttons->addArea(QRect(35, 5, 80, 50), "Zorro/left-sys.png", act));
+  addRadioWidget(ui->leftbuttons->addArea(QRect(52, 39, 70, 50), "Zorro/left-sys.png", act));
 
   act = new RadioUiAction(6, QList<int>() << Qt::Key_Right, SIMU_STR_HLP_KEY_RGT, SIMU_STR_HLP_ACT_TELE);
-  addRadioWidget(ui->leftbuttons->addArea(QRect(90, 210, 80, 35), "Zorro/left-tele.png", act));
+  addRadioWidget(ui->rightbuttons->addArea(QRect(75, 180, 80, 35), "Zorro/right-tele.png", act));
 
   act = new RadioUiAction(3, QList<int>() << Qt::Key_PageDown, SIMU_STR_HLP_KEY_PGDN, SIMU_STR_HLP_ACT_PGDN);
-  addRadioWidget(ui->leftbuttons->addArea(QRect(75, 125, 80, 35), "Zorro/left-pagedn.png", act));
+  addRadioWidget(ui->leftbuttons->addArea(QRect(70, 145, 80, 35), "Zorro/left-pagedn.png", act));
 
   act = new RadioUiAction(2, QList<int>() << Qt::Key_PageUp, SIMU_STR_HLP_KEY_PGUP, SIMU_STR_HLP_ACT_PGUP);
-  addRadioWidget(ui->leftbuttons->addArea(QRect(80, 170, 80, 35), "Zorro/left-pageup.png", act));
+  addRadioWidget(ui->leftbuttons->addArea(QRect(60, 185, 80, 35), "Zorro/left-pageup.png", act));
 
   act = new RadioUiAction(0, QList<int>() << Qt::Key_Down << Qt::Key_Delete << Qt::Key_Escape << Qt::Key_Backspace, SIMU_STR_HLP_KEYS_EXIT, SIMU_STR_HLP_ACT_EXIT);
-  addRadioWidget(ui->leftbuttons->addArea(QRect(70, 85, 80, 35), "Zorro/left-rtn.png", act));
+  addRadioWidget(ui->leftbuttons->addArea(QRect(85, 105, 80, 35), "Zorro/left-rtn.png", act));
 
   m_scrollUpAction = new RadioUiAction(-1, QList<int>() << Qt::Key_Minus << Qt::Key_Equal << Qt::Key_Left, SIMU_STR_HLP_KEYS_GO_LFT, SIMU_STR_HLP_ACT_ROT_LFT);
   m_scrollDnAction = new RadioUiAction(-1, QList<int>() << Qt::Key_Plus << Qt::Key_Right, SIMU_STR_HLP_KEYS_GO_RGT, SIMU_STR_HLP_ACT_ROT_RGT);
