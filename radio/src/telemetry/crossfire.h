@@ -104,6 +104,10 @@ uint8_t createCrossfireModelIDFrame(uint8_t * frame);
 const uint32_t CROSSFIRE_BAUDRATES[] = {
   400000,
   115200,
+  921600,
+  1870000,
+  3750000,
+  5250000,
 };
 const uint8_t CROSSFIRE_PERIODS[] = {
    4,

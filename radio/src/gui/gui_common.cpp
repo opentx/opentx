@@ -1141,3 +1141,15 @@ const char * getMultiOptionTitle(uint8_t moduleIdx)
   }
 }
 #endif
+
+void displayTelemetryBaudrate(coord_t x, coord_t y, uint8_t baudrate, LcdFlags flags) {
+
+  if (CROSSFIRE_BAUDRATES[baudrate] >= 1000000) {
+    lcdDrawNumber(x, y, CROSSFIRE_BAUDRATES[baudrate] / 10000, flags | PREC2);
+    lcdDrawText(lcdNextPos, y, "MBps", flags);
+  }
+  else {
+    lcdDrawNumber(x, y, CROSSFIRE_BAUDRATES[baudrate] / 1000, flags);
+    lcdDrawText(lcdNextPos, y, "KBps", flags);
+  }
+}
