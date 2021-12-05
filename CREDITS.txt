@@ -2446,3 +2446,5 @@ Eich Klaus-Juergen
 Devin Crumb
 Jeroen Robroek
 Roberto Orsello
+Matthew Haugh
+Pierre Truchon
