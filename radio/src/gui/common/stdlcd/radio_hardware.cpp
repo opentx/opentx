@@ -164,7 +164,7 @@ enum {
   ITEM_RADIO_HARDWARE_CAPACITY_CALIB,
 #endif
 
-#if (defined(CROSSFIRE) || defined(GHOST)) && SPORT_MAX_BAUDRATE < 400000
+#if (defined(CROSSFIRE) || defined(GHOST))
   ITEM_RADIO_HARDWARE_SERIAL_BAUDRATE,
 #endif
 
@@ -274,6 +274,8 @@ enum {
   #define SWITCH_TYPE_MAX(sw)            (SWITCH_3POS)
 #elif defined(PCBX9E)
   #define SWITCH_TYPE_MAX(sw)            ((MIXSRC_SF - MIXSRC_FIRST_SWITCH == sw || MIXSRC_SH - MIXSRC_FIRST_SWITCH == sw) ? SWITCH_2POS : SWITCH_3POS)
+#elif defined(RADIO_ZORRO)
+  #define SWITCH_TYPE_MAX(sw)            ((MIXSRC_SB - MIXSRC_FIRST_SWITCH == sw || MIXSRC_SC - MIXSRC_FIRST_SWITCH == sw) ? SWITCH_3POS : SWITCH_2POS)
 #elif defined(RADIO_TX12) || defined(RADIO_T8)
   #define SWITCH_TYPE_MAX(sw)            ((MIXSRC_SA - MIXSRC_FIRST_SWITCH == sw || MIXSRC_SD - MIXSRC_FIRST_SWITCH == sw) ? SWITCH_2POS : SWITCH_3POS)
 #else
@@ -292,7 +294,7 @@ enum {
   #define TX_CAPACITY_MEASUREMENT_ROWS
 #endif
 
-#if (defined(CROSSFIRE) || defined(GHOST)) && (SPORT_MAX_BAUDRATE < 400000 || defined(DEBUG))
+#if (defined(CROSSFIRE) || defined(GHOST))
   #define MAX_BAUD_ROWS                  0,
 #else
   #define MAX_BAUD_ROWS
@@ -575,10 +577,10 @@ void menuRadioHardware(event_t event)
         break;
 #endif
 
-#if (defined(CROSSFIRE) || defined(GHOST)) && SPORT_MAX_BAUDRATE < 400000
+#if (defined(CROSSFIRE) || defined(GHOST))
       case ITEM_RADIO_HARDWARE_SERIAL_BAUDRATE:
         lcdDrawTextAlignedLeft(y, STR_MAXBAUDRATE);
-        lcdDrawNumber(HW_SETTINGS_COLUMN2, y, CROSSFIRE_BAUDRATES[g_eeGeneral.telemetryBaudrate], attr|LEFT);
+        displayTelemetryBaudrate(HW_SETTINGS_COLUMN2, y, g_eeGeneral.telemetryBaudrate, attr|LEFT);
         if (attr) {
           g_eeGeneral.telemetryBaudrate = DIM(CROSSFIRE_BAUDRATES) - 1 - checkIncDecModel(event, DIM(CROSSFIRE_BAUDRATES) - 1 - g_eeGeneral.telemetryBaudrate, 0, DIM(CROSSFIRE_BAUDRATES) - 1);
           if (checkIncDec_Ret && IS_EXTERNAL_MODULE_ON()) {

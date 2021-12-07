@@ -222,7 +222,7 @@ enum TrainerMode {
 #else
   #define TRAINER_MODE_MAX()             TRAINER_MODE_SLAVE
 #endif
-#elif defined(INTERNAL_MODULE_MULTI) || defined(INTERNAL_MODULE_CRSF) || defined(HARDWARE_TRAINER_MULTI_MOD)
+#elif defined(INTERNAL_MODULE_MULTI) || defined(INTERNAL_MODULE_CRSF) || defined(INTERNAL_MODULE_ELRS) || defined(HARDWARE_TRAINER_MULTI_MOD)
   #define TRAINER_MODE_MAX()             TRAINER_MODE_MULTI
 #elif defined(BLUETOOTH)
   #define TRAINER_MODE_MAX()             TRAINER_MODE_SLAVE_BLUETOOTH
