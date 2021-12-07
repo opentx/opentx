@@ -95,7 +95,7 @@
     <message>
         <location filename="../apppreferencesdialog.ui" line="20"/>
         <source>Edit Settings</source>
-        <translation>Éditer les préférences</translation>
+        <translation>Éditer les Paramètres</translation>
     </message>
     <message>
         <location filename="../apppreferencesdialog.ui" line="52"/>
@@ -940,13 +940,23 @@ Manche Droit:  Profondeur, Direction
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="323"/>
-        <source>Delete Channel. Are you sure ?</source>
+        <source>Delete Channel. Are you sure?</source>
         <translation>Supprimer la Voie. Êtes-vous sûr ?</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="345"/>
-        <source>Cut Channel. Are you sure ?</source>
+        <source>Cut Channel. Are you sure?</source>
         <translation>Couper la Voie. Êtes-vous sûr ?</translation>
+    </message>
+    <message>
+        <location filename="../modeledit/channels.cpp" line="420"/>
+        <source>Clear Channel. Are you sure?</source>
+        <translation>Effacer la Voie. Êtes-vous sûr ?</translation>
+    </message>
+    <message>
+        <location filename="../modeledit/channels.cpp" line="431"/>
+        <source>Clear all Channels. Are you sure?</source>
+        <translation>Effacer toutes les Voies. Êtes-vous sûr ?</translation>
     </message>
     <message>
         <location filename="../modeledit/channels.cpp" line="359"/>
@@ -992,16 +1002,6 @@ Manche Droit:  Profondeur, Direction
         <location filename="../modeledit/channels.cpp" line="369"/>
         <source>Clear All</source>
         <translation>Effacer Tout</translation>
-    </message>
-    <message>
-        <location filename="../modeledit/channels.cpp" line="420"/>
-        <source>Clear Channel. Are you sure ?</source>
-        <translation>Effacer la Voie. Êtes-vous sûr ?</translation>
-    </message>
-    <message>
-        <location filename="../modeledit/channels.cpp" line="431"/>
-        <source>Clear all Channels. Are you sure ?</source>
-        <translation>Effacer toutes les Voies. Êtes-vous sûr ?</translation>
     </message>
 </context>
 <context>
@@ -1141,7 +1141,7 @@ Manche Droit:  Profondeur, Direction
     <message>
         <location filename="../warnings.h" line="30"/>
         <source>&lt;p&gt;&lt;b&gt;Welcome to OpenTX %1.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;As the first step, please configure the initial Radio Profile by selecting your Radio Type, Menu Language, and Build Options.&lt;/p&gt;&lt;p&gt;You may also want to take this time to review the other available options in the displayed Settings dialog.&lt;/p&gt;&lt;p&gt;After saving your settings, we recommend you download the latest firmware for your radio by using the &lt;i&gt;File -&amp;gt; Download&lt;/i&gt; menu option.&lt;/p&gt;&lt;p&gt;Please visit &lt;a href=&apos;http://www.open-tx.org&apos;&gt;open-tx.org&lt;/a&gt; for latest news, updates and documentation. Thank you for choosing OpenTX!&lt;/p&gt;- The OpenTX Team.</source>
-        <translation>&lt;p&gt;&lt;b&gt;Bienvenue dans OpenTX %1.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;La première étape à faire est de configurer le profil de radio en sélectionnant votre type de radio, votre langue de menu et vos options de compilation.&lt;/p&gt;&lt;p&gt;Vous pouvez également prendre le temps d&apos;examiner les autres options disponibles dans la boîte de dialogue &lt;b&gt;Préférence&lt;/b&gt;.&lt;/p&gt;&lt;p&gt;Après avoir sauvegardé vos préférences, nous vous recommandons de télécharger le dernier firmware de votre radio en utilisant le menu &lt;i&gt;Télécharger Fichier -&amp;gt;&lt;/i&gt;.&lt;/p&gt;&lt;p&gt;Visitez &lt;a href=&apos;http://www.open-tx.org&apos;&gt;open-tx.org&lt;/a&gt; pour obtenir les dernières nouvelles, mises à jour et documentations. Merci d&apos;avoir choisi OpenTX !&lt;/p&gt;- L&apos;équipe OpenTX.</translation>
+        <translation>&lt;p&gt;&lt;b&gt;Bienvenue dans OpenTX %1.&lt;/b&gt;&lt;/p&gt;&lt;p&gt;La première étape à faire est de configurer le profil de radio en sélectionnant votre type de radio, votre langue de menu et vos options de compilation.&lt;/p&gt;&lt;p&gt;Vous pouvez également prendre le temps d&apos;examiner les autres options disponibles dans la boîte de dialogue &lt;b&gt;Paramètres&lt;/b&gt;.&lt;/p&gt;&lt;p&gt;Après avoir sauvegardé vos Paramètres, nous vous recommandons de télécharger le dernier firmware de votre radio en utilisant le menu &lt;i&gt;Télécharger Fichier -&amp;gt;&lt;/i&gt;.&lt;/p&gt;&lt;p&gt;Visitez &lt;a href=&apos;http://www.open-tx.org&apos;&gt;open-tx.org&lt;/a&gt; pour obtenir les dernières nouvelles, mises à jour et documentations. Merci d&apos;avoir choisi OpenTX !&lt;/p&gt;- L&apos;équipe OpenTX.</translation>
     </message>
     <message>
         <location filename="../warnings.h" line="38"/>
@@ -1211,9 +1211,9 @@ Manche Droit:  Profondeur, Direction
     <message>
         <location filename="../companion.cpp" line="79"/>
         <source>We have found possible Companion settings backup file(s).
-Do you want to import settings from a file ?</source>
-        <translation>Nous avons trouvé un ou plusieurs fichiers de sauvegarde des paramètres Companion.
-Voulez-vous importer les paramètres depuis un fichier ?</translation>
+Do you want to import settings from a file?</source>
+        <translation>Nous avons trouvé un ou plusieurs fichiers de sauvegarde des Paramètres de Companion.
+Voulez-vous importer les Paramètres à partir d&apos;un fichier ? </translation>
     </message>
     <message>
         <location filename="../companion.cpp" line="81"/>
@@ -3523,7 +3523,7 @@ Blanc signifie &quot;inclure tous&quot;.Les métacaractères ?, * et [...] sont 
     <message>
         <location filename="../flasheepromdialog.cpp" line="284"/>
         <source>The radio firmware belongs to another product family, check file and preferences!</source>
-        <translation>Ce firmware ne correspond pas à la radio sélectionnée, vérifiez le fichier et les préférences !</translation>
+        <translation>Ce firmware ne correspond pas à la radio sélectionnée, vérifiez le fichier et les paramètres !</translation>
     </message>
     <message>
         <location filename="../flasheepromdialog.cpp" line="288"/>
@@ -4226,7 +4226,7 @@ p, li { white-space: pre-wrap; }
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;Sans Serif&apos;; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt; font-weight:600; text-decoration: underline;&quot;&gt;Réinitialiser les fusibles&lt;/span&gt;&lt;/p&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;Les fusibles de l&apos;AVR configurent sa manière de fonctionner. Pressser ce bouton les réinitialise aux valeurs nécessaires pour le firmware.&lt;/span&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;Ces paramètres sont différents pour la carte d&apos;origine et la carte gruvin, vérifier que vous avez choisi le bon type de carte dans les préférences avant de continuer.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;Les fusibles de l&apos;AVR configurent sa manière de fonctionner. Pressser ce bouton les réinitialise aux valeurs nécessaires pour le firmware.&lt;/span&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;Ces paramètres sont différents pour la carte d&apos;origine et la carte gruvin, vérifier que vous avez choisi le bon type de carte dans les Paramètres avant de continuer.&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;Ce bouton efface aussi le fusible &amp;quot;protection d&apos;EEPROM&amp;quot;&lt;/span&gt;&lt;/p&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8pt;&quot;&gt;L&apos;EEPROM sera donc effacée lors d&apos;un flashage du firmware.&lt;/span&gt;&lt;/p&gt;
@@ -6874,7 +6874,7 @@ Do you wish to continue?</source>
     <message>
         <location filename="../mainwindow.cpp" line="1207"/>
         <source>Export Application Settings..</source>
-        <translation>Exporter Préférences Application...</translation>
+        <translation>Exporter les paramètres de l&apos;application...</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1207"/>
@@ -7034,7 +7034,7 @@ Do you wish to continue?</source>
     <message>
         <location filename="../mainwindow.cpp" line="1699"/>
         <source>Confirm Settings Import</source>
-        <translation>Confirmer les paramètres d&apos;importation</translation>
+        <translation>Confirmer l&apos;importation des paramètres</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1704"/>
@@ -7094,12 +7094,12 @@ Do you wish to continue?</source>
     <message>
         <location filename="../mainwindow.cpp" line="1185"/>
         <source>Settings...</source>
-        <translation>Préférences...</translation>
+        <translation>Paramètres</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1185"/>
         <source>Edit Settings</source>
-        <translation>Éditer les préférences</translation>
+        <translation>Éditer les paramètres</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1186"/>
@@ -7863,25 +7863,25 @@ Mixage actif par défaut si non-renseigné.</translation>
     <name>MixesPanel</name>
     <message>
         <location filename="../modeledit/mixes.cpp" line="44"/>
-        <location filename="../modeledit/mixes.cpp" line="439"/>
+        <location filename="../modeledit/mixes.cpp" line="436"/>
         <source>Move Up</source>
         <translation>Monter</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="46"/>
-        <location filename="../modeledit/mixes.cpp" line="439"/>
+        <location filename="../modeledit/mixes.cpp" line="436"/>
         <source>Ctrl+Up</source>
         <translation>Ctrl+Haut</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="47"/>
-        <location filename="../modeledit/mixes.cpp" line="440"/>
+        <location filename="../modeledit/mixes.cpp" line="437"/>
         <source>Move Down</source>
         <translation>Descendre</translation>
     </message>
     <message>
         <location filename="../modeledit/mixes.cpp" line="49"/>
-        <location filename="../modeledit/mixes.cpp" line="440"/>
+        <location filename="../modeledit/mixes.cpp" line="437"/>
         <source>Ctrl+Down</source>
         <translation>Ctrl+Bas</translation>
     </message>
@@ -7906,92 +7906,92 @@ Mixage actif par défaut si non-renseigné.</translation>
         <translation>Couper les lignes Mixeur sélectionnées. Êtes-vous sûr ?</translation>
     </message>
     <message>
-        <location filename="../modeledit/mixes.cpp" line="429"/>
+        <location filename="../modeledit/mixes.cpp" line="426"/>
         <source>&amp;Add</source>
         <translation>&amp;Ajouter</translation>
     </message>
     <message>
-        <location filename="../modeledit/mixes.cpp" line="429"/>
+        <location filename="../modeledit/mixes.cpp" line="426"/>
         <source>Ctrl+A</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/mixes.cpp" line="430"/>
+        <location filename="../modeledit/mixes.cpp" line="427"/>
         <source>&amp;Edit</source>
         <translation>&amp;Édition</translation>
     </message>
     <message>
-        <location filename="../modeledit/mixes.cpp" line="430"/>
+        <location filename="../modeledit/mixes.cpp" line="427"/>
         <source>Enter</source>
         <translation>Entrée</translation>
     </message>
     <message>
-        <location filename="../modeledit/mixes.cpp" line="431"/>
+        <location filename="../modeledit/mixes.cpp" line="428"/>
         <source>Ctrl+T</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/mixes.cpp" line="431"/>
+        <location filename="../modeledit/mixes.cpp" line="428"/>
         <source>&amp;Toggle highlight</source>
         <translation>&amp;(Dé)sélectionner</translation>
     </message>
     <message>
-        <location filename="../modeledit/mixes.cpp" line="433"/>
+        <location filename="../modeledit/mixes.cpp" line="430"/>
         <source>&amp;Delete</source>
         <translation>&amp;Supprimer</translation>
     </message>
     <message>
-        <location filename="../modeledit/mixes.cpp" line="433"/>
+        <location filename="../modeledit/mixes.cpp" line="430"/>
         <source>Delete</source>
         <translation>Supprimer</translation>
     </message>
     <message>
-        <location filename="../modeledit/mixes.cpp" line="434"/>
+        <location filename="../modeledit/mixes.cpp" line="431"/>
         <source>&amp;Copy</source>
         <translation>&amp;Copier</translation>
     </message>
     <message>
-        <location filename="../modeledit/mixes.cpp" line="434"/>
+        <location filename="../modeledit/mixes.cpp" line="431"/>
         <source>Ctrl+C</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/mixes.cpp" line="435"/>
+        <location filename="../modeledit/mixes.cpp" line="432"/>
         <source>Ctrl+X</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/mixes.cpp" line="435"/>
+        <location filename="../modeledit/mixes.cpp" line="432"/>
         <source>C&amp;ut</source>
         <translation>&amp;Couper</translation>
     </message>
     <message>
-        <location filename="../modeledit/mixes.cpp" line="436"/>
+        <location filename="../modeledit/mixes.cpp" line="433"/>
         <source>&amp;Paste</source>
         <translation>&amp;Coller</translation>
     </message>
     <message>
-        <location filename="../modeledit/mixes.cpp" line="436"/>
+        <location filename="../modeledit/mixes.cpp" line="433"/>
         <source>Ctrl+V</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/mixes.cpp" line="437"/>
+        <location filename="../modeledit/mixes.cpp" line="434"/>
         <source>Du&amp;plicate</source>
         <translation>&amp;Dupliquer</translation>
     </message>
     <message>
-        <location filename="../modeledit/mixes.cpp" line="437"/>
+        <location filename="../modeledit/mixes.cpp" line="434"/>
         <source>Ctrl+U</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../modeledit/mixes.cpp" line="543"/>
+        <location filename="../modeledit/mixes.cpp" line="540"/>
         <source>Clear Mixes?</source>
         <translation>Effacer tous les mixages ?</translation>
     </message>
     <message>
-        <location filename="../modeledit/mixes.cpp" line="543"/>
+        <location filename="../modeledit/mixes.cpp" line="540"/>
         <source>Really clear all the mixes?</source>
         <translation>Êtes-vous sûr de vraiment vouloir effacer tous les mixages ?</translation>
     </message>
