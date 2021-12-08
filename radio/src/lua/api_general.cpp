@@ -1454,6 +1454,19 @@ static int luaDefaultChannel(lua_State * L)
 }
 
 /*luadoc
+@function flushAudio()
+
+flushes audio queue
+
+@status experimental
+*/
+static int luaFlushAudio(lua_State * L)
+{
+  audioQueue.flush();
+  return 0;
+}
+
+/*luadoc
 @function getRSSI()
 
 Get RSSI value as well as low and critical RSSI alarm levels (in dB)
@@ -1823,6 +1836,7 @@ const luaL_Reg opentxLib[] = {
   { "playDuration", luaPlayDuration },
   { "playTone", luaPlayTone },
   { "playHaptic", luaPlayHaptic },
+  { "flushAudio", luaFlushAudio },
   // { "popupInput", luaPopupInput },
   { "popupWarning", luaPopupWarning },
   { "popupConfirmation", luaPopupConfirmation },

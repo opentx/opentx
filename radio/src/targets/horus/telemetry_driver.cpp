@@ -46,6 +46,7 @@ void telemetryPortInit(uint32_t baudrate, uint8_t mode)
     USART_DeInit(TELEMETRY_USART);
     return;
   }
+
   //deinit inverted mode
   telemetryPortInvertedInit(0);
   NVIC_InitTypeDef NVIC_InitStructure;
@@ -75,7 +76,12 @@ void telemetryPortInit(uint32_t baudrate, uint8_t mode)
   USART_OverSampling8Cmd(TELEMETRY_USART, baudrate <= 400000 ? DISABLE : ENABLE);
 
   USART_InitStructure.USART_BaudRate = baudrate;
-  if (mode & TELEMETRY_SERIAL_8E2) {
+  if (baudrate == SBUS_BAUDRATE) {
+    USART_InitStructure.USART_WordLength = USART_WordLength_9b;
+    USART_InitStructure.USART_StopBits = USART_StopBits_1;
+    USART_InitStructure.USART_Parity = USART_Parity_Even;
+  }
+  else if (mode & TELEMETRY_SERIAL_8E2) {
     USART_InitStructure.USART_WordLength = USART_WordLength_9b;
     USART_InitStructure.USART_StopBits = USART_StopBits_2;
     USART_InitStructure.USART_Parity = USART_Parity_Even;
@@ -414,6 +420,10 @@ extern "C" void TELEMETRY_TIMER_IRQHandler()
 // TODO we should have telemetry in an higher layer, functions above should move to a sport_driver.cpp
 bool telemetryGetByte(uint8_t * byte)
 {
+#if defined(TRAINER_SPORT_SBUS)
+  if (g_model.trainerData.mode == TRAINER_MODE_MASTER_SBUS_SPORT)
+    return 0;
+#endif
 #if defined(PCBX12S)
   if (telemetryFifoMode & TELEMETRY_SERIAL_WITHOUT_DMA)
     return telemetryNoDMAFifo.pop(*byte);

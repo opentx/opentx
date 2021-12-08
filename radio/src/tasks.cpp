@@ -127,6 +127,10 @@ constexpr uint8_t MIXER_MAX_PERIOD = 30 /*ms*/;
 
 void execMixerFrequentActions()
 {
+  DEBUG_TIMER_START(debugTimerTelemetryWakeup);
+  telemetryWakeup();
+  DEBUG_TIMER_STOP(debugTimerTelemetryWakeup);
+
 #if defined(SBUS_TRAINER)
   // SBUS trainer
   processSbusInput();
@@ -224,10 +228,6 @@ TASK_FUNCTION(mixerTask)
 #if defined(PCBSKY9X) && !defined(SIMU)
       usbJoystickUpdate();
 #endif
-
-      DEBUG_TIMER_START(debugTimerTelemetryWakeup);
-      telemetryWakeup();
-      DEBUG_TIMER_STOP(debugTimerTelemetryWakeup);
 
       if (heartbeat == HEART_WDT_CHECK) {
         WDG_RESET();
