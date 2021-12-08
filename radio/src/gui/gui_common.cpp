@@ -604,11 +604,16 @@ bool isInternalModuleAvailable(int moduleType)
   if (moduleType == MODULE_TYPE_NONE)
     return true;
 
-#if defined(INTERNAL_MODULE_CRSF)
+#if defined(INTERNAL_MODULE_CRSF) || defined(INTERNAL_MODULE_ELRS)
   if (moduleType == MODULE_TYPE_CROSSFIRE) {
     if (g_model.moduleData[EXTERNAL_MODULE].type != MODULE_TYPE_CROSSFIRE)
       return true;
   }
+#endif
+
+#if defined(INTERNAL_MODULE_ELRS)
+  if (moduleType == MODULE_TYPE_CROSSFIRE)
+    return true;
 #endif
 
 #if defined(INTERNAL_MODULE_MULTI)
@@ -1144,3 +1149,15 @@ const char * getMultiOptionTitle(uint8_t moduleIdx)
   }
 }
 #endif
+
+void displayTelemetryBaudrate(coord_t x, coord_t y, uint8_t baudrate, LcdFlags flags) {
+
+  if (CROSSFIRE_BAUDRATES[baudrate] >= 1000000) {
+    lcdDrawNumber(x, y, CROSSFIRE_BAUDRATES[baudrate] / 10000, flags | PREC2);
+    lcdDrawText(lcdNextPos, y, "MBps", flags);
+  }
+  else {
+    lcdDrawNumber(x, y, CROSSFIRE_BAUDRATES[baudrate] / 1000, flags);
+    lcdDrawText(lcdNextPos, y, "KBps", flags);
+  }
+}

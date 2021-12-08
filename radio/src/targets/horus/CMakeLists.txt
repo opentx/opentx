@@ -177,6 +177,11 @@ if(INTERNAL_MODULE_MULTI)
   add_definitions(-DTRAINER_SPORT_SBUS)
 endif()
 
+if(INTERNAL_MODULE_ELRS)
+  add_definitions(-DHARDWARE_INTERNAL_MODULE)
+  add_definitions(-DINTERNAL_MODULE_ELRS)
+endif()
+
 if(EXTERNAL_MODULE)
   add_definitions(-DHARDWARE_EXTERNAL_MODULE)
 endif()

@@ -20,7 +20,7 @@
 
 #include "opentx.h"
 
-#if defined(INTERNAL_MODULE_CRSF)
+#if defined(INTERNAL_MODULE_CRSF) || defined(INTERNAL_MODULE_ELRS)
 uint8_t intTelemetryRxBuffer[TELEMETRY_RX_PACKET_SIZE];
 uint8_t intTelemetryRxBufferCount;
 #endif
@@ -83,7 +83,7 @@ const CrossfireSensor & getCrossfireSensor(uint8_t id, uint8_t subId)
 
 static uint8_t * getRxBuffer(uint8_t moduleIdx)
 {
-#if defined(INTERNAL_MODULE_CRSF)
+#if defined(INTERNAL_MODULE_CRSF) || defined(INTERNAL_MODULE_ELRS)
   if (moduleIdx == INTERNAL_MODULE)
     return intTelemetryRxBuffer;
 #endif
@@ -92,7 +92,7 @@ static uint8_t * getRxBuffer(uint8_t moduleIdx)
 
 static uint8_t &getRxBufferCount(uint8_t moduleIdx)
 {
-#if defined(INTERNAL_MODULE_CRSF)
+#if defined(INTERNAL_MODULE_CRSF) || defined(INTERNAL_MODULE_ELRS)
   if (moduleIdx == INTERNAL_MODULE)
     return intTelemetryRxBufferCount;
 #endif
