@@ -372,7 +372,8 @@
 #define TR_VTRAINER_MASTER_CPPM_MODULE "Lehrer/CPPM Modul\0"
 #define TR_VTRAINER_MASTER_BATTERY     "Lehrer/Serial\0    "
 #define TR_VTRAINER_BLUETOOTH          TR("Master/BT\0        ""Slave/BT\0         ", "Master/Bluetooth\0 ""Slave/Bluetooth\0  ")
-#define TR_VTRAINER_MULTI              "Master/Multi"
+#define TR_VTRAINER_MULTI              "Master/Multi\0     "
+#define TR_VTRAINER_SPORT_SBUS         "Master/SBUS-Sport\0"
 
 #define LEN_VFAILSAFE         			 "\015" // "\013" original
 #define TR_VFAILSAFE          			 "Kein Failsafe""Halte Pos.\0  ""Kanäle\0      ""Kein Signal\0 ""Empfänger\0   "

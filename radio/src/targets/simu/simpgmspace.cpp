@@ -445,6 +445,10 @@ void lcdRefresh()
   }
 }
 
+#if defined(TRAINER_SPORT_SBUS)
+Fifo<uint8_t, TELEMETRY_FIFO_SIZE> telemetryNoDMAFifo;
+#endif
+
 void telemetryPortInit(uint8_t baudrate)
 {
 }

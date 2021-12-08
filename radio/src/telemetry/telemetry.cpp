@@ -292,6 +292,11 @@ void telemetryInit(uint8_t protocol)
 {
   telemetryProtocol = protocol;
 
+#if defined(TRAINER_SPORT_SBUS)
+  if (g_model.trainerData.mode == TRAINER_MODE_MASTER_SBUS_SPORT)
+    return;
+#endif
+
   if (protocol == PROTOCOL_TELEMETRY_FRSKY_D) {
     telemetryPortInit(FRSKY_D_BAUDRATE, TELEMETRY_SERIAL_DEFAULT);
   }
