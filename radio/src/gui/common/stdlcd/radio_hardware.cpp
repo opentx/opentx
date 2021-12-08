@@ -164,7 +164,7 @@ enum {
   ITEM_RADIO_HARDWARE_CAPACITY_CALIB,
 #endif
 
-#if (defined(CROSSFIRE) || defined(GHOST))
+#if defined(CROSSFIRE) || defined(GHOST)
   ITEM_RADIO_HARDWARE_SERIAL_BAUDRATE,
 #endif
 
@@ -294,7 +294,7 @@ enum {
   #define TX_CAPACITY_MEASUREMENT_ROWS
 #endif
 
-#if (defined(CROSSFIRE) || defined(GHOST))
+#if defined(CROSSFIRE) || defined(GHOST)
   #define MAX_BAUD_ROWS                  0,
 #else
   #define MAX_BAUD_ROWS
@@ -577,7 +577,7 @@ void menuRadioHardware(event_t event)
         break;
 #endif
 
-#if (defined(CROSSFIRE) || defined(GHOST))
+#if defined(CROSSFIRE) || defined(GHOST)
       case ITEM_RADIO_HARDWARE_SERIAL_BAUDRATE:
         lcdDrawTextAlignedLeft(y, STR_MAXBAUDRATE);
         displayTelemetryBaudrate(HW_SETTINGS_COLUMN2, y, g_eeGeneral.telemetryBaudrate, attr|LEFT);

@@ -313,10 +313,11 @@ void menuStatisticsDebug2(event_t event)
   lcdDrawTextAlignedLeft(y, "Tlm RX Err");
   lcdDrawNumber(MENU_DEBUG_COL1_OFS, y, telemetryErrors);
   y += FH;
+#if defined(DEBUG)
   lcdDrawTextAlignedLeft(y, "SD Card");
   lcdDrawText(MENU_DEBUG_COL1_OFS, y, SD_CARD_PRESENT() ? "Inserted" : "Not inserted");
   y += FH;
-
+#endif
 #if defined(BLUETOOTH)
   lcdDrawTextAlignedLeft(y, "BT status");
   lcdDrawNumber(MENU_DEBUG_COL1_OFS, y, IS_BLUETOOTH_CHIP_PRESENT(), RIGHT);
