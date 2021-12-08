@@ -167,15 +167,13 @@ int sbusGetByte(uint8_t * byte)
       if (aux2SerialMode == UART_MODE_SBUS_TRAINER)
         return aux2SerialRxFifo.pop(*byte);
 #endif
+      return false;
+#endif
 #if defined(TRAINER_SPORT_SBUS)
-      break;
     case TRAINER_MODE_MASTER_SBUS_SPORT:
       return telemetryNoDMAFifo.pop(*byte);
-      break;
-#endif
 #endif
     default:
       return false;
   }
-  return false;
 }
