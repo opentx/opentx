@@ -33,13 +33,16 @@
 #define GHST_ADDR_5G_TWRSCAN            0x85
 #define GHST_ADDR_5G_RLY                0x86
 
-#define GHST_UL_RC_CHANS_HS4_5TO8	0x10	// High Speed 4 channel (12 bits), plus CH5-8 (8 bits)
-#define GHST_UL_RC_CHANS_HS4_9TO12	0x11	// High Speed 4 channel (12 bits), plus CH9-12 (8 bits)
-#define GHST_UL_RC_CHANS_HS4_13TO16	0x12	// High Speed 4 channel (12 bits), plus CH13-16 (8 bits)
+#define GHST_UL_RC_CHANS_HS4_5TO8       0x10	// High Speed 4 channel (12 bit legacy), plus CH5-8 (8 bit legacy)
+#define GHST_UL_RC_CHANS_HS4_9TO12      0x11	// High Speed 4 channel (12 bit legacy), plus CH9-12 (8 bit legacy)
+#define GHST_UL_RC_CHANS_HS4_13TO16     0x12	// High Speed 4 channel (12 bit legacy), plus CH13-16 (8 bit legacy)
 #define GHST_UL_RC_CHANS_SIZE           12      // 1 (type) + 10 (data) + 1 (crc)
 #define GHST_UL_MENU_CTRL               0x13
+#define GHST_UL_RC_CHANS_HS4_12_5TO8    0x30	// High Speed 4 channel (12 bit raw), plus CH5-8 (8 bit raw)
+#define GHST_UL_RC_CHANS_HS4_12_9TO12   0x31	// High Speed 4 channel (12 bit raw), plus CH9-12 (8 bit raw)
+#define GHST_UL_RC_CHANS_HS4_12_13TO16  0x32	// High Speed 4 channel (12 bit raw), plus CH13-16 (8 bit raw)
 
-#define GHST_DL_OPENTX_SYNC		0x20
+#define GHST_DL_OPENTX_SYNC             0x20
 #define GHST_DL_LINK_STAT               0x21
 #define GHST_DL_VTX_STAT                0x22
 #define GHST_DL_PACK_STAT               0x23

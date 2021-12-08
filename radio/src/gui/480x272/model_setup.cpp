@@ -1738,6 +1738,11 @@ bool menuModelSetup(event_t event)
           drawValueWithUnit(MODEL_SETUP_4TH_COLUMN, y, getBatteryVoltage(), UNIT_VOLTS, attr|PREC2|LEFT);
 #endif
         }
+        else if (isModuleGhost(moduleIdx)) {
+          auto & module = g_model.moduleData[moduleIdx];
+          lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y,  "Raw 12 bits");
+          module.ghost.raw12bits = editCheckBox(module.ghost.raw12bits , MODEL_SETUP_2ND_COLUMN, y, attr, event);
+        }
         break;
       }
 #if defined(HARDWARE_INTERNAL_MODULE)

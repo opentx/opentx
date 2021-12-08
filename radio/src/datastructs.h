@@ -450,6 +450,10 @@ PACK(struct ModuleData {
       uint8_t spare2:1;
       int8_t refreshRate;  // definition as framelength for ppm (* 5 + 225 = time in 1/10 ms)
     } sbus);
+    NOBACKUP(struct {
+      uint8_t raw12bits:1;
+      uint8_t spare1:7;
+    } ghost);
     NOBACKUP(PACK(struct {
       uint8_t receivers:7; // 4 bits spare
       uint8_t racingMode:1;
