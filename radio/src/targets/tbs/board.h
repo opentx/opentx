@@ -76,7 +76,7 @@ extern uint16_t sessionTimer;
 #if defined(RADIO_TANGO)
 static const uint8_t switchPosition[][2] = {{0,0}, {0,1}, {1,0}, {1,1}, {1,2}, {0,2}};
 #elif defined(RADIO_MAMBO)
-static const uint8_t switchReOrder[] = {1, 0, 4, 2, 3, 5};
+static const uint8_t switchPosition[][2] = {{0,1}, {0,0}, {1,0}, {1,1}, {0,2}, {1,2}};
 #endif
 
 // Board driver
