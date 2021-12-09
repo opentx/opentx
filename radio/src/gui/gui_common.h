@@ -360,6 +360,7 @@ inline uint8_t MODULE_OPTION_ROW(uint8_t moduleIdx) {
 
 void editStickHardwareSettings(coord_t x, coord_t y, int idx, event_t event, LcdFlags flags);
 const char * getMultiOptionTitle(uint8_t moduleIdx);
+void displayTelemetryBaudrate(coord_t x, coord_t y, uint8_t baudrate, LcdFlags flags);
 
 const char * writeScreenshot();
 

@@ -44,6 +44,8 @@
   #include "lua/lua_exports_tlite.inc"
 #elif defined(RADIO_TX12)
   #include "lua/lua_exports_tx12.inc"
+#elif defined(RADIO_ZORRO)
+  #include "lua/lua_exports_zorro.inc"
 #elif defined(RADIO_T8)
   #include "lua/lua_exports_t8.inc"
 #elif defined(RADIO_TANGO)
@@ -1452,6 +1454,19 @@ static int luaDefaultChannel(lua_State * L)
 }
 
 /*luadoc
+@function flushAudio()
+
+flushes audio queue
+
+@status experimental
+*/
+static int luaFlushAudio(lua_State * L)
+{
+  audioQueue.flush();
+  return 0;
+}
+
+/*luadoc
 @function getRSSI()
 
 Get RSSI value as well as low and critical RSSI alarm levels (in dB)
@@ -1821,6 +1836,7 @@ const luaL_Reg opentxLib[] = {
   { "playDuration", luaPlayDuration },
   { "playTone", luaPlayTone },
   { "playHaptic", luaPlayHaptic },
+  { "flushAudio", luaFlushAudio },
   // { "popupInput", luaPopupInput },
   { "popupWarning", luaPopupWarning },
   { "popupConfirmation", luaPopupConfirmation },
@@ -1998,7 +2014,7 @@ const luaR_value_entry opentxConstants[] = {
   { "EVT_VIRTUAL_ENTER_LONG", EVT_KEY_LONG(KEY_ENTER) },
   { "EVT_VIRTUAL_EXIT", EVT_KEY_BREAK(KEY_EXIT) },
 #elif defined(NAVIGATION_X7) || defined(NAVIGATION_X9D)
-#if defined(RADIO_TX12) || defined(RADIO_T8)
+#if defined(RADIO_TX12) || defined(RADIO_ZORRO) || defined(RADIO_T8)
   { "EVT_VIRTUAL_PREV_PAGE", EVT_KEY_BREAK(KEY_PAGEUP) },
   { "EVT_VIRTUAL_NEXT_PAGE", EVT_KEY_BREAK(KEY_PAGEDN) },
   { "EVT_VIRTUAL_MENU", EVT_KEY_BREAK(KEY_MODEL) },
