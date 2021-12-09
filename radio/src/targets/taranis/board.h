@@ -511,10 +511,20 @@ enum EnumSwitchesPositions
 
 void keysInit();
 uint32_t switchState(uint8_t index);
-#if defined(RADIO_ZORRO)
-static const uint8_t switchReOrder[] = {1, 0, 4, 2, 3, 5};
+#if defined(RADIO_TLITE)
+static const uint8_t switchPosition[][2] = {{0,0}, {1,0}, {0,1}, {1,1}};
+#elif defined(PCBX9LITE)
+static const uint8_t switchPosition[][2] = {{0,0}, {0,1}, {1,1}, {0,2}, {1,2}, {2,0}, {3,0}};
+#elif defined(PCBXLITES)
+static const uint8_t switchPosition[][2] = {{0,0}, {0,1}, {1,1}, {0,2}, {1,2}};
+#elif defined(RADIO_X7)
+static const uint8_t switchPosition[][2] = {{0,0}, {0,1}, {1,0}, {1,1}, {0,2}, {1,2}};
+#elif defined(RADIO_TX12)
+static const uint8_t switchPosition[][2] = {{0,1}, {0,0}, {1,0}, {1,1}, {0,2}, {1,2}};
+#elif defined(RADIO_ZORRO)
+static const uint8_t switchPosition[][2] = {{0,0}, {0,1}, {1,0}, {1,1}, {0,2}, {1,2}, {2,0}, {3,0}};
 #else
-static const uint8_t switchReOrder[] = {0, 1, 2, 3, 4, 5};
+static const uint8_t switchPosition[][2] = {{0,0}, {0,1}, {0,2}, {1,0}, {1,1}, {1,2}};
 #endif
 uint32_t readKeys();
 uint32_t readTrims();
