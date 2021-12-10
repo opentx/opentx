@@ -46,6 +46,8 @@
   #include "lua/lua_exports_tpro.inc"
 #elif defined(RADIO_TX12)
   #include "lua/lua_exports_tx12.inc"
+#elif defined(RADIO_ZORRO)
+  #include "lua/lua_exports_zorro.inc"
 #elif defined(RADIO_T8)
   #include "lua/lua_exports_t8.inc"
 #elif defined(RADIO_TANGO)
@@ -72,6 +74,8 @@
   #define RADIO_VERSION FLAVOUR
 #endif
 
+#define VERSION_OSNAME "OpenTX"
+
 #define FIND_FIELD_DESC  0x01
 
 #define KEY_EVENTS(xxx, yyy)  \
@@ -91,15 +95,16 @@ Return OpenTX version
 
 @retval string OpenTX version (ie "2.1.5")
 
-@retval multiple (available since 2.1.7) returns 5 values:
+@retval multiple (available since 2.1.7) returns 6 values:
  * (string) OpenTX version (ie "2.1.5")
  * (string) radio type: `x12s`, `x10`, `x9e`, `x9d+`, `x9d` or `x7`.
 If running in simulator the "-simu" is added
  * (number) major version (ie 2 if version 2.1.5)
  * (number) minor version (ie 1 if version 2.1.5)
  * (number) revision number (ie 5 if version 2.1.5)
+ * (string) OS name (ie "OpenTX" if OpenTX)
 
-@status current Introduced in 2.0.0, expanded in 2.1.7, radio type strings changed in 2.2.0
+@status current Introduced in 2.0.0, expanded in 2.1.7, radio type strings changed in 2.2.0, OS name added in 2.3.14
 
 ### Example
 
@@ -107,12 +112,13 @@ This example also runs in OpenTX versions where the function returned only one v
 
 ```lua
 local function run(event)
-  local ver, radio, maj, minor, rev = getVersion()
+  local ver, radio, maj, minor, rev, osname = getVersion()
   print("version: "..ver)
   if radio then print ("radio: "..radio) end
   if maj then print ("maj: "..maj) end
   if minor then print ("minor: "..minor) end
   if rev then print ("rev: "..rev) end
+  if osname then print ("osname: "..osname) end
   return 1
 end
 
@@ -120,11 +126,12 @@ return {  run=run }
 ```
 Output of the above script in simulator:
 ```
-version: 2.1.7
+version: 2.3.14
 radio: taranis-simu
 maj: 2
-minor: 1
-rev: 7
+minor: 3
+rev: 14
+osname: OpenTX
 ```
 */
 static int luaGetVersion(lua_State * L)
@@ -134,7 +141,8 @@ static int luaGetVersion(lua_State * L)
   lua_pushnumber(L, VERSION_MAJOR);
   lua_pushnumber(L, VERSION_MINOR);
   lua_pushnumber(L, VERSION_REVISION);
-  return 5;
+  lua_pushstring(L, VERSION_OSNAME);
+  return 6;
 }
 
 /*luadoc
@@ -1448,6 +1456,19 @@ static int luaDefaultChannel(lua_State * L)
 }
 
 /*luadoc
+@function flushAudio()
+
+flushes audio queue
+
+@status experimental
+*/
+static int luaFlushAudio(lua_State * L)
+{
+  audioQueue.flush();
+  return 0;
+}
+
+/*luadoc
 @function getRSSI()
 
 Get RSSI value as well as low and critical RSSI alarm levels (in dB)
@@ -1715,7 +1736,11 @@ static int luaSerialWrite(lua_State * L)
     return 0;
 
 #if defined(USB_SERIAL)
+#if defined(DEBUG)
   if (getSelectedUsbMode() == USB_SERIAL_MODE) {
+#else
+  if (getSelectedUsbMode() == USB_TELEMETRY_MIRROR_MODE) {
+#endif
     size_t wr_len = len;
     const char* p = str;
     while(wr_len--) usbSerialPutc(*p++);
@@ -1813,6 +1838,7 @@ const luaL_Reg opentxLib[] = {
   { "playDuration", luaPlayDuration },
   { "playTone", luaPlayTone },
   { "playHaptic", luaPlayHaptic },
+  { "flushAudio", luaFlushAudio },
   // { "popupInput", luaPopupInput },
   { "popupWarning", luaPopupWarning },
   { "popupConfirmation", luaPopupConfirmation },
@@ -1990,7 +2016,7 @@ const luaR_value_entry opentxConstants[] = {
   { "EVT_VIRTUAL_ENTER_LONG", EVT_KEY_LONG(KEY_ENTER) },
   { "EVT_VIRTUAL_EXIT", EVT_KEY_BREAK(KEY_EXIT) },
 #elif defined(NAVIGATION_X7) || defined(NAVIGATION_X9D)
-#if defined(RADIO_TX12) || defined(RADIO_T8)
+#if defined(RADIO_TX12) || defined(RADIO_ZORRO) || defined(RADIO_T8)
   { "EVT_VIRTUAL_PREV_PAGE", EVT_KEY_BREAK(KEY_PAGEUP) },
   { "EVT_VIRTUAL_NEXT_PAGE", EVT_KEY_BREAK(KEY_PAGEDN) },
   { "EVT_VIRTUAL_MENU", EVT_KEY_BREAK(KEY_MODEL) },

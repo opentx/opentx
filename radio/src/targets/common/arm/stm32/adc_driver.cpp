@@ -46,6 +46,8 @@
   const int8_t adcDirection[NUM_ANALOGS] = {1,-1,1,-1,  1,1,0,   1,1,  1,  1};
 #elif defined(RADIO_TX12)
   const int8_t adcDirection[NUM_ANALOGS] = {-1,1,-1,1,  -1,-1,  1,  1};
+#elif defined(RADIO_ZORRO)
+  const int8_t adcDirection[NUM_ANALOGS] = {-1, 1, 1, -1, -1, 1, 1, 1};
 #elif defined(RADIO_TANGO)
   const int8_t adcDirection[NUM_ANALOGS] = {1,1,1,1,  1,1};
 #elif defined(RADIO_MAMBO)
@@ -201,8 +203,11 @@ void adcInit()
 #endif
 }
 
-void adcSingleRead()
+constexpr uint16_t ADC_DMA_MAX_LOOP = 10000;
+
+bool adcSingleRead()
 {
+  uint16_t i = 0;
   ADC_DMA_Stream->CR &= ~DMA_SxCR_EN; // Disable DMA
   ADC_MAIN->SR &= ~(uint32_t)(ADC_SR_EOC | ADC_SR_STRT | ADC_SR_OVR);
   ADC_SET_DMA_FLAGS();
@@ -223,7 +228,7 @@ void adcSingleRead()
 #endif
 
 #if defined(PCBX9E)
-  for (unsigned int i=0; i<10000; i++) {
+  for (i = 0; i <= ADC_DMA_MAX_LOOP; i++) {
     if (ADC_TRANSFER_COMPLETE() && ADC_EXT_TRANSFER_COMPLETE()) {
       break;
     }
@@ -231,7 +236,7 @@ void adcSingleRead()
   ADC_DMA_Stream->CR &= ~DMA_SxCR_EN; // Disable DMA
   ADC_EXT_DMA_Stream->CR &= ~DMA_SxCR_EN; // Disable DMA
 #else
-  for (unsigned int i = 0; i < 10000; i++) {
+  for (i = 0; i <= ADC_DMA_MAX_LOOP; i++) {
     if (ADC_TRANSFER_COMPLETE()) {
       break;
     }
@@ -244,14 +249,16 @@ void adcSingleRead()
     rtcBatteryVoltage = ADC1->DR;
   }
 #endif
+
+  return i != ADC_DMA_MAX_LOOP;
 }
 
 void adcRead()
 {
   uint16_t temp[NUM_ANALOGS] = { 0 };
 
-  for (int i=0; i<4; i++) {
-    adcSingleRead();
+  for (int i = 0; i < 4; i++) {
+    while (!adcSingleRead());
     for (uint8_t x=FIRST_ANALOG_ADC; x<NUM_ANALOGS; x++) {
       uint16_t val = adcValues[x];
 #if defined(JITTER_MEASURE)

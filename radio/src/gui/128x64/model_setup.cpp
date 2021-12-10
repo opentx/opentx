@@ -930,7 +930,7 @@ void menuModelSetup(event_t event)
         lcdDrawTextAlignedLeft(y, STR_INTERNALRF);
         break;
 
-#if !defined(INTERNAL_MODULE_MULTI)
+#if !defined(INTERNAL_MODULE_MULTI) && !defined(INTERNAL_MODULE_ELRS)
       case ITEM_MODEL_SETUP_INTERNAL_MODULE_TYPE:
       {
         lcdDrawText(INDENT_WIDTH, y, STR_MODE);
@@ -1009,7 +1009,7 @@ void menuModelSetup(event_t event)
         break;
 #endif
 
-#if defined(INTERNAL_MODULE_MULTI)
+#if defined(INTERNAL_MODULE_MULTI) || defined(INTERNAL_MODULE_ELRS)
       case ITEM_MODEL_SETUP_INTERNAL_MODULE_TYPE:
 #endif
 #if defined(HARDWARE_EXTERNAL_MODULE)
@@ -1042,8 +1042,7 @@ void menuModelSetup(event_t event)
               case 0:
 #if defined(HARDWARE_INTERNAL_MODULE)
                 if (moduleIdx == INTERNAL_MODULE) {
-                  uint8_t moduleType = checkIncDec(event, g_model.moduleData[moduleIdx].type, MODULE_TYPE_NONE, MODULE_TYPE_MAX, EE_MODEL,
-                                                   isInternalModuleAvailable);
+                  uint8_t moduleType = checkIncDec(event, g_model.moduleData[moduleIdx].type, MODULE_TYPE_NONE, MODULE_TYPE_MAX, EE_MODEL, isInternalModuleAvailable);
                   if (checkIncDec_Ret) {
                     setModuleType(moduleIdx, moduleType);
                   }

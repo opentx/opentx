@@ -604,11 +604,16 @@ bool isInternalModuleAvailable(int moduleType)
   if (moduleType == MODULE_TYPE_NONE)
     return true;
 
-#if defined(INTERNAL_MODULE_CRSF)
+#if defined(INTERNAL_MODULE_CRSF) || defined(INTERNAL_MODULE_ELRS)
   if (moduleType == MODULE_TYPE_CROSSFIRE) {
     if (g_model.moduleData[EXTERNAL_MODULE].type != MODULE_TYPE_CROSSFIRE)
       return true;
   }
+#endif
+
+#if defined(INTERNAL_MODULE_ELRS)
+  if (moduleType == MODULE_TYPE_CROSSFIRE)
+    return true;
 #endif
 
 #if defined(INTERNAL_MODULE_MULTI)
@@ -641,6 +646,10 @@ bool isInternalModuleAvailable(int moduleType)
 
 bool isExternalModuleAvailable(int moduleType)
 {
+#if defined(TRAINER_SPORT_SBUS)
+  if (g_model.trainerData.mode == TRAINER_MODE_MASTER_SBUS_SPORT)
+    return false;
+#endif
 #if !defined(HARDWARE_EXTERNAL_MODULE_SIZE_SML)
   if (isModuleTypeR9MLite(moduleType) || moduleType == MODULE_TYPE_XJT_LITE_PXX2)
     return false;
@@ -784,6 +793,11 @@ bool isTelemetryProtocolAvailable(int protocol)
 
 bool isTrainerModeAvailable(int mode)
 {
+#if defined(TRAINER_SPORT_SBUS)
+  if (mode == TRAINER_MODE_MASTER_SBUS_SPORT)
+    return g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_NONE;
+#endif
+
 #if defined(RADIO_FAMILY_TBS)
   if (mode != TRAINER_MODE_MULTI)
     return false;
@@ -824,7 +838,6 @@ bool isTrainerModeAvailable(int mode)
   if (mode == TRAINER_MODE_MASTER_TRAINER_JACK || mode == TRAINER_MODE_SLAVE)
     return false;
 #endif
-
   return true;
 }
 
@@ -1136,3 +1149,15 @@ const char * getMultiOptionTitle(uint8_t moduleIdx)
   }
 }
 #endif
+
+void displayTelemetryBaudrate(coord_t x, coord_t y, uint8_t baudrate, LcdFlags flags) {
+
+  if (CROSSFIRE_BAUDRATES[baudrate] >= 1000000) {
+    lcdDrawNumber(x, y, CROSSFIRE_BAUDRATES[baudrate] / 10000, flags | PREC2);
+    lcdDrawText(lcdNextPos, y, "MBps", flags);
+  }
+  else {
+    lcdDrawNumber(x, y, CROSSFIRE_BAUDRATES[baudrate] / 1000, flags);
+    lcdDrawText(lcdNextPos, y, "KBps", flags);
+  }
+}

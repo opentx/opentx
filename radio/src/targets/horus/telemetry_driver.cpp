@@ -46,6 +46,7 @@ void telemetryPortInit(uint32_t baudrate, uint8_t mode)
     USART_DeInit(TELEMETRY_USART);
     return;
   }
+
   //deinit inverted mode
   telemetryPortInvertedInit(0);
   NVIC_InitTypeDef NVIC_InitStructure;
@@ -65,13 +66,22 @@ void telemetryPortInit(uint32_t baudrate, uint8_t mode)
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+  GPIO_InitStructure.GPIO_Speed = baudrate <= 400000 ? GPIO_Speed_2MHz : GPIO_Speed_25MHz;
   GPIO_Init(TELEMETRY_GPIO, &GPIO_InitStructure);
 
   telemetryInitDirPin();
 
+  USART_DeInit(TELEMETRY_USART);
+
+  USART_OverSampling8Cmd(TELEMETRY_USART, baudrate <= 400000 ? DISABLE : ENABLE);
+
   USART_InitStructure.USART_BaudRate = baudrate;
-  if (mode & TELEMETRY_SERIAL_8E2) {
+  if (baudrate == SBUS_BAUDRATE) {
+    USART_InitStructure.USART_WordLength = USART_WordLength_9b;
+    USART_InitStructure.USART_StopBits = USART_StopBits_1;
+    USART_InitStructure.USART_Parity = USART_Parity_Even;
+  }
+  else if (mode & TELEMETRY_SERIAL_8E2) {
     USART_InitStructure.USART_WordLength = USART_WordLength_9b;
     USART_InitStructure.USART_StopBits = USART_StopBits_2;
     USART_InitStructure.USART_Parity = USART_Parity_Even;
@@ -339,6 +349,8 @@ extern "C" void TELEMETRY_DMA_TX_IRQHandler(void)
   DEBUG_INTERRUPT(INT_TELEM_DMA);
   if (DMA_GetITStatus(TELEMETRY_DMA_Stream_TX, TELEMETRY_DMA_TX_FLAG_TC)) {
     DMA_ClearITPendingBit(TELEMETRY_DMA_Stream_TX, TELEMETRY_DMA_TX_FLAG_TC);
+    // clear TC flag before enabling interrupt
+    TELEMETRY_USART->SR &= ~USART_SR_TC;
     TELEMETRY_USART->CR1 |= USART_CR1_TCIE;
     if (telemetryProtocol == PROTOCOL_TELEMETRY_FRSKY_SPORT) {
       outputTelemetryBuffer.reset();
@@ -408,6 +420,10 @@ extern "C" void TELEMETRY_TIMER_IRQHandler()
 // TODO we should have telemetry in an higher layer, functions above should move to a sport_driver.cpp
 bool telemetryGetByte(uint8_t * byte)
 {
+#if defined(TRAINER_SPORT_SBUS)
+  if (g_model.trainerData.mode == TRAINER_MODE_MASTER_SBUS_SPORT)
+    return 0;
+#endif
 #if defined(PCBX12S)
   if (telemetryFifoMode & TELEMETRY_SERIAL_WITHOUT_DMA)
     return telemetryNoDMAFifo.pop(*byte);

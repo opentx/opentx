@@ -321,8 +321,8 @@ void enablePulsesExternalModule(uint8_t protocol)
 #endif
 
     default:
-      // external module stopped, set period to 50ms (necessary for USB Joystick, for instance)
-      mixerSchedulerSetPeriod(EXTERNAL_MODULE, 50000/*us*/);
+      // external module stopped, use default mixer period
+      mixerSchedulerSetPeriod(EXTERNAL_MODULE, 0);
       break;
   }
 }
@@ -460,7 +460,7 @@ static void enablePulsesInternalModule(uint8_t protocol)
   // start new protocol hardware here
 
   switch (protocol) {
-#if defined(INTERNAL_MODULE_CRSF)
+#if defined(INTERNAL_MODULE_CRSF) || defined(INTERNAL_MODULE_ELRS)
     case PROTOCOL_CHANNELS_CROSSFIRE:
       break;
 #elif defined(PXX1) && !defined(INTMODULE_USART)
@@ -516,7 +516,7 @@ static void enablePulsesInternalModule(uint8_t protocol)
 #endif
 
     default:
-      // internal module stopped, set internal period to 0 and start the scheduler
+      // internal module stopped, use default mixer period
       mixerSchedulerSetPeriod(INTERNAL_MODULE, 0);
       break;
   }
@@ -571,7 +571,7 @@ bool setupPulsesInternalModule(uint8_t protocol)
       return true;
 #endif
 
-#if defined(INTERNAL_MODULE_CRSF)
+#if defined(INTERNAL_MODULE_CRSF) || defined(INTERNAL_MODULE_ELRS)
     case PROTOCOL_CHANNELS_CROSSFIRE:
       mixerSchedulerSetPeriod(INTERNAL_MODULE, CROSSFIRE_PERIOD);
       return true;
@@ -631,6 +631,7 @@ bool setupPulsesExternalModule()
     RTOS_WAIT_MS(10);
     moduleState[EXTERNAL_MODULE].protocol = protocol;
     enablePulsesExternalModule(protocol);
+    setupPulsesExternalModule(protocol);
     return false;
   }
   else {

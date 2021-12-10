@@ -225,7 +225,7 @@ local function runYawConfig(event)
 end
 
 local ArmFields = {
-  {50, 50, COMBO, 1, 5, { "SA", "SB", "SC", "SD", "SE", "SF"} },
+  {50, 50, COMBO, 1, 5, { "SA", "SB", "SC", "SD", "SE", "SF", "SG"} },
 }
 
 local ArmBackground
@@ -247,7 +247,7 @@ local function runArmConfig(event)
 end
 
 local BeeperFields = {
-  {50, 50, COMBO, 1, 3, { "SA", "SB", "SC", "SD", "SE", "SF"} },
+  {50, 50, COMBO, 1, 3, { "SA", "SB", "SC", "SD", "SE", "SF", "SG"} },
 }
 
 local BeeperBackground
@@ -269,7 +269,7 @@ local function runBeeperConfig(event)
 end
 
 local ModeFields = {
-  {50, 50, COMBO, 1, 0, { "SA", "SB", "SC", "SD", "SE", "SF"} },
+  {50, 50, COMBO, 1, 0, { "SA", "SB", "SC", "SD", "SE", "SF", "SG"} },
 }
 
 local ModeBackground
@@ -362,11 +362,11 @@ local function createModel(event)
   -- throttle
   addMix(ThrottleFields[1][5], MIXSRC_FIRST_INPUT+defaultChannel(2), "Thr")
   -- roll
-  addMix(RollFields[1][5], MIXSRC_FIRST_INPUT+defaultChannel(0), "Roll")
+  addMix(RollFields[1][5], MIXSRC_FIRST_INPUT+defaultChannel(3), "Roll")
   -- pitch
   addMix(PitchFields[1][5], MIXSRC_FIRST_INPUT+defaultChannel(1), "Pitch")
   -- yaw
-  addMix(YawFields[1][5], MIXSRC_FIRST_INPUT+defaultChannel(3), "Yaw")
+  addMix(YawFields[1][5], MIXSRC_FIRST_INPUT+defaultChannel(0), "Yaw")
   addMix(4, MIXSRC_SA + ArmFields[1][5], "Arm")
   addMix(5, MIXSRC_SA + BeeperFields[1][5], "Beeper")
   addMix(6, MIXSRC_SA + ModeFields[1][5], "Mode")

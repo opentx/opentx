@@ -62,6 +62,7 @@ namespace Board {
     BOARD_RADIOMASTER_T8,
     BOARD_JUMPER_TLITE,
     BOARD_JUMPER_TPRO,
+    BOARD_RADIOMASTER_ZORRO,
     BOARD_TYPE_COUNT,
     BOARD_TYPE_MAX = BOARD_TYPE_COUNT - 1
   };
@@ -142,6 +143,7 @@ namespace Board {
     NumTrims,
     NumTrimSwitches,
     HasRTC,
+    HasColorLcd
     NumFunctionSwitches
   };
 
@@ -261,6 +263,12 @@ inline bool IS_RADIOMASTER_TX12(Board::Type board)
   return board == Board::BOARD_RADIOMASTER_TX12;
 }
 
+inline bool IS_RADIOMASTER_ZORRO(Board::Type board)
+{
+  return board == Board::BOARD_RADIOMASTER_ZORRO;
+}
+
+
 inline bool IS_RADIOMASTER_T8(Board::Type board)
 {
   return board == Board::BOARD_RADIOMASTER_T8;
@@ -273,7 +281,7 @@ inline bool IS_FAMILY_T16(Board::Type board)
 
 inline bool IS_FAMILY_T12(Board::Type board)
 {
-  return board == Board::BOARD_JUMPER_T12 || board == Board::BOARD_RADIOMASTER_TX12 || board == Board::BOARD_RADIOMASTER_T8 || board == Board::BOARD_JUMPER_TLITE;
+  return board == Board::BOARD_JUMPER_T12 || board == Board::BOARD_RADIOMASTER_TX12 || board == Board::BOARD_RADIOMASTER_ZORRO || board == Board::BOARD_RADIOMASTER_T8 || board == Board::BOARD_JUMPER_TLITE;
 }
 
 inline bool IS_TARANIS_XLITE(Board::Type board)

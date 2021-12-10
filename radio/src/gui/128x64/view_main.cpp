@@ -615,55 +615,24 @@ void menuMainView(event_t event)
         doMainScreenGraphics();
 
         // Switches
-#if defined(PCBX9LITES)
-        static const uint8_t x[NUM_SWITCHES-2] = {2*FW-2, 2*FW-2, 17*FW+1, 2*FW-2, 17*FW+1};
-        static const uint8_t y[NUM_SWITCHES-2] = {4*FH+1, 5*FH+1, 5*FH+1, 6*FH+1, 6*FH+1};
-        for (int i=0; i<NUM_SWITCHES - 2; ++i) {
-          if (SWITCH_EXISTS(i)) {
-            getvalue_t val = getValue(MIXSRC_FIRST_SWITCH + i);
-            getvalue_t sw = ((val < 0) ? 3 * i + 1 : ((val == 0) ? 3 * i + 2 : 3 * i + 3));
-            drawSwitch(x[i], y[i], sw, 0, false);
-          }
-        }
-        drawSmallSwitch(29, 5*FH+1, 4, SW_SF);
-        drawSmallSwitch(16*FW+1, 5*FH+1, 4, SW_SG);
-#elif defined(PCBX9LITE)
-        static const uint8_t x[NUM_SWITCHES] = {2 * FW - 2, 2 * FW - 2, 16 * FW + 1, 2 * FW - 2, 16 * FW + 1};
-        static const uint8_t y[NUM_SWITCHES] = {4 * FH + 1, 5 * FH + 1, 5 * FH + 1, 6 * FH + 1, 6 * FH + 1};
-        for (int i = 0; i < NUM_SWITCHES; ++i) {
-          if (SWITCH_EXISTS(i)) {
-            getvalue_t val = getValue(MIXSRC_FIRST_SWITCH + i);
-            getvalue_t sw = ((val < 0) ? 3 * i + 1 : ((val == 0) ? 3 * i + 2 : 3 * i + 3));
-            drawSwitch(x[i], y[i], sw, 0, false);
-          }
-        }
-#elif defined(PCBXLITES)
-        static const uint8_t x[NUM_SWITCHES] = {2*FW-2, 16*FW+1, 2*FW-2, 16*FW+1, 2*FW-2, 16*FW+1};
-        static const uint8_t y[NUM_SWITCHES] = {4*FH+1, 4*FH+1, 6*FH+1, 6*FH+1, 5*FH+1, 5*FH+1};
-        for (int i=0; i<NUM_SWITCHES; ++i) {
-          if (SWITCH_EXISTS(i)) {
-            getvalue_t val = getValue(MIXSRC_FIRST_SWITCH + i);
-            getvalue_t sw = ((val < 0) ? 3 * i + 1 : ((val == 0) ? 3 * i + 2 : 3 * i + 3));
-            drawSwitch(x[i], y[i], sw, 0, false);
-          }
-        }
-#elif defined(PCBTARANIS)
-        uint8_t switches = min(NUM_SWITCHES- NUM_FUNCTIONS_SWITCHES, 6);
+#if defined(PCBTARANIS)
+        uint8_t switches = min(NUM_SWITCHES, 8);
         for (int i = 0; i < switches; ++i) {
           if (SWITCH_EXISTS(i)) {
-#if LCD_H > 64
-            uint8_t x = 2 * FW - 2, y = 4 * FH + i * FH + 20;
-#else
-            uint8_t x = 2 * FW - 2, y = 4 * FH + i * FH + 1;
-#endif
-            if (i >= switches / 2) {
-              x = 16 * FW + 1;
-              y -= (switches / 2) * FH;
+            if (switchPosition[i][0] > 1) {
+              drawSmallSwitch(switchPosition[i][0] == 2 ? 29 : 16 * FW + 1, 5 * FH + 1, 4, i);
             }
-
-            getvalue_t val = getValue(MIXSRC_FIRST_SWITCH + switchReOrder[i]);
-            getvalue_t sw = ((val < 0) ? 3 * switchReOrder[i] + 1 : ((val == 0) ? 3 * switchReOrder[i] + 2 : 3 * switchReOrder[i] + 3));
-            drawSwitch(x, y, sw, 0, false);
+            else {
+              coord_t x = switchPosition[i][0] == 0 ? 2 * FW - 2 : 16 * FW + 7;
+#if LCD_H > 64
+              coord_t y = 52 + switchPosition[i][1] * FH;
+#else
+              coord_t y = 33 + switchPosition[i][1] * FH;
+#endif
+              getvalue_t val = getValue(MIXSRC_FIRST_SWITCH + i);
+              getvalue_t sw = ((val < 0) ? 3 * i + 1 : ((val == 0) ? 3 * i + 2 : 3 * i + 3));
+              drawSwitch(x, y, sw, 0, false);
+            }
           }
         }
 #else

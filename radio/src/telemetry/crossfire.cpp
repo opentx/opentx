@@ -20,7 +20,7 @@
 
 #include "opentx.h"
 
-#if defined(INTERNAL_MODULE_CRSF)
+#if defined(INTERNAL_MODULE_CRSF) || defined(INTERNAL_MODULE_ELRS)
 uint8_t intTelemetryRxBuffer[TELEMETRY_RX_PACKET_SIZE];
 uint8_t intTelemetryRxBufferCount;
 #endif
@@ -83,7 +83,7 @@ const CrossfireSensor & getCrossfireSensor(uint8_t id, uint8_t subId)
 
 static uint8_t * getRxBuffer(uint8_t moduleIdx)
 {
-#if defined(INTERNAL_MODULE_CRSF)
+#if defined(INTERNAL_MODULE_CRSF) || defined(INTERNAL_MODULE_ELRS)
   if (moduleIdx == INTERNAL_MODULE)
     return intTelemetryRxBuffer;
 #endif
@@ -92,7 +92,7 @@ static uint8_t * getRxBuffer(uint8_t moduleIdx)
 
 static uint8_t &getRxBufferCount(uint8_t moduleIdx)
 {
-#if defined(INTERNAL_MODULE_CRSF)
+#if defined(INTERNAL_MODULE_CRSF) || defined(INTERNAL_MODULE_ELRS)
   if (moduleIdx == INTERNAL_MODULE)
     return intTelemetryRxBufferCount;
 #endif
@@ -284,6 +284,13 @@ void processCrossfireTelemetryData(uint8_t data, uint8_t module)
 {
   uint8_t * rxBuffer = getRxBuffer(module);
   uint8_t &rxBufferCount = getRxBufferCount(module);
+
+#if !defined(DEBUG) && defined(USB_SERIAL)
+  if (getSelectedUsbMode() == USB_TELEMETRY_MIRROR_MODE) {
+    usbSerialPutc(data);
+  }
+#endif
+
 #if defined(AUX_SERIAL)
   if (g_eeGeneral.auxSerialMode == UART_MODE_TELEMETRY_MIRROR) {
     auxSerialPutc(data);

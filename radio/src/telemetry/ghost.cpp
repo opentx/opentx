@@ -171,6 +171,15 @@ void processGhostTelemetryFrame()
       update_interval /= 10;
       offset /= 10;
 
+#if SPORT_MAX_BAUDRATE < 400000
+      // Ghost telemetry frame are longer when in Ghost menu
+      // If telem baudrate is only at 115k, and pulse interval is less than 3ms, pulse and telem will conflict
+      if (isModuleGhost(EXTERNAL_MODULE) && g_eeGeneral.telemetryBaudrate == GHST_TELEMETRY_RATE_115K &&
+          menuHandlers[menuLevel] == menuGhostModuleConfig && update_interval < 3000) {
+        update_interval = 3000;
+      }
+#endif
+
       getModuleSyncStatus(EXTERNAL_MODULE).update(update_interval, offset);
     }
     break;
@@ -271,8 +280,8 @@ void processGhostTelemetryFrame()
         bluetooth.write(telemetryRxBuffer, telemetryRxBufferCount);
       }
 #endif
-      processGhostTelemetryValue(GHOST_ID_GPS_LAT, getTelemetryValue_s32le(3) / 10);  
-      processGhostTelemetryValue(GHOST_ID_GPS_LONG, getTelemetryValue_s32le(7) / 10);
+      processGhostTelemetryValue(GHOST_ID_GPS_LAT, ((int32_t)getTelemetryValue_s32le(3)) / 10);
+      processGhostTelemetryValue(GHOST_ID_GPS_LONG, ((int32_t)getTelemetryValue_s32le(7)) / 10);
       processGhostTelemetryValue(GHOST_ID_GPS_ALT, (int16_t) getTelemetryValue_u16le(11));  
       break; 
     }
@@ -295,6 +304,13 @@ void processGhostTelemetryFrame()
 
 void processGhostTelemetryData(uint8_t data)
 {
+
+#if !defined(DEBUG) && defined(USB_SERIAL)
+  if (getSelectedUsbMode() == USB_TELEMETRY_MIRROR_MODE) {
+    usbSerialPutc(data);
+  }
+#endif
+
 #if defined(AUX_SERIAL)
   if (g_eeGeneral.auxSerialMode == UART_MODE_TELEMETRY_MIRROR) {
     auxSerialPutc(data);

@@ -351,6 +351,11 @@ QString ModelPrinter::printInputLine(const ExpoData & input)
     str += input.srcRaw.toString(&model, &generalSettings).toHtmlEscaped();
   }
 
+  if (input.srcRaw.type == SOURCE_TYPE_TELEMETRY && input.scale != 0){
+    RawSourceRange range = input.srcRaw.getRange(&model, generalSettings);
+    str += " " + tr("Scale(%1)").arg(input.scale * range.step).toHtmlEscaped();
+  }
+
   str += " " + tr("Weight(%1)").arg(AdjustmentReference(input.weight).toString(&model, true)).toHtmlEscaped();
   if (input.curve.value)
     str += " " + input.curve.toString(&model).toHtmlEscaped();
@@ -364,10 +369,10 @@ QString ModelPrinter::printInputLine(const ExpoData & input)
 
 
   if (firmware->getCapability(VirtualInputs)) {
-    if (input.carryTrim > 0)
-      str += " " + tr("NoTrim");
-    else if (input.carryTrim < 0)
-      str += " " + RawSource(SOURCE_TYPE_TRIM, (-(input.carryTrim) - 1)).toString(&model, &generalSettings).toHtmlEscaped();
+    if ((input.srcRaw.isStick() && input.carryTrim == CARRYTRIM_STICK_OFF) || (!input.srcRaw.isStick() && input.carryTrim == CARRYTRIM_DEFAULT))
+      str += " " + tr("No Trim");
+    else if (input.carryTrim != CARRYTRIM_DEFAULT)
+      str += " " + input.carryTrimToString().toHtmlEscaped();
   }
 
   if (input.offset)

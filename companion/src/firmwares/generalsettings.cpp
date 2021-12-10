@@ -264,6 +264,10 @@ void GeneralSettings::setDefaultControlTypes(Board::Type board)
     potConfig[0] = Board::POT_WITHOUT_DETENT;
     potConfig[1] = Board::POT_WITH_DETENT;
   }
+  else if(IS_RADIOMASTER_ZORRO(board)) {
+    potConfig[0] = Board::POT_WITHOUT_DETENT;
+    potConfig[1] = Board::POT_WITHOUT_DETENT;
+  }
   else if (IS_FAMILY_T12(board)) {
     potConfig[0] = Board::POT_WITH_DETENT;
     potConfig[1] = Board::POT_WITH_DETENT;
@@ -489,20 +493,6 @@ FieldRange GeneralSettings::getPPM_MultiplierRange()
   result.decimals = 1;
   result.step = 0.1;
   result.offset = 10;
-
-  return result;
-}
-
-//  static
-FieldRange GeneralSettings::getTxVoltageCalibrationRange()
-{
-  FieldRange result;
-
-  result.decimals = 1;
-  result.max = 9.9;
-  result.min = -result.max;
-  result.step = 0.1;
-  result.unit = tr("v");
 
   return result;
 }

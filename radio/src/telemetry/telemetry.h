@@ -66,7 +66,7 @@ constexpr uint8_t TELEMETRY_TIMEOUT10ms = 100; // 1 second
 #define TELEMETRY_RX_PACKET_SIZE       19  // 9 bytes (full packet), worst case 18 bytes with byte-stuffing (+1)
 #endif
 
-#if defined(INTERNAL_MODULE_CRSF)
+#if defined(INTERNAL_MODULE_CRSF) || defined(INTERNAL_MODULE_ELRS)
 extern uint8_t intTelemetryRxBuffer[TELEMETRY_RX_PACKET_SIZE];
 extern uint8_t intTelemetryRxBufferCount;
 #endif
