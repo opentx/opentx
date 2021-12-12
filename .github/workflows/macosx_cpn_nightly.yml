@@ -1,8 +1,8 @@
 name: MacOSX nightly Companion
 
 on:
-  #schedule:
-  #  - cron:  '20 22 * * *'
+  schedule:
+    - cron:  '20 22 * * *'
 
   workflow_dispatch:
 
