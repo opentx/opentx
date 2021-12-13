@@ -517,7 +517,7 @@ typedef uint32_t swarnstate_t;
 typedef uint64_t swconfig_t;
 typedef uint64_t swarnstate_t;
 typedef uint32_t swarnenable_t;
-#elif defined(PCBX9D) || defined(PCBX9DP)
+#elif defined(PCBX9D) || defined(PCBX9DP) || defined(RADIO_TPRO)
 typedef uint32_t swconfig_t;
 typedef uint32_t swarnstate_t;
 typedef uint16_t swarnenable_t; // TODO remove it in 2.4
@@ -1009,8 +1009,8 @@ static inline void check_struct()
   CHKSIZE(RadioData, 865);
   CHKSIZE(ModelData, 6157);
 #elif defined(RADIO_TPRO)
-  CHKSIZE(RadioData, 841);
-  CHKSIZE(ModelData, 6182);
+  CHKSIZE(RadioData, 845);
+  CHKSIZE(ModelData, 6185);
 #elif defined(PCBX7)
   CHKSIZE(RadioData, 864);
   CHKSIZE(ModelData, 6157);

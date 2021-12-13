@@ -661,7 +661,7 @@ swsrc_t getMovedSwitch()
       auto prev = (uint8_t )(bfSingleBitGet(fsswitches_states, i) >> (i));
       uint8_t next = getFSLogicalState(i);
       if (prev != next) {
-        switches_states ^= (-next ^ switches_states) & (1 << i);
+        fsswitches_states ^= (-next ^ fsswitches_states) & (1 << i);
         result = 2 + (3 * (i + NUM_REGULAR_SWITCHES)) + next;
       }
     }
@@ -764,7 +764,7 @@ void checkSwitches()
       }
     }
 #elif defined(PCBTARANIS)
-    for (int i=0; i<NUM_SWITCHES; i++) {
+    for (int i=0; i < (NUM_SWITCHES - NUM_FUNCTIONS_SWITCHES); i++) {
       if (SWITCH_WARNING_ALLOWED(i) && !(g_model.switchWarningEnable & (1<<i))) {
         swarnstate_t mask = ((swarnstate_t)0x03 << (i*2));
         if (!((states & mask) == (switches_states & mask))) {
@@ -820,7 +820,7 @@ void checkSwitches()
       lcdNextPos = SWITCH_WARNING_LIST_X;
 #endif
       int numWarnings = 0;
-      for (int i=0; i<NUM_SWITCHES; ++i) {
+      for (int i=0; i < (NUM_SWITCHES - NUM_FUNCTIONS_SWITCHES); ++i) {
 #if defined(COLORLCD)
         if (SWITCH_WARNING_ALLOWED(i)) {
           unsigned int state = ((g_model.switchWarningState >> (3*i)) & 0x07);
