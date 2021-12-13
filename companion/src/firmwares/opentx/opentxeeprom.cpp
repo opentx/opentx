@@ -84,13 +84,6 @@ inline int MAX_POTS(Board::Type board, int version)
   return Boards::getCapability(board, Board::Pots);
 }
 
-inline int MAX_FUNCTION_SWITCHES(Board::Type board, int version)
-{
-  if (IS_JUMPER_TPRO(board))
-    return 6;
-  return 0;
-}
-
 inline int MAX_POTS_STORAGE(Board::Type board, int version)
 {
   if (version <= 218 && IS_FAMILY_HORUS_OR_T16(board))
@@ -2557,7 +2550,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, Board::Type board, unsig
     internalField.Append(new UnsignedField<16>(this, modelData.functionSwitchGroup));
     internalField.Append(new UnsignedField<16>(this, modelData.functionSwitchStartConfig));
     internalField.Append(new UnsignedField<8>(this, modelData.functionSwitchLogicalState));
-    for (int i=0; i < MAX_FUNCTION_SWITCHES(board, version); ++i) {
+    for (int i=0; i < Boards::getCapability(board, Board::NumFunctionSwitches); ++i) {
       internalField.Append(new ZCharField<3>(this, modelData.functionSwitchNames[i], "Function switch name"));
     }
   }

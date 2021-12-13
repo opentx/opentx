@@ -1369,8 +1369,6 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
 
   if (Boards::getCapability(firmware->getBoard(), Board::NumFunctionSwitches) > 0)
     ui->functionSwitchesLayout->addWidget(new FunctionSwitchesPanel(this, model, generalSettings, firmware));
-  //else
-  //  ui->functionSwitchesLayout->hide();
 
   for (int i = firmware->getCapability(NumFirstUsableModule); i < firmware->getCapability(NumModules); i++) {
     modules[i] = new ModulePanel(this, model, model.moduleData[i], generalSettings, firmware, i);
