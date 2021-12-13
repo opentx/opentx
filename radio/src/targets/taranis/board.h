@@ -540,6 +540,8 @@ void keysInit();
 uint32_t switchState(uint8_t index);
 #if defined(RADIO_TLITE)
 static const uint8_t switchPosition[][2] = {{0,0}, {1,0}, {0,1}, {1,1}};
+#elif defined(RADIO_TPRO)
+static const uint8_t switchPosition[][2] = {{0,0}, {1,0}, {0,1}, {1,1}};
 #elif defined(PCBX9LITE)
 static const uint8_t switchPosition[][2] = {{0,0}, {0,1}, {1,1}, {0,2}, {1,2}, {2,0}, {3,0}};
 #elif defined(PCBXLITES)
@@ -809,6 +811,10 @@ uint8_t isBacklightEnabled();
   #define USB_NAME                     "Jumper TLite"
   #define USB_MANUFACTURER             'J', 'U', 'M', 'P', 'E', 'R', ' ', ' '  /* 8 bytes */
   #define USB_PRODUCT                  'T', '-', 'L', 'I', 'T', 'E', ' ', ' '  /* 8 Bytes */
+#elif defined(RADIO_TPRO)
+  #define USB_NAME                     "Jumper TPRO"
+  #define USB_MANUFACTURER             'J', 'U', 'M', 'P', 'E', 'R', ' ', ' '  /* 8 bytes */
+  #define USB_PRODUCT                  'T', '-', 'P', 'R', 'O', ' ', ' ', ' '  /* 8 Bytes */
 #else
   #define USB_NAME                     "FrSky Taranis"
   #define USB_MANUFACTURER             'F', 'r', 'S', 'k', 'y', ' ', ' ', ' '  /* 8 bytes */

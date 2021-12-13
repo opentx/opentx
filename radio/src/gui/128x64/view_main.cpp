@@ -616,7 +616,7 @@ void menuMainView(event_t event)
 
         // Switches
 #if defined(PCBTARANIS)
-        uint8_t switches = min(NUM_SWITCHES, 8);
+        uint8_t switches = min(NUM_SWITCHES - NUM_FUNCTIONS_SWITCHES, 8);
         for (int i = 0; i < switches; ++i) {
           if (SWITCH_EXISTS(i)) {
             if (switchPosition[i][0] > 1) {
