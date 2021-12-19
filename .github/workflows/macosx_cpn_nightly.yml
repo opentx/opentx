@@ -99,7 +99,7 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: companion-nightly
-      - uses: eine/tip@master
+      - uses: pyTooling/Actions/releaser@main
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: 'nightly'
