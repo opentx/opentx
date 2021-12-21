@@ -50,7 +50,7 @@ jobs:
       # Execute the build.  You can specify a specific target with "--target <NAME>"
       run: mkdir ${{github.workspace}}/output && tools/build-companion-nightly.sh ${{github.workspace}}  ${{github.workspace}}/output/
       
-    - uses: eine/tip@master
+    - uses: pyTooling/Actions/releaser@main
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
         tag: 'nightly'
