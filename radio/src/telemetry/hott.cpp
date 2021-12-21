@@ -886,6 +886,7 @@ void processHottPacket(const uint8_t * packet)
           }
 
           // EAM vertical velocity
+          value = packet[5] + (packet[6] << 8) - 30000;
           sensor = getHottSensor(HOTT_ID_EAM_VV);
           setTelemetryValue(PROTOCOL_TELEMETRY_HOTT, HOTT_ID_EAM_VV, 0, HOTT_TELEM_EAM, value, sensor->unit, sensor->precision);
 
