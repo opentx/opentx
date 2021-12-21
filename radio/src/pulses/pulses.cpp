@@ -628,7 +628,6 @@ bool setupPulsesExternalModule()
 
   if (moduleState[EXTERNAL_MODULE].protocol != protocol) {
     extmoduleStop();
-    RTOS_WAIT_MS(10);
     moduleState[EXTERNAL_MODULE].protocol = protocol;
     enablePulsesExternalModule(protocol);
     setupPulsesExternalModule(protocol);
