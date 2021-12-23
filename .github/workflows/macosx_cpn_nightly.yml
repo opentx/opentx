@@ -98,7 +98,7 @@ jobs:
     steps:
       - uses: actions/download-artifact@v2
         with:
-          name: companion-nightly
+          name: output/companion-nightly
       - uses: pyTooling/Actions/releaser@main
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
