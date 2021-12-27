@@ -108,4 +108,4 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: 'nightly'
           rm: true
-          files: ${{github.workspace}}/output/*
+          files: *
