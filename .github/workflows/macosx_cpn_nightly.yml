@@ -99,6 +99,10 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: companion-nightly
+          
+      - name: Display structure of downloaded files
+        run: ls -R
+  
       - uses: pyTooling/Actions/releaser@main
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
