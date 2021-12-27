@@ -98,10 +98,10 @@ jobs:
     steps:
       - uses: actions/download-artifact@v2
         with:
-          name: output/companion-nightly
+          name: companion-nightly
       - uses: pyTooling/Actions/releaser@main
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: 'nightly'
           rm: true
-          files: ./*
+          files: ${{github.workspace}}/output/*
