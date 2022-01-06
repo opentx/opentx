@@ -1520,7 +1520,7 @@
   #define TRAINER_OUT_GPIO_PinSource    GPIO_PinSource9
   #define TRAINER_DETECT_GPIO           GPIOA
   #define TRAINER_DETECT_GPIO_PIN       GPIO_Pin_8  // PA.08
-#if defined(RADIO_X9DP2019)
+#if defined(RADIO_X9DP2019) || defined(RADIO_X7ACCESS)
   #define TRAINER_DETECT_GPIO_PIN_VALUE Bit_SET
 #else
   #define TRAINER_DETECT_GPIO_PIN_VALUE Bit_RESET
