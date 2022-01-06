@@ -51,6 +51,9 @@ inline int MAX_SWITCHES(Board::Type board, int version)
   if (IS_TARANIS_X7(board))
     return 8;
 
+  if (IS_JUMPER_TPRO(board))
+    return 10;
+
   return Boards::getCapability(board, Board::Switches);
 }
 
@@ -2287,6 +2290,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, Board::Type board, unsig
 
   qDebug() << QString("OpenTxModelData::OpenTxModelData(name: %1, board: %2, ver: %3, var: %4)").arg(name).arg(board).arg(version).arg(variant);
 
+  // Header
   if (IS_FAMILY_HORUS_OR_T16(board))
     internalField.Append(new ZCharField<15>(this, modelData.name, "Model name"));
   else if (HAS_LARGE_LCD(board))
@@ -2327,7 +2331,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, Board::Type board, unsig
       internalField.Append(new BoolField<1>(this, modelData.timers[i].minuteBeep));
       internalField.Append(new UnsignedField<2>(this, modelData.timers[i].persistent));
       internalField.Append(new SpareBitsField<3>(this));
-      if (IS_TARANIS(board))
+      if (HAS_LARGE_LCD(board))
         internalField.Append(new ZCharField<8>(this, modelData.timers[i].name, "Timer name"));
       else
         internalField.Append(new ZCharField<3>(this, modelData.timers[i].name, "Timer name"));
@@ -2353,17 +2357,17 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, Board::Type board, unsig
     internalField.Append(new LimitField(this, modelData.limitData[i], board, version));
   for (int i=0; i<MAX_EXPOS(board, version); i++)
     internalField.Append(new InputField(this, modelData.expoData[i], board, version));
+
   internalField.Append(new CurvesField(this, modelData.curves, board, version));
+
   for (int i=0; i<MAX_LOGICAL_SWITCHES(board, version); i++)
     internalField.Append(new LogicalSwitchField(this, modelData.logicalSw[i], board, version, variant, &modelData));
-  for (int i=0; i<MAX_CUSTOM_FUNCTIONS(board, version); i++) {
+  for (int i=0; i<MAX_CUSTOM_FUNCTIONS(board, version); i++)
     internalField.Append(new ArmCustomFunctionField(this, modelData.customFn[i], board, version, variant));
-  }
 
-  internalField.Append(new HeliField(this, modelData.swashRingData, board, version, variant));
-  for (int i=0; i<MAX_FLIGHT_MODES(board, version); i++) {
+  internalField.Append(new HeliField(this, modelData.swashRingData, board, version, variant));  // SwashRingData
+  for (int i=0; i<MAX_FLIGHT_MODES(board, version); i++)
     internalField.Append(new FlightModeField(this, modelData.flightModeData[i], i, board, version));
-  }
 
   internalField.Append(new UnsignedField<8>(this, modelData.thrTraceSrc, "Throttle Source"));
 
@@ -2539,6 +2543,16 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, Board::Type board, unsig
 
   if (version >= 219) {
     internalField.Append(new ZCharField<8>(this, modelData.registrationId, "ACCESS Registration ID"));
+  }
+
+  if (IS_JUMPER_TPRO(board)) {
+    internalField.Append(new UnsignedField<16>(this, modelData.functionSwitchConfig));
+    internalField.Append(new UnsignedField<16>(this, modelData.functionSwitchGroup));
+    internalField.Append(new UnsignedField<16>(this, modelData.functionSwitchStartConfig));
+    internalField.Append(new UnsignedField<8>(this, modelData.functionSwitchLogicalState));
+    for (int i=0; i < Boards::getCapability(board, Board::NumFunctionSwitches); ++i) {
+      internalField.Append(new ZCharField<3>(this, modelData.functionSwitchNames[i], "Function switch name"));
+    }
   }
 }
 

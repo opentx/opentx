@@ -34,6 +34,7 @@
 #include "sensordata.h"
 #include "telem_data.h"
 #include "timerdata.h"
+#include "generalsettings.h"
 
 #include <QtCore>
 
@@ -170,6 +171,7 @@ class ModelData {
     bool potsWarnEnabled[CPN_MAX_POTS];
     int potsWarnPosition[CPN_MAX_POTS];
     bool displayChecklist;
+
     GVarData gvarData[CPN_MAX_GVARS];
     MavlinkData mavlink;
     unsigned int telemetryProtocol;
@@ -195,10 +197,18 @@ class ModelData {
 
     char registrationId[8+1];
 
+    // Function switches
+    unsigned int functionSwitchConfig;
+    unsigned int functionSwitchGroup;
+    unsigned int functionSwitchStartConfig;
+    unsigned int functionSwitchLogicalState;
+    char functionSwitchNames[CPN_MAX_FUNCTION_SWITCHES][HARDWARE_NAME_LEN + 1];
+
     void clear();
     bool isEmpty() const;
     void setDefaultInputs(const GeneralSettings & settings);
     void setDefaultMixes(const GeneralSettings & settings);
+    void setDefaultFunctionSwitches(int functionSwitchCount);
     void setDefaultValues(unsigned int id, const GeneralSettings & settings);
 
     int getTrimValue(int phaseIdx, int trimIdx);

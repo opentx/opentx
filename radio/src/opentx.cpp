@@ -169,6 +169,10 @@ void per10ms()
 
   readKeysAndTrims();
 
+#if defined(FUNCTION_SWITCHES)
+  evalFunctionSwitches();
+#endif
+
 #if defined(ROTARY_ENCODER_NAVIGATION)
   if (IS_ROTARY_ENCODER_NAVIGATION_ENABLE()) {
     static rotenc_t rePreviousValue;
@@ -431,6 +435,13 @@ void defaultInputs()
 void applyDefaultTemplate()
 {
   defaultInputs(); // calls storageDirty internally
+
+#if defined(FUNCTION_SWITCHES)
+  g_model.functionSwitchConfig = DEFAULT_FS_CONFIG;
+  g_model.functionSwitchGroup = DEFAULT_FS_GROUPS;
+  g_model.functionSwitchStartConfig = DEFAULT_FS_STARTUP_CONFIG;
+  g_model.functionSwitchLogicalState = 0;
+#endif
 
   for (int i=0; i<NUM_STICKS; i++) {
     MixData * mix = mixAddress(i);
@@ -1693,6 +1704,12 @@ void opentxStart(const uint8_t startOptions = OPENTX_START_DEFAULT_ARGS)
 
 #if defined(TEST_BUILD_WARNING)
   ALERT(STR_TEST_WARNING, TR_TEST_NOTSAFE, AU_ERROR);
+#endif
+
+#if defined(FUNCTION_SWITCHES)
+  if (!UNEXPECTED_SHUTDOWN()) {
+    setFSStartupPosition();
+  }
 #endif
 
 #if defined(GUI)
