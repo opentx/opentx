@@ -147,11 +147,11 @@ local function drawEngineMenu()
   lcd.drawLine(LCD_W/2-1, 18, LCD_W/2-1, LCD_H-1, DOTTED, 0)
   if engineMode == 0 then
     -- No engine
-    lcd.drawPixmap(132, 8, "engine-0.bmp")
+    lcd.drawPixmap(132, 8, "img/engine-0.bmp")
     fieldsMax = 0
   else
     -- 1 channel
-    lcd.drawPixmap(132, 8, "engine-1.bmp")
+    lcd.drawPixmap(132, 8, "img/engine-1.bmp")
     lcd.drawText(25, LCD_H-16, "Assign channel", 0);
     lcd.drawText(LCD_W/2-19, LCD_H-8, ">>>", 0);
     lcd.drawSource(151, LCD_H-8, MIXSRC_CH1+thrCH1, getFieldFlags(1))
@@ -182,7 +182,7 @@ local function drawElevonsMenu()
   lcd.drawFilledRectangle(0, 0, LCD_W, 8, GREY_DEFAULT+FILL_WHITE)
   lcd.drawCombobox(0, 8, LCD_W/2, elevonsModeItems, elevonsMode, 0)
   lcd.drawLine(LCD_W/2-1, 18, LCD_W/2-1, LCD_H-1, DOTTED, 0)
-  lcd.drawPixmap(110, 9, "elevons.bmp")
+  lcd.drawPixmap(110, 9, "img/elevons.bmp")
   lcd.drawText(20, LCD_H-16, "Assign channels", 0);
   lcd.drawText(LCD_W/2-19, LCD_H-8, ">>>", 0);
   lcd.drawSource(116, LCD_H-8, MIXSRC_CH1+elevCH1, getFieldFlags(0))
@@ -216,11 +216,11 @@ local function drawRudderMenu()
   lcd.drawLine(LCD_W/2-1, 18, LCD_W/2-1, LCD_H-1, DOTTED, 0)
   if rudderMode == 0 then
     -- No rudder
-    lcd.drawPixmap(109, 14, "drudder-0.bmp")
+    lcd.drawPixmap(109, 14, "img/drudder-0.bmp")
     fieldsMax = 0
   else
     -- 1 channel
-    lcd.drawPixmap(109, 14, "drudder-1.bmp")
+    lcd.drawPixmap(109, 14, "img/drudder-1.bmp")
     lcd.drawText(25, LCD_H-16, "Assign channel", 0);
     lcd.drawText(LCD_W/2-19, LCD_H-8, ">>>", 0);
     lcd.drawSource(190, LCD_H-55, MIXSRC_CH1+rudCH1, getFieldFlags(1))
@@ -251,7 +251,7 @@ local function drawServoMenu(limits)
   lcd.drawFilledRectangle(0, 0, LCD_W, 8, GREY_DEFAULT+FILL_WHITE)
   lcd.drawLine(LCD_W/2-1, 8, LCD_W/2-1, LCD_H-1, DOTTED, 0)
   lcd.drawText(LCD_W/2-19, LCD_H-8, ">>>", 0);
-  lcd.drawPixmap(122, 8, "servo.bmp")
+  lcd.drawPixmap(122, 8, "img/servo.bmp")
   lcd.drawNumber(140, 35, limits.min, PREC1+getFieldFlags(0));
   lcd.drawNumber(205, 35, limits.max, PREC1+getFieldFlags(1));
   lcd.drawNumber(170, 9, limits.offset, PREC1+getFieldFlags(2));
@@ -345,7 +345,7 @@ local function drawConfirmationMenu()
   end
   lcd.drawText(48, LCD_H-8, "Long [ENT] to confirm", 0);
   lcd.drawFilledRectangle(0, LCD_H-9, LCD_W, 9, 0)
-  lcd.drawPixmap(LCD_W-18, LCD_H-17, "confirm-tick.bmp")
+  lcd.drawPixmap(LCD_W-18, LCD_H-17, "img/confirm-tick.bmp")
   fieldsMax = 0
 end
 

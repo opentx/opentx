@@ -1,4 +1,4 @@
-/*
+﻿/*
  * Copyright (C) OpenTX
  *
  * Based on code named
@@ -398,7 +398,7 @@ static int luaModelDeleteFlightModes(lua_State *L)
 @function model.getFlightMode(index)
 
 @param index (unsigned number) flight mode number (use 0 for FM0)
- 
+
 Return input data for given input and line number
 
 @retval nil requested input or line does not exist
@@ -1535,7 +1535,7 @@ Get Telemetry Sensor parameters
 @retval nil requested sensor does not exist
 
 @retval table with sensor data:
- * `type` (number) 0 = custom, 1 = calculated 
+ * `type` (number) 0 = custom, 1 = calculated
  * `name` (string) Name
  * `unit` (number) See list of units in the appendix of the OpenTX Lua Reference Guide
  * `prec` (number) Number of decimals
@@ -1586,9 +1586,59 @@ static int luaModelResetSensor(lua_State *L)
   if (idx < MAX_TELEMETRY_SENSORS) {
     telemetryItems[idx].clear();
   }
-  
+
   lua_pushnil(L);
   return 1;
+}
+
+/*luadoc
+@function model.swashRingData(params)
+Set heli swash parameters
+@param params (table):
+ * `type` (number) 0=---, 1=120, 2=120X, 3=140, 4=90
+ * `value` (number) swash ring value (normally 0)
+ * 'collectiveSource' (number) source index
+ * 'aileronSource' (number) source index
+ * 'elevatorSource' (number) source index
+ * 'collectiveWeight'(value) -100 to 100
+ * 'aileronWeight' (value) -100 to 100
+ * 'elevatorWeight' (value) -100 to 100
+ * @notice If a parameter is missing, then that parameter remains unchanged.
+@status current Introduced in 2.3.15
+*/
+static int luaModelSwashRingData(lua_State *L)
+{
+  luaL_checktype(L, -1, LUA_TTABLE);
+  for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1)) {
+    luaL_checktype(L, -2, LUA_TSTRING); // key is string
+    const char * key = luaL_checkstring(L, -2);
+    if (!strcmp(key, "type")) {
+      g_model.swashR.type = luaL_checkinteger(L, -1);
+    }
+    else if (!strcmp(key, "value")) {
+      g_model.swashR.value = luaL_checkinteger(L, -1);
+    }
+    else if (!strcmp(key, "collectiveSource")) {
+      g_model.swashR.collectiveSource = luaL_checkinteger(L, -1);
+    }
+    else if (!strcmp(key, "aileronSource")) {
+      g_model.swashR.aileronSource = luaL_checkinteger(L, -1);
+    }
+    else if (!strcmp(key, "elevatorSource")) {
+      g_model.swashR.elevatorSource = luaL_checkinteger(L, -1);
+    }
+    else if (!strcmp(key, "collectiveWeight")) {
+      g_model.swashR.collectiveWeight = luaL_checkinteger(L, -1);
+    }
+    else if (!strcmp(key, "aileronWeight")) {
+      g_model.swashR.aileronWeight = luaL_checkinteger(L, -1);
+    }
+    else if (!strcmp(key, "elevatorWeight")) {
+      g_model.swashR.elevatorWeight = luaL_checkinteger(L, -1);
+    }
+  }
+  storageDirty(EE_MODEL);
+  return 0;
 }
 
 const luaL_Reg modelLib[] = {
@@ -1625,5 +1675,6 @@ const luaL_Reg modelLib[] = {
   { "setGlobalVariable", luaModelSetGlobalVariable },
   { "getSensor", luaModelGetSensor },
   { "resetSensor", luaModelResetSensor },
+  { "swashRingData", luaModelSwashRingData },
   { NULL, NULL }  /* sentinel */
 };

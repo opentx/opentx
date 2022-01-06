@@ -157,14 +157,14 @@ local function drawEngineMenu()
   lcd.drawLine(LCD_W/2-1, 18, LCD_W/2-1, LCD_H-1, DOTTED, 0)
   if engineMode == 1 then
     -- 1 channel
-    lcd.drawPixmap(132, 8, "engine-1.bmp")
+    lcd.drawPixmap(132, 8, "img/engine-1.bmp")
     lcd.drawText(25, LCD_H-16, "Assign channel", 0);
     lcd.drawText(LCD_W/2-19, LCD_H-8, ">>>", 0);
     lcd.drawSource(151, LCD_H-8, MIXSRC_CH1+thrCH1, getFieldFlags(1))
     fieldsMax = 1
   else
     -- No engine
-    lcd.drawPixmap(132, 8, "engine-0.bmp")
+    lcd.drawPixmap(132, 8, "img/engine-0.bmp")
     fieldsMax = 0
   end
 end
@@ -194,7 +194,7 @@ local function drawAileronsMenu()
   lcd.drawLine(LCD_W/2-1, 18, LCD_W/2-1, LCD_H-1, DOTTED, 0)
   if aileronsMode == 2 then
     -- 2 channels
-    lcd.drawPixmap(112, 8, "ailerons-2.bmp")
+    lcd.drawPixmap(112, 8, "img/ailerons-2.bmp")
     lcd.drawText(20, LCD_H-16, "Assign channels", 0);
     lcd.drawText(LCD_W/2-19, LCD_H-8, ">>>", 0);
     lcd.drawSource(116, LCD_H-8, MIXSRC_CH1+ailCH1, getFieldFlags(1))
@@ -202,14 +202,14 @@ local function drawAileronsMenu()
     fieldsMax = 2
   elseif aileronsMode == 1 then
     -- 1 channel
-    lcd.drawPixmap(112, 8, "ailerons-1.bmp")
+    lcd.drawPixmap(112, 8, "img/ailerons-1.bmp")
     lcd.drawText(25, LCD_H-16, "Assign channel", 0);
     lcd.drawText(LCD_W/2-19, LCD_H-8, ">>>", 0);
     lcd.drawSource(151, LCD_H-8, MIXSRC_CH1+ailCH1, getFieldFlags(1))
     fieldsMax = 1
   else
     -- No ailerons
-    lcd.drawPixmap(112, 8, "ailerons-0.bmp")
+    lcd.drawPixmap(112, 8, "img/ailerons-0.bmp")
     fieldsMax = 0
   end
 end
@@ -241,18 +241,18 @@ local function drawFlapsMenu()
   lcd.drawLine(LCD_W/2-1, 18, LCD_W/2-1, LCD_H-1, DOTTED, 0)
   if flapsMode == 0 then
     -- no flaps
-    lcd.drawPixmap(112, 8, "ailerons-0.bmp")
+    lcd.drawPixmap(112, 8, "img/ailerons-0.bmp")
     fieldsMax = 0
   elseif flapsMode == 1 then
     -- 1 channel
-    lcd.drawPixmap(112, 8, "flaps-1.bmp")
+    lcd.drawPixmap(112, 8, "img/flaps-1.bmp")
     lcd.drawText(25, LCD_H-16, "Assign channel", 0);
     lcd.drawText(LCD_W/2-19, LCD_H-8, ">>>", 0);
     lcd.drawSource(151, LCD_H-8, MIXSRC_CH1+flapsCH1, getFieldFlags(1))
     fieldsMax = 1
   elseif flapsMode == 2 then
     -- 2 channels
-    lcd.drawPixmap(112, 8, "flaps-2.bmp")
+    lcd.drawPixmap(112, 8, "img/flaps-2.bmp")
     lcd.drawText(20, LCD_H-16, "Assign channels", 0);
     lcd.drawText(LCD_W/2-19, LCD_H-8, ">>>", 0);
     lcd.drawSource(116, LCD_H-8, MIXSRC_CH1+flapsCH1, getFieldFlags(1))
@@ -288,18 +288,18 @@ local function drawBrakesMenu()
   lcd.drawLine(LCD_W/2-1, 18, LCD_W/2-1, LCD_H-1, DOTTED, 0)
   if brakesMode == 0 then
     -- no brakes
-    lcd.drawPixmap(112, 8, "ailerons-0.bmp")
+    lcd.drawPixmap(112, 8, "img/ailerons-0.bmp")
     fieldsMax = 0
   elseif brakesMode == 1 then
     -- 1 channel
-    lcd.drawPixmap(112, 8, "brakes-1.bmp")
+    lcd.drawPixmap(112, 8, "img/brakes-1.bmp")
     lcd.drawText(25, LCD_H-16, "Assign channel", 0);
     lcd.drawText(LCD_W/2-19, LCD_H-8, ">>>", 0);
     lcd.drawSource(151, LCD_H-8, MIXSRC_CH1+brakesCH1, getFieldFlags(1))
     fieldsMax = 1
   elseif brakesMode == 2 then
     -- 2 channels
-    lcd.drawPixmap(112, 8, "brakes-2.bmp")
+    lcd.drawPixmap(112, 8, "img/brakes-2.bmp")
     lcd.drawText(20, LCD_H-16, "Assign channels", 0);
     lcd.drawText(LCD_W/2-19, LCD_H-8, ">>>", 0);
     lcd.drawSource(116, LCD_H-8, MIXSRC_CH1+brakesCH1, getFieldFlags(1))
@@ -336,20 +336,20 @@ local function drawTailMenu()
   lcd.drawText(LCD_W/2-19, LCD_H-8, ">>>", 0);
   if tailMode == 0 then
     -- Elevator(1ch), no rudder...
-    lcd.drawPixmap(112, 8, "tail-e.bmp")
+    lcd.drawPixmap(112, 8, "img/tail-e.bmp")
     lcd.drawText(25, LCD_H-16, "Assign channel", 0);
     lcd.drawSource(175, 30, MIXSRC_CH1+eleCH1, getFieldFlags(1))
     fieldsMax = 1
   elseif tailMode == 1 then
     -- Elevator(1ch) + rudder...
-    lcd.drawPixmap(112, 8, "tail-er.bmp")
+    lcd.drawPixmap(112, 8, "img/tail-er.bmp")
     lcd.drawText(20, LCD_H-16, "Assign channels", 0);
     lcd.drawSource(175, 30, MIXSRC_CH1+eleCH1, getFieldFlags(1))
     lcd.drawSource(175, 10, MIXSRC_CH1+rudCH1, getFieldFlags(2))
     fieldsMax = 2
   elseif tailMode == 2 then
     -- Elevator(2ch) + rudder...
-    lcd.drawPixmap(112, 8, "tail-eer.bmp")
+    lcd.drawPixmap(112, 8, "img/tail-eer.bmp")
     lcd.drawText(20, LCD_H-16, "Assign channels", 0);
     lcd.drawSource(175, 30, MIXSRC_CH1+eleCH1, getFieldFlags(1))
     lcd.drawSource(175, 20, MIXSRC_CH1+eleCH2, getFieldFlags(2))
@@ -357,7 +357,7 @@ local function drawTailMenu()
     fieldsMax = 3
   else
     -- V-Tail...
-    lcd.drawPixmap(112, 8, "tail-v.bmp")
+    lcd.drawPixmap(112, 8, "img/tail-v.bmp")
     lcd.drawText(20, LCD_H-16, "Assign channels", 0);
     lcd.drawSource(175, 20, MIXSRC_CH1+eleCH1, getFieldFlags(1))
     lcd.drawSource(175, 10, MIXSRC_CH1+eleCH2, getFieldFlags(2))
@@ -392,7 +392,7 @@ local function drawServoMenu(limits)
   lcd.drawFilledRectangle(0, 0, LCD_W, 8, GREY_DEFAULT+FILL_WHITE)
   lcd.drawLine(LCD_W/2-1, 8, LCD_W/2-1, LCD_H-1, DOTTED, 0)
   lcd.drawText(LCD_W/2-19, LCD_H-8, ">>>", 0);
-  lcd.drawPixmap(122, 8, "servo.bmp")
+  lcd.drawPixmap(122, 8, "img/servo.bmp")
   lcd.drawNumber(140, 35, limits.min, PREC1+getFieldFlags(0));
   lcd.drawNumber(205, 35, limits.max, PREC1+getFieldFlags(1));
   lcd.drawNumber(170, 9, limits.offset, PREC1+getFieldFlags(2));
@@ -485,7 +485,7 @@ local function drawConfirmationMenu()
   end
   lcd.drawText(48, LCD_H-8, "Long [ENT] to confirm", 0);
   lcd.drawFilledRectangle(0, LCD_H-9, LCD_W, 9, 0)
-  lcd.drawPixmap(LCD_W-18, LCD_H-17, "confirm-tick.bmp")
+  lcd.drawPixmap(LCD_W-18, LCD_H-17, "img/confirm-tick.bmp")
   fieldsMax = 0
 end
 
