@@ -474,13 +474,13 @@ local function runCreateModel(event)
 
   --Set Swash Parameters
   if TypeFields[1][5]==1 and TypeFields[2][5]==0 then
-    model.swashRingData({type="1",collectiveSource=77,aileronSource=78,elevatorSource=76,collectiveWeight=60,aileronWeight=60,elevatorWeight=60})
+    model.setSwashRing({type="1",collectiveSource=77,aileronSource=78,elevatorSource=76,collectiveWeight=60,aileronWeight=60,elevatorWeight=60})
   elseif TypeFields[2][5]==1 then
-    model.swashRingData({type="2",collectiveSource=77,aileronSource=78,elevatorSource=76,collectiveWeight=60,aileronWeight=60,elevatorWeight=60})
+    model.setSwashRing({type="2",collectiveSource=77,aileronSource=78,elevatorSource=76,collectiveWeight=60,aileronWeight=60,elevatorWeight=60})
   elseif TypeFields[2][5]==2 then
-    model.swashRingData({type="3",collectiveSource=77,aileronSource=78,elevatorSource=76,collectiveWeight=40,aileronWeight=40,elevatorWeight=60})
+    model.setSwashRing({type="3",collectiveSource=77,aileronSource=78,elevatorSource=76,collectiveWeight=40,aileronWeight=40,elevatorWeight=60})
   elseif TypeFields[2][5]==3 then
-    model.swashRingData({type="4",collectiveSource=77,aileronSource=78,elevatorSource=76,collectiveWeight=35,aileronWeight=35,elevatorWeight=60})
+    model.setSwashRing({type="4",collectiveSource=77,aileronSource=78,elevatorSource=76,collectiveWeight=35,aileronWeight=35,elevatorWeight=60})
   end
 end
 

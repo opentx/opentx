@@ -1592,7 +1592,7 @@ static int luaModelResetSensor(lua_State *L)
 }
 
 /*luadoc
-@function model.swashRingData(params)
+@function model.setSwashRing(params)
 Set heli swash parameters
 @param params (table):
  * `type` (number) 0=---, 1=120, 2=120X, 3=140, 4=90
@@ -1606,7 +1606,7 @@ Set heli swash parameters
  * @notice If a parameter is missing, then that parameter remains unchanged.
 @status current Introduced in 2.3.15
 */
-static int luaModelSwashRingData(lua_State *L)
+static int luaModelSetSwashRing(lua_State *L)
 {
   luaL_checktype(L, -1, LUA_TTABLE);
   for (lua_pushnil(L); lua_next(L, -2); lua_pop(L, 1)) {
@@ -1675,6 +1675,6 @@ const luaL_Reg modelLib[] = {
   { "setGlobalVariable", luaModelSetGlobalVariable },
   { "getSensor", luaModelGetSensor },
   { "resetSensor", luaModelResetSensor },
-  { "swashRingData", luaModelSwashRingData },
-  { NULL, NULL }  /* sentinel */
+  { "setSwashRing", luaModelSetSwashRing },
+  { nullptr, nullptr }  /* sentinel */
 };
