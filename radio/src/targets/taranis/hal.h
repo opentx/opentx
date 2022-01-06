@@ -1485,7 +1485,7 @@
 #if defined(PCBX9LITE)
   #define TRAINER_DETECT_GPIO           GPIOD
   #define TRAINER_DETECT_GPIO_PIN       GPIO_Pin_11 // PD.11
-  #define TRAINER_DETECT_GPIO_PIN_VALUE Bit_RESET
+  #define TRAINER_DETECT_GPIO_PIN_VALUE Bit_SET
 #endif
   #define TRAINER_TIMER                 TIM4
   #define TRAINER_GPIO_AF               GPIO_AF_TIM4 // TIM4_CH1 (Out) + TIM4_CH2 (In)
@@ -1520,7 +1520,7 @@
   #define TRAINER_OUT_GPIO_PinSource    GPIO_PinSource9
   #define TRAINER_DETECT_GPIO           GPIOA
   #define TRAINER_DETECT_GPIO_PIN       GPIO_Pin_8  // PA.08
-#if defined(RADIO_X9DP2019)
+#if defined(RADIO_X9DP2019) || defined(RADIO_X7ACCESS)
   #define TRAINER_DETECT_GPIO_PIN_VALUE Bit_SET
 #else
   #define TRAINER_DETECT_GPIO_PIN_VALUE Bit_RESET
