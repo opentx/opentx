@@ -177,17 +177,26 @@ uint8_t createGhostChannelsFrame12BitRaw(uint8_t * frame, int16_t * pulses)
 
 void setupPulsesGhost()
 {
-  auto & module = g_model.moduleData[EXTERNAL_MODULE];
-
   if (telemetryProtocol == PROTOCOL_TELEMETRY_GHOST) {
-    uint8_t * pulses = extmodulePulsesData.ghost.pulses;
+
+    auto &module = g_model.moduleData[EXTERNAL_MODULE];
+    auto *p_data = &extmodulePulsesData.ghost;
+
+    #if defined(LUA)
+    if (outputTelemetryBuffer.destination == TELEMETRY_ENDPOINT_SPORT) {
+      memcpy(p_data->pulses, outputTelemetryBuffer.data, outputTelemetryBuffer.size);
+      p_data->length = outputTelemetryBuffer.size;
+      outputTelemetryBuffer.reset();
+    } else
+    #endif
+
     if (moduleState[EXTERNAL_MODULE].counter == GHST_MENU_CONTROL)
-      extmodulePulsesData.ghost.length = createGhostMenuControlFrame(pulses, &channelOutputs[g_model.moduleData[EXTERNAL_MODULE].channelsStart]);
+      p_data->length = createGhostMenuControlFrame(p_data->pulses, &channelOutputs[g_model.moduleData[EXTERNAL_MODULE].channelsStart]);
     else {
       if (module.ghost.raw12bits)
-        extmodulePulsesData.ghost.length = createGhostChannelsFrame12BitRaw(pulses, &channelOutputs[g_model.moduleData[EXTERNAL_MODULE].channelsStart]);
+        p_data->length = createGhostChannelsFrame12BitRaw(p_data->pulses, &channelOutputs[g_model.moduleData[EXTERNAL_MODULE].channelsStart]);
       else
-        extmodulePulsesData.ghost.length = createGhostChannelsFrame(pulses, &channelOutputs[g_model.moduleData[EXTERNAL_MODULE].channelsStart]);
+        p_data->length = createGhostChannelsFrame(p_data->pulses, &channelOutputs[g_model.moduleData[EXTERNAL_MODULE].channelsStart]);
     }
 
     moduleState[EXTERNAL_MODULE].counter = GHST_FRAME_CHANNEL;
