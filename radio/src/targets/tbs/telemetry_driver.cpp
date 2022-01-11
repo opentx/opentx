@@ -214,6 +214,7 @@ void sportWaitTransmissionComplete()
 
 void telemetryPortSetDirectionInput()
 {
+  sportWaitTransmissionComplete();
   TELEMETRY_DIR_INPUT();
   TELEMETRY_USART->CR1 |= USART_CR1_RE; // turn on receiver
 }
