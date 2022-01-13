@@ -143,6 +143,11 @@ def main():
         cmake_options["PCBREV"] = "TLITE"
         firmware_options = options_jumper_tlite
         maxsize = 65536 * 8
+    elif board_name == "tpro":
+        cmake_options["PCB"] = "X7"
+        cmake_options["PCBREV"] = "TPRO"
+        firmware_options = options_jumper_tlite
+        maxsize = 65536 * 8
     elif board_name == "t12":
         cmake_options["PCB"] = "X7"
         cmake_options["PCBREV"] = "T12"
