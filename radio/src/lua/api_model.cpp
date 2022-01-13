@@ -1590,20 +1590,46 @@ static int luaModelResetSensor(lua_State *L)
   lua_pushnil(L);
   return 1;
 }
+/*luadoc
+@function model.getSwashRing(params)
+Get heli swash parameters
 
+@param params (table):
+* `type` (number) 0=---, 1=120, 2=120X, 3=140, 4=90
+* `value` (number) swash ring value (normally 0)
+* 'collectiveSource' (number) source index
+* 'aileronSource' (number) source index
+* 'elevatorSource' (number) source index
+* 'collectiveWeight'(value) -100 to 100
+* 'aileronWeight' (value) -100 to 100
+* 'elevatorWeight' (value) -100 to 100
+
+ @status current Introduced in 2.3.15
+*/
+static int luaModelGetSwashRing(lua_State *L)
+{
+  {
+    lua_newtable(L);
+    lua_pushtableinteger(L, "type", g_model.swashR.type);
+    lua_pushtableinteger(L, "value", g_model.swashR.value);
+    lua_pushtableinteger(L, "collectiveSource", g_model.swashR.collectiveSource);
+    lua_pushtableinteger(L, "aileronSource", g_model.swashR.aileronSource);
+    lua_pushtableinteger(L, "elevatorSource", g_model.swashR.elevatorSource);
+    lua_pushtableinteger(L, "collectiveWeight", g_model.swashR.collectiveWeight);
+    lua_pushtableinteger(L, "aileronWeight", g_model.swashR.aileronWeight);
+    lua_pushtableinteger(L, "elevatorWeight", g_model.swashR.elevatorWeight);
+
+  }
+  return 1;
+}
 /*luadoc
 @function model.setSwashRing(params)
 Set heli swash parameters
-@param params (table):
- * `type` (number) 0=---, 1=120, 2=120X, 3=140, 4=90
- * `value` (number) swash ring value (normally 0)
- * 'collectiveSource' (number) source index
- * 'aileronSource' (number) source index
- * 'elevatorSource' (number) source index
- * 'collectiveWeight'(value) -100 to 100
- * 'aileronWeight' (value) -100 to 100
- * 'elevatorWeight' (value) -100 to 100
- * @notice If a parameter is missing, then that parameter remains unchanged.
+
+@param value (table) swash ring parameters, see model.getSwashRing() for table format
+
+@notice If a parameter is missing, then that parameter remains unchanged.
+
 @status current Introduced in 2.3.15
 */
 static int luaModelSetSwashRing(lua_State *L)
@@ -1675,6 +1701,7 @@ const luaL_Reg modelLib[] = {
   { "setGlobalVariable", luaModelSetGlobalVariable },
   { "getSensor", luaModelGetSensor },
   { "resetSensor", luaModelResetSensor },
+  { "getSwashRing", luaModelGetSwashRing },
   { "setSwashRing", luaModelSetSwashRing },
   { nullptr, nullptr }  /* sentinel */
 };
