@@ -49,6 +49,8 @@
 #define GHST_DL_MENU_DESC               0x24
 #define GHST_DL_GPS_PRIMARY             0x25
 #define GHST_DL_GPS_SECONDARY           0x26
+#define GHST_DL_MAGBARO                 0x27
+#define GHST_DL_MSP_RESP                0x28
 
 #define GHST_RC_CTR_VAL_12BIT		0x7C0   // 0x3e0 << 1
 #define GHST_RC_CTR_VAL_8BIT		0x7C
@@ -105,6 +107,7 @@ enum GhstVtxBand
 
 void processGhostTelemetryData(uint8_t data);
 void ghostSetDefault(int index, uint8_t id, uint8_t subId);
+uint8_t getGhostModuleAddr();
 
 #if SPORT_MAX_BAUDRATE < 400000
 // For radios which can't support telemetry at high rates, offer baud rate choices
