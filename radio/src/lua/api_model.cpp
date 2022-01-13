@@ -1608,18 +1608,16 @@ Get heli swash parameters
 */
 static int luaModelGetSwashRing(lua_State *L)
 {
-  {
-    lua_newtable(L);
-    lua_pushtableinteger(L, "type", g_model.swashR.type);
-    lua_pushtableinteger(L, "value", g_model.swashR.value);
-    lua_pushtableinteger(L, "collectiveSource", g_model.swashR.collectiveSource);
-    lua_pushtableinteger(L, "aileronSource", g_model.swashR.aileronSource);
-    lua_pushtableinteger(L, "elevatorSource", g_model.swashR.elevatorSource);
-    lua_pushtableinteger(L, "collectiveWeight", g_model.swashR.collectiveWeight);
-    lua_pushtableinteger(L, "aileronWeight", g_model.swashR.aileronWeight);
-    lua_pushtableinteger(L, "elevatorWeight", g_model.swashR.elevatorWeight);
+  lua_newtable(L);
+  lua_pushtableinteger(L, "type", g_model.swashR.type);
+  lua_pushtableinteger(L, "value", g_model.swashR.value);
+  lua_pushtableinteger(L, "collectiveSource", g_model.swashR.collectiveSource);
+  lua_pushtableinteger(L, "aileronSource", g_model.swashR.aileronSource);
+  lua_pushtableinteger(L, "elevatorSource", g_model.swashR.elevatorSource);
+  lua_pushtableinteger(L, "collectiveWeight", g_model.swashR.collectiveWeight);
+  lua_pushtableinteger(L, "aileronWeight", g_model.swashR.aileronWeight);
+  lua_pushtableinteger(L, "elevatorWeight", g_model.swashR.elevatorWeight);
 
-  }
   return 1;
 }
 /*luadoc

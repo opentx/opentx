@@ -87,7 +87,8 @@ const GhostSensor ghostSensors[] = {
   {0x00,                     NULL,                  UNIT_RAW,               0},
 };
 
-uint8_t getGhostModuleAddr() {
+uint8_t getGhostModuleAddr()
+{
 #if SPORT_MAX_BAUDRATE < 400000
   return g_eeGeneral.telemetryBaudrate == GHST_TELEMETRY_RATE_400K ? GHST_ADDR_MODULE_SYM : GHST_ADDR_MODULE_ASYM;
 #else

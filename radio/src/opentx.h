@@ -1321,6 +1321,12 @@ void usbPluggedIn();
 
 #include "lua/lua_api.h"
 
+#if defined(LUA)
+#define LUA_DEFINED() true
+#else
+#define LUA_DEFINED() false
+#endif
+
 #if defined(SDCARD)
 enum ClipboardType {
   CLIPBOARD_TYPE_NONE,
