@@ -797,7 +797,7 @@ bool OpenTxFirmware::isAvailable(PulsesProtocol proto, int port)
           case PULSES_ACCST_ISRM_D16:
             return IS_ACCESS_RADIO(board, id);
           case PULSES_MULTIMODULE:
-            return id.contains("internalmulti") || IS_RADIOMASTER_TX16S(board) || IS_JUMPER_T18(board) || IS_RADIOMASTER_TX12(board) || IS_JUMPER_TLITE(board);
+            return id.contains("internalmulti") || IS_FAMILY_T12(board) || IS_FAMILY_T16(board);
           default:
             return false;
         }
