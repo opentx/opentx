@@ -1105,7 +1105,7 @@ void checkThrottleStick()
   bool refresh = false;
 #endif
 
-  while (!getEvent()) {
+  while (!keyDown()) {
     if (!isThrottleWarningAlertNeeded()) {
       return;
     }
