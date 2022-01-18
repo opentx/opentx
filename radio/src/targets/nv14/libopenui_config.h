@@ -147,6 +147,8 @@ enum FontIndex
   FONTS_COUNT
 };
 
+#define DEFAULT_TEXT_BUTTON_FLAGS (BUTTON_BACKGROUND | OPAQUE)
+
 constexpr uint32_t INPUT_EDIT_LABELS_WIDTH = 80;
 constexpr coord_t INPUT_EDIT_CURVE_WIDTH = LCD_W;
 constexpr coord_t INPUT_EDIT_CURVE_HEIGHT = 158;
