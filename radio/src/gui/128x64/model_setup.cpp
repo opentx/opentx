@@ -627,14 +627,14 @@ void menuModelSetup(event_t event)
         }
         
         if (FSWITCH_GROUP(index)) {
-          uint8_t groupeAlwaysOn = FSWITCH_GROUP_ON(config);
+          uint8_t groupeAlwaysOn = IS_FSWITCH_GROUP_ON(config);
           groupeAlwaysOn = editCheckBox(groupeAlwaysOn, 30 + 15 * FW, y, "", menuHorizontalPosition == 3 ? attr : 0, event);
           if (attr && checkIncDec_Ret && menuHorizontalPosition == 3) {
             swconfig_t mask = (swconfig_t) 0x01 << (2 * NUM_FUNCTIONS_SWITCHES + config);
             g_model.functionSwitchGroup = (g_model.functionSwitchGroup & ~mask) | (groupeAlwaysOn << (2 * NUM_FUNCTIONS_SWITCHES + config));
           }
         }
-        else if (attr && menuHorizontalPosition == 3 ) {
+        else if (attr && menuHorizontalPosition == 3) {  // Non visible checkbox
           REPEAT_LAST_CURSOR_MOVE();
         }
         break;

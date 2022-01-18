@@ -120,7 +120,7 @@ void evalFunctionSwitches()
     uint8_t physicalState = getFSPhysicalState(i);
     if (physicalState != getFSPreviousPhysicalState(i)) {      // FS was moved
       if ((FSWITCH_CONFIG(i) == SWITCH_2POS && physicalState == 1) || (FSWITCH_CONFIG(i) == SWITCH_TOGGLE)) {
-        if (FSWITCH_GROUP_ON(FSWITCH_GROUP(i)) != 0) { // In an always on group
+        if (IS_FSWITCH_GROUP_ON(FSWITCH_GROUP(i)) != 0) { // In an always on group
           g_model.functionSwitchLogicalState |= 1 << i;   // Set bit
         }
         else {
