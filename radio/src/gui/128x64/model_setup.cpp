@@ -634,7 +634,7 @@ void menuModelSetup(event_t event)
             g_model.functionSwitchGroup = (g_model.functionSwitchGroup & ~mask) | (groupeAlwaysOn << (2 * NUM_FUNCTIONS_SWITCHES + config));
           }
         }
-        else if (menuHorizontalPosition == 3 ) {
+        else if (attr && menuHorizontalPosition == 3 ) {
           REPEAT_LAST_CURSOR_MOVE();
         }
         break;
