@@ -108,7 +108,8 @@ static void interface_speed( enum speed_setting speed )
   if ( speed == INTERFACE_SLOW ) {
     /* Set slow clock (100k-400k) */
     tmp = ( tmp | SPI_BaudRatePrescaler_128 );
-  } else{
+  }
+  else{
     /* Set fast clock (depends on the CSD) */
     tmp = ( tmp & ~SPI_BaudRatePrescaler_128 ) | SD_SPI_BaudRatePrescaler;
   }
