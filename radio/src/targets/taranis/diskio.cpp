@@ -419,7 +419,8 @@ BOOL rcvr_datablock (
   if ((DWORD)buff < RAM_START || ((DWORD)buff & 3)) {
     stm32_dma_transfer(TRUE, sd_buff, btr);
     memcpy(buff, sd_buff, btr);
-  } else {
+  }
+  else {
     stm32_dma_transfer(TRUE, buff, btr);
   }
   #else
