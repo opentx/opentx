@@ -108,7 +108,7 @@ static void interface_speed( enum speed_setting speed )
   if ( speed == INTERFACE_SLOW ) {
     /* Set slow clock (100k-400k) */
     tmp = ( tmp | SPI_BaudRatePrescaler_128 );
-  } else {
+  } else{
     /* Set fast clock (depends on the CSD) */
     tmp = ( tmp & ~SPI_BaudRatePrescaler_128 ) | SD_SPI_BaudRatePrescaler;
   }
@@ -418,7 +418,7 @@ BOOL rcvr_datablock (
   if ((DWORD)buff < RAM_START || ((DWORD)buff & 3)) {
     stm32_dma_transfer(TRUE, sd_buff, btr);
     memcpy(buff, sd_buff, btr);
-  } else {
+  } else{
     stm32_dma_transfer(TRUE, buff, btr);
   }
   #else
@@ -472,7 +472,8 @@ BOOL xmit_datablock (
   if ((DWORD)buff < RAM_START || ((DWORD)buff & 3)) {
     memcpy(sd_buff, buff, 512);
     stm32_dma_transfer(FALSE, sd_buff, 512);
-  } else {
+  }
+  else {
     stm32_dma_transfer(FALSE, buff, 512);
   }
   #else
@@ -604,10 +605,12 @@ DSTATUS disk_initialize (
           ty = (ocr[0] & 0x40) ? CT_SD2 | CT_BLOCK : CT_SD2;
         }
       }
-    } else {                                                        /* SDSC or MMC */
+    }
+    else {                                                        /* SDSC or MMC */
       if (send_cmd(ACMD41, 0) <= 1)   {
         ty = CT_SD1; cmd = ACMD41;      /* SDSC */
-      } else {
+      }
+      else {
         ty = CT_MMC; cmd = CMD1;        /* MMC */
       }
       while (Timer1 && send_cmd(cmd, 0));                     /* Wait for leaving idle state */
@@ -837,11 +840,13 @@ DRESULT disk_ioctl (
             res = RES_OK;
           }
         }
-      } else {                                        /* SDC version 1.XX or MMC */
+      }
+      else {                                        /* SDC version 1.XX or MMC */
         if ((send_cmd(CMD9, 0) == 0) && rcvr_datablock(csd, 16)) {      /* Read CSD */
           if (CardType & CT_SD1) {        /* SDC version 1.XX */
             *(DWORD*)buff = (((csd[10] & 63) << 1) + ((WORD)(csd[11] & 128) >> 7) + 1) << ((csd[13] >> 6) - 1);
-          } else {                                        /* MMC */
+          }
+          else {                                        /* MMC */
             *(DWORD*)buff = ((WORD)((csd[10] & 124) >> 2) + 1) * (((csd[11] & 3) << 3) + ((csd[11] & 224) >> 5) + 1);
           }
           res = RES_OK;
