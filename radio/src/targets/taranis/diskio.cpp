@@ -109,7 +109,7 @@ static void interface_speed( enum speed_setting speed )
     /* Set slow clock (100k-400k) */
     tmp = ( tmp | SPI_BaudRatePrescaler_128 );
   }
-  else{
+  else {
     /* Set fast clock (depends on the CSD) */
     tmp = ( tmp & ~SPI_BaudRatePrescaler_128 ) | SD_SPI_BaudRatePrescaler;
   }
@@ -419,7 +419,7 @@ BOOL rcvr_datablock (
   if ((DWORD)buff < RAM_START || ((DWORD)buff & 3)) {
     stm32_dma_transfer(TRUE, sd_buff, btr);
     memcpy(buff, sd_buff, btr);
-  } else{
+  } else {
     stm32_dma_transfer(TRUE, buff, btr);
   }
   #else
