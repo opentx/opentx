@@ -145,6 +145,7 @@ class FunctionSwitchesPanel : public ModelPanel
     void on_configCurrentIndexChanged(int index);
     void on_startPosnCurrentIndexChanged(int index);
     void on_groupChanged(int value);
+    void on_alwaysOnGroupChanged(int value);
 
   private:
     Ui::FunctionSwitches * ui;
@@ -152,6 +153,7 @@ class FunctionSwitchesPanel : public ModelPanel
     QVector<QComboBox *> cboConfigs;
     QVector<QComboBox *> cboStartupPosns;
     QVector<QSpinBox *> sbGroups;
+    QVector<QCheckBox *> cbAlwaysOnGroups;
     int switchcnt;
 };
 
