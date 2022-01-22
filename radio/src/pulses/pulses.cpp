@@ -390,7 +390,7 @@ bool setupPulsesExternalModule(uint8_t protocol)
       }
       else
         mixerSchedulerSetPeriod(EXTERNAL_MODULE, CROSSFIRE_PERIOD);
-      setupPulsesCrossfire();
+      setupPulsesCrossfire(EXTERNAL_MODULE);
 #if defined(PCBSKY9X)
       scheduleNextMixerCalculation(EXTERNAL_MODULE, CROSSFIRE_PERIOD);
 #endif
@@ -460,7 +460,12 @@ static void enablePulsesInternalModule(uint8_t protocol)
   // start new protocol hardware here
 
   switch (protocol) {
-#if defined(INTERNAL_MODULE_CRSF) || defined(INTERNAL_MODULE_ELRS)
+#if defined(INTERNAL_MODULE_ELRS)
+    case PROTOCOL_CHANNELS_CROSSFIRE:
+      intmoduleSerialStart(CROSSFIRE_BAUDRATE, true, USART_Parity_No, USART_StopBits_1, USART_WordLength_8b);
+      mixerSchedulerSetPeriod(INTERNAL_MODULE, CROSSFIRE_PERIOD);
+      break;
+#elif defined(INTERNAL_MODULE_CRSF)
     case PROTOCOL_CHANNELS_CROSSFIRE:
       break;
 #elif defined(PXX1) && !defined(INTMODULE_USART)
@@ -572,9 +577,15 @@ bool setupPulsesInternalModule(uint8_t protocol)
 #endif
 
 #if defined(INTERNAL_MODULE_CRSF) || defined(INTERNAL_MODULE_ELRS)
-    case PROTOCOL_CHANNELS_CROSSFIRE:
-      mixerSchedulerSetPeriod(INTERNAL_MODULE, CROSSFIRE_PERIOD);
+    case PROTOCOL_CHANNELS_CROSSFIRE: {
+      ModuleSyncStatus & status = getModuleSyncStatus(INTERNAL_MODULE);
+      if (status.isValid())
+        mixerSchedulerSetPeriod(INTERNAL_MODULE, status.getAdjustedRefreshRate());
+      else
+        mixerSchedulerSetPeriod(INTERNAL_MODULE, CROSSFIRE_PERIOD);
+      setupPulsesCrossfire(INTERNAL_MODULE);
       return true;
+    }
 #endif
 
     default:

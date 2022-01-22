@@ -23,7 +23,7 @@
 ModuleFifo intmoduleFifo;
 #if !defined(INTMODULE_DMA_STREAM)
 uint8_t * intmoduleTxBufferData;
-uint8_t intmoduleTxBufferRemaining;
+volatile uint8_t intmoduleTxBufferRemaining;
 #endif
 
 void intmoduleStop()
@@ -75,7 +75,7 @@ void intmoduleSerialStart(uint32_t baudrate, uint8_t rxEnable, uint16_t parity, 
   GPIO_InitStructure.GPIO_Mode = GPIO_Mode_AF;
   GPIO_InitStructure.GPIO_OType = GPIO_OType_PP;
   GPIO_InitStructure.GPIO_PuPd = GPIO_PuPd_UP;
-  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_2MHz;
+  GPIO_InitStructure.GPIO_Speed = GPIO_Speed_50MHz;
   GPIO_Init(INTMODULE_GPIO, &GPIO_InitStructure);
 
   USART_DeInit(INTMODULE_USART);
@@ -172,20 +172,49 @@ void intmoduleSendNextFrame()
   switch (moduleState[INTERNAL_MODULE].protocol) {
 #if defined(PXX2)
     case PROTOCOL_CHANNELS_PXX2_HIGHSPEED:
-      intmoduleSendBuffer(intmodulePulsesData.pxx2.getData(), intmodulePulsesData.pxx2.getSize());
+      intmoduleSendBuffer(intmodulePulsesData.pxx2.getData(),
+                          intmodulePulsesData.pxx2.getSize());
+      break;
+#endif
+
+#if defined(INTERNAL_MODULE_PPM)
+    case PROTOCOL_CHANNELS_PPM:
+      intmoduleSendNextFramePPM(
+          intmodulePulsesData.ppm.pulses,
+          intmodulePulsesData.ppm.ptr - intmodulePulsesData.ppm.pulses);
       break;
 #endif
 
 #if defined(PXX1)
+#if defined(INTMODULE_USART)
     case PROTOCOL_CHANNELS_PXX1_SERIAL:
-      intmoduleSendBuffer(intmodulePulsesData.pxx_uart.getData(), intmodulePulsesData.pxx_uart.getSize());
+      intmoduleSendBuffer(intmodulePulsesData.pxx_uart.getData(),intmodulePulsesData.pxx_uart.getSize());
       break;
+#else
+      case PROTOCOL_CHANNELS_PXX1_PULSES:
+      intmoduleSendNextFramePxx1(intmodulePulsesData.pxx.getData(),intmodulePulsesData.pxx.getSize());
+      break;
+#endif
 #endif
 
 #if defined(INTERNAL_MODULE_MULTI)
-    case PROTOCOL_CHANNELS_MULTIMODULE:
-      intmoduleSendBuffer(intmodulePulsesData.multi.getData(), intmodulePulsesData.multi.getSize());
+      case PROTOCOL_CHANNELS_MULTIMODULE:
+      intmoduleSendBuffer(intmodulePulsesData.multi.getData(),intmodulePulsesData.multi.getSize());
       break;
+#endif
+
+#if defined(INTERNAL_MODULE_ELRS)
+      case PROTOCOL_CHANNELS_CROSSFIRE:
+      intmoduleSendBuffer(intmodulePulsesData.crossfire.pulses,intmodulePulsesData.crossfire.length);
+      break;
+#endif
+
+#if defined(AFHDS2)
+      case PROTOCOL_CHANNELS_AFHDS2A: {
+    uint8_t* data = (uint8_t*)intmodulePulsesData.flysky.pulses;
+    uint16_t size = intmodulePulsesData.flysky.ptr - data;
+    intmoduleSendBuffer(data, size);
+  } break;
 #endif
   }
 }

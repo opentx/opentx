@@ -139,6 +139,7 @@ elseif(PCB STREQUAL X7)
     add_definitions(-DMANUFACTURER_JUMPER)
   elseif(PCBREV STREQUAL TPRO)
     option(INTERNAL_MODULE_MULTI "Support for MULTI internal module" ON)
+    option(INTERNAL_MODULE_ELRS "Support for ELRS internal module" OFF)
     set(FLAVOUR tpro)
     set(NAVIGATION_TYPE x7)
     set(CPU_TYPE STM32F2)
@@ -522,6 +523,7 @@ endif()
 if(INTERNAL_MODULE_ELRS)
   add_definitions(-DHARDWARE_INTERNAL_MODULE)
   add_definitions(-DINTERNAL_MODULE_ELRS)
+  add_definitions(-DINTERNAL_MODULE_SERIAL_TELEMETRY)
   set(INTERNAL_MODULE_MULTI NO)
   set(TARGET_SRC
     ${TARGET_SRC}
@@ -532,6 +534,7 @@ endif()
 if(INTERNAL_MODULE_MULTI)
   add_definitions(-DHARDWARE_INTERNAL_MODULE)
   add_definitions(-DINTERNAL_MODULE_MULTI)
+  add_definitions(-DINTERNAL_MODULE_SERIAL_TELEMETRY)
   set(TARGET_SRC
     ${TARGET_SRC}
     ../common/arm/stm32/intmodule_serial_driver.cpp

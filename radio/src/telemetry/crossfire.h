@@ -117,6 +117,10 @@ const uint8_t CROSSFIRE_PERIODS[] = {
 #define CROSSFIRE_BAUDRATE    CROSSFIRE_BAUDRATES[g_eeGeneral.telemetryBaudrate]
 #define CROSSFIRE_PERIOD      (CROSSFIRE_PERIODS[g_eeGeneral.telemetryBaudrate] * 1000)
 
+#if defined(DEBUG)
+#define CROSSFIRE_TELEM_MIRROR_BAUDRATE   DEBUG_BAUDRATE
+#else
 #define CROSSFIRE_TELEM_MIRROR_BAUDRATE   115200
+#endif
 
 #endif // _CROSSFIRE_H_
