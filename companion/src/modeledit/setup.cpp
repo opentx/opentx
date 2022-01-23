@@ -971,6 +971,9 @@ FunctionSwitchesPanel::FunctionSwitchesPanel(QWidget * parent, ModelData & model
 {
   ui->setupUi(this);
 
+  AbstractStaticItemModel *fsConfig = ModelData::funcSwitchConfigItemModel();
+  AbstractStaticItemModel *fsStart = ModelData::funcSwitchStartItemModel();
+
   lock = true;
 
   QRegExp rx(CHAR_FOR_NAMES_REGEX);
@@ -986,19 +989,13 @@ FunctionSwitchesPanel::FunctionSwitchesPanel(QWidget * parent, ModelData & model
     aleName->setValidator(new QRegExpValidator(rx, this));
     aleName->setField((char *)model.functionSwitchNames[i], 3);
 
-    //  TODO itemmodel
     QComboBox * cboConfig = new QComboBox(this);
     cboConfig->setProperty("index", i);
-    cboConfig->addItem(tr("NONE"));
-    cboConfig->addItem(tr("TOGGLE"));
-    cboConfig->addItem(tr("2POS"));
+    cboConfig->setModel(fsConfig);
 
-    //  TODO itemmodel
     QComboBox * cboStartPosn = new QComboBox(this);
     cboStartPosn->setProperty("index", i);
-    cboStartPosn->addItem(tr("Inactive"));
-    cboStartPosn->addItem(tr("Active"));
-    cboStartPosn->addItem(tr("Restore"));
+    cboStartPosn->setModel(fsStart);
 
     QSpinBox * sbGroup = new QSpinBox(this);
     sbGroup->setProperty("index", i);
