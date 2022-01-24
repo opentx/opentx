@@ -192,6 +192,9 @@ QString RawSource::toString(const ModelData * model, const GeneralSettings * con
         result = Boards::getSwitchInfo(board, index).name;
       return result;
 
+    case SOURCE_TYPE_FUNCTIONSWITCH:
+      return tr("SW%1").arg(index + 1);
+
     case SOURCE_TYPE_CUSTOM_SWITCH:
       return RawSwitch(SWITCH_TYPE_VIRTUAL, index + 1).toString();
 
@@ -305,6 +308,9 @@ bool RawSource::isAvailable(const ModelData * const model, const GeneralSettings
   if (type == SOURCE_TYPE_SWITCH && index >= b.getCapability(Board::Switches))
     return false;
 
+  if (type == SOURCE_TYPE_FUNCTIONSWITCH && index >= b.getCapability(Board::FunctionsSwitches))
+    return false;
+
   if (model) {
     if (type == SOURCE_TYPE_VIRTUAL_INPUT && !model->isInputValid(index))
       return false;
@@ -325,6 +331,9 @@ bool RawSource::isAvailable(const ModelData * const model, const GeneralSettings
       return false;
 
     if (type == SOURCE_TYPE_SWITCH && IS_HORUS_OR_TARANIS(board) && !gs->switchSourceAllowedTaranis(index))
+      return false;
+
+    if (type == SOURCE_TYPE_FUNCTIONSWITCH && IS_HORUS_OR_TARANIS(board) && !model->isFunctionSwitchSourceAllowed(index))
       return false;
   }
 
@@ -406,7 +415,7 @@ QStringList RawSource::getSwitchList(Boards board) const
 {
   QStringList ret;
 
-  for (int i = 0; i < board.getCapability(Board::Switches); i++) {
+  for (int i = 0; i < board.getCapability(Board::Switches) + board.getCapability(Board::FunctionsSwitches); i++) {
     ret.append(board.getSwitchInfo(i).name);
   }
   return ret;

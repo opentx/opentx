@@ -423,6 +423,12 @@ int Boards::getCapability(Board::Type board, Board::Capability capability)
       else
         return 7;
 
+    case FunctionsSwitches:
+      if (IS_JUMPER_TPRO(board))
+        return 6;
+      else
+        return 0;
+
     case FactoryInstalledSwitches:
       if (IS_TARANIS_X9E(board))
         return 8;
@@ -442,6 +448,9 @@ int Boards::getCapability(Board::Type board, Board::Capability capability)
         return getCapability(board, Board::Switches) * 3;
       else
         return 9;
+
+    case NumFunctionSwitchesPositions:
+      return getCapability(board, Board::FunctionsSwitches) * 3;
 
     case NumTrims:
       if (IS_FAMILY_HORUS_OR_T16(board))

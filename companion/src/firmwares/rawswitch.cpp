@@ -90,6 +90,10 @@ QString RawSwitch::toString(Board::Type board, const GeneralSettings * const gen
         else
           return LogicalSwitchData().nameToString(index-1);
 
+      case SWITCH_TYPE_FUNCTIONSWITCH:
+        qr = div(index-1, 3);
+        return tr("SW%1").arg(qr.quot + 1) + directionIndicators.at(qr.rem > -1 && qr.rem < directionIndicators.size() ? qr.rem : 1);
+
       case SWITCH_TYPE_MULTIPOS_POT:
         if (!Boards::getCapability(board, Board::MultiposPotsPositions))
           return tr("???");
@@ -155,11 +159,17 @@ bool RawSwitch::isAvailable(const ModelData * const model, const GeneralSettings
   if (type == SWITCH_TYPE_SWITCH && abs(index) > b.getCapability(Board::SwitchPositions))
     return false;
 
+  if (type == SWITCH_TYPE_FUNCTIONSWITCH && abs(index) > b.getCapability(Board::NumFunctionSwitchesPositions))
+    return false;
+
   if (type == SWITCH_TYPE_TRIM && abs(index) > b.getCapability(Board::NumTrimSwitches))
     return false;
 
   if (gs) {
     if (type == SWITCH_TYPE_SWITCH && IS_HORUS_OR_TARANIS(board) && !gs->switchPositionAllowedTaranis(abs(index)))
+      return false;
+
+    if (type == SWITCH_TYPE_FUNCTIONSWITCH && IS_HORUS_OR_TARANIS(board) && !model->isFunctionSwitchPositionAvailable(abs(index)))
       return false;
 
     if (type == SWITCH_TYPE_MULTIPOS_POT) {
@@ -236,7 +246,7 @@ QStringList RawSwitch::getSwitchList(Boards board) const
 {
   QStringList ret;
 
-  for (int i = 0; i < board.getCapability(Board::Switches); i++) {
+  for (int i = 0; i < board.getCapability(Board::Switches) + board.getCapability(Board::FunctionsSwitches); i++) {
     ret.append(board.getSwitchInfo(i).name);
   }
   return ret;

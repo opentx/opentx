@@ -256,6 +256,8 @@ class ModelData {
     int getChannelsMax(bool forceExtendedLimits=false) const;
 
     bool isAvailable(const RawSwitch & swtch) const;
+    bool isFunctionSwitchPositionAvailable(int index) const;
+    bool isFunctionSwitchSourceAllowed(int index) const;
 
     enum ReferenceUpdateAction {
       REF_UPD_ACT_CLEAR,
