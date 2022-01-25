@@ -141,7 +141,11 @@ class FunctionSwitchesPanel : public ModelPanel
     virtual void update();
     void update(int index);
 
+  signals:
+    void updateDataModels();
+
   private slots:
+    void on_nameEditingFinished();
     void on_configCurrentIndexChanged(int index);
     void on_startPosnCurrentIndexChanged(int index);
     void on_groupChanged(int value);
@@ -203,6 +207,7 @@ class SetupPanel : public ModelPanel
     void onItemModelAboutToBeUpdated();
     void onItemModelUpdateComplete();
     void onModuleUpdateItemModels();
+    void onFunctionSwitchesUpdateItemModels();
 
   private:
     Ui::Setup *ui;
@@ -212,6 +217,8 @@ class SetupPanel : public ModelPanel
     QVector<QCheckBox *> centerBeepCheckboxes;
     ModulePanel * modules[CPN_MAX_MODULES + 1];
     TimerPanel * timers[CPN_MAX_TIMERS];
+    FunctionSwitchesPanel * funcswitches;
+
     void updateStartupSwitches();
     void updatePotWarnings();
     void updateBeepCenter();

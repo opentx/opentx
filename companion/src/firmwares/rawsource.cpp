@@ -193,7 +193,10 @@ QString RawSource::toString(const ModelData * model, const GeneralSettings * con
       return result;
 
     case SOURCE_TYPE_FUNCTIONSWITCH:
-      return tr("SW%1").arg(index + 1);
+      result = QString(model->functionSwitchNames[index]).trimmed();
+      if (result.isEmpty())
+        result = tr("SW%1").arg(index + 1);
+      return result;
 
     case SOURCE_TYPE_CUSTOM_SWITCH:
       return RawSwitch(SWITCH_TYPE_VIRTUAL, index + 1).toString();

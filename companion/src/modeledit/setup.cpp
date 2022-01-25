@@ -1014,6 +1014,7 @@ FunctionSwitchesPanel::FunctionSwitchesPanel(QWidget * parent, ModelData & model
     ui->gridSwitches->addWidget(sbGroup, row++, i + coloffset);
     ui->gridSwitches->addWidget(cbAlwaysOnGroup, row++, i + coloffset);
 
+    connect(aleName, &AutoLineEdit::currentDataChanged, this, &FunctionSwitchesPanel::on_nameEditingFinished);
     connect(cboConfig, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &FunctionSwitchesPanel::on_configCurrentIndexChanged);
     connect(cboStartPosn, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &FunctionSwitchesPanel::on_startPosnCurrentIndexChanged);
     connect(sbGroup, QOverload<int>::of(&QSpinBox::valueChanged), this, &FunctionSwitchesPanel::on_groupChanged);
@@ -1074,6 +1075,11 @@ void FunctionSwitchesPanel::update(int index)
   lock = false;
 }
 
+void FunctionSwitchesPanel::on_nameEditingFinished()
+{
+  emit updateDataModels();
+}
+
 void FunctionSwitchesPanel::on_configCurrentIndexChanged(int index)
 {
   if (!sender())
@@ -1094,6 +1100,7 @@ void FunctionSwitchesPanel::on_configCurrentIndexChanged(int index)
         model->functionSwitchGroup = (model->functionSwitchGroup & ~ mask) | ((unsigned int) 0 << (2 * i));
       update(i);
       emit modified();
+      emit updateDataModels();
     }
     lock = false;
   }
@@ -1405,8 +1412,12 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
 
   ui->trimsDisplay->setField(model.trimsDisplay, this);
 
-  if (Boards::getCapability(firmware->getBoard(), Board::NumFunctionSwitches) > 0)
-    ui->functionSwitchesLayout->addWidget(new FunctionSwitchesPanel(this, model, generalSettings, firmware));
+  if (Boards::getCapability(firmware->getBoard(), Board::NumFunctionSwitches) > 0) {
+    funcswitches = new FunctionSwitchesPanel(this, model, generalSettings, firmware);
+    ui->functionSwitchesLayout->addWidget(funcswitches);
+    connect(funcswitches, &FunctionSwitchesPanel::modified, this, &SetupPanel::modified);
+    connect(funcswitches, &FunctionSwitchesPanel::updateDataModels, this, &SetupPanel::onFunctionSwitchesUpdateItemModels);
+  }
 
   for (int i = firmware->getCapability(NumFirstUsableModule); i < firmware->getCapability(NumModules); i++) {
     modules[i] = new ModulePanel(this, model, model.moduleData[i], generalSettings, firmware, i);
@@ -1922,4 +1933,9 @@ void SetupPanel::updateItemModels()
 void SetupPanel::onModuleUpdateItemModels()
 {
   sharedItemModels->update(AbstractItemModel::IMUE_Modules);
+}
+
+void SetupPanel::onFunctionSwitchesUpdateItemModels()
+{
+  sharedItemModels->update(AbstractItemModel::IMUE_FunctionSwitches);
 }

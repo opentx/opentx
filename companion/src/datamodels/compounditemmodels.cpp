@@ -164,7 +164,7 @@ RawSwitchItemModel::RawSwitchItemModel(const GeneralSettings * const generalSett
     AbstractDynamicItemModel(generalSettings, modelData, firmware, board, boardType)
 {
   setId(IMID_RawSwitch);
-  setUpdateMask(IMUE_FlightModes | IMUE_LogicalSwitches | IMUE_TeleSensors);
+  setUpdateMask(IMUE_FlightModes | IMUE_LogicalSwitches | IMUE_TeleSensors | IMUE_FunctionSwitches);
 
   // Descending switch direction: NOT (!) switches
   addItems(SWITCH_TYPE_ACT,            -1);
@@ -206,7 +206,7 @@ void RawSwitchItemModel::addItems(const RawSwitchType & type, int count)
   // handle exceptions in RawSwitch() index values
   const short rawIdxAdj = rawSwitchIndexBaseZeroTypes.contains(type) ? -1 : 0;
 
-  // determine cotext flags
+  // determine context flags
   int context = RawSwitch::AllSwitchContexts;
   switch (type) {
     case SWITCH_TYPE_FLIGHT_MODE:
