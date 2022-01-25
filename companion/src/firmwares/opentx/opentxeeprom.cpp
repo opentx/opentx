@@ -45,14 +45,14 @@ inline int MAX_SWITCHES(Board::Type board, int version)
   if (IS_TARANIS_X9D(board))
     return 9;
 
+  if (IS_JUMPER_TPRO(board))
+    return 10;
+
   if (IS_FAMILY_T12(board))
     return 8;
 
   if (IS_TARANIS_X7(board))
     return 8;
-
-  if (IS_JUMPER_TPRO(board))
-    return 10;
 
   return Boards::getCapability(board, Board::Switches);
 }
@@ -134,7 +134,7 @@ inline int SWITCHES_CONFIG_SIZE(Board::Type board, int version)
   if (IS_FAMILY_HORUS_OR_T16(board))
     return 32;
 
-  if (version >= 219 && IS_TARANIS_X9D(board))
+  if (version >= 219 && (IS_TARANIS_X9D(board) || IS_JUMPER_TPRO(board)))
     return 32;
 
   return 16;
@@ -2858,7 +2858,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
 
   if (IS_TARANIS_X9E(board))
     internalField.Append(new SpareBitsField<64>(this)); // switchUnlockStates
-  else if (version >= 219 && IS_TARANIS_X9D(board))
+  else if (version >= 219 && (IS_TARANIS_X9D(board) || IS_JUMPER_TPRO(board)))
     internalField.Append(new SpareBitsField<32>(this)); // switchUnlockStates
   else if (IS_TARANIS(board))
     internalField.Append(new SpareBitsField<16>(this)); // switchUnlockStates
