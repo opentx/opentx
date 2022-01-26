@@ -59,6 +59,9 @@ inline int MAX_SWITCHES(Board::Type board, int version)
 
 inline int MAX_SWITCHES_POSITION(Board::Type board, int version)
 {
+  if (IS_JUMPER_TPRO(board))
+    return Boards::getCapability(board, Board::Switches) * 3;
+
   if (IS_HORUS_OR_TARANIS(board)) {
     return MAX_SWITCHES(board, version) * 3;
   }
@@ -194,6 +197,13 @@ class SwitchesConversionTable: public ConversionTable {
         int s = switchIndex(i, board, version);
         addConversion(RawSwitch(SWITCH_TYPE_SWITCH, s), val);
         addConversion(RawSwitch(SWITCH_TYPE_SWITCH, -s), -val+offset);
+        val++;
+      }
+
+      for (int i=1; i<=Boards::getCapability(board, Board::NumFunctionSwitchesPositions); i++) {
+        int s = switchIndex(i, board, version);
+        addConversion(RawSwitch(SWITCH_TYPE_FUNCTIONSWITCH, s), val);
+        addConversion(RawSwitch(SWITCH_TYPE_FUNCTIONSWITCH, -s), -val+offset);
         val++;
       }
 
