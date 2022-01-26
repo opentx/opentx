@@ -216,8 +216,8 @@ void ModelData::setDefaultFunctionSwitches(int functionSwitchCount)
     return;
 
   for (int i = 0; i < functionSwitchCount; i++) {
-    functionSwitchConfig |= (Board::SWITCH_2POS << 2 * i);
-    functionSwitchGroup |= (1 << 2 * i);
+    setFuncSwitchConfig(i, Board::SWITCH_2POS);
+    setFuncSwitchGroup(i, 1);
   }
 }
 
@@ -230,7 +230,7 @@ void ModelData::setDefaultValues(unsigned int id, const GeneralSettings & settin
     moduleData[i].modelId = id + 1;
   }
   setDefaultMixes(settings);
-  setDefaultFunctionSwitches(getCurrentFirmware()->getCapability(FunctionSwitches));
+  setDefaultFunctionSwitches(Boards::getCapability(getCurrentFirmware()->getBoard(), Board::FunctionSwitches));
 }
 
 int ModelData::getTrimValue(int phaseIdx, int trimIdx)
@@ -1733,7 +1733,7 @@ unsigned int ModelData::getFuncSwitchAlwaysOnGroup(unsigned int index) const
 {
   if (index < CPN_MAX_FUNCTION_SWITCHES) {
     unsigned int grp = getFuncSwitchGroup(index);
-    unsigned int switchcnt = Boards::getCapability(getCurrentFirmware()->getBoard(), Board::NumFunctionSwitches);
+    unsigned int switchcnt = Boards::getCapability(getCurrentFirmware()->getBoard(), Board::FunctionSwitches);
     return Helpers::getBitmappedValue(functionSwitchGroup, grp, 1, 2 * switchcnt);
   }
   else
@@ -1744,7 +1744,7 @@ void ModelData::setFuncSwitchAlwaysOnGroup(unsigned int index, unsigned int valu
 {
   if (index < CPN_MAX_FUNCTION_SWITCHES) {
     unsigned int grp = getFuncSwitchGroup(index);
-    unsigned int switchcnt = Boards::getCapability(getCurrentFirmware()->getBoard(), Board::NumFunctionSwitches);
+    unsigned int switchcnt = Boards::getCapability(getCurrentFirmware()->getBoard(), Board::FunctionSwitches);
     Helpers::setBitmappedValue(functionSwitchGroup, value, grp, 1, 2 * switchcnt);
   }
 }

@@ -423,11 +423,8 @@ int Boards::getCapability(Board::Type board, Board::Capability capability)
       else
         return 7;
 
-    case FunctionsSwitches:
-      if (IS_JUMPER_TPRO(board))
-        return 6;
-      else
-        return 0;
+    case FunctionSwitches:
+      return (IS_JUMPER_TPRO(board) ? 6 : 0);
 
     case FactoryInstalledSwitches:
       if (IS_TARANIS_X9E(board))
@@ -450,7 +447,7 @@ int Boards::getCapability(Board::Type board, Board::Capability capability)
         return 9;
 
     case NumFunctionSwitchesPositions:
-      return getCapability(board, Board::FunctionsSwitches) * 3;
+      return getCapability(board, Board::FunctionSwitches) * 3;
 
     case NumTrims:
       if (IS_FAMILY_HORUS_OR_T16(board))
@@ -466,9 +463,6 @@ int Boards::getCapability(Board::Type board, Board::Capability capability)
 
     case HasColorLcd:
       return IS_FAMILY_HORUS_OR_T16(board);
-
-    case NumFunctionSwitches:
-      return IS_JUMPER_TPRO(board) ? 6 : 0;
 
     default:
       return 0;

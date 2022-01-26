@@ -802,7 +802,7 @@ QString ModelPrinter::printSwitchWarnings()
   uint64_t switchStates = model.switchWarningStates;
   uint64_t value;
 
-  for (int idx=0; idx<board.getCapability(Board::Switches) + board.getCapability(Board::FunctionsSwitches); idx++) {
+  for (int idx=0; idx<board.getCapability(Board::Switches) + board.getCapability(Board::FunctionSwitches); idx++) {
     Board::SwitchInfo switchInfo = Boards::getSwitchInfo(board.getBoardType(), idx);
     switchInfo.config = Board::SwitchType(generalSettings.switchConfig[idx]);
     if (switchInfo.config == Board::SWITCH_NOT_AVAILABLE || switchInfo.config == Board::SWITCH_TOGGLE) {

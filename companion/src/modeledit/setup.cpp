@@ -978,7 +978,7 @@ FunctionSwitchesPanel::FunctionSwitchesPanel(QWidget * parent, ModelData & model
 
   QRegExp rx(CHAR_FOR_NAMES_REGEX);
 
-  switchcnt = Boards::getCapability(firmware->getBoard(), Board::NumFunctionSwitches);
+  switchcnt = Boards::getCapability(firmware->getBoard(), Board::FunctionSwitches);
 
   for (int i = 0; i < switchcnt; i++) {
     QLabel * lblSwitchId = new QLabel(this);
@@ -1407,7 +1407,7 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
 
   ui->trimsDisplay->setField(model.trimsDisplay, this);
 
-  if (Boards::getCapability(firmware->getBoard(), Board::NumFunctionSwitches) > 0) {
+  if (Boards::getCapability(firmware->getBoard(), Board::FunctionSwitches) > 0) {
     funcswitches = new FunctionSwitchesPanel(this, model, generalSettings, firmware);
     ui->functionSwitchesLayout->addWidget(funcswitches);
     connect(funcswitches, &FunctionSwitchesPanel::modified, this, &SetupPanel::modified);

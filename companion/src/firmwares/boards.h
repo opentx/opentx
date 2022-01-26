@@ -138,15 +138,14 @@ namespace Board {
     MultiposPots,
     MultiposPotsPositions,
     Switches,
-    FunctionsSwitches,
+    FunctionSwitches,
     SwitchPositions,
     NumFunctionSwitchesPositions,
     FactoryInstalledSwitches,
     NumTrims,
     NumTrimSwitches,
     HasRTC,
-    HasColorLcd,
-    NumFunctionSwitches
+    HasColorLcd
   };
 
   struct SwitchInfo

@@ -2550,7 +2550,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, Board::Type board, unsig
     internalField.Append(new UnsignedField<16>(this, modelData.functionSwitchGroup));
     internalField.Append(new UnsignedField<16>(this, modelData.functionSwitchStartConfig));
     internalField.Append(new UnsignedField<8>(this, modelData.functionSwitchLogicalState));
-    for (int i=0; i < Boards::getCapability(board, Board::NumFunctionSwitches); ++i) {
+    for (int i=0; i < Boards::getCapability(board, Board::FunctionSwitches); ++i) {
       internalField.Append(new ZCharField<3>(this, modelData.functionSwitchNames[i], "Function switch name"));
     }
   }
