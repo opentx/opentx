@@ -42,32 +42,25 @@ inline int MAX_SWITCHES(Board::Type board, int version)
       return 4;
   }
 
-  if (IS_TARANIS_X9D(board))
+  if (IS_TARANIS_X9D(board))  //  TODO This should be in getCapability and there is no match there so potential issue
     return 9;
-
-  if (IS_JUMPER_TPRO(board))
-    return 10;
-
-  if (IS_FAMILY_T12(board))
-    return 8;
-
-  if (IS_TARANIS_X7(board))
-    return 8;
 
   return Boards::getCapability(board, Board::Switches);
 }
 
 inline int MAX_SWITCHES_POSITION(Board::Type board, int version)
 {
-  if (IS_JUMPER_TPRO(board))
-    return Boards::getCapability(board, Board::Switches) * 3;
+  return Boards::getCapability(board, Board::SwitchPositions);
+}
 
-  if (IS_HORUS_OR_TARANIS(board)) {
-    return MAX_SWITCHES(board, version) * 3;
-  }
-  else {
-    return Boards::getCapability(board, Board::SwitchPositions);
-  }
+inline int MAX_FUNCTIONSWITCHES(Board::Type board, int version)
+{
+  return Boards::getCapability(board, Board::FunctionSwitches);
+}
+
+inline int MAX_FUNCTIONSWITCHES_POSITION(Board::Type board, int version)
+{
+  return Boards::getCapability(board, Board::NumFunctionSwitchesPositions);
 }
 
 inline int POTS_CONFIG_SIZE(Board::Type board, int version)
@@ -200,7 +193,7 @@ class SwitchesConversionTable: public ConversionTable {
         val++;
       }
 
-      for (int i=1; i<=Boards::getCapability(board, Board::NumFunctionSwitchesPositions); i++) {
+      for (int i=1; i<=MAX_FUNCTIONSWITCHES_POSITION(board, version); i++) {
         int s = switchIndex(i, board, version);
         addConversion(RawSwitch(SWITCH_TYPE_FUNCTIONSWITCH, s), val);
         addConversion(RawSwitch(SWITCH_TYPE_FUNCTIONSWITCH, -s), -val+offset);
@@ -355,6 +348,8 @@ class SourcesConversionTable: public ConversionTable {
       if (!(flags & FLAG_NOSWITCHES)) {
         for (int i=1; i<MAX_SWITCHES(board, version); i++)
           addConversion(RawSource(SOURCE_TYPE_SWITCH, i), val++);
+        for (int i=1; i<MAX_FUNCTIONSWITCHES(board, version); i++)
+          addConversion(RawSource(SOURCE_TYPE_FUNCTIONSWITCH, i), val++);
         for (int i=0; i<MAX_LOGICAL_SWITCHES(board, version); i++)
           addConversion(RawSource(SOURCE_TYPE_CUSTOM_SWITCH, i), val++);
       }
