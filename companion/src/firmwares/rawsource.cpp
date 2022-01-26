@@ -418,7 +418,7 @@ QStringList RawSource::getSwitchList(Boards board) const
 {
   QStringList ret;
 
-  for (int i = 0; i < board.getCapability(Board::Switches) + board.getCapability(Board::FunctionsSwitches); i++) {
+  for (int i = 0; i < board.getCapability(Board::Switches); i++) {
     ret.append(board.getSwitchInfo(i).name);
   }
   return ret;

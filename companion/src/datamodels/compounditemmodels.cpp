@@ -114,7 +114,8 @@ RawSourceItemModel::RawSourceItemModel(const GeneralSettings * const generalSett
   addItems(SOURCE_TYPE_TRIM,           RawSource::TrimsGroup,    board->getCapability(Board::NumTrims));
   addItems(SOURCE_TYPE_MAX,            RawSource::SourcesGroup,  1);
   addItems(SOURCE_TYPE_SWITCH,         RawSource::SwitchesGroup, board->getCapability(Board::Switches));
-  addItems(SOURCE_TYPE_FUNCTIONSWITCH, RawSource::SwitchesGroup, board->getCapability(Board::FunctionsSwitches));
+  if (modelData != nullptr)
+    addItems(SOURCE_TYPE_FUNCTIONSWITCH, RawSource::SwitchesGroup, board->getCapability(Board::FunctionsSwitches));
   addItems(SOURCE_TYPE_CUSTOM_SWITCH,  RawSource::SwitchesGroup, firmware->getCapability(LogicalSwitches));
   addItems(SOURCE_TYPE_CYC,            RawSource::SourcesGroup,  CPN_MAX_CYC);
   addItems(SOURCE_TYPE_PPM,            RawSource::SourcesGroup,  firmware->getCapability(TrainerInputs));
@@ -174,6 +175,7 @@ RawSwitchItemModel::RawSwitchItemModel(const GeneralSettings * const generalSett
   addItems(SWITCH_TYPE_VIRTUAL,        -firmware->getCapability(LogicalSwitches));
   addItems(SWITCH_TYPE_TRIM,           -board->getCapability(Board::NumTrimSwitches));
   addItems(SWITCH_TYPE_MULTIPOS_POT,   -(board->getCapability(Board::MultiposPots) * board->getCapability(Board::MultiposPotsPositions)));
+  if (modelData != nullptr)
   addItems(SWITCH_TYPE_FUNCTIONSWITCH, -board->getCapability(Board::NumFunctionSwitchesPositions));
   addItems(SWITCH_TYPE_SWITCH,         -board->getCapability(Board::SwitchPositions));
 
@@ -181,6 +183,7 @@ RawSwitchItemModel::RawSwitchItemModel(const GeneralSettings * const generalSett
   addItems(SWITCH_TYPE_TIMER_MODE, 5);
   addItems(SWITCH_TYPE_NONE, 1);
   addItems(SWITCH_TYPE_SWITCH,         board->getCapability(Board::SwitchPositions));
+  if (modelData != nullptr)
   addItems(SWITCH_TYPE_FUNCTIONSWITCH, board->getCapability(Board::NumFunctionSwitchesPositions));
   addItems(SWITCH_TYPE_MULTIPOS_POT,   board->getCapability(Board::MultiposPots) * board->getCapability(Board::MultiposPotsPositions));
   addItems(SWITCH_TYPE_TRIM,           board->getCapability(Board::NumTrimSwitches));
