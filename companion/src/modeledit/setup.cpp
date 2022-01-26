@@ -1050,11 +1050,11 @@ void FunctionSwitchesPanel::update(int index)
 
   for (int i = 0; i < switchcnt; i++) {
     aleNames[i]->update();
-    cboConfigs[i]->setCurrentIndex((model->functionSwitchConfig >> (2 * i)) & 0x03);
-    cboStartupPosns[i]->setCurrentIndex((model->functionSwitchStartConfig >> (2 * i)) & 0x03);
-    const int grp = (model->functionSwitchGroup >> (2 * i)) & 0x03;
+    cboConfigs[i]->setCurrentIndex(model->getFuncSwitchConfig(i));
+    cboStartupPosns[i]->setCurrentIndex(model->getFuncSwitchStart(i));
+    unsigned int grp = model->getFuncSwitchGroup(i);
     sbGroups[i]->setValue(grp);
-    cbAlwaysOnGroups[i]->setChecked((model->functionSwitchGroup >> (2 * switchcnt + grp)) & 0x01);
+    cbAlwaysOnGroups[i]->setChecked(model->getFuncSwitchAlwaysOnGroup(i));
 
     if (cboConfigs[i]->currentIndex() < 2)
       cboStartupPosns[i]->setEnabled(false);
@@ -1090,14 +1090,13 @@ void FunctionSwitchesPanel::on_configCurrentIndexChanged(int index)
   if (cb && !lock) {
     lock = true;
     bool ok = false;
-    int i = sender()->property("index").toInt(&ok);
-    if (ok && ((model->functionSwitchConfig >> (2 * i)) & 0x03) != (unsigned int)index) {
-      unsigned int mask = ((unsigned int) 0x03 << (2 * i));
-      model->functionSwitchConfig = (model->functionSwitchConfig & ~ mask) | ((unsigned int) index << (2 * i));
+    unsigned int i = sender()->property("index").toInt(&ok);
+    if (ok && model->getFuncSwitchConfig(i) != (unsigned int)index) {
+      model->setFuncSwitchConfig(i, index);
       if (index < 2)
-        model->functionSwitchStartConfig = (model->functionSwitchStartConfig & ~ mask) | ((unsigned int) 0 << (2 * i));
+        model->setFuncSwitchStart(i, ModelData::FUNC_SWITCH_START_INACTIVE);
       if (index < 1)
-        model->functionSwitchGroup = (model->functionSwitchGroup & ~ mask) | ((unsigned int) 0 << (2 * i));
+        model->setFuncSwitchGroup(i, 0);
       update(i);
       emit modified();
       emit updateDataModels();
@@ -1116,10 +1115,9 @@ void FunctionSwitchesPanel::on_startPosnCurrentIndexChanged(int index)
   if (cb && !lock) {
     lock = true;
     bool ok = false;
-    int i = sender()->property("index").toInt(&ok);
-    if (ok && ((model->functionSwitchStartConfig >> (2 * i)) & 0x03) != (unsigned int)index) {
-      unsigned int mask = ((unsigned int) 0x03 << (2 * i));
-      model->functionSwitchStartConfig = (model->functionSwitchStartConfig & ~ mask) | ((unsigned int) index << (2 * i));
+    unsigned int i = sender()->property("index").toInt(&ok);
+    if (ok && model->getFuncSwitchStart(i) != (unsigned int)index) {
+      model->setFuncSwitchStart(i, index);
       emit modified();
     }
     lock = false;
@@ -1138,9 +1136,8 @@ void FunctionSwitchesPanel::on_groupChanged(int value)
     bool ok = false;
     int i = sender()->property("index").toInt(&ok);
 
-    if (ok && ((model->functionSwitchGroup >> (2 * i)) & 0x03) != (unsigned int)value) {
-      unsigned int mask = ((unsigned int) 0x03 << (2 * i));
-      model->functionSwitchGroup = (model->functionSwitchGroup & ~ mask) | ((unsigned int) value << (2 * i));
+    if (ok && model->getFuncSwitchGroup(i) != (unsigned int)value) {
+      model->setFuncSwitchGroup(i, (unsigned int)value);
       update(i);
       emit modified();
     }
@@ -1162,9 +1159,7 @@ void FunctionSwitchesPanel::on_alwaysOnGroupChanged(int value)
     int i = sender()->property("index").toInt(&ok);
 
     if (ok) {
-      const int grp = (model->functionSwitchGroup >> (2 * i)) & 0x03;
-      unsigned int mask = ((unsigned int) 0x01 << (2 * switchcnt + grp));
-      model->functionSwitchGroup = (model->functionSwitchGroup & ~ mask) | ((unsigned int) value << (2 * switchcnt + grp));
+      model->setFuncSwitchAlwaysOnGroup(i, (unsigned int)value);
       update();
       emit modified();
     }
