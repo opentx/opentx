@@ -64,6 +64,7 @@ inline int MAX_SWITCHES_SOURCE(Board::Type board, int version)
   else
     return MAX_SWITCHES(board, version);
 }
+
 inline int MAX_SWITCHES_POSITION(Board::Type board, int version)
 {
   if (IS_JUMPER_TPRO(board))
