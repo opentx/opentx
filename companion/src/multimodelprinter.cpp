@@ -277,7 +277,7 @@ QString MultiModelPrinter::print(QTextDocument * document)
   if (firmware->getCapability(Timers)) {
     str.append(printTimers());
   }
-  if (Boards::getCapability(firmware->getBoard(), Board::NumFunctionSwitches)) {
+  if (Boards::getCapability(firmware->getBoard(), Board::FunctionSwitches)) {
     str.append(printFunctionSwitches());
   }
   str.append(printModules());
@@ -947,7 +947,7 @@ QString MultiModelPrinter::printFunctionSwitches()
   MultiColumns columns(modelPrinterMap.size());
   columns.appendSectionTableStart();
 
-  int numFS = Boards::getCapability(firmware->getBoard(), Board::NumFunctionSwitches);
+  int numFS = Boards::getCapability(firmware->getBoard(), Board::FunctionSwitches);
   int colwidth = 80 / numFS;
 
   QStringList headings = { tr("Function Switches") };
@@ -966,21 +966,28 @@ QString MultiModelPrinter::printFunctionSwitches()
   columns.appendRowStart(tr("Type"), 20);
 
   for (int i = 0; i < numFS; i++) {
-    COMPARECELLWIDTH(model->funcSwitchConfigToString((unsigned int)i), colwidth);
+    COMPARECELLWIDTH(model->funcSwitchConfigToString(model->getFuncSwitchConfig((unsigned int)i)), colwidth);
   }
 
   columns.appendRowEnd();
   columns.appendRowStart(tr("Start"), 20);
 
   for (int i = 0; i < numFS; i++) {
-    COMPARECELLWIDTH(model->funcSwitchStartToString((unsigned int)i), colwidth);
+    COMPARECELLWIDTH(model->funcSwitchStartToString(model->getFuncSwitchStart((unsigned int)i)), colwidth);
   }
 
   columns.appendRowEnd();
   columns.appendRowStart(tr("Group"), 20);
 
   for (int i = 0; i < numFS; i++) {
-    COMPARECELLWIDTH((model->functionSwitchGroup >> (2 * i)) & 0x03, colwidth);
+    COMPARECELLWIDTH(model->getFuncSwitchGroup((unsigned int)i), colwidth);
+  }
+
+  columns.appendRowEnd();
+  columns.appendRowStart(tr("Always On"), 20);
+
+  for (int i = 0; i < numFS; i++) {
+    COMPARECELLWIDTH((model->getFuncSwitchAlwaysOnGroup((unsigned int)i) == 0 ? "No" : "Yes"), colwidth);
   }
 
   columns.appendRowEnd();
