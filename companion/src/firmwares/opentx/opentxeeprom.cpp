@@ -42,15 +42,29 @@ inline int MAX_SWITCHES(Board::Type board, int version)
       return 4;
   }
 
-  if (IS_TARANIS_X9D(board))  //  TODO This should be in getCapability and there is no match there so potential issue
+  if (IS_TARANIS_X9D(board))
     return 9;
+
+  if (IS_JUMPER_TPRO(board))
+    return 10;
+
+  if (IS_FAMILY_T12(board))
+    return 8;
+
+  if (IS_TARANIS_X7(board))
+    return 8;
 
   return Boards::getCapability(board, Board::Switches);
 }
 
 inline int MAX_SWITCHES_POSITION(Board::Type board, int version)
 {
-  return Boards::getCapability(board, Board::SwitchPositions);
+  if (IS_JUMPER_TPRO(board))
+    return Boards::getCapability(board, Board::SwitchPositions);
+  else if (IS_HORUS_OR_TARANIS(board))
+    return MAX_SWITCHES(board, version) * 3;
+  else
+    return Boards::getCapability(board, Board::SwitchPositions);
 }
 
 inline int MAX_FUNCTIONSWITCHES(Board::Type board, int version)
