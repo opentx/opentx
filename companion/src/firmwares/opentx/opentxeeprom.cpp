@@ -57,6 +57,13 @@ inline int MAX_SWITCHES(Board::Type board, int version)
   return Boards::getCapability(board, Board::Switches);
 }
 
+inline int MAX_SWITCHES_SOURCE(Board::Type board, int version)
+{
+  if (IS_JUMPER_TPRO(board))  // 10 switches are allocated in EEprom but 6 are reserved for FS
+    return Boards::getCapability(board, Board::Switches);
+  else
+    return MAX_SWITCHES(board, version);
+}
 inline int MAX_SWITCHES_POSITION(Board::Type board, int version)
 {
   if (IS_JUMPER_TPRO(board))
@@ -360,9 +367,9 @@ class SourcesConversionTable: public ConversionTable {
       addConversion(RawSource(SOURCE_TYPE_SWITCH, 0), val++);
 
       if (!(flags & FLAG_NOSWITCHES)) {
-        for (int i=1; i<MAX_SWITCHES(board, version); i++)
+        for (int i=1; i<MAX_SWITCHES_SOURCE(board, version); i++)
           addConversion(RawSource(SOURCE_TYPE_SWITCH, i), val++);
-        for (int i=1; i<MAX_FUNCTIONSWITCHES(board, version); i++)
+        for (int i=0; i<MAX_FUNCTIONSWITCHES(board, version); i++)
           addConversion(RawSource(SOURCE_TYPE_FUNCTIONSWITCH, i), val++);
         for (int i=0; i<MAX_LOGICAL_SWITCHES(board, version); i++)
           addConversion(RawSource(SOURCE_TYPE_CUSTOM_SWITCH, i), val++);
