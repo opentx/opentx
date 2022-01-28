@@ -1740,7 +1740,7 @@ bool menuModelSetup(event_t event)
         }
         else if (isModuleGhost(moduleIdx)) {
           auto & module = g_model.moduleData[moduleIdx];
-          lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y,  "Raw 12 bits");
+          lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, STR_RAW_12BITS);
           module.ghost.raw12bits = editCheckBox(module.ghost.raw12bits , MODEL_SETUP_2ND_COLUMN, y, attr, event);
         }
         break;
