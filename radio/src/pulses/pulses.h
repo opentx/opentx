@@ -266,6 +266,8 @@ union InternalModulePulsesData {
   UartMultiPulses multi;
 #endif
 
+  CrossfirePulsesData crossfire;
+
 #if defined(INTERNAL_MODULE_PPM)
   PpmPulsesData<pulse_duration_t> ppm;
 #endif
@@ -327,7 +329,7 @@ bool setupPulsesExternalModule();
 void stopPulsesExternalModule();
 #endif
 void setupPulsesDSM2();
-void setupPulsesCrossfire();
+void setupPulsesCrossfire(uint8_t module);
 void setupPulsesGhost();
 void setupPulsesMultiExternalModule();
 void setupPulsesMultiInternalModule();

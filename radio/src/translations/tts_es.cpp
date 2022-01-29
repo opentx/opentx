@@ -135,7 +135,8 @@ I18N_PLAY_FUNCTION(es, playNumber, getvalue_t number, uint8_t unit, uint8_t att)
     if (number >= 2000) {
       PLAY_NUMBER(number / 1000, 0, 0);
       PUSH_NUMBER_PROMPT(ES_PROMPT_MIL);
-    } else {
+    }
+    else {
       PUSH_NUMBER_PROMPT(ES_PROMPT_MIL);
     }
     number %= 1000;

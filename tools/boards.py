@@ -66,4 +66,16 @@ boards = {
         "PCB": "X7",
         "PCBREV": "TX12",
     },
+    "TLITE": {
+        "PCB": "X7",
+        "PCBREV": "TLITE",
+    },
+    "TPRO": {
+        "PCB": "X7",
+        "PCBREV": "TPRO",
+    },
+    "ZORRO": {
+        "PCB": "X7",
+        "PCBREV": "ZORRO",
+    },
 }

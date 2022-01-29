@@ -100,7 +100,8 @@ void libCrsfRouting(uint8_t inputPort, uint8_t * pArr)
     if (libCrsfPorts[routeToPort].gateway != NULL) {
       libCrsfPorts[routeToPort].gateway(pArr);
     }
-  } else {
+  }
+  else {
     for (portCnt = 0; portCnt < libCrsfPortsSize; portCnt++) {
       if (inputPort != libCrsfPorts[portCnt].portName
           && libCrsfPorts[portCnt].gateway != NULL) {
@@ -134,7 +135,8 @@ bool libCrsfParse(libCrsfParseData * pParseData, uint8_t newData)
       if (pParseData->payload[LIBCRSF_LENGTH_ADD] < LIBCRSF_PAYLOAD_SIZE
           && pParseData->payload[LIBCRSF_LENGTH_ADD] != 0) {
         pParseData->status = CRSF_PARSE_RD_FRAME;
-      } else {
+      }
+      else {
         pParseData->status = CRSF_PARSE_SYNC;
       }
       break;
@@ -152,7 +154,8 @@ bool libCrsfParse(libCrsfParseData * pParseData, uint8_t newData)
           }
           pParseData->status = CRSF_PARSE_SYNC;
         }
-      } else {
+      }
+      else {
         pParseData->status = CRSF_PARSE_SYNC;
       }
       break;

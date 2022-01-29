@@ -467,7 +467,8 @@ int luaLoadScriptFileToState(lua_State * L, const char * filename, const char * 
     if (scriptNeedsCompile || !strchr(lmode, 'b')) {
       // text version needs compilation or forced by mode
       loadFileType = 1;
-    } else {
+    }
+    else {
       // use binary file
       loadFileType = 2;
     }

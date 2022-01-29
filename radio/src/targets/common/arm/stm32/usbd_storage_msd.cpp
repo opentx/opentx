@@ -466,7 +466,8 @@ static void pushCluster(uint8_t *buffer, uint16_t sector, uint16_t & cluster, in
     // First 12 bit half
     rest = value >> 8;
     writeByte(buffer, sector, startbyte, value & 0xff);
-  } else {
+  }
+  else {
     // second 12 bit half, write rest and next byte
     writeByte(buffer, sector, startbyte, value << 4 | rest );
     writeByte(buffer, sector, startbyte+1, (value >> 4) & 0xff);

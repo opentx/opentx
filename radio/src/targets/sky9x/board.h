@@ -404,6 +404,8 @@ void telemetryPortSetDirectionInput();
 void telemetryTransmitBuffer(const uint8_t * buffer, uint32_t size);
 void rxPdcUsart( void (*pChProcess)(uint8_t x) );
 void sportSendBuffer(const uint8_t * buffer, uint32_t size);
+bool telemetryGetByte(uint8_t * byte);
+void telemetryClearFifo();
 
 // Second UART driver
 void auxSerialTelemetryInit(unsigned int protocol);
