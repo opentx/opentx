@@ -316,6 +316,11 @@ bool isSwitchAvailable(int swtch, SwitchContext context)
     if (!SWITCH_EXISTS(swinfo.quot)) {
       return false;
     }
+
+    if (IS_SWITCH_FS(swinfo.quot) && context == GeneralCustomFunctionsContext) {
+      return false;   // FS are defined at model level, and cannot be in global functions
+    }
+
     if (!IS_CONFIG_3POS(swinfo.quot)) {
       if (negative) {
         return false;
