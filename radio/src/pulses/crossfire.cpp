@@ -83,7 +83,8 @@ static void setupPulsesCrossfire(uint8_t idx, CrossfirePulsesData* p_data, uint8
     if (moduleState[idx].counter == CRSF_FRAME_MODELID) {
       p_data->length = createCrossfireModelIDFrame(p_data->pulses);
       moduleState[idx].counter = CRSF_FRAME_MODELID_SENT;
-    } else {
+    }
+    else {
       p_data->length = createCrossfireChannelsFrame(
         p_data->pulses,
         &channelOutputs[g_model.moduleData[idx].channelsStart]);
