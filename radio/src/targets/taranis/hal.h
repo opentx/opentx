@@ -1905,7 +1905,6 @@
   #define TRAINER_MODULE_SBUS_DMA_STREAM          DMA2_Stream1
   #define TRAINER_MODULE_SBUS_DMA_CHANNEL         DMA_Channel_5
 #else
-  // TODO: replace SBUS trainer with S.PORT pin
   #define TRAINER_MODULE_RCC_AHB1Periph           0
   #define TRAINER_MODULE_RCC_APB2Periph           0
   #define TRAINER_MODULE_RCC_APB1Periph           0

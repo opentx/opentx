@@ -171,17 +171,13 @@ void intmoduleSendNextFrame()
 {
   switch (moduleState[INTERNAL_MODULE].protocol) {
 #if defined(PXX2)
-    case PROTOCOL_CHANNELS_PXX2_HIGHSPEED:
-      intmoduleSendBuffer(intmodulePulsesData.pxx2.getData(),
-                          intmodulePulsesData.pxx2.getSize());
+    case PROTOCOL_CHANNELS_PXX2_HIGHSPEED: intmoduleSendBuffer(intmodulePulsesData.pxx2.getData(), intmodulePulsesData.pxx2.getSize());
       break;
 #endif
 
 #if defined(INTERNAL_MODULE_PPM)
     case PROTOCOL_CHANNELS_PPM:
-      intmoduleSendNextFramePPM(
-          intmodulePulsesData.ppm.pulses,
-          intmodulePulsesData.ppm.ptr - intmodulePulsesData.ppm.pulses);
+      intmoduleSendNextFramePPM(intmodulePulsesData.ppm.pulses, intmodulePulsesData.ppm.ptr - intmodulePulsesData.ppm.pulses);
       break;
 #endif
 
@@ -191,30 +187,22 @@ void intmoduleSendNextFrame()
       intmoduleSendBuffer(intmodulePulsesData.pxx_uart.getData(),intmodulePulsesData.pxx_uart.getSize());
       break;
 #else
-      case PROTOCOL_CHANNELS_PXX1_PULSES:
+    case PROTOCOL_CHANNELS_PXX1_PULSES:
       intmoduleSendNextFramePxx1(intmodulePulsesData.pxx.getData(),intmodulePulsesData.pxx.getSize());
       break;
 #endif
 #endif
 
 #if defined(INTERNAL_MODULE_MULTI)
-      case PROTOCOL_CHANNELS_MULTIMODULE:
+    case PROTOCOL_CHANNELS_MULTIMODULE:
       intmoduleSendBuffer(intmodulePulsesData.multi.getData(),intmodulePulsesData.multi.getSize());
       break;
 #endif
 
 #if defined(INTERNAL_MODULE_ELRS)
-      case PROTOCOL_CHANNELS_CROSSFIRE:
+    case PROTOCOL_CHANNELS_CROSSFIRE:
       intmoduleSendBuffer(intmodulePulsesData.crossfire.pulses,intmodulePulsesData.crossfire.length);
       break;
-#endif
-
-#if defined(AFHDS2)
-      case PROTOCOL_CHANNELS_AFHDS2A: {
-    uint8_t* data = (uint8_t*)intmodulePulsesData.flysky.pulses;
-    uint16_t size = intmodulePulsesData.flysky.ptr - data;
-    intmoduleSendBuffer(data, size);
-  } break;
 #endif
   }
 }
