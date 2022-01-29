@@ -525,7 +525,7 @@ void ModuleSyncStatus::update(uint16_t newRefreshRate, int16_t newInputLag)
   currentLag  = newInputLag;
   lastUpdate  = get_tmr10ms();
 
-  TRACE("[SYNC] update rate = %dus; lag = %dus",refreshRate,currentLag);
+  //TRACE("[SYNC] update rate = %dus; lag = %dus",refreshRate,currentLag);
 }
 
 uint16_t ModuleSyncStatus::getAdjustedRefreshRate()
@@ -547,7 +547,7 @@ uint16_t ModuleSyncStatus::getAdjustedRefreshRate()
   }
 
   currentLag -= newRefreshRate - refreshRate;
-  TRACE("[SYNC] mod rate = %dus; lag = %dus",newRefreshRate,currentLag);
+  //TRACE("[SYNC] mod rate = %dus; lag = %dus",newRefreshRate,currentLag);
 
   return (uint16_t)newRefreshRate;
 }

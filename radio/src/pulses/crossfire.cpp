@@ -91,7 +91,6 @@ static void setupPulsesCrossfire(uint8_t idx, CrossfirePulsesData* p_data, uint8
   }
 }
 
-
 void setupPulsesCrossfire(uint8_t idx)
 {
 #if !defined(PCBSKY9X)
