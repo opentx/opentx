@@ -1850,7 +1850,7 @@
 #endif
 
 // Trainer / Trainee from the module bay
-#if defined(PCBX9LITE) ||  defined(PCBXLITE)
+#if defined(PCBX9LITE) || defined(PCBXLITE) || defined(RADIO_X9DP2019) || defined(RADIO_X7ACCESS)
   #define TRAINER_MODULE_CPPM
   #define TRAINER_MODULE_SBUS
   #define TRAINER_MODULE_RCC_AHB1Periph      0

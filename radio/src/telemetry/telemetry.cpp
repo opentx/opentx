@@ -155,9 +155,6 @@ static inline void pollIntTelemetry(void (*processData)(uint8_t,uint8_t))
 static void pollIntMulti()
 {
   pollIntTelemetry(processMultiTelemetryData);
-#if defined(MULTI_PROTOLIST)
-  pollMultiProtolist(INTERNAL_MODULE);
-#endif
 }
 #endif
 
