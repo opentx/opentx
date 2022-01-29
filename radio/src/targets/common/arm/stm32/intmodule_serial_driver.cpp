@@ -171,7 +171,8 @@ void intmoduleSendNextFrame()
 {
   switch (moduleState[INTERNAL_MODULE].protocol) {
 #if defined(PXX2)
-    case PROTOCOL_CHANNELS_PXX2_HIGHSPEED: intmoduleSendBuffer(intmodulePulsesData.pxx2.getData(), intmodulePulsesData.pxx2.getSize());
+    case PROTOCOL_CHANNELS_PXX2_HIGHSPEED:
+      intmoduleSendBuffer(intmodulePulsesData.pxx2.getData(), intmodulePulsesData.pxx2.getSize());
       break;
 #endif
 
@@ -184,18 +185,18 @@ void intmoduleSendNextFrame()
 #if defined(PXX1)
 #if defined(INTMODULE_USART)
     case PROTOCOL_CHANNELS_PXX1_SERIAL:
-      intmoduleSendBuffer(intmodulePulsesData.pxx_uart.getData(),intmodulePulsesData.pxx_uart.getSize());
+      intmoduleSendBuffer(intmodulePulsesData.pxx_uart.getData(), intmodulePulsesData.pxx_uart.getSize());
       break;
 #else
     case PROTOCOL_CHANNELS_PXX1_PULSES:
-      intmoduleSendNextFramePxx1(intmodulePulsesData.pxx.getData(),intmodulePulsesData.pxx.getSize());
+      intmoduleSendNextFramePxx1(intmodulePulsesData.pxx.getData(), intmodulePulsesData.pxx.getSize());
       break;
 #endif
 #endif
 
 #if defined(INTERNAL_MODULE_MULTI)
     case PROTOCOL_CHANNELS_MULTIMODULE:
-      intmoduleSendBuffer(intmodulePulsesData.multi.getData(),intmodulePulsesData.multi.getSize());
+      intmoduleSendBuffer(intmodulePulsesData.multi.getData(), intmodulePulsesData.multi.getSize());
       break;
 #endif
 
