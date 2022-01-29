@@ -749,8 +749,6 @@ int OpenTxFirmware::getCapability(::Capability capability)
       return IS_HORUS_OR_TARANIS(board) ? true : false;
     case HasTelemetryBaudrate:
       return IS_HORUS_OR_TARANIS(board) ? true : false;
-    case FunctionSwitches:
-      return IS_JUMPER_TPRO(board) ? 6 : 0;
 
     default:
       return 0;

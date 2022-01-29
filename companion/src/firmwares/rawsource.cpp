@@ -192,6 +192,13 @@ QString RawSource::toString(const ModelData * model, const GeneralSettings * con
         result = Boards::getSwitchInfo(board, index).name;
       return result;
 
+    case SOURCE_TYPE_FUNCTIONSWITCH:
+      if (model)
+        result = QString(model->functionSwitchNames[index]).trimmed();
+      if (result.isEmpty())
+        result = tr("SW%1").arg(index + 1);
+      return result;
+
     case SOURCE_TYPE_CUSTOM_SWITCH:
       return RawSwitch(SWITCH_TYPE_VIRTUAL, index + 1).toString();
 
@@ -305,7 +312,14 @@ bool RawSource::isAvailable(const ModelData * const model, const GeneralSettings
   if (type == SOURCE_TYPE_SWITCH && index >= b.getCapability(Board::Switches))
     return false;
 
+  if (type == SOURCE_TYPE_FUNCTIONSWITCH)
+    if (!model || index >= b.getCapability(Board::FunctionSwitches))
+      return false;
+
   if (model) {
+    if (type == SOURCE_TYPE_FUNCTIONSWITCH && !model->isFunctionSwitchSourceAllowed(index))
+        return false;
+
     if (type == SOURCE_TYPE_VIRTUAL_INPUT && !model->isInputValid(index))
       return false;
 

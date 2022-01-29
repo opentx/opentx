@@ -57,14 +57,32 @@ inline int MAX_SWITCHES(Board::Type board, int version)
   return Boards::getCapability(board, Board::Switches);
 }
 
+inline int MAX_SWITCHES_SOURCE(Board::Type board, int version)
+{
+  if (IS_JUMPER_TPRO(board))  // 10 switches are allocated in EEprom but 6 are reserved for FS
+    return Boards::getCapability(board, Board::Switches);
+  else
+    return MAX_SWITCHES(board, version);
+}
+
 inline int MAX_SWITCHES_POSITION(Board::Type board, int version)
 {
-  if (IS_HORUS_OR_TARANIS(board)) {
-    return MAX_SWITCHES(board, version) * 3;
-  }
-  else {
+  if (IS_JUMPER_TPRO(board))
     return Boards::getCapability(board, Board::SwitchPositions);
-  }
+  else if (IS_HORUS_OR_TARANIS(board))
+    return MAX_SWITCHES(board, version) * 3;
+  else
+    return Boards::getCapability(board, Board::SwitchPositions);
+}
+
+inline int MAX_FUNCTIONSWITCHES(Board::Type board, int version)
+{
+  return Boards::getCapability(board, Board::FunctionSwitches);
+}
+
+inline int MAX_FUNCTIONSWITCHES_POSITION(Board::Type board, int version)
+{
+  return Boards::getCapability(board, Board::NumFunctionSwitchesPositions);
 }
 
 inline int POTS_CONFIG_SIZE(Board::Type board, int version)
@@ -194,6 +212,13 @@ class SwitchesConversionTable: public ConversionTable {
         int s = switchIndex(i, board, version);
         addConversion(RawSwitch(SWITCH_TYPE_SWITCH, s), val);
         addConversion(RawSwitch(SWITCH_TYPE_SWITCH, -s), -val+offset);
+        val++;
+      }
+
+      for (int i=1; i<=MAX_FUNCTIONSWITCHES_POSITION(board, version); i++) {
+        int s = switchIndex(i, board, version);
+        addConversion(RawSwitch(SWITCH_TYPE_FUNCTIONSWITCH, s), val);
+        addConversion(RawSwitch(SWITCH_TYPE_FUNCTIONSWITCH, -s), -val+offset);
         val++;
       }
 
@@ -343,8 +368,10 @@ class SourcesConversionTable: public ConversionTable {
       addConversion(RawSource(SOURCE_TYPE_SWITCH, 0), val++);
 
       if (!(flags & FLAG_NOSWITCHES)) {
-        for (int i=1; i<MAX_SWITCHES(board, version); i++)
+        for (int i=1; i<MAX_SWITCHES_SOURCE(board, version); i++)
           addConversion(RawSource(SOURCE_TYPE_SWITCH, i), val++);
+        for (int i=0; i<MAX_FUNCTIONSWITCHES(board, version); i++)
+          addConversion(RawSource(SOURCE_TYPE_FUNCTIONSWITCH, i), val++);
         for (int i=0; i<MAX_LOGICAL_SWITCHES(board, version); i++)
           addConversion(RawSource(SOURCE_TYPE_CUSTOM_SWITCH, i), val++);
       }
@@ -2550,7 +2577,7 @@ OpenTxModelData::OpenTxModelData(ModelData & modelData, Board::Type board, unsig
     internalField.Append(new UnsignedField<16>(this, modelData.functionSwitchGroup));
     internalField.Append(new UnsignedField<16>(this, modelData.functionSwitchStartConfig));
     internalField.Append(new UnsignedField<8>(this, modelData.functionSwitchLogicalState));
-    for (int i=0; i < Boards::getCapability(board, Board::NumFunctionSwitches); ++i) {
+    for (int i=0; i < Boards::getCapability(board, Board::FunctionSwitches); ++i) {
       internalField.Append(new ZCharField<3>(this, modelData.functionSwitchNames[i], "Function switch name"));
     }
   }
