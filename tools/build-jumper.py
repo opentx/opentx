@@ -19,6 +19,12 @@ boards = {
         "PCBREV": "TPRO",
         "DEFAULT_MODE": "2",
     },
+    "TPRO-ELRS": {
+        "PCB": "X7",
+        "PCBREV": "TPRO",
+        "DEFAULT_MODE": "2",
+        "INTERNAL_MODULE_ELRS": "YES"
+    },
     "T12": {
         "PCB": "X7",
         "PCBREV": "T12",
