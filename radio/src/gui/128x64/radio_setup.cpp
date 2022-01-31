@@ -52,10 +52,10 @@ const unsigned char sticks[]  = {
   #define CASE_BATTGRAPH(x)
 #endif
 
-#if defined(ENABLE_ROTARY_INVERSE)
-  #define CASE_ROTARY_INVERSE(x) x,
+#if defined(ROTARY_ENCODER_NAVIGATION)
+  #define CASE_ROTARY_ENCODER(x) x,
 #else
-  #define CASE_ROTARY_INVERSE(x)
+  #define CASE_ROTARY_ENCODER(x)
 #endif
 
 enum {
@@ -113,9 +113,9 @@ enum {
   CASE_STM32(ITEM_RADIO_SETUP_USB_MODE)
   CASE_JACK_DETECT(ITEM_RADIO_SETUP_JACK_MODE)
   ITEM_RADIO_SETUP_RX_CHANNEL_ORD,
+  CASE_ROTARY_ENCODER(ITEM_RADIO_SETUP_ROTARY_INVERSE)
   ITEM_RADIO_SETUP_STICK_MODE_LABELS,
   ITEM_RADIO_SETUP_STICK_MODE,
-  CASE_ROTARY_INVERSE(ITEM_RADIO_SETUP_ROTARY_INVERSE)
   ITEM_RADIO_SETUP_MAX
 };
 
@@ -192,9 +192,9 @@ void menuRadioSetup(event_t event)
     CASE_STM32(0) // USB mode
     CASE_JACK_DETECT(0) // Jack mode
     0,  // default channel order
+    CASE_ROTARY_ENCODER(0)
     COL_TX_MODE, // Label
     0, // Stick mode
-    CASE_ROTARY_INVERSE(0)
     1/*to force edit mode*/});
 
   if (event == EVT_ENTRY) {
@@ -680,9 +680,9 @@ void menuRadioSetup(event_t event)
         }
         break;
 
-#if defined(ENABLE_ROTARY_INVERSE)
+#if defined(ROTARY_ENCODER_NAVIGATION)
       case ITEM_RADIO_SETUP_ROTARY_INVERSE:
-        g_eeGeneral.enableRotaryInverse = editCheckBox(g_eeGeneral.enableRotaryInverse, RADIO_SETUP_2ND_COLUMN, y, STR_INVERT_ROTARY, attr, event);
+        g_eeGeneral.rotEncDirection = editCheckBox(g_eeGeneral.rotEncDirection, RADIO_SETUP_2ND_COLUMN, y, STR_INVERT_ROTARY, attr, event);
         break;
 #endif
     }

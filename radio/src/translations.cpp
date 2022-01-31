@@ -225,9 +225,9 @@ const char STR_RELEASE_STICK[] = TR_RELEASE_STICK;
 const char STR_MOVE_PLUS[] = TR_MOVE_PLUS;
 const char STR_JOYSTICK_RF[] = TR_JOYSTICK_RF;
 const char STR_TURN_OFF_RF[] = TR_TURN_OFF_RF;
-const char STR_INVERT_ROTARY[] = TR_INVERT_ROTARY;
 const char STR_UPDATE_CROSSFIRE[] = TR_UPDATE_CROSSFIRE;
 #endif
+const char STR_INVERT_ROTARY[] = TR_INVERT_ROTARY;
 const char STR_TX[] = TR_TXnRX;
 const char STR_NODATA[] = TR_NODATA;
 const char STR_US[] = TR_US;

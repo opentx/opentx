@@ -782,13 +782,6 @@ PACK(struct TrainerData {
   #define BUZZER_FIELD int8_t spare4:2
 #endif
 
-#if defined(ENABLE_ROTARY_INVERSE)
-  #define ROTARY_MODE \
-    NOBACKUP(uint8_t enableRotaryInverse:1);
-#else
-  #define ROTARY_MODE
-#endif
-
 #if defined(RADIO_FAMILY_TBS)
   #define POWER_ON_SPEED    (1 + pwrOnSpeed)
   #define POWER_OFF_SPEED   (1 + pwrOffSpeed)
@@ -810,7 +803,7 @@ PACK(struct RadioData {
   int8_t antennaMode:2;
   uint8_t disableRtcWarning:1;
   uint8_t keysBacklight:1;
-  int8_t spare1:1;
+  int8_t rotEncDirection:1;
   NOBACKUP(TrainerData trainer);
   NOBACKUP(uint8_t view);            // index of view in main screen
   NOBACKUP(BUZZER_FIELD); /* 2bits */
@@ -872,8 +865,6 @@ PACK(struct RadioData {
   char ownerRegistrationID[PXX2_LEN_REGISTRATION_ID];
 
   GYRO_FIELDS
-
-  ROTARY_MODE
 
   NOBACKUP(uint8_t getPwrOnSpeed() const
   {
@@ -1007,7 +998,7 @@ static inline void check_struct()
   CHKSIZE(RadioData, 858);
   CHKSIZE(ModelData, 6157);
 #elif defined(RADIO_TANGO)
-  CHKSIZE(RadioData, 847);
+  CHKSIZE(RadioData, 846);
   CHKSIZE(ModelData, 6155);
 #elif defined(RADIO_MAMBO)
   CHKSIZE(RadioData, 865);

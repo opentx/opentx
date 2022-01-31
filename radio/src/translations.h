@@ -368,11 +368,11 @@ extern const char STR_RELEASE_STICK[];
 extern const char STR_MOVE_PLUS[];
 extern const char STR_JOYSTICK_RF[];
 extern const char STR_TURN_OFF_RF[];
-extern const char STR_INVERT_ROTARY[];
 extern const char STR_UPDATE_CROSSFIRE[];
 #endif
 extern const char STR_TX[];
 #define STR_RX (STR_TX+OFS_RX)
+extern const char STR_INVERT_ROTARY[];
 extern const char STR_NODATA[];
 extern const char STR_US[];
 extern const char STR_TMIXMAXMS[];
