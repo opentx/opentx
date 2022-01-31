@@ -694,6 +694,8 @@
 #define TR_MODULE_BINDING              "Associa"
 #define TR_MODULE_UPGRADE_ALERT        TR3("Richiede agg.", "Richiede agg. modulo", "Modulo\nRichiede agg.")
 #define TR_MODULE_UPGRADE              TR("Cons. agg.", "Consiglio agg. modulo")
+#define TR_PULSE_RATE                  "Pulse rate"
+#define TR_LINK_SPEED                  "Link speed"
 #define TR_REBIND                      "Richiede associazione"
 #define TR_REG_OK                      "Registrazione ok"
 #define TR_BIND_OK                     "Associazione riuscita"

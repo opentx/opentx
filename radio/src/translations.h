@@ -447,6 +447,8 @@ extern const char STR_MODULE_NO_TELEMETRY[];
 extern const char STR_MODULE_BINDING[];
 extern const char STR_MODULE_UPGRADE_ALERT[];
 extern const char STR_MODULE_UPGRADE[];
+extern const char STR_PULSE_RATE[];
+extern const char STR_LINK_SPEED[];
 extern const char STR_PROTOCOL_INVALID[];
 extern const char STR_MODULE_STATUS[];
 extern const char STR_MODULE_SYNC[];

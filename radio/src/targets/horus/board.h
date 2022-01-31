@@ -190,6 +190,8 @@ void extmoduleSendBuffer(const uint8_t * data, uint8_t size);
 void extmoduleSendNextFrame();
 void extmoduleSendInvertedByte(uint8_t byte);
 
+#define ELRS_INTERNAL_BAUDRATE        3750000     // 3.75 Mbps
+
 // Trainer driver
 void init_trainer_ppm();
 void stop_trainer_ppm();

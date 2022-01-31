@@ -327,11 +327,11 @@ void menuStatisticsDebug2(event_t event)
 
 #if defined(INTERNAL_MODULE_ELRS)
   if (isModuleCrossfire(INTERNAL_MODULE)) {
-    lcdDrawTextAlignedLeft(y, "Module link");
-    lcdDrawNumber(MENU_DEBUG_COL1_OFS, y, ELRS_INTERNAL_BAUDARTE / 10000, PREC2);
+    lcdDrawTextAlignedLeft(y, STR_LINK_SPEED);
+    lcdDrawNumber(MENU_DEBUG_COL1_OFS, y, ELRS_INTERNAL_BAUDRATE / 10000, PREC2);
     lcdDrawText(lcdNextPos, y, "MBps", 0);
     y += FH;
-    lcdDrawTextAlignedLeft(y, "Pulse rate");
+    lcdDrawTextAlignedLeft(y, STR_PULSE_RATE);
     lcdDrawNumber(MENU_DEBUG_COL1_OFS, y, getMixerSchedulerPeriod() / 1000, LEFT);
     lcdDrawText(lcdNextPos, y, "ms (");
     lcdDrawNumber(lcdNextPos, y, 1000000 / getMixerSchedulerPeriod(), LEFT);

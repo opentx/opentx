@@ -171,15 +171,17 @@ if(INTERNAL_MODULE_PXX2)
   endif()
 endif()
 
+if(INTERNAL_MODULE_ELRS)
+  add_definitions(-DHARDWARE_INTERNAL_MODULE)
+  add_definitions(-DINTERNAL_MODULE_ELRS)
+  add_definitions(-DINTERNAL_MODULE_SERIAL_TELEMETRY)
+  set(INTERNAL_MODULE_MULTI NO)
+endif()
+
 if(INTERNAL_MODULE_MULTI)
   add_definitions(-DHARDWARE_INTERNAL_MODULE)
   add_definitions(-DINTERNAL_MODULE_MULTI)
   add_definitions(-DTRAINER_SPORT_SBUS)
-endif()
-
-if(INTERNAL_MODULE_ELRS)
-  add_definitions(-DHARDWARE_INTERNAL_MODULE)
-  add_definitions(-DINTERNAL_MODULE_ELRS)
 endif()
 
 if(EXTERNAL_MODULE)

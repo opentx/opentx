@@ -20,6 +20,7 @@
 
 #include "opentx.h"
 #include "stamp.h"
+#include "mixer_scheduler.h"
 
 #define MENU_STATS_COLUMN1    (MENUS_MARGIN_LEFT + 120)
 #define MENU_STATS_COLUMN2    (LCD_W/2)
@@ -182,6 +183,22 @@ bool menuStatsDebug(event_t event)
   lcdDrawNumber(lcdNextPos+5, y, gpsData.numSat, LEFT);
   lcdDrawText(lcdNextPos+20, y+1, "[Hdop]", HEADER_COLOR|SMLSIZE);
   lcdDrawNumber(lcdNextPos+5, y, gpsData.hdop, PREC2|LEFT);
+#endif
+
+#if defined(INTERNAL_MODULE_ELRS)
+  if (isModuleCrossfire(INTERNAL_MODULE)) {
+    lcdDrawText(MENUS_MARGIN_LEFT, y,  "ELRS module");
+    lcdDrawText(MENU_STATS_COLUMN1, y,  STR_LINK_SPEED);
+    lcdDrawNumber(lcdNextPos, y, ELRS_INTERNAL_BAUDRATE / 10000, PREC2);
+    lcdDrawText(lcdNextPos, y, "MBps", 0);
+    y += FH;
+    lcdDrawText(MENU_STATS_COLUMN1, y, STR_PULSE_RATE);
+    lcdDrawNumber(lcdNextPos, y, getMixerSchedulerPeriod() / 1000, LEFT);
+    lcdDrawText(lcdNextPos, y, "ms (");
+    lcdDrawNumber(lcdNextPos, y, 1000000 / getMixerSchedulerPeriod(), LEFT);
+    lcdDrawText(lcdNextPos, y, "Hz)");
+    y += FH;
+  }
 #endif
 
   lcdDrawText(LCD_W/2, MENU_FOOTER_TOP, STR_MENUTORESET, MENU_TITLE_COLOR | CENTERED);

@@ -676,6 +676,8 @@
 #define TR_MODULE_BINDING              "Emparejando"
 #define TR_MODULE_UPGRADE_ALERT        TR3("Actualizar", "Actualizar módulo", "Actualizar\nmódulo")
 #define TR_MODULE_UPGRADE              TR("Act recom", "Actualizar módulo recomendado")
+#define TR_PULSE_RATE                  "Pulse rate"
+#define TR_LINK_SPEED                  "Link speed"
 #define TR_REBIND                      "Reemparejar "
 #define TR_REG_OK                      "Registro ok"
 #define TR_BIND_OK                     "Emparejado ok"

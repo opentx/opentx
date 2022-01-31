@@ -462,7 +462,7 @@ static void enablePulsesInternalModule(uint8_t protocol)
   switch (protocol) {
 #if defined(INTERNAL_MODULE_ELRS)
     case PROTOCOL_CHANNELS_CROSSFIRE:
-      intmoduleSerialStart(ELRS_INTERNAL_BAUDARTE, true, USART_Parity_No, USART_StopBits_1, USART_WordLength_8b);
+      intmoduleSerialStart(ELRS_INTERNAL_BAUDRATE, true, USART_Parity_No, USART_StopBits_1, USART_WordLength_8b);
       mixerSchedulerSetPeriod(INTERNAL_MODULE, CROSSFIRE_PERIOD);
       break;
 #elif defined(INTERNAL_MODULE_CRSF)
