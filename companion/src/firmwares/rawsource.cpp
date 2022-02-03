@@ -172,7 +172,7 @@ QString RawSource::toString(const ModelData * model, const GeneralSettings * con
         else if (isStick(&genAryIdx))
           result = QString(generalSettings->stickName[genAryIdx]);
       }
-      if (result.isEmpty())
+      if (result.trimmed().isEmpty())
         result = Boards::getAnalogInputName(board, index);
       return result;
 
@@ -187,7 +187,7 @@ QString RawSource::toString(const ModelData * model, const GeneralSettings * con
 
     case SOURCE_TYPE_SWITCH:
       if (generalSettings)
-        result = QString(generalSettings->switchName[index]);
+        result = QString(generalSettings->switchName[index]).trimmed();
       if (result.isEmpty())
         result = Boards::getSwitchInfo(board, index).name;
       return result;
