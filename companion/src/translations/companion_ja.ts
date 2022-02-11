@@ -2604,7 +2604,7 @@ To &lt;b&gt;remove a remembered entry&lt;/b&gt; from the filter  list, first cho
         <source>Switch used to enable the line.
 If blank then the input is considered to be &quot;ON&quot; all the time.</source>
         <translation>この設定を有効にするために使用されるスイッチです。
-空白の場合、入力は常に『オン』と見なします。</translation>
+空白の場合、入力は常時『ON』とみなします。</translation>
     </message>
     <message>
         <location filename="../modeledit/expodialog.ui" line="241"/>
