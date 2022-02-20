@@ -590,9 +590,11 @@ bool isModuleUsingSport(uint8_t moduleBay, uint8_t moduleType)
       if (moduleBay == EXTERNAL_MODULE)
         return false;
 
+#if defined(HARDWARE_INTERNAL_MODULE)
     case MODULE_TYPE_CROSSFIRE:
       if (moduleBay == INTERNAL_MODULE)
         return false;
+#endif
 
     default:
       return true;
