@@ -154,7 +154,7 @@ void extmoduleSendNextFrame();
 void extmoduleSendInvertedByte(uint8_t byte);
 
 #if defined(RADIO_ZORRO)
-#define ELRS_INTERNAL_BAUDRATE        3750000     // 3.75 Mbps
+#define ELRS_INTERNAL_BAUDRATE        5250000     // 5.25 Mbps
 #elif defined(RADIO_TPRO)
 #define ELRS_INTERNAL_BAUDRATE        1870000     // 1.87 Mbps
 #else

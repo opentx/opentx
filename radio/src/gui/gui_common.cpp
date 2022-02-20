@@ -590,6 +590,10 @@ bool isModuleUsingSport(uint8_t moduleBay, uint8_t moduleType)
       if (moduleBay == EXTERNAL_MODULE)
         return false;
 
+    case MODULE_TYPE_CROSSFIRE:
+      if (moduleBay == INTERNAL_MODULE)
+        return false;
+
     default:
       return true;
   }
@@ -1155,14 +1159,26 @@ const char * getMultiOptionTitle(uint8_t moduleIdx)
 }
 #endif
 
-void displayTelemetryBaudrate(coord_t x, coord_t y, uint8_t baudrate, LcdFlags flags) {
+void displayTelemetryBaudrate(coord_t x, coord_t y, uint8_t baudrateIndex, LcdFlags flags) {
 
-  if (CROSSFIRE_BAUDRATES[baudrate] >= 1000000) {
-    lcdDrawNumber(x, y, CROSSFIRE_BAUDRATES[baudrate] / 10000, flags | PREC2);
+  if (CROSSFIRE_BAUDRATES[baudrateIndex] >= 1000000) {
+    lcdDrawNumber(x, y, CROSSFIRE_BAUDRATES[baudrateIndex] / 10000, flags | PREC2);
     lcdDrawText(lcdNextPos, y, "MBps", flags);
   }
   else {
-    lcdDrawNumber(x, y, CROSSFIRE_BAUDRATES[baudrate] / 1000, flags);
+    lcdDrawNumber(x, y, CROSSFIRE_BAUDRATES[baudrateIndex] / 1000, flags);
+    lcdDrawText(lcdNextPos, y, "KBps", flags);
+  }
+}
+
+void displayTelemetryBaudrate(coord_t x, coord_t y, uint32_t baudrate, LcdFlags flags) {
+
+  if (baudrate >= 1000000) {
+    lcdDrawNumber(x, y, baudrate / 10000, flags | PREC2);
+    lcdDrawText(lcdNextPos, y, "MBps", flags);
+  }
+  else {
+    lcdDrawNumber(x, y, baudrate / 1000, flags);
     lcdDrawText(lcdNextPos, y, "KBps", flags);
   }
 }
