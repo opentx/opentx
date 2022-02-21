@@ -23,8 +23,7 @@
 #include "../fifo.h"
 #include "../pulses/pxx.h"
 
-#if defined(RADIO_TPRO)
-// TPro requires a larger fifo because it cannot DMA to internal module
+#if defined(INTERNAL_MODULE_ELRS)
 #define MODULE_FIFO_SIZE      128
 #else
 #define MODULE_FIFO_SIZE      PXX2_FRAME_MAXLENGTH

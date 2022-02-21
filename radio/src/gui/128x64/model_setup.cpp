@@ -19,6 +19,7 @@
  */
 
 #include "opentx.h"
+#include "mixer_scheduler.h"
 #if defined(EEPROM_SDCARD)
 #include "storage/modelslist.h"
 #endif
@@ -96,6 +97,9 @@ enum MenuModelSetupItems {
 #if defined(HARDWARE_INTERNAL_MODULE)
   ITEM_MODEL_SETUP_INTERNAL_MODULE_LABEL,
   ITEM_MODEL_SETUP_INTERNAL_MODULE_TYPE,
+#if defined(CROSSFIRE) || defined(GHOST)
+  ITEM_MODEL_SETUP_INTERNAL_MODULE_SERIALSTATUS,
+#endif
 #if defined(MULTIMODULE)
   ITEM_MODEL_SETUP_INTERNAL_MODULE_PROTOCOL,
   ITEM_MODEL_SETUP_INTERNAL_MODULE_SUBTYPE,
@@ -126,6 +130,9 @@ enum MenuModelSetupItems {
 #if defined(HARDWARE_EXTERNAL_MODULE)
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_LABEL,
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_TYPE,
+#if defined(CROSSFIRE) || defined(GHOST)
+  ITEM_MODEL_SETUP_EXTERNAL_MODULE_SERIALSTATUS,
+#endif
 #if defined(MULTIMODULE)
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_PROTOCOL,
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_SUBTYPE,
@@ -189,6 +196,11 @@ enum MenuModelSetupItems {
 #define IF_NOT_PXX2_MODULE(module, xxx)  (isModulePXX2(module) ? HIDDEN_ROW : (uint8_t)(xxx))
 #define IF_ACCESS_MODULE_RF(module, xxx) (isModuleRFAccess(module) ? (uint8_t)(xxx) : HIDDEN_ROW)
 #define IF_NOT_ACCESS_MODULE_RF(module, xxx) (isModuleRFAccess(module) ? HIDDEN_ROW : (uint8_t)(xxx))
+#if defined(CROSSFIRE) || defined(GHOST)
+#define IF_MODULE_SYNCED(module, xxx)    ((isModuleCrossfire(module) || isModuleGhost(module)) ? (uint8_t)(xxx) : HIDDEN_ROW)
+#else
+#define IF_MODULE_SYNCED(module, xxx)
+#endif
 
 #if defined(PXX2)
 #define REGISTRATION_ID_ROWS             uint8_t((isDefaultModelRegistrationID() || (warningText && popupFunc == runPopupRegister)) ? HIDDEN_ROW : READONLY_ROW),
@@ -367,6 +379,7 @@ void editTimerCountdown(int timerIdx, coord_t y, LcdFlags attr, event_t event)
   #define INTERNAL_MODULE_ROWS \
     LABEL(InternalModule), \
     MODULE_TYPE_ROWS(INTERNAL_MODULE),         /* ITEM_MODEL_SETUP_INTERNAL_MODULE_TYPE */ \
+    IF_MODULE_SYNCED(INTERNAL_MODULE, 0),      /* ITEM_MODEL_SETUP_INTERNAL_MODULE_SERIALSTATUS */ \
     MULTIMODULE_TYPE_ROWS(INTERNAL_MODULE)     /* ITEM_MODEL_SETUP_INTERNAL_MODULE_PROTOCOL */ \
     MULTIMODULE_SUBTYPE_ROWS(INTERNAL_MODULE)  /* ITEM_MODEL_SETUP_INTERNAL_MODULE_SUBTYPE */ \
     MULTIMODULE_STATUS_ROWS(INTERNAL_MODULE)   /* ITEM_MODEL_SETUP_INTERNAL_MODULE_STATUS, ITEM_MODEL_SETUP_INTERNAL_MODULE_SYNCSTATUS */ \
@@ -391,7 +404,8 @@ void editTimerCountdown(int timerIdx, coord_t y, LcdFlags attr, event_t event)
 #if defined(HARDWARE_EXTERNAL_MODULE)
   #define EXTERNAL_MODULE_ROWS \
     LABEL(ExternalModule), \
-    MODULE_TYPE_ROWS(EXTERNAL_MODULE),  \
+    MODULE_TYPE_ROWS(EXTERNAL_MODULE), \
+    IF_MODULE_SYNCED(EXTERNAL_MODULE, 0),          /* Sync rate + errors */ \
     MULTIMODULE_TYPE_ROWS(EXTERNAL_MODULE)         /* PROTOCOL */ \
     MULTIMODULE_SUBTYPE_ROWS(EXTERNAL_MODULE)      /* SUBTYPE */  \
     MULTIMODULE_STATUS_ROWS(EXTERNAL_MODULE)  \
@@ -1120,6 +1134,32 @@ void menuModelSetup(event_t event)
 #endif
         }
         break;
+
+#if (defined(CROSSFIRE) || defined(GHOST))
+#if defined(HARDWARE_INTERNAL_MODULE)
+      case ITEM_MODEL_SETUP_INTERNAL_MODULE_SERIALSTATUS:
+#endif
+#if defined(HARDWARE_EXTERNAL_MODULE)
+      case ITEM_MODEL_SETUP_EXTERNAL_MODULE_SERIALSTATUS:
+#endif
+        lcdDrawText(INDENT_WIDTH, y, STR_STATUS);
+        lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, 1000000 / getMixerSchedulerPeriod(), LEFT | attr);
+        lcdDrawText(lcdNextPos, y, "Hz ", attr);
+#if !defined(PCBSKY9X)
+        lcdDrawNumber(lcdNextPos, y, telemetryErrors, attr);
+        lcdDrawText(lcdNextPos + 1, y, "Err", attr);
+        if (attr) {
+          s_editMode = 0;
+          if (event == EVT_KEY_LONG(KEY_ENTER)) {
+            START_NO_HIGHLIGHT();
+            telemetryErrors = 0;
+            AUDIO_WARNING1();
+            killEvents(event);
+          }
+        }
+#endif
+        break;
+#endif
 
 #if defined(MULTIMODULE)
 #if defined(HARDWARE_INTERNAL_MODULE)
