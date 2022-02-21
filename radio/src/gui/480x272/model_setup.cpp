@@ -20,6 +20,7 @@
 
 #include "opentx.h"
 #include "storage/modelslist.h"
+#include "mixer_scheduler.h"
 
 uint8_t g_moduleIdx;
 
