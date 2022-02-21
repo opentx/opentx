@@ -275,7 +275,7 @@ void extmoduleSendNextFrame()
       break;
 #endif
 
-#if defined(PXX1) && defined(HARDWARE_EXTERNAL_MODULE_SIZE_SML)
+#if defined(PXX1) && defined(EXTMODULE_USART)
     case PROTOCOL_CHANNELS_PXX1_SERIAL:
       extmoduleSendBuffer(extmodulePulsesData.pxx_uart.getData(), extmodulePulsesData.pxx_uart.getSize());
       break;

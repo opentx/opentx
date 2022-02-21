@@ -132,7 +132,7 @@ uint8_t getRequiredProtocol(uint8_t module)
       protocol = PROTOCOL_CHANNELS_PXX1_PULSES;
       break;
 
-#if defined(HARDWARE_EXTERNAL_MODULE_SIZE_SML)
+#if defined(EXTMODULE_USART)
     case MODULE_TYPE_R9M_LITE_PXX1:
       protocol = PROTOCOL_CHANNELS_PXX1_SERIAL;
       break;
@@ -144,7 +144,7 @@ uint8_t getRequiredProtocol(uint8_t module)
 
     case MODULE_TYPE_ISRM_PXX2:
     case MODULE_TYPE_R9M_PXX2:
-#if defined(HARDWARE_EXTERNAL_MODULE_SIZE_SML)
+#if defined(EXTMODULE_USART)
     case MODULE_TYPE_XJT_LITE_PXX2:
     case MODULE_TYPE_R9M_LITE_PRO_PXX2:
 #endif
@@ -237,7 +237,7 @@ void enablePulsesExternalModule(uint8_t protocol)
       break;
 #endif
 
-#if defined(PXX1) && defined(HARDWARE_EXTERNAL_MODULE_SIZE_SML)
+#if defined(PXX1) && defined(EXTMODULE_USART)
     case PROTOCOL_CHANNELS_PXX1_SERIAL:
       extmodulePxx1SerialStart();
       mixerSchedulerSetPeriod(EXTERNAL_MODULE, EXTMODULE_PXX1_SERIAL_PERIOD);
@@ -339,7 +339,7 @@ bool setupPulsesExternalModule(uint8_t protocol)
       return true;
 #endif
 
-#if defined(PXX1) && defined(HARDWARE_EXTERNAL_MODULE_SIZE_SML)
+#if defined(PXX1) && defined(EXTMODULE_USART)
     case PROTOCOL_CHANNELS_PXX1_SERIAL:
       extmodulePulsesData.pxx_uart.setupFrame(EXTERNAL_MODULE);
 #if defined(PCBSKY9X)
