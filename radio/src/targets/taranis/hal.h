@@ -1561,6 +1561,10 @@
   #define EXTMODULE_TIMER_FREQ                  (PERI2_FREQUENCY * TIMER_MULT_APB2)
 #endif
 
+#if defined(RADIO_TLITE) || defined(RADIO_TPRO) || defined(RADIO_ZORRO)
+  #define HARDWARE_EXTERNAL_MODULE_SIZE_SML
+#endif
+
 // Trainer Port
 #if defined(PCBXLITES) || defined(PCBX9LITE)
   // on these 2 radios the trainer port already uses DMA1_Stream6, we won't use the DMA
