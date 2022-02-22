@@ -195,6 +195,8 @@ elseif(PCB STREQUAL X7)
     set(BLUETOOTH NO)
     set(USB_CHARGER YES)
     set(AUX_SERIAL_DRIVER ../common/arm/stm32/aux_serial_driver.cpp)
+    set(PXX2 ON)
+
     add_definitions(-DRADIO_ZORRO)
     add_definitions(-DEEPROM_VARIANT=0x4006)
     add_definitions(-DMANUFACTURER_RADIOMASTER)
