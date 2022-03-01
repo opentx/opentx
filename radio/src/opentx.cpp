@@ -1918,13 +1918,8 @@ inline uint32_t PWR_PRESS_DURATION_MIN()
 {
   if (g_eeGeneral.version != EEPROM_VER)
     return 200;
-#if defined(RADIO_TPRO)
-  // TPro tries to turn on charge connection, returning a non-zero value
-  // will ensure radio checks power button is actually pushed
-  return max((2 - g_eeGeneral.pwrOnSpeed) * 100, 5);
-#else
+
   return (2 - g_eeGeneral.pwrOnSpeed) * 100;
-#endif
 }
 
 constexpr uint32_t PWR_PRESS_DURATION_MAX = 500; // 5s
