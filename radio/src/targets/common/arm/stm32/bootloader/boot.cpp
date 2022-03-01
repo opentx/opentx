@@ -221,8 +221,17 @@ int main()
 #if defined(RADIO_T8) && !defined(RADIOMASTER_RELEASE)
   // Bind button not pressed
   if ((~KEYS_GPIO_REG_BIND & KEYS_GPIO_PIN_BIND) == false) {
+#elif defined(RADIO_TPRO)
+  // Checks pwr is pressed to avoid USB charge erroneous start
+  if (!pwrPressed() && !WAS_RESET_BY_WATCHDOG_OR_SOFTWARE()) {
+    pwrOff();
+    while(1);
+  }
+
+  // LHR & RHL trims not pressed simultaneously
+  if (readTrims() != BOOTLOADER_KEYS) {
 #else
-  // LHR & RHL trims not pressed simultanously
+  // LHR & RHL trims not pressed simultaneously
   if (readTrims() != BOOTLOADER_KEYS) {
 #endif
     // Start main application
