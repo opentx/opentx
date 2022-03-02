@@ -143,6 +143,21 @@ void boardInit()
   ledGreen();
 #endif
 
+#if defined(RADIO_TPRO)
+  // This is needed to prevent radio from starting when usb is plugged to charge
+  usbInit();
+
+  // prime debounce state...
+  usbPlugged();
+
+  if (usbPlugged()) {
+    while (usbPlugged()) {
+      // Let it charge ...
+    }
+    pwrOff();
+  }
+#endif
+
   keysInit();
 
 #if defined(ROTARY_ENCODER_NAVIGATION)
@@ -166,7 +181,9 @@ void boardInit()
   init5msTimer();
   __enable_irq();
   i2cInit();
+#if !defined(RADIO_TPRO)
   usbInit();
+#endif
 
 #if defined(DEBUG) && defined(AUX_SERIAL_GPIO)
   auxSerialInit(0, 0); // default serial mode (None if DEBUG not defined)
