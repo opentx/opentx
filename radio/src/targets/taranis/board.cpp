@@ -151,8 +151,29 @@ void boardInit()
   usbPlugged();
 
   if (usbPlugged()) {
+    delaysInit();
+    adcInit();
+    getADC();
+    pwrOn(); // required to get bat adc reads
+    storageReadRadioSettings(false);  // Needed for bat calibration
+    INTERNAL_MODULE_OFF();
+    EXTERNAL_MODULE_OFF();
+
     while (usbPlugged()) {
-      // Let it charge ...
+      getADC();
+      delay_ms(20);
+      if (getBatteryVoltage() >= 660)
+        fsLedOn(0);
+      if (getBatteryVoltage() >= 700)
+        fsLedOn(1);
+      if (getBatteryVoltage() >= 740)
+        fsLedOn(2);
+      if (getBatteryVoltage() >= 780)
+        fsLedOn(3);
+      if (getBatteryVoltage() >= 820)
+        fsLedOn(4);
+      if (getBatteryVoltage() >= 842)
+        fsLedOn(5);
     }
     pwrOff();
   }
