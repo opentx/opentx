@@ -7,6 +7,7 @@ option(GHOST "Ghost TX Module" ON)
 option(INTERNAL_MODULE_PPM "Support for PPM internal module" OFF)
 option(AUTOUPDATE "Auto update internal chips from SD" OFF)
 option(BIND_KEY "Enable bind button" OFF)
+option(MEITUAN "Meituan custom software" OFF)
 
 set(EXTERNAL_MODULE YES)
 add_definitions(-DHARDWARE_TRIMS)
@@ -549,6 +550,10 @@ endif()
 if(INTERNAL_MODULE_ELRS)
   add_definitions(-DHARDWARE_INTERNAL_MODULE)
   add_definitions(-DINTERNAL_MODULE_ELRS)
+endif()
+
+if(MEITUAN)
+  add_definitions(-DMEITUAN)
 endif()
 
 if(EXTERNAL_MODULE)

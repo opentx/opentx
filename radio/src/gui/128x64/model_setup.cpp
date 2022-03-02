@@ -1368,6 +1368,13 @@ void menuModelSetup(event_t event)
       case ITEM_MODEL_SETUP_EXTERNAL_MODULE_PXX2_MODEL_NUM:
       {
         lcdDrawText(INDENT_WIDTH, y, STR_RECEIVER_NUM);
+#if defined(MEITUAN)
+        if (g_model.header.modelId[moduleIdx] == 0) {
+          lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, "--", attr | LEADING0 | LEFT);
+        }
+        else
+          lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, g_model.header.modelId[moduleIdx], attr | LEADING0 | LEFT, 2);
+#else
         lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, g_model.header.modelId[moduleIdx], attr | LEADING0 | LEFT, 2);
         if (attr) {
           CHECK_INCDEC_MODELVAR_ZERO(event, g_model.header.modelId[moduleIdx], getMaxRxNum(moduleIdx));
@@ -1375,6 +1382,7 @@ void menuModelSetup(event_t event)
             modelHeaders[g_eeGeneral.currModel].modelId[moduleIdx] = g_model.header.modelId[moduleIdx];
           }
         }
+#endif
       }
       break;
 

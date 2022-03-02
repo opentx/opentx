@@ -59,8 +59,10 @@ void pushMenu(MenuHandlerFunc newMenu)
     if (newMenu == menuRadioTools)
       menuVerticalPositions[0] = 1;
 #endif
+#if !define(MEITUAN)
     if (newMenu == menuModelSetup)
       menuVerticalPositions[0] = 0;
+#endif
   }
   else {
     menuVerticalPositions[menuLevel] = menuVerticalPosition;

@@ -268,6 +268,9 @@ void Pxx2Pulses::setupAccessBindFrame(uint8_t module)
       moduleState[module].mode = MODULE_MODE_NORMAL;
       destination->step = BIND_OK;
       POPUP_INFORMATION(STR_BIND_OK); // TODO rather use the new callback
+#if defined(MEITUAN)
+      g_model.header.modelId[module] = (g_model.header.modelId[module] + 1) % getMaxRxNum(module);
+#endif
     }
     return;
   }
@@ -291,7 +294,12 @@ void Pxx2Pulses::setupAccessBindFrame(uint8_t module)
     else {
       Pxx2Transport::addByte(destination->rxUid); // RX_UID is the slot index (which is unique and never moved)
     }
+
+#if defined(MEITUAN)
+    Pxx2Transport::addByte((g_model.header.modelId[module] + 1) % getMaxRxNum(module));
+#else
     Pxx2Transport::addByte(g_model.header.modelId[module]);
+#endif
   }
   else {
     Pxx2Transport::addByte(0x00); // DATA0

@@ -80,6 +80,10 @@ void onModelSelectMenu(const char * result)
 #endif
 }
 
+#if defined(MEITUAN)
+  uint8_t MENU_MODEL_SELECT = 0;
+#endif
+
 void menuModelSelect(event_t event)
 {
   event_t _event_ = event;

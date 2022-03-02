@@ -52,6 +52,9 @@ void onPXX2R9MBindModeMenu(const char * result)
   moduleState[moduleIdx].mode = MODULE_MODE_NORMAL;
   reusableBuffer.moduleSetup.bindInformation.step = BIND_OK;
   POPUP_INFORMATION(STR_BIND_OK);
+#if defined(MEITUAN)
+  g_model.header.modelId[moduleIdx] = (g_model.header.modelId[moduleIdx] + 1) % getMaxRxNum(moduleIdx);
+#endif
 #else
   reusableBuffer.moduleSetup.bindInformation.step = BIND_START;
 #endif
@@ -83,6 +86,9 @@ void onPXX2BindMenu(const char * result)
       moduleState[moduleIdx].mode = MODULE_MODE_NORMAL;
       reusableBuffer.moduleSetup.bindInformation.step = BIND_OK;
       POPUP_INFORMATION(STR_BIND_OK);
+#if defined(MEITUAN)
+      g_model.header.modelId[moduleIdx] = (g_model.header.modelId[moduleIdx] + 1) % getMaxRxNum(moduleIdx);
+#endif
 #else
       reusableBuffer.moduleSetup.bindInformation.step = BIND_START;
 #endif

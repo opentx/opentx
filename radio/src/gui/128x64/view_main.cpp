@@ -458,7 +458,7 @@ void menuMainView(event_t event)
 #endif
 
     case EVT_KEY_MODEL_MENU:
-      pushMenu(menuModelSelect);
+      pushMenu(menuTabModel[0]);
       killEvents(event);
       break;
 
