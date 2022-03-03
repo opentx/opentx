@@ -152,6 +152,42 @@ void boardInit()
   ledGreen();
 #endif
 
+#if defined(RADIO_TPRO)
+  // This is needed to prevent radio from starting when usb is plugged to charge
+  usbInit();
+
+  // prime debounce state...
+  usbPlugged();
+
+  if (usbPlugged()) {
+    delaysInit();
+    adcInit();
+    getADC();
+    pwrOn(); // required to get bat adc reads
+    storageReadRadioSettings(false);  // Needed for bat calibration
+    INTERNAL_MODULE_OFF();
+    EXTERNAL_MODULE_OFF();
+
+    while (usbPlugged()) {
+      getADC();
+      delay_ms(20);
+      if (getBatteryVoltage() >= 660)
+        fsLedOn(0);
+      if (getBatteryVoltage() >= 700)
+        fsLedOn(1);
+      if (getBatteryVoltage() >= 740)
+        fsLedOn(2);
+      if (getBatteryVoltage() >= 780)
+        fsLedOn(3);
+      if (getBatteryVoltage() >= 820)
+        fsLedOn(4);
+      if (getBatteryVoltage() >= 842)
+        fsLedOn(5);
+    }
+    pwrOff();
+  }
+#endif
+
   keysInit();
 
 #if defined(ROTARY_ENCODER_NAVIGATION)
@@ -175,7 +211,9 @@ void boardInit()
   init5msTimer();
   __enable_irq();
   i2cInit();
+#if !defined(RADIO_TPRO)
   usbInit();
+#endif
 
 #if defined(DEBUG) && defined(AUX_SERIAL_GPIO)
   auxSerialInit(0, 0); // default serial mode (None if DEBUG not defined)
