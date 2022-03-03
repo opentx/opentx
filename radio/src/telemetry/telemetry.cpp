@@ -232,15 +232,7 @@ void telemetryWakeup()
   }
 #endif
 
-#if defined(STM32)
-  if (telemetryGetByte(&data)) {
-    LOG_TELEMETRY_WRITE_START();
-    do {
-      processTelemetryData(data);
-      LOG_TELEMETRY_WRITE_BYTE(data);
-    } while (telemetryGetByte(&data));
-  }
-#elif defined(PCBSKY9X)
+#if defined(PCBSKY9X)
   if (telemetryProtocol == PROTOCOL_TELEMETRY_FRSKY_D_SECONDARY) {
     while (telemetrySecondPortReceive(data)) {
       processTelemetryData(data);

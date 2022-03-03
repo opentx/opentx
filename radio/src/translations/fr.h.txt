@@ -559,6 +559,7 @@
 #define TR_PERSISTENT                  TR(INDENT "Persist.", INDENT "Persistant")
 #define TR_BACKLIGHT_LABEL             "Rétroéclairage"
 #define TR_GHOST_MENU_LABEL            "GHOST MENU"
+#define TR_STATUS                      "Status"
 #define TR_RAW_12BITS                  "Raw 12 bits"
 #define TR_BLDELAY                     INDENT "Durée"
 #define TR_BLONBRIGHTNESS              INDENT "Luminosité ON"
@@ -695,6 +696,8 @@
 #define TR_MODULE_BINDING              "Bind..."
 #define TR_MODULE_UPGRADE_ALERT              "Mise à jour requise"
 #define TR_MODULE_UPGRADE              TR("Upg. advised", "Module update recommended")
+#define TR_PULSE_RATE                  "Pulse rate"
+#define TR_LINK_SPEED                  "Link speed"
 #define TR_REBIND                      "Rebind requis"
 #define TR_REG_OK                      "Enregistr. ok"
 #define TR_BIND_OK                     "Bind ok"

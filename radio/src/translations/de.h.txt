@@ -540,6 +540,7 @@
 #define TR_PERSISTENT                  TR(INDENT "Permanent", INDENT "Permanent")
 #define TR_BACKLIGHT_LABEL             "LCD-Beleuchtung"
 #define TR_GHOST_MENU_LABEL            "GHOST MENU"
+#define TR_STATUS                      "Status"
 #define TR_RAW_12BITS                  "Raw 12 bits"
 #define TR_BLDELAY                     INDENT "Dauer"
 #define TR_BLONBRIGHTNESS              INDENT "An-Helligkeit"
@@ -674,6 +675,8 @@
 #define TR_MODULE_BINDING              "Binding"
 #define TR_MODULE_UPGRADE_ALERT        TR3("Upg. needed", "Module upgrade required", "Modul\nUpdate nötig")
 #define TR_MODULE_UPGRADE              TR("Upg. advised", "Modulupdate empfohlen")
+#define TR_PULSE_RATE                  "Pulse rate"
+#define TR_LINK_SPEED                  "Link speed"
 #define TR_REBIND                      "Rebinding required"
 #define TR_REG_OK                      "Registration ok"
 #define TR_BIND_OK                     "Bind successful"

@@ -19,6 +19,7 @@
  */
 
 #include "opentx.h"
+#include "mixer_scheduler.h"
 
 #define STATS_1ST_COLUMN               1
 #define STATS_2ND_COLUMN               7*FW+FW/2
@@ -322,6 +323,21 @@ void menuStatisticsDebug2(event_t event)
   lcdDrawTextAlignedLeft(y, "BT status");
   lcdDrawNumber(MENU_DEBUG_COL1_OFS, y, IS_BLUETOOTH_CHIP_PRESENT(), RIGHT);
   y += FH;
+#endif
+
+#if defined(INTERNAL_MODULE_ELRS)
+  if (isModuleCrossfire(INTERNAL_MODULE)) {
+    lcdDrawTextAlignedLeft(y, STR_LINK_SPEED);
+    lcdDrawNumber(MENU_DEBUG_COL1_OFS, y, ELRS_INTERNAL_BAUDRATE / 10000, PREC2);
+    lcdDrawText(lcdNextPos, y, "MBps", 0);
+    y += FH;
+    lcdDrawTextAlignedLeft(y, STR_PULSE_RATE);
+    lcdDrawNumber(MENU_DEBUG_COL1_OFS, y, getMixerSchedulerPeriod() / 1000, LEFT);
+    lcdDrawText(lcdNextPos, y, "ms (");
+    lcdDrawNumber(lcdNextPos, y, 1000000 / getMixerSchedulerPeriod(), LEFT);
+    lcdDrawText(lcdNextPos, y, "Hz)");
+    y += FH;
+  }
 #endif
 
   lcdDrawText(LCD_W/2, 7*FH+1, STR_MENUTORESET, CENTERED);

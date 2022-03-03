@@ -188,6 +188,7 @@ elseif(PCB STREQUAL X7)
     set(FIRMWARE_TARGET_SRC
       ${FIRMWARE_TARGET_SRC}
       startup_stm32f40_41xxx.s
+      ../../thirdparty/STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_flash.c
       )
     add_definitions(-DSTM32F40_41xxx)
     set(ROTARY_ENCODER YES)
@@ -195,6 +196,8 @@ elseif(PCB STREQUAL X7)
     set(BLUETOOTH NO)
     set(USB_CHARGER YES)
     set(AUX_SERIAL_DRIVER ../common/arm/stm32/aux_serial_driver.cpp)
+    set(PXX2 ON)
+
     add_definitions(-DRADIO_ZORRO)
     add_definitions(-DEEPROM_VARIANT=0x4006)
     add_definitions(-DMANUFACTURER_RADIOMASTER)

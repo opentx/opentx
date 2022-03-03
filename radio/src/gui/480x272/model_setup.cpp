@@ -20,6 +20,7 @@
 
 #include "opentx.h"
 #include "storage/modelslist.h"
+#include "mixer_scheduler.h"
 
 uint8_t g_moduleIdx;
 
@@ -70,6 +71,9 @@ enum MenuModelSetupItems {
 #if defined(HARDWARE_INTERNAL_MODULE)
   ITEM_MODEL_SETUP_INTERNAL_MODULE_LABEL,
   ITEM_MODEL_SETUP_INTERNAL_MODULE_TYPE,
+#if defined(CROSSFIRE) || defined(GHOST)
+  ITEM_MODEL_SETUP_INTERNAL_MODULE_SERIALSTATUS,
+#endif
 #if defined(MULTIMODULE)
   ITEM_MODEL_SETUP_INTERNAL_MODULE_STATUS,
   ITEM_MODEL_SETUP_INTERNAL_MODULE_SYNCSTATUS,
@@ -97,6 +101,9 @@ enum MenuModelSetupItems {
 #endif
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_LABEL,
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_TYPE,
+#if defined(CROSSFIRE) || defined(GHOST)
+  ITEM_MODEL_SETUP_EXTERNAL_MODULE_SERIALSTATUS,
+#endif
 #if defined(MULTIMODULE)
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_STATUS,
   ITEM_MODEL_SETUP_EXTERNAL_MODULE_SYNCSTATUS,
@@ -494,6 +501,11 @@ int getSwitchWarningsCount()
 #define IF_NOT_PXX2_MODULE(module, xxx)      (isModulePXX2(module) ? HIDDEN_ROW : (uint8_t)(xxx))
 #define IF_ACCESS_MODULE_RF(module, xxx)     (isModuleRFAccess(module) ? (uint8_t)(xxx) : HIDDEN_ROW)
 #define IF_NOT_ACCESS_MODULE_RF(module, xxx) (isModuleRFAccess(module) ? HIDDEN_ROW : (uint8_t)(xxx))
+#if defined(CROSSFIRE) || defined(GHOST)
+#define IF_MODULE_SYNCED(module, xxx)    ((isModuleCrossfire(module) || isModuleGhost(module)) ? (uint8_t)(xxx) : HIDDEN_ROW)
+#else
+#define IF_MODULE_SYNCED(module, xxx)
+#endif
 
 #define TIMER_ROWS(x)                        NAVIGATION_LINE_BY_LINE|1, 0, 0, 0, g_model.timers[x].countdownBeep != COUNTDOWN_SILENT ? (uint8_t)1 : (uint8_t)0
 
@@ -558,9 +570,10 @@ void onModelAntennaSwitchConfirm(const char * result)
 #if defined(HARDWARE_INTERNAL_MODULE)
   #define INTERNAL_MODULE_ROWS \
          LABEL(InternalModule), \
-         MODULE_TYPE_ROWS(INTERNAL_MODULE),         /* ITEM_MODEL_SETUP_INTERNAL_MODULE_TYPE*/ \
+         MODULE_TYPE_ROWS(INTERNAL_MODULE),         /* ITEM_MODEL_SETUP_INTERNAL_MODULE_TYPE */ \
+         IF_MODULE_SYNCED(INTERNAL_MODULE, 0),      /* SITEM_MODEL_SETUP_INTERNAL_MODULE_SERIALSTATUS */ \
          MULTIMODULE_STATUS_ROWS(INTERNAL_MODULE)   /* ITEM_MODEL_SETUP_INTERNAL_MODULE_STATUS, ITEM_MODEL_SETUP_INTERNAL_MODULE_SYNCSTATUS */ \
-         MODULE_CHANNELS_ROWS(INTERNAL_MODULE),     /* ITEM_MODEL_SETUP_INTERNAL_MODULE_CHANNELS*/ \
+         MODULE_CHANNELS_ROWS(INTERNAL_MODULE),     /* ITEM_MODEL_SETUP_INTERNAL_MODULE_CHANNELS */ \
          IF_ALLOW_RACING_MODE(INTERNAL_MODULE),     /* ITEM_MODEL_SETUP_INTERNAL_MODULE_RACING_MODE */ \
          IF_NOT_ACCESS_MODULE_RF(INTERNAL_MODULE, MODULE_BIND_ROWS(INTERNAL_MODULE)), /* *ITEM_MODEL_SETUP_INTERNAL_MODULE_NOT_ACCESS_RXNUM_BIND_RANGE */\
          IF_ACCESS_MODULE_RF(INTERNAL_MODULE, 0),   /* ITEM_MODEL_SETUP_INTERNAL_MODULE_PXX2_MODEL_NUM*/ \
@@ -619,6 +632,7 @@ bool menuModelSetup(event_t event)
 
          LABEL(ExternalModule),
            MODULE_TYPE_ROWS(EXTERNAL_MODULE),
+           IF_MODULE_SYNCED(EXTERNAL_MODULE, 0),      // Sync rate + errors
            MULTIMODULE_STATUS_ROWS(EXTERNAL_MODULE)
            AFHDS3_MODE_ROWS(EXTERNAL_MODULE)
            MODULE_CHANNELS_ROWS(EXTERNAL_MODULE),
@@ -1018,6 +1032,8 @@ bool menuModelSetup(event_t event)
           lcdDrawTextAtIndex(MODEL_SETUP_3RD_COLUMN, y, STR_XJT_ACCST_RF_PROTOCOLS, 1 + g_model.moduleData[INTERNAL_MODULE].subType, menuHorizontalPosition==1 ? attr : 0);
         else if (isModuleISRM(INTERNAL_MODULE))
           lcdDrawTextAtIndex(MODEL_SETUP_3RD_COLUMN, y, STR_ISRM_RF_PROTOCOLS, g_model.moduleData[INTERNAL_MODULE].subType, menuHorizontalPosition==1 ? attr : 0);
+        else if (isModuleCrossfire(INTERNAL_MODULE))
+          displayTelemetryBaudrate(MODEL_SETUP_3RD_COLUMN, y, (uint32_t )ELRS_INTERNAL_BAUDRATE, 0);
         if (attr) {
           if (menuHorizontalPosition == 0) {
             uint8_t moduleType = checkIncDec(event, g_model.moduleData[INTERNAL_MODULE].type, MODULE_TYPE_NONE, MODULE_TYPE_MAX, EE_MODEL, isInternalModuleAvailable);
@@ -1074,6 +1090,12 @@ bool menuModelSetup(event_t event)
           lcdDrawTextAtIndex(MODEL_SETUP_3RD_COLUMN, y, STR_DSM_PROTOCOLS, g_model.moduleData[moduleIdx].rfProtocol, (menuHorizontalPosition==1 ? attr : 0));
         else if (isModuleR9MNonAccess(moduleIdx))
           lcdDrawTextAtIndex(MODEL_SETUP_3RD_COLUMN, y, STR_R9M_REGION, g_model.moduleData[moduleIdx].subType, (menuHorizontalPosition==1 ? attr : 0));
+#if defined(INTERNAL_MODULE_ELRS)
+        else if (moduleIdx == INTERNAL_MODULE && isModuleCrossfire(moduleIdx))
+          displayTelemetryBaudrate(lcdNextPos + 3, y, (uint32_t )ELRS_INTERNAL_BAUDRATE, LEFT);
+#endif
+        else if (moduleIdx == EXTERNAL_MODULE && isModuleCrossfire(moduleIdx))
+          displayTelemetryBaudrate(lcdNextPos + 3, y, g_eeGeneral.telemetryBaudrate, LEFT);
 #if defined(MULTIMODULE)
         else if (isModuleMultimodule(moduleIdx)) {
           int multi_rfProto = g_model.moduleData[moduleIdx].getMultiProtocol();
@@ -1202,6 +1224,31 @@ bool menuModelSetup(event_t event)
 #endif
         }
         break;
+
+#if (defined(CROSSFIRE) || defined(GHOST))
+#if defined(HARDWARE_INTERNAL_MODULE)
+      case ITEM_MODEL_SETUP_INTERNAL_MODULE_SERIALSTATUS:
+#endif
+#if defined(HARDWARE_EXTERNAL_MODULE)
+      case ITEM_MODEL_SETUP_EXTERNAL_MODULE_SERIALSTATUS:
+#endif
+        lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, STR_STATUS);
+        lcdDrawNumber(MODEL_SETUP_2ND_COLUMN, y, 1000000 / getMixerSchedulerPeriod(), LEFT | attr);
+        lcdDrawText(lcdNextPos, y, "Hz ", attr);
+        lcdDrawNumber(lcdNextPos, y, telemetryErrors, attr);
+        lcdDrawText(lcdNextPos + 1, y, "Err", attr);
+        if (attr) {
+          s_editMode = 0;
+          if (event == EVT_KEY_LONG(KEY_ENTER)) {
+            START_NO_HIGHLIGHT();
+            telemetryErrors = 0;
+            AUDIO_WARNING1();
+            killEvents(event);
+          }
+        }
+        break;
+#endif
+
 #if defined(HARDWARE_INTERNAL_MODULE)
       case ITEM_MODEL_SETUP_INTERNAL_MODULE_CHANNELS:
 #endif
