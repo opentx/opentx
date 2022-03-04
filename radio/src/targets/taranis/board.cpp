@@ -268,6 +268,10 @@ void boardInit()
 #endif
 
   backlightInit();
+
+#if defined(GUI)
+  lcdSetContrast(true);
+#endif
 }
 
 void boardOff()

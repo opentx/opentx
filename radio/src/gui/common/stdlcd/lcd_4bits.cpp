@@ -727,9 +727,13 @@ void drawDate(coord_t x, coord_t y, TelemetryItem & telemetryItem, LcdFlags att)
   }
 }
 
-void lcdSetContrast()
+void lcdSetContrast(bool useDefault)
 {
-  lcdSetRefVolt(g_eeGeneral.contrast);
+#if defined(BOOT)
+  lcdSetRefVolt(LCD_CONTRAST_DEFAULT);
+#else
+  lcdSetRefVolt(useDefault ? LCD_CONTRAST_DEFAULT : g_eeGeneral.contrast);
+#endif
 }
 
 void lcdMaskPoint(uint8_t * p, uint8_t mask, LcdFlags att)
