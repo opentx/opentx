@@ -84,6 +84,7 @@ enum menuRadioSetupItems {
   ITEM_SETUP_SWITCHES_DELAY,
   ITEM_SETUP_USB_MODE,
   ITEM_SETUP_RX_CHANNEL_ORD,
+  CASE_ROTARY_ENCODER(ITEM_RADIO_SETUP_ROTARY_INVERSE)
   ITEM_SETUP_STICK_MODE,
   ITEM_SETUP_MAX
 };
@@ -139,6 +140,7 @@ bool menuRadioSetup(event_t event)
     0, // switches delay
     0, // USB mode
     0, // RX channels order
+    CASE_ROTARY_ENCODER(0)  // Invert rotary encoder
     0, // sticks mode
     1 /*to force edit mode*/
   }); // Units - Fai choice - Play delay - USB mode - Chan order - Mode (1 to 4)
@@ -533,6 +535,13 @@ bool menuRadioSetup(event_t event)
         }
         break;
       }
+
+#if defined(ROTARY_ENCODER_NAVIGATION)
+      case ITEM_RADIO_SETUP_ROTARY_INVERSE:
+        lcdDrawText(MENUS_MARGIN_LEFT, y, STR_INVERT_ROTARY);
+        g_eeGeneral.rotEncDirection = editCheckBox(g_eeGeneral.rotEncDirection, RADIO_SETUP_2ND_COLUMN, y, attr, event);
+        break;
+#endif
     }
   }
 
