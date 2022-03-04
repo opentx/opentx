@@ -2687,6 +2687,7 @@ OpenTxGeneralData::OpenTxGeneralData(GeneralSettings & generalData, Board::Type 
     internalField.Append(new BoolField<1>(this, generalData.rotEncoderDirection));  // TODO : rotary encoder invert GUI
   }
   else {
+    internalField.Append(new SpareBitsField<1>(this));
     internalField.Append(new  BoolField<1>(this, generalData.rotEncoderDirection));  // TODO : rotary encoder invert GUI
   }
 
