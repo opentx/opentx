@@ -32,12 +32,6 @@ int8_t editSlider(coord_t x, coord_t y, event_t event, int8_t value, int8_t min,
 
 #define SLIDER_5POS(val) val = editSlider(RADIO_SETUP_2ND_COLUMN, y, event, val, -2, +2, attr)
 
-#if defined(ROTARY_ENCODER_NAVIGATION)
-#define CASE_ROTARY_ENCODER(x) x,
-#else
-#define CASE_ROTARY_ENCODER(x)
-#endif
-
 enum menuRadioSetupItems {
   ITEM_SETUP_DATE,
   ITEM_SETUP_TIME,

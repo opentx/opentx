@@ -42,12 +42,6 @@ const unsigned char sticks[]  = {
   #define CASE_SPLASH_PARAM(x)
 #endif
 
-#if defined(ROTARY_ENCODER_NAVIGATION)
-#define CASE_ROTARY_ENCODER(x) x,
-#else
-#define CASE_ROTARY_ENCODER(x)
-#endif
-
 enum MenuRadioSetupItems {
   CASE_RTCLOCK(ITEM_RADIO_SETUP_DATE)
   CASE_RTCLOCK(ITEM_RADIO_SETUP_TIME)
