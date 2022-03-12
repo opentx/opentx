@@ -220,7 +220,7 @@ QString Multiprotocols::protocolToString(int protocol, bool custom)
     "Bayang RX", "Pelikan", "Tiger", "XK", "XN297 Dump", "FrSky X 2.1", "FrSky R9", "Propel", "FrSky L", "Skyartec",
     "ESky 150v2", "DSM RX", "JJRC345", "Q90C", "Kyosho", "RadioLink", "ExpressLRS", "Realacc", "OMP", "M-Link", "Wfly 2",
     "Eachine E016H v2", "E010 R5", "Loli 3", "Eachine E129", "Joysway", "Eachine E016H", "Config", "IKEA Ansluta", "WilliFM",
-    "LOSI", "Mould King"
+    "LOSI", "Mould King", "Xerall", "MT99XX2"
   });
 
   return strings.value(protocol, CPN_STR_UNKNOWN_ITEM);
