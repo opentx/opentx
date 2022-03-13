@@ -54,7 +54,7 @@ static const QStringList STR_SUBTYPE_CX10      {"Green", "Blue", "DM007", "-", "
 static const QStringList STR_SUBTYPE_CG023     {"Standard", "YD829"};
 static const QStringList STR_SUBTYPE_BAYANG    {"Standard", "H8S3D", "X16 AH", "IRDRONE", "DHD D4", "QX100"};
 static const QStringList STR_SUBTYPE_ESky      {"Standard", "ET4"};
-static const QStringList STR_SUBTYPE_MT99      {"MT99", "H7", "YZ", "LS", "FY805", "A180", "Dragon""F949G"};
+static const QStringList STR_SUBTYPE_MT99      {"MT99", "H7", "YZ", "LS", "FY805", "A180", "Dragon","F949G"};
 static const QStringList STR_SUBTYPE_MJXQ      {"WLH08", "X600", "X800", "H26D", "E010", "H26WH", "Phoenix"};
 static const QStringList STR_SUBTYPE_FY326     {"Standard", "FY319"};
 static const QStringList STR_SUBTYPE_FUTABA    {"SFHSS"};
