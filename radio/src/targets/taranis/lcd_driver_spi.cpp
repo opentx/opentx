@@ -134,6 +134,11 @@ void lcdStart()
   lcdWriteCommand(0x36); // Set Vop
   lcdWriteCommand(0xa6); // Set display mode
 #endif
+#if defined(BOOT)
+  lcdSetRefVolt(LCD_CONTRAST_DEFAULT);
+#else
+  lcdSetRefVolt(g_eeGeneral.contrast);
+#endif
 }
 #else
 void lcdStart()
