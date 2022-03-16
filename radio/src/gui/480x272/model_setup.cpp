@@ -1116,7 +1116,7 @@ bool menuModelSetup(event_t event)
           else if (reusableBuffer.moduleSetup.newType != reusableBuffer.moduleSetup.previousType) {
             g_model.moduleData[EXTERNAL_MODULE].type = reusableBuffer.moduleSetup.newType;
             reusableBuffer.moduleSetup.previousType = reusableBuffer.moduleSetup.newType;
-            setModuleType(EXTERNAL_MODULE, g_model.moduleData[EXTERNAL_MODULE].type)
+            setModuleType(EXTERNAL_MODULE, g_model.moduleData[EXTERNAL_MODULE].type);
             storageDirty(EE_MODEL);
           }
           else if (g_model.moduleData[EXTERNAL_MODULE].type == MODULE_TYPE_NONE) {
