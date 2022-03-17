@@ -1063,6 +1063,7 @@ void menuModelSetup(event_t event)
             g_model.moduleData[moduleIdx].type = reusableBuffer.moduleSetup.newType;
             reusableBuffer.moduleSetup.previousType = reusableBuffer.moduleSetup.newType;
             setModuleType(moduleIdx, g_model.moduleData[moduleIdx].type);
+            storageDirty(EE_MODEL);
           }
           else if (g_model.moduleData[moduleIdx].type == MODULE_TYPE_NONE) {
             g_model.moduleData[moduleIdx].type = reusableBuffer.moduleSetup.newType;
@@ -1081,8 +1082,7 @@ void menuModelSetup(event_t event)
                 }
                 else
 #endif
-                  reusableBuffer.moduleSetup.newType = checkIncDec(event, reusableBuffer.moduleSetup.newType, MODULE_TYPE_NONE, MODULE_TYPE_MAX, EE_MODEL,
-                                                                   isExternalModuleAvailable);
+                  reusableBuffer.moduleSetup.newType = checkIncDec(event, reusableBuffer.moduleSetup.newType, MODULE_TYPE_NONE, MODULE_TYPE_MAX, 0,isExternalModuleAvailable);
                 break;
 
               case 1:
