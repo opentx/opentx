@@ -3253,13 +3253,13 @@ Blanc signifie &quot;inclure tous&quot;.Les métacaractères ?, * et [...] sont 
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1358"/>
         <source>Jumper T-Pro</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1363"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1393"/>
         <source>Select if internal ELRS module is installed</source>
-        <translation type="unfinished"></translation>
+        <translation>Sélectionnez si le module interne ELRS est installé</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1372"/>
@@ -3271,7 +3271,7 @@ Blanc signifie &quot;inclure tous&quot;.Les métacaractères ?, * et [...] sont 
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1388"/>
         <source>Radiomaster Zorro</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1407"/>
@@ -4149,37 +4149,37 @@ Vous utilisez actuellement:
     <message>
         <location filename="../modeledit/setup_function_switches.ui" line="14"/>
         <source>Form</source>
-        <translation type="unfinished">Formulaire</translation>
+        <translation>Formulaire</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_function_switches.ui" line="47"/>
         <source>Function Switches</source>
-        <translation type="unfinished"></translation>
+        <translation>Interrupteur Fonctions</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_function_switches.ui" line="69"/>
         <source>Type</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../modeledit/setup_function_switches.ui" line="76"/>
         <source>Name</source>
-        <translation type="unfinished">Nom</translation>
+        <translation>Nom</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_function_switches.ui" line="83"/>
         <source>Start</source>
-        <translation type="unfinished"></translation>
+        <translation>Démarrer</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_function_switches.ui" line="96"/>
         <source>Group</source>
-        <translation type="unfinished"></translation>
+        <translation>Groupe</translation>
     </message>
     <message>
         <location filename="../modeledit/setup_function_switches.ui" line="103"/>
         <source>Always On</source>
-        <translation type="unfinished"></translation>
+        <translation>Toujours Activé</translation>
     </message>
 </context>
 <context>
@@ -4187,7 +4187,7 @@ Vous utilisez actuellement:
     <message>
         <location filename="../modeledit/setup.cpp" line="985"/>
         <source>SW%1</source>
-        <translation type="unfinished"></translation>
+        <translation>IT%1</translation>
     </message>
 </context>
 <context>
@@ -8124,32 +8124,32 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../firmwares/modeldata.cpp" line="1694"/>
         <source>NONE</source>
-        <translation type="unfinished"></translation>
+        <translation>AUCUN</translation>
     </message>
     <message>
         <location filename="../firmwares/modeldata.cpp" line="1696"/>
         <source>TOGGLE</source>
-        <translation type="unfinished"></translation>
+        <translation>MOMENTANÉ</translation>
     </message>
     <message>
         <location filename="../firmwares/modeldata.cpp" line="1698"/>
         <source>2POS</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/modeldata.cpp" line="1771"/>
         <source>Inactive</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/modeldata.cpp" line="1773"/>
         <source>Active</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../firmwares/modeldata.cpp" line="1775"/>
         <source>Restore</source>
-        <translation type="unfinished"></translation>
+        <translation>Rétablir</translation>
     </message>
 </context>
 <context>
@@ -9447,7 +9447,7 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../multimodelprinter.cpp" line="712"/>
         <source>L%1</source>
-        <translation></translation>
+        <translation>IL%1</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="719"/>
@@ -9573,22 +9573,22 @@ Mixage actif par défaut si non-renseigné.</translation>
     <message>
         <location filename="../multimodelprinter.cpp" line="953"/>
         <source>Function Switches</source>
-        <translation type="unfinished"></translation>
+        <translation>Interrupteurs Fonction</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="955"/>
         <source>Switch %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Inter %1</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="980"/>
         <source>Group</source>
-        <translation type="unfinished"></translation>
+        <translation>Groupe</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="987"/>
         <source>Always On</source>
-        <translation type="unfinished"></translation>
+        <translation>Toujours Activé</translation>
     </message>
     <message>
         <location filename="../multimodelprinter.cpp" line="475"/>
@@ -10224,7 +10224,7 @@ E</translation>
     <message>
         <location filename="../firmwares/rawsource.cpp" line="199"/>
         <source>SW%1</source>
-        <translation type="unfinished"></translation>
+        <translation>IT%1</translation>
     </message>
     <message>
         <location filename="../firmwares/rawsource.cpp" line="206"/>
@@ -10385,7 +10385,7 @@ E</translation>
     <message>
         <location filename="../firmwares/rawswitch.cpp" line="100"/>
         <source>SW%1</source>
-        <translation type="unfinished"></translation>
+        <translation>IT%1</translation>
     </message>
     <message>
         <location filename="../firmwares/rawswitch.cpp" line="126"/>
