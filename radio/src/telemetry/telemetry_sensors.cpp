@@ -520,6 +520,7 @@ int setTelemetryValue(TelemetryProtocol protocol, uint16_t id, uint8_t subId, ui
 
   int index = availableTelemetryIndex();
   if (index >= 0) {
+    storageDirty(EE_MODEL);
     switch (protocol) {
       case PROTOCOL_TELEMETRY_FRSKY_SPORT:
         frskySportSetDefault(index, id, subId, instance);
