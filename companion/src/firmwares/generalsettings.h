@@ -212,6 +212,7 @@ class GeneralSettings {
     bool jitterFilter;
     bool rtcCheckDisable;
     bool keysBacklight;
+    bool rotEncoderDirection;
     unsigned int imperial;
     char ttsLanguage[TTS_LANGUAGE_LEN + 1];
     int beepVolume;

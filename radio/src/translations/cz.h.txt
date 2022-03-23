@@ -539,6 +539,7 @@
 #define TR_PERSISTENT                  INDENT"Trvalé"
 #define TR_BACKLIGHT_LABEL             "Podsvětlení"
 #define TR_GHOST_MENU_LABEL            "GHOST MENU"
+#define TR_STATUS                      "Status"
 #define TR_RAW_12BITS                  "Raw 12 bits"
 #define TR_BLDELAY                     INDENT"Zhasnout po"
 #define TR_BLONBRIGHTNESS              TR3(INDENT"Jas Zap.", INDENT"Jas Zap.", INDENT"Jas zapnutého LCD")
@@ -673,6 +674,8 @@
 #define TR_MODULE_BINDING              TR("Bind...","Párování")
 #define TR_MODULE_UPGRADE_ALERT        TR3("Upg. needed", "Module upgrade required", "Module\nUpgrade required")
 #define TR_MODULE_UPGRADE              TR("Upg. advised", "Module update recommended")
+#define TR_PULSE_RATE                  "Pulse rate"
+#define TR_LINK_SPEED                  "Link speed"
 #define TR_REBIND                      "Nutno přepárovat"
 #define TR_REG_OK                      "Registrace ok"
 #define TR_BIND_OK                     "Úspěšné párovaní"
@@ -844,6 +847,7 @@
 #define TR_DATE                        "Datum"
 #define TR_MONTHS                      { "Led", "Úno", "Bře", "Dub", "Kvě", "Čvn", "Čvc", "Srp", "Zář", "Říj", "Lis", "Pro" }
 #define TR_ROTARY_ENCODER              "R.Enko"
+#define TR_INVERT_ROTARY             "Invert Rotary"
 #define TR_CHANNELS_MONITOR            "MONITOR KANÁLU"
 #define TR_MIXERS_MONITOR              "MONITOR MIXU"
 #define TR_PATH_TOO_LONG               "Cesta je moc dlouhá"

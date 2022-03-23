@@ -590,6 +590,12 @@ bool isModuleUsingSport(uint8_t moduleBay, uint8_t moduleType)
       if (moduleBay == EXTERNAL_MODULE)
         return false;
 
+#if defined(HARDWARE_INTERNAL_MODULE)
+    case MODULE_TYPE_CROSSFIRE:
+      if (moduleBay == INTERNAL_MODULE)
+        return false;
+#endif
+
     default:
       return true;
   }
@@ -975,7 +981,7 @@ const char STR_SUBTYPE_CX10[] =       "\007""Green\0 ""Blue\0  ""DM007\0 ""-\0  
 const char STR_SUBTYPE_CG023[] =      "\005""Std\0 ""YD829";
 const char STR_SUBTYPE_BAYANG[] =     "\007""Std\0   ""H8S3D\0 ""X16 AH\0""IRDrone""DHD D4\0""QX100\0 ";
 const char STR_SUBTYPE_ESky[] =       "\003""Std""ET4";
-const char STR_SUBTYPE_MT99[] =       "\006""MT99\0 ""H7\0   ""YZ\0   ""LS\0   ""FY805\0""A180\0 ""Dragon";
+const char STR_SUBTYPE_MT99[] =       "\006""MT99\0 ""H7\0   ""YZ\0   ""LS\0   ""FY805\0""A180\0 ""Dragon""F949G\0";
 const char STR_SUBTYPE_MJXQ[] =       "\007""WLH08\0 ""X600\0  ""X800\0  ""H26D\0  ""E010\0  ""H26WH\0 ""Phoenix";
 const char STR_SUBTYPE_FY326[] =      "\005""Std\0 ""FY319";
 const char STR_SUBTYPE_FUTABA[] =     "\005""SFHSS";
@@ -996,6 +1002,7 @@ const char STR_SUBTYPE_E01X[] =       "\004""E012""E015";
 const char STR_SUBTYPE_V911S[] =      "\004""Std\0""E119";
 const char STR_SUBTYPE_GD00X[] =      "\005""GD_V1""GD_V2";
 const char STR_SUBTYPE_V761[] =       "\003""3ch""4ch";
+const char STR_SUBTYPE_KF606[] =      "\006""KF606\0""MIG320";
 const char STR_SUBTYPE_REDPINE[] =    "\004""Fast""Slow";
 const char STR_SUBTYPE_POTENSIC[] =   "\003""A20";
 const char STR_SUBTYPE_ZSX[] =        "\007""280JJRC";
@@ -1018,6 +1025,7 @@ const char STR_SUBTYPE_ELRS[] =       "\007""N/A WIP";
 const char STR_SUBTYPE_REALACC[] =    "\003""R11";
 const char STR_SUBTYPE_WFLY2[] =      "\005""RF20x";
 const char STR_SUBTYPE_MOULDKG[] =    "\007""Analog\0""Digital";
+const char STR_SUBTYPE_MT992[] =      "\004""PA18";
 
 const char* mm_options_strings::options[] = {
   nullptr,
@@ -1055,7 +1063,7 @@ const mm_protocol_definition multi_protocols[] = {
   {MODULE_SUBTYPE_MULTI_CG023,      1, false, false,  STR_SUBTYPE_CG023,     nullptr},
   {MODULE_SUBTYPE_MULTI_BAYANG,     5, false, false,  STR_SUBTYPE_BAYANG,    STR_MULTI_TELEMETRY},
   {MODULE_SUBTYPE_MULTI_ESky,       1, false, true,   STR_SUBTYPE_ESky,      nullptr},
-  {MODULE_SUBTYPE_MULTI_MT99XX,     6, false, false,  STR_SUBTYPE_MT99,      nullptr},
+  {MODULE_SUBTYPE_MULTI_MT99XX,     7, false, false,  STR_SUBTYPE_MT99,      nullptr},
   {MODULE_SUBTYPE_MULTI_MJXQ,       6, false, false,  STR_SUBTYPE_MJXQ,      nullptr},
   {MODULE_SUBTYPE_MULTI_FY326,      1, false, false,  STR_SUBTYPE_FY326,     nullptr},
   {MODULE_SUBTYPE_MULTI_FUTABA,     0, true,  true,   STR_SUBTYPE_FUTABA,    STR_MULTI_RFTUNE},
@@ -1074,11 +1082,11 @@ const mm_protocol_definition multi_protocols[] = {
   {MODULE_SUBTYPE_MULTI_WFLY,       0, true,  false,  STR_SUBTYPE_WFLY,      nullptr},
   {MODULE_SUBTYPE_MULTI_BUGS_MINI,  1, false, false,  STR_SUBTYPE_BUGS_MINI, nullptr},
   {MODULE_SUBTYPE_MULTI_TRAXXAS,    0, false, false,  STR_SUBTYPE_TRAXXAS,   nullptr},
-  {MODULE_SUBTYPE_MULTI_E01X,       1, false, false,  STR_SUBTYPE_E01X,      STR_MULTI_OPTION},
+  {MODULE_SUBTYPE_MULTI_E01X,       1, false, false,  STR_SUBTYPE_E01X,      nullptr},
   {MODULE_SUBTYPE_MULTI_V911S,      1, false, false,  STR_SUBTYPE_V911S,     STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_GD00X,      1, false, false,  STR_SUBTYPE_GD00X,     STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_V761,       1, false, false,  STR_SUBTYPE_V761,      nullptr},
-  {MODULE_SUBTYPE_MULTI_KF606,      0, false, false,  NO_SUBTYPE,            STR_MULTI_RFTUNE},
+  {MODULE_SUBTYPE_MULTI_KF606,      1, false, false,  STR_SUBTYPE_KF606,     STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_REDPINE,    1, false, false,  STR_SUBTYPE_REDPINE,   STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_POTENSIC,   0, false, false,  STR_SUBTYPE_POTENSIC,  nullptr},
   {MODULE_SUBTYPE_MULTI_ZSX,        0, false, false,  STR_SUBTYPE_ZSX,       nullptr},
@@ -1106,7 +1114,8 @@ const mm_protocol_definition multi_protocols[] = {
   {MODULE_SUBTYPE_MULTI_WFLY2,      0, true,  false,  STR_SUBTYPE_WFLY2,     STR_MULTI_OPTION},
   {MODULE_SUBTYPE_MULTI_E016HV2,    0, false, false,  NO_SUBTYPE,            STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_LOLI,       0, true,  false,  NO_SUBTYPE,            nullptr},
-  {MODULE_SUBTYPE_MULTI_MOULDKG,    1, false, false,  STR_SUBTYPE_MOULDKG,   nullptr},
+  {MODULE_SUBTYPE_MULTI_MOULDKG,    1, false, false,  STR_SUBTYPE_MOULDKG,   STR_MULTI_OPTION},
+  {MODULE_SUBTYPE_MULTI_MT99XX2,    0, false, false,  STR_SUBTYPE_MT992,     nullptr},
   {MM_RF_CUSTOM_SELECTED,           7, true,  true,   NO_SUBTYPE,            STR_MULTI_OPTION},
 
   // Sentinel and default for protocols not listed above (MM_RF_CUSTOM is 0xff)
@@ -1155,14 +1164,26 @@ const char * getMultiOptionTitle(uint8_t moduleIdx)
 }
 #endif
 
-void displayTelemetryBaudrate(coord_t x, coord_t y, uint8_t baudrate, LcdFlags flags) {
+void displayTelemetryBaudrate(coord_t x, coord_t y, uint8_t baudrateIndex, LcdFlags flags) {
 
-  if (CROSSFIRE_BAUDRATES[baudrate] >= 1000000) {
-    lcdDrawNumber(x, y, CROSSFIRE_BAUDRATES[baudrate] / 10000, flags | PREC2);
+  if (CROSSFIRE_BAUDRATES[baudrateIndex] >= 1000000) {
+    lcdDrawNumber(x, y, CROSSFIRE_BAUDRATES[baudrateIndex] / 10000, flags | PREC2);
     lcdDrawText(lcdNextPos, y, "MBps", flags);
   }
   else {
-    lcdDrawNumber(x, y, CROSSFIRE_BAUDRATES[baudrate] / 1000, flags);
+    lcdDrawNumber(x, y, CROSSFIRE_BAUDRATES[baudrateIndex] / 1000, flags);
+    lcdDrawText(lcdNextPos, y, "KBps", flags);
+  }
+}
+
+void displayTelemetryBaudrate(coord_t x, coord_t y, uint32_t baudrate, LcdFlags flags) {
+
+  if (baudrate >= 1000000) {
+    lcdDrawNumber(x, y, baudrate / 10000, flags | PREC2);
+    lcdDrawText(lcdNextPos, y, "MBps", flags);
+  }
+  else {
+    lcdDrawNumber(x, y, baudrate / 1000, flags);
     lcdDrawText(lcdNextPos, y, "KBps", flags);
   }
 }

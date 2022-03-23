@@ -37,10 +37,6 @@ void rotaryEncoderInit();
 void rotaryEncoderCheck();
 #endif
 
-#if defined(RADIO_ZORRO)
-#define ROTARY_ENCODER_INVERT
-#endif
-
 #define FLASHSIZE                       0x80000
 #define BOOTLOADER_SIZE                 0x8000
 #define FIRMWARE_ADDRESS                0x08000000
@@ -152,6 +148,15 @@ void extmoduleInvertedSerialStart(uint32_t baudrate);
 void extmoduleSendBuffer(const uint8_t * data, uint8_t size);
 void extmoduleSendNextFrame();
 void extmoduleSendInvertedByte(uint8_t byte);
+
+#if defined(RADIO_ZORRO)
+#define ELRS_INTERNAL_BAUDRATE        5250000     // 5.25 Mbps
+#elif defined(RADIO_TPRO)
+#define ELRS_INTERNAL_BAUDRATE        1870000     // 1.87 Mbps
+#else
+#define ELRS_INTERNAL_BAUDRATE        400000
+#endif
+
 
 // Trainer driver
 #define SLAVE_MODE()                    (g_model.trainerData.mode == TRAINER_MODE_SLAVE)

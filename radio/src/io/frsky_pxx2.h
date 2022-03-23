@@ -18,13 +18,18 @@
  * GNU General Public License for more details.
  */
 
-#ifndef _IO_PXX2_H_
-#define _IO_PXX2_H_
+#pragma once
 
 #include "../fifo.h"
 #include "../pulses/pxx.h"
 
-class ModuleFifo : public Fifo<uint8_t, PXX2_FRAME_MAXLENGTH> {
+#if defined(INTERNAL_MODULE_ELRS)
+#define MODULE_FIFO_SIZE      128
+#else
+#define MODULE_FIFO_SIZE      PXX2_FRAME_MAXLENGTH
+#endif
+
+class ModuleFifo : public Fifo<uint8_t, MODULE_FIFO_SIZE> {
   public:
     bool getFrame(uint8_t * frame)
     {
@@ -75,5 +80,3 @@ class ModuleFifo : public Fifo<uint8_t, PXX2_FRAME_MAXLENGTH> {
 
     uint32_t errors;
 };
-
-#endif

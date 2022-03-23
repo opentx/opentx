@@ -397,6 +397,13 @@ inline bool SPLASH_NEEDED()
   #define SPLASH_TIMEOUT               (4 * 100)  // 4 seconds
 #endif
 
+
+#if defined(ROTARY_ENCODER_NAVIGATION)
+  #define CASE_ROTARY_ENCODER(x) x,
+#else
+  #define CASE_ROTARY_ENCODER(x)
+#endif
+
 #if defined(ROTARY_ENCODER_NAVIGATION)
   #define IS_ROTARY_ENCODER_NAVIGATION_ENABLE()  true
   extern volatile rotenc_t rotencValue;
