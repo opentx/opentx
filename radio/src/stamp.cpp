@@ -32,7 +32,9 @@
 #define TAB "\037\033"
 #endif
 
-#if defined(FRSKY_RELEASE)
+#if defined(MEITUAN)
+#define DISPLAY_VERSION "-meituan"
+#elif defined(FRSKY_RELEASE)
 #define DISPLAY_VERSION "-frsky"
 #elif defined(JUMPER_RELEASE)
 #define DISPLAY_VERSION "-jumper"
