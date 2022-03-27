@@ -80,9 +80,9 @@ void menuAboutView(event_t event)
       break;
   }
 
-  lcdDrawText(17, 0, STR_ABOUTUS, DBLSIZE|INVERS);
-  lcdDrawSolidHorizontalLine(17, 16, LCD_W-17);
-  lcdDraw1bitBitmap(8, 0, about_bmp, 0);
+  lcdDrawText(11, 0, STR_ABOUTUS, DBLSIZE|INVERS);
+  lcdDrawSolidHorizontalLine(11, 16, LCD_W-11);
+  lcdDraw1bitBitmap(0, 0, about_bmp, 0);
   LcdFlags att = 0;
 
   uint8_t screenDuration = 150;
