@@ -30,9 +30,10 @@ jobs:
         uses: jurplel/install-qt-action@v2
         with:
           version: '5.12.9'
+          setup-python: 'false'
 
       - name: Install dependencies
-        run: python -m pip install --upgrade pip Pillow
+        run: python3 -m pip install --upgrade pip Pillow
 
       - name: Install ARM toolchain
         uses: fiam/arm-none-eabi-gcc@v1
