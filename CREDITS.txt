@@ -2511,3 +2511,5 @@ Jason Farlette
 Roger Brookes
 Ermanno Gresta
 Michal Polak
+Roman Hanel
+Carlos Ramirez Vega
