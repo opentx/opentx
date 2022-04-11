@@ -86,42 +86,30 @@ bool menuRadioModulesVersion(event_t event)
     // Module model
     if (y >= MENU_BODY_TOP && y < MENU_FOOTER_TOP) {
       lcdDrawText(MENUS_MARGIN_LEFT + INDENT_WIDTH, y, STR_MODULE);
-      if (module == INTERNAL_MODULE) {
-        if (!IS_INTERNAL_MODULE_ON()) {
-          lcdDrawText(COLUMN2_X, y, STR_OFF);
-          y += FH;
-          continue;
-        }
-#if defined(HARDWARE_EXTERNAL_ACCESS_MOD)
-        if (isModuleMultimodule(INTERNAL_MODULE)) {
-          char statusText[64];
-          lcdDrawText(COLUMN2_X, y, "Multimodule");
-          y += FH;
-          getMultiModuleStatus(INTERNAL_MODULE).getStatusString(statusText);
-          lcdDrawText(COLUMN2_X, y, statusText);
-          y += FH;
-          continue;
-        }
+      if ((module == INTERNAL_MODULE && !IS_INTERNAL_MODULE_ON()) ||
+          (module == EXTERNAL_MODULE && !IS_EXTERNAL_MODULE_ON())) {
+        lcdDrawText(COLUMN2_X, y, STR_OFF);
+        y += FH;
+        continue;
+      }
+#if defined(MULTIMODULE)
+      if (isModuleMultimodule(module)) {
+        char statusText[64];
+        lcdDrawText(COLUMN2_X, y, "Multimodule");
+        y += FH;
+        getMultiModuleStatus(INTERNAL_MODULE).getStatusString(statusText);
+        lcdDrawText(COLUMN2_X, y, statusText);
+        y += FH;
+        continue;
+      }
 #endif
-        if (!isModulePXX2(INTERNAL_MODULE)) {
-          lcdDrawText(COLUMN2_X, y, STR_NO_INFORMATION);
-          y += FH;
-          continue;
-        }
+      if (!isModulePXX2(module)) {
+        lcdDrawText(COLUMN2_X, y, STR_NO_INFORMATION);
+        y += FH;
+        continue;
       }
-      else if (module == EXTERNAL_MODULE) {
-        if (!IS_EXTERNAL_MODULE_ON()) {
-          lcdDrawText(COLUMN2_X, y, STR_OFF);
-          y += FH;
-          continue;
-        }
-        if (!isModulePXX2(EXTERNAL_MODULE)) {
-          lcdDrawText(COLUMN2_X, y, STR_NO_INFORMATION);
-          y += FH;
-          continue;
-        }
-      }
-      uint8_t modelId = reusableBuffer.hardwareAndSettings.modules[module].information.modelID;
+      uint8_t modelId = reusableBuffer.hardwareAndSettings.modules[module]
+                            .information.modelID;
       lcdDrawText(COLUMN2_X, y, getPXX2ModuleName(modelId));
     }
     y += FH;
