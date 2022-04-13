@@ -21,7 +21,7 @@
 #include "opentx.h"
 #include "options.h"
 
-#if defined(PXX2)
+#if defined(PXX2) || defined(MULTIMODULE)
 constexpr coord_t COLUMN2_X = 200;
 
 void drawPXX2Version(coord_t x, coord_t y, PXX2Version version)
@@ -212,7 +212,7 @@ bool menuRadioVersion(event_t event)
     lcdDrawText(lcdNextPos, y, option);
   }
 
-#if defined(PXX2)
+#if defined(PXX2) || defined(MULTIMODULE)
   y += FH + FH / 2;
 
   lcdDrawText(MENUS_MARGIN_LEFT, y, BUTTON(TR_MODULES_RX_VERSION), menuVerticalPosition == 0 ? INVERS : 0);
