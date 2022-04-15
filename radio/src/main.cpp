@@ -81,7 +81,9 @@ void handleUsbConnection()
           POPUP_MENU_ADD_ITEM(STR_USB_SERIAL);
 #endif
 #if defined(USB_SERIAL)
+  #if !defined(RADIO_Commando8)
         POPUP_MENU_ADD_ITEM(STR_USB_TELEMETRY);
+  #endif      
 #endif
           POPUP_MENU_TITLE(STR_SELECT_MODE);
           POPUP_MENU_START(onUSBConnectMenu);

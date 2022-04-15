@@ -1053,16 +1053,34 @@ void menuModelSetup(event_t event)
             switch (menuHorizontalPosition) {
               case 0:
 #if defined(HARDWARE_INTERNAL_MODULE)
-                if (moduleIdx == INTERNAL_MODULE) {
+                if (moduleIdx == INTERNAL_MODULE) 
+                {
                   uint8_t moduleType = checkIncDec(event, g_model.moduleData[moduleIdx].type, MODULE_TYPE_NONE, MODULE_TYPE_MAX, EE_MODEL, isInternalModuleAvailable);
-                  if (checkIncDec_Ret) {
+                  #if defined(RADIO_Commando8)
+                    if (reusableBuffer.moduleSetup.newType!=MODULE_TYPE_NONE)
+                    {
+                      reusableBuffer.moduleSetup.newType=MODULE_TYPE_NONE;
+                      g_model.moduleData[moduleIdx].type = reusableBuffer.moduleSetup.newType;
+                      reusableBuffer.moduleSetup.previousType = reusableBuffer.moduleSetup.newType;
+                      setModuleType(EXTERNAL_MODULE, MODULE_TYPE_NONE);
+                    }
+                  #endif
+                  if (checkIncDec_Ret)
+                  {
                     setModuleType(moduleIdx, moduleType);
                   }
                 }
                 else
+                {
 #endif
-                  reusableBuffer.moduleSetup.newType = checkIncDec(event, reusableBuffer.moduleSetup.newType, MODULE_TYPE_NONE, MODULE_TYPE_MAX, EE_MODEL,
-                                                                   isExternalModuleAvailable);
+                    reusableBuffer.moduleSetup.newType = checkIncDec(event, reusableBuffer.moduleSetup.newType, MODULE_TYPE_NONE, MODULE_TYPE_MAX, EE_MODEL,isExternalModuleAvailable);
+                  #if defined(RADIO_Commando8)
+                    if (checkIncDec(event, g_model.moduleData[moduleIdx].type, MODULE_TYPE_NONE, MODULE_TYPE_MAX, EE_MODEL,isInternalModuleAvailable)!=MODULE_TYPE_NONE)
+                    {
+                      setModuleType(INTERNAL_MODULE, MODULE_TYPE_NONE);
+                    }
+                  #endif
+                }
                 break;
 
               case 1:

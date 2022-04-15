@@ -117,10 +117,26 @@ extern "C" void PWM_IRQHandler(void)
   }
 }
 
+#if defined(CHANNEL_1023)
+
+#define _CHANNEL0     1
+#define _CHANNEL1     0
+#define _CHANNEL2     2
+#define _CHANNEL3     3
+
+#else
+
+#define _CHANNEL0     0
+#define _CHANNEL1     1
+#define _CHANNEL2     3
+#define _CHANNEL3     2
+
+#endif
+
 void sticksPwmRead(uint16_t * values)
 {
-  values[0] = timer_capture_values[0];
-  values[1] = timer_capture_values[1];
-  values[2] = timer_capture_values[3];
-  values[3] = timer_capture_values[2];
+  values[0] = timer_capture_values[_CHANNEL0];
+  values[1] = timer_capture_values[_CHANNEL1];
+  values[2] = timer_capture_values[_CHANNEL2];
+  values[3] = timer_capture_values[_CHANNEL3];
 }

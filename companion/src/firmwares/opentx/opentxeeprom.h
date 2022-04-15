@@ -41,6 +41,7 @@
 #define RADIOMASTER_T8_VARIANT         0x4004
 #define JUMPER_TPRO_VARIANT            0x4005
 #define RADIOMASTER_ZORRO_VARIANT      0x4006
+#define iFlight_Commando8_VARIANT      0x4008
 
 class OpenTxGeneralData: public TransformedField {
   public:

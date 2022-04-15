@@ -33,6 +33,11 @@
 
 #include "board.h"
 
+//Modified T8 applies to commando8
+#if defined(RADIO_Commando8)
+#undef VARIO
+#endif
+
 #if defined(STM32)
 #include "usbd_conf.h"
 #endif
@@ -407,7 +412,7 @@ inline bool SPLASH_NEEDED()
   #define ROTENC_HIGHSPEED             50
   #define ROTENC_DELAY_MIDSPEED        32
   #define ROTENC_DELAY_HIGHSPEED       16
-#elif defined(RADIO_T8)
+#elif defined(RADIO_T8) || defined(RADIO_Commando8)
   constexpr uint8_t rotencSpeed = 1;
 #endif
 
@@ -1045,7 +1050,7 @@ constexpr uint8_t OPENTX_START_NO_CHECKS = 0x04;
 
 #if defined(STATUS_LEDS)
   #define LED_ERROR_BEGIN()            ledRed()
-#if defined(RADIO_T8)
+#if defined(RADIO_T8) || defined(RADIO_Commando8)
   // Because of green backlit logo, green is preferred on this radio
   #define LED_ERROR_END()              ledGreen()
   #define LED_BIND()                   ledBlue()

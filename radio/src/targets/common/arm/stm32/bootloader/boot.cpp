@@ -218,7 +218,7 @@ int main()
     }
   }
 
-#if defined(RADIO_T8) && !defined(RADIOMASTER_RELEASE)
+#if defined(RADIO_T8) || defined(RADIO_Commando8) && !defined(RADIOMASTER_RELEASE)
   // Bind button not pressed
   if ((~KEYS_GPIO_REG_BIND & KEYS_GPIO_PIN_BIND) == false) {
 #else
@@ -268,7 +268,9 @@ int main()
 
   // init screen
   bootloaderInitScreen();
-
+#if defined(RADIO_Commando8)   //Modified T8 applies to commando8
+    lcdSetRefVolt(25);
+#endif
 #if defined(PWR_BUTTON_PRESS)
   // wait until power button is released
   while (pwrPressed()) {
@@ -509,16 +511,27 @@ int main()
     }
 
     if (state == ST_REBOOT) {
-      lcdClear();
-      lcdRefresh();
-      lcdRefreshWait();
 
 #if defined(RTC_BACKUP_RAM)
       rtcInit();
       RTC->BKP0R = SOFTRESET_REQUEST;
 #endif
 
+      #if defined(RADIO_Commando8)
+      lcdClear();
+      lcdDrawText(2, 22,"Press the power button.");
+      lcdDrawText(2, 33,"Exit the flashing mode.");
+      lcdRefresh();
+      lcdRefreshWait();
+      while(1);
+
+      #else
+      lcdClear();
+      lcdRefresh();
+      lcdRefreshWait();
+
       NVIC_SystemReset();
+      #endif
     }
   }
 

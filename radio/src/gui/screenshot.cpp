@@ -62,9 +62,11 @@ const char * writeScreenshot()
     return error;
   }
 
+#if defined(RTCLOCK) //This is a bug. An error is reported when RTC is closed.
   char * tmp = strAppend(&filename[sizeof(SCREENSHOTS_PATH)-1], "/screen");
   tmp = strAppendDate(tmp, true);
   strcpy(tmp, BMP_EXT);
+#endif
 
   FRESULT result = f_open(&bmpFile, filename, FA_CREATE_ALWAYS | FA_WRITE);
   if (result != FR_OK) {

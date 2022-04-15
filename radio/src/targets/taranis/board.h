@@ -374,7 +374,7 @@ enum EnumSwitchesPositions
   SW_SE1,
   SW_SE2,
 #endif
-#if defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E) || defined(PCBX7) || defined(PCBXLITES) || defined(PCBX9LITES) || defined(RADIO_T8) || defined(RADIO_ZORRO)  || defined(RADIO_TPRO)
+#if defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E) || defined(PCBX7) || defined(PCBXLITES) || defined(PCBX9LITES) || defined(RADIO_T8) || defined(RADIO_Commando8) || defined(RADIO_ZORRO)  || defined(RADIO_TPRO)
   SW_SF0,
   SW_SF1,
   SW_SF2,
@@ -384,7 +384,7 @@ enum EnumSwitchesPositions
   SW_SG1,
   SW_SG2,
 #endif
-#if defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E) || (defined(PCBX7) && !defined(RADIO_TX12)) || defined(RADIO_T8) || defined(RADIO_ZORRO) || defined(RADIO_TPRO)
+#if defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E) || (defined(PCBX7) && !defined(RADIO_TX12)) || defined(RADIO_T8) || defined(RADIO_Commando8) || defined(RADIO_ZORRO) || defined(RADIO_TPRO)
   SW_SH0,
   SW_SH1,
   SW_SH2,
@@ -482,6 +482,11 @@ enum EnumSwitchesPositions
   #define DEFAULT_SWITCH_CONFIG         (SWITCH_TOGGLE << 14) + (SWITCH_TOGGLE << 12) + (SWITCH_2POS << 10) + (SWITCH_2POS << 8) + (SWITCH_TOGGLE << 6) + (SWITCH_3POS << 4) + (SWITCH_3POS << 2) + (SWITCH_TOGGLE << 0)
   #define DEFAULT_POTS_CONFIG           (POT_WITHOUT_DETENT << 0) + (POT_WITHOUT_DETENT << 2);
 #elif defined(RADIO_T8)
+  #define NUM_SWITCHES                  4
+  #define STORAGE_NUM_SWITCHES          8
+  #define DEFAULT_SWITCH_CONFIG         (SWITCH_2POS << 6) + (SWITCH_3POS << 4) + (SWITCH_3POS << 2) + (SWITCH_2POS << 0);
+  #define DEFAULT_POTS_CONFIG           (0)
+#elif defined(RADIO_Commando8)
   #define NUM_SWITCHES                  4
   #define STORAGE_NUM_SWITCHES          8
   #define DEFAULT_SWITCH_CONFIG         (SWITCH_2POS << 6) + (SWITCH_3POS << 4) + (SWITCH_3POS << 2) + (SWITCH_2POS << 0);
@@ -617,7 +622,7 @@ enum Analogs {
   #define NUM_SLIDERS                   0
   #define STORAGE_NUM_POTS              1
   #define STORAGE_NUM_SLIDERS           0
-#elif defined(RADIO_T8) || defined(RADIO_TLITE)
+#elif defined(RADIO_T8) || defined(RADIO_TLITE) || defined(RADIO_Commando8)
   #define NUM_POTS                      0
   #define NUM_SLIDERS                   0
   #define STORAGE_NUM_POTS              2
@@ -655,7 +660,7 @@ enum Analogs {
   #define NUM_TRIMS_KEYS                (NUM_TRIMS * 2)
 #endif
 
-#if defined(STICKS_PWM)
+#if defined(STICKS_PWM) || defined(Commando8_STICKS_PWM_EN)
   #define NUM_PWMSTICKS                 4
   #define STICKS_PWM_ENABLED()          (!hardwareOptions.sticksPwmDisabled)
   void sticksPwmInit();
@@ -663,6 +668,7 @@ enum Analogs {
   extern volatile uint32_t pwm_interrupt_count; // TODO => reusable buffer (boot section)
 #else
   #define STICKS_PWM_ENABLED()          false
+  #define NUM_PWMSTICKS                 0
 #endif
 
 PACK(typedef struct {
@@ -729,6 +735,13 @@ extern uint16_t adcValues[NUM_ANALOGS];
   #define BATTERY_MIN                   34 // 3.4V
   #define BATTERY_MAX                   42 // 4.2V
   #define BATTERY_TYPE_FIXED
+
+#elif defined(RADIO_Commando8)         
+  #define BATTERY_WARN                  32 // 3.2V  //Modified T8 applies to commando8
+  #define BATTERY_MIN                   30 // 3.0V
+  #define BATTERY_MAX                   42 // 4.2V
+  #define BATTERY_TYPE_FIXED
+
 #else
   // NI-MH 7.2V
   #define BATTERY_WARN                  65 // 6.5V
@@ -803,6 +816,10 @@ uint8_t isBacklightEnabled();
   #define USB_NAME                     "Radiomaster T8"
   #define USB_MANUFACTURER             'R', 'M', '_', 'T', 'X', ' ', ' ', ' '  /* 8 bytes */
   #define USB_PRODUCT                  'R', 'M', ' ', 'T', '8', ' ', ' ', ' '  /* 8 Bytes */
+#elif defined(RADIO_Commando8)  //Modified T8 applies to commando8
+  #define USB_NAME                     "iFlight Commando 8"
+  #define USB_MANUFACTURER             'i', 'F', 'l', 'i', 'g', 'h', 't', '-'  /* 8 bytes */
+  #define USB_PRODUCT                  'C', 'o', 'm', 'm', 'a', 'n', 'd', 'o'  /* 8 Bytes */
 #elif defined(RADIO_TLITE)
   #define USB_NAME                     "Jumper TLite"
   #define USB_MANUFACTURER             'J', 'U', 'M', 'P', 'E', 'R', ' ', ' '  /* 8 bytes */

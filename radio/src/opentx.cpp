@@ -301,7 +301,8 @@ void generalDefault()
 #if defined(LCD_CONTRAST_DEFAULT)
   g_eeGeneral.contrast = LCD_CONTRAST_DEFAULT;
 #endif
-
+//Modified T8 applies to commando8
+  g_eeGeneral.contrast = 25;
 #if defined(DEFAULT_POTS_CONFIG)
   g_eeGeneral.potsConfig = DEFAULT_POTS_CONFIG;
 #endif
@@ -387,6 +388,12 @@ void generalDefault()
   g_eeGeneral.pwrOnSpeed = 1; // 1 second
 #endif
 
+  //Modified T8 applies to commando8
+#if defined(RADIO_Commando8)
+  g_eeGeneral.splashMode=3;
+  g_eeGeneral.pwrOnSpeed=2;
+  g_eeGeneral.pwrOffSpeed=2;
+#endif
   g_eeGeneral.chkSum = 0xFFFF;
 }
 

@@ -285,7 +285,7 @@ void displayVoltageOrAlarm()
 #define displayVoltageOrAlarm() displayBattVoltage()
 #endif
 
-#if defined(RADIO_T8)
+#if defined(RADIO_T8) || defined(RADIO_Commando8)
 #define EVT_KEY_CONTEXT_MENU           EVT_KEY_LONG(KEY_ENTER)
 #define EVT_KEY_PREVIOUS_VIEW          EVT_KEY_BREAK(KEY_PAGEUP)
 #define EVT_KEY_NEXT_VIEW              EVT_KEY_FIRST(KEY_PAGEDN)

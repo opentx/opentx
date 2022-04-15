@@ -549,14 +549,18 @@ void menuRadioSetup(event_t event)
         lcdDrawTextAlignedLeft(y, STR_PWR_ON_DELAY);
         lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.getPwrOnSpeed(), attr|LEFT);
         lcdDrawChar(lcdLastRightPos, y, 's');
-        if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.pwrOnSpeed, -1, 2);
+        #if !defined(RADIO_Commando8)
+          if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.pwrOnSpeed, -1, 2);
+        #endif  
         break;
 
       case ITEM_RADIO_SETUP_PWR_OFF_SPEED:
         lcdDrawTextAlignedLeft(y, STR_PWR_OFF_DELAY);
         lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.getPwrOffSpeed(), attr|LEFT);
         lcdDrawChar(lcdLastRightPos, y, 's');
-        if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.pwrOffSpeed, -1, 2);
+        #if !defined(RADIO_Commando8)
+          if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.pwrOffSpeed, -1, 2);
+        #endif
         break;
 #endif
       

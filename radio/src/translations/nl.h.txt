@@ -311,6 +311,9 @@
 #elif defined(RADIO_T8)
   #define LEN_VKEYS                    "\005"
   #define TR_VKEYS                     "RTN\0 ""ENTER""PGUP\0""PGDN\0""SYS\0 ""MDL\0 ""UP\0  ""DOWN\0"
+#elif defined(RADIO_Commando8)
+  #define LEN_VKEYS                    "\005"
+  #define TR_VKEYS                     "RTN\0 ""ENTER""PGUP\0""PGDN\0""SYS\0 ""MDL\0 ""UP\0  ""DOWN\0"
 #elif defined(PCBTARANIS)
   #define LEN_VKEYS                    "\005"
   #define TR_VKEYS                     "Menu\0""Exit\0""Enter""Page\0""Plus\0""Minus"
@@ -1146,6 +1149,10 @@
   #define TR_ABOUT_HARDWARE_3          "Firmware contributor"
 #elif defined(MANUFACTURER_RADIOMASTER)
   #define TR_ABOUT_HARDWARE_1          "Radiomaster"
+  #define TR_ABOUT_HARDWARE_2          TR("Hardware design/producer", "Hardware designer/producer")
+  #define TR_ABOUT_HARDWARE_3          "Firmware contributor"
+#elif defined(MANUFACTURER_iFlight)
+  #define TR_ABOUT_HARDWARE_1          "iFlight"
   #define TR_ABOUT_HARDWARE_2          TR("Hardware design/producer", "Hardware designer/producer")
   #define TR_ABOUT_HARDWARE_3          "Firmware contributor"
 #elif defined(MANUFACTURER_JUMPER)
