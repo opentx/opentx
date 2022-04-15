@@ -32,10 +32,6 @@
 void rotaryEncoderInit();
 void rotaryEncoderCheck();
 #endif
-#if defined(RADIO_MAMBO)
-#define ROTARY_ENCODER_INVERT
-#endif
-
 
 #if !defined(LUA_EXPORT_GENERATION)
 #include "STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/inc/stm32f4xx_sdio.h"

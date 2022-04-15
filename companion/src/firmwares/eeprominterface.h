@@ -161,8 +161,7 @@ enum Capability {
   HasBluetooth,
   HasAntennaChoice,
   HasADCJitterFilter,
-  HasTelemetryBaudrate,
-  FunctionSwitches
+  HasTelemetryBaudrate
 };
 
 class EEPROMInterface

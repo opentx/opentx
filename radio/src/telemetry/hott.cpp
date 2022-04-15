@@ -373,7 +373,8 @@ uint8_t processHoTTWarnings(const uint8_t * packet) {
       default: 
         warnings[HOTT_WARN_RX] = 53;              // other rx events -> translate to general receiver warning
     }  
-  } else {
+  }
+  else {
     if (PAGE > 0 && PAGE <= 4) {                  // sending device is other than rx
       switch (DEVICE) {
         case HOTT_TELEM_ESC:                      // sending device is ESC

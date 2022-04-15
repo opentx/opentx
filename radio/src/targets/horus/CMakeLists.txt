@@ -171,15 +171,17 @@ if(INTERNAL_MODULE_PXX2)
   endif()
 endif()
 
+if(INTERNAL_MODULE_ELRS)
+  add_definitions(-DHARDWARE_INTERNAL_MODULE)
+  add_definitions(-DINTERNAL_MODULE_ELRS)
+  add_definitions(-DINTERNAL_MODULE_SERIAL_TELEMETRY)
+  set(INTERNAL_MODULE_MULTI NO)
+endif()
+
 if(INTERNAL_MODULE_MULTI)
   add_definitions(-DHARDWARE_INTERNAL_MODULE)
   add_definitions(-DINTERNAL_MODULE_MULTI)
   add_definitions(-DTRAINER_SPORT_SBUS)
-endif()
-
-if(INTERNAL_MODULE_ELRS)
-  add_definitions(-DHARDWARE_INTERNAL_MODULE)
-  add_definitions(-DINTERNAL_MODULE_ELRS)
 endif()
 
 if(EXTERNAL_MODULE)
@@ -322,6 +324,7 @@ set(STM32LIB_SRC
   STM32F4xx_StdPeriph_Driver/src/stm32f4xx_ltdc.c
   STM32F4xx_StdPeriph_Driver/src/stm32f4xx_tim.c
   STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma2d.c
+  STM32F4xx_StdPeriph_Driver/src/stm32f4xx_flash.c
   )
 
 MACRO(GET_GCC_INCLUDE_PATH gcc_include_path)

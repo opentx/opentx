@@ -542,6 +542,7 @@
 #define TR_PERSISTENT          TR(INDENT"Persisten.", INDENT"Persistente")
 #define TR_BACKLIGHT_LABEL     "Luz fondo"
 #define TR_GHOST_MENU_LABEL            "GHOST MENU"
+#define TR_STATUS                      "Status"
 #define TR_RAW_12BITS                  "Raw 12 bits"
 #define TR_BLDELAY             INDENT"Duración"
 #define TR_BLONBRIGHTNESS      INDENT"MAS brillo"
@@ -679,6 +680,8 @@
 #define TR_MODULE_BINDING              "Emparejando"
 #define TR_MODULE_UPGRADE_ALERT        TR3("Actualizar", "Actualizar módulo", "Actualizar\nmódulo")
 #define TR_MODULE_UPGRADE              TR("Act recom", "Actualizar módulo recomendado")
+#define TR_PULSE_RATE                  "Pulse rate"
+#define TR_LINK_SPEED                  "Link speed"
 #define TR_REBIND                      "Reemparejar "
 #define TR_REG_OK                      "Registro ok"
 #define TR_BIND_OK                     "Emparejado ok"
@@ -850,6 +853,7 @@
 #define TR_DATE                        "Fecha"
 #define TR_MONTHS                      { "Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic" }
 #define TR_ROTARY_ENCODER              "R.E."
+#define TR_INVERT_ROTARY               "Invert Rotary"
 #define TR_CHANNELS_MONITOR            "MONITOR CANALES"
 #define TR_MIXERS_MONITOR              "MONITOR MEZCLAS"
 #define TR_PATH_TOO_LONG               "Path muy largo"

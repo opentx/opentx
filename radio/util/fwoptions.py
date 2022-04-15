@@ -220,6 +220,17 @@ options_jumper_tlite = {
     "afhds3": ("AFHDS3", "YES", "NO")
 }
 
+options_jumper_tpro = {
+    "noheli": ("HELI", "NO", "YES"),
+    "ppmus": ("PPM_UNIT", "US", "PERCENT_PREC1"),
+    "lua": ("LUA", "YES", "NO_MODEL_SCRIPTS"),
+    "nogvars": ("GVARS", "NO", "YES"),
+    "faimode": ("FAI", "YES", None),
+    "faichoice": ("FAI", "CHOICE", None),
+    "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
+    "flexr9m": ("MODULE_PROTOCOL_FLEX", "YES", None),
+    "internalelrs": ("INTERNAL_MODULE_ELRS", "YES", "NO"),
+}
 
 options_jumper_t12 = {
     "noheli": ("HELI", "NO", "YES"),
@@ -282,7 +293,6 @@ options_radiomaster_zorro = {
     "faichoice": ("FAI", "CHOICE", None),
     "nooverridech": ("OVERRIDE_CHANNEL_FUNCTION", "NO", "YES"),
     "flexr9m": ("MODULE_PROTOCOL_FLEX", "YES", None),
-    "afhds3": ("AFHDS3", "YES", "NO"),
     "internalelrs": ("INTERNAL_MODULE_ELRS", "YES", "NO"),
 }
 
@@ -309,4 +319,5 @@ options_radiomaster_tx16s = {
     "bluetooth": ("BLUETOOTH", "YES", "NO"),
     "internalgps": ("INTERNAL_GPS", "YES", "NO"),
     "externalaccessmod": ("HARDWARE_EXTERNAL_ACCESS_MOD", "YES", "NO"),
+    "internalelrs": ("INTERNAL_MODULE_ELRS", "YES", "NO"),
 }

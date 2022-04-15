@@ -39,6 +39,12 @@ boards = {
         "PCBREV": "ZORRO",
         "DEFAULT_MODE": "2",
     },
+    "ZORRO-ELRS": {
+        "PCB": "X7",
+        "PCBREV": "ZORRO",
+        "DEFAULT_MODE": "2",
+        "INTERNAL_MODULE_ELRS": "YES",
+    },
     "T8_1": {
         "PCB": "X7",
         "PCBREV": "T8",
@@ -50,7 +56,7 @@ boards = {
         "PCBREV": "T8",
         "DEFAULT_MODE": "2",
         "RADIOMASTER_RTF_RELEASE": "YES",
-    }
+    },
 }
 
 translations = [

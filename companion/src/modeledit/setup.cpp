@@ -971,11 +971,14 @@ FunctionSwitchesPanel::FunctionSwitchesPanel(QWidget * parent, ModelData & model
 {
   ui->setupUi(this);
 
+  AbstractStaticItemModel *fsConfig = ModelData::funcSwitchConfigItemModel();
+  AbstractStaticItemModel *fsStart = ModelData::funcSwitchStartItemModel();
+
   lock = true;
 
   QRegExp rx(CHAR_FOR_NAMES_REGEX);
 
-  switchcnt = Boards::getCapability(firmware->getBoard(), Board::NumFunctionSwitches);
+  switchcnt = Boards::getCapability(firmware->getBoard(), Board::FunctionSwitches);
 
   for (int i = 0; i < switchcnt; i++) {
     QLabel * lblSwitchId = new QLabel(this);
@@ -986,23 +989,21 @@ FunctionSwitchesPanel::FunctionSwitchesPanel(QWidget * parent, ModelData & model
     aleName->setValidator(new QRegExpValidator(rx, this));
     aleName->setField((char *)model.functionSwitchNames[i], 3);
 
-    //  TODO itemmodel
     QComboBox * cboConfig = new QComboBox(this);
     cboConfig->setProperty("index", i);
-    cboConfig->addItem(tr("NONE"));
-    cboConfig->addItem(tr("TOGGLE"));
-    cboConfig->addItem(tr("2POS"));
+    cboConfig->setModel(fsConfig);
 
-    //  TODO itemmodel
     QComboBox * cboStartPosn = new QComboBox(this);
     cboStartPosn->setProperty("index", i);
-    cboStartPosn->addItem(CPN_STR_SW_INDICATOR_UP);
-    cboStartPosn->addItem(CPN_STR_SW_INDICATOR_DN);
-    cboStartPosn->addItem("=");
+    cboStartPosn->setModel(fsStart);
 
     QSpinBox * sbGroup = new QSpinBox(this);
     sbGroup->setProperty("index", i);
     sbGroup->setMaximum(3);
+    sbGroup->setSpecialValueText("-");
+
+    QCheckBox * cbAlwaysOnGroup = new QCheckBox(this);
+    cbAlwaysOnGroup->setProperty("index", i);
 
     int row = 0;
     int coloffset = 1;
@@ -1011,15 +1012,19 @@ FunctionSwitchesPanel::FunctionSwitchesPanel(QWidget * parent, ModelData & model
     ui->gridSwitches->addWidget(cboConfig, row++, i + coloffset);
     ui->gridSwitches->addWidget(cboStartPosn, row++, i + coloffset);
     ui->gridSwitches->addWidget(sbGroup, row++, i + coloffset);
+    ui->gridSwitches->addWidget(cbAlwaysOnGroup, row++, i + coloffset);
 
+    connect(aleName, &AutoLineEdit::currentDataChanged, this, &FunctionSwitchesPanel::on_nameEditingFinished);
     connect(cboConfig, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &FunctionSwitchesPanel::on_configCurrentIndexChanged);
     connect(cboStartPosn, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &FunctionSwitchesPanel::on_startPosnCurrentIndexChanged);
     connect(sbGroup, QOverload<int>::of(&QSpinBox::valueChanged), this, &FunctionSwitchesPanel::on_groupChanged);
+    connect(cbAlwaysOnGroup, &QCheckBox::toggled, this, &FunctionSwitchesPanel::on_alwaysOnGroupChanged);
 
     aleNames << aleName;
     cboConfigs << cboConfig;
     cboStartupPosns << cboStartPosn;
     sbGroups << sbGroup;
+    cbAlwaysOnGroups << cbAlwaysOnGroup;
   }
 
   update();
@@ -1045,9 +1050,11 @@ void FunctionSwitchesPanel::update(int index)
 
   for (int i = 0; i < switchcnt; i++) {
     aleNames[i]->update();
-    cboConfigs[i]->setCurrentIndex((model->functionSwitchConfig >> (2 * i)) & 0x03);
-    cboStartupPosns[i]->setCurrentIndex((model->functionSwitchStartConfig >> (2 * i)) & 0x03);
-    sbGroups[i]->setValue((model->functionSwitchGroup >> (2 * i)) & 0x03);
+    cboConfigs[i]->setCurrentIndex(model->getFuncSwitchConfig(i));
+    cboStartupPosns[i]->setCurrentIndex(model->getFuncSwitchStart(i));
+    unsigned int grp = model->getFuncSwitchGroup(i);
+    sbGroups[i]->setValue(grp);
+    cbAlwaysOnGroups[i]->setChecked(model->getFuncSwitchAlwaysOnGroup(i));
 
     if (cboConfigs[i]->currentIndex() < 2)
       cboStartupPosns[i]->setEnabled(false);
@@ -1058,9 +1065,19 @@ void FunctionSwitchesPanel::update(int index)
       sbGroups[i]->setEnabled(false);
     else
       sbGroups[i]->setEnabled(true);
+
+    if (!(sbGroups[i]->isEnabled()) || grp < 1)
+      cbAlwaysOnGroups[i]->setEnabled(false);
+    else
+      cbAlwaysOnGroups[i]->setEnabled(true);
   }
 
   lock = false;
+}
+
+void FunctionSwitchesPanel::on_nameEditingFinished()
+{
+  emit updateDataModels();
 }
 
 void FunctionSwitchesPanel::on_configCurrentIndexChanged(int index)
@@ -1073,16 +1090,16 @@ void FunctionSwitchesPanel::on_configCurrentIndexChanged(int index)
   if (cb && !lock) {
     lock = true;
     bool ok = false;
-    int i = sender()->property("index").toInt(&ok);
-    if (ok && ((model->functionSwitchConfig >> (2 * i)) & 0x03) != (unsigned int)index) {
-      unsigned int mask = ((unsigned int) 0x03 << (2 * i));
-      model->functionSwitchConfig = (model->functionSwitchConfig & ~ mask) | ((unsigned int) index << (2 * i));
+    unsigned int i = sender()->property("index").toInt(&ok);
+    if (ok && model->getFuncSwitchConfig(i) != (unsigned int)index) {
+      model->setFuncSwitchConfig(i, index);
       if (index < 2)
-        model->functionSwitchStartConfig = (model->functionSwitchStartConfig & ~ mask) | ((unsigned int) 0 << (2 * i));
+        model->setFuncSwitchStart(i, ModelData::FUNC_SWITCH_START_INACTIVE);
       if (index < 1)
-        model->functionSwitchGroup = (model->functionSwitchGroup & ~ mask) | ((unsigned int) 0 << (2 * i));
+        model->setFuncSwitchGroup(i, 0);
       update(i);
       emit modified();
+      emit updateDataModels();
     }
     lock = false;
   }
@@ -1098,10 +1115,9 @@ void FunctionSwitchesPanel::on_startPosnCurrentIndexChanged(int index)
   if (cb && !lock) {
     lock = true;
     bool ok = false;
-    int i = sender()->property("index").toInt(&ok);
-    if (ok && ((model->functionSwitchStartConfig >> (2 * i)) & 0x03) != (unsigned int)index) {
-      unsigned int mask = ((unsigned int) 0x03 << (2 * i));
-      model->functionSwitchStartConfig = (model->functionSwitchStartConfig & ~ mask) | ((unsigned int) index << (2 * i));
+    unsigned int i = sender()->property("index").toInt(&ok);
+    if (ok && model->getFuncSwitchStart(i) != (unsigned int)index) {
+      model->setFuncSwitchStart(i, index);
       emit modified();
     }
     lock = false;
@@ -1119,11 +1135,35 @@ void FunctionSwitchesPanel::on_groupChanged(int value)
     lock = true;
     bool ok = false;
     int i = sender()->property("index").toInt(&ok);
-    if (ok && ((model->functionSwitchGroup >> (2 * i)) & 0x03) != (unsigned int)value) {
-      unsigned int mask = ((unsigned int) 0x03 << (2 * i));
-      model->functionSwitchGroup = (model->functionSwitchGroup & ~ mask) | ((unsigned int) value << (2 * i));
+
+    if (ok && model->getFuncSwitchGroup(i) != (unsigned int)value) {
+      model->setFuncSwitchGroup(i, (unsigned int)value);
+      update(i);
       emit modified();
     }
+
+    lock = false;
+  }
+}
+
+void FunctionSwitchesPanel::on_alwaysOnGroupChanged(int value)
+{
+  if (!sender())
+    return;
+
+  QCheckBox * cb = qobject_cast<QCheckBox *>(sender());
+
+  if (cb && !lock) {
+    lock = true;
+    bool ok = false;
+    int i = sender()->property("index").toInt(&ok);
+
+    if (ok) {
+      model->setFuncSwitchAlwaysOnGroup(i, (unsigned int)value);
+      update();
+      emit modified();
+    }
+
     lock = false;
   }
 }
@@ -1367,8 +1407,12 @@ SetupPanel::SetupPanel(QWidget * parent, ModelData & model, GeneralSettings & ge
 
   ui->trimsDisplay->setField(model.trimsDisplay, this);
 
-  if (Boards::getCapability(firmware->getBoard(), Board::NumFunctionSwitches) > 0)
-    ui->functionSwitchesLayout->addWidget(new FunctionSwitchesPanel(this, model, generalSettings, firmware));
+  if (Boards::getCapability(firmware->getBoard(), Board::FunctionSwitches) > 0) {
+    funcswitches = new FunctionSwitchesPanel(this, model, generalSettings, firmware);
+    ui->functionSwitchesLayout->addWidget(funcswitches);
+    connect(funcswitches, &FunctionSwitchesPanel::modified, this, &SetupPanel::modified);
+    connect(funcswitches, &FunctionSwitchesPanel::updateDataModels, this, &SetupPanel::onFunctionSwitchesUpdateItemModels);
+  }
 
   for (int i = firmware->getCapability(NumFirstUsableModule); i < firmware->getCapability(NumModules); i++) {
     modules[i] = new ModulePanel(this, model, model.moduleData[i], generalSettings, firmware, i);
@@ -1884,4 +1928,9 @@ void SetupPanel::updateItemModels()
 void SetupPanel::onModuleUpdateItemModels()
 {
   sharedItemModels->update(AbstractItemModel::IMUE_Modules);
+}
+
+void SetupPanel::onFunctionSwitchesUpdateItemModels()
+{
+  sharedItemModels->update(AbstractItemModel::IMUE_FunctionSwitches);
 }

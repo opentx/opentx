@@ -54,7 +54,7 @@ static const QStringList STR_SUBTYPE_CX10      {"Green", "Blue", "DM007", "-", "
 static const QStringList STR_SUBTYPE_CG023     {"Standard", "YD829"};
 static const QStringList STR_SUBTYPE_BAYANG    {"Standard", "H8S3D", "X16 AH", "IRDRONE", "DHD D4", "QX100"};
 static const QStringList STR_SUBTYPE_ESky      {"Standard", "ET4"};
-static const QStringList STR_SUBTYPE_MT99      {"MT99", "H7", "YZ", "LS", "FY805", "A180", "Dragon"};
+static const QStringList STR_SUBTYPE_MT99      {"MT99", "H7", "YZ", "LS", "FY805", "A180", "Dragon","F949G"};
 static const QStringList STR_SUBTYPE_MJXQ      {"WLH08", "X600", "X800", "H26D", "E010", "H26WH", "Phoenix"};
 static const QStringList STR_SUBTYPE_FY326     {"Standard", "FY319"};
 static const QStringList STR_SUBTYPE_FUTABA    {"SFHSS"};
@@ -75,6 +75,7 @@ static const QStringList STR_SUBTYPE_E01X      {"E012", "E015"};
 static const QStringList STR_SUBTYPE_V911S     {"Standard", "E119"};
 static const QStringList STR_SUBTYPE_GD00X     {"GD V1", "GD V2"};
 static const QStringList STR_SUBTYPE_V761      {"3 Channel", "4 Channel"};
+static const QStringList STR_SUBTYPE_KF606     {"Standard", "MIG320"};
 static const QStringList STR_SUBTYPE_REDPINE   {"Fast", "Slow"};
 static const QStringList STR_SUBTYPE_POTENSIC  {"A20 Firefly"};
 static const QStringList STR_SUBTYPE_ZSX       {"JJRC ZSX-280"};
@@ -97,6 +98,7 @@ static const QStringList STR_SUBTYPE_ELRS      {"Not Available WIP"};
 static const QStringList STR_SUBTYPE_REALACC   {"R11"};
 static const QStringList STR_SUBTYPE_WFLY2     {"RF20x"};
 static const QStringList STR_SUBTYPE_MOULDKG   {"Analog", "Digital"};
+static const QStringList STR_SUBTYPE_MT992     {"PA18"};
 
 static const QStringList NO_SUBTYPE            {STR_MULTI_DEFAULT};
 
@@ -119,7 +121,7 @@ const Multiprotocols multiProtocols {
   {MODULE_SUBTYPE_MULTI_CG023,      1, false,      STR_SUBTYPE_CG023,     nullptr},
   {MODULE_SUBTYPE_MULTI_BAYANG,     5, false,      STR_SUBTYPE_BAYANG,    STR_MULTI_TELEMETRY},
   {MODULE_SUBTYPE_MULTI_ESky,       1, false,      STR_SUBTYPE_ESky,      nullptr},
-  {MODULE_SUBTYPE_MULTI_MT99XX,     6, false,      STR_SUBTYPE_MT99,      nullptr},
+  {MODULE_SUBTYPE_MULTI_MT99XX,     7, false,      STR_SUBTYPE_MT99,      nullptr},
   {MODULE_SUBTYPE_MULTI_MJXQ,       6, false,      STR_SUBTYPE_MJXQ,      nullptr},
   {MODULE_SUBTYPE_MULTI_FY326,      1, false,      STR_SUBTYPE_FY326,     nullptr},
   {MODULE_SUBTYPE_MULTI_FUTABA,     0, true,       STR_SUBTYPE_FUTABA,    STR_MULTI_RFTUNE},
@@ -138,11 +140,11 @@ const Multiprotocols multiProtocols {
   {MODULE_SUBTYPE_MULTI_WFLY,       0, false,      STR_SUBTYPE_WFLY,      nullptr},
   {MODULE_SUBTYPE_MULTI_BUGS_MINI,  1, false,      STR_SUBTYPE_BUGS_MINI, nullptr},
   {MODULE_SUBTYPE_MULTI_TRAXXAS,    0, false,      STR_SUBTYPE_TRAXXAS,   nullptr},
-  {MODULE_SUBTYPE_MULTI_E01X,       1, false,      STR_SUBTYPE_E01X,      STR_MULTI_OPTION},
+  {MODULE_SUBTYPE_MULTI_E01X,       1, false,      STR_SUBTYPE_E01X,      nullptr},
   {MODULE_SUBTYPE_MULTI_V911S,      1, false,      STR_SUBTYPE_V911S,     STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_GD00X,      1, false,      STR_SUBTYPE_GD00X,     STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_V761,       1, false,      STR_SUBTYPE_V761,      nullptr},
-  {MODULE_SUBTYPE_MULTI_KF606,      0, false,      NO_SUBTYPE,            STR_MULTI_RFTUNE},
+  {MODULE_SUBTYPE_MULTI_KF606,      1, false,      STR_SUBTYPE_KF606,     STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_REDPINE,    1, false,      STR_SUBTYPE_REDPINE,   STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_POTENSIC,   0, false,      STR_SUBTYPE_POTENSIC,  nullptr},
   {MODULE_SUBTYPE_MULTI_ZSX,        0, false,      STR_SUBTYPE_ZSX,       nullptr},
@@ -170,7 +172,9 @@ const Multiprotocols multiProtocols {
   {MODULE_SUBTYPE_MULTI_WFLY2,      0, false,      STR_SUBTYPE_WFLY2,     STR_MULTI_OPTION},
   {MODULE_SUBTYPE_MULTI_E016HV2,    0, false,      NO_SUBTYPE,            STR_MULTI_RFTUNE},
   {MODULE_SUBTYPE_MULTI_LOLI,       0, true,       NO_SUBTYPE,            nullptr},
-  {MODULE_SUBTYPE_MULTI_MOULDKG,    1, false,      STR_SUBTYPE_MOULDKG,   nullptr},
+  {MODULE_SUBTYPE_MULTI_MOULDKG,    1, false,      STR_SUBTYPE_MOULDKG,   STR_MULTI_OPTION},
+  {MODULE_SUBTYPE_MULTI_XERALL,     0, false,      NO_SUBTYPE,            nullptr},
+  {MODULE_SUBTYPE_MULTI_MT99XX2,    0, false,      STR_SUBTYPE_MT992,     nullptr},
   {MM_RF_CUSTOM_SELECTED,           7, true,       STR_SUBTYPE_CUSTOM,    STR_MULTI_OPTION},
 
   // Sentinel and default for protocols not listed above (MM_RF_CUSTOM is 0xff)
@@ -217,7 +221,7 @@ QString Multiprotocols::protocolToString(int protocol, bool custom)
     "Bayang RX", "Pelikan", "Tiger", "XK", "XN297 Dump", "FrSky X 2.1", "FrSky R9", "Propel", "FrSky L", "Skyartec",
     "ESky 150v2", "DSM RX", "JJRC345", "Q90C", "Kyosho", "RadioLink", "ExpressLRS", "Realacc", "OMP", "M-Link", "Wfly 2",
     "Eachine E016H v2", "E010 R5", "Loli 3", "Eachine E129", "Joysway", "Eachine E016H", "Config", "IKEA Ansluta", "WilliFM",
-    "LOSI", "Mould King"
+    "LOSI", "Mould King", "Xerall", "MT99XX2"
   });
 
   return strings.value(protocol, CPN_STR_UNKNOWN_ITEM);

@@ -20,7 +20,7 @@
 
 #include "opentx.h"
 
-#if defined(INTERNAL_MODULE_CRSF) || defined(INTERNAL_MODULE_ELRS)
+#if defined(INTERNAL_MODULE_CRSF)
 uint8_t intTelemetryRxBuffer[TELEMETRY_RX_PACKET_SIZE];
 uint8_t intTelemetryRxBufferCount;
 #endif
@@ -56,6 +56,7 @@ const CrossfireSensor crossfireSensors[] = {
   {ATTITUDE_ID,    2, ZSTR_YAW,           UNIT_RADIANS,           3},
   {FLIGHT_MODE_ID, 0, ZSTR_FLIGHT_MODE,   UNIT_TEXT,              0},
   {CF_VARIO_ID,    0, ZSTR_VSPD,          UNIT_METERS_PER_SECOND, 2},
+  {BARO_ALT_ID,    0, ZSTR_ALT,           UNIT_METERS,            2},
   {0,              0, "UNKNOWN",          UNIT_RAW,               0},
 };
 
@@ -77,26 +78,10 @@ const CrossfireSensor & getCrossfireSensor(uint8_t id, uint8_t subId)
     return crossfireSensors[ATTITUDE_PITCH_INDEX+subId];
   else if (id == FLIGHT_MODE_ID)
     return crossfireSensors[FLIGHT_MODE_INDEX];
+  else if (id == BARO_ALT_ID)
+    return crossfireSensors[BARO_ALTITUDE_INDEX];
   else
     return crossfireSensors[UNKNOWN_INDEX];
-}
-
-static uint8_t * getRxBuffer(uint8_t moduleIdx)
-{
-#if defined(INTERNAL_MODULE_CRSF) || defined(INTERNAL_MODULE_ELRS)
-  if (moduleIdx == INTERNAL_MODULE)
-    return intTelemetryRxBuffer;
-#endif
-  return telemetryRxBuffer;
-}
-
-static uint8_t &getRxBufferCount(uint8_t moduleIdx)
-{
-#if defined(INTERNAL_MODULE_CRSF) || defined(INTERNAL_MODULE_ELRS)
-  if (moduleIdx == INTERNAL_MODULE)
-    return intTelemetryRxBufferCount;
-#endif
-  return telemetryRxBufferCount;
 }
 
 void processCrossfireTelemetryValue(uint8_t index, int32_t value)
@@ -110,7 +95,7 @@ void processCrossfireTelemetryValue(uint8_t index, int32_t value)
 
 bool checkCrossfireTelemetryFrameCRC(uint8_t module)
 {
-  uint8_t * rxBuffer = getRxBuffer(module);
+  uint8_t * rxBuffer = getTelemetryRxBuffer(module);
   uint8_t len = rxBuffer[1];
   uint8_t crc = crc8(&rxBuffer[2], len-1);
   return (crc == rxBuffer[len+1]);
@@ -119,7 +104,7 @@ bool checkCrossfireTelemetryFrameCRC(uint8_t module)
 template<int N>
 bool getCrossfireTelemetryValue(uint8_t index, int32_t & value, uint8_t module)
 {
-  uint8_t * rxBuffer = getRxBuffer(module);
+  uint8_t * rxBuffer = getTelemetryRxBuffer(module);
   bool result = false;
   uint8_t * byte = &rxBuffer[index];
   value = (*byte & 0x80) ? -1 : 0;
@@ -135,8 +120,8 @@ bool getCrossfireTelemetryValue(uint8_t index, int32_t & value, uint8_t module)
 
 void processCrossfireTelemetryFrame(uint8_t module)
 {
-  uint8_t * rxBuffer = getRxBuffer(module);
-  uint8_t &rxBufferCount = getRxBufferCount(module);
+  uint8_t * rxBuffer = getTelemetryRxBuffer(module);
+  uint8_t &rxBufferCount = getTelemetryRxBufferCount(module);
 
   if (!checkCrossfireTelemetryFrameCRC(module)) {
     TRACE("[XF] CRC error");
@@ -170,6 +155,21 @@ void processCrossfireTelemetryFrame(uint8_t module)
         processCrossfireTelemetryValue(GPS_SATELLITES_INDEX, value);
       break;
 
+    case BARO_ALT_ID:
+      if (getCrossfireTelemetryValue<2>(3, value, module)) {
+        if (value & 0x8000) {
+          // Altitude in meters
+          value &= ~(0x8000);
+          value *= 100; // cm
+        } else {
+          // Altitude in decimeters + 10000dm
+          value -= 10000;
+          value *= 10;
+        }
+        processCrossfireTelemetryValue(BARO_ALTITUDE_INDEX, value);
+      }
+      break;
+
     case LINK_ID:
       for (unsigned int i=0; i<=TX_SNR_INDEX; i++) {
         if (getCrossfireTelemetryValue<1>(3+i, value, module)) {
@@ -184,7 +184,7 @@ void processCrossfireTelemetryFrame(uint8_t module)
               telemetryStreaming = TELEMETRY_TIMEOUT10ms;
               telemetryData.telemetryValid |= 1 << module;
             }
-            else{
+            else {
               if (telemetryData.telemetryValid & (1 << module)) {
                 telemetryData.rssi.reset();
                 telemetryStreaming = 0;
@@ -242,10 +242,9 @@ void processCrossfireTelemetryFrame(uint8_t module)
     }
 
     case RADIO_ID:
-      if (telemetryRxBuffer[3] == 0xEA    // radio address
-          && telemetryRxBuffer[5] == 0x10 // timing correction frame
-          ) {
-
+      if (rxBuffer[3] == 0xEA     // radio address
+          && rxBuffer[5] == 0x10  // timing correction frame
+      ) {
         uint32_t update_interval;
         int32_t  offset;
         if (getCrossfireTelemetryValue<4>(6, (int32_t&)update_interval, module) && getCrossfireTelemetryValue<4>(10, offset, module)) {
@@ -254,7 +253,7 @@ void processCrossfireTelemetryFrame(uint8_t module)
           update_interval /= 10;
           offset /= 10;
 
-          TRACE("[XF] Rate: %d, Lag: %d", update_interval, offset);
+         //TRACE("[XF] Rate: %d, Lag: %d", update_interval, offset);
           getModuleSyncStatus(module).update(update_interval, offset);
         }
       }
@@ -282,8 +281,8 @@ bool isCrossfireOutputBufferAvailable()
 
 void processCrossfireTelemetryData(uint8_t data, uint8_t module)
 {
-  uint8_t * rxBuffer = getRxBuffer(module);
-  uint8_t &rxBufferCount = getRxBufferCount(module);
+  uint8_t * rxBuffer = getTelemetryRxBuffer(module);
+  uint8_t &rxBufferCount = getTelemetryRxBufferCount(module);
 
 #if !defined(DEBUG) && defined(USB_SERIAL)
   if (getSelectedUsbMode() == USB_TELEMETRY_MIRROR_MODE) {
@@ -327,7 +326,7 @@ void processCrossfireTelemetryData(uint8_t data, uint8_t module)
     if (length + 2 == rxBufferCount) {
 #if defined(BLUETOOTH)
       if (g_eeGeneral.bluetoothMode == BLUETOOTH_TELEMETRY && bluetooth.state == BLUETOOTH_STATE_CONNECTED) {
-        bluetooth.write(telemetryRxBuffer, telemetryRxBufferCount);
+        bluetooth.write(rxBuffer, rxBufferCount);
       }
 #endif
       processCrossfireTelemetryFrame(module);

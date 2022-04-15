@@ -74,6 +74,10 @@ extern uint8_t intTelemetryRxBufferCount;
 extern uint8_t telemetryRxBuffer[TELEMETRY_RX_PACKET_SIZE];
 extern uint8_t telemetryRxBufferCount;
 
+//TODO: use module scoped buffers instead
+uint8_t* getTelemetryRxBuffer(uint8_t moduleIdx);
+uint8_t& getTelemetryRxBufferCount(uint8_t moduleIdx);
+
 #define TELEMETRY_AVERAGE_COUNT        3
 
 enum {

@@ -309,6 +309,7 @@ extern const char STR_BEEPCOUNTDOWN[];
 extern const char STR_PERSISTENT[];
 extern const char STR_BACKLIGHT_LABEL[];
 extern const char STR_GHOST_MENU_LABEL[];
+extern const char STR_STATUS[];
 extern const char STR_RAW_12BITS[];
 extern const char STR_BLDELAY[];
 
@@ -368,11 +369,11 @@ extern const char STR_RELEASE_STICK[];
 extern const char STR_MOVE_PLUS[];
 extern const char STR_JOYSTICK_RF[];
 extern const char STR_TURN_OFF_RF[];
-extern const char STR_INVERT_ROTARY[];
 extern const char STR_UPDATE_CROSSFIRE[];
 #endif
 extern const char STR_TX[];
 #define STR_RX (STR_TX+OFS_RX)
+extern const char STR_INVERT_ROTARY[];
 extern const char STR_NODATA[];
 extern const char STR_US[];
 extern const char STR_TMIXMAXMS[];
@@ -447,6 +448,8 @@ extern const char STR_MODULE_NO_TELEMETRY[];
 extern const char STR_MODULE_BINDING[];
 extern const char STR_MODULE_UPGRADE_ALERT[];
 extern const char STR_MODULE_UPGRADE[];
+extern const char STR_PULSE_RATE[];
+extern const char STR_LINK_SPEED[];
 extern const char STR_PROTOCOL_INVALID[];
 extern const char STR_MODULE_STATUS[];
 extern const char STR_MODULE_SYNC[];

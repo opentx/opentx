@@ -754,8 +754,6 @@ int OpenTxFirmware::getCapability(::Capability capability)
       return IS_HORUS_OR_TARANIS(board) ? true : false;
     case HasTelemetryBaudrate:
       return IS_HORUS_OR_TARANIS(board) ? true : false;
-    case FunctionSwitches:
-      return IS_JUMPER_TPRO(board) ? 6 : 0;
 
     default:
       return 0;
@@ -1372,6 +1370,7 @@ void registerOpenTxFirmwares()
   firmware->addOption("noheli", Firmware::tr("Disable HELI menu and cyclic mix support"));
   firmware->addOption("nogvars", Firmware::tr("Disable Global variables"));
   firmware->addOption("lua", Firmware::tr("Enable Lua custom scripts screen"));
+  firmware->addOption("internalelrs", Firmware::tr("Select if internal ELRS module is installed"));
   addOpenTxFontOptions(firmware);
   registerOpenTxFirmware(firmware);
   addOpenTxRfOptions(firmware, FLEX);
@@ -1436,6 +1435,7 @@ void registerOpenTxFirmwares()
   static const Firmware::Option opt_internal_gps("internalgps", Firmware::tr("Support internal GPS"));
   firmware->addOptionsGroup({opt_bt, opt_internal_gps});
   firmware->addOption("externalaccessmod", Firmware::tr("Support hardware mod: R9M ACCESS"));
+  firmware->addOption("internalelrs", Firmware::tr("Select if internal ELRS module is installed"));
   registerOpenTxFirmware(firmware);
 
   /* Jumper T18 board */
