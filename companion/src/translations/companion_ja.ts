@@ -6861,7 +6861,7 @@ Do you wish to continue?</source>
     <message>
         <location filename="../mainwindow.cpp" line="1207"/>
         <source>Backup Radio to File</source>
-        <translation>ファイルを送信機にバックアップ</translation>
+        <translation>送信機のバックアップをファイルに保存</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="1207"/>
