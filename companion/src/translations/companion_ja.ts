@@ -3197,7 +3197,7 @@ Blank means include all. ?, *, and [...] wildcards accepted.</source>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1331"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1373"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1416"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1423"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1424"/>
         <source>Support hardware mod: R9M ACCESS</source>
         <translation>ハードウェアモジュールサポート: R9M ACCESS</translation>
     </message>
@@ -3230,13 +3230,14 @@ Blank means include all. ?, *, and [...] wildcards accepted.</source>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1363"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1393"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1417"/>
         <source>Select if internal ELRS module is installed</source>
         <translation>内蔵ELRSモジュールが搭載されているかどうかを選択</translation>
     </message>
     <message>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1372"/>
         <location filename="../firmwares/opentx/opentxinterface.cpp" line="1413"/>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1422"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1423"/>
         <source>Support for bluetooth module</source>
         <translation>Bluetoothモジュールのサポート</translation>
     </message>
@@ -3261,12 +3262,12 @@ Blank means include all. ?, *, and [...] wildcards accepted.</source>
         <translation>Radiomaster TX16S / SE / Hall / Masterfire</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1420"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1421"/>
         <source>Jumper T18</source>
         <translation>Jumper T18</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1428"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1429"/>
         <source>Turnigy 9XR-PRO</source>
         <translation>Turnigy 9XR-PRO</translation>
     </message>
@@ -3327,7 +3328,7 @@ Blank means include all. ?, *, and [...] wildcards accepted.</source>
         <translation>上下に同時に押し、値のリセットを有効にする</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1433"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1434"/>
         <source>9X with AR9X board</source>
         <translation>9X AR9Xボード</translation>
     </message>
@@ -3357,7 +3358,7 @@ Blank means include all. ?, *, and [...] wildcards accepted.</source>
         <translation>内蔵GPSサポート</translation>
     </message>
     <message>
-        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1440"/>
+        <location filename="../firmwares/opentx/opentxinterface.cpp" line="1441"/>
         <source>9X with Sky9x board</source>
         <translation>9X Sky9Xボード</translation>
     </message>
@@ -9104,12 +9105,12 @@ If blank then the mix is considered to be &quot;ON&quot; all the time.</source>
         <translation>2 W</translation>
     </message>
     <message>
-        <location filename="../firmwares/moduledata.h" line="227"/>
+        <location filename="../firmwares/moduledata.h" line="229"/>
         <source>Positive</source>
         <translation>ノーマル</translation>
     </message>
     <message>
-        <location filename="../firmwares/moduledata.h" line="227"/>
+        <location filename="../firmwares/moduledata.h" line="229"/>
         <source>Negative</source>
         <translation>リバース</translation>
     </message>
