@@ -1056,7 +1056,7 @@ void menuModelSetup(event_t event)
                 if (moduleIdx == INTERNAL_MODULE) 
                 {
                   uint8_t moduleType = checkIncDec(event, g_model.moduleData[moduleIdx].type, MODULE_TYPE_NONE, MODULE_TYPE_MAX, EE_MODEL, isInternalModuleAvailable);
-                  #if defined(RADIO_Commando8)
+                  #if defined(RADIO_COMMANDO8)
                     if (reusableBuffer.moduleSetup.newType!=MODULE_TYPE_NONE)
                     {
                       reusableBuffer.moduleSetup.newType=MODULE_TYPE_NONE;
@@ -1074,13 +1074,15 @@ void menuModelSetup(event_t event)
                 {
 #endif
                     reusableBuffer.moduleSetup.newType = checkIncDec(event, reusableBuffer.moduleSetup.newType, MODULE_TYPE_NONE, MODULE_TYPE_MAX, EE_MODEL,isExternalModuleAvailable);
-                  #if defined(RADIO_Commando8)
+                  #if defined(RADIO_COMMANDO8) && defined(HARDWARE_INTERNAL_MODULE)
                     if (checkIncDec(event, g_model.moduleData[moduleIdx].type, MODULE_TYPE_NONE, MODULE_TYPE_MAX, EE_MODEL,isInternalModuleAvailable)!=MODULE_TYPE_NONE)
                     {
                       setModuleType(INTERNAL_MODULE, MODULE_TYPE_NONE);
                     }
                   #endif
+#if defined(HARDWARE_INTERNAL_MODULE)                  
                 }
+#endif                
                 break;
 
               case 1:

@@ -6,6 +6,9 @@ extern MemoryType memoryType;
 
 void bootloaderInitScreen()
 {
+#if defined(RADIO_COMMANDO8)   
+  lcdSetRefVolt(25);
+#endif
 }
 
 static void bootloaderDrawMsg(unsigned int x, const char *str, uint8_t line, bool inverted)

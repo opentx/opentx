@@ -168,6 +168,11 @@ def main():
         cmake_options["PCBREV"] = "T8"
         firmware_options = options_radiomaster_t8
         maxsize = 65536 * 8
+    elif board_name == "commando8":
+        cmake_options["PCB"] = "X7"
+        cmake_options["PCBREV"] = "COMMANDO8"
+        firmware_options = options_iflight_commando8
+        maxsize = 65536 * 8
     elif board_name == "t16":
         cmake_options["PCB"] = "X10"
         cmake_options["PCBREV"] = "T16"

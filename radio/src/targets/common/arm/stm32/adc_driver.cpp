@@ -140,7 +140,7 @@ void adcInit()
     ADC_MAIN->SQR3 = (ADC_CHANNEL_STICK_LH << 0) + (ADC_CHANNEL_STICK_LV << 5) + (ADC_CHANNEL_STICK_RV << 10) + (ADC_CHANNEL_STICK_RH << 15) + (ADC_CHANNEL_POT1 << 20) + (ADC_CHANNEL_POT2 << 25);
   }
 
-#elif defined(RADIO_Commando8)
+#elif defined(RADIO_COMMANDO8)
   if (STICKS_PWM_ENABLED()) {
     ADC_MAIN->SQR2 = 0;
     ADC_MAIN->SQR3 = (ADC_CHANNEL_BATT << 10) + (ADC_Channel_Vbat << 15);
@@ -161,13 +161,14 @@ void adcInit()
   ADC_MAIN->SQR3 = (ADC_CHANNEL_POT1 << 0) + (ADC_CHANNEL_POT2 << 5) + (ADC_CHANNEL_TRIM << 10) + (ADC_CHANNEL_SWITCH_A << 15) + (ADC_CHANNEL_SWITCH_B << 20) + (ADC_CHANNEL_SWITCH_C << 25);
 #elif defined(PCBX7)
 
-#if defined(Commando8_STICKS_PWM_EN)
+  if(STICKS_PWM_ENABLED()){
   ADC_MAIN->SQR2 = 0;
   ADC_MAIN->SQR3 =(ADC_CHANNEL_BATT << 10) + (ADC_Channel_Vbat << 15);
-#else
+  }
+  else{
   ADC_MAIN->SQR2 = (ADC_CHANNEL_BATT << 0) + (ADC_Channel_Vbat << 5);
   ADC_MAIN->SQR3 = (ADC_CHANNEL_STICK_LH << 0) + (ADC_CHANNEL_STICK_LV << 5) + (ADC_CHANNEL_STICK_RV << 10) + (ADC_CHANNEL_STICK_RH << 15) + (ADC_CHANNEL_POT1 << 20) + (ADC_CHANNEL_POT2 << 25);
-#endif
+  }
 
 #elif defined(PCBX9LITE)
   ADC_MAIN->SQR2 = (ADC_Channel_Vbat << 0);

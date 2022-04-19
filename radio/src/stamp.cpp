@@ -38,7 +38,7 @@
 #define DISPLAY_VERSION "-jumper"
 #elif defined(RADIOMASTER_RELEASE)
 #define DISPLAY_VERSION "-RM"
-#elif defined(iFlight_RELEASE)
+#elif defined(IFLIGHT_RELEASE)
 #define DISPLAY_VERSION "-iF"
 #elif defined(TBS_RELEASE)
 #define DISPLAY_VERSION "-tbs"
@@ -64,9 +64,8 @@
   const char vers_stamp[]  = "FW" TAB ": opentx-" FLAVOUR    "\036VERS" TAB ": RM Factory (" GIT_STR ")" "\036BUILT BY : OpenTX" "\036DATE" TAB ": " DATE " " TIME "\036EEPR" TAB ": " EEPROM_STR;
 #elif defined(JUMPER_RELEASE)
   const char vers_stamp[]  = "FW" TAB ": opentx-" FLAVOUR    "\036VERS" TAB ": Factory (" GIT_STR ")" "\036BUILT BY : OpenTX" "\036DATE" TAB ": " DATE " " TIME "\036EEPR" TAB ": " EEPROM_STR;
-#elif defined(iFlight_RELEASE)
-  //#if defined(RADIO_T8)   //Modified T8 applies to commando8
-  const char vers_stamp[]  = "FW" TAB ": iFlight-Commando 8"  "\036VERS" TAB ": OpenTX-2.3.14" "\036BUILT BY : iFlight" "\036DATE" TAB ": " DATE " " TIME "\036EEPR" TAB ": " EEPROM_STR;
+#elif defined(IFLIGHT_RELEASE)
+  const char vers_stamp[]  = "FW" TAB ": opentx-" FLAVOUR  "\036VERS" TAB ": Factory (" GIT_STR ")" "\036BUILT BY : OpenTX" "\036DATE" TAB ": " DATE " " TIME "\036EEPR" TAB ": " EEPROM_STR;
 #else
   const char vers_stamp[]  = "FW" TAB ": opentx-" FLAVOUR    "\036VERS" TAB ": " VERSION DISPLAY_VERSION " (" GIT_STR ")" "\036DATE" TAB ": " DATE " " TIME "\036EEPR" TAB ": " EEPROM_STR;
 #endif

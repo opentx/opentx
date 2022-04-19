@@ -216,17 +216,12 @@ elseif(PCB STREQUAL X7)
     add_definitions(-DEEPROM_VARIANT=0x4004)
     add_definitions(-DMANUFACTURER_RADIOMASTER)
 
-  elseif(PCBREV STREQUAL Commando8)          #Modified T8 applies to commando8
+  elseif(PCBREV STREQUAL COMMANDO8)          
     option(INTERNAL_MODULE_MULTI "Support for MULTI internal module" ON)
     set(EXTERNAL_MODULE YES)
     set(AFHDS3 NO)
-    set(FLAVOUR Commando8)
+    set(FLAVOUR commando8)
     set(NAVIGATION_TYPE x7)
-
-    # set(CPU_TYPE STM32F2)
-    # set(CPU_TYPE_FULL STM32F205xE)  # for size report
-    # set(LINKER_SCRIPT targets/taranis/stm32f2_flash.ld)
-
     set(CPU_TYPE STM32F4)
     set(CPU_TYPE_FULL STM32F407xE)  # for size report
     set(LINKER_SCRIPT targets/taranis/stm32f4_flash.ld)
@@ -236,19 +231,19 @@ elseif(PCB STREQUAL X7)
       )
     add_definitions(-DSTM32F40_41xxx)
     set(ROTARY_ENCODER NO)
-    set(LUA_EXPORT lua_export_Commando8)
+    set(LUA_EXPORT lua_export_commando8)
     set(BLUETOOTH NO)
     set(UNRTCLOCK YES)
-    if(iFlight_RELEASE)
+    if(IFLIGHT_RELEASE)
       set(BIND_KEY NO)
     endif()
-    add_definitions(-DRADIO_Commando8)
-    add_definitions(-DCommando8_Float_Show_OFF) #Commando8_Float_Show_OFF
-    add_definitions(-DCommando8_STICKS_PWM_EN) #Commando8_STICKS_PWM_EN
-    add_definitions(-DiFlight_RELEASE)
+
+    add_definitions(-DRADIO_COMMANDO8)
+    add_definitions(-DSTICKS_PWM)
+    add_definitions(-DAUDIO_MUTE_PIN_INVERT)
+    add_definitions(-DIFLIGHT_RELEASE)
     add_definitions(-DEEPROM_VARIANT=0x4008)
-    add_definitions(-DMANUFACTURER_iFlight)#add_definitions(-DMANUFACTURER_RADIOMASTER)
-    add_definitions(-DCHANNEL_1023)
+    add_definitions(-DMANUFACTURER_IFLIGHT)
   elseif(PCBREV STREQUAL ACCESS)
     option(INTERNAL_MODULE_PXX1 "Support for PXX1 internal module" OFF)
     option(INTERNAL_MODULE_PXX2 "Support for PXX2 internal module" ON)
@@ -480,8 +475,8 @@ endif()
 
 add_definitions(-DPCBTARANIS)
 
-   #Modified T8 applies to commando8
-   if(UNRTCLOCK)
+
+if(UNRTCLOCK)
    add_definitions(-DAUDIO -DVOICE )
 else()   
    add_definitions(-DAUDIO -DVOICE -DRTCLOCK)
@@ -529,7 +524,7 @@ set(TARGET_SRC
   ../common/arm/stm32/mixer_scheduler_driver.cpp
   )
 
-if(PCB STREQUAL XLITE OR PCB STREQUAL XLITES OR PCBREV STREQUAL Commando8)
+if(PCB STREQUAL XLITE OR PCB STREQUAL XLITES OR PCBREV STREQUAL COMMANDO8)
   set(TARGET_SRC
     ${TARGET_SRC}
     ../common/arm/stm32/sticks_pwm_driver.cpp

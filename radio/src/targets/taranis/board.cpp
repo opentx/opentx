@@ -273,7 +273,7 @@ void boardOff()
 
 #if defined (RADIO_TX12)
   #define BATTERY_DIVIDER 22830
-#elif defined (RADIO_T8) || defined(RADIO_Commando8)
+#elif defined (RADIO_T8) || defined(RADIO_COMMANDO8)
   #define BATTERY_DIVIDER 50000
 #else
   #define BATTERY_DIVIDER 26214
@@ -348,3 +348,30 @@ void initJackDetect(void)
   GPIO_Init(JACK_DETECT_GPIO, &GPIO_InitStructure);
 }
 #endif
+
+void setMutePin(GPIO_TypeDef* GPIOx,uint16_t Pinx)
+{
+#if defined(AUDIO_MUTE_PIN_INVERT)
+  GPIO_ResetBits(GPIOx, Pinx);
+#else
+  GPIO_SetBits(GPIOx, Pinx);
+#endif
+}
+
+void resetMutePin(GPIO_TypeDef* GPIOx,uint16_t Pinx)
+{
+#if defined(AUDIO_MUTE_PIN_INVERT)
+  GPIO_SetBits(GPIOx, Pinx);
+#else
+  GPIO_ResetBits(GPIOx, Pinx);
+#endif
+}
+
+uint8_t readMutePinLevel(GPIO_TypeDef* GPIOx,uint16_t Pinx)
+{
+#if defined(AUDIO_MUTE_PIN_INVERT)
+  return !GPIO_ReadOutputDataBit(GPIOx, Pinx);
+#else
+  return GPIO_ReadOutputDataBit(GPIOx, Pinx);
+#endif
+}
