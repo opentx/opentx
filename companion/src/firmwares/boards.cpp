@@ -96,7 +96,7 @@ uint32_t Boards::getFourCC(Type board)
       return 0x4778746F;
     case BOARD_RADIOMASTER_T8:
       return 0x4378746F;
-    case BOARD_iFlight_Commando8:
+    case BOARD_IFLIGHT_COMMANDO8:
       return 0x4478746F;
     default:
       return 0;
@@ -127,7 +127,7 @@ int Boards::getEEpromSize(Board::Type board)
     case BOARD_RADIOMASTER_TX12:
     case BOARD_RADIOMASTER_T8:
     case BOARD_RADIOMASTER_ZORRO:
-    case BOARD_iFlight_Commando8:
+    case BOARD_IFLIGHT_COMMANDO8:
       return EESIZE_TARANIS;
     case BOARD_UNKNOWN:
       return EESIZE_MAX;
@@ -167,7 +167,7 @@ int Boards::getFlashSize(Type board)
     case BOARD_RADIOMASTER_TX12:
     case BOARD_RADIOMASTER_ZORRO:
     case BOARD_RADIOMASTER_T8:
-    case BOARD_iFlight_Commando8:
+    case BOARD_IFLIGHT_COMMANDO8:
       return FSIZE_TARANIS;
     case BOARD_HORUS_X12S:
     case BOARD_X10:
@@ -275,7 +275,7 @@ SwitchInfo Boards::getSwitchInfo(Board::Type board, int index)
     if (index < DIM(switches))
       return switches[index];
   }
-  else if (IS_iFlight_Commando8(board)) {
+  else if (IS_IFLIGHT_COMMANDO8(board)) {
     const Board::SwitchInfo switches[] = {
       {SWITCH_TOGGLE,   "SA"},
       {SWITCH_3POS,     "SB"},

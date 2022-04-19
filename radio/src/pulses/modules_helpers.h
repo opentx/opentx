@@ -645,7 +645,7 @@ inline void resetMultiProtocolsOptions(uint8_t moduleIdx)
     g_model.moduleData[moduleIdx].multi.autoBindMode = 0;
   }
 
-#if defined (RADIO_Commando8)
+#if defined (RADIO_COMMANDO8)
   g_model.moduleData[moduleIdx].multi.optionValue = -27;
 #else
   g_model.moduleData[moduleIdx].multi.optionValue = 0;

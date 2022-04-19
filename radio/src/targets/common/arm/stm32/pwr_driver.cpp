@@ -49,8 +49,7 @@ void pwrInit()
   GPIO_Init(EXTMODULE_PWR_GPIO, &GPIO_InitStructure);
 #endif
 
-  //Modified T8 applies to commando8
-#if defined(RADIO_Commando8)
+#if defined(RADIO_COMMANDO8)
   GPIO_InitStructure.GPIO_Pin = EXTMODULE_RF_SWITCH_GPIO_PIN;
   GPIO_Init(EXTMODULE_RF_SWITCH_GPIO,&GPIO_InitStructure);
 #endif

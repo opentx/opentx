@@ -112,7 +112,7 @@ SimulatorWidget::SimulatorWidget(QWidget * parent, SimulatorInterface * simulato
     case Board::BOARD_RADIOMASTER_T8:
       radioUiWidget = new SimulatedUIWidgetT8(simulator, this);
       break;
-    case Board::BOARD_iFlight_Commando8:
+    case Board::BOARD_IFLIGHT_COMMANDO8:
       radioUiWidget = new SimulatedUIWidgetCommando8(simulator, this);
       break;  
     case Board::BOARD_RADIOMASTER_TX16S:
