@@ -348,8 +348,8 @@ if(RADIOMASTER_RELEASE)
   add_definitions(-DRADIOMASTER_RELEASE)
 endif()
 
-if(iFlight_RELEASE)
-  add_definitions(-DiFlight_RELEASE)
+if(IFLIGHT_RELEASE)
+  add_definitions(-DIFLIGHT_RELEASE)
 endif()
 
 if(RADIOMASTER_RTF_RELEASE)

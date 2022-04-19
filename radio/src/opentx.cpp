@@ -388,11 +388,10 @@ void generalDefault()
   g_eeGeneral.pwrOnSpeed = 1; // 1 second
 #endif
 
-  //Modified T8 applies to commando8
-#if defined(RADIO_Commando8)
-  g_eeGeneral.splashMode=3;
-  g_eeGeneral.pwrOnSpeed=2;
-  g_eeGeneral.pwrOffSpeed=2;
+#if defined(RADIO_COMMANDO8)
+  g_eeGeneral.splashMode = 3;
+  g_eeGeneral.pwrOnSpeed = 2;
+  g_eeGeneral.pwrOffSpeed = 2;
 #endif
   g_eeGeneral.chkSum = 0xFFFF;
 }

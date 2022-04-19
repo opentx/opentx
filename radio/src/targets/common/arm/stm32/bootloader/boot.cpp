@@ -218,7 +218,7 @@ int main()
     }
   }
 
-#if defined(RADIO_T8) || defined(RADIO_Commando8) && !defined(RADIOMASTER_RELEASE)
+#if defined(RADIO_T8) || defined(RADIO_COMMANDO8) && !defined(RADIOMASTER_RELEASE)
   // Bind button not pressed
   if ((~KEYS_GPIO_REG_BIND & KEYS_GPIO_PIN_BIND) == false) {
 #else
@@ -517,7 +517,7 @@ int main()
       RTC->BKP0R = SOFTRESET_REQUEST;
 #endif
 
-      #if defined(RADIO_Commando8)
+      #if defined(RADIO_COMMANDO8)
       lcdClear();
       lcdDrawText(2, 22,"Press the power button.");
       lcdDrawText(2, 33,"Exit the flashing mode.");
