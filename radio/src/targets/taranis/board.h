@@ -379,7 +379,7 @@ enum EnumSwitchesPositions
   SW_SE1,
   SW_SE2,
 #endif
-#if defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E) || defined(PCBX7) || defined(PCBXLITES) || defined(PCBX9LITES) || defined(RADIO_T8) || defined(RADIO_Commando8) || defined(RADIO_ZORRO)  || defined(RADIO_TPRO)
+#if defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E) || defined(PCBX7) || defined(PCBXLITES) || defined(PCBX9LITES) || defined(RADIO_T8) || defined(RADIO_COMMANDO8) || defined(RADIO_ZORRO)  || defined(RADIO_TPRO)
   SW_SF0,
   SW_SF1,
   SW_SF2,
@@ -389,7 +389,7 @@ enum EnumSwitchesPositions
   SW_SG1,
   SW_SG2,
 #endif
-#if defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E) || (defined(PCBX7) && !defined(RADIO_TX12)) || defined(RADIO_T8) || defined(RADIO_Commando8) || defined(RADIO_ZORRO) || defined(RADIO_TPRO)
+#if defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E) || (defined(PCBX7) && !defined(RADIO_TX12)) || defined(RADIO_T8) || defined(RADIO_COMMANDO8) || defined(RADIO_ZORRO) || defined(RADIO_TPRO)
   SW_SH0,
   SW_SH1,
   SW_SH2,
@@ -491,7 +491,7 @@ enum EnumSwitchesPositions
   #define STORAGE_NUM_SWITCHES          8
   #define DEFAULT_SWITCH_CONFIG         (SWITCH_2POS << 6) + (SWITCH_3POS << 4) + (SWITCH_3POS << 2) + (SWITCH_2POS << 0);
   #define DEFAULT_POTS_CONFIG           (0)
-#elif defined(RADIO_Commando8)
+#elif defined(RADIO_COMMANDO8)
   #define NUM_SWITCHES                  4
   #define STORAGE_NUM_SWITCHES          8
   #define DEFAULT_SWITCH_CONFIG         (SWITCH_2POS << 6) + (SWITCH_3POS << 4) + (SWITCH_3POS << 2) + (SWITCH_2POS << 0);
@@ -627,7 +627,7 @@ enum Analogs {
   #define NUM_SLIDERS                   0
   #define STORAGE_NUM_POTS              1
   #define STORAGE_NUM_SLIDERS           0
-#elif defined(RADIO_T8) || defined(RADIO_TLITE) || defined(RADIO_Commando8)
+#elif defined(RADIO_T8) || defined(RADIO_TLITE) || defined(RADIO_COMMANDO8)
   #define NUM_POTS                      0
   #define NUM_SLIDERS                   0
   #define STORAGE_NUM_POTS              2
@@ -665,9 +665,21 @@ enum Analogs {
   #define NUM_TRIMS_KEYS                (NUM_TRIMS * 2)
 #endif
 
-#if defined(STICKS_PWM) || defined(Commando8_STICKS_PWM_EN)
+#if defined(RADIO_COMMANDO8)
+  #define STICK_PWM_CHANNEL_0           1
+  #define STICK_PWM_CHANNEL_1           0
+  #define STICK_PWM_CHANNEL_2           2
+  #define STICK_PWM_CHANNEL_3           3
+#else
+  #define STICK_PWM_CHANNEL_0           0
+  #define STICK_PWM_CHANNEL_1           1
+  #define STICK_PWM_CHANNEL_2           3
+  #define STICK_PWM_CHANNEL_3           2
+#endif
+
+#if defined(STICKS_PWM)
   #define NUM_PWMSTICKS                 4
-  #define STICKS_PWM_ENABLED()          (!hardwareOptions.sticksPwmDisabled)
+  #define STICKS_PWM_ENABLED()          (!hardwareOptions.sticksPwmDisabled)  
   void sticksPwmInit();
   void sticksPwmRead(uint16_t * values);
   extern volatile uint32_t pwm_interrupt_count; // TODO => reusable buffer (boot section)
@@ -741,8 +753,8 @@ extern uint16_t adcValues[NUM_ANALOGS];
   #define BATTERY_MAX                   42 // 4.2V
   #define BATTERY_TYPE_FIXED
 
-#elif defined(RADIO_Commando8)         
-  #define BATTERY_WARN                  32 // 3.2V  //Modified T8 applies to commando8
+#elif defined(RADIO_COMMANDO8)         
+  #define BATTERY_WARN                  32 // 3.2V  
   #define BATTERY_MIN                   30 // 3.0V
   #define BATTERY_MAX                   42 // 4.2V
   #define BATTERY_TYPE_FIXED
@@ -821,7 +833,7 @@ uint8_t isBacklightEnabled();
   #define USB_NAME                     "Radiomaster T8"
   #define USB_MANUFACTURER             'R', 'M', '_', 'T', 'X', ' ', ' ', ' '  /* 8 bytes */
   #define USB_PRODUCT                  'R', 'M', ' ', 'T', '8', ' ', ' ', ' '  /* 8 Bytes */
-#elif defined(RADIO_Commando8)  //Modified T8 applies to commando8
+#elif defined(RADIO_COMMANDO8) 
   #define USB_NAME                     "iFlight Commando 8"
   #define USB_MANUFACTURER             'i', 'F', 'l', 'i', 'g', 'h', 't', '-'  /* 8 bytes */
   #define USB_PRODUCT                  'C', 'o', 'm', 'm', 'a', 'n', 'd', 'o'  /* 8 Bytes */
@@ -900,11 +912,15 @@ void sportUpdatePowerInit();
 #endif
 
 // Audio driver
+
 void audioInit() ;
 void audioEnd() ;
 void dacStart();
 void dacStop();
 void setSampleRate(uint32_t frequency);
+void setMutePin(GPIO_TypeDef* GPIOx,uint16_t Pinx);
+void resetMutePin(GPIO_TypeDef* GPIOx,uint16_t Pinx);
+uint8_t readMutePinLevel(GPIO_TypeDef* GPIOx,uint16_t Pinx);
 #define VOLUME_LEVEL_MAX  23
 #define VOLUME_LEVEL_DEF  12
 #if !defined(SOFTWARE_VOLUME)
