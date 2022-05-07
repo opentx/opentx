@@ -250,7 +250,7 @@ void displayMixLine(coord_t y, MixData * md, bool active)
 
 void menuModelMixAll(event_t event)
 {
-#if defined(KEY_MENU)
+#if defined(KEY_MENU) && !defined(NAVIGATION_9X)
   if (event == EVT_KEY_LONG(KEY_MENU)) {
     pushMenu(menuChannelsView);
     killEvents(event);
