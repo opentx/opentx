@@ -187,3 +187,6 @@ static const charSuite charsSuite[] = {
   {'>', ' '},
   {'>', 0},
 };
+
+#define KEYBOARD_NUMBERS_FIRST_LINE_SPECIAL_CHARS "_-"
+#define KEYBOARD_NUMBERS_SECOND_LINE_SPECIAL_CHARS "                 "
