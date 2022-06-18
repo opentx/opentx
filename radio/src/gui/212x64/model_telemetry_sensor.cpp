@@ -276,6 +276,7 @@ void menuModelSensor(event_t event)
         int8_t min = -MAX_TELEMETRY_SENSORS;
         uint8_t delta = GV_GET_GV1_VALUE(MAX_TELEMETRY_SENSORS);
         if (attr) {
+#if defined(GVARS)
           if (event == EVT_KEY_LONG(KEY_ENTER)) {
               *source = (GV_IS_GV_VALUE(*source, -MAX_TELEMETRY_SENSORS, MAX_TELEMETRY_SENSORS) ? 0 : delta);
               s_editMode = !s_editMode;
@@ -290,8 +291,10 @@ void menuModelSensor(event_t event)
               *source = (int8_t)GV_CALC_VALUE_IDX_POS(idx, delta);
             }
           } else {
-            *source = checkIncDec(event, *source, -MAX_TELEMETRY_SENSORS, MAX_TELEMETRY_SENSORS, EE_MODEL|NO_INCDEC_MARKS, isSensorAvailable);
-          }
+#endif
+          *source = checkIncDec(event, *source, -MAX_TELEMETRY_SENSORS, MAX_TELEMETRY_SENSORS, EE_MODEL|NO_INCDEC_MARKS, isSensorAvailable);
+        }
+#if defined(GVARS)
         }
         if(GV_IS_GV_VALUE(*source, -MAX_TELEMETRY_SENSORS, MAX_TELEMETRY_SENSORS)) {
           int8_t gvindex = GV_INDEX_CALC_DELTA(*source, delta);
@@ -301,7 +304,9 @@ void menuModelSensor(event_t event)
           } else {
             drawGVarName(SENSOR_2ND_COLUMN, y, gvindex, attr);
           }
-        } else {
+        } else
+#endif
+        {
           if (*source < 0) {
             lcdDrawChar(SENSOR_2ND_COLUMN, y, '-', attr);
             drawSource(lcdNextPos, y, MIXSRC_FIRST_TELEM+3*(-1-*source), attr);
