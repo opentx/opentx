@@ -306,9 +306,9 @@ bool menuModelSensor(event_t event)
           int8_t gvindex = GV_INDEX_CALC_DELTA(*source, delta);
           if(gvindex<0 && sensor->formula == TELEM_FORMULA_MULTIPLY) {
             lcdDrawText(SENSOR_2ND_COLUMN, y, "/", attr);
-            drawStringWithIndex(lcdNextPos, y, STR_GV, -gvindex-1, attr);
+            drawStringWithIndex(lcdNextPos, y, STR_GV, -gvindex, attr);
           } else {
-            drawStringWithIndex(SENSOR_2ND_COLUMN, y, STR_GV, gvindex, attr, gvindex<0?"-":"");
+            drawStringWithIndex(SENSOR_2ND_COLUMN, y, STR_GV, gvindex<0?-gvindex:gvindex+1, attr, gvindex<0?"-":"");
           }
         } else
 #endif
