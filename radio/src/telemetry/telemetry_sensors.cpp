@@ -646,6 +646,25 @@ bool TelemetrySensor::isAvailable() const
   return ZLEN(label) > 0;
 }
 
+bool TelemetrySensor::isOfflineFresh() const
+{
+  if(type == TELEM_TYPE_CALCULATED && formula <= TELEM_FORMULA_MULTIPLY) {
+    int32_t maxitems = 4;
+    if(formula == TELEM_FORMULA_MULTIPLY) {
+      maxitems = 2;
+    }
+    for(int i=0; i<maxitems; i++) {
+      int8_t source = calc.sources[i];
+      if(source && !GV_IS_GV_VALUE(source, -MAX_TELEMETRY_SENSORS, MAX_TELEMETRY_SENSORS)) {
+        return false;
+      }
+    }
+    return true;
+  } else {
+    return false;
+  }
+}
+
 PACK(typedef struct {
   uint8_t unitFrom;
   uint8_t unitTo;
