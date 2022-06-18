@@ -412,8 +412,13 @@ void TelemetryItem::eval(const TelemetrySensor & sensor)
           int32_t gvarvalue = GET_GVAR_PREC1(source, -MAX_TELEMETRY_SENSORS, MAX_TELEMETRY_SENSORS, mixerCurrentFlightMode);
 
           if (sensor.formula == TELEM_FORMULA_MULTIPLY) {
-            mulprec += 1;
-            value *= convertTelemetryValue(gvarvalue, sensor.unit, 0, sensor.unit, 0);
+            if (source>0) {
+              //divide, actually
+              value /= convertTelemetryValue(-gvarvalue, sensor.unit, 1, sensor.unit, 0);
+            } else {
+              value *= convertTelemetryValue(gvarvalue, sensor.unit, 0, sensor.unit, 0);
+              mulprec += 1;
+            }
           }
           else {
             int32_t sensorValue = convertTelemetryValue(gvarvalue, sensor.unit, 1, sensor.unit, sensor.prec);

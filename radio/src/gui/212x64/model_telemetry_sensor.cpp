@@ -278,6 +278,7 @@ void menuModelSensor(event_t event)
         if (attr) {
           if (event == EVT_KEY_LONG(KEY_ENTER)) {
               *source = (GV_IS_GV_VALUE(*source, -MAX_TELEMETRY_SENSORS, MAX_TELEMETRY_SENSORS) ? 0 : delta);
+              s_editMode = !s_editMode;
           }
           if(GV_IS_GV_VALUE(*source, -MAX_TELEMETRY_SENSORS, MAX_TELEMETRY_SENSORS)) {
             int8_t idx = (int16_t)GV_INDEX_CALC_DELTA(*source, delta);
@@ -293,7 +294,13 @@ void menuModelSensor(event_t event)
           }
         }
         if(GV_IS_GV_VALUE(*source, -MAX_TELEMETRY_SENSORS, MAX_TELEMETRY_SENSORS)) {
-          drawGVarName(SENSOR_2ND_COLUMN, y, GV_INDEX_CALC_DELTA(*source, delta), attr);
+          int8_t gvindex = GV_INDEX_CALC_DELTA(*source, delta);
+          if(gvindex<0 && sensor->formula == TELEM_FORMULA_MULTIPLY) {
+            lcdDrawChar(SENSOR_2ND_COLUMN, y, '/', attr);
+            drawGVarName(lcdNextPos, y, -gvindex-1, attr);
+          } else {
+            drawGVarName(SENSOR_2ND_COLUMN, y, gvindex, attr);
+          }
         } else {
           if (*source < 0) {
             lcdDrawChar(SENSOR_2ND_COLUMN, y, '-', attr);
