@@ -407,6 +407,28 @@ void TelemetryItem::eval(const TelemetrySensor & sensor)
       }
       for (int i=0; i<maxitems; i++) {
         int8_t source = sensor.calc.sources[i];
+#if defined(GVARS)
+        if (GV_IS_GV_VALUE(source, -MAX_TELEMETRY_SENSORS, MAX_TELEMETRY_SENSORS)) {
+          int32_t gvarvalue = GET_GVAR_PREC1(source, -MAX_TELEMETRY_SENSORS, MAX_TELEMETRY_SENSORS, mixerCurrentFlightMode);
+
+          if (sensor.formula == TELEM_FORMULA_MULTIPLY) {
+            mulprec += 1;
+            value *= convertTelemetryValue(gvarvalue, sensor.unit, 0, sensor.unit, 0);
+          }
+          else {
+            int32_t sensorValue = convertTelemetryValue(gvarvalue, sensor.unit, 1, sensor.unit, sensor.prec);
+            if (sensor.formula == TELEM_FORMULA_MIN)
+              value = (count==1 ? sensorValue : min<int32_t>(value, sensorValue));
+            else if (sensor.formula == TELEM_FORMULA_MAX)
+              value = (count==1 ? sensorValue : max<int32_t>(value, sensorValue));
+            else
+              value += sensorValue;
+          }
+          count += 1;
+
+          continue;
+        }
+#endif
         if (source) {
           unsigned int index = abs(source)-1;
           TelemetrySensor & telemetrySensor = g_model.telemetrySensors[index];

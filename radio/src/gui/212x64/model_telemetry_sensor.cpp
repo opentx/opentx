@@ -273,15 +273,35 @@ void menuModelSensor(event_t event)
       {
         drawStringWithIndex(0, y, STR_SOURCE, k-SENSOR_FIELD_PARAM1+1);
         int8_t * source = &sensor->calc.sources[k-SENSOR_FIELD_PARAM1];
+        int8_t min = -MAX_TELEMETRY_SENSORS;
+        uint8_t delta = GV_GET_GV1_VALUE(MAX_TELEMETRY_SENSORS);
         if (attr) {
-          *source = checkIncDec(event, *source, -MAX_TELEMETRY_SENSORS, MAX_TELEMETRY_SENSORS, EE_MODEL|NO_INCDEC_MARKS, isSensorAvailable);
+          if (event == EVT_KEY_LONG(KEY_ENTER)) {
+              *source = (GV_IS_GV_VALUE(*source, -MAX_TELEMETRY_SENSORS, MAX_TELEMETRY_SENSORS) ? 0 : delta);
+          }
+          if(GV_IS_GV_VALUE(*source, -MAX_TELEMETRY_SENSORS, MAX_TELEMETRY_SENSORS)) {
+            int8_t idx = (int16_t)GV_INDEX_CALC_DELTA(*source, delta);
+            CHECK_INCDEC_MODELVAR(event, idx, -MAX_GVARS, MAX_GVARS-1);
+            if (idx < 0) {
+              *source = (int8_t)GV_CALC_VALUE_IDX_NEG(idx, delta);
+            }
+            else {
+              *source = (int8_t)GV_CALC_VALUE_IDX_POS(idx, delta);
+            }
+          } else {
+            *source = checkIncDec(event, *source, -MAX_TELEMETRY_SENSORS, MAX_TELEMETRY_SENSORS, EE_MODEL|NO_INCDEC_MARKS, isSensorAvailable);
+          }
         }
-        if (*source < 0) {
-          lcdDrawChar(SENSOR_2ND_COLUMN, y, '-', attr);
-          drawSource(lcdNextPos, y, MIXSRC_FIRST_TELEM+3*(-1-*source), attr);
-        }
-        else {
-          drawSource(SENSOR_2ND_COLUMN, y, *source ? MIXSRC_FIRST_TELEM+3*(*source-1) : 0, attr);
+        if(GV_IS_GV_VALUE(*source, -MAX_TELEMETRY_SENSORS, MAX_TELEMETRY_SENSORS)) {
+          drawGVarName(SENSOR_2ND_COLUMN, y, GV_INDEX_CALC_DELTA(*source, delta), attr);
+        } else {
+          if (*source < 0) {
+            lcdDrawChar(SENSOR_2ND_COLUMN, y, '-', attr);
+            drawSource(lcdNextPos, y, MIXSRC_FIRST_TELEM+3*(-1-*source), attr);
+          }
+          else {
+            drawSource(SENSOR_2ND_COLUMN, y, *source ? MIXSRC_FIRST_TELEM+3*(*source-1) : 0, attr);
+          }
         }
         break;
       }
