@@ -414,7 +414,12 @@ void TelemetryItem::eval(const TelemetrySensor & sensor)
           if (sensor.formula == TELEM_FORMULA_MULTIPLY) {
             if (source>0) {
               //divide, actually
-              value /= convertTelemetryValue(-gvarvalue, sensor.unit, 1, sensor.unit, 0);
+              int32_t divisor = convertTelemetryValue(-gvarvalue, sensor.unit, 1, sensor.unit, 0);
+              if (divisor!=0) {
+                value /= divisor;
+              } else {
+                value = 0;
+              }
             } else {
               value *= convertTelemetryValue(gvarvalue, sensor.unit, 0, sensor.unit, 0);
               mulprec += 1;
