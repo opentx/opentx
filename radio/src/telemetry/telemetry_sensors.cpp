@@ -409,14 +409,18 @@ void TelemetryItem::eval(const TelemetrySensor & sensor)
         int8_t source = sensor.calc.sources[i];
 #if defined(GVARS)
         if (GV_IS_GV_VALUE(source, -MAX_TELEMETRY_SENSORS, MAX_TELEMETRY_SENSORS)) {
-          int32_t gvarvalue = GET_GVAR(source, -MAX_TELEMETRY_SENSORS, MAX_TELEMETRY_SENSORS, mixerCurrentFlightMode);
+          int32_t gvarvalue;
+          {
+            int8_t min = -MAX_TELEMETRY_SENSORS;
+            gvarvalue = getGVarValue(GV_INDEX_CALCULATION(source, MAX_TELEMETRY_SENSORS), mixerCurrentFlightMode);
+          }
 
           if (sensor.formula == TELEM_FORMULA_MULTIPLY) {
             if (source>0) {
               //divide, actually
               int32_t divisor = convertTelemetryValue(-gvarvalue, sensor.unit, 0, sensor.unit, 0);
               if (divisor!=0) {
-                value /= divisor;
+                value = convertTelemetryValue(value, sensor.unit, mulprec, sensor.unit, mulprec+sensor.prec)/divisor;
               } else {
                 value = 0;
               }
@@ -426,13 +430,12 @@ void TelemetryItem::eval(const TelemetrySensor & sensor)
             }
           }
           else {
-            int32_t sensorValue = convertTelemetryValue(gvarvalue, sensor.unit, 1, sensor.unit, sensor.prec);
             if (sensor.formula == TELEM_FORMULA_MIN)
-              value = (count==1 ? sensorValue : min<int32_t>(value, sensorValue));
+              value = (count==1 ? gvarvalue : min<int32_t>(value, gvarvalue));
             else if (sensor.formula == TELEM_FORMULA_MAX)
-              value = (count==1 ? sensorValue : max<int32_t>(value, sensorValue));
+              value = (count==1 ? gvarvalue : max<int32_t>(value, gvarvalue));
             else
-              value += sensorValue;
+              value += gvarvalue;
           }
           count += 1;
 
