@@ -33,7 +33,7 @@ boards = {
         "PPM": "NO",
         "DSM2": "NO",
         "SBUS": "NO",
-        # "MEITUAN":"YES",
+        "MEITUAN":"YES",
     },
     "X9LITE": {
         "PCB": "X9LITE",
@@ -56,7 +56,7 @@ boards = {
         "DSM2": "NO",
         "SBUS": "NO",
         "DEFAULT_MODE": "2",
-        # "MEITUAN":"YES",
+        "MEITUAN":"YES",
     },
     "X9D+2019": {
         "PCB": "X9D+",
