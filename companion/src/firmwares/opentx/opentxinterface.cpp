@@ -1414,6 +1414,7 @@ void registerOpenTxFirmwares()
   static const Firmware::Option opt_internal_gps("internalgps", Firmware::tr("Support internal GPS"));
   firmware->addOptionsGroup({opt_bt, opt_internal_gps});
   firmware->addOption("externalaccessmod", Firmware::tr("Support hardware mod: R9M ACCESS"));
+  firmware->addOption("internalelrs", Firmware::tr("Select if internal ELRS module is installed"));
   registerOpenTxFirmware(firmware);
 
   /* Jumper T18 board */

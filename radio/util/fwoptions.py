@@ -319,4 +319,5 @@ options_radiomaster_tx16s = {
     "bluetooth": ("BLUETOOTH", "YES", "NO"),
     "internalgps": ("INTERNAL_GPS", "YES", "NO"),
     "externalaccessmod": ("HARDWARE_EXTERNAL_ACCESS_MOD", "YES", "NO"),
+    "internalelrs": ("INTERNAL_MODULE_ELRS", "YES", "NO"),
 }

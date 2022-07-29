@@ -920,13 +920,13 @@ Get Logical Switch parameters
 @retval nil requested logical switch does not exist
 
 @retval table logical switch data:
- * `func` (number) function index
- * `v1` (number) V1 value (index)
- * `v2` (number) V2 value (index or value)
- * `v3` (number) V3 value (index or value)
- * `and` (number) AND switch index
- * `delay` (number) delay (time in 1/10 s)
- * `duration` (number) duration (time in 1/10 s)
+  * `func` (number) function index
+  * `v1` (number) V1 value (index)
+  * `v2` (number) V2 value (index or value)
+  * `v3` (number) V3 value (index or value)
+  * `and` (number) AND switch index
+  * `delay` (number) delay (time in 1/10 s)
+  * `duration` (number) duration (time in 1/10 s)
 
 @status current Introduced in 2.0.0
 */
@@ -1085,15 +1085,16 @@ Set Curve parameters
 
 The first and last x value must -100 and 100 and x values must be monotonically increasing
 
-@retval  0 - Everything okay
-         1 - Wrong number of points
-         2 - Invalid Curve number
-         3 - Cuve does not fit anymore
-         4 - point of out of index
-         5 - x value not monotonically increasing
-         6 - y value not in range [-100;100]
-         7 - extra values for y are set
-         8 - extra values for x are set
+@retval curve status data:
+  * 0 - Everything okay
+  * 1 - Wrong number of points
+  * 2 - Invalid Curve number
+  * 3 - Cuve does not fit anymore
+  * 4 - point of out of index
+  * 5 - x value not monotonically increasing
+  * 6 - y value not in range [-100;100]
+  * 7 - extra values for y are set
+  * 8 - extra values for x are set
 
 @status current Introduced in 2.2.0
 
