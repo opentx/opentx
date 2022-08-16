@@ -390,7 +390,7 @@ void boardInit()
 
   init_SDcard();
 
-#if defined(PCBAR9X)
+#if defined(PCBAR9X) || defined(REVX)
   rtcInit();
 #endif
 }
