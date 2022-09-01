@@ -28,13 +28,13 @@
   #define LBOX_CENTERX  (LCD_W/4 + 10)
   #define RBOX_CENTERX  (3*LCD_W/4 - 10)
 #endif
-#define MODELNAME_X   (2*FW-2)
-#define MODELNAME_Y   (0)
+#define MODELNAME_X   (4)
+#define MODELNAME_Y   (3)
 #define PHASE_X       (6*FW-1)
 #define PHASE_Y       (2*FH)
 #define PHASE_FLAGS   0
-#define VBATT_X       (6*FW)
-#define VBATT_Y       (2*FH)
+#define VBATT_X       (128)
+#define VBATT_Y       (0)
 #define VBATTUNIT_X   (VBATT_X-1)
 #define VBATTUNIT_Y   (3*FH)
 #define REBOOT_X      (20*FW-3)
@@ -68,7 +68,7 @@ void doMainScreenGraphics()
 #if defined(PCBACAIR)
 void displayTrims(uint8_t phase)
 {
-  for (uint8_t i=0; i<3*NUM_STICKS; i++) {
+  for (uint8_t i=0; i< 6; i++) {
     coord_t xm, ym;
     uint8_t stickIndex = CONVERT_MODE(i);
 
@@ -91,9 +91,9 @@ void displayTrims(uint8_t phase)
       val /= 4;
     }
 
-    if (i >= 3) {
-      ym = 36;
-      xm = LCD_W - 20 + 8 * (i - 3);
+    // if (i >= 3) {
+      ym = 39;
+      xm = LCD_W / 2 + 2 + 8 * (i + 2);
       lcdDrawSolidVerticalLine(xm, ym-TRIM_LEN, TRIM_LEN*2);
       if (i!=2 || !g_model.thrTrim) {
         lcdDrawSolidVerticalLine(xm-1, ym-1,  3);
@@ -116,34 +116,34 @@ void displayTrims(uint8_t phase)
           lcdDrawNumber(dir>0 ? 12 : 40, xm-2, -abs(dir/5), TINSIZE|VERTICAL);
         }
       }
-    }
-    else {
-      ym = 44 + (8 * (2-i));
-      xm = TRIM_LEN + 4;
-      lcdDrawSolidHorizontalLine(xm-TRIM_LEN, ym, TRIM_LEN*2);
-      lcdDrawSolidHorizontalLine(xm-1, ym-1,  3);
-      lcdDrawSolidHorizontalLine(xm-1, ym+1,  3);
-      xm += val;
-#if !defined(CPUM64) || !defined(TELEMETRY_FRSKY)
-      lcdDrawFilledRect(xm-3, ym-3, 7, 7, SOLID, att|ERASE);
-      if (dir >= 0) {
-        lcdDrawSolidVerticalLine(xm+1, ym-1,  3);
-      }
-      if (dir <= 0) {
-        lcdDrawSolidVerticalLine(xm-1, ym-1,  3);
-      }
-      if (exttrim) {
-        lcdDrawSolidVerticalLine(xm, ym-1,  3);
-      }
-#endif
-#if defined(CPUARM)
-      if (g_model.displayTrims != DISPLAY_TRIMS_NEVER && dir != 0) {
-        if (g_model.displayTrims == DISPLAY_TRIMS_ALWAYS || (trimsDisplayTimer > 0 && (trimsDisplayMask & (1<<i)))) {
-          lcdDrawNumber((stickIndex==0 ? (dir>0 ? TRIM_LH_POS : TRIM_LH_NEG) : (dir>0 ? TRIM_RH_POS : TRIM_RH_NEG)), ym-2, -abs(dir/5), TINSIZE);
-        }
-      }
-#endif
-    }
+    // }
+//     else {
+//       ym = 26 + (8 * (2-i));
+//       xm = TRIM_LEN + 4;
+//       lcdDrawSolidHorizontalLine(xm-TRIM_LEN, ym, TRIM_LEN*2);
+//       lcdDrawSolidHorizontalLine(xm-1, ym-1,  3);
+//       lcdDrawSolidHorizontalLine(xm-1, ym+1,  3);
+//       xm += val;
+// #if !defined(CPUM64) || !defined(TELEMETRY_FRSKY)
+//       lcdDrawFilledRect(xm-3, ym-3, 7, 7, SOLID, att|ERASE);
+//       if (dir >= 0) {
+//         lcdDrawSolidVerticalLine(xm+1, ym-1,  3);
+//       }
+//       if (dir <= 0) {
+//         lcdDrawSolidVerticalLine(xm-1, ym-1,  3);
+//       }
+//       if (exttrim) {
+//         lcdDrawSolidVerticalLine(xm, ym-1,  3);
+//       }
+// #endif
+// #if defined(CPUARM)
+//       if (g_model.displayTrims != DISPLAY_TRIMS_NEVER && dir != 0) {
+//         if (g_model.displayTrims == DISPLAY_TRIMS_ALWAYS || (trimsDisplayTimer > 0 && (trimsDisplayMask & (1<<i)))) {
+//           lcdDrawNumber((stickIndex==0 ? (dir>0 ? TRIM_LH_POS : TRIM_LH_NEG) : (dir>0 ? TRIM_RH_POS : TRIM_RH_NEG)), ym-2, -abs(dir/5), TINSIZE);
+//         }
+//       }
+// #endif
+//     }
     lcdDrawSquare(xm-3, ym-3, 7, att);
   }
 }
@@ -303,22 +303,22 @@ void displayVoltageOrAlarm()
 void displayRssiLine()
 {
   if (moduleFlag[INTERNAL_MODULE] & MODULE_BIND) {
-    lcdDrawText(40, 20, "BIND", INVERS);
+    lcdDrawText(64, 4, "BIND", INVERS);
   }
   else if (g_eeGeneral.inactivityTimer && inactivity.counter > g_eeGeneral.inactivityTimer*60) {
-    lcdDrawText(40, 20, "INACTIVITY", INVERS);
+    lcdDrawText(55, 4, "INACTIVE", INVERS);
   }
   else if (TELEMETRY_STREAMING()) {
     uint8_t rssi;
     rssi = min((uint8_t)99, TELEMETRY_RSSI());
-    lcdDrawText(40, 16, "RSSI : ", SMLSIZE);
-    lcdDrawNumber(68, 16, rssi, LEADING0 | SMLSIZE, 2);
-    lcdDrawRect(40, 24, 38, 7);
+    lcdDrawText(57, 2, "RSSI : ", SMLSIZE);
+    lcdDrawNumber(85, 2, rssi, LEADING0 | SMLSIZE, 2);
+    lcdDrawRect(57, 8, 38, 7);
     uint8_t v = 4*rssi/11;
-    lcdDrawFilledRect(41, 25, v, 5, (rssi < getRssiAlarmValue(0)) ? DOTTED : SOLID);
+    lcdDrawFilledRect(58, 9, v, 5, (rssi < getRssiAlarmValue(0)) ? DOTTED : SOLID);
   }
   else {
-    lcdDrawText(40, 20, STR_NODATA, INVERS);
+    lcdDrawText(57, 4, STR_NODATA, INVERS);
   }
 }
 
@@ -339,7 +339,7 @@ void menuMainView(event_t event)
 
   {
     // Model Name
-    putsModelName(MODELNAME_X, MODELNAME_Y, g_model.header.name, g_eeGeneral.currModel, BIGSIZE);
+    putsModelName(MODELNAME_X, MODELNAME_Y, g_model.header.name, g_eeGeneral.currModel, MIDSIZE);
 
     // Main Voltage (or alarm if any)
     displayVoltageOrAlarm();
@@ -351,10 +351,10 @@ void menuMainView(event_t event)
     displayRssiLine();
   }
 
-  for (uint8_t i=0; i<2; i++) {
+  for (uint8_t i=0; i<4; i++) {
     int16_t val = channelOutputs[i];
-    uint8_t y = LCD_H/2+FH+2+i*(FH+2);
-    drawStringWithIndex(LCD_W/2-FW-3, y, "CH", i+1, SMLSIZE | INVERS);
+    uint8_t y = LCD_H/2 - (FH+2) + i * (FH+2);
+    drawStringWithIndex(5, y, "CH", i+1, SMLSIZE | INVERS);
     lcdDrawNumber(lcdLastRightPos + 1, y, PPM_CH_CENTER(i)+val/2);
     lcdDrawText(lcdLastRightPos, y, "us");
   }

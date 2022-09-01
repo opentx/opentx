@@ -593,6 +593,12 @@ void modelDefault(uint8_t id)
     g_model.switchWarningState |= (1 << (3*i));
   }
 #endif
+
+#if defined(PCBACAIR)
+  g_model.xValue[0] = 10;
+  g_model.xValue[1] = 50;
+#endif
+
 }
 
 #if defined(VIRTUAL_INPUTS)

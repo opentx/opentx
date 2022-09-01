@@ -1231,6 +1231,18 @@ void evalMixes(uint8_t tick10ms)
 #endif
   }
 
+#if defined(PCBACAIR)
+  // A7 Custom mixing
+  // V1 = X1 / X2;  (0 < V1 < 1)
+  uint16_t v1;
+  if (g_model.xValue[1] == 0) {
+    g_model.xValue[0] = 10;
+    g_model.xValue[1] = 50;
+  }
+
+  v1 = g_model.xValue[0] * 100 / g_model.xValue[1];
+#endif 
+
   //========== LIMITS ===============
   for (uint8_t i=0; i<MAX_OUTPUT_CHANNELS; i++) {
     // chans[i] holds data from mixer.   chans[i] = v*weight => 1024*256
@@ -1247,6 +1259,15 @@ void evalMixes(uint8_t tick10ms)
 #endif
 
     int16_t value = applyLimits(i, q);  // applyLimits will remove the 256 100% basis
+
+#if defined(PCBACAIR)
+      // CH3 = V1 * CH1 + CH2 * (1 - V1)
+      if(i == 2)
+        value = (v1 * channelOutputs[0] + channelOutputs[1] * (100 - v1)) / 100;
+      // CH4 = V1 * CH2 + CH1 * (1 - V1)
+      else if (i == 3)
+        value = (v1 * channelOutputs[1] + channelOutputs[0] * (100 - v1)) / 100;
+#endif 
 
     cli();
     channelOutputs[i] = value;  // copy consistent word to int-level

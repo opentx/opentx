@@ -22,12 +22,28 @@
 
 void menuModelControls(event_t event)
 {
-  MENU("CONTROL SOURCES", menuTabModel, MENU_MODEL_CONTROLS, 5, {1, 1, 1, 1, 1});
+  MENU("CONTROL SOURCES", menuTabModel, MENU_MODEL_CONTROLS, 5, {0, 0, 1, 1, 1});
 
-  for (uint8_t i=2; i<7; i++) {
+  coord_t y = MENU_HEADER_HEIGHT + 2;
+  lcdDrawText(0, y, "X1", 0);
+  LcdFlags attr = (menuVerticalPosition == 0 ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
+  lcdDrawNumber(40, y, g_model.xValue[0], attr);
+  if (attr) {
+    CHECK_INCDEC_MODELVAR(event, g_model.xValue[0], 0, g_model.xValue[1] - 1);
+  }
+
+  y += (FH+2);
+  attr = (menuVerticalPosition == 1 ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
+  lcdDrawText(0, y, "X2", 0);
+  lcdDrawNumber(40, y, g_model.xValue[1], attr);
+  if (attr) {
+    CHECK_INCDEC_MODELVAR(event, g_model.xValue[1], g_model.xValue[0] + 1, 250);
+  }
+
+  for (uint8_t i = 4; i < 7; i++) {
     MixData * md = mixAddress(2+i);
-    coord_t y = MENU_HEADER_HEIGHT + 2 + i*(FH+2) - 2*FH;
-    LcdFlags attr = (menuVerticalPosition==(i-2) ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
+    y += (FH+2);
+    attr = (menuVerticalPosition==(i-2) ? (s_editMode>0 ? BLINK|INVERS : INVERS) : 0);
     putsChn(0, y, i+1, 0);
     drawSource(40, y, md->srcRaw, STREXPANDED|(menuHorizontalPosition == 0 ? attr : 0));
     drawSwitch(80, y, md->swtch, STREXPANDED|(menuHorizontalPosition == 1 ? attr : 0));

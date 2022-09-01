@@ -61,7 +61,7 @@ elseif(PCB STREQUAL X9D)
   set(SERIAL2_DRIVER ../common/arm/stm32/serial2_driver.cpp)
   set(GVAR_SCREEN model_gvars.cpp)
 elseif(PCB STREQUAL X7)
-  set(PWR_BUTTON "PRESS" CACHE STRING "Pwr button type (PRESS/SWITCH)")
+  set(PWR_BUTTON "SWITCH" CACHE STRING "Pwr button type (PRESS/SWITCH)")
   set(CPU_TYPE STM32F2)
   set(CPU_TYPE_FULL STM32F205xE)  # for size report
   set(LINKER_SCRIPT targets/taranis/stm32f2_flash.ld)

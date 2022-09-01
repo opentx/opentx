@@ -828,6 +828,8 @@ PACK(struct ModelData {
   SwashRingData swashR;
   FlightModeData flightModeData[MAX_FLIGHT_MODES];
 
+  uint8_t        xValue[2];
+
   AVR_FIELD(int8_t ppmFrameLength)     // 0=22.5ms  (10ms-30ms) 0.5ms increments
 
   NOBACKUP(uint8_t thrTraceSrc);
