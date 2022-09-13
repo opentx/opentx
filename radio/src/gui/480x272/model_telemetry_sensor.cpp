@@ -245,7 +245,7 @@ bool menuModelSensor(event_t event)
         if (sensor->type == TELEM_TYPE_CALCULATED) {
           if (sensor->formula == TELEM_FORMULA_CELL) {
             lcdDrawText(MENUS_MARGIN_LEFT, y, STR_CELLINDEX);
-            sensor->cell.index = editChoice(SENSOR_2ND_COLUMN, y, STR_VCELLINDEX, sensor->cell.index, 0, 8, attr, event);
+            sensor->cell.index = editChoice(SENSOR_2ND_COLUMN, y, STR_VCELLINDEX, sensor->cell.index, TELEM_CELL_INDEX_LOWEST, TELEM_CELL_INDEX_LAST, attr, event);
             break;
           }
           else if (sensor->formula == TELEM_FORMULA_DIST) {
