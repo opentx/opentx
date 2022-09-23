@@ -394,6 +394,8 @@ void TelemetrySimulator::generateTelemetryFrame()
         cellValues[3] = ui->cell4->value();
         cellValues[4] = ui->cell5->value();
         cellValues[5] = ui->cell6->value();
+        cellValues[6] = ui->cell7->value();
+        cellValues[7] = ui->cell8->value();
         generateSportPacket(buffer, ui->cells_inst->text().toInt(&ok, 0) - 1, DATA_FRAME, CELLS_FIRST_ID, flvss->setAllCells_GetNextPair(cellValues));
       }
       else {
@@ -499,6 +501,7 @@ void TelemetrySimulator::FlvssEmulator::encodeAllCells()
   cellData1 = encodeCellPair(numCells, 0, cellFloats[0], cellFloats[1]);
   if (numCells > 2) cellData2 = encodeCellPair(numCells, 2, cellFloats[2], cellFloats[3]); else cellData2 = 0;
   if (numCells > 4) cellData3 = encodeCellPair(numCells, 4, cellFloats[4], cellFloats[5]); else cellData3 = 0;
+  if (numCells > 6) cellData4 = encodeCellPair(numCells, 6, cellFloats[6], cellFloats[7]); else cellData4 = 0;
 }
 
 void TelemetrySimulator::FlvssEmulator::splitIntoCells(double totalVolts)
@@ -516,7 +519,7 @@ void TelemetrySimulator::FlvssEmulator::splitIntoCells(double totalVolts)
   numCells = numCells > MAXCELLS ? MAXCELLS : numCells; // force into valid cell count in case of input out of range
 }
 
-uint32_t TelemetrySimulator::FlvssEmulator::setAllCells_GetNextPair(double cellValues[6])
+uint32_t TelemetrySimulator::FlvssEmulator::setAllCells_GetNextPair(double cellValues[MAXCELLS])
 {
   numCells = 0;
   for (uint32_t i = 0; i < MAXCELLS; i++) {
@@ -554,6 +557,9 @@ uint32_t TelemetrySimulator::FlvssEmulator::setAllCells_GetNextPair(double cellV
     break;
   case 4:
     cellData = cellData3;
+    break;
+  case 6:
+    cellData = cellData4;
     break;
   }
   nextCellNum += 2;

@@ -387,7 +387,7 @@
 #define TR_VPREC               "0.--""0.0 ""0.00"
 
 #define LEN_VCELLINDEX         "\007"
-#define TR_VCELLINDEX          "Menor\0 ""1\0     ""2\0     ""3\0     ""4\0     ""5\0     ""6\0     ""Mayor\0 ""Delta\0"
+#define TR_VCELLINDEX          "Menor\0 ""1\0     ""2\0     ""3\0     ""4\0     ""5\0     ""6\0     ""7\0     ""8\0     ""Mayor\0 ""Delta\0"
 
 #define LEN_GYROS                      "\004"
 #define TR_GYROS                       "GyrX""GyrY"
