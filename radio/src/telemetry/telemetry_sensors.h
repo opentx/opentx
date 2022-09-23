@@ -96,27 +96,27 @@ class TelemetryItem
 
     void setValue(const TelemetrySensor & sensor, int32_t newVal, uint32_t unit, uint32_t prec=0);
 
-    inline bool isAvailable()
+    inline bool isAvailable() const
     {
       return (timeout != TELEMETRY_SENSOR_TIMEOUT_UNAVAILABLE);
     }
 
-    inline bool isOld()
+    inline bool isOld() const
     {
       return (timeout == TELEMETRY_SENSOR_TIMEOUT_OLD);
     }
 
-    inline bool hasReceiveTime()
+    inline bool hasReceiveTime() const
     {
       return timeout >= 0;
     }
 
-    inline int8_t getDelaySinceLastValue()
+    inline int8_t getDelaySinceLastValue() const
     {
       return hasReceiveTime() ? TELEMETRY_SENSOR_TIMEOUT_START - timeout : TELEMETRY_SENSOR_TIMEOUT_OLD;
     }
 
-    inline bool isFresh()
+    inline bool isFresh() const
     {
       return TELEMETRY_SENSOR_TIMEOUT_START - timeout <= 1; // 2 * 160ms
     }
