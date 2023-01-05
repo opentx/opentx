@@ -98,7 +98,7 @@ PACK(struct ExpoData {
   uint16_t mode:2;
   uint16_t scale:14;
   uint16_t srcRaw:10;
-  int16_t  carryTrim:6;
+  int16_t  trimSource:6;
   uint32_t chn:5;
   int32_t  swtch:9;
   uint32_t flightModes:9;
