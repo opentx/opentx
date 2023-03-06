@@ -2599,3 +2599,6 @@ James D McKeown
 Michal Král
 Gérard Pedro
 Thomas David
+Jean-Baptiste Chancerelle
+Michel Stephanno
+James Lauridson
