@@ -2602,3 +2602,5 @@ Thomas David
 Jean-Baptiste Chancerelle
 Michel Stephanno
 James Lauridson
+Timothy Bailey
+Burt Pickard-Richardson
