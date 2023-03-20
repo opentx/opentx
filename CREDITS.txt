@@ -2604,3 +2604,6 @@ Michel Stephanno
 James Lauridson
 Timothy Bailey
 Burt Pickard-Richardson
+Daniel Elias
+Simon Hasewski
+Edward Kolodziej
