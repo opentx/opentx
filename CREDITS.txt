@@ -2608,3 +2608,4 @@ Daniel Elias
 Simon Hasewski
 Edward Kolodziej
 Lars Gebauer
+Richard Weiss
