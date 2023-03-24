@@ -714,30 +714,12 @@ int32_t TelemetrySensor::getValue(int32_t value, uint8_t unit, uint8_t prec) con
 
 bool TelemetrySensor::isConfigurable() const
 {
-  if (type == TELEM_TYPE_CALCULATED) {
-    if (formula >= TELEM_FORMULA_CELL) {
-      return false;
-    }
-  }
-  else {
-    if (unit >= UNIT_FIRST_VIRTUAL)  {
-      return false;
-    }
-  }
-  return true;
+  return ( (type == TELEM_TYPE_CALCULATED && formula >= TELEM_FORMULA_CELL) || unit >= UNIT_FIRST_VIRTUAL) ? false : true;
 }
 
 bool TelemetrySensor::isPrecConfigurable() const
 {
-  if (isConfigurable()) {
-    return true;
-  }
-  else if (unit == UNIT_CELLS) {
-    return true;
-  }
-  else {
-    return false;
-  }
+  return (isConfigurable() || unit == UNIT_CELLS) ? true : false;
 }
 
 int32_t TelemetrySensor::getPrecMultiplier() const
