@@ -2635,3 +2635,7 @@ Brett Lee
 Rodney Charters
 Walter Schirmer
 Steve Shipley
+Hans Maier
+Sébastien Pollet
+Franz Miglbauer
+Stany Verdoodt
