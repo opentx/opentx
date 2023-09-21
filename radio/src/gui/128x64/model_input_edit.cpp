@@ -144,11 +144,11 @@ void menuModelExpoOne(event_t event)
 
       case EXPO_FIELD_TRIM:
         uint8_t notStick = (ed->srcRaw > MIXSRC_Ail);
-        int8_t carryTrim = -ed->carryTrim;
+        int8_t carryTrim = -ed->trimSource;
         lcdDrawTextAlignedLeft(y, STR_TRIM);
         lcdDrawTextAtIndex(EXPO_ONE_2ND_COLUMN, y, STR_VMIXTRIMS, (notStick && carryTrim == 0) ? 0 : carryTrim+1, RIGHT | (menuHorizontalPosition==0 ? attr : 0));
         if (attr)
-          ed->carryTrim = -checkIncDecModel(event, carryTrim, notStick ? TRIM_ON : -TRIM_OFF, -TRIM_LAST);
+          ed->trimSource = -checkIncDecModel(event, carryTrim, notStick ? TRIM_ON : -TRIM_OFF, -TRIM_LAST);
         break;
     }
     y += FH;
