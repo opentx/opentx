@@ -1,0 +1,27 @@
+---
+BasedOnStyle: LLVM
+IndentWidth: 2
+UseTab: Never
+
+---
+Language: Cpp
+AllowShortBlocksOnASingleLine: false
+AllowShortIfStatementsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: false
+BreakBeforeBraces: Custom
+BreakConstructorInitializers: AfterColon
+BraceWrapping: 
+  AfterCaseLabel: true
+  AfterFunction: true
+  BeforeElse: true
+  BeforeLambdaBody: false
+ColumnLimit: 0
+IncludeCategories:
+  - Regex: '<[[:alnum:].]+>'
+    Priority: 0
+  - Regex: '.*'
+    Priority: 1
+IndentCaseLabels: true
+# PackConstructorInitializers: Never
+PenaltyReturnTypeOnItsOwnLine: 0
+PointerAlignment: Middle
