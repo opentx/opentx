@@ -95,8 +95,8 @@ static const char * const PXX2ModulesNames[] = {
   "ISRM-PRO",
   "ISRM-S",
   "R9M",
-  "R9MLite",
-  "R9MLite-PRO",
+  "R9M Lite",
+  "R9M Lite Pro",
   "ISRM-N",
   "ISRM-S-X9",
   "ISRM-S-X10E",
@@ -168,16 +168,16 @@ static const char * const PXX2ReceiversNames[] = {
   "---",
   "X8R",
   "RX8R",
-  "RX8R-PRO",
+  "RX8R Pro",
   "RX6R",
   "RX4R",
   "G-RX8",
   "G-RX6",
   "X6R",
   "X4R",
-  "X4R-SB",
+  "X4R SB",
   "XSR",
-  "XSR-M",
+  "XSR M",
   "RXSR",
   "S6R",
   "S8R",
@@ -185,17 +185,67 @@ static const char * const PXX2ReceiversNames[] = {
   "XM+",
   "XMR",
   "R9",
-  "R9-SLIM",
-  "R9-SLIM+",
-  "R9-MINI",
-  "R9-MM",
-  "R9-STAB", // R9-STAB has OTA
-  "R9-MINI-OTA", // this one has OTA (different bootloader)
-  "R9-MM-OTA", // this one has OTA (different bootloader)
-  "R9-SLIM+-OTA", // this one has OTA (different bootloader)
-  "Archer-X", // this one has OTA (internal module)
-  "R9MX", // this one has OTA
-  "R9SX", // this one has OTA
+  "R9 SLIM",
+  "R9 SLIM+",
+  "R9 MINI",
+  "R9 MM",
+  "R9 Stab",
+  "R9 Mini OTA",
+  "R9 MM OTA",
+  "R9 SLIM+ OTA",
+  "Archer X",
+  "R9MX",
+  "R9SX",
+  "---",
+  "---",
+  "---",
+  "---",
+  "---",
+  "---",
+  "---",
+  "---",
+  "---",
+  "---",
+  "---",
+  "---",
+  "---",
+  "---",
+  "---",
+  "---",
+  "---",
+  "---",
+  "---",
+  "---",
+  "---",
+  "---",
+  "---",
+  "---",
+  "---",
+  "---",
+  "---",
+  "---",
+  "---",
+  "---",
+  "---",
+  "---",
+  "---",
+  "SR10 Plus", // 0x40
+  "R10 Plus",
+  "GR8 Plus",
+  "R8 Plus",
+  "SR8 Plus",
+  "GR6 Plus",
+  "R6 Plus",
+  "R6M (ESC DC)",
+  "Rs Plus",
+  "RS Mini",
+  "R6FB",
+  "GR6FB",
+  "SR12 Plus",
+  "R12 Plus",
+  "R6 Mini ESC",
+  "SR6 Mini",
+  "SR6 Mini ESC", // 0x50
 };
 
 inline const char * getPXX2ReceiverName(uint8_t modelId)
@@ -207,48 +257,110 @@ inline const char * getPXX2ReceiverName(uint8_t modelId)
 }
 
 enum {
-  RECEIVER_OPTION_OTA,
+  RECEIVER_OPTION_24G,
+  RECEIVER_OPTION_900M,
+  RECEIVER_OPTION_OTA_TO_UPDATE_SELF,
+  RECEIVER_OPTION_OTA_TO_UPDATE_OTHER,
+  RECEIVER_OPTION_TANDEM,
+  RECEIVER_OPTION_TWIN,
+  RECEIVER_OPTION_D_TELE_PORT,
 };
 
 /* Receiver options order:
- * - OTA (0x01)
+ * - 2.4G (0x01)
+ * - 900M (0x02)
+ * - OTA to update self (0x04)
+ * - OTA to update sensors (0x08)
+ * - Tandem Receiver (0x10)
+ * - Twin Receiver (0x20)
+ * - Dynamic Telemetry Port (0x40)
  */
 static const uint8_t PXX2ReceiverOptions[] = {
 #if defined(SIMU)
   0b11111111, // None = display all options on SIMU
 #else
-  0b00000000, // None = display all options on SIMU
+  0b00000000, // None
 #endif
-  0b11111110, // X8R
-  0b11111110, // RX8R
-  0b11111110, // RX8R-PRO
-  0b11111111, // RX6R
-  0b11111111, // RX4R
-  0b11111111, // G-RX8
-  0b11111111, // G-RX6
-  0b11111110, // X6R
-  0b11111110, // X4R
-  0b11111110, // X4R-SB
-  0b11111110, // XSR
-  0b11111110, // XSR-M
-  0b11111111, // RXSR
-  0b11111110, // S6R
-  0b11111110, // S8R
-  0b11111110, // XM
-  0b11111110, // XM+
-  0b11111110, // XMR
-  0b11111110, // R9
-  0b11111110, // R9-SLIM
-  0b11111110, // R9-SLIM+
-  0b11111110, // R9-MINI
-  0b11111110, // R9-MM
-  0b11111111, // R9-STAB+OTA
-  0b11111111, // R9-MINI+OTA
-  0b11111111, // R9-MM+OTA
-  0b11111111, // R9-SLIM+OTA
-  0b11111111, // ARCHER-X
-  0b11111111, // R9MX
-  0b11111111, // R9SX
+  0b00000001, // X8R
+  0b00000001, // RX8R
+  0b00000001, // RX8R-PRO
+  0b00001001, // RX6R, flash sensors by OTA
+  0b00001001, // RX4R, flash sensors by OTA
+  0b00001001, // G-RX8, flash sensors by OTA
+  0b00001001, // G-RX6, flash sensors by OTA
+  0b00000001, // X6R
+  0b00000001, // X4R
+  0b00000001, // X4R-SB
+  0b00000001, // XSR
+  0b00000001, // XSR-M
+  0b00001001, // RXSR, flash sensors by OTA
+  0b00000001, // S6R
+  0b00000001, // S8R
+  0b00000001, // XM
+  0b00000001, // XM+
+  0b00000001, // XMR
+  0b00000010, // R9
+  0b00000010, // R9-SLIM
+  0b00000010, // R9-SLIM+
+  0b00000010, // R9-MINI
+  0b00000010, // R9-MM
+  0b00001110, // R9-STAB+OTA, flash self + sensors by OTA
+  0b00001110, // R9-MINI+OTA, flash self + sensors by OTA
+  0b00001110, // R9-MM+OTA, flash self + sensors by OTA
+  0b00001110, // R9-SLIM+OTA, flash self + sensors by OTA
+  0b00001101, // ARCHER-X, flash self + sensors by OTA
+  0b00001110, // R9MX, flash self + sensors by OTA
+  0b00001110, // R9SX, flash self + sensors by OTA
+  0b00010100, // TDMX, flash self by OTA
+  0b01010100, // TDR18, flash self by OTA
+  0b01010100, // TDR10, flash self by OTA
+  0b00010100, // TDR6, flash self by OTA
+  0b01010100, // TDR12
+  0b01010100, // TDSR12
+  0b01010100, // TDSR18
+  0b00010100, // 0x26
+  0b00010100,
+  0b00010100,
+  0b00010100,
+  0b00010100, // 0x2A
+  0b00010100,
+  0b00010100,
+  0b00010100,
+  0b00010100,
+  0b00010100, // 0x2F
+  0b00010100, // reserve 0x23 ~ 0x30 for TD Receivers
+  0b00100100, // TWMX, flash self by OTA
+  0b01100100, // TWSR12, flash self by OTA
+  0b01100100, // TWR12, flash self by OTA
+  0b00100100, // TWGR6, flash self by OTA
+  0b00100100, // TWGR8
+  0b00100100, // TWR6
+  0b00100100, // TWR8
+  0b00100100, // TWGR6FB
+  0b00100100, // TWR6FB
+  0b00100100, // 0x3A
+  0b00100100,
+  0b00100100,
+  0b00100100,
+  0b00100100,
+  0b00100100, // reserve 0x38 ~ 0x3F for TW Receivers
+  0b01001101, // SR10-plus
+  0b01001101, // R10-plus
+  0b00001101, // GR8-plus
+  0b00001101, // R8-plus
+  0b00001101, // SR8-plus
+  0b00001101, // GR6-plus
+  0b00001101, // R6-plus
+  0b00001101, // R6M (ESC DC)
+  0b00001101, // RS-plus
+  0b00001101, // RS Mini
+  0b00001101, // R6FB
+  0b00001101, // GR6FB
+  0b01001101, // SR12-plus
+  0b01001101, // R12-plus
+  0b00001101, // R6 Mini E
+  0b00001101, // SR6 Mini
+  0b00001101, // SR6 Mini E
 };
 
 inline uint8_t getPXX2ReceiverOptions(uint8_t modelId)
