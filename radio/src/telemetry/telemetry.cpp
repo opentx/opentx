@@ -187,7 +187,6 @@ static void pollExtTelemetry()
 void telemetryWakeup()
 {
   uint8_t requiredTelemetryProtocol = modelTelemetryProtocol();
-  uint8_t data;
 
 #if defined(REVX)
   uint8_t requiredSerialInversion = g_model.moduleData[EXTERNAL_MODULE].invertedSerial;
@@ -222,6 +221,7 @@ void telemetryWakeup()
   
 #if defined(INTERNAL_MODULE_CRSF) && !defined(SIMU)
   if (IS_INTERNAL_MODULE_ENABLED()) {
+    uint8_t data;
     if (intCrsfTelemetryFifo.pop(data)) {
       LOG_TELEMETRY_WRITE_START();
       do {
@@ -234,6 +234,7 @@ void telemetryWakeup()
 
 #if defined(PCBSKY9X)
   if (telemetryProtocol == PROTOCOL_TELEMETRY_FRSKY_D_SECONDARY) {
+    uint8_t data;
     while (telemetrySecondPortReceive(data)) {
       processTelemetryData(data);
     }

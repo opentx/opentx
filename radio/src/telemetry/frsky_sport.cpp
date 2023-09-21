@@ -51,6 +51,8 @@ const FrSkySportSensor sportSensors[] = {
   { ACCX_FIRST_ID, ACCX_LAST_ID, 0, ZSTR_ACCX, UNIT_G, 3 },
   { ACCY_FIRST_ID, ACCY_LAST_ID, 0, ZSTR_ACCY, UNIT_G, 3 },
   { ACCZ_FIRST_ID, ACCZ_LAST_ID, 0, ZSTR_ACCZ, UNIT_G, 3 },
+  { ANGLE_FIRST_ID, ANGLE_LAST_ID, 0, ZSTR_ROLL, UNIT_DEGREE, 2 },
+  { ANGLE_FIRST_ID, ANGLE_LAST_ID, 1, ZSTR_PITCH, UNIT_DEGREE, 2 },
   { CURR_FIRST_ID, CURR_LAST_ID, 0, ZSTR_CURR, UNIT_AMPS, 1 },
   { VFAS_FIRST_ID, VFAS_LAST_ID, 0, ZSTR_VFAS, UNIT_VOLTS, 2 },
   { AIR_SPEED_FIRST_ID, AIR_SPEED_LAST_ID, 0, ZSTR_ASPD, UNIT_KTS, 1 },
@@ -351,6 +353,10 @@ void sportProcessTelemetryPacketWithoutCrc(uint8_t origin, const uint8_t * packe
             audioEvent(AU_SERVO_KO);
             servosState = newServosState;
           }
+        }
+        else if (dataId >= ANGLE_FIRST_ID && dataId <= ANGLE_LAST_ID) {
+          sportProcessTelemetryPacket(dataId, 0, instance, int16_t(data & 0xFFFFu));
+          sportProcessTelemetryPacket(dataId, 1, instance, int16_t(data >> 16u));
         }
         else {
           sportProcessTelemetryPacket(dataId, 0, instance, data);
