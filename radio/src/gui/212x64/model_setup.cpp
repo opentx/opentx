@@ -1499,7 +1499,7 @@ void menuModelSetup(event_t event)
 #if defined (MULTIMODULE)
     case ITEM_MODEL_SETUP_EXTERNAL_MODULE_STATUS:
     {
-      lcdDrawText(INDENT_WIDTH, y, STR_MODULE_STATUS);
+      lcdDrawTextAlignedLeft(y, STR_MODULE_STATUS);
       char statusText[64];
       getModuleStatusString(EXTERNAL_MODULE, statusText);
       lcdDrawText(MODEL_SETUP_2ND_COLUMN, y, statusText);
