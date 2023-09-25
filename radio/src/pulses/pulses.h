@@ -112,6 +112,7 @@ class ReceiverSettings {
     uint8_t fport;
     uint8_t enablePwmCh5Ch6;
     uint8_t fport2;
+    uint8_t sbus24;
     uint8_t outputsCount;
     uint8_t outputsMapping[24];
 };
