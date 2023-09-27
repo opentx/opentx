@@ -128,7 +128,7 @@
 #define TR_R9M_PXX2_RF_PROTOCOLS       "ACCESS""FCC\0  ""EU\0   ""Flex"
 
 #define LEN_SPORT_MODES                "\014"
-#define TR_SPORT_MODES                 "S.PORT\0     ""F.PORT\0     ""FBUS(FPORT2)"
+#define TR_SPORT_MODES                 "S.Port\0     ""F.PORT\0     ""FBUS(FPORT2)"
 
 #define LEN_R9M_REGION                 "\006"
 #define TR_R9M_REGION                  "FCC\0  ""EU\0   ""868MHz""915MHz"
@@ -168,3 +168,8 @@
 
 #define LEN_FSGROUPS                    "\001"
 #define TR_FSGROUPS                     "-""1""2""3"
+
+#define STR_SPORT                       "S.Port"
+#define STR_FBUS                        "FBUS"
+#define STR_SBUS_IN                     "SBUS In"
+#define STR_SBUS_OUT                    "SBUS Out"

@@ -228,22 +228,22 @@ bool menuModelReceiverOptions(event_t event)
             }
 
             if (isPXX2ReceiverOptionAvailable(receiverModelId, RECEIVER_OPTION_D_TELE_PORT)) {
-              if (mapping == 0b01000000) {
-                lcdDrawText(100, y,  "S.Port", attr);
+              if (mapping == PXX2_CHMAP_SPORT) {
+                lcdDrawText(100, y, STR_SPORT, attr);
                 mapping = channelMax + 1;
               }
-              else if (mapping == 0b10000000) {
-                lcdDrawText(100, y, "SBUS Out", attr);
+              else if (mapping == PXX2_CHMAP_SBUS_OUT) {
+                lcdDrawText(100, y, STR_SBUS_OUT, attr);
                 mapping = channelMax + 2;
               }
-              else if (mapping == 0b11000000) {
-                lcdDrawText(100, y, "FBUS", attr);
+              else if (mapping == PXX2_CHMAP_FBUS) {
+                lcdDrawText(100, y, STR_FBUS, attr);
                 mapping = channelMax + 3;
               }
               if (pin == 0) {
                 selectionMax = channelMax + 4;
-                if (mapping == 0b10100000) {
-                  lcdDrawText(100, y, "SBUS In", attr);
+                if (mapping == PXX2_CHMAP_SBUS_IN) {
+                  lcdDrawText(100, y, STR_SBUS_IN, attr);
                   mapping = selectionMax;
                 } 
               }
@@ -254,12 +254,12 @@ bool menuModelReceiverOptions(event_t event)
             else if (IS_RECEIVER_CAPABILITY_ENABLED(RECEIVER_CAPABILITY_ENABLE_PWM_CH5_CH6)) {
               if (CH_ENABLE_SPORT == pin) {
                 if (++selectionMax == mapping) {
-                  lcdDrawText(100, y, "S.Port", attr);
+                  lcdDrawText(100, y, STR_SPORT, attr);
                 }
               }
               else if (CH_ENABLE_SBUS == pin) {
                 if (++selectionMax == mapping) {
-                  lcdDrawText(100, y, "SBUS", attr);
+                  lcdDrawText(100, y, STR_SBUS_OUT, attr);
                 }
               }
             }
@@ -270,13 +270,13 @@ bool menuModelReceiverOptions(event_t event)
               if (checkIncDec_Ret) {
                 if (isPXX2ReceiverOptionAvailable(receiverModelId, RECEIVER_OPTION_D_TELE_PORT)) {
                   if (mapping == channelMax + 1)
-                    mapping = 0b01000000; // S.Port
+                    mapping = PXX2_CHMAP_SPORT; // S.Port
                   else if (mapping == channelMax + 2)
-                    mapping = 0b10000000; // SBUS Out
+                    mapping = PXX2_CHMAP_SBUS_OUT; // SBUS Out
                   else if (mapping == channelMax + 3)
-                    mapping = 0b11000000; // FBUS
+                    mapping = PXX2_CHMAP_FBUS; // FBUS
                   else if (mapping == channelMax + 4)
-                    mapping = 0b10100000; // SBUS In
+                    mapping = PXX2_CHMAP_SBUS_IN; // SBUS In
                 }
                 reusableBuffer.hardwareAndSettings.receiverSettings.outputsMapping[pin] = mapping;
                 reusableBuffer.hardwareAndSettings.receiverSettings.dirty = RECEIVER_SETTINGS_DIRTY;
