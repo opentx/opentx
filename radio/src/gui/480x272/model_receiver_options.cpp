@@ -215,44 +215,79 @@ bool menuModelReceiverOptions(event_t event)
         {
           uint8_t pin = i - ITEM_RECEIVER_SETTINGS_PINMAP_FIRST;
           if (pin < reusableBuffer.hardwareAndSettings.receiverSettings.outputsCount) {
-            uint8_t & mapping = reusableBuffer.hardwareAndSettings.receiverSettings.outputsMapping[pin];
-            uint8_t channel = g_model.moduleData[g_moduleIdx].channelsStart + mapping;
-            int32_t channelValue = channelOutputs[channel];
+            uint8_t mapping = reusableBuffer.hardwareAndSettings.receiverSettings.outputsMapping[pin];
             lcdDrawText(MENUS_MARGIN_LEFT, y, STR_PIN);
             lcdDrawNumber(lcdNextPos + 1, y, pin + 1);
 
             uint8_t channelMax = sentModuleChannels(g_moduleIdx) - 1;
             uint8_t selectionMax = channelMax;
 
-            if (IS_RECEIVER_CAPABILITY_ENABLED(RECEIVER_CAPABILITY_ENABLE_PWM_CH5_CH6)) {
-              if (CH_ENABLE_SPORT == pin || CH_ENABLE_SBUS == pin) {
-                selectionMax += 1;
+            if (mapping <= channelMax) {
+              uint8_t channel = g_model.moduleData[g_moduleIdx].channelsStart + mapping;
+              putsChn(100, y, channel + 1, attr);
+            }
+
+            if (isPXX2ReceiverOptionAvailable(receiverModelId, RECEIVER_OPTION_D_TELE_PORT)) {
+              if (mapping == 0b01000000) {
+                lcdDrawText(100, y,  "S.Port", attr);
+                mapping = channelMax + 1;
               }
-              if (CH_ENABLE_SPORT == pin && selectionMax == channel) {
-                lcdDrawText(100, y,  "S.PORT", attr);
+              else if (mapping == 0b10000000) {
+                lcdDrawText(100, y, "SBUS Out", attr);
+                mapping = channelMax + 2;
               }
-              else if (CH_ENABLE_SBUS == pin && selectionMax == channel) {
-                lcdDrawText(100, y,  "SBUS", attr);
+              else if (mapping == 0b11000000) {
+                lcdDrawText(100, y, "FBUS", attr);
+                mapping = channelMax + 3;
+              }
+              if (pin == 0) {
+                selectionMax = channelMax + 4;
+                if (mapping == 0b10100000) {
+                  lcdDrawText(100, y, "SBUS In", attr);
+                  mapping = selectionMax;
+                } 
               }
               else {
-                putsChn(100, y, channel + 1, attr);
+                selectionMax = channelMax + 3;
               }
             }
-            else {
-              putsChn(100, y, channel + 1, attr);
+            else if (IS_RECEIVER_CAPABILITY_ENABLED(RECEIVER_CAPABILITY_ENABLE_PWM_CH5_CH6)) {
+              if (CH_ENABLE_SPORT == pin) {
+                if (++selectionMax == mapping) {
+                  lcdDrawText(100, y, "S.Port", attr);
+                }
+              }
+              else if (CH_ENABLE_SBUS == pin) {
+                if (++selectionMax == mapping) {
+                  lcdDrawText(100, y, "SBUS", attr);
+                }
+              }
             }
 
             // Channel
             if (attr) {
               mapping = checkIncDec(event, mapping, 0, selectionMax);
               if (checkIncDec_Ret) {
+                if (isPXX2ReceiverOptionAvailable(receiverModelId, RECEIVER_OPTION_D_TELE_PORT)) {
+                  if (mapping == channelMax + 1)
+                    mapping = 0b01000000; // S.Port
+                  else if (mapping == channelMax + 2)
+                    mapping = 0b10000000; // SBUS Out
+                  else if (mapping == channelMax + 3)
+                    mapping = 0b11000000; // FBUS
+                  else if (mapping == channelMax + 4)
+                    mapping = 0b10100000; // SBUS In
+                }
+                reusableBuffer.hardwareAndSettings.receiverSettings.outputsMapping[pin] = mapping;
                 reusableBuffer.hardwareAndSettings.receiverSettings.dirty = RECEIVER_SETTINGS_DIRTY;
               }
             }
 
             // Bargraph
-            if (channel <= channelMax) {
+            if (mapping <= channelMax) {
               lcdDrawRect(RECEIVER_OPTIONS_2ND_COLUMN, y + 4, wbar + 1, 10);
+              uint8_t channel = g_model.moduleData[g_moduleIdx].channelsStart + mapping;
+              int32_t channelValue = channelOutputs[channel];
               auto lenChannel = limit<uint8_t>(1, (abs(channelValue) * wbar / 2 + lim / 2) / lim, wbar / 2);
               auto xChannel = (channelValue > 0) ? RECEIVER_OPTIONS_2ND_COLUMN + wbar / 2 : RECEIVER_OPTIONS_2ND_COLUMN + wbar / 2 + 1 - lenChannel;
               lcdDrawSolidFilledRect(xChannel, y + 5, lenChannel, 8, TEXT_INVERTED_BGCOLOR);
