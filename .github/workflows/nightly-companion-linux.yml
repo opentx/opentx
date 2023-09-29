@@ -1,12 +1,12 @@
 name: Nightly - Linux Companion
 
 on:
-  # workflow_run:
-  #   workflows: ["MacOSX nightly Companion"]
-  #   types:
-  #     - completed
+  workflow_run:
+    workflows: ["Nightly - Companion"]
+    types:
+      - completed
      
-  workflow_dispatch:  
+  workflow_dispatch:
      
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
@@ -48,7 +48,7 @@ jobs:
     - name: Build
       working-directory: ${{github.workspace}}
       shell: bash
-      # Execute the build.  You can specify a specific target with "--target <NAME>"
+      # Execute the build. You can specify a specific target with "--target <NAME>"
       run: mkdir ${{github.workspace}}/output && tools/build-companion-nightly.sh ${{github.workspace}}  ${{github.workspace}}/output/
       
     - uses: pyTooling/Actions/releaser@main

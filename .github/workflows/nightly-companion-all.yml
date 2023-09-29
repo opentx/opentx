@@ -1,0 +1,13 @@
+name: Nightly - Companion
+
+on: workflow_dispatch
+     
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+
+    steps:      
+    - uses: pyTooling/Actions/releaser@main
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        tag: 'nightly'

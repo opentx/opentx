@@ -1,8 +1,10 @@
 name: Nightly - MacOSX Companion
 
 on:
-  schedule:
-    - cron:  '47 4 * * *'
+  workflow_run:
+    workflows: ["Nightly - Companion"]
+    types:
+      - completed
 
   workflow_dispatch:
 

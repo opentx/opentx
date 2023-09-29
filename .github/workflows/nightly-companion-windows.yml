@@ -1,7 +1,12 @@
 name: Nightly - Windows Companion
 
 on:
-  workflow_dispatch:  
+  workflow_run:
+    workflows: ["Nightly - Companion"]
+    types:
+      - completed
+
+  workflow_dispatch:
      
 env:
   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
