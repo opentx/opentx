@@ -36,9 +36,9 @@ jobs:
 
     - name: Install GCC 11.2
       run: | 
-        wget https://repo.msys2.org/mingw/mingw32/mingw-w64-x86_64-gcc-libs-11.2.0-10-any.pkg.tar.zst
-        wget https://repo.msys2.org/mingw/mingw32/mingw-w64-x86_64-gcc-11.2.0-10-any.pkg.tar.zst
-        wget https://repo.msys2.org/mingw/mingw32/mingw-w64-x86_64-crt-git-9.0.0.6448.b03cbfb95-1-any.pkg.tar.zst
+        wget https://repo.msys2.org/mingw/mingw64/mingw-w64-x86_64-gcc-libs-11.2.0-10-any.pkg.tar.zst
+        wget https://repo.msys2.org/mingw/mingw64/mingw-w64-x86_64-gcc-11.2.0-10-any.pkg.tar.zst
+        wget https://repo.msys2.org/mingw/mingw64/mingw-w64-x86_64-crt-git-9.0.0.6448.b03cbfb95-1-any.pkg.tar.zst
         pacman -U --noconfirm mingw-w64-x86_64-gcc-libs-11.2.0-10-any.pkg.tar.zst \
                               mingw-w64-x86_64-gcc-11.2.0-10-any.pkg.tar.zst \
                               mingw-w64-x86_64-crt-git-9.0.0.6448.b03cbfb95-1-any.pkg.tar.zst
