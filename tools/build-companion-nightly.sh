@@ -156,7 +156,7 @@ elif [ "$(uname)" = "Linux" ]; then
     make -j${JOBS} package
     cp *.deb "${OUTDIR}"
 else
-    cmake ${COMMON_OPTIONS} -DWIN_DO_FULL_INSTALL=YES -DSIMU_TARGET=NO ${SRCDIR} 
+    cmake ${COMMON_OPTIONS} -DWIN_DO_FULL_INSTALL=YES ${SRCDIR} 
     make -j${JOBS} installer
     cp companion/*.exe "${OUTDIR}"
 fi

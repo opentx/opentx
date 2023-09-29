@@ -372,14 +372,6 @@ elseif(PCB STREQUAL X10 AND PCBREV STREQUAL T18)
 else()
   string(TOLOWER ${PCB} FLAVOUR)
 endif()
-if(POLICY CMP0026)
-  cmake_policy(SET CMP0026 OLD)  # https://cmake.org/cmake/help/v3.0/policy/CMP0026.html
-endif()
-
-if(SIMU_TARGET)
-  get_property(current_plugin TARGET opentx-${FLAVOUR}-simulator PROPERTY LOCATION)
-  list(APPEND simulator_plugins "${current_plugin}")
-endif()
 
 if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   message(STATUS "install " ${CMAKE_BINARY_DIR} " to " ${CMAKE_INSTALL_PREFIX}/bin)
@@ -440,8 +432,6 @@ elseif(WIN32)
 
   # Add installer command to execute windeployqt
   message(STATUS "windeployqt command: ${QT_BIN_DIR}/windeployqt.exe ${wdqtopts}")
-  install(CODE "execute_process(COMMAND pwd)")
-  install(CODE "execute_process(COMMAND ls *)")
   install(CODE "execute_process(COMMAND \"${QT_BIN_DIR}/windeployqt.exe\" ${wdqtopts})")
 
   # SDL dll

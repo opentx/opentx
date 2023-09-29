@@ -1,10 +1,3 @@
-
-option(SIMU_TARGET "Configure libsimulator/simu targets (can be turned off for compiling Companion only)" ON)
-if(NOT SIMU_TARGET)
-  message(STATUS "libsimulator/simu targets disabled")
-  return()
-endif()
-
 foreach(FILE ${SRC})
   set(SIMU_SRC ${SIMU_SRC} ../../${FILE})
 endforeach()
