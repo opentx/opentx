@@ -13,5 +13,5 @@ Refer to the [OpenTX wiki](https://github.com/opentx/opentx/wiki) for informatio
 Useful links:
  * OpenTX Main Site https://www.open-tx.org/
  * OpenTx University http://open-txu.org/
- * OpenTX User Manual https://www.gitbook.com/book/opentx/opentx-taranis-manual/details
+ * OpenTX User Manual https://app.gitbook.com/o/-MRzpA3L4AvKH4MrPT67/s/-MRzpA59TKutI-lAv_5j
  * OpenTX Lua Reference Guide https://app.gitbook.com/o/-MRzpA3L4AvKH4MrPT67/s/jEsPbkQgZYrJgTifhLlf
