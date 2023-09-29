@@ -332,7 +332,9 @@ endif()
 
 # Generate list of simulator plugins, used by all platforms
 if(WIN32)
-  file(GLOB simulator_plugins "${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/*opentx-*simulator${CMAKE_SHARED_LIBRARY_SUFFIX}")
+  file(GLOB simulator_plugins "${CMAKE_BINARY_DIR}/*opentx-*simulator${CMAKE_SHARED_LIBRARY_SUFFIX}")
+  message(STATUS ${CMAKE_BINARY_DIR})
+  message(STATUS ${simulator_plugins})
 else()
   file(GLOB simulator_plugins "${CMAKE_BINARY_DIR}/*opentx-*simulator${CMAKE_SHARED_LIBRARY_SUFFIX}")
 endif()
@@ -405,18 +407,18 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
   set(OperatingSystem "Linux")
 
 elseif(WIN32)
+  set(INSTALL_DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_BUILD_TYPE}")
   if(NOT WIN_DO_FULL_INSTALL)
     # Just copy supporting DLLs to build folder
-    set(INSTALL_DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_BUILD_TYPE}")
     message(STATUS "Partial install to " ${INSTALL_DESTINATION})
   else()
     # Full Windows installation with all supporting files
-    set(INSTALL_DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_BUILD_TYPE}")
     message(STATUS "Full install to " ${INSTALL_DESTINATION})
     # companion & simulator binaries
     install(TARGETS ${COMPANION_NAME} DESTINATION ${INSTALL_DESTINATION})
     install(TARGETS ${SIMULATOR_NAME} DESTINATION ${INSTALL_DESTINATION})
-    install(FILES ${simulator_plugins} DESTINATION "${INSTALL_DESTINATION}")
+    # simulator dlls
+    install(FILES ${simulator_plugins} DESTINATION ${INSTALL_DESTINATION})
     # supporting utilities
     set(INSTALL_TEMP_FILES dfu-util.exe libusb0.dll libusb-1.0.dll license.txt)
     foreach(tmpfile ${INSTALL_TEMP_FILES})
