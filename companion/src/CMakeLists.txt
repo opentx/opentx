@@ -332,7 +332,7 @@ endif()
 
 # Generate list of simulator plugins, used by all platforms
 if(WIN32)
-  file(GLOB simulator_plugins "${CMAKE_BINARY_DIR}/Release/*opentx-*simulator${CMAKE_SHARED_LIBRARY_SUFFIX}")
+  file(GLOB simulator_plugins "${CMAKE_BINARY_DIR}/${CMAKE_BUILD_TYPE}/*opentx-*simulator${CMAKE_SHARED_LIBRARY_SUFFIX}")
 else()
   file(GLOB simulator_plugins "${CMAKE_BINARY_DIR}/*opentx-*simulator${CMAKE_SHARED_LIBRARY_SUFFIX}")
 endif()
@@ -407,11 +407,11 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 elseif(WIN32)
   if(NOT WIN_DO_FULL_INSTALL)
     # Just copy supporting DLLs to build folder
-    set(INSTALL_DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
+    set(INSTALL_DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_BUILD_TYPE}")
     message(STATUS "Partial install to " ${INSTALL_DESTINATION})
   else()
     # Full Windows installation with all supporting files
-    set(INSTALL_DESTINATION "${CMAKE_INSTALL_PREFIX}")
+    set(INSTALL_DESTINATION "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_BUILD_TYPE}")
     message(STATUS "Full install to " ${INSTALL_DESTINATION})
     # companion & simulator binaries
     install(TARGETS ${COMPANION_NAME} DESTINATION ${INSTALL_DESTINATION})
@@ -433,7 +433,8 @@ elseif(WIN32)
   if(MSVC)
     set(wdqtopts ${wdqtopts} --no-compiler-runtime)  # --compiler-runtime includes vcredist_x86, but we just copy the required DLLs manually
   endif()
-  set(wdqtopts ${wdqtopts} -dir "\"${INSTALL_DESTINATION}\"" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Release/${COMPANION_NAME}.exe" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/Release/${SIMULATOR_NAME}.exe")
+  set(wdqtopts ${wdqtopts} -dir "\"${INSTALL_DESTINATION}\"" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_BUILD_TYPE}/${COMPANION_NAME}.exe" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_BUILD_TYPE}/${SIMULATOR_NAME}.exe")
+  list(JOIN wdqtopts " " wdqtopts)
 
   # Add installer command to execute windeployqt
   message(STATUS "windeployqt command: ${QT_BIN_DIR}/windeployqt.exe ${wdqtopts}")

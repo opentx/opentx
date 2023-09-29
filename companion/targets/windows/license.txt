@@ -1,4 +1,4 @@
-Copyright © 2011-2019 OpenTX team
+Copyright © 2011-2023 OpenTX team
 
 OpenTX Companion is based on code named eePe by author - Erez Raviv <erezraviv@gmail.com> 
 

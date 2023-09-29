@@ -1,4 +1,4 @@
-name: Do MacOSX release Companion
+name: Release - MacOSX Companion
 
 on: workflow_dispatch
 
@@ -15,7 +15,7 @@ jobs:
     runs-on: macos-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Create Build Environment
       # Some projects don't allow in-source building, so create a separate build directory
@@ -36,34 +36,34 @@ jobs:
         release: '6-2017-q2'   
 
     - name: Install dfu-util
-      run:   wget https://downloads.sourceforge.net/project/dfu-util/dfu-util-0.9.tar.gz &&
-            tar xfv dfu-util-0.9.tar.gz &&
-            cd dfu-util-0.9 &&
-            ./configure &&
-            make install
+      run: wget https://downloads.sourceforge.net/project/dfu-util/dfu-util-0.9.tar.gz &&
+           tar xfv dfu-util-0.9.tar.gz &&
+           cd dfu-util-0.9 &&
+           ./configure &&
+           make install
           
     - name: Install libusb
-      run:   wget https://github.com/libusb/libusb/releases/download/v1.0.20/libusb-1.0.20.tar.bz2 &&
-            export MACOSX_DEPLOYMENT_TARGET=10.9 &&
-            tar xfv libusb-1.0.20.tar.bz2 &&
-            cd libusb-1.0.20 &&
-            ./configure &&
-            make install &&
-            cd ..
+      run: wget https://github.com/libusb/libusb/releases/download/v1.0.20/libusb-1.0.20.tar.bz2 &&
+           export MACOSX_DEPLOYMENT_TARGET=10.9 &&
+           tar xfv libusb-1.0.20.tar.bz2 &&
+           cd libusb-1.0.20 &&
+           ./configure &&
+           make install &&
+           cd ..
       
     - name: Install libsdl
-      run:   wget https://www.libsdl.org/release/SDL-1.2.15.tar.gz &&
-            tar xfv SDL-1.2.15.tar.gz &&
-            export MACOSX_DEPLOYMENT_TARGET=10.9 &&
-            cd SDL-1.2.15 &&
-            wget 'https://bugzilla-attachments.libsdl.org/attachment.cgi?id=1320' -O patch1 &&
-            wget 'https://bugzilla-attachments.libsdl.org/attachment.cgi?id=1324' -O patch2 &&
-            wget 'https://hg.libsdl.org/SDL/raw-rev/91ad7b43317a' -O patch3 &&
-            patch -p1 < patch1 &&
-            patch -p1 < patch2 &&
-            patch -p1 < patch3 &&
-            ./configure --without-x &&
-            make install
+      run: wget https://www.libsdl.org/release/SDL-1.2.15.tar.gz &&
+           tar xfv SDL-1.2.15.tar.gz &&
+           export MACOSX_DEPLOYMENT_TARGET=10.9 &&
+           cd SDL-1.2.15 &&
+           wget 'https://bugzilla-attachments.libsdl.org/attachment.cgi?id=1320' -O patch1 &&
+           wget 'https://bugzilla-attachments.libsdl.org/attachment.cgi?id=1324' -O patch2 &&
+           wget 'https://hg.libsdl.org/SDL/raw-rev/91ad7b43317a' -O patch3 &&
+           patch -p1 < patch1 &&
+           patch -p1 < patch2 &&
+           patch -p1 < patch3 &&
+           ./configure --without-x &&
+           make install
       
     - name: Configure CMake
       # Use a bash shell so we can use the same syntax for environment variable
