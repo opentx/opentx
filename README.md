@@ -1,7 +1,7 @@
 ## OpenTX 2.3 Branch
 
-[![GitHub release (latest by date)](https://img.shields.io/github/v/release/Edgetx/edgetx)](https://github.com/EdgeTX/edgetx/releases/latest)
-[![GitHub all releases](https://img.shields.io/github/downloads/EdgeTX/edgetx/total)](https://github.com/EdgeTX/edgetx/releases)
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/opentx/opentx)](https://github.com/opentx/opentx/releases/latest)
+[![GitHub all releases](https://img.shields.io/github/downloads/opentx/opentx/total)](https://github.com/opentx/opentx/releases)
 [![GitHub license](https://img.shields.io/github/license/Edgetx/edgetx)](https://github.com/EdgeTX/edgetx/blob/main/LICENSE)
 [![Commit Tests](https://github.com/EdgeTX/edgetx/actions/workflows/actions.yml/badge.svg)](https://github.com/EdgeTX/edgetx/actions/workflows/actions.yml)
 [![Join the Discord chat](https://img.shields.io/badge/discord-join_chat-yellow.svg)](https://discord.gg/CZCwVx2)
