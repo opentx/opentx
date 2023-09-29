@@ -109,4 +109,3 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: 'nightly'
           files: opentx-companion*.*
-          rm: true

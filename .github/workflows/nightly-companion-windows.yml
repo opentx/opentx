@@ -113,5 +113,4 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: 'nightly'
           files: companion*.*
-          rm: true
    
