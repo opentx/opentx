@@ -438,6 +438,8 @@ elseif(WIN32)
 
   # Add installer command to execute windeployqt
   message(STATUS "windeployqt command: ${QT_BIN_DIR}/windeployqt.exe ${wdqtopts}")
+  install(CODE "execute_process(COMMAND pwd)")
+  install(CODE "execute_process(COMMAND ls *)")
   install(CODE "execute_process(COMMAND \"${QT_BIN_DIR}/windeployqt.exe\" ${wdqtopts})")
 
   # SDL dll
