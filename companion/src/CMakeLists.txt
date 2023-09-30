@@ -433,7 +433,15 @@ elseif(WIN32)
   # Add installer command to execute windeployqt
   message(STATUS "windeployqt command: ${QT_BIN_DIR}/windeployqt.exe ${wdqtopts}")
   install(CODE "execute_process(COMMAND \"${QT_BIN_DIR}/windeployqt.exe\" ${wdqtopts})")
+
+  message(STATUS ${SDL_LIBSDL})
+  message(STATUS ${SDL_LIBRARY_PATH})
+  message(STATUS ${SDL_LIBRARY})
+
+  install(CODE "execute_process(COMMAND ls ${SDL_LIBSDL})")
   install(CODE "execute_process(COMMAND ls ${SDL_LIBRARY_PATH})")
+  install(CODE "execute_process(COMMAND ls ${SDL_LIBRARY})")
+
   # SDL dll
   if(SDL_FOUND AND EXISTS "${SDL_LIBRARY_PATH}/SDL.dll")
     set(SDL_DIR ${SDL_LIBRARY_PATH})  # this is also used by NSIS installer script
