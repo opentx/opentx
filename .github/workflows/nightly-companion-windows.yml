@@ -91,12 +91,8 @@ jobs:
       working-directory: ${{github.workspace}}
       # Execute the build.  You can specify a specific target with "--target <NAME>"
       run: |
-        ls $RUNNER_WORKSPACE/Qt/Tools/ && \
-        ls $RUNNER_WORKSPACE/Qt/Tools/OpenSSLv3/ && \
-        ls $RUNNER_WORKSPACE/Qt/Tools/OpenSSLv3/Win_x64 && \
         mkdir output && \
         CMAKE_PREFIX_PATH=$RUNNER_WORKSPACE/Qt/$QT_VERSION/$MINGW_PATH \
-        QT_TOOLS_OPENSSL_ROOT_PATH=$RUNNER_WORKSPACE/Qt/Tools/OpenSSLv3/Win_x64 \
         PATH=$PATH:/c/arm-none-eabi/bin ./tools/build-companion-nightly.sh "${{github.workspace}}" "${{github.workspace}}/output/"
     
     - name: Archive production artifacts
