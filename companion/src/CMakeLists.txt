@@ -436,7 +436,7 @@ elseif(WIN32)
 
   message(STATUS ${SDL_LIBSDL})
   message(STATUS ${SDL_LIBRARY_PATH})
-  message(STATUS ${SDL_LIBRARY})
+  message(STATUS $<TARGET_FILE:SDL::SDL>)
 
   install(CODE "execute_process(COMMAND ls ${SDL_LIBSDL})")
   install(CODE "execute_process(COMMAND ls ${SDL_LIBRARY_PATH})")
