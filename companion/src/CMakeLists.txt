@@ -444,10 +444,13 @@ elseif(WIN32)
     message(WARNING "Installer: SDL.dll not found, set SDL_LIB_DIR manually.")
   endif()
 
+  message(STATUS ${Qt5_Dir})
+
   # SSL dlls (used by QtNetwork)
   file(TO_CMAKE_PATH "$ENV{PROGRAMFILES}" WIN_PROGRAM_FILES)
   find_path(SSL_LIB_DIR libssl-1_1.dll HINTS
     "${WIN_PROGRAM_FILES}/OpenSSL" "${WIN_PROGRAM_FILES}/OpenSSL-Win32"
+    "${Qt5_Dir}"
     "C:/OpenSSL/" "C:/OpenSSL-Win32/"
     "${WIN_EXTRA_LIBS_PATH}" "${WIN_EXTRA_LIBS_PATH}/OpenSSL" "${WIN_EXTRA_LIBS_PATH}/OpenSSL-Win32"
     "${MINGW_DIR}/../opt/bin"
