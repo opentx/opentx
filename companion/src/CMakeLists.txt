@@ -333,8 +333,6 @@ endif()
 # Generate list of simulator plugins, used by all platforms
 if(WIN32)
   file(GLOB simulator_plugins "${CMAKE_BINARY_DIR}/*opentx-*simulator${CMAKE_SHARED_LIBRARY_SUFFIX}")
-  message(STATUS ${CMAKE_BINARY_DIR})
-  message(STATUS ${simulator_plugins})
 else()
   file(GLOB simulator_plugins "${CMAKE_BINARY_DIR}/*opentx-*simulator${CMAKE_SHARED_LIBRARY_SUFFIX}")
 endif()
