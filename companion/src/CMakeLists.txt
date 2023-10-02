@@ -435,12 +435,10 @@ elseif(WIN32)
   install(CODE "execute_process(COMMAND \"${QT_BIN_DIR}/windeployqt.exe\" ${wdqtopts})")
 
   message(STATUS ${SDL_LIBSDL})
-  message(STATUS ${SDL_LIBRARY_PATH})
-  message(STATUS $<TARGET_FILE:SDL::SDL>)
 
   install(CODE "execute_process(COMMAND ls ${SDL_LIBSDL})")
   install(CODE "execute_process(COMMAND ls ${SDL_LIBRARY_PATH})")
-  install(CODE "execute_process(COMMAND ls ${SDL_LIBRARY})")
+  install(CODE "execute_process(COMMAND ls ${SDL_LIBRARY}/..)")
 
   # SDL dll
   if(SDL_FOUND AND EXISTS "${SDL_LIBRARY_PATH}/SDL.dll")
@@ -450,21 +448,21 @@ elseif(WIN32)
     message(WARNING "Installer: SDL.dll not found, set SDL_LIBRARY_PATH manually.")
   endif()
 
-  # libeay (SSL) dlls  (used by QtNetwork) -- not strictly required but avoids possible issues with downloads and Qt warnings.
+  # SSL dlls (used by QtNetwork)
   file(TO_CMAKE_PATH "$ENV{PROGRAMFILES}" WIN_PROGRAM_FILES)
-  find_path(EAY_LIB_DIR libeay32.dll HINTS
+  find_path(SSL_LIB_DIR libssl-1_1.dll HINTS
     "${WIN_PROGRAM_FILES}/OpenSSL" "${WIN_PROGRAM_FILES}/OpenSSL-Win32"
     "C:/OpenSSL/" "C:/OpenSSL-Win32/"
     "${WIN_EXTRA_LIBS_PATH}" "${WIN_EXTRA_LIBS_PATH}/OpenSSL" "${WIN_EXTRA_LIBS_PATH}/OpenSSL-Win32"
     "${MINGW_DIR}/../opt/bin"
     "${PYTHON_DIRECTORY}/lib/site-packages/PyQt4"
     PATH_SUFFIXES bin
-    DOC "Path to libeay32.dll and ssleay32.dll (OpenSSL)"
+    DOC "Path to libssl-1_1.dll and libcrypto-1_1 (OpenSSL)"
   )
-  if (EAY_LIB_DIR)
-    install(FILES "${EAY_LIB_DIR}/libeay32.dll" "${EAY_LIB_DIR}/ssleay32.dll" DESTINATION ${INSTALL_DESTINATION} OPTIONAL)
+  if (SSL_LIB_DIR)
+    install(FILES "${SSL_LIB_DIR}/libssl-1_1.dll" "${SSL_LIB_DIR}/libcrypto-1_1" DESTINATION ${INSTALL_DESTINATION} OPTIONAL)
   else()
-    message(WARNING "Installer: SSL libs not found, set EAY_LIB_DIR manually.")
+    message(WARNING "Installer: SSL libs not found, set SSL_LIB_DIR manually.")
   endif()
 
   # C++/system dlls, depends on compiler
