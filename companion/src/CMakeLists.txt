@@ -446,11 +446,13 @@ elseif(WIN32)
   if (OPENSSL_FOUND)
     message(STATUS ${OPENSSL_SSL_LIBRARY})
 
+    get_filename_component(OPENSSL_SSL_LIBRARY_DIR ${OPENSSL_SSL_LIBRARY} DIRECTORY)
 
-    file(GLOB dlls "${OPENSSL_SSL_LIBRARY}/../*.dll")
+
+    file(GLOB dlls "${OPENSSL_SSL_LIBRARY_DIR}/../*.dll")
     message(STATUS ${dlls})
 
-    file(GLOB dlls "${OPENSSL_SSL_LIBRARY}/../bin/*.dll")
+    file(GLOB dlls "${OPENSSL_SSL_LIBRARY_DIR}/../bin/*.dll")
     message(STATUS ${dlls})
 
   endif()
