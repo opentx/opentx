@@ -437,6 +437,7 @@ elseif(WIN32)
     "${PYTHON_DIRECTORY}/lib/site-packages/PyQt4"
     PATH_SUFFIXES bin
     DOC "Path to SDL.dll"
+  )
   if(SDL_LIB_DIR)
     install(FILES ${SDL_LIB_DIR}/SDL.dll DESTINATION ${INSTALL_DESTINATION})
   else()
