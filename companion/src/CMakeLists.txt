@@ -435,7 +435,7 @@ elseif(WIN32)
   install(CODE "execute_process(COMMAND \"${QT_BIN_DIR}/windeployqt.exe\" ${wdqtopts})")
 
   # SDL dll
-  if(SDL_FOUND AND EXISTS "${SDL_LIBRARY_PATH}/SDL.dll")
+  if(EXISTS "${SDL_LIBRARY_PATH}/SDL.dll")
     set(SDL_DIR ${SDL_LIBRARY_PATH})  # this is also used by NSIS installer script
     install(FILES ${SDL_DIR}/SDL.dll DESTINATION ${INSTALL_DESTINATION})
   elseif(SDL_FOUND)
@@ -456,7 +456,7 @@ elseif(WIN32)
     DOC "Path to libssl-1_1.dll and libcrypto-1_1 (OpenSSL)"
   )
   if (SSL_LIB_DIR)
-    install(FILES "${SSL_LIB_DIR}/libssl-3.dll" "${SSL_LIB_DIR}/libcrypto-3" DESTINATION ${INSTALL_DESTINATION} OPTIONAL)
+    install(FILES "${SSL_LIB_DIR}/libssl-3.dll" "${SSL_LIB_DIR}/libcrypto-3.dll" DESTINATION ${INSTALL_DESTINATION} OPTIONAL)
   else()
     message(WARNING "Installer: SSL libs not found, set SSL_LIB_DIR manually.")
   endif()
