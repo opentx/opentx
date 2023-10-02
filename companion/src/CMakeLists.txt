@@ -421,28 +421,27 @@ elseif(WIN32)
   # Qt dlls (using windeployqt)
   ## Qt translations are already packaged into our custom qrc. Also don't need software rendering engines.
   set(wdqtopts --no-translations --no-opengl-sw --no-system-d3d-compiler --no-angle)
-  # if(CMAKE_BUILD_TYPE STREQUAL "Release")
-  #   set(wdqtopts ${wdqtopts} --release)  # release builds aren't always properly detected with mingw
-  # endif()
   if(MSVC)
     set(wdqtopts ${wdqtopts} --no-compiler-runtime)  # --compiler-runtime includes vcredist_x86, but we just copy the required DLLs manually
   endif()
   set(wdqtopts ${wdqtopts} -dir "\"${INSTALL_DESTINATION}\"" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_BUILD_TYPE}/${COMPANION_NAME}.exe" "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${CMAKE_BUILD_TYPE}/${SIMULATOR_NAME}.exe")
   list(JOIN wdqtopts " " wdqtopts)
-
-  # Add installer command to execute windeployqt
   # message(STATUS "windeployqt command: ${QT_BIN_DIR}/windeployqt.exe ${wdqtopts}")
   install(CODE "execute_process(COMMAND \"${QT_BIN_DIR}/windeployqt.exe\" ${wdqtopts})")
 
   # SDL dll
-  if(EXISTS "${SDL_LIBRARY_PATH}/SDL.dll")
-    set(SDL_DIR ${SDL_LIBRARY_PATH})  # this is also used by NSIS installer script
-    install(FILES ${SDL_DIR}/SDL.dll DESTINATION ${INSTALL_DESTINATION})
-  elseif(SDL_FOUND)
-    message(WARNING "Installer: SDL.dll not found, set SDL_LIBRARY_PATH manually.")
+  find_path(SDL_LIB_DIR SDL.dll HINTS
+    "${SDL_LIBRARY_PATH}"
+    "${WIN_EXTRA_LIBS_PATH}"
+    "${MINGW_DIR}/../opt/bin"
+    "${PYTHON_DIRECTORY}/lib/site-packages/PyQt4"
+    PATH_SUFFIXES bin
+    DOC "Path to SDL.dll"
+  if(SDL_LIB_DIR)
+    install(FILES ${SDL_LIB_DIR}/SDL.dll DESTINATION ${INSTALL_DESTINATION})
+  else()
+    message(WARNING "Installer: SDL.dll not found, set SDL_LIB_DIR manually.")
   endif()
-
-  message(STATUS ${MINGW_DIR})
 
   # SSL dlls (used by QtNetwork)
   file(TO_CMAKE_PATH "$ENV{PROGRAMFILES}" WIN_PROGRAM_FILES)
