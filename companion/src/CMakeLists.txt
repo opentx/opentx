@@ -442,25 +442,36 @@ elseif(WIN32)
     message(WARNING "Installer: SDL.dll not found, set SDL_LIB_DIR manually.")
   endif()
 
-  message(STATUS ${Qt5_Dir})
+  find_package(OpenSSL)
+  if (OPENSSL_FOUND)
+    message(STATUS ${OPENSSL_SSL_LIBRARY})
+  endif()
+
 
   # SSL dlls (used by QtNetwork)
-  file(TO_CMAKE_PATH "$ENV{PROGRAMFILES}" WIN_PROGRAM_FILES)
-  find_path(SSL_LIB_DIR libssl-1_1.dll HINTS
-    "${WIN_PROGRAM_FILES}/OpenSSL" "${WIN_PROGRAM_FILES}/OpenSSL-Win32"
-    "${Qt5_Dir}"
-    "C:/OpenSSL/" "C:/OpenSSL-Win32/"
-    "${WIN_EXTRA_LIBS_PATH}" "${WIN_EXTRA_LIBS_PATH}/OpenSSL" "${WIN_EXTRA_LIBS_PATH}/OpenSSL-Win32"
-    "${MINGW_DIR}/../opt/bin"
-    "${PYTHON_DIRECTORY}/lib/site-packages/PyQt4"
-    PATH_SUFFIXES bin
-    DOC "Path to libssl-1_1.dll and libcrypto-1_1 (OpenSSL)"
-  )
-  if (SSL_LIB_DIR)
-    install(FILES "${SSL_LIB_DIR}/libssl-1_1.dll" "${SSL_LIB_DIR}/libcrypto-1_1.dll" DESTINATION ${INSTALL_DESTINATION} OPTIONAL)
-  else()
-    message(WARNING "Installer: SSL libs not found, set SSL_LIB_DIR manually.")
-  endif()
+  # file(TO_CMAKE_PATH "$ENV{PROGRAMFILES}" WIN_PROGRAM_FILES)
+  # find_path(SSL_LIB_DIR libssl-1_1.dll HINTS
+  #   "${WIN_PROGRAM_FILES}/OpenSSL" "${WIN_PROGRAM_FILES}/OpenSSL-Win32"
+  #   "${Qt5_Dir}"
+  #   "C:/OpenSSL/" "C:/OpenSSL-Win32/"
+  #   "${WIN_EXTRA_LIBS_PATH}" "${WIN_EXTRA_LIBS_PATH}/OpenSSL" "${WIN_EXTRA_LIBS_PATH}/OpenSSL-Win32"
+  #   "${MINGW_DIR}/../opt/bin"
+  #   "${PYTHON_DIRECTORY}/lib/site-packages/PyQt4"
+  #   PATH_SUFFIXES bin
+  #   DOC "Path to libssl-1_1.dll and libcrypto-1_1 (OpenSSL)"
+  # )
+  # if (SSL_LIB_DIR)
+    # install(FILES "${SSL_LIB_DIR}/libssl-1_1.dll" "${SSL_LIB_DIR}/libcrypto-1_1.dll" DESTINATION ${INSTALL_DESTINATION} OPTIONAL)
+  # get_filename_component(OPENSSL_SSL_LIBRARY_DIR libeay DIRECTORY)
+  # set(OPENSSL_BIN_DIR "${OPENSSL_SSL_LIBRARY_DIR}/../bin")
+  # if (EXISTS "${OPENSSL_BIN_DIR}")
+  #   install(DIRECTORY ${OPENSSL_BIN_DIR}/ DESTINATION ${INSTALL_DESTINATION} FILES_MATCHING PATTERN "*.dll")
+  # else()
+  #   message(STATUS "Installer: OpenSSL bin directory not found, dlls not bundled.")
+  # endif()
+  # else()
+  #   message(WARNING "Installer: SSL libs not found, set SSL_LIB_DIR manually.")
+  # endif()
 
   # C++/system dlls, depends on compiler
   if(MSVC)
