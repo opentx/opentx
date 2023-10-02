@@ -445,6 +445,14 @@ elseif(WIN32)
   find_package(OpenSSL)
   if (OPENSSL_FOUND)
     message(STATUS ${OPENSSL_SSL_LIBRARY})
+
+
+    file(GLOB dlls "${OPENSSL_SSL_LIBRARY}/../*.dll")
+    message(STATUS ${dlls})
+
+    file(GLOB dlls "${OPENSSL_SSL_LIBRARY}/../bin/*.dll")
+    message(STATUS ${dlls})
+
   endif()
 
 
