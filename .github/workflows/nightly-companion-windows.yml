@@ -62,6 +62,7 @@ jobs:
                               mingw-w64-i686-libraqm \
                               mingw-w64-i686-SDL \
                               mingw-w64-i686-clang \
+                              mingw-w64-i686-openssl \
                               mingw-w64-i686-nsis
         python -m pip install clang
 
