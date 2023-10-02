@@ -442,9 +442,11 @@ elseif(WIN32)
     message(WARNING "Installer: SDL.dll not found, set SDL_LIBRARY_PATH manually.")
   endif()
 
+  message(STATUS ${MINGW_DIR})
+
   # SSL dlls (used by QtNetwork)
   file(TO_CMAKE_PATH "$ENV{PROGRAMFILES}" WIN_PROGRAM_FILES)
-  find_path(SSL_LIB_DIR libssl-1_1.dll HINTS
+  find_path(SSL_LIB_DIR libssl-3.dll HINTS
     "${WIN_PROGRAM_FILES}/OpenSSL" "${WIN_PROGRAM_FILES}/OpenSSL-Win32"
     "C:/OpenSSL/" "C:/OpenSSL-Win32/"
     "${WIN_EXTRA_LIBS_PATH}" "${WIN_EXTRA_LIBS_PATH}/OpenSSL" "${WIN_EXTRA_LIBS_PATH}/OpenSSL-Win32"
@@ -454,7 +456,7 @@ elseif(WIN32)
     DOC "Path to libssl-1_1.dll and libcrypto-1_1 (OpenSSL)"
   )
   if (SSL_LIB_DIR)
-    install(FILES "${SSL_LIB_DIR}/libssl-1_1.dll" "${SSL_LIB_DIR}/libcrypto-1_1" DESTINATION ${INSTALL_DESTINATION} OPTIONAL)
+    install(FILES "${SSL_LIB_DIR}/libssl-3.dll" "${SSL_LIB_DIR}/libcrypto-3" DESTINATION ${INSTALL_DESTINATION} OPTIONAL)
   else()
     message(WARNING "Installer: SSL libs not found, set SSL_LIB_DIR manually.")
   endif()
