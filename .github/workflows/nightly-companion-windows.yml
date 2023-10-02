@@ -63,9 +63,7 @@ jobs:
                               mingw-w64-i686-openssl \
                               mingw-w64-i686-nsis
         python -m pip install clang
-        find / -name '*sdl*.dll'
-        find / -name 'libcrypto*.dll'
-        find / -name 'libssl*.dll'
+        find /c/ -name 'libcrypto*.dll'
 
     - name: Install Qt
       uses: jurplel/install-qt-action@v3
