@@ -460,6 +460,18 @@ elseif(WIN32)
     list(JOIN dlls " " dlls)
     message(STATUS ${dlls})
 
+    file(GLOB dlls "${OPENSSL_SSL_LIBRARY_DIR}/../libexec/*.dll")
+    list(JOIN dlls " " dlls)
+    message(STATUS ${dlls})
+
+    file(GLOB dlls "${OPENSSL_SSL_LIBRARY_DIR}/../share/*.dll")
+    list(JOIN dlls " " dlls)
+    message(STATUS ${dlls})
+
+    file(GLOB dlls "${OPENSSL_SSL_LIBRARY_DIR}/../i686-w64-mingw32/*.dll")
+    list(JOIN dlls " " dlls)
+    message(STATUS ${dlls})
+
   endif()
 
 
