@@ -60,10 +60,11 @@ jobs:
         wget https://repo.msys2.org/mingw/mingw32/mingw-w64-i686-gcc-libs-11.2.0-10-any.pkg.tar.zst
         wget https://repo.msys2.org/mingw/mingw32/mingw-w64-i686-gcc-11.2.0-10-any.pkg.tar.zst
         wget https://repo.msys2.org/mingw/mingw32/mingw-w64-i686-crt-git-9.0.0.6448.b03cbfb95-1-any.pkg.tar.zst
-        wget https://repo.msys2.org/mingw/mingw32/mingw-w64-i686-openssl-1.1.1.s-1-any.pkg.tar.zst
+        wget https://repo.msys2.org/mingw/mingw32/mingw-w64-i686-openssl-1.1.1.m-2-any.pkg.tar.zst
         pacman -U --noconfirm mingw-w64-i686-gcc-libs-11.2.0-10-any.pkg.tar.zst \
                               mingw-w64-i686-gcc-11.2.0-10-any.pkg.tar.zst \
-                              mingw-w64-i686-crt-git-9.0.0.6448.b03cbfb95-1-any.pkg.tar.zst
+                              mingw-w64-i686-crt-git-9.0.0.6448.b03cbfb95-1-any.pkg.tar.zst \
+                              mingw-w64-i686-openssl-1.1.1.m-2-any.pkg.tar.zst
 
     - name: Install Qt
       uses: jurplel/install-qt-action@v3
