@@ -448,11 +448,16 @@ elseif(WIN32)
 
     get_filename_component(OPENSSL_SSL_LIBRARY_DIR ${OPENSSL_SSL_LIBRARY} DIRECTORY)
 
+    file(GLOB dlls "${OPENSSL_SSL_LIBRARY_DIR}/..")
+    list(JOIN dlls " " dlls)
+    message(STATUS ${dlls})
 
-    file(GLOB dlls "${OPENSSL_SSL_LIBRARY_DIR}/../*.dll")
+    file(GLOB dlls "${OPENSSL_SSL_LIBRARY_DIR}/*.dll")
+    list(JOIN dlls " " dlls)
     message(STATUS ${dlls})
 
     file(GLOB dlls "${OPENSSL_SSL_LIBRARY_DIR}/../bin/*.dll")
+    list(JOIN dlls " " dlls)
     message(STATUS ${dlls})
 
   endif()
