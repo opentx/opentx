@@ -2663,3 +2663,5 @@ James Goins
 Victor da Fonseca
 Christoph Tomberger
 Paul Balos
+Bruno Steiner
+Loran Wren
