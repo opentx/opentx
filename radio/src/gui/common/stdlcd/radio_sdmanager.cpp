@@ -298,6 +298,18 @@ void menuRadioSdManager(event_t _event)
   int lastPos = menuVerticalPosition;
 #endif
 
+  if (_event == EVT_ENTRY) {
+      f_chdir(ROOT_PATH);
+#idefined(NAVIGATION_X9D)
+      lastPos = -1;
+#eif
+  }
+
+  if (_event == EVT_ENTRY || _event == EVT_ENTRY_UP) {
+      memclear(&reusableBuffer.sdManager, sizeof(reusableBuffer.sdManager));
+      REFRESH_FILES();
+  }
+
 #if defined(PXX2)
   if (EVT_KEY_MASK(_event) == KEY_EXIT && moduleState[reusableBuffer.sdManager.otaUpdateInformation.module].mode == MODULE_MODE_BIND) {
     moduleState[reusableBuffer.sdManager.otaUpdateInformation.module].mode = MODULE_MODE_NORMAL;
