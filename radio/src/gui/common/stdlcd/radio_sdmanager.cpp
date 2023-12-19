@@ -300,9 +300,9 @@ void menuRadioSdManager(event_t _event)
 
   if (_event == EVT_ENTRY) {
       f_chdir(ROOT_PATH);
-#idefined(LCD_W >= 212 )
+#if defined(LCD_W >= 212 )
       lastPos = -1;
-#eif
+#endif
   }
 
   if (_event == EVT_ENTRY || _event == EVT_ENTRY_UP) {
