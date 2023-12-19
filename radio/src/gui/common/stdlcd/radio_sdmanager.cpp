@@ -300,7 +300,7 @@ void menuRadioSdManager(event_t _event)
 
   if (_event == EVT_ENTRY) {
       f_chdir(ROOT_PATH);
-#idefined(NAVIGATION_X9D)
+#idefined(LCD_W >= 212 )
       lastPos = -1;
 #eif
   }
@@ -323,17 +323,6 @@ void menuRadioSdManager(event_t _event)
   SIMPLE_MENU(SD_IS_HC() ? STR_SDHC_CARD : STR_SD_CARD, menuTabGeneral, MENU_RADIO_SD_MANAGER, HEADER_LINE + reusableBuffer.sdManager.count);
 
   switch (_event) {
-    case EVT_ENTRY:
-      f_chdir(ROOT_PATH);
-#if LCD_W >= 212
-      lastPos = -1;
-#endif
-      // no break
-
-    case EVT_ENTRY_UP:
-      memclear(&reusableBuffer.sdManager, sizeof(reusableBuffer.sdManager));
-      REFRESH_FILES();
-      break;
 
 #if defined(PCBX9) || defined(RADIO_X7) || defined(RADIO_X7ACCESS)// TODO NO_MENU_KEY
     case EVT_KEY_LONG(KEY_MENU):
