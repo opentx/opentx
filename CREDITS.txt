@@ -2672,3 +2672,4 @@ Dr Richard L Cooper
 Donald Wittenberg
 Bruce Bowden
 James D McKeown
+Gérard Chadeyras
