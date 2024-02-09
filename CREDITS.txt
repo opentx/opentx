@@ -1610,7 +1610,6 @@ William Goodrich
 Marcel Schäfer
 Joseph Santa Cruz
 Gerald Roedel
-James D McKeown
 鄭 淳中
 Matthias Wuethrich
 Michael Tessler
@@ -2577,7 +2576,6 @@ Brett Lee
 Russell Bryant
 Matthijs Amelink
 Bykov Yuriy
-James D McKeown
 Pierluigi Vidari
 Peter Schumacher
 Ken Schulz
@@ -2588,14 +2586,12 @@ Stuart Posnett
 Glenn Labay
 Damir Pooshs
 Martin Niessing
-James D McKeown
 Peter Gaskill
 Rex Hall
 Kent Miller
 Geoff Graham
 Neil McGladrigan
 Richard McNamara
-James D McKeown
 Michal Král
 Gérard Pedro
 Thomas David
@@ -2640,7 +2636,6 @@ Sébastien Pollet
 Franz Miglbauer
 Stany Verdoodt
 Chan Lofland
-Gérard Chadeyras
 Robert Hunter
 Timothy Jackson
 Ian Jemmeson
@@ -2665,11 +2660,10 @@ Christoph Tomberger
 Paul Balos
 Bruno Steiner
 Loran Wren
-James D McKeown
 Bruno Leberre
 Clifford Maxsom
 Dr Richard L Cooper
 Donald Wittenberg
 Bruce Bowden
-James D McKeown
 Gérard Chadeyras
+James D McKeown
