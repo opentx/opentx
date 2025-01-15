@@ -26,6 +26,7 @@
   #define KEYS_GPIO_PIN_MENU                GPIO_Pin_13  // PD.13
   #define KEYS_GPIO_REG_EXIT                GPIOD->IDR
   #define KEYS_GPIO_PIN_EXIT                GPIO_Pin_14  // PD.14
+  #define HARDWARE_KEY_PAGE
   #define KEYS_GPIO_REG_PAGE                GPIOD->IDR
   #define KEYS_GPIO_PIN_PAGE                GPIO_Pin_12  // PD.12
   #define KEYS_GPIO_REG_ENTER               GPIOD->IDR

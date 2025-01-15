@@ -623,6 +623,10 @@ void perMain()
 
   checkBacklight();
 
+#if defined(RADIO_V10)
+  nca9555Read();
+#endif
+
   event_t evt = getEvent(false);
 
 #if defined(RTC_BACKUP_RAM)

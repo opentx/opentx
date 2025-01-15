@@ -106,7 +106,7 @@ void rotaryEncoderCheck()
     state |= pins;
 #else
   uint8_t newPosition = ROTARY_ENCODER_POSITION();
-  if (newPosition != rotencPosition && !(readKeys() & (1 << KEY_ENTER))) {
+  if (newPosition != rotencPosition && !IS_ENTER_PRESSED()) {
     if ((rotencPosition & 0x01) ^ ((newPosition & 0x02) >> 1)) {
       rotencValue -= INC_ROT;
     }

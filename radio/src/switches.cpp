@@ -288,7 +288,7 @@ void getSwitchesPosition(bool startup)
   CHECK_2POS(SW_SI);
 #endif
 
-#if defined(PCBX7ACCESS)
+#if defined(RADIO_X7ACCESS)
   CHECK_2POS(SW_SI);
 #elif defined(PCBHORUS) || (defined(PCBX7) && !defined(RADIO_ZORRO))
   CHECK_2POS(SW_SI);

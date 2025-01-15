@@ -165,7 +165,7 @@ void menuModelCurveOne(event_t event)
       }
       break;
 
-#if defined(KEYS_GPIO_REG_MDL)
+#if defined(HARDWARE_KEY_MODEL)
     case EVT_KEY_FIRST(KEY_MODEL):
       pushMenu(menuChannelsView);
       killEvents(event);

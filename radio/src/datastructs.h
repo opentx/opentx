@@ -521,7 +521,7 @@ typedef uint32_t swarnstate_t;
 typedef uint64_t swconfig_t;
 typedef uint64_t swarnstate_t;
 typedef uint32_t swarnenable_t;
-#elif defined(PCBX9D) || defined(PCBX9DP) || defined(RADIO_TPRO)
+#elif defined(PCBX9D) || defined(PCBX9DP) || defined(RADIO_TPRO) || defined(RADIO_V10)
 typedef uint32_t swconfig_t;
 typedef uint32_t swarnstate_t;
 typedef uint16_t swarnenable_t; // TODO remove it in 2.4
@@ -739,10 +739,16 @@ PACK(struct TrainerData {
   #define MODEL_FILE_NAME_FIELD
 #endif
 
+#if NUM_POTS + NUM_SLIDERS > 4
+  #define potsConfig_t uint16_t
+#else
+  #define potsConfig_t uint8_t
+#endif
+
   #define EXTRA_GENERAL_FIELDS \
     uint8_t  auxSerialMode:4; \
     uint8_t  slidersConfig:4; \
-    uint8_t  potsConfig; /* two bits per pot */\
+    potsConfig_t potsConfig; /* two bits per pot */\
     uint8_t  backlightColor; \
     swarnstate_t switchUnlockStates; \
     swconfig_t switchConfig; \
@@ -1006,6 +1012,8 @@ static inline void check_struct()
 #elif defined(RADIO_TPRO)
   CHKSIZE(RadioData, 845);
   CHKSIZE(ModelData, 6185);
+#elif defined(RADIO_V10)
+  // TODO
 #elif defined(PCBX7)
   CHKSIZE(RadioData, 864);
   CHKSIZE(ModelData, 6157);

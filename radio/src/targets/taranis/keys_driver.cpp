@@ -24,16 +24,16 @@ uint32_t readKeys()
 {
   uint32_t result = 0;
 
-  if (~KEYS_GPIO_REG_ENTER & KEYS_GPIO_PIN_ENTER)
+  if (IS_ENTER_PRESSED())
     result |= 1 << KEY_ENTER;
 
-#if defined(KEYS_GPIO_PIN_MENU)
-  if (~KEYS_GPIO_REG_MENU & KEYS_GPIO_PIN_MENU)
+#if defined(HARDWARE_KEY_MENU)
+  if (IS_KEY_PRESSED(MENU))
     result |= 1 << KEY_MENU;
 #endif
 
-#if defined(KEYS_GPIO_PIN_PAGE)
-  if (~KEYS_GPIO_REG_PAGE & KEYS_GPIO_PIN_PAGE)
+#if defined(HARDWARE_KEY_PAGE)
+  if (IS_KEY_PRESSED(PAGE))
     result |= 1 << KEY_PAGE;
 #endif
 
@@ -47,23 +47,25 @@ uint32_t readKeys()
     result |= 1 << KEY_PAGEDN;
 #endif
 
-#if defined(KEYS_GPIO_PIN_SYS)
-  if (~KEYS_GPIO_REG_SYS & KEYS_GPIO_PIN_SYS)
+#if defined(HARDWARE_KEY_SYS)
+  if (IS_KEY_PRESSED(SYS))
     result |= 1 << KEY_SYS;
 #endif
 
-#if defined(KEYS_GPIO_PIN_MDL)
-  if (~KEYS_GPIO_REG_MDL & KEYS_GPIO_PIN_MDL)
+#if defined(HARDWARE_KEY_MODEL)
+  if (IS_KEY_PRESSED(MODEL))
     result |= 1 << KEY_MODEL;
 #endif
 
-#if defined(KEYS_GPIO_PIN_TELE)
-  if (~KEYS_GPIO_REG_TELE & KEYS_GPIO_PIN_TELE)
+#if defined(HARDWARE_KEY_TELE)
+  if (IS_KEY_PRESSED(TELE))
     result |= 1 << KEY_TELE;
 #endif
 
-  if (~KEYS_GPIO_REG_EXIT & KEYS_GPIO_PIN_EXIT)
+#if defined(HARDWARE_KEY_EXIT)
+  if (IS_KEY_PRESSED(EXIT))
     result |= 1 << KEY_EXIT;
+#endif
 
 #if defined(KEYS_GPIO_PIN_PLUS)
   if (~KEYS_GPIO_REG_PLUS & KEYS_GPIO_PIN_PLUS)
@@ -92,11 +94,13 @@ uint32_t readKeys()
   if (~KEYS_GPIO_REG_BIND & KEYS_GPIO_PIN_BIND)
     result |= 1 << KEY_BIND;
 #endif
+
   // if (result != 0) TRACE("readKeys(): result=0x%02x", result);
 
   return result;
 }
 
+#if !defined(RADIO_V10)
 uint32_t readTrims()
 {
   uint32_t result = 0;
@@ -128,6 +132,7 @@ uint32_t readTrims()
 
   return result;
 }
+#endif
 
 bool trimDown(uint8_t idx)
 {
@@ -201,6 +206,10 @@ void readKeysAndTrims()
 #if !defined(BOOT)
 uint32_t switchState(uint8_t index)
 {
+#if defined(RADIO_V10)
+  return switchStateFromExternalChip(index);
+#else
+
   uint32_t xxx = 0;
 
   switch (index) {
@@ -235,7 +244,7 @@ uint32_t switchState(uint8_t index)
 #elif defined(PCBXLITE)
     ADD_3POS_CASE(D, 3);
     // no SWE, SWF, SWG and SWH on XLITE
-#elif defined(PCBX7ACCESS)    
+#elif defined(RADIO_X7ACCESS)    
     ADD_3POS_CASE(D, 3);
     ADD_2POS_CASE(F);
     ADD_2POS_CASE(H);
@@ -299,6 +308,7 @@ uint32_t switchState(uint8_t index)
 
   // TRACE("switch %d => %d", index, xxx);
   return xxx;
+#endif
 }
 #endif
 

@@ -263,6 +263,11 @@ void boardInit()
   gyroInit();
 #endif
 
+#if defined(RADIO_V10) && !defined(BOOTLOADER)
+  i2c2Init();
+  nca9555Init();
+#endif
+
 #if defined(RTCLOCK) && !defined(COPROCESSOR)
   rtcInit(); // RTC must be initialized before rambackupRestore() is called
 #endif

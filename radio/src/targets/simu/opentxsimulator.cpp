@@ -595,8 +595,10 @@ class OpenTxSimulatorFactory: public SimulatorFactory
       return Board::BOARD_HORUS_X12S;
 #elif defined(PCBX10)
       return Board::BOARD_X10;
-#elif defined(PCBX7ACCESS)
+#elif defined(RADIO_X7ACCESS)
       return Board::BOARD_TARANIS_X7_ACCESS;
+#elif defined(RADIO_V10)
+      return Board::BOARD_TARANIS_V10;
 #elif defined(PCBX7)
       return Board::BOARD_TARANIS_X7;
 #elif defined(PCBX9LITES)

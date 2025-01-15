@@ -231,7 +231,6 @@ elseif(PCB STREQUAL X7)
     add_definitions(-DRADIO_X7ACCESS)
     add_definitions(-DEEPROM_VARIANT=0x4000)
     add_definitions(-DPCBREV=${PCBREV})
-    add_definitions(-DPCBX7ACCESS)
     set(FIRMWARE_TARGET_SRC
       ${FIRMWARE_TARGET_SRC}
       startup_stm32f40_41xxx.s
@@ -241,6 +240,33 @@ elseif(PCB STREQUAL X7)
     set(PXX2 ON)
     set(PXX_FREQUENCY "HIGH")
     set(BLUETOOTH YES)
+    set(ROTARY_ENCODER YES)
+    set(INTERNAL_MODULE_SERIAL YES)
+    add_definitions(-DMANUFACTURER_FRSKY)
+  elseif(PCBREV STREQUAL V10)
+    option(INTERNAL_MODULE_PXX1 "Support for PXX1 internal module" OFF)
+    option(INTERNAL_MODULE_PXX2 "Support for PXX2 internal module" ON)
+    set(FLAVOUR v10)
+    set(NAVIGATION_TYPE x7)
+    set(CPU_TYPE STM32F4)
+    set(CPU_TYPE_FULL STM32F407xE)  # for size report
+    set(LINKER_SCRIPT targets/taranis/stm32f4_flash.ld)
+    set(LUA_EXPORT lua_export_v10)
+    add_definitions(-DRADIO_V10)
+    add_definitions(-DEEPROM_VARIANT=0x4000)
+    add_definitions(-DPCBREV=${PCBREV})
+    add_definitions(-DPCBX7V10)
+    set(FIRMWARE_TARGET_SRC
+      ${FIRMWARE_TARGET_SRC}
+      startup_stm32f40_41xxx.s
+      ../../thirdparty/STM32F4xx_DSP_StdPeriph_Lib_V1.4.0/Libraries/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_sdio.c
+      ../common/arm/stm32/nca9555_driver.cpp
+      )
+    add_definitions(-DSTM32F40_41xxx)
+    add_definitions(-DHARDWARE_POWER_MANAGEMENT_UNIT)
+    set(PXX2 ON)
+    set(PXX_FREQUENCY "HIGH")
+    set(BLUETOOTH NO)
     set(ROTARY_ENCODER YES)
     set(INTERNAL_MODULE_SERIAL YES)
     add_definitions(-DMANUFACTURER_FRSKY)
@@ -490,6 +516,7 @@ set(TARGET_SRC
   ../common/arm/stm32/adc_driver.cpp
   ../common/arm/stm32/heartbeat_driver.cpp
   ../common/arm/stm32/mixer_scheduler_driver.cpp
+  ../common/arm/stm32/sdio_sd.c
   )
 
 if(PCB STREQUAL XLITE OR PCB STREQUAL XLITES)

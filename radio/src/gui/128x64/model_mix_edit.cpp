@@ -85,7 +85,7 @@ void drawOffsetBar(uint8_t x, uint8_t y, MixData * md)
 
 void menuModelMixOne(event_t event)
 {
-#if defined(KEYS_GPIO_REG_MDL)
+#if defined(HARDWARE_KEY_MODEL)
   if (event == EVT_KEY_FIRST(KEY_MODEL)) {
     pushMenu(menuChannelsView);
     killEvents(event);

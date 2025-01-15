@@ -284,7 +284,7 @@ void OpenTxSim::updateKeysAndSwitches(bool start)
     KEY_Down,      KEY_MINUS,
 #elif defined(RADIO_FAMILY_TBS)
     KEY_Page_Up,   KEY_MENU,
-  #if defined(KEYS_GPIO_REG_PAGE)
+  #if defined(HARDWARE_KEY_PAGE)
     KEY_Page_Down, KEY_PAGE,
   #endif
     KEY_Return,    KEY_ENTER,
@@ -293,7 +293,7 @@ void OpenTxSim::updateKeysAndSwitches(bool start)
     KEY_Down,      KEY_MINUS,
 #elif defined(PCBTARANIS)
     KEY_Page_Up,   KEY_MENU,
-  #if defined(KEYS_GPIO_REG_PAGE)
+  #if defined(HARDWARE_KEY_PAGE)
     KEY_Page_Down, KEY_PAGE,
   #endif
     KEY_Return,    KEY_ENTER,

@@ -54,6 +54,8 @@
   const int8_t adcDirection[NUM_ANALOGS] = {1,1,1,1,  1,1,  1,1,1,1,1,  1,1};
 #elif defined(RADIO_TPRO)
   const int8_t adcDirection[NUM_ANALOGS] = {1,-1,1,-1,  1,1,  1,  1};
+#elif defined(RADIO_V10)
+  const int8_t adcDirection[NUM_ANALOGS] = {1,-1,1,-1,  -1,-1,  1,  1, 1, 1, 1, 1};
 #elif defined(PCBX7)
   const int8_t adcDirection[NUM_ANALOGS] = {-1,1,-1,1,  1,1,  1,  1};
 #elif defined(PCBX9LITE)
@@ -148,6 +150,9 @@ void adcInit()
 #elif defined(RADIO_MAMBO)
   ADC_MAIN->SQR2 = (ADC_CHANNEL_SWITCH_D << 0) + (ADC_CHANNEL_BATT << 5) + (ADC_Channel_Vbat << 10);
   ADC_MAIN->SQR3 = (ADC_CHANNEL_POT1 << 0) + (ADC_CHANNEL_POT2 << 5) + (ADC_CHANNEL_TRIM << 10) + (ADC_CHANNEL_SWITCH_A << 15) + (ADC_CHANNEL_SWITCH_B << 20) + (ADC_CHANNEL_SWITCH_C << 25);
+#elif defined(RADIO_V10)
+  ADC_MAIN->SQR2 = (ADC_CHANNEL_SLIDER1 << 0) + (ADC_CHANNEL_SLIDER2 << 5) + (ADC_CHANNEL_EXT1 << 10) + (ADC_CHANNEL_EXT2 << 15) + (ADC_CHANNEL_BATT << 20) + (ADC_Channel_Vbat << 25);
+  ADC_MAIN->SQR3 = (ADC_CHANNEL_STICK_LH << 0) + (ADC_CHANNEL_STICK_LV << 5) + (ADC_CHANNEL_STICK_RV << 10) + (ADC_CHANNEL_STICK_RH << 15) + (ADC_CHANNEL_POT1 << 20) + (ADC_CHANNEL_POT2 << 25);
 #elif defined(PCBX7)
   ADC_MAIN->SQR2 = (ADC_CHANNEL_BATT << 0) + (ADC_Channel_Vbat << 5);
   ADC_MAIN->SQR3 = (ADC_CHANNEL_STICK_LH << 0) + (ADC_CHANNEL_STICK_LV << 5) + (ADC_CHANNEL_STICK_RV << 10) + (ADC_CHANNEL_STICK_RH << 15) + (ADC_CHANNEL_POT1 << 20) + (ADC_CHANNEL_POT2 << 25);

@@ -823,6 +823,10 @@ void checkBacklight()
       }
     }
   }
+
+#if defined(RADIO_V10)
+  nca9555Read();
+#endif
 }
 
 void resetBacklightTimeout()
