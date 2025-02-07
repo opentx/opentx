@@ -893,8 +893,12 @@ void telemetryPortInvertedInit(uint32_t baudrate);
 #if defined(RADIO_X7ACCESS)
   #define HAS_SPORT_UPDATE_CONNECTOR()  true
 #elif defined(PCBX7)
+#if defined(RADIO_V10)
+  #define HAS_SPORT_UPDATE_CONNECTOR()  true
+#else
   #define IS_PCBREV_40()                (hardwareOptions.pcbrev == PCBREV_X7_40)
   #define HAS_SPORT_UPDATE_CONNECTOR()  IS_PCBREV_40()
+#endif
 #elif defined(SPORT_UPDATE_PWR_GPIO)
   #define HAS_SPORT_UPDATE_CONNECTOR()  true
 #else
