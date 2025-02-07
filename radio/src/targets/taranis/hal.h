@@ -1863,7 +1863,7 @@
   #define TELEMETRY_DIR_GPIO              GPIOD
   #define TELEMETRY_DIR_GPIO_PIN          GPIO_Pin_4  // PD.04
 #endif
-#if defined(PCBXLITE) || defined(PCBX9LITE) || defined(RADIO_X9DP2019) || defined(RADIO_X7ACCESS)
+#if defined(PCBXLITE) || defined(PCBX9LITE) || defined(RADIO_X9DP2019) || defined(RADIO_X7ACCESS) || defined(RADIO_V10)
   #define TELEMETRY_DIR_OUTPUT()          TELEMETRY_DIR_GPIO->BSRRH = TELEMETRY_DIR_GPIO_PIN
   #define TELEMETRY_DIR_INPUT()           TELEMETRY_DIR_GPIO->BSRRL = TELEMETRY_DIR_GPIO_PIN
 #else
