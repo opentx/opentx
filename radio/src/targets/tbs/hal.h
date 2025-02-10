@@ -365,7 +365,7 @@
   #endif
 
 #if defined(RADIO_TANGO)
-  #define TELEMETRY_EXTI_REUSE_INTERRUPT_ROTARY_ENCODER
+  #define TELEMETRY_EXTI_REUSE_ROTARY_ENCODER_IRQ1
 #endif
   #define TELEMETRY_TIMER                   TIM11
   #define TELEMETRY_TIMER_IRQn              TIM1_TRG_COM_TIM11_IRQn

@@ -112,7 +112,7 @@ void telemetryPortInvertedInit(uint32_t baudrate)
     //TODO:
     // - handle conflict with HEARTBEAT disabled for trainer input...
     // - probably need to stop trainer input/output and restore after this is closed
-#if !defined(TELEMETRY_EXTI_REUSE_INTERRUPT_ROTARY_ENCODER) && !defined(TELEMETRY_EXTI_REUSE_INTERRUPT_INTMODULE_HEARTBEAT)
+#if !defined(TELEMETRY_EXTI_REUSE_ROTARY_ENCODER_IRQ1) && !defined(TELEMETRY_EXTI_REUSE_INTMODULE_HEARTBEAT_IRQ)
     NVIC_DisableIRQ(TELEMETRY_EXTI_IRQn);
 #endif
     NVIC_DisableIRQ(TELEMETRY_TIMER_IRQn);
@@ -166,7 +166,7 @@ void telemetryPortInvertedInit(uint32_t baudrate)
   //TODO:
   // - handle conflict with HEARTBEAT disabled for trainer input...
   // - probably need to stop trainer input/output and restore after this is closed
-#if !defined(TELEMETRY_EXTI_REUSE_INTERRUPT_ROTARY_ENCODER) && !defined(TELEMETRY_EXTI_REUSE_INTERRUPT_INTMODULE_HEARTBEAT)
+#if !defined(TELEMETRY_EXTI_REUSE_ROTARY_ENCODER_IRQ1) && !defined(TELEMETRY_EXTI_REUSE_INTMODULE_HEARTBEAT_IRQ)
   NVIC_SetPriority(TELEMETRY_EXTI_IRQn, 0);
   NVIC_EnableIRQ(TELEMETRY_EXTI_IRQn);
 #endif
