@@ -37,7 +37,7 @@ uint8_t g_moduleIdx;
 uint8_t getSwitchWarningsCount()
 {
   uint8_t count = 0;
-  for (int i=0; i<NUM_SWITCHES - NUM_FUNCTIONS_SWITCHES; ++i) {
+  for (int i=0; i<NUM_SWITCHES - FUNCTION_SWITCHES; ++i) {
     if (SWITCH_WARNING_ALLOWED(i)) {
       ++count;
     }
@@ -63,14 +63,16 @@ enum MenuModelSetupItems {
   ITEM_MODEL_SETUP_TIMER3_PERSISTENT,
   ITEM_MODEL_SETUP_TIMER3_MINUTE_BEEP,
   ITEM_MODEL_SETUP_TIMER3_COUNTDOWN_BEEP,
-#if defined(FUNCTION_SWITCHES)
+#if FUNCTION_SWITCHES > 0
   ITEM_MODEL_SETUP_LABEL,
   ITEM_MODEL_SETUP_SW1,
   ITEM_MODEL_SETUP_SW2,
   ITEM_MODEL_SETUP_SW3,
   ITEM_MODEL_SETUP_SW4,
+#if FUNCTION_SWITCHES >= 6
   ITEM_MODEL_SETUP_SW5,
   ITEM_MODEL_SETUP_SW6,
+#endif
   ITEM_MODEL_SETUP_FS_STARTUP,
 #endif
   ITEM_MODEL_SETUP_EXTENDED_LIMITS,
@@ -279,8 +281,10 @@ inline uint8_t MODULE_SUBTYPE_ROWS(int moduleIdx)
   #define EXTRA_MODULE_ROWS
 #endif
 
-#if defined(FUNCTION_SWITCHES)
-  #define FUNCTION_SWITCHES_ROWS       READONLY_ROW, NAVIGATION_LINE_BY_LINE|3, NAVIGATION_LINE_BY_LINE|3, NAVIGATION_LINE_BY_LINE|3, NAVIGATION_LINE_BY_LINE|3, NAVIGATION_LINE_BY_LINE|3, NAVIGATION_LINE_BY_LINE|3, NAVIGATION_LINE_BY_LINE|(NUM_FUNCTIONS_SWITCHES-1),
+#if FUNCTION_SWITCHES == 6
+  #define FUNCTION_SWITCHES_ROWS       READONLY_ROW, NAVIGATION_LINE_BY_LINE|3, NAVIGATION_LINE_BY_LINE|3, NAVIGATION_LINE_BY_LINE|3, NAVIGATION_LINE_BY_LINE|3, NAVIGATION_LINE_BY_LINE|3, NAVIGATION_LINE_BY_LINE|3, NAVIGATION_LINE_BY_LINE|(FUNCTION_SWITCHES-1),
+#elif FUNCTION_SWITCHES == 4
+  #define FUNCTION_SWITCHES_ROWS       READONLY_ROW, NAVIGATION_LINE_BY_LINE|3, NAVIGATION_LINE_BY_LINE|3, NAVIGATION_LINE_BY_LINE|3, NAVIGATION_LINE_BY_LINE|3, NAVIGATION_LINE_BY_LINE|(FUNCTION_SWITCHES-1),
 #else
   #define FUNCTION_SWITCHES_ROWS
 #endif
@@ -609,8 +613,7 @@ void menuModelSetup(event_t event)
         timer->persistent = editChoice(MODEL_SETUP_2ND_COLUMN, y, STR_PERSISTENT, STR_VPERSISTENT, timer->persistent, 0, 2, attr, event);
         break;
       }
-#if defined(FUNCTION_SWITCHES)
-
+#if FUNCTION_SWITCHES > 0
       case ITEM_MODEL_SETUP_LABEL:
         lcdDrawTextAlignedLeft(y, "Function Switches");
         break;
@@ -619,12 +622,14 @@ void menuModelSetup(event_t event)
       case ITEM_MODEL_SETUP_SW2:
       case ITEM_MODEL_SETUP_SW3:
       case ITEM_MODEL_SETUP_SW4:
+#if FUNCTION_SWITCHES >= 6
       case ITEM_MODEL_SETUP_SW5:
       case ITEM_MODEL_SETUP_SW6:
+#endif
       {
         int index = k - ITEM_MODEL_SETUP_SW1;
         int config = FSWITCH_CONFIG(index);
-        lcdDrawTextAtIndex(INDENT_WIDTH, y, STR_VSRCRAW, MIXSRC_FIRST_SWITCH + NUM_REGULAR_SWITCHES - MIXSRC_Rud + index + 1, menuHorizontalPosition < 0 ? attr : 0);
+        lcdDrawTextAtIndex(INDENT_WIDTH, y, STR_VSRCRAW, MIXSRC_FIRST_SWITCH + NUM_SWITCHES - MIXSRC_Rud + index + 1, menuHorizontalPosition < 0 ? attr : 0);
         if (ZEXIST(g_model.switchNames[index]) || (attr && s_editMode > 0 && menuHorizontalPosition == 0))
           editName(35, y, g_model.switchNames[index], LEN_SWITCH_NAME, event, menuHorizontalPosition == 0 ? attr : 0);
         else
@@ -646,8 +651,8 @@ void menuModelSetup(event_t event)
           uint8_t groupeAlwaysOn = IS_FSWITCH_GROUP_ON(config);
           groupeAlwaysOn = editCheckBox(groupeAlwaysOn, 30 + 15 * FW, y, "", menuHorizontalPosition == 3 ? attr : 0, event);
           if (attr && checkIncDec_Ret && menuHorizontalPosition == 3) {
-            swconfig_t mask = (swconfig_t) 0x01 << (2 * NUM_FUNCTIONS_SWITCHES + config);
-            g_model.functionSwitchGroup = (g_model.functionSwitchGroup & ~mask) | (groupeAlwaysOn << (2 * NUM_FUNCTIONS_SWITCHES + config));
+            swconfig_t mask = (swconfig_t) 0x01 << (2 * FUNCTION_SWITCHES + config);
+            g_model.functionSwitchGroup = (g_model.functionSwitchGroup & ~mask) | (groupeAlwaysOn << (2 * FUNCTION_SWITCHES + config));
           }
         }
         else if (attr && menuHorizontalPosition == 3) {  // Non visible checkbox
@@ -660,7 +665,7 @@ void menuModelSetup(event_t event)
       {
         char c;
         lcdDrawText(0, y, INDENT "Start", menuHorizontalPosition < 0 ? attr : 0);
-        for (uint8_t i = 0; i < NUM_FUNCTIONS_SWITCHES; i++) {
+        for (uint8_t i = 0; i < FUNCTION_SWITCHES; i++) {
           uint8_t startPos = (g_model.functionSwitchStartConfig >> 2 * i) & 0x03;
           c = "\300\301="[(g_model.functionSwitchStartConfig >> 2 * i) & 0x03];
           lcdDrawNumber(MODEL_SETUP_2ND_COLUMN - (2 + FW) + i * 2 * FW, y, i + 1, 0);
@@ -807,7 +812,7 @@ void menuModelSetup(event_t event)
           }
 
           int current = 0;
-          for (int i = 0; i < NUM_SWITCHES - NUM_FUNCTIONS_SWITCHES; i++) {
+          for (int i = 0; i < NUM_SWITCHES - FUNCTION_SWITCHES; i++) {
             if (SWITCH_WARNING_ALLOWED(i)) {
               div_t qr = div(current, MAX_SWITCH_PER_LINE);
               if (!READ_ONLY() && event==EVT_KEY_BREAK(KEY_ENTER) && attr && l_posHorz == current && old_posHorz >= 0) {

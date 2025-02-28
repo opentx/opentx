@@ -260,6 +260,9 @@ bool eeLoadGeneral(bool allowFixes)
 {
   eeLoadGeneralSettingsData();
 
+  // to force default settings
+  // return false;
+
   if (g_eeGeneral.version != EEPROM_VER) {
     TRACE("EEPROM version %d instead of %d", g_eeGeneral.version, EEPROM_VER);
 #if defined(PCBSKY9X)

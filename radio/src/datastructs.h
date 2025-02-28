@@ -577,13 +577,13 @@ PACK(struct CustomScreenData {
   #define SCRIPT_DATA
 #endif
 
-#if defined(FUNCTION_SWITCHES) && NUM_FUNCTIONS_SWITCHES < 8
+#if FUNCTION_SWITCHES > 0
   #define FUNCTION_SWITCHS_FIELDS \
     uint16_t functionSwitchConfig;  \
     uint16_t functionSwitchGroup; \
     uint16_t functionSwitchStartConfig; \
     uint8_t functionSwitchLogicalState;  \
-    char switchNames[NUM_FUNCTIONS_SWITCHES][LEN_SWITCH_NAME];
+    char switchNames[FUNCTION_SWITCHES][LEN_SWITCH_NAME];
 #else
   #define FUNCTION_SWITCHS_FIELDS
 #endif
@@ -752,7 +752,7 @@ PACK(struct TrainerData {
     uint8_t  backlightColor; \
     swarnstate_t switchUnlockStates; \
     swconfig_t switchConfig; \
-    char switchNames[STORAGE_NUM_SWITCHES - NUM_FUNCTIONS_SWITCHES][LEN_SWITCH_NAME]; \
+    char switchNames[STORAGE_NUM_SWITCHES - FUNCTION_SWITCHES][LEN_SWITCH_NAME]; \
     char anaNames[NUM_STICKS+STORAGE_NUM_POTS+STORAGE_NUM_SLIDERS][LEN_ANA_NAME]; \
     MODEL_FILE_NAME_FIELD \
     BLUETOOTH_FIELDS

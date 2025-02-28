@@ -21,23 +21,18 @@
 #include "opentx.h"
 
 vertpos_t menuVerticalOffset;
+vertpos_t menuVerticalPosition;
+horzpos_t menuHorizontalPosition;
 int8_t s_editMode;
 uint8_t noHighlightCounter;
 uint8_t menuCalibrationState;
-vertpos_t menuVerticalPosition;
-horzpos_t menuHorizontalPosition;
-int8_t  checkIncDec_Ret;
 
-#define DBLKEYS_PRESSED_RGT_LFT(in)    (false)
-#define DBLKEYS_PRESSED_UP_DWN(in)     (false)
-#define DBLKEYS_PRESSED_RGT_UP(in)     (false)
-#define DBLKEYS_PRESSED_LFT_DWN(in)    (false)
+int8_t  checkIncDec_Ret;
+extern int checkIncDecSelection;
 
 INIT_STOPS(stops100, 3, -100, 0, 100)
 INIT_STOPS(stops1000, 3, -1000, 0, 1000)
 INIT_STOPS(stopsSwitch, 15, SWSRC_FIRST, CATEGORY_END(-SWSRC_FIRST_LOGICAL_SWITCH), CATEGORY_END(-SWSRC_FIRST_TRIM), CATEGORY_END(-SWSRC_LAST_SWITCH+1), 0, CATEGORY_END(SWSRC_LAST_SWITCH), CATEGORY_END(SWSRC_FIRST_TRIM-1), CATEGORY_END(SWSRC_FIRST_LOGICAL_SWITCH-1), SWSRC_LAST)
-
-extern int checkIncDecSelection;
 
 void onSwitchLongEnterPress(const char * result)
 {
@@ -52,6 +47,11 @@ void onSwitchLongEnterPress(const char * result)
   else if (result == STR_MENU_INVERT)
     checkIncDecSelection = SWSRC_INVERT;
 }
+
+#define DBLKEYS_PRESSED_RGT_LFT(in)    (false)
+#define DBLKEYS_PRESSED_UP_DWN(in)     (false)
+#define DBLKEYS_PRESSED_RGT_UP(in)     (false)
+#define DBLKEYS_PRESSED_LFT_DWN(in)    (false)
 
 int checkIncDec(event_t event, int val, int i_min, int i_max, unsigned int i_flags, IsValueAvailable isValueAvailable, const CheckIncDecStops &stops)
 {
@@ -214,7 +214,6 @@ tmr10ms_t menuEntryTime;
 #define MAXCOL_RAW(row)                (horTab ? *(horTab+min(row, (vertpos_t)horTabMax)) : (const uint8_t)0)
 #define MAXCOL(row)                    (MAXCOL_RAW(row) >= HIDDEN_ROW ? MAXCOL_RAW(row) : (const uint8_t)(MAXCOL_RAW(row) & (~NAVIGATION_LINE_BY_LINE)))
 #define COLATTR(row)                   (MAXCOL_RAW(row) == (uint8_t)-1 ? (const uint8_t)0 : (const uint8_t)(MAXCOL_RAW(row) & NAVIGATION_LINE_BY_LINE))
-#define POS_HORZ_INIT(posVert)         ((COLATTR(posVert) & NAVIGATION_LINE_BY_LINE) ? -1 : 0)
 
 void check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t menuTabSize, const uint8_t * horTab, uint8_t horTabMax, vertpos_t rowcount)
 {
@@ -226,7 +225,21 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t
   if (menuTab) {
     int cc = curr;
     switch (event) {
-#if defined(KEYS_GPIO_REG_PAGEUP)
+#if defined(HARDWARE_KEY_PAGEDN)
+      case EVT_KEY_FIRST(KEY_PAGEDN):
+#else
+      case EVT_KEY_BREAK(KEY_PAGE):
+#endif
+        if (s_editMode>0)
+          break;
+
+        if (curr < (menuTabSize-1))
+          cc = curr + 1;
+        else
+          cc = 0;
+        break;
+
+#if defined(HARDWARE_KEY_PAGEUP)
       case EVT_KEY_FIRST(KEY_PAGEUP):
 #else
       case EVT_KEY_LONG(KEY_PAGE):
@@ -239,20 +252,6 @@ void check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t
         else
           cc = menuTabSize-1;
         killEvents(event);
-        break;
-
-#if defined(KEYS_GPIO_REG_PAGEDN)
-      case EVT_KEY_FIRST(KEY_PAGEDN):
-#else
-      case EVT_KEY_BREAK(KEY_PAGE):
-#endif
-        if (s_editMode>0)
-          break;
-
-        if (curr < (menuTabSize-1))
-          cc = curr + 1;
-        else
-          cc = 0;
         break;
     }
 

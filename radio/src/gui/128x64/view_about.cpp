@@ -42,10 +42,11 @@ enum AboutScreens {
 #define ABOUT_X      2
 #define ABOUT_INDENT 4
 
-#if defined(KEYS_GPIO_REG_PAGEDN)
+// TODO duplicated code here
+#if defined(HARDWARE_KEY_PAGEUP)
 #define EVT_KEY_PREVIOUS_VIEW          EVT_KEY_BREAK(KEY_PAGEUP)
 #define EVT_KEY_NEXT_VIEW              EVT_KEY_BREAK(KEY_PAGEDN)
-#elif defined(NAVIGATION_X7)
+#elif defined(HARDWARE_KEY_PAGE)
 #define EVT_KEY_PREVIOUS_VIEW          EVT_KEY_LONG(KEY_PAGE)
 #define EVT_KEY_NEXT_VIEW              EVT_KEY_BREAK(KEY_PAGE)
 #else

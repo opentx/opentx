@@ -52,6 +52,26 @@ uint32_t readKeys()
     result |= 1 << KEY_SYS;
 #endif
 
+#if defined(HARDWARE_KEY_LEFT)
+  if (IS_KEY_PRESSED(LEFT))
+    result |= 1 << KEY_LEFT;
+#endif
+
+#if defined(HARDWARE_KEY_RIGHT)
+  if (IS_KEY_PRESSED(RIGHT))
+    result |= 1 << KEY_RIGHT;
+#endif
+
+#if defined(HARDWARE_KEY_UP)
+  if (IS_KEY_PRESSED(UP))
+    result |= 1 << KEY_UP;
+#endif
+
+#if defined(HARDWARE_KEY_DOWN)
+  if (IS_KEY_PRESSED(DOWN))
+    result |= 1 << KEY_DOWN;
+#endif
+
 #if defined(HARDWARE_KEY_MODEL)
   if (IS_KEY_PRESSED(MODEL))
     result |= 1 << KEY_MODEL;

@@ -102,10 +102,10 @@
 #elif defined(RADIO_V10)
   // PAGE / MENU / EXIT moved to NCA9555
   #define HARDWARE_KEY_PAGE
-  #define HARDWARE_KEY_SYS
-  #define HARDWARE_KEY_MODEL
-  #define HARDWARE_KEY_TELE
-  #define HARDWARE_KEY_EXIT
+  #define HARDWARE_KEY_UP
+  #define HARDWARE_KEY_DOWN
+  #define HARDWARE_KEY_RIGHT
+  #define HARDWARE_KEY_LEFT
   #define KEYS_GPIO_REG_ENTER           GPIOE->IDR
   #define KEYS_GPIO_PIN_ENTER           GPIO_Pin_10 // PE.10
 #elif defined(PCBX7)
@@ -640,7 +640,7 @@
   #define SWITCHES_GPIO_REG_E           GPIOG->IDR
   #define SWITCHES_GPIO_PIN_E           GPIO_Pin_7  // PG.07
 #elif defined(RADIO_V10)
-  #define STORAGE_SWITCH_E
+  // #define STORAGE_SWITCH_E
   // no SWE
 #elif defined(PCBX7)
   // no SWE
@@ -734,7 +734,8 @@
   #define SWITCHES_GPIO_REG_G           GPIOG->IDR
   #define SWITCHES_GPIO_PIN_G           GPIO_Pin_5  // PG.05
 #elif defined(RADIO_V10)
-  #define STORAGE_SWITCH_G
+  // #define STORAGE_SWITCH_G
+  // no SWG
 #elif defined(PCBX7) || defined(PCBXLITE) || defined(PCBX9LITE)  || defined(RADIO_T8)
   // no SWG
 #else
@@ -1433,19 +1434,21 @@
 #endif
 
 #if defined(RADIO_V10)
-  #define FUNCTION_LED1_GPIO              GPIOC
-  #define FUNCTION_LED1_GPIO_PIN          LL_GPIO_PIN_4  // PC.04
-  #define FUNCTION_LED2_GPIO              GPIOA
-  #define FUNCTION_LED2_GPIO_PIN          LL_GPIO_PIN_7  // PA.07
-  #define FUNCTION_LED3_GPIO              GPIOE
-  #define FUNCTION_LED3_GPIO_PIN          LL_GPIO_PIN_15 // PE.01
-  #define FUNCTION_LED4_GPIO              GPIOA
-  #define FUNCTION_LED4_GPIO_PIN          LL_GPIO_PIN_15 // PA.15
+  #define FUNCTION_LED4_GPIO              GPIOC
+  #define FUNCTION_LED4_GPIO_PIN          GPIO_Pin_4  // PC.04
+  #define FUNCTION_LED3_GPIO              GPIOA
+  #define FUNCTION_LED3_GPIO_PIN          GPIO_Pin_7  // PA.07
+  #define FUNCTION_LED2_GPIO              GPIOE
+  #define FUNCTION_LED2_GPIO_PIN          GPIO_Pin_1  // PE.01
+  #define FUNCTION_LED1_GPIO              GPIOA
+  #define FUNCTION_LED1_GPIO_PIN          GPIO_Pin_15 // PA.15
+  #define RESET_FUNCTION_LED(gpio, pin)   GPIO_SetBits(gpio, pin)
+  #define SET_FUNCTION_LED(gpio, pin)     GPIO_ResetBits(gpio, pin)
 #elif defined(RADIO_TPRO)
-  #define FS_RCC_AHB1Periph             RCC_AHB1Periph_GPIOF
-  #define GPIO_FSLED_GPIO_ON            GPIO_SetBits
-  #define GPIO_FSLED_GPIO_OFF           GPIO_ResetBits
-  #define FSLED_GPIO                    GPIOF
+  #define FS_RCC_AHB1Periph               RCC_AHB1Periph_GPIOF
+  #define RESET_FUNCTION_LED(gpio, pin)   GPIO_SetBits(gpio, pin)
+  #define SET_FUNCTION_LED(gpio, pin)     GPIO_ResetBits(gpio, pin)
+  #define FSLED_GPIO                      GPIOF
   #define FUNCTION_LED1_GPIO_PIN              GPIO_Pin_5
   #define FUNCTION_LED2_GPIO_PIN              GPIO_Pin_4
   #define FUNCTION_LED3_GPIO_PIN              GPIO_Pin_3

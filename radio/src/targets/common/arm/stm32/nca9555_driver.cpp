@@ -277,16 +277,16 @@ uint32_t readTrims()
 
 uint8_t getFunctionSwitchesStates()
 {
-  //uint32_t value2 = inputValues[1];
+  uint32_t value1 = inputValues[0];
   uint8_t result = 0;
-  /*if (!(value2 & (1 << INPUT2_FS_1)))
+  if (!(value1 & (1 << INPUT1_FS_1)))
     result |= 1u << 0u;
-  if (!(value2 & (1 << INPUT2_FS_2)))
+  if (!(value1 & (1 << INPUT1_FS_2)))
     result |= 1u << 1u;
-  if (!(value2 & (1 << INPUT2_FS_3)))
+  if (!(value1 & (1 << INPUT1_FS_3)))
     result |= 1u << 2u;
-  if (!(value2 & (1 << INPUT2_FS_4)))
-    result |= 1u << 3u;*/
+  if (!(value1 & (1 << INPUT1_FS_4)))
+    result |= 1u << 3u;
   return result;
 }
 

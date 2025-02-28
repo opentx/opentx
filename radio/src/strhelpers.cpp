@@ -297,7 +297,7 @@ char * getSwitchName(char * dest, swsrc_t idx)
     }
     else
       *dest++ = 'A' + swinfo.quot;
-#elif defined(PCBX7) && !defined(RADIO_TX12) && !defined(RADIO_ZORRO) && !defined(RADIO_FAMILY_TBS) && !defined(RADIO_V10)
+#elif defined(PCBX7) && !defined(RADIO_TX12) && !defined(RADIO_ZORRO) && !defined(RADIO_FAMILY_TBS)
     if (swinfo.quot >= 5)
         *dest++ = 'H' + swinfo.quot - 5;
       else if (swinfo.quot == 4)
@@ -347,6 +347,19 @@ char * getSwitchPositionName(char * dest, swsrc_t idx)
     *s = '\0';
   }
 #endif // PCBSKY9X
+
+#if FUNCTION_SWITCHES > 0
+  else if (idx <= SWSRC_LAST_FUNCTION_SWITCH) {
+    idx -= SWSRC_FIRST_FUNCTION_SWITCH;
+    if (ZEXIST(g_model.switchNames[idx])) {
+      zchar2str(dest, g_model.switchNames[idx], LEN_SWITCH_NAME);
+      dest[LEN_SWITCH_NAME] = '\0';
+    }
+    else {
+      getStringAtIndex(dest, STR_VSRCRAW, idx + MIXSRC_FIRST_FS_SWITCH - MIXSRC_Rud + 1);
+    }
+  }
+#endif
 
 #if NUM_XPOTS > 0
   else if (idx <= SWSRC_LAST_MULTIPOS_SWITCH) {

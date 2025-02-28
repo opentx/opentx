@@ -67,7 +67,7 @@ uint8_t   potsPos[NUM_XPOTS];
 #define SWITCH_POSITION(sw)  (switchesPos & ((MASK_CFN_TYPE)1<<(sw)))
 #define POT_POSITION(sw)     ((potsPos[(sw)/XPOTS_MULTIPOS_COUNT] & 0x0f) == ((sw) % XPOTS_MULTIPOS_COUNT))
 
-#if defined(FUNCTION_SWITCHES)
+#if FUNCTION_SWITCHES > 0
 // Non pushed : SWSRC_Sx0 = -1024 = Sx(up) = state 0
 // Pushed : SWSRC_Sx2 = +1024 = Sx(down) = state 1
 
@@ -75,7 +75,7 @@ uint8_t fsPreviousState = 0;
 
 void setFSStartupPosition()
 {
-  for (uint8_t i = 0; i < NUM_FUNCTIONS_SWITCHES; i++) {
+  for (uint8_t i = 0; i < FUNCTION_SWITCHES; i++) {
     uint8_t startPos = (g_model.functionSwitchStartConfig >> 2 * i) & 0x03;
     switch(startPos) {
       case FS_START_DOWN:
@@ -99,27 +99,29 @@ uint8_t getFSLogicalState(uint8_t index)
   return (uint8_t )(bfSingleBitGet(g_model.functionSwitchLogicalState, index) >> (index));
 }
 
-uint8_t getFSPhysicalState(uint8_t index)
-{
-  return switchState(((index + NUM_REGULAR_SWITCHES) * 3) + 2) ? 1 : 0;
-}
+// uint8_t getFSPhysicalState(uint8_t index)
+// {
+//   return switchState(((index + NUM_REGULAR_SWITCHES) * 3) + 2) ? 1 : 0;
+// }
 
-uint8_t getFSPreviousPhysicalState(uint8_t index)
+bool getFSPreviousPhysicalState(uint8_t index)
 {
-  return (uint8_t )(bfSingleBitGet(fsPreviousState, index) >> (index));
+  return bfSingleBitGet(fsPreviousState, index) >> index;
 }
 
 void evalFunctionSwitches()
 {
-  for (uint8_t i = 0; i < NUM_FUNCTIONS_SWITCHES; i++) {
+  uint8_t ledsMask = 0;
+  uint8_t keysStates = getFunctionSwitchesStates();
+
+  for (uint8_t i = 0; i < FUNCTION_SWITCHES; i++) {
     if (FSWITCH_CONFIG(i) == SWITCH_NONE) {
-      fsLedOff(i);
       continue;
     }
 
-    uint8_t physicalState = getFSPhysicalState(i);
+    auto physicalState = bool(keysStates & (1 << i));
     if (physicalState != getFSPreviousPhysicalState(i)) {      // FS was moved
-      if ((FSWITCH_CONFIG(i) == SWITCH_2POS && physicalState == 1) || (FSWITCH_CONFIG(i) == SWITCH_TOGGLE)) {
+      if ((FSWITCH_CONFIG(i) == SWITCH_2POS && physicalState) || (FSWITCH_CONFIG(i) == SWITCH_TOGGLE)) {
         if (IS_FSWITCH_GROUP_ON(FSWITCH_GROUP(i)) != 0) { // In an always on group
           g_model.functionSwitchLogicalState |= 1 << i;   // Set bit
         }
@@ -129,7 +131,7 @@ void evalFunctionSwitches()
       }
 
       if (FSWITCH_GROUP(i) && physicalState == 1) {    // switch is in a group, other in group need to be turned off
-        for (uint8_t j = 0; j < NUM_FUNCTIONS_SWITCHES; j++) {
+        for (uint8_t j = 0; j < FUNCTION_SWITCHES; j++) {
           if (i == j)
             continue;
           if (FSWITCH_GROUP(j) == FSWITCH_GROUP(i)) {
@@ -142,11 +144,12 @@ void evalFunctionSwitches()
       storageDirty(EE_MODEL);
     }
 
-    if (getFSLogicalState(i))
-      fsLedOn(i);
-    else
-      fsLedOff(i);
+    if (getFSLogicalState(i)) {
+      ledsMask |= 1 << i;
+    }
   }
+
+  writeFunctionLeds(ledsMask);
 }
 #endif
 
@@ -562,7 +565,7 @@ bool getSwitch(swsrc_t swtch, uint8_t flags)
     result = latencyToggleSwitch;
   }
 #endif
-  else if (cs_idx <= (SWSRC_LAST_SWITCH - 3 * NUM_FUNCTIONS_SWITCHES)) {
+  else if (cs_idx <= SWSRC_LAST_SWITCH) {
 #if defined(PCBTARANIS) || defined(PCBHORUS)
     if (flags & GETSWITCH_MIDPOS_DELAY)
       result = SWITCH_POSITION(cs_idx-SWSRC_FIRST_SWITCH);
@@ -573,16 +576,14 @@ bool getSwitch(swsrc_t swtch, uint8_t flags)
 #endif
 
   }
-#if defined(FUNCTION_SWITCHES)
-  else if (cs_idx <= SWSRC_LAST_SWITCH) {
-    div_t qr = div(cs_idx - 3 * NUM_FUNCTIONS_SWITCHES, 3);
-    auto value = getFSLogicalState(qr.quot + 1);
-    result = qr.rem == -2 ? 1 - value : value;
+#if FUNCTION_SWITCHES > 0
+  else if (cs_idx <= SWSRC_LAST_FUNCTION_SWITCH) {
+    result = getFSLogicalState(cs_idx - SWSRC_FIRST_FUNCTION_SWITCH);
   }
 #endif
 #if NUM_XPOTS > 0
   else if (cs_idx <= SWSRC_LAST_MULTIPOS_SWITCH) {
-    result = POT_POSITION(cs_idx-SWSRC_FIRST_MULTIPOS_SWITCH);
+    result = POT_POSITION(cs_idx - SWSRC_FIRST_MULTIPOS_SWITCH);
   }
 #endif
   else if (cs_idx <= SWSRC_LAST_TRIM) {
@@ -647,26 +648,26 @@ swsrc_t getMovedSwitch()
 
 #if defined(PCBTARANIS) || defined(PCBHORUS)
   // Switches
-  for (int i = 0; i < NUM_SWITCHES - NUM_FUNCTIONS_SWITCHES; i++) {
+  for (int i = 0; i < NUM_SWITCHES; i++) {
     if (SWITCH_EXISTS(i)) {
       swarnstate_t mask = ((swarnstate_t) 0x03 << (i * 2));
       uint8_t prev = (switches_states & mask) >> (i * 2);
       uint8_t next = (1024 + getValue(MIXSRC_SA + i)) / 1024;
       if (prev != next) {
         switches_states = (switches_states & (~mask)) | ((swarnstate_t) next << (i * 2));
-        result = 1 + (3 * i) + next;
+        result = SWSRC_FIRST_SWITCH + (3 * i) + next;
       }
     }
   }
 
-#if defined(FUNCTION_SWITCHES)
-  for (int i = 0; i < NUM_FUNCTIONS_SWITCHES; i++) {
+#if FUNCTION_SWITCHES > 0
+  for (int i = 0; i < FUNCTION_SWITCHES; i++) {
     if (FSWITCH_CONFIG(i) != SWITCH_NONE) {
-      auto prev = (uint8_t )(bfSingleBitGet(fsswitches_states, i) >> (i));
+      auto prev = uint8_t(bfSingleBitGet(fsswitches_states, i)) >> i;
       uint8_t next = getFSLogicalState(i);
       if (prev != next) {
-        fsswitches_states ^= (-next ^ fsswitches_states) & (1 << i);
-        result = 2 + (3 * (i + NUM_REGULAR_SWITCHES)) + next;
+        fsswitches_states ^= (1 << i);
+        result = SWSRC_FIRST_FUNCTION_SWITCH + i;
       }
     }
   }
@@ -681,7 +682,7 @@ swsrc_t getMovedSwitch()
         uint8_t prev = potsPos[i] & 0x0F;
         uint8_t next = anaIn(POT1 + i) / (2 * RESX / calib->count);
         if (prev != next) {
-          result = SWSRC_LAST_SWITCH + i * XPOTS_MULTIPOS_COUNT + next + 1;
+          result = SWSRC_FIRST_MULTIPOS_SWITCH + (i * XPOTS_MULTIPOS_COUNT) + next;
         }
       }
     }
@@ -768,7 +769,7 @@ void checkSwitches()
       }
     }
 #elif defined(PCBTARANIS)
-    for (int i=0; i < (NUM_SWITCHES - NUM_FUNCTIONS_SWITCHES); i++) {
+    for (int i=0; i < (NUM_SWITCHES - FUNCTION_SWITCHES); i++) {
       if (SWITCH_WARNING_ALLOWED(i) && !(g_model.switchWarningEnable & (1<<i))) {
         swarnstate_t mask = ((swarnstate_t)0x03 << (i*2));
         if (!((states & mask) == (switches_states & mask))) {
@@ -824,7 +825,7 @@ void checkSwitches()
       lcdNextPos = SWITCH_WARNING_LIST_X;
 #endif
       int numWarnings = 0;
-      for (int i=0; i < (NUM_SWITCHES - NUM_FUNCTIONS_SWITCHES); ++i) {
+      for (int i=0; i < (NUM_SWITCHES - FUNCTION_SWITCHES); ++i) {
 #if defined(COLORLCD)
         if (SWITCH_WARNING_ALLOWED(i)) {
           unsigned int state = ((g_model.switchWarningState >> (3*i)) & 0x07);

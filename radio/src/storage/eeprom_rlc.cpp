@@ -767,6 +767,9 @@ bool eeLoadGeneral(bool allowFixes)
     }
   }
 
+  // to force default settings
+  // return false;
+
 #if defined(PCBX7)
   if (g_eeGeneral.variant == 0) {
     TRACE("Pre release EEPROM detected, variant %d instead of %d for X7 radio. Loading anyway", g_eeGeneral.variant, EEPROM_VARIANT);

@@ -147,7 +147,7 @@ elseif(PCB STREQUAL X7)
     set(CPU_TYPE_FULL STM32F205xE)  # for size report
     set(LINKER_SCRIPT targets/taranis/stm32f2_flash.ld)
     set(LUA_EXPORT lua_export_tpro)
-    add_definitions(-DFUNCTION_SWITCHES)
+    add_definitions(-DFUNCTION_SWITCHES=6)
     add_definitions(-DRADIO_TPRO)
     add_definitions(-DEEPROM_VARIANT=0x4005)
     add_definitions(-DMANUFACTURER_JUMPER)
@@ -247,7 +247,7 @@ elseif(PCB STREQUAL X7)
     option(INTERNAL_MODULE_PXX1 "Support for PXX1 internal module" OFF)
     option(INTERNAL_MODULE_PXX2 "Support for PXX2 internal module" ON)
     set(FLAVOUR v10)
-    set(NAVIGATION_TYPE x7)
+    set(NAVIGATION_TYPE horus)
     set(CPU_TYPE STM32F4)
     set(CPU_TYPE_FULL STM32F407xE)  # for size report
     set(LINKER_SCRIPT targets/taranis/stm32f4_flash.ld)
@@ -264,6 +264,7 @@ elseif(PCB STREQUAL X7)
       )
     add_definitions(-DSTM32F40_41xxx)
     add_definitions(-DHARDWARE_POWER_MANAGEMENT_UNIT)
+    add_definitions(-DFUNCTION_SWITCHES=4)
     set(PXX2 ON)
     set(PXX_FREQUENCY "HIGH")
     set(BLUETOOTH NO)
@@ -516,8 +517,12 @@ set(TARGET_SRC
   ../common/arm/stm32/adc_driver.cpp
   ../common/arm/stm32/heartbeat_driver.cpp
   ../common/arm/stm32/mixer_scheduler_driver.cpp
-  ../common/arm/stm32/sdio_sd.c
   )
+
+set(FIRMWARE_TARGET_SRC
+  ${FIRMWARE_TARGET_SRC}
+  ../common/arm/stm32/sdio_sd.c
+)
 
 if(PCB STREQUAL XLITE OR PCB STREQUAL XLITES)
   set(TARGET_SRC

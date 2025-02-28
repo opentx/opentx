@@ -349,20 +349,6 @@ getvalue_t getValue(mixsrc_t i)
   }
 
 #if defined(PCBTARANIS) || defined(PCBHORUS)
-#if defined(FUNCTION_SWITCHES)
-  else if (i >= MIXSRC_FIRST_SWITCH && i <= MIXSRC_LAST_REGULAR_SWITCH) {
-    mixsrc_t sw = i - MIXSRC_FIRST_SWITCH;
-    if (SWITCH_EXISTS(sw)) {
-      return (switchState(3*sw) ? -1024 : (IS_CONFIG_3POS(sw) && switchState(3*sw+1) ? 0 : 1024));
-    }
-    else {
-      return 0;
-    }
-  }
-  else if (i >= MIXSRC_FIRST_FS_SWITCH && i <= MIXSRC_LAST_SWITCH) {
-    return getFSLogicalState(i - MIXSRC_FIRST_SWITCH - NUM_REGULAR_SWITCHES) ? +1024 : -1024;
-  }
-#else
   else if (i >= MIXSRC_FIRST_SWITCH && i <= MIXSRC_LAST_SWITCH) {
     mixsrc_t sw = i - MIXSRC_FIRST_SWITCH;
     if (SWITCH_EXISTS(sw)) {
@@ -372,7 +358,6 @@ getvalue_t getValue(mixsrc_t i)
       return 0;
     }
   }
-#endif
 #else
   else if (i == MIXSRC_3POS) {
     return (getSwitch(SW_ID0+1) ? -1024 : (getSwitch(SW_ID1+1) ? 0 : 1024));
@@ -380,6 +365,12 @@ getvalue_t getValue(mixsrc_t i)
   // don't use switchState directly to give getSwitch possibility to hack values if needed for switch warning
   else if (i < MIXSRC_SW1) {
     return getSwitch(SWSRC_THR+i-MIXSRC_THR) ? 1024 : -1024;
+  }
+#endif
+
+#if FUNCTION_SWITCHES > 0
+  else if (i >= MIXSRC_FIRST_FS_SWITCH && i <= MIXSRC_LAST_FS_SWITCH) {
+    return getFSLogicalState(i - MIXSRC_FIRST_FS_SWITCH) ? +1024 : -1024;
   }
 #endif
 

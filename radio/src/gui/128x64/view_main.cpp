@@ -315,8 +315,8 @@ void displayVoltageOrAlarm()
 #define EVT_KEY_NEXT_PAGE              EVT_ROTARY_RIGHT
 #define EVT_KEY_PREVIOUS_PAGE          EVT_ROTARY_LEFT
 #define EVT_KEY_MODEL_MENU             EVT_KEY_BREAK(KEY_MODEL)
-#define EVT_KEY_GENERAL_MENU           EVT_KEY_LONG(KEY_SYS)
-#define EVT_KEY_TELEMETRY              EVT_KEY_LONG(KEY_PAGE)
+#define EVT_KEY_GENERAL_MENU           EVT_KEY_BREAK(KEY_SYS)
+#define EVT_KEY_TELEMETRY              EVT_KEY_BREAK(KEY_TELE)
 #elif defined(NAVIGATION_X7)
 #define EVT_KEY_CONTEXT_MENU           EVT_KEY_LONG(KEY_ENTER)
 #define EVT_KEY_NEXT_VIEW              EVT_KEY_BREAK(KEY_PAGE)

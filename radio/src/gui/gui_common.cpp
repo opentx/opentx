@@ -21,10 +21,15 @@
 #include "opentx.h"
 
 #if defined(PCBTARANIS) || defined(PCBHORUS)
-uint8_t switchToMix(uint8_t source)
+uint8_t switchToMix(uint8_t swsrc)
 {
-  div_t qr = div(source-1, 3);
-  return qr.quot+MIXSRC_FIRST_SWITCH;
+#if FUNCTION_SWITCHES > 0
+  if (swsrc >= SWSRC_FIRST_FUNCTION_SWITCH) {
+    return MIXSRC_FIRST_FS_SWITCH + swsrc - SWSRC_FIRST_FUNCTION_SWITCH;
+  }
+#endif
+  div_t qr = div(swsrc - 1, 3);
+  return MIXSRC_FIRST_SWITCH + qr.quot;
 }
 #else
 uint8_t switchToMix(uint8_t source)
@@ -315,10 +320,6 @@ bool isSwitchAvailable(int swtch, SwitchContext context)
     div_t swinfo = switchInfo(swtch);
     if (!SWITCH_EXISTS(swinfo.quot)) {
       return false;
-    }
-
-    if (IS_SWITCH_FS(swinfo.quot) && context == GeneralCustomFunctionsContext) {
-      return false;   // FS are defined at model level, and cannot be in global functions
     }
 
     if (!IS_CONFIG_3POS(swinfo.quot)) {

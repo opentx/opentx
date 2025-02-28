@@ -291,6 +291,13 @@ void OpenTxSim::updateKeysAndSwitches(bool start)
     KEY_BackSpace, KEY_EXIT,
     KEY_Up,        KEY_PLUS,
     KEY_Down,      KEY_MINUS,
+#elif defined(RADIO_V10)
+    KEY_Page_Down, KEY_PAGE,
+    KEY_Return,    KEY_ENTER,
+    KEY_Up,        KEY_UP,
+    KEY_Down,      KEY_DOWN,
+    KEY_Right,     KEY_RIGHT,
+    KEY_Left,      KEY_LEFT,
 #elif defined(PCBTARANIS)
     KEY_Page_Up,   KEY_MENU,
   #if defined(HARDWARE_KEY_PAGE)
