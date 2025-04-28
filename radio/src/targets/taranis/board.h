@@ -783,6 +783,8 @@ extern uint16_t adcValues[NUM_ANALOGS];
 
 #if defined(PCBXLITE)
   #define BATT_SCALE                    131
+#elif defined(RADIO_V10)
+  #define BATT_SCALE                    153
 #elif defined(PCBX7)
   #define BATT_SCALE                    123
 #elif defined(PCBX9LITE)
