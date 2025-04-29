@@ -30,7 +30,10 @@ struct {
 #endif
 
 #define BIGSIZE       DBLSIZE
-#if defined (PCBTARANIS)
+#if defined (RADIO_V10)
+  #define LBOX_CENTERX  (LCD_W/4 + 5)
+  #define RBOX_CENTERX  (3*LCD_W/4 - 4)
+#elif defined (PCBTARANIS)
   #define LBOX_CENTERX  (LCD_W/4 + 14)
   #define RBOX_CENTERX  (3*LCD_W/4 - 13)
 #else
@@ -83,7 +86,7 @@ void drawExternalAntennaAndRSSI()
 void drawPotsBars()
 {
 #if defined(RADIO_V10)
-  #define NUM_POT_BARS 2
+  #define NUM_POT_BARS 6
 #else
   #define NUM_POT_BARS (NUM_POTS + NUM_SLIDERS)
 #endif
