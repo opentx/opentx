@@ -6,3 +6,4 @@
 build*/
 cmake-build-*/
 /debian/
+.vscode/
