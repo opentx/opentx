@@ -145,7 +145,6 @@ void readKeysAndTrims()
 
   in = readKeys();
   if (FACTORY_MODE_ENABLED()) {
-    TRACE("FACTORY 0x%x", in);
     if (in == ((1 << KEY_MENU) | (1 << KEY_ENTER))) {
       ENABLE_KEYS();
     }

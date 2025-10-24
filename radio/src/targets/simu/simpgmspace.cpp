@@ -233,6 +233,9 @@ void simuSetKey(uint8_t key, bool state)
     KEY_CASE(KEY_UP, KEYS_GPIO_REG_UP, KEYS_GPIO_PIN_UP)
     KEY_CASE(KEY_DOWN, KEYS_GPIO_REG_DOWN, KEYS_GPIO_PIN_DOWN)
 #endif
+#if defined(PCBACAIR)
+    KEY_CASE(KEY_BIND, KEYS_GPIO_REG_BIND, KEYS_GPIO_PIN_BIND)
+#endif
 #if defined(PCBSKY9X) && !defined(REVX) && !defined(AR9X) && defined(ROTARY_ENCODERS)
     KEY_CASE(BTN_REa, PIOB->PIO_PDSR, 0x40)
 #elif (defined(PCBGRUVIN9X) || defined(PCBMEGA2560)) && (defined(ROTARY_ENCODERS) || defined(ROTARY_ENCODER_NAVIGATION))
