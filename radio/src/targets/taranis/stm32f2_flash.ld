@@ -52,7 +52,7 @@ SECTIONS
 
     KEEP(*(.bootloader)) /* Bootloader code */
       
-    . = 32768;           /* Set the start of the main program */
+    . = 0x8000;           /* Set the start of the main program */
     _stext = .;          /* Provide the name for the start of this section */
 	 . = ALIGN(4);
     KEEP(*(.isr_vector)) /* Startup code */

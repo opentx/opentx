@@ -299,15 +299,15 @@ void menuRadioSdManager(event_t _event)
 #endif
 
   if (_event == EVT_ENTRY) {
-      f_chdir(ROOT_PATH);
+    f_chdir(ROOT_PATH);
 #if LCD_W >= 212
-      lastPos = -1;
+    lastPos = -1;
 #endif
   }
 
   if (_event == EVT_ENTRY || _event == EVT_ENTRY_UP) {
-      memclear(&reusableBuffer.sdManager, sizeof(reusableBuffer.sdManager));
-      REFRESH_FILES();
+    memclear(&reusableBuffer.sdManager, sizeof(reusableBuffer.sdManager));
+    REFRESH_FILES();
   }
 
 #if defined(PXX2)

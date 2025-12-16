@@ -21,7 +21,6 @@
 #ifndef _BOARD_H_
 #define _BOARD_H_
 
-#include <inttypes.h>
 #include "definitions.h"
 #include "opentx_constants.h"
 #include "board_common.h"
@@ -38,7 +37,7 @@ void rotaryEncoderCheck();
 #endif
 
 #define FLASHSIZE                       0x80000
-#define BOOTLOADER_SIZE                 0x8000
+#define BOOTLOADER_SIZE                 0x10000
 #define FIRMWARE_ADDRESS                0x08000000
 
 #define LUA_MEM_MAX                     (0)    // max allowed memory usage for complete Lua  (in bytes), 0 means unlimited
@@ -96,9 +95,17 @@ uint32_t sdGetSpeed();
 void sdInit();
 void sdMount();
 void sdDone();
+#if defined(RADIO_V10)
+#define sdPoll10ms()
+#else
 void sdPoll10ms();
+#endif
 uint32_t sdMounted();
-#define SD_CARD_PRESENT()               ((SD_GPIO_PRESENT_GPIO->IDR & SD_GPIO_PRESENT_GPIO_PIN) == 0)
+#if defined(SD_GPIO_PRESENT_GPIO)
+  #define SD_CARD_PRESENT()               ((SD_GPIO_PRESENT_GPIO->IDR & SD_GPIO_PRESENT_GPIO_PIN) == 0)
+#else
+  #define SD_CARD_PRESENT()               true
+#endif  
 #endif
 
 // Flash Write driver
@@ -226,28 +233,31 @@ int sbusGetByte(uint8_t * byte);
 // Keys driver
 enum EnumKeys
 {
-#if defined(KEYS_GPIO_REG_SHIFT)
+#if defined(HARDWARE_KEY_SHIFT)
   KEY_SHIFT,
 #endif
 
-#if defined(KEYS_GPIO_REG_MENU)
+#if defined(HARDWARE_KEY_MENU)
   KEY_MENU,
 #endif
 
+#if defined(HARDWARE_KEY_EXIT)
   KEY_EXIT,
-  KEY_ENTER,
+#endif
 
-#if defined(KEYS_GPIO_REG_DOWN)
+#if defined(HARDWARE_KEY_DOWN)
   KEY_DOWN,
   KEY_UP,
 #endif
 
-#if defined(KEYS_GPIO_REG_RIGHT)
+#if defined(HARDWARE_KEY_RIGHT)
   KEY_RIGHT,
   KEY_LEFT,
 #endif
 
-#if defined(KEYS_GPIO_REG_PAGE)
+  KEY_ENTER,
+
+#if defined(HARDWARE_KEY_PAGE)
   KEY_PAGE,
 #endif
 
@@ -259,15 +269,15 @@ enum EnumKeys
   KEY_PAGEDN,
 #endif
 
-#if defined(KEYS_GPIO_REG_SYS)
+#if defined(HARDWARE_KEY_SYS)
   KEY_SYS,
 #endif
 
-#if defined(KEYS_GPIO_REG_MDL)
+#if defined(HARDWARE_KEY_MODEL)
   KEY_MODEL,
 #endif
 
-#if defined(KEYS_GPIO_REG_TELE)
+#if defined(HARDWARE_KEY_TELE)
   KEY_TELE,
 #endif
 
@@ -314,6 +324,11 @@ enum EnumKeys
   #define KEY_MENU                      KEY_ENTER
   #define KEY_MINUS                     KEY_DOWN
   #define KEY_PLUS                      KEY_UP
+#elif defined(NAVIGATION_HORUS)
+  #define KEY_MODEL                     KEY_UP
+  #define KEY_SYS                       KEY_LEFT
+  #define KEY_TELE                      KEY_RIGHT
+  #define KEY_EXIT                      KEY_DOWN
 #else
   #define KEY_UP                        KEY_PLUS
   #define KEY_DOWN                      KEY_MINUS
@@ -339,9 +354,13 @@ enum EnumSwitches
   SW_SB,
   SW_SC,
   SW_SD,
+#if defined(STORAGE_SWITCH_E)
   SW_SE,
+#endif
   SW_SF,
+#if defined(STORAGE_SWITCH_G)
   SW_SG,
+#endif
   SW_SH,
   SW_SI,
   SW_SJ,
@@ -374,50 +393,37 @@ enum EnumSwitchesPositions
   SW_SD0,
   SW_SD1,
   SW_SD2,
-#if defined(PCBX9) || defined(PCBXLITES) || defined(PCBX9LITES) || defined(RADIO_TX12) || defined(RADIO_ZORRO) || defined(RADIO_TPRO)
+#if defined(STORAGE_SWITCH_E)
   SW_SE0,
   SW_SE1,
   SW_SE2,
 #endif
-#if defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E) || defined(PCBX7) || defined(PCBXLITES) || defined(PCBX9LITES) || defined(RADIO_T8) || defined(RADIO_ZORRO)  || defined(RADIO_TPRO)
+#if defined(STORAGE_SWITCH_F)
   SW_SF0,
   SW_SF1,
   SW_SF2,
 #endif
-#if defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E) || defined(PCBX9LITES) || defined(RADIO_ZORRO)  || defined(RADIO_TPRO)
+#if defined(STORAGE_SWITCH_G)
   SW_SG0,
   SW_SG1,
   SW_SG2,
 #endif
-#if defined(PCBX9D) || defined(PCBX9DP) || defined(PCBX9E) || (defined(PCBX7) && !defined(RADIO_TX12)) || defined(RADIO_T8) || defined(RADIO_ZORRO) || defined(RADIO_TPRO)
+#if defined(STORAGE_SWITCH_H)
   SW_SH0,
   SW_SH1,
   SW_SH2,
 #endif
-#if defined(RADIO_X9DP2019)
+#if defined(STORAGE_SWITCH_I)
   SW_SI0,
   SW_SI1,
   SW_SI2,
 #endif
-#if defined(PCBX7ACCESS)
-  SW_SI0,
-  SW_SI1,
-  SW_SI2,
-#elif defined(PCBX7) && !defined(RADIO_ZORRO)
-  SW_SI0,
-  SW_SI1,
-  SW_SI2,
+#if defined(STORAGE_SWITCH_J)
   SW_SJ0,
   SW_SJ1,
   SW_SJ2,
 #endif
 #if defined(PCBX9E)
-  SW_SI0,
-  SW_SI1,
-  SW_SI2,
-  SW_SJ0,
-  SW_SJ1,
-  SW_SJ2,
   SW_SK0,
   SW_SK1,
   SW_SK2,
@@ -462,14 +468,13 @@ enum EnumSwitchesPositions
   #define DEFAULT_SWITCH_CONFIG         (SWITCH_2POS << 6) + (SWITCH_2POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0);
   #define DEFAULT_POTS_CONFIG           (0)
 #elif defined(RADIO_TPRO)
-  #define NUM_SWITCHES                  10
-  #define NUM_FUNCTIONS_SWITCHES        6
-  #define NUM_REGULAR_SWITCHES          (NUM_SWITCHES - NUM_FUNCTIONS_SWITCHES)
-  #define STORAGE_NUM_SWITCHES          10
+  #define NUM_SWITCHES                  4
+  #define FUNCTION_SWITCHES        6
+  #define STORAGE_NUM_SWITCHES          6
   #define DEFAULT_SWITCH_CONFIG         (SWITCH_TOGGLE << 6) + (SWITCH_TOGGLE << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0);
   #define DEFAULT_FS_CONFIG             (SWITCH_2POS << 10) + (SWITCH_2POS << 8) + (SWITCH_2POS << 6) + (SWITCH_2POS << 4) + (SWITCH_2POS << 2) + (SWITCH_2POS << 0)
   #define DEFAULT_FS_GROUPS             (1 << 10) + (1 << 8) + (1 << 6) + (1 << 4) + (1 << 2) + (1 << 0)  // Set all FS to group 1 to act like a 6pos
-  #define DEFAULT_FS_STARTUP_CONFIG     ((FS_START_PREVIOUS << 10) + (FS_START_PREVIOUS << 8) + (FS_START_PREVIOUS << 6) + (FS_START_PREVIOUS << 4) + (FS_START_PREVIOUS << 2) + FS_START_PREVIOUS << 0)  // keep last state by default
+  #define DEFAULT_FS_STARTUP_CONFIG     ((FS_START_PREVIOUS << 10) + (FS_START_PREVIOUS << 8) + (FS_START_PREVIOUS << 6) + (FS_START_PREVIOUS << 4) + (FS_START_PREVIOUS << 2) + (FS_START_PREVIOUS << 0))  // keep last state by default
   #define DEFAULT_POTS_CONFIG           (POT_WITHOUT_DETENT << 0) + (POT_WITH_DETENT << 2); // S1 = pot without detent, S2 = pot with detent
 #elif defined(RADIO_FAMILY_JUMPER_T12)
   #define NUM_SWITCHES                  8
@@ -491,26 +496,35 @@ enum EnumSwitchesPositions
   #define STORAGE_NUM_SWITCHES          8
   #define DEFAULT_SWITCH_CONFIG         (SWITCH_2POS << 6) + (SWITCH_3POS << 4) + (SWITCH_3POS << 2) + (SWITCH_2POS << 0);
   #define DEFAULT_POTS_CONFIG           (0)
-#elif defined(PCBX7ACCESS)
+#elif defined(RADIO_X7ACCESS)
   #define NUM_SWITCHES                  7
   #define STORAGE_NUM_SWITCHES          8
   #define DEFAULT_SWITCH_CONFIG         (SWITCH_TOGGLE << 10) + (SWITCH_2POS << 8) + (SWITCH_3POS << 6) + (SWITCH_3POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0)
-  #define DEFAULT_POTS_CONFIG           (POT_WITHOUT_DETENT << 0) + (POT_WITH_DETENT << 2); // S1 = pot without detent, S2 = pot with detent
+  #define DEFAULT_POTS_CONFIG           (POT_WITHOUT_DETENT << 0) + (POT_WITH_DETENT << 2) // S1 = pot without detent, S2 = pot with detent
+#elif defined(RADIO_V10)
+  #define NUM_SWITCHES                  8
+  #define STORAGE_NUM_SWITCHES          NUM_SWITCHES
+  #define DEFAULT_SWITCH_CONFIG         (SWITCH_TOGGLE << 14) + (SWITCH_TOGGLE << 12) + (SWITCH_TOGGLE << 10) + (SWITCH_2POS << 8) + (SWITCH_3POS << 6) + (SWITCH_3POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0)
+  #define DEFAULT_POTS_CONFIG           (POT_WITH_DETENT << 0) + (POT_WITH_DETENT << 2) + (SLIDER_WITH_DETENT << 8) + (SLIDER_WITH_DETENT << 10) // S1 = pot with detent, S2 = pot with detent, LS & RS = sliders with detent
+  #define FUNCTION_SWITCHES        4
+  #define DEFAULT_FS_CONFIG             (SWITCH_2POS << 6) + (SWITCH_2POS << 4) + (SWITCH_2POS << 2) + (SWITCH_2POS << 0)
+  #define DEFAULT_FS_GROUPS             (1 << 6) + (1 << 4) + (1 << 2) + (1 << 0)  // Set all FS to group 1 to act like a 6pos
+  #define DEFAULT_FS_STARTUP_CONFIG     ((FS_START_PREVIOUS << 6) + (FS_START_PREVIOUS << 4) + (FS_START_PREVIOUS << 2) + (FS_START_PREVIOUS << 0))  // keep last state by default
 #elif defined(PCBX7)
   #define NUM_SWITCHES                  8
   #define STORAGE_NUM_SWITCHES          NUM_SWITCHES
   #define DEFAULT_SWITCH_CONFIG         (SWITCH_TOGGLE << 10) + (SWITCH_2POS << 8) + (SWITCH_3POS << 6) + (SWITCH_3POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0)
-  #define DEFAULT_POTS_CONFIG           (POT_WITHOUT_DETENT << 0) + (POT_WITH_DETENT << 2); // S1 = pot without detent, S2 = pot with detent
+  #define DEFAULT_POTS_CONFIG           (POT_WITHOUT_DETENT << 0) + (POT_WITH_DETENT << 2) // S1 = pot without detent, S2 = pot with detent
 #elif defined(PCBX9LITES)
   #define NUM_SWITCHES                  7
   #define STORAGE_NUM_SWITCHES          NUM_SWITCHES
-  #define DEFAULT_SWITCH_CONFIG         (SWITCH_TOGGLE << 12) + (SWITCH_TOGGLE << 10) + (SWITCH_TOGGLE << 8) + (SWITCH_2POS << 6) + (SWITCH_3POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0);
-  #define DEFAULT_POTS_CONFIG           (POT_WITH_DETENT << 0); // S1 = pot with detent
+  #define DEFAULT_SWITCH_CONFIG         (SWITCH_TOGGLE << 12) + (SWITCH_TOGGLE << 10) + (SWITCH_TOGGLE << 8) + (SWITCH_2POS << 6) + (SWITCH_3POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0)
+  #define DEFAULT_POTS_CONFIG           (POT_WITH_DETENT << 0) // S1 = pot with detent
 #elif defined(PCBX9LITE)
   #define NUM_SWITCHES                  5
   #define STORAGE_NUM_SWITCHES          NUM_SWITCHES
   #define DEFAULT_SWITCH_CONFIG         (SWITCH_TOGGLE << 8) + (SWITCH_2POS << 6) + (SWITCH_3POS << 4) + (SWITCH_3POS << 2) + (SWITCH_3POS << 0);
-  #define DEFAULT_POTS_CONFIG           (POT_WITH_DETENT << 0); // S1 = pot with detent
+  #define DEFAULT_POTS_CONFIG           (POT_WITH_DETENT << 0) // S1 = pot with detent
 #elif defined(PCBX9E)
   #define NUM_SWITCHES                  18 // yes, it's perfect like that !
   #define STORAGE_NUM_SWITCHES          NUM_SWITCHES
@@ -531,15 +545,18 @@ enum EnumSwitchesPositions
   #define DEFAULT_SLIDERS_CONFIG        (SLIDER_WITH_DETENT << 1) + (SLIDER_WITH_DETENT << 0)
 #endif
 
-#if !defined(NUM_FUNCTIONS_SWITCHES)
-  #define NUM_FUNCTIONS_SWITCHES        0
+#if !defined(FUNCTION_SWITCHES)
+  #define FUNCTION_SWITCHES        0
 #endif
 
 #define STORAGE_NUM_SWITCHES_POSITIONS  (STORAGE_NUM_SWITCHES * 3)
 
 void keysInit();
 uint32_t switchState(uint8_t index);
-#if defined(RADIO_TLITE)
+#if defined(RADIO_V10)
+uint32_t switchStateFromExternalChip(uint8_t index);
+static const int8_t switchPosition[][2] = {{0,0}, {0,1}, {1,0}, {1,1}, {-1,0}, {0,2}, {-1,0}, {1,2}, {2,0}, {3,0}};
+#elif defined(RADIO_TLITE)
 static const uint8_t switchPosition[][2] = {{0,0}, {1,0}, {0,1}, {1,1}};
 #elif defined(RADIO_TPRO)
 static const uint8_t switchPosition[][2] = {{0,0}, {1,0}, {0,1}, {1,1}};
@@ -558,8 +575,10 @@ static const uint8_t switchPosition[][2] = {{0,0}, {0,1}, {0,2}, {1,0}, {1,1}, {
 #endif
 uint32_t readKeys();
 uint32_t readTrims();
-#if defined(FUNCTION_SWITCHES)
+#if FUNCTION_SWITCHES > 0
 extern uint8_t fsPreviousState;
+uint8_t getFunctionSwitchesStates();
+void writeFunctionLeds(uint8_t mask);
 void evalFunctionSwitches();
 void setFSStartupPosition();
 uint8_t getFSLogicalState(uint8_t index);
@@ -568,6 +587,15 @@ uint8_t getFSPhysicalState(uint8_t index);
 
 #define TRIMS_PRESSED()                 (readTrims())
 #define KEYS_PRESSED()                  (readKeys())
+
+#define IS_ENTER_PRESSED()              (~KEYS_GPIO_REG_ENTER & KEYS_GPIO_PIN_ENTER)
+
+#if defined(RADIO_V10)
+bool isKeyPressed(uint8_t key);
+#define IS_KEY_PRESSED(key)             isKeyPressed(KEY_ ## key)
+#else
+#define IS_KEY_PRESSED(key)             (~KEYS_GPIO_REG_ ## key & KEYS_GPIO_PIN_ ## key)
+#endif
 
 // WDT driver
 #define WDG_DURATION                      500 /*ms*/
@@ -593,6 +621,13 @@ enum Analogs {
   POT1 = POT_FIRST,
 #if defined(PCBX9LITE)
   POT_LAST = POT1,
+#elif defined(RADIO_V10)
+  POT2,
+  EXT1,
+  EXT2,
+  POT_LAST = EXT2,
+  SLIDER1,
+  SLIDER2,
 #elif defined(PCBXLITE) || defined(PCBX7)
   POT2,
   POT_LAST = POT2,
@@ -627,6 +662,11 @@ enum Analogs {
   #define NUM_SLIDERS                   0
   #define STORAGE_NUM_POTS              2
   #define STORAGE_NUM_SLIDERS           0
+#elif defined(RADIO_V10)
+  #define NUM_POTS                      4
+  #define NUM_SLIDERS                   2
+  #define STORAGE_NUM_POTS              4
+  #define STORAGE_NUM_SLIDERS           2
 #elif defined(PCBXLITE) || defined(PCBX7)
   #define NUM_POTS                      2
   #define NUM_SLIDERS                   0
@@ -743,6 +783,8 @@ extern uint16_t adcValues[NUM_ANALOGS];
 
 #if defined(PCBXLITE)
   #define BATT_SCALE                    131
+#elif defined(RADIO_V10)
+  #define BATT_SCALE                    153
 #elif defined(PCBX7)
   #define BATT_SCALE                    123
 #elif defined(PCBX9LITE)
@@ -853,11 +895,15 @@ extern uint32_t telemetryErrors;
 void telemetryPortInvertedInit(uint32_t baudrate);
 
 // PCBREV driver
-#if defined(PCBX7ACCESS)
+#if defined(RADIO_X7ACCESS)
   #define HAS_SPORT_UPDATE_CONNECTOR()  true
 #elif defined(PCBX7)
+#if defined(RADIO_V10)
+  #define HAS_SPORT_UPDATE_CONNECTOR()  true
+#else
   #define IS_PCBREV_40()                (hardwareOptions.pcbrev == PCBREV_X7_40)
   #define HAS_SPORT_UPDATE_CONNECTOR()  IS_PCBREV_40()
+#endif
 #elif defined(SPORT_UPDATE_PWR_GPIO)
   #define HAS_SPORT_UPDATE_CONNECTOR()  true
 #else
@@ -962,7 +1008,7 @@ void bluetoothInit(uint32_t baudrate, bool enable);
 void bluetoothWriteWakeup();
 uint8_t bluetoothIsWriting();
 void bluetoothDisable();
-#if defined(PCBX9LITES) || defined(PCBX7ACCESS)
+#if defined(PCBX9LITES) || defined(RADIO_X7ACCESS)
   #define IS_BLUETOOTH_CHIP_PRESENT()     (true)
 #elif defined(PCBX9LITE)
   #define IS_BLUETOOTH_CHIP_PRESENT()     (false)
@@ -985,7 +1031,7 @@ void ledOff();
 void ledRed();
 void ledGreen();
 void ledBlue();
-#if defined(FUNCTION_SWITCHES)
+#if FUNCTION_SWITCHES > 0
 void fsLedOff(uint8_t);
 void fsLedOn(uint8_t);
 #endif
@@ -1075,5 +1121,10 @@ int gyroRead(uint8_t buffer[GYRO_BUFFER_LENGTH]);
 #define GYRO_MAX_RANGE                  60
 #define GYRO_OFFSET_MIN                 -30
 #define GYRO_OFFSET_MAX                 10
+
+// NCA9555 driver
+void i2c2Init();
+void nca9555Init();
+void nca9555Read();
 
 #endif // _BOARD_H_

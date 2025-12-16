@@ -106,7 +106,7 @@ void rotaryEncoderCheck()
     state |= pins;
 #else
   uint8_t newPosition = ROTARY_ENCODER_POSITION();
-  if (newPosition != rotencPosition && !(readKeys() & (1 << KEY_ENTER))) {
+  if (newPosition != rotencPosition && !IS_ENTER_PRESSED()) {
     if ((rotencPosition & 0x01) ^ ((newPosition & 0x02) >> 1)) {
       rotencValue -= INC_ROT;
     }
@@ -132,7 +132,7 @@ void rotaryEncoderStartDelay()
 extern "C" void ROTARY_ENCODER_EXTI_IRQHandler1(void)
 {
   // Check as first because it is the most critical one
-#if !defined(BOOT) && defined(TELEMETRY_EXTI_REUSE_INTERRUPT_ROTARY_ENCODER)
+#if !defined(BOOT) && defined(TELEMETRY_EXTI_REUSE_ROTARY_ENCODER_IRQ1)
   check_telemetry_exti();
 #endif
 
@@ -148,7 +148,7 @@ extern "C" void ROTARY_ENCODER_EXTI_IRQHandler1(void)
   }
 #endif
 
-#if !defined(BOOT) && defined(INTMODULE_HEARTBEAT_REUSE_INTERRUPT_ROTARY_ENCODER)
+#if !defined(BOOT) && defined(INTMODULE_HEARTBEAT_REUSE_ROTARY_ENCODER_IRQ1)
   check_intmodule_heartbeat();
 #endif
 }
@@ -160,6 +160,10 @@ extern "C" void ROTARY_ENCODER_EXTI_IRQHandler2(void)
     rotaryEncoderStartDelay();
     EXTI_ClearITPendingBit(ROTARY_ENCODER_EXTI_LINE2);
   }
+
+#if !defined(BOOT) && defined(INTMODULE_HEARTBEAT_REUSE_ROTARY_ENCODER_IRQ2)
+  check_intmodule_heartbeat();
+#endif
 }
 #endif
 

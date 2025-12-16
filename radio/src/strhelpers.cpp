@@ -348,6 +348,19 @@ char * getSwitchPositionName(char * dest, swsrc_t idx)
   }
 #endif // PCBSKY9X
 
+#if FUNCTION_SWITCHES > 0
+  else if (idx <= SWSRC_LAST_FUNCTION_SWITCH) {
+    idx -= SWSRC_FIRST_FUNCTION_SWITCH;
+    if (ZEXIST(g_model.switchNames[idx])) {
+      zchar2str(dest, g_model.switchNames[idx], LEN_SWITCH_NAME);
+      dest[LEN_SWITCH_NAME] = '\0';
+    }
+    else {
+      getStringAtIndex(dest, STR_VSRCRAW, idx + MIXSRC_FIRST_FS_SWITCH - MIXSRC_Rud + 1);
+    }
+  }
+#endif
+
 #if NUM_XPOTS > 0
   else if (idx <= SWSRC_LAST_MULTIPOS_SWITCH) {
     div_t swinfo = div(int(idx - SWSRC_FIRST_MULTIPOS_SWITCH), XPOTS_MULTIPOS_COUNT);

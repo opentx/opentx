@@ -34,6 +34,8 @@ elseif(CPU_TYPE_FULL STREQUAL STM32F407xE)
     ../../../../../${STM32LIB_DIR}/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_exti.c
     ../../../../../${STM32LIB_DIR}/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_spi.c
     ../../../../../${STM32LIB_DIR}/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_i2c.c
+    ../../../../../${STM32LIB_DIR}/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_sdio.c
+    ../../../../../${STM32LIB_DIR}/STM32F4xx_StdPeriph_Driver/src/stm32f4xx_dma.c
     ../../../../../${STM32LIB_DIR}/STM32F4xx_StdPeriph_Driver/src/misc.c
     )
 else()
@@ -80,8 +82,11 @@ set(BOOTLOADER_SRC
   ../../../../../targets/${TARGET_DIR}/${LCD_DRIVER}
   ../../../../../targets/${TARGET_DIR}/backlight_driver.cpp
   ../../../../../targets/${TARGET_DIR}/keys_driver.cpp
-  ../../../../../targets/${TARGET_DIR}/diskio.cpp
+  ../../../../../targets/common/arm/stm32/nca9555_driver.cpp
+  # ../../../../../targets/${TARGET_DIR}/diskio.cpp
+  ../../../../../targets/horus/diskio.cpp
   ../../../../../targets/${TARGET_DIR}/board.cpp
+  ../../../../../targets/${TARGET_DIR}/led_driver.cpp
   ../pwr_driver.cpp
   ../../../../../targets/${TARGET_DIR}/bootloader/boot_menu.cpp
   ../usbd_usr.cpp
@@ -101,6 +106,7 @@ if(ROTARY_ENCODER)
   set(BOOTLOADER_SRC
     ${BOOTLOADER_SRC}
     ../../../../../targets/common/arm/stm32/rotary_encoder_driver.cpp
+    ../../../../../targets/common/arm/stm32/sdio_sd.c
     )
 endif()
 

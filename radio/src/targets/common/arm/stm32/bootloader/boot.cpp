@@ -187,6 +187,15 @@ void writeEepromBlock()
 }
 #endif
 
+#if defined(RADIO_V10)
+  #define IS_BOOTLOADER_REQUESTED() IS_ENTER_PRESSED()
+#elif defined(RADIO_T8) && !defined(RADIOMASTER_RELEASE)
+  #define IS_BOOTLOADER_REQUESTED() IS_KEY_PRESSED(BIND)
+#else
+  // LHR & RHL trims not pressed simultanously
+  #define IS_BOOTLOADER_REQUESTED() (readTrims() == BOOTLOADER_KEYS)
+#endif
+
 int main()
 {
   BootloaderState state = ST_START;
@@ -195,7 +204,7 @@ int main()
   FRESULT fr;
   uint32_t nameCount = 0;
 
-  RCC_AHB1PeriphClockCmd(PWR_RCC_AHB1Periph | KEYS_RCC_AHB1Periph |
+  RCC_AHB1PeriphClockCmd(PWR_RCC_AHB1Periph | KEYS_RCC_AHB1Periph | RCC_AHB1Periph_GPIOA | RCC_AHB1Periph_GPIOD | 
                          LCD_RCC_AHB1Periph | BACKLIGHT_RCC_AHB1Periph |
                          AUX_SERIAL_RCC_AHB1Periph | AUX2_SERIAL_RCC_AHB1Periph |
                          I2C_RCC_AHB1Periph | KEYS_BACKLIGHT_RCC_AHB1Periph |
@@ -218,13 +227,7 @@ int main()
     }
   }
 
-#if defined(RADIO_T8) && !defined(RADIOMASTER_RELEASE)
-  // Bind button not pressed
-  if ((~KEYS_GPIO_REG_BIND & KEYS_GPIO_PIN_BIND) == false) {
-#else
-  // LHR & RHL trims not pressed simultanously
-  if (readTrims() != BOOTLOADER_KEYS) {
-#endif
+  if (!IS_BOOTLOADER_REQUESTED()) {
     // Start main application
     jumpTo(APP_START_ADDRESS);
   }
@@ -271,10 +274,13 @@ int main()
 
 #if defined(PWR_BUTTON_PRESS)
   // wait until power button is released
-  while (pwrPressed()) {
+  while (pwrPressed() || IS_BOOTLOADER_REQUESTED()) {
     WDG_RESET();
   }
 #endif
+
+  memclear(keys, sizeof(keys));
+  putEvent(0);
 
   for (;;) {
     WDG_RESET();

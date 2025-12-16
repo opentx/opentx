@@ -84,11 +84,11 @@ void check_intmodule_heartbeat()
 }
 #endif
 
-#if defined(INTMODULE_HEARTBEAT) && !defined(INTMODULE_HEARTBEAT_REUSE_INTERRUPT_ROTARY_ENCODER)
+#if defined(INTMODULE_HEARTBEAT) && !defined(INTMODULE_HEARTBEAT_REUSE_ROTARY_ENCODER_IRQ1) && !defined(INTMODULE_HEARTBEAT_REUSE_ROTARY_ENCODER_IRQ2)
 extern "C" void INTMODULE_HEARTBEAT_EXTI_IRQHandler()
 {
   // Check as first because it is the most critical one
-#if defined(TELEMETRY_EXTI_REUSE_INTERRUPT_INTMODULE_HEARTBEAT)
+#if defined(TELEMETRY_EXTI_REUSE_INTMODULE_HEARTBEAT_IRQ)
   check_telemetry_exti();
 #endif
 

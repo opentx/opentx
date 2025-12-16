@@ -169,7 +169,7 @@ void per10ms()
 
   readKeysAndTrims();
 
-#if defined(FUNCTION_SWITCHES)
+#if FUNCTION_SWITCHES > 0
   evalFunctionSwitches();
 #endif
 
@@ -436,7 +436,7 @@ void applyDefaultTemplate()
 {
   defaultInputs(); // calls storageDirty internally
 
-#if defined(FUNCTION_SWITCHES)
+#if FUNCTION_SWITCHES > 0
   g_model.functionSwitchConfig = DEFAULT_FS_CONFIG;
   g_model.functionSwitchGroup = DEFAULT_FS_GROUPS;
   g_model.functionSwitchStartConfig = DEFAULT_FS_STARTUP_CONFIG;
@@ -765,17 +765,29 @@ ls_telemetry_value_t maxTelemValue(source_t channel)
 bool inputsMoved()
 {
   uint8_t sum = 0;
-  for (uint8_t i=0; i<NUM_STICKS+NUM_POTS+NUM_SLIDERS; i++)
+
+  for (uint8_t i=0; i<NUM_STICKS+NUM_POTS+NUM_SLIDERS; i++) {
 #if defined(RADIO_FAMILY_TBS)
     sum += ((int16_t)anaIn(i) + 4096) >> INAC_STICKS_SHIFT;
 #else
     sum += anaIn(i) >> INAC_STICKS_SHIFT;
 #endif
-  for (uint8_t i=0; i<NUM_SWITCHES; i++)
+  }
+
+  for (uint8_t i=0; i<STORAGE_NUM_SWITCHES; i++) {
     sum += getValue(MIXSRC_FIRST_SWITCH+i) >> INAC_SWITCHES_SHIFT;
+  }
+
+#if FUNCTION_SWITCHES > 0
+  for (uint8_t i=0; i<FUNCTION_SWITCHES; i++) {
+    sum += getValue(MIXSRC_FIRST_FS_SWITCH+i) >> INAC_SWITCHES_SHIFT;
+  }
+#endif
+
 #if defined(GYRO)
-  for (uint8_t i=0; i<2; i++)
+  for (uint8_t i=0; i<2; i++) {
     sum += getValue(MIXSRC_GYRO1+i) >> INAC_STICKS_SHIFT;
+  }
 #endif
 
   if (abs((int8_t)(sum-inactivity.sum)) > 1) {
@@ -823,6 +835,10 @@ void checkBacklight()
       }
     }
   }
+
+#if defined(RADIO_V10)
+  nca9555Read();
+#endif
 }
 
 void resetBacklightTimeout()
@@ -1706,7 +1722,7 @@ void opentxStart(const uint8_t startOptions = OPENTX_START_DEFAULT_ARGS)
   ALERT(STR_TEST_WARNING, TR_TEST_NOTSAFE, AU_ERROR);
 #endif
 
-#if defined(FUNCTION_SWITCHES)
+#if FUNCTION_SWITCHES > 0
   if (!UNEXPECTED_SHUTDOWN()) {
     setFSStartupPosition();
   }

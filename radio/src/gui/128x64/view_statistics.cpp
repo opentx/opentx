@@ -41,18 +41,16 @@ void menuStatisticsView(event_t event)
       chainMenu(menuStatisticsDebug);
       break;
 
-    case EVT_KEY_FIRST(KEY_DOWN):
-#if defined(KEYS_GPIO_REG_PAGEUP)
+    // TODO case EVT_KEY_PREVIOUS_VIEW:
+#if defined(HARDWARE_KEY_PAGEUP)
     case EVT_KEY_BREAK(KEY_PAGEUP):
-      killEvents(event);
-      chainMenu(menuStatisticsDebug2);
-#elif defined(NAVIGATION_X7)
+#elif defined(HARDWARE_KEY_PAGE)
     case EVT_KEY_LONG(KEY_PAGE):
+#else
+    case EVT_KEY_FIRST(KEY_DOWN):
+#endif
       killEvents(event);
       chainMenu(menuStatisticsDebug2);
-#else
-      chainMenu(menuStatisticsDebug);
-#endif
       break;
 
 #if !defined(PCBTARANIS)
@@ -153,11 +151,13 @@ void menuStatisticsDebug(event_t event)
       break;
 #endif
 
-    case EVT_KEY_FIRST(KEY_DOWN):
-#if defined(KEYS_GPIO_REG_PAGEUP)
+    // TODO case EVT_KEY_PREVIOUS_VIEW:
+#if defined(HARDWARE_KEY_PAGEUP)
     case EVT_KEY_BREAK(KEY_PAGEUP):
-#elif defined(NAVIGATION_X7)
+#elif defined(HARDWARE_KEY_PAGE)
     case EVT_KEY_LONG(KEY_PAGE):
+#else
+    case EVT_KEY_FIRST(KEY_DOWN):
 #endif
       killEvents(event);
       disableVBatBridge();
@@ -285,20 +285,23 @@ void menuStatisticsDebug2(event_t event)
       telemetryErrors  = 0;
       break;
 
-    case EVT_KEY_FIRST(KEY_UP):
-#if defined(KEYS_GPIO_REG_PAGEDN)
+    // TODO EVT_KEY_PREVIOUS_VIEW
+#if defined(HARDWARE_KEY_PAGEDN)
     case EVT_KEY_BREAK(KEY_PAGEDN):
-#elif defined(NAVIGATION_X7)
+#elif defined(HARDWARE_KEY_PAGE)
     case EVT_KEY_BREAK(KEY_PAGE):
+#else
+    case EVT_KEY_FIRST(KEY_UP):
 #endif
       chainMenu(menuStatisticsView);
       return;
 
-    case EVT_KEY_FIRST(KEY_DOWN):
-#if defined(KEYS_GPIO_REG_PAGEUP)
+#if defined(HARDWARE_KEY_PAGEUP)
     case EVT_KEY_BREAK(KEY_PAGEUP):
-#elif defined(NAVIGATION_X7)
+#elif defined(HARDWARE_KEY_PAGE)
     case EVT_KEY_LONG(KEY_PAGE):
+#else
+    case EVT_KEY_FIRST(KEY_DOWN):
 #endif
       killEvents(event);
       chainMenu(menuStatisticsDebug);

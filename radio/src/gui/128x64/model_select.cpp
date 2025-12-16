@@ -212,7 +212,7 @@ void menuModelSelect(event_t event)
     case EVT_KEY_FIRST(KEY_PAGEDN):
       chainMenu(menuModelSetup);
       break;
-#elif defined(KEYS_GPIO_REG_PAGE)
+#elif defined(HARDWARE_KEY_PAGE)
     case EVT_KEY_LONG(KEY_PAGE):
       chainMenu(menuTabModel[DIM(menuTabModel)-1]);
       killEvents(event);

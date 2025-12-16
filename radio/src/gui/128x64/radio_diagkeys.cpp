@@ -66,8 +66,8 @@ void menuRadioDiagKeys(event_t event)
       drawSwitch(8*FW, y, i+1, 0);
       displaySwitchState(11*FW+2, y, i);
     }
-#elif (NUM_SWITCHES > 6)
-    if (i < NUM_SWITCHES) {
+#elif STORAGE_NUM_SWITCHES > 6
+    if (i < STORAGE_NUM_SWITCHES) {
       if (SWITCH_EXISTS(i)) {
         y = (i > 4) ? FH*(i-4) : MENU_HEADER_HEIGHT + FH*i;
         getvalue_t val = getValue(MIXSRC_FIRST_SWITCH+i);
@@ -76,9 +76,9 @@ void menuRadioDiagKeys(event_t event)
       }
     }
 #else
-    if (i < NUM_SWITCHES) {
+    if (i < STORAGE_NUM_SWITCHES) {
       if (SWITCH_EXISTS(i)) {
-        y = (NUM_SWITCHES - NUM_FUNCTIONS_SWITCHES > 6 ? 0 : MENU_HEADER_HEIGHT) + FH*i;
+        y = (STORAGE_NUM_SWITCHES > 6 ? 0 : MENU_HEADER_HEIGHT) + FH*i;
         getvalue_t val = getValue(MIXSRC_FIRST_SWITCH+i);
         getvalue_t sw = ((val < 0) ? 3*i+1 : ((val == 0) ? 3*i+2 : 3*i+3));
         drawSwitch(8*FW+4, y, sw, 0);
@@ -87,19 +87,13 @@ void menuRadioDiagKeys(event_t event)
 #endif
   }
 
-#if defined(FUNCTION_SWITCHES) && defined(DEBUG)
-  lcdDrawText(LCD_W / 2 , LCD_H - 2 * FH, "Phys");
-  lcdDrawText(LCD_W / 2 , LCD_H - 1 * FH, "Log");
-
-  for (uint8_t i = 0; i < NUM_FUNCTIONS_SWITCHES; i++) {
-    lcdDrawNumber(LCD_W / 2 + 20 + (i + 1) * FW , LCD_H - 2 * FH, getFSPhysicalState(i));
-    lcdDrawNumber(LCD_W / 2 + 20 + (i + 1) * FW , LCD_H - 1 * FH, getFSLogicalState(i));
-  }
+#if defined(ROTARY_ENCODER_NAVIGATION)
+  lcdDrawText(0, LCD_H - FH + 1, STR_ROTARY_ENCODER);
+  lcdDrawNumber(5*FW+FWNUM+2, LCD_H - FH + 1, rotencValue / ROTARY_ENCODER_GRANULARITY, RIGHT);
 #endif
 
-#if defined(ROTARY_ENCODER_NAVIGATION)
-  coord_t y = LCD_H - FH - 1;
-  lcdDrawText(0, y, STR_ROTARY_ENCODER);
-  lcdDrawNumber(5*FW+FWNUM+2, y, rotencValue / ROTARY_ENCODER_GRANULARITY, RIGHT);
+#if FUNCTION_SWITCHES > 0
+  lcdDrawText(LCD_W / 2, LCD_H - FH + 1, "FS");
+  lcdDrawNumber(LCD_W / 2 + 2 * FW , LCD_H - FH + 1, getFunctionSwitchesStates());
 #endif
 }

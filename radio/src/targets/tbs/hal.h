@@ -26,6 +26,7 @@
   #define KEYS_GPIO_PIN_MENU                GPIO_Pin_13  // PD.13
   #define KEYS_GPIO_REG_EXIT                GPIOD->IDR
   #define KEYS_GPIO_PIN_EXIT                GPIO_Pin_14  // PD.14
+  #define HARDWARE_KEY_PAGE
   #define KEYS_GPIO_REG_PAGE                GPIOD->IDR
   #define KEYS_GPIO_PIN_PAGE                GPIO_Pin_12  // PD.12
   #define KEYS_GPIO_REG_ENTER               GPIOD->IDR
@@ -364,7 +365,7 @@
   #endif
 
 #if defined(RADIO_TANGO)
-  #define TELEMETRY_EXTI_REUSE_INTERRUPT_ROTARY_ENCODER
+  #define TELEMETRY_EXTI_REUSE_ROTARY_ENCODER_IRQ1
 #endif
   #define TELEMETRY_TIMER                   TIM11
   #define TELEMETRY_TIMER_IRQn              TIM1_TRG_COM_TIM11_IRQn

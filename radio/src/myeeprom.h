@@ -78,23 +78,18 @@
 #define MODEL_GVAR_MIN(idx)            (CFN_GVAR_CST_MIN + g_model.gvars[idx].min)
 #define MODEL_GVAR_MAX(idx)            (CFN_GVAR_CST_MAX - g_model.gvars[idx].max)
 
-#if defined(PCBTARANIS) || defined(PCBHORUS)
-  #define SWITCH_CONFIG(x)            (bfGet<swconfig_t>(g_eeGeneral.switchConfig, 2*(x), 2))
-#if defined(FUNCTION_SWITCHES)
+#if FUNCTION_SWITCHES > 0
   #define FSWITCH_CONFIG(x)           (bfGet<swconfig_t>(g_model.functionSwitchConfig, 2*(x), 2))
   #define FSWITCH_GROUP(x)            (bfGet<swconfig_t>(g_model.functionSwitchGroup, 2*(x), 2))
-  #define IS_FSWITCH_GROUP_ON(x)      (bfGet<swconfig_t>(g_model.functionSwitchGroup, 2 * NUM_FUNCTIONS_SWITCHES + x, 1))
-  #define IS_SWITCH_FS(x)             (x >= NUM_REGULAR_SWITCHES)
-  #define SWITCH_EXISTS(x)            (IS_SWITCH_FS(x)  ? true : (SWITCH_CONFIG(x) != SWITCH_NONE))
-  #define IS_CONFIG_3POS(x)           (IS_SWITCH_FS(x)  ? (FSWITCH_CONFIG(x - NUM_REGULAR_SWITCHES) == SWITCH_3POS) : (SWITCH_CONFIG(x) == SWITCH_3POS))
-  #define IS_CONFIG_TOGGLE(x)         (IS_SWITCH_FS(x)  ? (FSWITCH_CONFIG(x - NUM_REGULAR_SWITCHES) == SWITCH_TOGGLE) : (SWITCH_CONFIG(x) == SWITCH_TOGGLE))
-#else
+  #define IS_FSWITCH_GROUP_ON(x)      (bfGet<swconfig_t>(g_model.functionSwitchGroup, 2 * FUNCTION_SWITCHES + x, 1))
+#endif
+
+#if defined(PCBTARANIS) || defined(PCBHORUS)
+  #define SWITCH_CONFIG(x)            (bfGet<swconfig_t>(g_eeGeneral.switchConfig, 2*(x), 2))
   #define SWITCH_EXISTS(x)            (SWITCH_CONFIG(x) != SWITCH_NONE)
   #define IS_CONFIG_3POS(x)           (SWITCH_CONFIG(x) == SWITCH_3POS)
   #define IS_CONFIG_TOGGLE(x)         (SWITCH_CONFIG(x) == SWITCH_TOGGLE)
-  #define IS_SWITCH_FS(x)             (false)
-#endif
-  #define SWITCH_WARNING_ALLOWED(x)   (SWITCH_EXISTS(x) && !(IS_CONFIG_TOGGLE(x) || IS_SWITCH_FS(x)))
+  #define SWITCH_WARNING_ALLOWED(x)   (SWITCH_EXISTS(x) && !(IS_CONFIG_TOGGLE(x)))
 #else
   #define IS_CONFIG_3POS(x)           IS_3POS(x)
   #define IS_CONFIG_TOGGLE(x)         IS_TOGGLE(x)

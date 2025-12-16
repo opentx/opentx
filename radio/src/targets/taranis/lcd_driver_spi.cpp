@@ -20,7 +20,7 @@
 
 #include "opentx.h"
 
-#if defined(RADIO_FAMILY_JUMPER_T12) || defined(RADIO_TX12) || defined(RADIO_ZORRO) || defined(RADIO_T8) || defined(RADIO_TPRO)
+#if defined(RADIO_FAMILY_JUMPER_T12) || defined(RADIO_TX12) || defined(RADIO_ZORRO) || defined(RADIO_T8) || defined(RADIO_TPRO) || RADIO_V10
   #define LCD_CONTRAST_OFFSET            -10
 #else
   #define LCD_CONTRAST_OFFSET            160
@@ -367,5 +367,5 @@ void lcdSetRefVolt(uint8_t val)
 #endif
 
   lcdWriteCommand(0x81); // Set Vop
-  lcdWriteCommand(val+LCD_CONTRAST_OFFSET); // 0-255
+  lcdWriteCommand(val + 10 /*+LCD_CONTRAST_OFFSET*/); // 0-255
 }

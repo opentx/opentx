@@ -35,7 +35,7 @@
 #define FILL_WHITE                     0x10
 #endif
 
-#if defined(NAVIGATION_X7)
+#if defined(NAVIGATION_X7) || defined(NAVIGATION_HORUS)
   #define HEADER_LINE                  0
   #define HEADER_LINE_COLUMNS
 #else
@@ -156,9 +156,15 @@ int checkIncDec(event_t event, int val, int i_min, int i_max, unsigned int i_fla
 #define CURSOR_ON_LINE()               (0)
 #endif
 
+#if defined(NAVIGATION_HORUS)
+bool check(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t menuTabSize, const uint8_t * horTab, uint8_t horTabMax, int maxrow, uint8_t flags=0);
+bool check_simple(event_t event, uint8_t curr, const MenuHandlerFunc * menuTab, uint8_t menuTabSize, int maxrow);
+bool check_submenu_simple(event_t event, uint8_t maxrow);
+#else
 void check(event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t menuTabSize, const uint8_t *horTab, uint8_t horTabMax, vertpos_t maxrow);
 void check_simple(event_t event, uint8_t curr, const MenuHandlerFunc *menuTab, uint8_t menuTabSize, vertpos_t maxrow);
 void check_submenu_simple(event_t event, uint8_t maxrow);
+#endif
 
 void title(const char * s);
 
@@ -273,6 +279,8 @@ void menuChannelsViewCommon(event_t event);
   void repeatLastCursorMove(event_t event);
   #define REPEAT_LAST_CURSOR_MOVE()    repeatLastCursorMove(event)
 #endif
+
+#define POS_HORZ_INIT(posVert)         ((COLATTR(posVert) & NAVIGATION_LINE_BY_LINE) ? -1 : 0)
 
 // TODO enum
 #if defined(PCBX7) || defined(PCBX9LITE)

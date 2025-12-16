@@ -514,6 +514,10 @@ void boardInit()
 {
 }
 
+void nca9555Read()
+{
+}
+
 display_t simuLcdBackupBuf[DISPLAY_BUFFER_SIZE];
 void lcdStoreBackupBuffer()
 {
@@ -780,6 +784,11 @@ uint16_t getBatteryVoltage()
 
 void boardOff()
 {
+}
+
+uint8_t getFunctionSwitchesStates()
+{
+  return 0;
 }
 
 #if defined(RADIO_FAMILY_TBS)
