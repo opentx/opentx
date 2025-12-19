@@ -122,3 +122,25 @@ void runPopupWarning(event_t event)
 #endif
   }
 }
+
+void raiseThrottleWarning()
+{
+#if defined(PCBACAIR)
+  extern const pm_uchar ASTERISK_BITMAP[] PROGMEM;
+  lcdClear();
+  lcd_img(2, 0, ASTERISK_BITMAP, 0, 0);
+  lcdDrawText(6*FW, 0, STR_THROTTLEWARN, DBLSIZE);
+  lcdDrawText(6*FW, 2*FH, STR_WARNING, DBLSIZE);
+  lcdDrawSolidFilledRect(0, 0, LCD_W, 32);
+  lcdDrawTextAlignedLeft(4*FH+4, STR_THROTTLENOTIDLE);
+  lcdDrawTextAlignedLeft(6*FH-2, "Joystick calib. needed");
+  // lcdDrawTextAlignedLeft(6*FH, " or press any key to skip");
+  lcdDrawTextAlignedLeft(7*FH+1, STR_PRESSANYKEYTOSKIP);
+  AUDIO_ERROR_MESSAGE(AU_THROTTLE_ALERT);
+  lcdRefresh();
+  lcdSetContrast();
+  clearKeyEvents();
+#else
+  RAISE_ALERT(STR_THROTTLEWARN, STR_THROTTLENOTIDLE, STR_PRESSANYKEYTOSKIP, AU_THROTTLE_ALERT);
+#endif
+}

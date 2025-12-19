@@ -1235,7 +1235,8 @@ void checkLowEEPROM()
 #endif
 
 #if defined(PCBACAIR)
-#define IS_THROTTLE_LOW(v)             (abs(calibratedAnalogs[thrchn]) <= THRCHK_DEADBAND && abs(calibratedAnalogs[RUD_STICK]) <= THRCHK_DEADBAND)
+#define IS_THROTTLE_LOW(v) false
+// #define IS_THROTTLE_LOW(v)             (abs(calibratedAnalogs[thrchn]) <= THRCHK_DEADBAND && abs(calibratedAnalogs[RUD_STICK]) <= THRCHK_DEADBAND)
 #else
 #define IS_THROTTLE_LOW()              (calibratedAnalogs[thrchn] <= THRCHK_DEADBAND-1024)
 #endif
@@ -1260,7 +1261,7 @@ void checkTHR()
       rawAnas[thrchn] = anas[thrchn] = calibratedAnalogs[thrchn];
     }
 #endif
-    RAISE_ALERT(STR_THROTTLEWARN, STR_THROTTLENOTIDLE, STR_PRESSANYKEYTOSKIP, AU_THROTTLE_ALERT);
+    raiseThrottleWarning();
   }
 #else
   if (g_model.disableThrottleWarning) {
@@ -1277,7 +1278,7 @@ void checkTHR()
 
   // first - display warning; also deletes inputs if any have been before
   LED_ERROR_BEGIN();
-  RAISE_ALERT(STR_THROTTLEWARN, STR_THROTTLENOTIDLE, STR_PRESSANYKEYTOSKIP, AU_THROTTLE_ALERT);
+  raiseThrottleWarning();
 
 #if defined(PWR_BUTTON_PRESS)
   bool refresh = false;
@@ -1988,7 +1989,7 @@ void opentxStart(OPENTX_START_ARGS)
 {
   TRACE("opentxStart");
 
-#if defined(SIMU)
+#if defined(SIMU) && !defined(PCBACAIR)
   if (main_thread_running == 2) {
     return;
   }

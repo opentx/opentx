@@ -490,4 +490,7 @@ FlightModesType editFlightModes(coord_t x, coord_t y, event_t event, FlightModes
 #define displayFlightModes(...)
 #endif
 
+void raiseThrottleWarning();
+
+
 #endif // _GUI_H_
