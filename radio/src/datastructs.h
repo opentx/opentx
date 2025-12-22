@@ -382,6 +382,7 @@ PACK(struct TelemetrySensor {
     int32_t getPrecMultiplier() const;
     int32_t getPrecDivisor() const;
     bool isSameInstance(TelemetryProtocol protocol, uint8_t instance);
+    bool isOfflineFresh() const;
   );
 });
 
