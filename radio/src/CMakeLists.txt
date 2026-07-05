@@ -56,6 +56,7 @@ option(FRSKY_RELEASE "Used to build FrSky released firmware" OFF)
 option(TBS_RELEASE "Used to build TBS released firmware" OFF)
 option(IMRC_RELEASE "Used to build IMRC released firmware" OFF)
 option(HARDWARE_TRAINER_MULTI_MOD "Allow multi trainer" OFF)
+option(PASSWORD "Turn on password protection" OFF)
 
 # since we reset all default CMAKE compiler flags for firmware builds, provide an alternate way for user to specify additional flags.
 set(FIRMWARE_C_FLAGS "" CACHE STRING "Additional flags for firmware target c compiler (note: all CMAKE_C_FLAGS[_*] are ignored for firmware/bootloader).")
@@ -363,6 +364,11 @@ endif()
 if(FRSKY_RELEASE)
   add_definitions(-DFRSKY_RELEASE)
   set(POPUP_LEVEL 3)
+endif()
+
+if(PASSWORD)
+  message(STATUS "Password is '${PASSWORD}'")
+  add_compile_definitions(PASSWORD="${PASSWORD}")
 endif()
 
 if(HARDWARE_TRAINER_MULTI_MOD)

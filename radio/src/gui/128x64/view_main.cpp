@@ -402,6 +402,73 @@ void drawSmallSwitch(coord_t x, coord_t y, int width, unsigned int index)
   }
 }
 
+#if defined(PASSWORD)
+enum PopupPasswordItems {
+  ITEM_PASSWORD,
+  ITEM_PASSWORD_BUTTONS
+};
+void runPopupPassword(event_t event)
+{
+  uint8_t backupVerticalPosition = menuVerticalPosition;
+  uint8_t backupHorizontalPosition = menuHorizontalPosition;
+  uint8_t backupVerticalOffset = menuVerticalOffset;
+  int8_t backupEditMode = s_editMode;
+
+  menuVerticalPosition = reusableBuffer.moduleSetup.pxx2.registerPopupVerticalPosition;
+  menuHorizontalPosition = reusableBuffer.moduleSetup.pxx2.registerPopupHorizontalPosition;
+  s_editMode = reusableBuffer.moduleSetup.pxx2.registerPopupEditMode;
+
+  switch (event) {
+    case EVT_KEY_BREAK(KEY_ENTER):
+      // if (menuVerticalPosition != ITEM_REGISTER_BUTTONS) {
+      //   break;
+      // }
+      // else if (reusableBuffer.moduleSetup.pxx2.registerStep >= REGISTER_RX_NAME_RECEIVED && menuHorizontalPosition == 0) {
+      //   // [Enter] pressed
+      //   reusableBuffer.moduleSetup.pxx2.registerStep = REGISTER_RX_NAME_SELECTED;
+      //   backupEditMode = EDIT_MODIFY_FIELD; // so that the [Register] button blinks and the REGISTER process can continue
+      // }
+      // no break
+
+    case EVT_KEY_LONG(KEY_EXIT):
+      s_editMode = 0;
+      // no break;
+
+    case EVT_KEY_BREAK(KEY_EXIT):
+      if (s_editMode <= 0) {
+        warningText = nullptr;
+      }
+      break;
+  }
+
+  if (warningText) {
+    drawMessageBox(warningText);
+
+    // label
+    lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y - 4, "Password");
+
+    // password input
+    constexpr uint8_t PASSWORD_MAX_LENGTH = 8;
+    static char password[PASSWORD_MAX_LENGTH + 1] = { 0 };
+    editName(WARNING_LINE_X, WARNING_LINE_Y + FH, password, PASSWORD_MAX_LENGTH, event, menuVerticalPosition == ITEM_PASSWORD);
+
+    lcdDrawText(WARNING_LINE_X, WARNING_LINE_Y - 2 + 3 * FH, TR_ENTER, menuVerticalPosition == ITEM_PASSWORD_BUTTONS && menuHorizontalPosition == 0 ? INVERS : 0);
+    lcdDrawText(WARNING_LINE_X + 8*FW, WARNING_LINE_Y - 2 + 3 * FH, TR_EXIT, menuVerticalPosition == ITEM_PASSWORD_BUTTONS && menuHorizontalPosition == 1 ? INVERS : 0);
+
+    reusableBuffer.moduleSetup.pxx2.registerPopupVerticalPosition = menuVerticalPosition;
+    reusableBuffer.moduleSetup.pxx2.registerPopupHorizontalPosition = menuHorizontalPosition;
+    reusableBuffer.moduleSetup.pxx2.registerPopupEditMode = s_editMode;
+  }
+
+  menuVerticalPosition = backupVerticalPosition;
+  menuHorizontalPosition = backupHorizontalPosition;
+  menuVerticalOffset = backupVerticalOffset;
+  s_editMode = backupEditMode;
+}
+#endif
+
+bool passwordChecked = false;
+
 void menuMainView(event_t event)
 {
   uint8_t view = g_eeGeneral.view;
@@ -458,6 +525,14 @@ void menuMainView(event_t event)
 #endif
 
     case EVT_KEY_MODEL_MENU:
+#if defined(PASSWORD)
+      if (!passwordChecked) {
+        s_editMode = 0;
+        killAllEvents();
+        POPUP_INPUT("", runPopupPassword);
+        break;
+      }
+#endif
       pushMenu(menuModelSelect);
       killEvents(event);
       break;
