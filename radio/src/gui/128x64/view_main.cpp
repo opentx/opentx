@@ -407,7 +407,10 @@ enum PopupPasswordItems {
   ITEM_PASSWORD,
   ITEM_PASSWORD_BUTTONS
 };
+
 bool passwordChecked = false;
+MenuHandlerFunc passWordProtectedMenu = nullptr;
+
 void runPopupPassword(event_t event)
 {
   constexpr uint8_t PASSWORD_MAX_LENGTH = 8;
@@ -425,6 +428,7 @@ void runPopupPassword(event_t event)
         if (len == zlen(password, PASSWORD_MAX_LENGTH) && cmpStrWithZchar(PASSWORD, password, len)) {
           passwordChecked = true;
           warningText = nullptr;
+          pushMenu(passWordProtectedMenu);
         }
       }
       else {
@@ -461,6 +465,23 @@ void runPopupPassword(event_t event)
     lcdDrawText(WARNING_LINE_X + 8*FW, WARNING_LINE_Y - 2 + 3 * FH, TR_EXIT, menuVerticalPosition == ITEM_PASSWORD_BUTTONS && menuHorizontalPosition == 1 ? INVERS : 0);
   }
 }
+
+void pushMenuWithPassword(MenuHandlerFunc newMenu)
+{
+  if (passwordChecked) {
+    pushMenu(newMenu);
+  }
+  else {
+    menuVerticalPosition = ITEM_PASSWORD;
+    menuHorizontalPosition = 0;
+    s_editMode = EDIT_MODIFY_FIELD;
+    passWordProtectedMenu = newMenu;
+    killAllEvents();
+    POPUP_INPUT("", runPopupPassword);
+  }
+}
+#else
+#define pushMenuWithPassword(newMenu) pushMenu(newMenu)
 #endif
 
 void menuMainView(event_t event)
@@ -513,28 +534,18 @@ void menuMainView(event_t event)
 #if MENUS_LOCK != 2 /*no menus*/
 #if defined(EVT_KEY_LAST_MENU)
     case EVT_KEY_LAST_MENU:
-      pushMenu(lastPopMenu());
+      pushMenuWithPassword(lastPopMenu());
       killEvents(event);
       break;
 #endif
 
     case EVT_KEY_MODEL_MENU:
-#if defined(PASSWORD)
-      if (!passwordChecked) {
-        menuVerticalPosition = ITEM_PASSWORD;
-        menuHorizontalPosition = 0;
-        s_editMode = EDIT_MODIFY_FIELD;
-        killAllEvents();
-        POPUP_INPUT("", runPopupPassword);
-        break;
-      }
-#endif
-      pushMenu(menuModelSelect);
+      pushMenuWithPassword(menuModelSelect);
       killEvents(event);
       break;
 
     case EVT_KEY_GENERAL_MENU:
-      pushMenu(menuTabGeneral[0]);
+      pushMenuWithPassword(menuTabGeneral[0]);
       killEvents(event);
       break;
 #endif
